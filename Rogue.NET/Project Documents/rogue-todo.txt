@@ -2769,5 +2769,24 @@ IMMEDIATE TODO'S:
 						   Static Layouts?  YES!  Let's build an editor
 
 	- TODO: Saw problem with null values in AuraSourceParameters. Should definitely fix any null strings - especially colors
+
+	- TODO: ATTACK ATTRIBUTE META-DATA / SEPARATE SCREEN FOR VIEWING - MAYBE TURN STYLE + META DATA
+
+	- TODO: Play-from-editor-button / Layout Preview / Zoom Feature / Bulk Change UNDO
+
+	- TODO: Add Astaroth as the "Big Baddy" for the Sorcerer scenario
+
+	- TODO: Add feature for PERMADEATH that stores the save time in the .rdn file - which gets compared to the file-system record date-time.
+
+	- TODO: Strip out most of the difficulty chart SIMULATION code and do the accumulated "average" data from runs of the actual scenario - 
+			STARTED FROM THE EDITOR.
+
+	- TODO: Add red foreground text coloring to the level browser for the validation "design mode". (will have to show the level browser during
+			validation)
+
+	- TODO: Design some "fun" chart to show for the "Overview" design mode. Since we can click around in the asset (or) level browser - it might
+			be nice to see a related chart (?). Just something simple to show someone.
+
+	- TODO: Level browser - collapse tree view button
 	
 						  

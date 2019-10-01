@@ -1,8 +1,16 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+
+using LayoutViewType = Rogue.NET.ScenarioEditor.Views.Assets.Layout;
+
+
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 {
+    [UIType(DisplayName = "Layout",
+            Description = "Specification for the layout of a level of the game",
+            ViewType = typeof(LayoutViewType))]
     public class LayoutTemplateViewModel : TemplateViewModel
     {
         private int _width;

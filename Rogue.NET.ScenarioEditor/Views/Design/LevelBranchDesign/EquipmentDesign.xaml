@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign.EquipmentDesign"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <StackPanel>
+
+        <!-- Instructions -->
+        <TextBlock TextWrapping="Wrap" Width="600" HorizontalAlignment="Left" Margin="10" FontSize="16" Foreground="White"
+                   Text="The equipment below will be generated randomly - using the below # of draws - with the relative generation weights. (NOTE*** Removing an asset here will NOT remove it from the scenario)" />
+
+        <Separator Margin="10" HorizontalAlignment="Stretch" BorderBrush="White" BorderThickness="1" />
+
+        <!-- Equipment Generation -->
+        <Grid Margin="10">
+            <TextBlock Text="Equipment Placement (# Draws)" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <toolkit:IntegerUpDown Width="80" FontSize="18" Value="{Binding EquipmentGeneration, StringFormat=P2}" Minimum="0" Maximum="50" Increment="1" Foreground="White" HorizontalAlignment="Right" />
+        </Grid>
+
+        <!-- Equipment -->
+        <controls:ListBuilder x:Name="EquipmentLB"
+                              Margin="10"
+                              Height="400"
+                              DestinationItemsSource="{Binding Equipment}"
+                              HorizontalContentAlignment="Stretch" 
+                              AddEvent="EquipmentLB_AddEvent"
+                              RemoveEvent="EquipmentLB_RemoveEvent" />
+
+    </StackPanel>
+</UserControl>

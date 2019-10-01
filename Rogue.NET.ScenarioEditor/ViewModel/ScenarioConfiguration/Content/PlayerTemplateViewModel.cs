@@ -1,10 +1,14 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-
+using Rogue.NET.ScenarioEditor.Views.Assets;
 using System.Collections.ObjectModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
+    [UIType(DisplayName = "Player Class",
+            Description = "Type of character that your player will be - each has its own special attributes, items, and skills",
+            ViewType = typeof(Player))]
     public class PlayerTemplateViewModel : CharacterTemplateViewModel
     {
         private string _class;

@@ -17,7 +17,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Constants
         // Editor
         public const string DesignRegion = "DesignRegion";
 
-        // Design Region
+        // Asset (Container) Design Region
         public const string AssetContainerRegion = "AssetContainerRegion";
+
+        // Tree View Region
+        public const string BrowserRegion = "BrowserRegion";
+
+        // Design (Container) Design Region
+        public const string DesignContainerRegion = "DesignContainerRegion";
     }
 }

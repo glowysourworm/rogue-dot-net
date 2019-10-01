@@ -6,6 +6,8 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 
@@ -16,21 +18,29 @@ namespace Rogue.NET.ScenarioEditor.Service
     {
         readonly IRogueEventAggregator _eventAggregator;
 
+        // Level Design Collections
+        public ObservableCollection<LevelTemplateViewModel> Levels { get; private set; }
+
+        // Asset Collections
+        public ObservableCollection<PlayerTemplateViewModel> PlayerClasses { get; private set; }
+        public ObservableCollection<LayoutTemplateViewModel> Layouts { get; private set; }
         public ObservableCollection<EnemyTemplateViewModel> Enemies { get; private set; }
         public ObservableCollection<FriendlyTemplateViewModel> Friendlies { get; private set; }
         public ObservableCollection<EquipmentTemplateViewModel> Equipment { get; private set; }
         public ObservableCollection<ConsumableTemplateViewModel> Consumables { get; private set; }
+        public ObservableCollection<DoodadTemplateViewModel> Doodads { get; private set; }
         public ObservableCollection<SkillSetTemplateViewModel> SkillSets { get; private set; }
+
+        // Shared Non-Calculated "General" Assets
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; private set; }
-        public ObservableCollection<PlayerTemplateViewModel> CharacterClasses { get; private set; }
+        public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; private set; }
 
         // "General Assets" - these are calculated and provided by the ScenarioEditorModule
         public ObservableCollection<BrushTemplateViewModel> Brushes { get; private set; }
 
         [ImportingConstructor]
         public ScenarioCollectionProvider(
-                IRogueEventAggregator eventAggregator,
-                IScenarioEditorController scenarioEditorController)
+                IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
 
@@ -46,13 +56,22 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         private void Set(ScenarioConfigurationData configurationData)
         {
+            // Level Design Collections
+            this.Levels = configurationData.Configuration.ScenarioDesign.LevelDesigns;
+
+            // Assets
+            this.PlayerClasses = configurationData.Configuration.PlayerTemplates;
+            this.Layouts = configurationData.Configuration.LayoutTemplates;
             this.Enemies = configurationData.Configuration.EnemyTemplates;
             this.Friendlies = configurationData.Configuration.FriendlyTemplates;
             this.Equipment = configurationData.Configuration.EquipmentTemplates;
             this.Consumables = configurationData.Configuration.ConsumableTemplates;
+            this.Doodads = configurationData.Configuration.DoodadTemplates;
             this.SkillSets = configurationData.Configuration.SkillTemplates;
+
+            // Shared Non-calculated "General" Assets
             this.AlteredCharacterStates = configurationData.Configuration.AlteredCharacterStates;
-            this.CharacterClasses = configurationData.Configuration.PlayerTemplates;
+            this.AttackAttributes = configurationData.Configuration.AttackAttributes;
 
             // "General (calculated) Assets"
             this.Brushes.Clear();

@@ -100,95 +100,96 @@ namespace Rogue.NET.ScenarioEditor.Utility
             // MAP DATA TO NEW FACILITIES
             //
 
-            //// Scenario Design
-            //configuration.ScenarioDesign = new ScenarioDesignTemplateViewModel();
-            //configuration.ScenarioDesign.Name = configuration.DungeonTemplate.Name;
-            //configuration.ScenarioDesign.ObjectiveDescription = configuration.DungeonTemplate.ObjectiveDescription;
+            // Scenario Design
+            configuration.ScenarioDesign = new ScenarioDesignTemplateViewModel();
+            configuration.ScenarioDesign.Name = configuration.DungeonTemplate.Name;
+            configuration.ScenarioDesign.ObjectiveDescription = configuration.DungeonTemplate.ObjectiveDescription;
 
-            //// DungeonTemplate.LayoutTemplates -> LayoutTemplates
-            //configuration.LayoutTemplates = new ObservableCollection<LayoutTemplateViewModel>(configuration.DungeonTemplate.LayoutTemplates);
+            // DungeonTemplate.LayoutTemplates -> LayoutTemplates
+            configuration.LayoutTemplates = new ObservableCollection<LayoutTemplateViewModel>(configuration.DungeonTemplate.LayoutTemplates);
 
 
-            //// Scenario Design -> Levels -> Assets
-            //for (int i = 0; i < configuration.DungeonTemplate.NumberOfLevels; i++)
-            //{
-            //    var levelNumber = i + 1;
+            // Scenario Design -> Levels -> Assets
+            for (int i = 0; i < configuration.DungeonTemplate.NumberOfLevels; i++)
+            {
+                var levelNumber = i + 1;
 
-            //    var layouts = configuration.LayoutTemplates.Where(x => x.Level.Contains(levelNumber));
-            //    var consumables = configuration.ConsumableTemplates.Where(x => x.Level.Contains(levelNumber));
-            //    var equipment = configuration.EquipmentTemplates.Where(x => x.Level.Contains(levelNumber));
-            //    var enemies = configuration.EnemyTemplates.Where(x => x.Level.Contains(levelNumber));
-            //    var friendlies = configuration.FriendlyTemplates.Where(x => x.Level.Contains(levelNumber));
-            //    var doodads = configuration.DoodadTemplates.Where(x => x.Level.Contains(levelNumber));
+                var layouts = configuration.LayoutTemplates.Where(x => x.Level.Contains(levelNumber));
+                var consumables = configuration.ConsumableTemplates.Where(x => x.Level.Contains(levelNumber));
+                var equipment = configuration.EquipmentTemplates.Where(x => x.Level.Contains(levelNumber));
+                var enemies = configuration.EnemyTemplates.Where(x => x.Level.Contains(levelNumber));
+                var friendlies = configuration.FriendlyTemplates.Where(x => x.Level.Contains(levelNumber));
+                var doodads = configuration.DoodadTemplates.Where(x => x.Level.Contains(levelNumber));
 
-            //    // Don't generate level if there's no layout selected
-            //    if (layouts.Any())
-            //    {
-            //        var level = new LevelTemplateViewModel();
-            //        var levelBranch = new LevelBranchTemplateViewModel();
+                // Don't generate level if there's no layout selected
+                if (layouts.Any())
+                {
+                    var level = new LevelTemplateViewModel();
+                    var levelBranch = new LevelBranchTemplateViewModel();
 
-            //        // Consumables
-            //        levelBranch.Consumables.AddRange(consumables.Select(x => new ConsumableGenerationTemplateViewModel()
-            //        {
-            //            Asset = x,
-            //            GenerationWeight = 1.0,
-            //            Name = x.Name,
-            //        }));
+                    // Consumables
+                    levelBranch.Consumables.AddRange(consumables.Select(x => new ConsumableGenerationTemplateViewModel()
+                    {
+                        Asset = x,
+                        GenerationWeight = 1.0,
+                        Name = x.Name,
+                    }));
 
-            //        // Doodads
-            //        levelBranch.Doodads.AddRange(doodads.Select(x => new DoodadGenerationTemplateViewModel()
-            //        {
-            //            Asset = x,
-            //            GenerationWeight = 1.0,
-            //            Name = x.Name,
-            //        }));
+                    // Doodads
+                    levelBranch.Doodads.AddRange(doodads.Select(x => new DoodadGenerationTemplateViewModel()
+                    {
+                        Asset = x,
+                        GenerationWeight = 1.0,
+                        Name = x.Name,
+                    }));
 
-            //        // Enemies
-            //        levelBranch.Enemies.AddRange(enemies.Select(x => new EnemyGenerationTemplateViewModel()
-            //        {
-            //            Asset = x,
-            //            GenerationWeight = 1.0,
-            //            Name = x.Name,
-            //        }));
+                    // Enemies
+                    levelBranch.Enemies.AddRange(enemies.Select(x => new EnemyGenerationTemplateViewModel()
+                    {
+                        Asset = x,
+                        GenerationWeight = 1.0,
+                        Name = x.Name,
+                    }));
 
-            //        // Equipment
-            //        levelBranch.Equipment.AddRange(equipment.Select(x => new EquipmentGenerationTemplateViewModel()
-            //        {
-            //            Asset = x,
-            //            GenerationWeight = 1.0,
-            //            Name = x.Name,
-            //        }));
+                    // Equipment
+                    levelBranch.Equipment.AddRange(equipment.Select(x => new EquipmentGenerationTemplateViewModel()
+                    {
+                        Asset = x,
+                        GenerationWeight = 1.0,
+                        Name = x.Name,
+                    }));
 
-            //        // Friendlies
-            //        levelBranch.Friendlies.AddRange(friendlies.Select(x => new FriendlyGenerationTemplateViewModel()
-            //        {
-            //            Asset = x,
-            //            GenerationWeight = 1.0,
-            //            Name = x.Name,
-            //        }));
+                    // Friendlies
+                    levelBranch.Friendlies.AddRange(friendlies.Select(x => new FriendlyGenerationTemplateViewModel()
+                    {
+                        Asset = x,
+                        GenerationWeight = 1.0,
+                        Name = x.Name,
+                    }));
 
-            //        // Layouts
-            //        levelBranch.Layouts.AddRange(layouts.Select(x => new LayoutGenerationTemplateViewModel()
-            //        {
-            //            Asset = x,
-            //            GenerationWeight = 1.0,
-            //            Name = x.Name,
-            //            PartyRoomGenerationRate = configuration.DungeonTemplate.PartyRoomGenerationRate
-            //        }));
+                    // Layouts
+                    levelBranch.Layouts.AddRange(layouts.Select(x => new LayoutGenerationTemplateViewModel()
+                    {
+                        Asset = x,
+                        GenerationWeight = 1.0,
+                        Name = x.Name,
+                        PartyRoomGenerationRate = configuration.DungeonTemplate.PartyRoomGenerationRate
+                    }));
 
-            //        levelBranch.MonsterGenerationPerStep = configuration.DungeonTemplate.MonsterGenerationBase;
-            //        levelBranch.Name = "Level " + levelNumber.ToString() + " Branch A";
+                    levelBranch.MonsterGenerationPerStep = configuration.DungeonTemplate.MonsterGenerationBase;
+                    levelBranch.Name = "Level " + levelNumber.ToString() + " Branch 1";
 
-            //        level.Name = "Level " + levelNumber.ToString();
-            //        level.LevelBranches.Add(new LevelBranchGenerationTemplateViewModel()
-            //        {
-            //            LevelBranch = levelBranch,
-            //            GenerationWeight = 1.0
-            //        });
+                    level.Name = "Level " + levelNumber.ToString();
+                    level.LevelBranches.Add(new LevelBranchGenerationTemplateViewModel()
+                    {
+                        LevelBranch = levelBranch,
+                        GenerationWeight = 1.0,
+                        Name = levelBranch.Name
+                    });
 
-            //        configuration.ScenarioDesign.LevelDesigns.Add(level);
-            //    }
-            //}
+                    configuration.ScenarioDesign.LevelDesigns.Add(level);
+                }
+            }
 
             return configuration;
         }

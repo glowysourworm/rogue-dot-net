@@ -23,10 +23,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioConfigurationUndoService _rogueUndoService;
 
+        ScenarioConfigurationContainerViewModel _configuration;
         string _scenarioName;
 
+
         // Required configuration reference for binding global collections
-        public ScenarioConfigurationContainerViewModel Configuration { get; private set; }
+        public ScenarioConfigurationContainerViewModel Configuration
+        {
+            get { return _configuration; }
+            private set { this.RaiseAndSetIfChanged(ref _configuration, value); }
+        }
         public string ScenarioName
         {
             get { return _scenarioName; }
@@ -37,7 +43,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public ICommand SaveBuiltInCommand { get; private set; }
         public ICommand RunBuiltInSaveCycleCommand { get; private set; }
         public ICommand NewCommand { get; private set; }
-        public ICommand ShowDifficultyCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public DelegateCommand UndoCommand { get; private set; }
@@ -81,10 +86,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                     // Load the Scenario (event)
                     _eventAggregator.GetEvent<LoadScenarioEvent>().Publish(scenarioName);
                 }
-            });
-            this.ShowDifficultyCommand = new DelegateCommand(() =>
-            {
-                _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Publish();
             });
             this.NewCommand = new DelegateCommand(() =>
             {

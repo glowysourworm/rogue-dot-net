@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.TemplateSelector
@@ -12,7 +13,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.TemplateSelector
             var result = element.TryFindResource(resourceName);
 
             if (result == null)
-                MessageBox.Show("Couldn't Find Resource " + resourceName);
+                throw new Exception("Couldn't Find Resource " + resourceName);
 
             return result as DataTemplate;
         }

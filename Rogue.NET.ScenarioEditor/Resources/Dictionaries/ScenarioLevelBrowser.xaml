@@ -1,0 +1,539 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:contentViewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content"
+                    xmlns:layoutViewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/Button.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/ScenarioAssetBrowser.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Readonly Asset Item Style -->
+    <Style x:Key="ReadonlyAssetButtonStyle" TargetType="TreeViewItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <Grid Margin="-20,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.InputBindings>
+                            <MouseBinding Command="{Binding LoadAssetCommand}" MouseAction="LeftClick" />
+                        </Grid.InputBindings>
+
+                        <Rectangle Grid.ColumnSpan="4" 
+                                   Fill="{TemplateBinding Background}" 
+                                   HorizontalAlignment="Stretch" 
+                                   VerticalAlignment="Stretch" />
+
+                        <Image Grid.Column="1"
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center" 
+                               Stretch="None">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <MultiBinding.ConverterParameter>
+                                        <system:Double>1.35</system:Double>
+                                    </MultiBinding.ConverterParameter>
+                                    <Binding Path="SymbolDetails.CharacterColor" />
+                                    <Binding Path="SymbolDetails.CharacterSymbol" />
+                                    <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                                    <Binding Path="SymbolDetails.CharacterScale" />
+                                    <Binding Path="SymbolDetails.Symbol" />
+                                    <Binding Path="SymbolDetails.SymbolHue" />
+                                    <Binding Path="SymbolDetails.SymbolSaturation" />
+                                    <Binding Path="SymbolDetails.SymbolLightness" />
+                                    <Binding Path="SymbolDetails.SymbolScale" />
+                                    <Binding Path="SymbolDetails.SymbolUseColorMask" />
+                                    <Binding Path="SymbolDetails.SmileyExpression" />
+                                    <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                    <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                    <Binding Path="SymbolDetails.SmileyLineColor" />
+                                    <Binding Path="SymbolDetails.GameSymbol" />
+                                    <Binding Path="SymbolDetails.SymbolType" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
+
+                        <Border Name="Bd"
+                                  Grid.Column="2" Margin="4,0,0,0"           
+                                  Background="Transparent"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  Padding="{TemplateBinding Padding}">
+
+                            <TextBlock x:Name="PART_Header" 
+                                           Text="{Binding Name}"
+                                           FontSize="18"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                            </TextBlock>
+                        </Border>
+
+                        <ItemsPresenter x:Name="ItemsHost"
+                                          Grid.Row="1"
+                                          Grid.Column="2"
+                                          Grid.ColumnSpan="2"/>
+
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="false">
+                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Level Branch Asset (Group) Item Style -->
+    <Style x:Key="LevelBranchAssetBrowserButtonStyle" TargetType="TreeViewItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <Grid Margin="-20, 0, 0, 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Rectangle Grid.ColumnSpan="4" Margin="-20, 0, 0, 0" Fill="{TemplateBinding Background}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+                        <ToggleButton x:Name="Expander" 
+                                      Grid.Column="1"
+                                      Style="{StaticResource ExpandCollapseToggleStyle}" 
+                                      IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
+                                      ClickMode="Press"/>
+
+                        <Border Name="Bd"
+                                  Grid.Column="2"                                  
+                                  Background="Transparent"
+                                  BorderBrush="Transparent"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="PART_Header" ContentSource="Header"
+                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+
+                        <Button Grid.Column="3"
+                                Width="Auto"
+                                FontSize="16"
+                                Padding="3"
+                                Background="Black"
+                                Foreground="White"
+                                Style="{StaticResource SmallFlatButtonStyle}"
+                                HorizontalAlignment="Right"
+                                VerticalContentAlignment="Center"
+                                Content="Edit"
+                                Command="{Binding LoadLevelBranchAssetsCommand}"
+                                CommandParameter="{Binding Path=Tag, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TreeViewItem}}">
+                        </Button>
+
+                        <ItemsPresenter x:Name="ItemsHost"
+                                          Grid.Row="1"
+                                          Grid.Column="2"
+                                          Grid.ColumnSpan="3"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="false">
+                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Level Branch Style -->
+    <Style x:Key="LevelBrowserLevelBranchStyle" TargetType="TreeViewItem">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <Grid Margin="-20, 0, 0, 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition  />
+                        </Grid.RowDefinitions>
+
+                        <Rectangle Grid.ColumnSpan="3" Fill="{TemplateBinding Background}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                        </Rectangle>
+                        
+                        <ToggleButton x:Name="Expander" 
+                                      Grid.Column="1"
+                                      Style="{StaticResource ExpandCollapseToggleStyle}" 
+                                      IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
+                                      ClickMode="Press"/>                        
+                        
+                        <Border Name="Bd"
+                                Grid.Column="2"
+                                  Margin="4,0,0,0"           
+                                  Background="Transparent"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  Padding="{TemplateBinding Padding}">
+
+                            <TextBlock x:Name="PART_Header" 
+                                           Text="{Binding Name}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                            </TextBlock>
+                        </Border>
+
+                        <ItemsControl x:Name="ItemsHost"
+                                          Grid.Row="1"
+                                          Grid.Column="2">
+                            <ItemsControl.Items>
+                                
+                                <!-- Layouts TODO:LEVEL (Make these read-only) -->
+                                <TreeViewItem ItemsSource="{Binding Layouts}"
+                                              ItemContainerStyle="{StaticResource ReadonlyAssetButtonStyle}"
+                                              Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
+                                              Tag="{x:Type layoutViewModel:LayoutTemplateViewModel}">
+                                    <TreeViewItem.Header>
+                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                            <Run Text="Layouts (" />
+                                            <Run Text="{Binding Layouts.Count, Mode=OneWay}" />
+                                            <Run Text=")" />
+                                        </TextBlock>
+                                    </TreeViewItem.Header>
+                                </TreeViewItem>
+
+                                <!-- Equipment TODO:LEVEL -->
+                                <TreeViewItem ItemsSource="{Binding Equipment}"
+                                              ItemContainerStyle="{StaticResource ReadonlyAssetButtonStyle}"
+                                              Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
+                                              Tag="{x:Type contentViewModel:EquipmentTemplateViewModel}">
+                                    <TreeViewItem.Header>
+                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                            <Run Text="Equipment (" />
+                                            <Run Text="{Binding Equipment.Count, Mode=OneWay}" />
+                                            <Run Text=")" />
+                                        </TextBlock>
+                                    </TreeViewItem.Header>
+                                </TreeViewItem>                                
+
+                                <!-- Consumables TODO:LEVEL -->
+                                <TreeViewItem ItemsSource="{Binding Consumables}"
+                                              ItemContainerStyle="{StaticResource ReadonlyAssetButtonStyle}"
+                                              Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
+                                              Tag="{x:Type contentViewModel:ConsumableTemplateViewModel}">
+                                    <TreeViewItem.Header>
+                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                            <Run Text="Consumables (" />
+                                            <Run Text="{Binding Consumables.Count, Mode=OneWay}" />
+                                            <Run Text=")" />
+                                        </TextBlock>
+                                    </TreeViewItem.Header>
+                                </TreeViewItem>                                
+
+                                <!-- Enemies TODO:LEVEL -->
+                                <TreeViewItem ItemsSource="{Binding Enemies}"
+                                              ItemContainerStyle="{StaticResource ReadonlyAssetButtonStyle}"
+                                              Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
+                                              Tag="{x:Type contentViewModel:EnemyTemplateViewModel}">
+                                    <TreeViewItem.Header>
+                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                            <Run Text="Enemies (" />
+                                            <Run Text="{Binding Enemies.Count, Mode=OneWay}" />
+                                            <Run Text=")" />
+                                        </TextBlock>
+                                    </TreeViewItem.Header>
+                                </TreeViewItem>                                
+
+                                <!-- Friendlies TODO:LEVEL -->
+                                <TreeViewItem ItemsSource="{Binding Friendlies}"
+                                              ItemContainerStyle="{StaticResource ReadonlyAssetButtonStyle}"
+                                              Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
+                                              Tag="{x:Type contentViewModel:FriendlyTemplateViewModel}">
+                                    <TreeViewItem.Header>
+                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                            <Run Text="Friendlies (" />
+                                            <Run Text="{Binding Friendlies.Count, Mode=OneWay}" />
+                                            <Run Text=")" />
+                                        </TextBlock>
+                                    </TreeViewItem.Header>
+                                </TreeViewItem>
+
+                                <!-- Doodads TODO:LEVEL -->
+                                <TreeViewItem ItemsSource="{Binding Doodads}"
+                                              ItemContainerStyle="{StaticResource ReadonlyAssetButtonStyle}"
+                                              Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
+                                              Tag="{x:Type contentViewModel:DoodadTemplateViewModel}">
+                                    <TreeViewItem.Header>
+                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                            <Run Text="Doodads (" />
+                                            <Run Text="{Binding Doodads.Count, Mode=OneWay}" />
+                                            <Run Text=")" />
+                                        </TextBlock>
+                                    </TreeViewItem.Header>
+                                </TreeViewItem>                                
+
+                            </ItemsControl.Items>
+                        </ItemsControl>
+
+                        <Rectangle Grid.Column="2" Fill="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Rectangle.ContextMenu>
+
+                                <!-- Right-Click Items -->
+                                <ContextMenu>
+                                    <MenuItem Command="{Binding CopyLevelBranchCommand}">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xf0c5;" Foreground="White" FontFamily="{StaticResource FontAwesome}" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <TextBlock>
+                                                <Run Text="Copy " />
+                                                <Run Text="{Binding Name}" />
+                                            </TextBlock>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem Command="{Binding RemoveLevelBranchCommand}">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xf068;" Foreground="White" FontFamily="{StaticResource FontAwesome}" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <TextBlock>
+                                                <Run Text="Delete " />
+                                                <Run Text="{Binding Name}" />
+                                            </TextBlock>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem Command="{Binding RenameLevelBranchCommand}">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xf044;" Foreground="White" FontFamily="{StaticResource FontAwesome}" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <TextBlock>
+                                                <Run Text="Rename " />
+                                                <Run Text="{Binding Name}" />
+                                            </TextBlock>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Rectangle.ContextMenu>
+                        </Rectangle>
+
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="false">
+                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="MediumBlue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="MediumBlue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Level Style -->
+    <Style x:Key="LevelBrowserLevelStyle" TargetType="TreeViewItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource LevelBrowserLevelBranchStyle}" />
+        <Setter Property="ItemsSource" Value="{Binding LevelBranches, Mode=OneWay}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <Grid Background="Transparent">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="19" Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Rectangle Grid.ColumnSpan="4" Fill="{TemplateBinding Background}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+                        <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
+                                      IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
+                                      ClickMode="Press"/>
+
+                        <Border Name="Bd"
+                                  Grid.Column="1"
+                                  Background="Transparent"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  Padding="{TemplateBinding Padding}">
+                            <TextBlock Text="{Binding Name}" 
+                                       Foreground="{TemplateBinding Foreground}" 
+                                       FontSize="{TemplateBinding FontSize}" 
+                                       HorizontalAlignment="Left" />
+                        </Border>
+
+                        <Button Grid.Column="3"
+                                Width="Auto"
+                                Padding="3"
+                                FontSize="16"
+                                Background="Black"
+                                Foreground="White"
+                                Style="{StaticResource SmallFlatButtonStyle}"
+                                HorizontalAlignment="Right"
+                                VerticalContentAlignment="Center"
+                                Content="Edit"
+                                Command="{Binding LoadLevelCommand}" />
+
+                        <ItemsPresenter x:Name="ItemsHost"
+                                          Grid.Row="1"
+                                          Grid.Column="1"
+                                          Grid.ColumnSpan="3"/>
+
+                        <Rectangle Grid.Column="1" Grid.ColumnSpan="2" Fill="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Rectangle.ContextMenu>
+
+                                <!-- Right-Click Items -->
+                                <ContextMenu>
+                                    <MenuItem Command="{Binding CopyLevelCommand}">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xf0c5;" Foreground="White" FontFamily="{StaticResource FontAwesome}" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <TextBlock>
+                                                <Run Text="Copy " />
+                                                <Run Text="{Binding Name}" />
+                                            </TextBlock>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem Command="{Binding RemoveLevelCommand}">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xf068;" Foreground="White" FontFamily="{StaticResource FontAwesome}" />
+                                        </MenuItem.Icon>
+                                        <MenuItem.Header>
+                                            <TextBlock>
+                                                <Run Text="Delete " />
+                                                <Run Text="{Binding Name}" />
+                                            </TextBlock>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Rectangle.ContextMenu>
+                        </Rectangle>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="false">
+                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="Blue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="Blue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>                        
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

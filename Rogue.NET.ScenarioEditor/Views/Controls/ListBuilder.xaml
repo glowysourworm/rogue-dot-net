@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.ListBuilder"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
@@ -9,139 +10,586 @@
              xmlns:converter="clr-namespace:Rogue.NET.Core.Converter;assembly=Rogue.NET.Core"
              xmlns:templateSelector="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.TemplateSelector">
     <UserControl.Resources>
-        <converter:BoolVisibilityCollapseConverter x:Key="BoolVisibilityCollapseConverter" />
-        <DataTemplate x:Key="ProbabilityConsumableTemplateViewModel">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding TheTemplate.Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4" />
-                <Slider Grid.Column="1"  FontSize="16" SmallChange="0.01" LargeChange="0.1" Margin="4" Minimum="0" Maximum="1" Value="{Binding GenerationProbability, Delay=300, Mode=TwoWay}" />
-                <TextBlock Text="{Binding GenerationProbability, StringFormat=F2}"  FontSize="16" Grid.Column="2" Foreground="White" VerticalAlignment="Center" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="ProbabilityEquipmentTemplateViewModel">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding TheTemplate.Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4" />
-                <Slider Grid.Column="1" FontSize="16" Margin="4" SmallChange="0.01" LargeChange="0.1" Minimum="0" Maximum="1" Value="{Binding GenerationProbability, Delay=300, Mode=TwoWay}" />
-                <TextBlock Text="{Binding GenerationProbability, StringFormat=F2}"  FontSize="16" Grid.Column="2" Foreground="White" VerticalAlignment="Center" />
-                <CheckBox IsChecked="{Binding EquipOnStartup, Mode=TwoWay}" Margin="8,0,0,0"  FontSize="16" Content="Equip On Startup" Grid.Column="3" Foreground="White" VerticalAlignment="Center" />
-            </Grid>
-        </DataTemplate>        
-        <DataTemplate x:Key="ConsumableTemplateViewModel">
-            <Grid>
-                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="EquipmentTemplateViewModel">
-            <Grid>
-                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="SkillSetTemplateViewModel">
-            <Grid>
-                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="SpellTemplateViewModel">
-            <Grid>
-                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="AnimationTemplateViewModel">
-            <Grid>
-                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="SkillTemplateViewModel">
-            <Expander Header="{Binding Name}" 
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary>
+                    <converter:BoolVisibilityCollapseConverter x:Key="BoolVisibilityCollapseConverter" />
+
+                    <!-- Asset Generation Data Templates -->
+                    <DataTemplate x:Key="ConsumableGenerationTemplateViewModel">
+                        <Grid>
+
+                            <!-- Asset / Layout Name-->
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="Asset.SymbolDetails.CharacterColor" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterScale" />
+                                            <Binding Path="Asset.SymbolDetails.Symbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolHue" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolLightness" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolScale" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyExpression" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="Asset.SymbolDetails.GameSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+
+
+                            <!-- Asset / Layout Generation Weight -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Margin="5" Text="Generation Weight" Foreground="White" FontSize="14" HorizontalAlignment="Left" />
+                                <Slider Margin="5" Value="{Binding GenerationWeight, Delay=300}" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Width="200" />
+                                <TextBlock Margin="5" Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" />
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="DoodadGenerationTemplateViewModel">
+                        <Grid>
+
+                            <!-- Asset / Layout Name-->
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="Asset.SymbolDetails.CharacterColor" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterScale" />
+                                            <Binding Path="Asset.SymbolDetails.Symbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolHue" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolLightness" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolScale" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyExpression" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="Asset.SymbolDetails.GameSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+
+
+                            <!-- Asset / Layout Generation Weight -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Margin="5" Text="Generation Weight" Foreground="White" FontSize="14" HorizontalAlignment="Left" />
+                                <Slider Margin="5" Value="{Binding GenerationWeight, Delay=300}" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Width="200" />
+                                <TextBlock Margin="5" Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" />
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="EnemyGenerationTemplateViewModel">
+                        <Grid>
+
+                            <!-- Asset / Layout Name-->
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="Asset.SymbolDetails.CharacterColor" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterScale" />
+                                            <Binding Path="Asset.SymbolDetails.Symbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolHue" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolLightness" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolScale" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyExpression" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="Asset.SymbolDetails.GameSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+
+
+                            <!-- Asset / Layout Generation Weight -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Margin="5" Text="Generation Weight" Foreground="White" FontSize="14" HorizontalAlignment="Left" />
+                                <Slider Margin="5" Value="{Binding GenerationWeight, Delay=300}" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Width="200" />
+                                <TextBlock Margin="5" Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" />
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="EquipmentGenerationTemplateViewModel">
+                        <Grid>
+
+                            <!-- Asset / Layout Name-->
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="Asset.SymbolDetails.CharacterColor" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterScale" />
+                                            <Binding Path="Asset.SymbolDetails.Symbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolHue" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolLightness" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolScale" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyExpression" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="Asset.SymbolDetails.GameSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+
+
+                            <!-- Asset / Layout Generation Weight -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Margin="5" Text="Generation Weight" Foreground="White" FontSize="14" HorizontalAlignment="Left" />
+                                <Slider Margin="5" Value="{Binding GenerationWeight, Delay=300}" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Width="200" />
+                                <TextBlock Margin="5" Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" />
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="FriendlyGenerationTemplateViewModel">
+                        <Grid>
+
+                            <!-- Asset / Layout Name-->
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="Asset.SymbolDetails.CharacterColor" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="Asset.SymbolDetails.CharacterScale" />
+                                            <Binding Path="Asset.SymbolDetails.Symbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolHue" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolLightness" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolScale" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyExpression" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="Asset.SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="Asset.SymbolDetails.GameSymbol" />
+                                            <Binding Path="Asset.SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+
+
+                            <!-- Asset / Layout Generation Weight -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Margin="5" Text="Generation Weight" Foreground="White" FontSize="14" HorizontalAlignment="Left" />
+                                <Slider Margin="5" Value="{Binding GenerationWeight, Delay=300}" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Width="200" />
+                                <TextBlock Margin="5" Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" />
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="LevelBranchGenerationTemplateViewModel">
+                        <Grid>
+
+                            <!-- Asset / Layout Name-->
+                            <TextBlock Text="{Binding Name}" Margin="5" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                            <!-- Asset / Layout Generation Weight -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Margin="5" Text="Generation Weight" Foreground="White" FontSize="14" HorizontalAlignment="Left" />
+                                <Slider Margin="5" Value="{Binding GenerationWeight, Delay=300}" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Width="200" />
+                                <TextBlock Margin="5" Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" />
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="LayoutGenerationTemplateViewModel">
+                        <Grid>
+
+                            <!-- Asset / Layout Name-->
+                            <TextBlock Text="{Binding Name}" Margin="5" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                            <!-- Asset / Layout Generation Weight -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Margin="5" Text="Generation Weight" Foreground="White" FontSize="14" HorizontalAlignment="Left" />
+                                <Slider Margin="5" Value="{Binding GenerationWeight, Delay=300}" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Width="200" />
+                                <TextBlock Margin="5" Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" />
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>                    
+                    
+                    <DataTemplate x:Key="EnemyTemplateViewModel">
+                        <Grid>
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="SymbolDetails.CharacterScale" />
+                                            <Binding Path="SymbolDetails.Symbol" />
+                                            <Binding Path="SymbolDetails.SymbolHue" />
+                                            <Binding Path="SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="SymbolDetails.SymbolLightness" />
+                                            <Binding Path="SymbolDetails.SymbolScale" />
+                                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="SymbolDetails.SmileyExpression" />
+                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="SymbolDetails.GameSymbol" />
+                                            <Binding Path="SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="FriendlyTemplateViewModel">
+                        <Grid>
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="SymbolDetails.CharacterScale" />
+                                            <Binding Path="SymbolDetails.Symbol" />
+                                            <Binding Path="SymbolDetails.SymbolHue" />
+                                            <Binding Path="SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="SymbolDetails.SymbolLightness" />
+                                            <Binding Path="SymbolDetails.SymbolScale" />
+                                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="SymbolDetails.SmileyExpression" />
+                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="SymbolDetails.GameSymbol" />
+                                            <Binding Path="SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>                    
+                    
+                    <DataTemplate x:Key="DoodadTemplateViewModel">
+                        <Grid>
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="SymbolDetails.CharacterScale" />
+                                            <Binding Path="SymbolDetails.Symbol" />
+                                            <Binding Path="SymbolDetails.SymbolHue" />
+                                            <Binding Path="SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="SymbolDetails.SymbolLightness" />
+                                            <Binding Path="SymbolDetails.SymbolScale" />
+                                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="SymbolDetails.SmileyExpression" />
+                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="SymbolDetails.GameSymbol" />
+                                            <Binding Path="SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="LayoutTemplateViewModel">
+                        <Grid>
+                            <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                        </Grid>
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="ProbabilityConsumableTemplateViewModel">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding TheTemplate.Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4" />
+                            <Slider Grid.Column="1"  FontSize="16" SmallChange="0.01" LargeChange="0.1" Margin="4" Minimum="0" Maximum="1" Value="{Binding GenerationProbability, Delay=300, Mode=TwoWay}" />
+                            <TextBlock Text="{Binding GenerationProbability, StringFormat=F2}"  FontSize="16" Grid.Column="2" Foreground="White" VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ProbabilityEquipmentTemplateViewModel">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding TheTemplate.Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4" />
+                            <Slider Grid.Column="1" FontSize="16" Margin="4" SmallChange="0.01" LargeChange="0.1" Minimum="0" Maximum="1" Value="{Binding GenerationProbability, Delay=300, Mode=TwoWay}" />
+                            <TextBlock Text="{Binding GenerationProbability, StringFormat=F2}"  FontSize="16" Grid.Column="2" Foreground="White" VerticalAlignment="Center" />
+                            <CheckBox IsChecked="{Binding EquipOnStartup, Mode=TwoWay}" Margin="8,0,0,0"  FontSize="16" Content="Equip On Startup" Grid.Column="3" Foreground="White" VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ConsumableTemplateViewModel">
+                        <Grid>
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="SymbolDetails.CharacterScale" />
+                                            <Binding Path="SymbolDetails.Symbol" />
+                                            <Binding Path="SymbolDetails.SymbolHue" />
+                                            <Binding Path="SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="SymbolDetails.SymbolLightness" />
+                                            <Binding Path="SymbolDetails.SymbolScale" />
+                                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="SymbolDetails.SmileyExpression" />
+                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="SymbolDetails.GameSymbol" />
+                                            <Binding Path="SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="EquipmentTemplateViewModel">
+                        <Grid>
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="SymbolDetails.CharacterScale" />
+                                            <Binding Path="SymbolDetails.Symbol" />
+                                            <Binding Path="SymbolDetails.SymbolHue" />
+                                            <Binding Path="SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="SymbolDetails.SymbolLightness" />
+                                            <Binding Path="SymbolDetails.SymbolScale" />
+                                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="SymbolDetails.SmileyExpression" />
+                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="SymbolDetails.GameSymbol" />
+                                            <Binding Path="SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="SkillSetTemplateViewModel">
+                        <Grid>
+                            <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="20" Height="30" HorizontalAlignment="Left" Margin="0, 0, 8, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>2.0</system:Double>
+                                            </MultiBinding.ConverterParameter>
+                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                            <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                                            <Binding Path="SymbolDetails.CharacterScale" />
+                                            <Binding Path="SymbolDetails.Symbol" />
+                                            <Binding Path="SymbolDetails.SymbolHue" />
+                                            <Binding Path="SymbolDetails.SymbolSaturation" />
+                                            <Binding Path="SymbolDetails.SymbolLightness" />
+                                            <Binding Path="SymbolDetails.SymbolScale" />
+                                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
+                                            <Binding Path="SymbolDetails.SmileyExpression" />
+                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                            <Binding Path="SymbolDetails.GameSymbol" />
+                                            <Binding Path="SymbolDetails.SymbolType" />
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="SpellTemplateViewModel">
+                        <Grid>
+                            <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="AnimationTemplateViewModel">
+                        <Grid>
+                            <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="SkillTemplateViewModel">
+                        <Expander Header="{Binding Name}" 
                       Foreground="White"
                       Padding="2" 
                       FontSize="16" 
                       ExpandDirection="Down" 
                       HorizontalAlignment="Stretch">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="2*" />
-                    </Grid.ColumnDefinitions>
-                    
-                    <!-- Minimum Level -->
-                    <TextBlock Text="Minimum Level" 
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Minimum Level -->
+                                <TextBlock Text="Minimum Level" 
                                Grid.Column="0"
                                Foreground="White" FontSize="16" 
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center" Margin="2" />
-                    <toolkit:IntegerUpDown Value="{Binding LevelRequirement}" 
+                                <toolkit:IntegerUpDown Value="{Binding LevelRequirement}" 
                                        Grid.Column="1"
                                        Minimum="0" Maximum="500" Margin="2" Width="50"
                                        HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    
-                    <!-- Point Cost -->
-                    <TextBlock Text="Point Cost" 
+
+                                <!-- Point Cost -->
+                                <TextBlock Text="Point Cost" 
                                Grid.Column="0" Grid.Row="1"
                                Foreground="White" FontSize="16" 
                                VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" />
-                    <toolkit:IntegerUpDown Value="{Binding PointRequirement}" 
+                                <toolkit:IntegerUpDown Value="{Binding PointRequirement}" 
                                        Grid.Column="1" Grid.Row="1"
                                        HorizontalAlignment="Right" VerticalAlignment="Center"
                                        Minimum="0" Maximum="50" Margin="2" Width="50" />
 
-                    <!-- Attribute Requirement -->
-                    <TextBlock Text="Has Attribute Requirement" 
+                                <!-- Attribute Requirement -->
+                                <TextBlock Text="Has Attribute Requirement" 
                                Grid.Column="0" Grid.Row="2"
                                Foreground="White" FontSize="16" 
                                VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" />
-                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right">
-                        <CheckBox IsChecked="{Binding HasAttributeRequirement}" 
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right">
+                                    <CheckBox IsChecked="{Binding HasAttributeRequirement}" 
                                   VerticalAlignment="Center"
                                   Margin="2" />
-                        <common:EnumComboBox EnumType="{x:Type coreModelEnums:CharacterAttribute}" 
+                                    <common:EnumComboBox EnumType="{x:Type coreModelEnums:CharacterAttribute}" 
                                              EnumValue="{Binding AttributeRequirement, Mode=TwoWay}"                                      
                                              VerticalAlignment="Center"
                                              Margin="2" Width="100" />
-                        <toolkit:DoubleUpDown Value="{Binding AttributeLevelRequirement}" 
+                                    <toolkit:DoubleUpDown Value="{Binding AttributeLevelRequirement}" 
                                               VerticalAlignment="Center"
                                               Minimum="0" Maximum="50" Margin="2" Width="50" />
-                    </StackPanel>
+                                </StackPanel>
 
-                    <!-- Character Class Requirement -->
-                    <TextBlock Text="Character Class Requirement" 
+                                <!-- Character Class Requirement -->
+                                <TextBlock Text="Character Class Requirement" 
                                Grid.Column="0" Grid.Row="3"
                                Foreground="White" FontSize="16" 
                                VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" />
-                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right">
-                        <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" 
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right">
+                                    <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" 
                                   VerticalAlignment="Center"
                                   Margin="2" />
-                        <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.CharacterClasses, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
+                                    <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.CharacterClasses, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
                                    SelectedValue="{Binding CharacterClass.Name}" 
                                    SelectedItem="{Binding CharacterClass}"
                                    SelectedValuePath="Name"
                                    DisplayMemberPath="Name"
                                    VerticalAlignment="Center"
                                    Margin="2" Width="154" />
-                    </StackPanel>
-                </Grid>
-            </Expander>
-        </DataTemplate>
-        <templateSelector:ListBuilderTemplateSelector x:Key="ProbabilityTemplateSelector" />
+                                </StackPanel>
+                            </Grid>
+                        </Expander>
+                    </DataTemplate>
+                    <templateSelector:ListBuilderTemplateSelector x:Key="ProbabilityTemplateSelector" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>

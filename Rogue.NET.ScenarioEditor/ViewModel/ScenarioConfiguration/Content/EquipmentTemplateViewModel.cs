@@ -1,12 +1,17 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment;
+using Rogue.NET.ScenarioEditor.Views.Assets;
 using System.Collections.ObjectModel;
 
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
+    [UIType(DisplayName = "Equipment",
+            Description = "Item that is worn by the Player or Character",
+            ViewType = typeof(Equipment))]
     public class EquipmentTemplateViewModel : DungeonObjectTemplateViewModel
     {
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }

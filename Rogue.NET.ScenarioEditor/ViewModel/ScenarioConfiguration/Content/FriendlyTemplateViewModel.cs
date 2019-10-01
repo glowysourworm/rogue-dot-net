@@ -1,12 +1,12 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.Views.Assets;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
+    [UIType(DisplayName = "Friendly",
+            Description = "Character that is aligned with the Player and will fight for them",
+            ViewType = typeof(Friendly))]
     public class FriendlyTemplateViewModel : NonPlayerCharacterTemplateViewModel
     {
         public FriendlyTemplateViewModel()

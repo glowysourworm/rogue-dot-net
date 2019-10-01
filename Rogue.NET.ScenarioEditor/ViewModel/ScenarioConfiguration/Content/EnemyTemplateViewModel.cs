@@ -1,7 +1,13 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.Views;
+using Rogue.NET.ScenarioEditor.Views.Assets;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
+    [UIType(DisplayName = "Enemy",
+            Description = "Character that is opposed to the player - which the player can attack",
+            ViewType = typeof(Enemy))]
     public class EnemyTemplateViewModel : NonPlayerCharacterTemplateViewModel
     {
         private bool _generateOnStep;

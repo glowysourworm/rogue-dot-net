@@ -13,9 +13,18 @@ using System;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioAssetReferenceService))]
     public class ScenarioAssetReferenceService : IScenarioAssetReferenceService
     {
+        readonly IScenarioCollectionProvider _scenarioCollectionProvider;
+
+        [ImportingConstructor]
+        public ScenarioAssetReferenceService(IScenarioCollectionProvider scenarioCollectionProvider)
+        {
+            _scenarioCollectionProvider = scenarioCollectionProvider;
+        }
+
         /*
              For building these methods - start with the lowest level asset first (Brush) and
              move up the tree to see what's been affected
@@ -24,44 +33,44 @@ namespace Rogue.NET.ScenarioEditor.Service
          */
 
         #region (public) Methods
-        public void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdateAttackAttributes()
         {
             // Alteration Effects - (Update en-mas)
-            foreach (var effect in GetAllAlterationEffects(configuration))
-                UpdateAttackAttributeAlterationEffect(effect, configuration.AttackAttributes);
+            foreach (var effect in GetAllAlterationEffects())
+                UpdateAttackAttributeAlterationEffect(effect, _scenarioCollectionProvider.AttackAttributes);
 
             // Equipment
-            foreach (var equipment in configuration.EquipmentTemplates)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, equipment.AttackAttributes);
+            foreach (var equipment in _scenarioCollectionProvider.Equipment)
+                UpdateAttackAttributeCollection(_scenarioCollectionProvider.AttackAttributes, equipment.AttackAttributes);
 
             // Enemies
-            foreach (var enemy in configuration.EnemyTemplates)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
+            foreach (var enemy in _scenarioCollectionProvider.Enemies)
+                UpdateAttackAttributeCollection(_scenarioCollectionProvider.AttackAttributes, enemy.AttackAttributes);
 
             // Friendlies
-            foreach (var friendly in configuration.FriendlyTemplates)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, friendly.AttackAttributes);
+            foreach (var friendly in _scenarioCollectionProvider.Friendlies)
+                UpdateAttackAttributeCollection(_scenarioCollectionProvider.AttackAttributes, friendly.AttackAttributes);
 
             // Player Template
-            foreach (var player in configuration.PlayerTemplates)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, player.AttackAttributes);
+            foreach (var player in _scenarioCollectionProvider.PlayerClasses)
+                UpdateAttackAttributeCollection(_scenarioCollectionProvider.AttackAttributes, player.AttackAttributes);
         }
 
-        public void UpdateCharacterClasses(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdatePlayerClasses()
         {
             // Nothing to do while Character Class is stored as a string
         }
 
-        public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdateAlteredCharacterStates()
         {
             // Alteration Effects - Update Altered Character States
-            foreach (var alterationEffect in GetAllAlterationEffects(configuration))
+            foreach (var alterationEffect in GetAllAlterationEffects())
             {
                 if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
                 {
                     var effect = alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel;
 
-                    effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, effect.AlteredState);
+                    effect.AlteredState = MatchByName(_scenarioCollectionProvider.AlteredCharacterStates, effect.AlteredState);
 
                     if (effect.AlteredState == null)
                         effect.HasAlteredState = false;
@@ -71,7 +80,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                 {
                     var effect = alterationEffect as TemporaryAlterationEffectTemplateViewModel;
 
-                    effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, effect.AlteredState);
+                    effect.AlteredState = MatchByName(_scenarioCollectionProvider.AlteredCharacterStates, effect.AlteredState);
 
                     if (effect.AlteredState == null)
                         effect.HasAlteredState = false;
@@ -79,49 +88,49 @@ namespace Rogue.NET.ScenarioEditor.Service
             }
         }
 
-        public void UpdateNonPlayerCharacters(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdateNonPlayerCharacters()
         {
             // TODO ?  => Non Player Character Asset Collections Changed: {Friendly, Enemy}
         }
 
-        public void UpdateItems(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdateItems()
         {
             // Enemies
-            foreach (var enemy in configuration.EnemyTemplates)
+            foreach (var enemy in _scenarioCollectionProvider.Enemies)
             {
-                UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, enemy.StartingConsumables);
-                UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, enemy.StartingEquipment);
+                UpdateStartingConsumablesCollection(_scenarioCollectionProvider.Consumables, enemy.StartingConsumables);
+                UpdateStartingEquipmentCollection(_scenarioCollectionProvider.Equipment, enemy.StartingEquipment);
             }
 
             // Friendlies
-            foreach (var friendly in configuration.FriendlyTemplates)
+            foreach (var friendly in _scenarioCollectionProvider.Friendlies)
             {
-                UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, friendly.StartingConsumables);
-                UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, friendly.StartingEquipment);
+                UpdateStartingConsumablesCollection(_scenarioCollectionProvider.Consumables, friendly.StartingConsumables);
+                UpdateStartingEquipmentCollection(_scenarioCollectionProvider.Equipment, friendly.StartingEquipment);
             }
 
             // Player
-            foreach (var player in configuration.PlayerTemplates)
+            foreach (var player in _scenarioCollectionProvider.PlayerClasses)
             {
-                UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, player.StartingConsumables);
-                UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, player.StartingEquipment);
+                UpdateStartingConsumablesCollection(_scenarioCollectionProvider.Consumables, player.StartingConsumables);
+                UpdateStartingEquipmentCollection(_scenarioCollectionProvider.Equipment, player.StartingEquipment);
             }
         }
 
-        public void UpdateSkillSets(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdateSkillSets()
         {
             // Consumables
-            foreach (var consumable in configuration.ConsumableTemplates)
+            foreach (var consumable in _scenarioCollectionProvider.Consumables)
             {
-                consumable.LearnedSkill = MatchByName(configuration.SkillTemplates, consumable.LearnedSkill);
+                consumable.LearnedSkill = MatchByName(_scenarioCollectionProvider.SkillSets, consumable.LearnedSkill);
 
                 if (consumable.LearnedSkill == null)
                     consumable.HasLearnedSkill = false;
             }
 
             // Player Starting Skills
-            foreach (var player in configuration.PlayerTemplates)
-                UpdateCollection(configuration.SkillTemplates, player.Skills);
+            foreach (var player in _scenarioCollectionProvider.PlayerClasses)
+                UpdateCollection(_scenarioCollectionProvider.SkillSets, player.Skills);
         }
 
         #endregion      
@@ -226,15 +235,15 @@ namespace Rogue.NET.ScenarioEditor.Service
         /// <summary>
         /// Returns combined list of all alteration effects
         /// </summary>
-        private IEnumerable<IAlterationEffectTemplateViewModel> GetAllAlterationEffects(ScenarioConfigurationContainerViewModel configuration)
+        private IEnumerable<IAlterationEffectTemplateViewModel> GetAllAlterationEffects()
         {
             var consumableFunc = new Func<ConsumableTemplateViewModel, IEnumerable<IAlterationEffectTemplateViewModel>>(consumable =>
             {
                 var list = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
                 {
-                    configuration.ConsumableTemplates.Select(x => x.ConsumableAlteration.Effect),
-                    configuration.ConsumableTemplates.Select(x => x.ConsumableProjectileAlteration.Effect),
-                    configuration.ConsumableTemplates.SelectMany(x => x.LearnedSkill.Skills.Select(z => z.SkillAlteration.Effect))
+                    _scenarioCollectionProvider.Consumables.Select(x => x.ConsumableAlteration.Effect),
+                    _scenarioCollectionProvider.Consumables.Select(x => x.ConsumableProjectileAlteration.Effect),
+                    _scenarioCollectionProvider.Consumables.SelectMany(x => x.LearnedSkill.Skills.Select(z => z.SkillAlteration.Effect))
                 };
 
                 return list.SelectMany(x => x);
@@ -244,9 +253,9 @@ namespace Rogue.NET.ScenarioEditor.Service
             {
                 var list = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
                 {
-                    configuration.EquipmentTemplates.Select(x => x.EquipmentAttackAlteration.Effect),
-                    configuration.EquipmentTemplates.Select(x => x.EquipmentCurseAlteration.Effect),
-                    configuration.EquipmentTemplates.Select(x => x.EquipmentEquipAlteration.Effect)
+                    _scenarioCollectionProvider.Equipment.Select(x => x.EquipmentAttackAlteration.Effect),
+                    _scenarioCollectionProvider.Equipment.Select(x => x.EquipmentCurseAlteration.Effect),
+                    _scenarioCollectionProvider.Equipment.Select(x => x.EquipmentEquipAlteration.Effect)
                 };
 
                 return list.SelectMany(x => x);
@@ -254,20 +263,20 @@ namespace Rogue.NET.ScenarioEditor.Service
 
             var alterations = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
             {
-                configuration.ConsumableTemplates.SelectMany(x => consumableFunc(x)),
-                configuration.EquipmentTemplates.SelectMany(x => equipmentFunc(x)),
-                configuration.DoodadTemplates.Select(x => x.AutomaticAlteration.Effect),
-                configuration.DoodadTemplates.Select(x => x.InvokedAlteration.Effect),
-                configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.Alteration.Effect)),
-                configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
-                configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
-                configuration.FriendlyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.Alteration.Effect)),
-                configuration.FriendlyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
-                configuration.FriendlyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
-                configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                configuration.PlayerTemplates.SelectMany(q => q.Skills).SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                configuration.PlayerTemplates.SelectMany(q => q.StartingConsumables).SelectMany(x => consumableFunc(x.TheTemplate)),
-                configuration.PlayerTemplates.SelectMany(q => q.StartingEquipment).SelectMany(x => equipmentFunc(x.TheTemplate)),
+                _scenarioCollectionProvider.Consumables.SelectMany(x => consumableFunc(x)),
+                _scenarioCollectionProvider.Equipment.SelectMany(x => equipmentFunc(x)),
+                _scenarioCollectionProvider.Doodads.Select(x => x.AutomaticAlteration.Effect),
+                _scenarioCollectionProvider.Doodads.Select(x => x.InvokedAlteration.Effect),
+                _scenarioCollectionProvider.Enemies.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.Alteration.Effect)),
+                _scenarioCollectionProvider.Enemies.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
+                _scenarioCollectionProvider.Enemies.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
+                _scenarioCollectionProvider.Friendlies.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.Alteration.Effect)),
+                _scenarioCollectionProvider.Friendlies.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
+                _scenarioCollectionProvider.Friendlies.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
+                _scenarioCollectionProvider.SkillSets.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                _scenarioCollectionProvider.PlayerClasses.SelectMany(q => q.Skills).SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                _scenarioCollectionProvider.PlayerClasses.SelectMany(q => q.StartingConsumables).SelectMany(x => consumableFunc(x.TheTemplate)),
+                _scenarioCollectionProvider.PlayerClasses.SelectMany(q => q.StartingEquipment).SelectMany(x => equipmentFunc(x.TheTemplate)),
             };
 
             return alterations.SelectMany(x => x).Actualize();

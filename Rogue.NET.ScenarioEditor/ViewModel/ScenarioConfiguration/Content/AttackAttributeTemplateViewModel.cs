@@ -1,7 +1,12 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.Views;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
+    [UIType(DisplayName = "Attack Attribute",
+            Description = "Special combat attribute created for this scenario", 
+            ViewType = typeof(EditorInstructions))]
     public class AttackAttributeTemplateViewModel : DungeonObjectTemplateViewModel
     {
         private RangeViewModel<double> _attack;

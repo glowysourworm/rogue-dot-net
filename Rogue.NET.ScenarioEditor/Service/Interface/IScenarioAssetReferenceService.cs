@@ -31,33 +31,33 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         /// ADD them to the collections if they don't exist. (ALL Attack Attributes exist on ALL
         /// collections of them in the Scenario. This makes it much easier to manage downstream)
         /// </summary>
-        void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration);
+        void UpdateAttackAttributes();
 
         /// <summary>
         /// Updates Character Class references on Enemies, Equipment, Consumables, and Doodads. This will
         /// ensure that the reference is broken if it has been removed.
         /// </summary>
-        void UpdateCharacterClasses(ScenarioConfigurationContainerViewModel configuration);
+        void UpdatePlayerClasses();
 
         /// <summary>
         /// Updates Altered Character State references on Alterations. This will set dangling references
         /// to default (new AlteredCharacterStateTemplate) - which will be a "Normal" Base Type.
         /// </summary>
-        void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration);
+        void UpdateAlteredCharacterStates();
 
         /// <summary>
         /// Updates Create Monster Alteration Effects
         /// </summary>
-        void UpdateNonPlayerCharacters(ScenarioConfigurationContainerViewModel configuration);
+        void UpdateNonPlayerCharacters();
 
         /// <summary>
         /// Updates Item references on Enemies, and Player
         /// </summary>
-        void UpdateItems(ScenarioConfigurationContainerViewModel configuration);
+        void UpdateItems();
 
         /// <summary>
         /// Updates SkillSet references on Player, and Alterations
         /// </summary>
-        void UpdateSkillSets(ScenarioConfigurationContainerViewModel configuration);
+        void UpdateSkillSets();
     }
 }

@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Browser.ScenarioAssetBrowser"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/ScenarioAssetBrowser.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Editor.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Margin="8">
+            <TextBlock Foreground="White" 
+                       Text="Scenario Assets" 
+                       HorizontalAlignment="Left"
+                       FontSize="20" />
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Style="{StaticResource ActionButton}" Command="{Binding CollapseAssetTreeCommand}" ToolTip="Collapse Asset Tree" FontFamily="{StaticResource FontAwesome}" Content="&#xf146;" Margin="2,0,0,0" />
+            </StackPanel>                        
+        </Grid>
+        <TreeView x:Name="AssetTreeView"
+                  ItemContainerStyle="{DynamicResource AssetBrowserItemContainerStyle}" 
+                  Style="{DynamicResource AssetBrowserStyle}" 
+                  Grid.Row="1">
+
+            <TreeViewItem x:Name="PlayerClassItem" 
+                          ItemsSource="{Binding Assets, Mode=OneWay}" 
+                          DataContext="{Binding PlayerGroup}"
+                          Style="{StaticResource AssetBrowserAddButtonStyle}"
+                          ItemContainerStyle="{StaticResource AssetBrowserRemoveButtonStyle}"
+                          Header="Player Classes">
+            </TreeViewItem>
+
+            <TreeViewItem x:Name="LayoutItem" 
+                          ItemsSource="{Binding Assets, Mode=OneWay}" 
+                          DataContext="{Binding LayoutGroup}"
+                          Style="{StaticResource AssetBrowserAddButtonStyle}"
+                          ItemContainerStyle="{StaticResource AssetBrowserRemoveButtonStyle}"                          
+                          Header="Layouts" />
+            
+            <TreeViewItem x:Name="EnemiesItem" 
+                          ItemsSource="{Binding Assets, Mode=OneWay}" 
+                          DataContext="{Binding EnemyGroup}"
+                          Style="{StaticResource AssetBrowserAddButtonStyle}"
+                          ItemContainerStyle="{StaticResource AssetBrowserRemoveButtonStyle}"                          
+                          Header="Enemies" />
+            
+            <TreeViewItem x:Name="FriendliesItem" 
+                          ItemsSource="{Binding Assets, Mode=OneWay}" 
+                          DataContext="{Binding FriendlyGroup}"
+                          Style="{StaticResource AssetBrowserAddButtonStyle}"
+                          ItemContainerStyle="{StaticResource AssetBrowserRemoveButtonStyle}"                          
+                          Header="Friendlies" />
+            
+            <TreeViewItem x:Name="EquipmentItem" 
+                          ItemsSource="{Binding Assets, Mode=OneWay}" 
+                          DataContext="{Binding EquipmentGroup}"
+                          Style="{StaticResource AssetBrowserAddButtonStyle}"
+                          ItemContainerStyle="{StaticResource AssetBrowserRemoveButtonStyle}"                          
+                          Header="Equipment" />
+            
+            <TreeViewItem x:Name="ConsumablesItem" 
+                          ItemsSource="{Binding Assets, Mode=OneWay}" 
+                          DataContext="{Binding ConsumableGroup}"
+                          Style="{StaticResource AssetBrowserAddButtonStyle}"
+                          ItemContainerStyle="{StaticResource AssetBrowserRemoveButtonStyle}"                          
+                          Header="Consumables" />
+            
+            <TreeViewItem x:Name="DoodadsItem" 
+                          ItemsSource="{Binding Assets, Mode=OneWay}" 
+                          DataContext="{Binding DoodadGroup}"
+                          Style="{StaticResource AssetBrowserAddButtonStyle}"
+                          ItemContainerStyle="{StaticResource AssetBrowserRemoveButtonStyle}"                          
+                          Header="Scenario Objects" />
+            
+            <TreeViewItem x:Name="SkillSetsItem"   
+                          ItemsSource="{Binding Assets, Mode=OneWay}" 
+                          DataContext="{Binding SkillSetGroup}"
+                          Style="{StaticResource AssetBrowserAddButtonStyle}"
+                          ItemContainerStyle="{StaticResource AssetBrowserRemoveButtonStyle}"                          
+                          Header="Skill Sets" />
+        </TreeView>
+    </Grid>
+</UserControl>

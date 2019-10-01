@@ -63,7 +63,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
         bool _validationPassed = false;
         bool _includeAttackAttributes = false;
-        IDifficultyAssetBrowserViewModel _assetBrowserViewModel;
 
         public bool ValidationPassed
         {
@@ -74,11 +73,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         {
             get { return _includeAttackAttributes; }
             set { this.RaiseAndSetIfChanged(ref _includeAttackAttributes, value); }
-        }
-        public IDifficultyAssetBrowserViewModel AssetBrowserViewModel
-        {
-            get { return _assetBrowserViewModel; }
-            set { this.RaiseAndSetIfChanged(ref _assetBrowserViewModel, value); }
         }
 
         public ICommand CalculateCommand { get; set; }
@@ -105,7 +99,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             this.IncludeAttackAttributes = true;
             this.DifficultySeries = new SeriesCollection();
             this.ValidationMessages = new ObservableCollection<IScenarioValidationMessage>();
-            this.AssetBrowserViewModel = new DifficultyAssetBrowserViewModel(scenarioConfiguration);
             this.Charts = new ObservableCollection<IDifficultyChartViewModel>(new List<IDifficultyChartViewModel>()
             {
                 new DifficultyChartViewModel() { Title = CHART_HUNGER_AVERAGE, Show = false },
@@ -196,203 +189,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 Fill = null
             };
 
-            switch (chartTitle)
-            {
-                case CHART_HUNGER_AVERAGE:
-                    {
-                        lineSeries.Stroke = Brushes.GreenYellow;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateHungerCurve(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
-                    }
-                    break;
-                case CHART_HUNGER_HIGH:
-                    {
-                        lineSeries.Stroke = Brushes.GreenYellow;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateHungerCurve(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.High)));
-                    }
-                    break;
-                case CHART_HUNGER_LOW:
-                    {
-                        lineSeries.Stroke = Brushes.GreenYellow;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateHungerCurve(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
-                    }
-                    break;
-                case CHART_ENEMY_ATTACK_POWER_AVERAGE:
-                    {
-                        lineSeries.Stroke = Brushes.Purple;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyAttackPower(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true, includeAttackAttributes)
-                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
-                    }
-                    break;
-                case CHART_ENEMY_ATTACK_POWER_HIGH:
-                    {
-                        lineSeries.Stroke = Brushes.Purple;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyAttackPower(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true, includeAttackAttributes)
-                                                .Select(x => new ObservablePoint(x.Level, x.High)));
-                    }
-                    break;
-                case CHART_ENEMY_ATTACK_POWER_LOW:
-                    {
-                        lineSeries.Stroke = Brushes.Purple;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyAttackPower(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true, includeAttackAttributes)
-                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
-                    }
-                    break;
-                case CHART_ENEMY_HP_AVERAGE:
-                    {
-                        lineSeries.Stroke = Brushes.MediumVioletRed;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyHp(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
-                    }
-                    break;
-                case CHART_ENEMY_HP_HIGH:
-                    {
-                        lineSeries.Stroke = Brushes.MediumVioletRed;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyHp(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.High)));
-                    }
-                    break;
-                case CHART_ENEMY_HP_LOW:
-                    {
-                        lineSeries.Stroke = Brushes.MediumVioletRed;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyHp(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
-                    }
-                    break;
-                case CHART_ENEMY_STRENGTH_AVERAGE:
-                    {
-                        lineSeries.Stroke = Brushes.MediumVioletRed;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
-                    }
-                    break;
-                case CHART_ENEMY_STRENGTH_HIGH:
-                    {
-                        lineSeries.Stroke = Brushes.MediumVioletRed;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.High)));
-                    }
-                    break;
-                case CHART_ENEMY_STRENGTH_LOW:
-                    {
-                        lineSeries.Stroke = Brushes.MediumVioletRed;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculateEnemyStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
-                    }
-                    break;
-                case CHART_PLAYER_ATTACK_POWER_AVERAGE:
-                    {
-                        lineSeries.Stroke = Brushes.White;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerAttackPower(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true, includeAttackAttributes)
-                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
-                    }
-                    break;
-                case CHART_PLAYER_ATTACK_POWER_HIGH:
-                    {
-                        lineSeries.Stroke = Brushes.White;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerAttackPower(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true, includeAttackAttributes)
-                                                .Select(x => new ObservablePoint(x.Level, x.High)));
-                    }
-                    break;
-                case CHART_PLAYER_ATTACK_POWER_LOW:
-                    {
-                        lineSeries.Stroke = Brushes.White;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerAttackPower(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true, includeAttackAttributes)
-                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
-                    }
-                    break;
-                case CHART_PLAYER_HP_AVERAGE:
-                    {
-                        lineSeries.Stroke = Brushes.Red;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerHp(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
-                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
-                    }
-                    break;
-                case CHART_PLAYER_HP_HIGH:
-                    {
-                        lineSeries.Stroke = Brushes.Red;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerHp(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
-                                                .Select(x => new ObservablePoint(x.Level, x.High)));
-                    }
-                    break;
-                case CHART_PLAYER_HP_LOW:
-                    {
-                        lineSeries.Stroke = Brushes.Red;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerHp(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
-                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
-                    }
-                    break;
-                case CHART_PLAYER_STRENGTH_AVERAGE:
-                    {
-                        lineSeries.Stroke = Brushes.Red;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
-                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
-                    }
-                    break;
-                case CHART_PLAYER_STRENGTH_HIGH:
-                    {
-                        lineSeries.Stroke = Brushes.Red;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
-                                                .Select(x => new ObservablePoint(x.Level, x.High)));
-                    }
-                    break;
-                case CHART_PLAYER_STRENGTH_LOW:
-                    {
-                        lineSeries.Stroke = Brushes.Red;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
-                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
-                    }
-                    break;
-                case CHART_PLAYER_LEVEL_AVERAGE:
-                    {
-                        lineSeries.Stroke = Brushes.Tan;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerLevel(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
-                    }
-                    break;
-                case CHART_PLAYER_LEVEL_HIGH:
-                    {
-                        lineSeries.Stroke = Brushes.Tan;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerLevel(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.High)));
-                    }
-                    break;
-                case CHART_PLAYER_LEVEL_LOW:
-                    {
-                        lineSeries.Stroke = Brushes.Tan;
-                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-                                                .CalculatePlayerLevel(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
-                    }
-                    break;
-                default:
-                    break;
-            }
+            //lineSeries.Stroke = Brushes.GreenYellow;
+            //lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
+            //                        .CalculateHungerCurve(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
+            //                        .Select(x => new ObservablePoint(x.Level, x.Average)));
 
             return lineSeries;
         }

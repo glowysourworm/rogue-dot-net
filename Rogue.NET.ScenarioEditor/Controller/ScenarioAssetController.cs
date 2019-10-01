@@ -2,15 +2,11 @@
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
-using Rogue.NET.ScenarioEditor.ViewModel.Constant;
-using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System;
-using System.Collections;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -19,7 +15,7 @@ namespace Rogue.NET.ScenarioEditor.Controller
     [Export(typeof(IScenarioAssetController))]
     public class ScenarioAssetController : IScenarioAssetController
     {
-        readonly IScenarioEditorController _scenarioEditorController;
+        readonly IScenarioCollectionProvider _scenarioCollectionProvider;
         readonly IScenarioConfigurationUndoService _undoService;
         readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
 
@@ -28,11 +24,11 @@ namespace Rogue.NET.ScenarioEditor.Controller
 
         [ImportingConstructor]
         public ScenarioAssetController(
-            IScenarioEditorController scenarioEditorController, 
+            IScenarioCollectionProvider scenarioCollectionProvider, 
             IScenarioAssetReferenceService scenarioAssetReferenceService,
             IScenarioConfigurationUndoService scenarioConfigurationUndoService)
-        {            
-            _scenarioEditorController = scenarioEditorController;
+        {
+            _scenarioCollectionProvider = scenarioCollectionProvider;
             _scenarioAssetReferenceService = scenarioAssetReferenceService;
             _undoService = scenarioConfigurationUndoService;
             _scenarioConfigurationMapper = new ScenarioConfigurationMapper();
@@ -41,51 +37,51 @@ namespace Rogue.NET.ScenarioEditor.Controller
         /// <summary>
         /// Adds an asset with a pre-calculated name
         /// </summary>
-        public void AddAsset(string assetType, string uniqueName)
+        public void AddAsset(Type assetType, string uniqueName)
         {
-            switch (assetType)
-            {
-                case AssetType.Layout:
-                    _scenarioEditorController.CurrentConfig.DungeonTemplate.LayoutTemplates.Add(new LayoutTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.Enemy:
-                    _scenarioEditorController.CurrentConfig.EnemyTemplates.Add(new EnemyTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.Friendly:
-                    _scenarioEditorController.CurrentConfig.FriendlyTemplates.Add(new FriendlyTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.Equipment:
-                    _scenarioEditorController.CurrentConfig.EquipmentTemplates.Add(new EquipmentTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.Consumable:
-                    _scenarioEditorController.CurrentConfig.ConsumableTemplates.Add(new ConsumableTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.Doodad:
-                    _scenarioEditorController.CurrentConfig.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.SkillSet:
-                    _scenarioEditorController.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
-                    break;
-                default:
-                    throw new Exception("Unidentified new asset type");
-            }
+            if (assetType == typeof(PlayerTemplateViewModel))
+                _scenarioCollectionProvider.PlayerClasses.Add(new PlayerTemplateViewModel() { Name = uniqueName });
+
+            else if (assetType == typeof(LayoutTemplateViewModel))
+                _scenarioCollectionProvider.Layouts.Add(new LayoutTemplateViewModel() { Name = uniqueName });
+
+            else if (assetType == typeof(EnemyTemplateViewModel))
+                _scenarioCollectionProvider.Enemies.Add(new EnemyTemplateViewModel() { Name = uniqueName });
+
+            else if (assetType == typeof(FriendlyTemplateViewModel))
+                _scenarioCollectionProvider.Friendlies.Add(new FriendlyTemplateViewModel() { Name = uniqueName });
+
+            else if (assetType == typeof(EquipmentTemplateViewModel))
+                _scenarioCollectionProvider.Equipment.Add(new EquipmentTemplateViewModel() { Name = uniqueName });
+
+            else if (assetType == typeof(ConsumableTemplateViewModel))
+                _scenarioCollectionProvider.Consumables.Add(new ConsumableTemplateViewModel() { Name = uniqueName });
+
+            else if (assetType == typeof(DoodadTemplateViewModel))
+                _scenarioCollectionProvider.Doodads.Add(new DoodadTemplateViewModel() { Name = uniqueName });
+
+            else if (assetType == typeof(SkillSetTemplateViewModel))
+                _scenarioCollectionProvider.SkillSets.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
+
+            else
+                throw new Exception("Unhandled Asset Type ScenarioAssetController");
+                    
 
             // NOTE*** HAVE TO BLOCK CHANGES TO THE UNDO STACK TO UPDATE THESE REFERENCES
             _undoService.Block();
 
             // Update Asset References - (Example: Attack Attributes for enemy or alteration or other affected object)
-            _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+            _scenarioAssetReferenceService.UpdateAttackAttributes();
 
             // Restore Undo Service
             _undoService.UnBlock();
         }
 
-        // TODO:SERIALIZATION - ABANDON GUID'S ENTIRELY. LET OBJECT REFERENCES DO THE WORK FOR EQUALS / HASH CODES.
-        //                      GET RID OF ANYTHING IN THE NAMESPACES THAT OVERRIDES THESE THAT DERIVES FROM TEMPLATE.
-        public void CopyAsset(string assetName, string assetNewName, string assetType)
+        // TODO:SERIALIZATION - ABANDON GUID'S ENTIRELY. GET RID OF ANYTHING IN THE NAMESPACES THAT OVERRIDES 
+        //                      THESE THAT DERIVES FROM TEMPLATE.
+        public void CopyAsset(string assetName, string assetNewName, Type assetType)
         {
-            return;
-
+            // Get Existing Asset
             var asset = GetAsset(assetName, assetType);
 
             // Creating a clone will recreate the object with the same guids; but there's a problem
@@ -95,82 +91,126 @@ namespace Rogue.NET.ScenarioEditor.Controller
             // Have to give new identity to asset copy
             assetCopy.Guid = Guid.NewGuid().ToString();
             assetCopy.Name = assetNewName;
-            
-            switch (assetType)
-            {
-                case AssetType.Layout:
-                    _scenarioEditorController.CurrentConfig.DungeonTemplate.LayoutTemplates.Add(assetCopy as LayoutTemplateViewModel);
-                    break;
-                case AssetType.Enemy:
-                    _scenarioEditorController.CurrentConfig.EnemyTemplates.Add(assetCopy as EnemyTemplateViewModel);
-                    break;
-                case AssetType.Equipment:
-                    _scenarioEditorController.CurrentConfig.EquipmentTemplates.Add(assetCopy as EquipmentTemplateViewModel);
-                    break;
-                case AssetType.Consumable:
-                    _scenarioEditorController.CurrentConfig.ConsumableTemplates.Add(assetCopy as ConsumableTemplateViewModel);
-                    break;
-                case AssetType.Doodad:
-                    _scenarioEditorController.CurrentConfig.DoodadTemplates.Add(assetCopy as DoodadTemplateViewModel);
-                    break;
-                case AssetType.SkillSet:
-                    _scenarioEditorController.CurrentConfig.SkillTemplates.Add(assetCopy as SkillSetTemplateViewModel);
-                    break;
-                default:
-                    throw new Exception("Unidentified new asset type");
-            }
 
-            // NOTE*** HAVE TO BLOCK CHANGES TO THE UNDO STACK TO UPDATE THESE REFERENCES
-            _undoService.Block();
+            if (assetType == typeof(PlayerTemplateViewModel))
+                _scenarioCollectionProvider.PlayerClasses.Add(assetCopy as PlayerTemplateViewModel);
 
-            // Fix Asset References - Uses the ScenarioConfigurationMapper 
-            // _scenarioConfigurationMapper.MapObject(_scenarioEditorController.CurrentConfig);
+            else if (assetType == typeof(LayoutTemplateViewModel))
+                _scenarioCollectionProvider.Layouts.Add(assetCopy as LayoutTemplateViewModel);
 
-            // Restore Undo Service
-            _undoService.UnBlock();
+            else if (assetType == typeof(EnemyTemplateViewModel))
+                _scenarioCollectionProvider.Enemies.Add(assetCopy as EnemyTemplateViewModel);
+
+            else if (assetType == typeof(FriendlyTemplateViewModel))
+                _scenarioCollectionProvider.Friendlies.Add(assetCopy as FriendlyTemplateViewModel);
+
+            else if (assetType == typeof(EquipmentTemplateViewModel))
+                _scenarioCollectionProvider.Equipment.Add(assetCopy as EquipmentTemplateViewModel);
+
+            else if (assetType == typeof(ConsumableTemplateViewModel))
+                _scenarioCollectionProvider.Consumables.Add(assetCopy as ConsumableTemplateViewModel);
+
+            else if (assetType == typeof(DoodadTemplateViewModel))
+                _scenarioCollectionProvider.Doodads.Add(assetCopy as DoodadTemplateViewModel);
+
+            else if (assetType == typeof(SkillSetTemplateViewModel))
+                _scenarioCollectionProvider.SkillSets.Add(assetCopy as SkillSetTemplateViewModel);
+
+            else
+                throw new Exception("Unhandled Asset Type ScenarioAssetController");
         }
-        public void RemoveAsset(string assetType, string name)
+        public void RemoveAsset(Type assetType, string name)
         {
-            // Get collection to modify
-            var collection = (IList)ConfigurationCollectionResolver.GetAssetCollection(_scenarioEditorController.CurrentConfig, assetType);
+            var asset = GetAsset(name, assetType);
 
-            // Modify the collection
-            var item = collection.Cast<TemplateViewModel>().First(x => x.Name == name);
-            collection.Remove(item);
+            if (assetType == typeof(PlayerTemplateViewModel))
+                _scenarioCollectionProvider.PlayerClasses.Remove(asset as PlayerTemplateViewModel);
+
+            else if (assetType == typeof(LayoutTemplateViewModel))
+                _scenarioCollectionProvider.Layouts.Remove(asset as LayoutTemplateViewModel);
+
+            else if (assetType == typeof(EnemyTemplateViewModel))
+                _scenarioCollectionProvider.Enemies.Remove(asset as EnemyTemplateViewModel);
+
+            else if (assetType == typeof(FriendlyTemplateViewModel))
+                _scenarioCollectionProvider.Friendlies.Remove(asset as FriendlyTemplateViewModel);
+
+            else if (assetType == typeof(EquipmentTemplateViewModel))
+                _scenarioCollectionProvider.Equipment.Remove(asset as EquipmentTemplateViewModel);
+
+            else if (assetType == typeof(ConsumableTemplateViewModel))
+                _scenarioCollectionProvider.Consumables.Remove(asset as ConsumableTemplateViewModel);
+
+            else if (assetType == typeof(DoodadTemplateViewModel))
+                _scenarioCollectionProvider.Doodads.Remove(asset as DoodadTemplateViewModel);
+
+            else if (assetType == typeof(SkillSetTemplateViewModel))
+                _scenarioCollectionProvider.SkillSets.Remove(asset as SkillSetTemplateViewModel);
+
+            else
+                throw new Exception("Unhandled Asset Type ScenarioAssetController");
 
             // BLOCK CHANGES TO THE UNDO STACK TO UPDATE THESE REFERENCES
             _undoService.Block();
 
-            // Update Asset References
-            switch (assetType)
-            {
-                // No references to update
-                case AssetType.Layout:
-                case AssetType.Doodad:
-                    break;
-                case AssetType.Enemy:
-                case AssetType.Friendly:
-                    _scenarioAssetReferenceService.UpdateNonPlayerCharacters(_scenarioEditorController.CurrentConfig);
-                    break;
-                case AssetType.Equipment:
-                case AssetType.Consumable:
-                    _scenarioAssetReferenceService.UpdateItems(_scenarioEditorController.CurrentConfig);
-                    break;
-                case AssetType.SkillSet:
-                    _scenarioAssetReferenceService.UpdateSkillSets(_scenarioEditorController.CurrentConfig);
-                    break;
-                default:
-                    throw new Exception("Unidentified new asset type");
-            }
+            if (assetType == typeof(PlayerTemplateViewModel))
+            { }
+
+            else if (assetType == typeof(LayoutTemplateViewModel))
+            { }
+
+            else if (assetType == typeof(EnemyTemplateViewModel))
+                _scenarioAssetReferenceService.UpdateNonPlayerCharacters();
+
+            else if (assetType == typeof(FriendlyTemplateViewModel))
+                _scenarioAssetReferenceService.UpdateNonPlayerCharacters();
+
+            else if (assetType == typeof(EquipmentTemplateViewModel))
+                _scenarioAssetReferenceService.UpdateItems();
+
+            else if (assetType == typeof(ConsumableTemplateViewModel))
+                _scenarioAssetReferenceService.UpdateItems();
+
+            else if (assetType == typeof(DoodadTemplateViewModel))
+            { }
+
+            else if (assetType == typeof(SkillSetTemplateViewModel))
+                _scenarioAssetReferenceService.UpdateSkillSets();
+
+            else
+                throw new Exception("Unhandled Asset Type ScenarioAssetController");
 
             // Restore Undo Service
             _undoService.UnBlock();
         }
-        public TemplateViewModel GetAsset(string name, string assetType)
+        public TemplateViewModel GetAsset(string name, Type assetType)
         {
-            var collection = (IList)ConfigurationCollectionResolver.GetAssetCollection(_scenarioEditorController.CurrentConfig, assetType);
+            if (assetType == typeof(PlayerTemplateViewModel))
+                return _scenarioCollectionProvider.PlayerClasses.FirstOrDefault(x => x.Name == name);
 
-            return collection.Cast<TemplateViewModel>().First(x => x.Name == name);
+            else if (assetType == typeof(LayoutTemplateViewModel))
+                return _scenarioCollectionProvider.Layouts.FirstOrDefault(x => x.Name == name);
+
+            else if (assetType == typeof(EnemyTemplateViewModel))
+                return _scenarioCollectionProvider.Enemies.FirstOrDefault(x => x.Name == name);
+
+            else if (assetType == typeof(FriendlyTemplateViewModel))
+                return _scenarioCollectionProvider.Friendlies.FirstOrDefault(x => x.Name == name);
+
+            else if (assetType == typeof(EquipmentTemplateViewModel))
+                return _scenarioCollectionProvider.Equipment.FirstOrDefault(x => x.Name == name);
+
+            else if (assetType == typeof(ConsumableTemplateViewModel))
+                return _scenarioCollectionProvider.Consumables.FirstOrDefault(x => x.Name == name);
+
+            else if (assetType == typeof(DoodadTemplateViewModel))
+                return _scenarioCollectionProvider.Doodads.FirstOrDefault(x => x.Name == name);
+
+            else if (assetType == typeof(SkillSetTemplateViewModel))
+                return _scenarioCollectionProvider.SkillSets.FirstOrDefault(x => x.Name == name);
+
+            else
+                throw new Exception("Unhandled Asset Type ScenarioAssetGroupViewModel");
         }
     }
 }

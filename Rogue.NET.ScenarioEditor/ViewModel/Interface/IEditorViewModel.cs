@@ -14,6 +14,5 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
         ICommand LoadBuiltInCommand { get; }
         ICommand SaveCommand { get; }
         ICommand NewCommand { get; }
-        ICommand ShowDifficultyCommand { get; }
     }
 }

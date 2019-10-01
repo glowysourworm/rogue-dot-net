@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
@@ -10,24 +11,33 @@
         <Setter Property="Foreground" Value="White" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="FontSize" Value="12" />        
+        <Setter Property="FontSize" Value="18" />        
     </Style>
     <Style x:Key="AssetBrowserItemContainerStyle" TargetType="TreeViewItem">
         <Setter Property="Background" Value="Black" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="18" />
     </Style>
 
     <!-- Control template style example copied from msft: http://msdn.microsoft.com/en-us/library/vstudio/ms788727(v=vs.90).aspx -->
-    <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
+    <SolidColorBrush x:Key="GlyphBrush" Color="#888" />
     <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Grid Width="15" Height="13" Background="Transparent">
-                        <Path x:Name="ExpandPath" HorizontalAlignment="Left" VerticalAlignment="Center"  
-                              Margin="1,1,1,1" Fill="{StaticResource GlyphBrush}" Data="M 4 0 L 8 4 L 4 8 Z"/>
+                        <Path x:Name="ExpandPath" 
+                              HorizontalAlignment="Left" 
+                              VerticalAlignment="Center"  
+                              Margin="1,1,1,1" Fill="{StaticResource GlyphBrush}" Data="M 4 0 L 8 4 L 4 8 Z">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                                    <TranslateTransform X="-1" Y="-1" />
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
@@ -57,16 +67,16 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
         <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-        <Setter Property="Padding" Value="1,0,0,0"/>
+        <Setter Property="Padding" Value="2"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="18" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="19" Width="Auto"/>
+                            <ColumnDefinition MinWidth="20" Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto" />
@@ -75,9 +85,13 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
+
+                        <Rectangle Grid.ColumnSpan="4" Fill="{TemplateBinding Background}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
                         <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
                                       IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
                                       ClickMode="Press"/>
+                        
                         <TextBlock Cursor="Hand" 
                                    FontFamily="{StaticResource FontAwesome}" 
                                    Background="Transparent" 
@@ -86,17 +100,17 @@
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    ToolTip="Add Asset"
-                                   Padding="0"
+                                   Padding="{TemplateBinding Padding}"
                                    Text="&#xf067;" 
                                    Grid.Column="3">
                             <TextBlock.InputBindings>
-                                <MouseBinding Command="{Binding AddAssetCommand}" CommandParameter="{Binding Tag}" MouseAction="LeftClick" />
+                                <MouseBinding Command="{Binding AddAssetCommand}" MouseAction="LeftClick" />
                             </TextBlock.InputBindings>
                         </TextBlock>
+                        
                         <Border Name="Bd"
-                                  Grid.Column="1"
-                                  
-                                  Background="{TemplateBinding Background}"
+                                  Grid.Column="1"                                  
+                                  Background="Transparent"
                                   BorderBrush="{TemplateBinding BorderBrush}"
                                   BorderThickness="{TemplateBinding BorderThickness}"
                                   Padding="{TemplateBinding Padding}">
@@ -115,84 +129,44 @@
                         <Trigger Property="HasItems" Value="false">
                             <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
                         </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="HasHeader" Value="false"/>
-                                <Condition Property="Width" Value="Auto"/>
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_Header" Property="MinWidth" Value="75"/>
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="HasHeader" Value="false"/>
-                                <Condition Property="Height" Value="Auto"/>
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
-                        </MultiTrigger>
-                        <Trigger Property="IsSelected" Value="true">
-                            <Setter TargetName="Bd"
-                                    Property="Background"
-                                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                            <Setter Property="Foreground"
-                                    Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
-                        </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="true"/>
-                                <Condition Property="IsSelectionActive" Value="false"/>
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                        </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                         </Trigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>                        
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
     <Style x:Key="AssetBrowserRemoveButtonStyle" TargetType="TreeViewItem">
-        <Setter Property="Background" Value="Black"/>
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
         <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-        <Setter Property="Padding" Value="1,0,0,0"/>
+        <Setter Property="Padding" Value="2"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
         <Setter Property="Focusable" Value="False" />
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-        <Setter Property="ToolTip">
-            <Setter.Value>
-                <ToolTip IsEnabled="{Binding IsLevelPlacement}"
-                         Background="Transparent"
-                         BorderBrush="Transparent">
-                    <Border Visibility="{Binding IsLevelPlacement, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-                            Background="Black" 
-                            CornerRadius="3" 
-                            BorderBrush="#AFFFFFFF" 
-                            BorderThickness="0.75">
-                        <TextBlock  FontSize="16"
-                                    Background="Transparent"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center" 
-                                    VerticalAlignment="Center"
-                                    Margin="4">
-                            <Run Text="Level " />
-                            <Run Text="{Binding Level.Low}" />
-                            <Run Text=" to " />
-                            <Run Text="{Binding Level.High}" />
-                        </TextBlock>
-                    </Border>
-                </ToolTip>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="FontSize" Value="18" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                    <Grid Background="{TemplateBinding Background}" Margin="-20,0,0,0">
+                    <Grid Margin="-20,0,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="19" Width="Auto"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
@@ -202,17 +176,12 @@
                         </Grid.RowDefinitions>
 
                         <Grid.InputBindings>
-                            <MouseBinding Command="{Binding LoadAssetCommand}" CommandParameter="{Binding Name}" MouseAction="LeftClick" />
+                            <MouseBinding Command="{Binding LoadAssetCommand}" MouseAction="LeftClick" />
                         </Grid.InputBindings>
-
-                        <!--ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
-                                      IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
-                                      ClickMode="Press"/-->
 
                         <Grid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Command="{Binding CopyAssetCommand}" 
-                                          CommandParameter="{Binding Name}">
+                                <MenuItem Command="{Binding CopyAssetCommand}">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xf0c5;" FontFamily="{StaticResource FontAwesome}" />
                                     </MenuItem.Icon>
@@ -222,8 +191,7 @@
                                         </TextBlock>
                                     </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem Command="{Binding RemoveAssetCommand}" 
-                                          CommandParameter="{Binding Name}" >
+                                <MenuItem Command="{Binding RemoveAssetCommand}">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xf068;" FontFamily="{StaticResource FontAwesome}" />
                                     </MenuItem.Icon>
@@ -233,8 +201,7 @@
                                         </TextBlock>
                                     </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem Command="{Binding RenameAssetCommand}" 
-                                          CommandParameter="{Binding Name}" >
+                                <MenuItem Command="{Binding RenameAssetCommand}">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xf044;" FontFamily="{StaticResource FontAwesome}" />
                                     </MenuItem.Icon>
@@ -247,14 +214,20 @@
                             </ContextMenu>
                         </Grid.ContextMenu>
 
-                        <Image VerticalAlignment="Center" 
+                        <Rectangle Grid.ColumnSpan="4" 
+                                   Fill="{TemplateBinding Background}" 
+                                   HorizontalAlignment="Stretch" 
+                                   VerticalAlignment="Stretch" />
+
+                        <Image Grid.Column="1"
+                               VerticalAlignment="Center" 
                                HorizontalAlignment="Center" 
-                               Margin="20,0,0,0"
-                               Height="15"
-                               Width="10"
                                Stretch="None">
                             <Image.Source>
                                 <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <MultiBinding.ConverterParameter>
+                                        <system:Double>1.35</system:Double>
+                                    </MultiBinding.ConverterParameter>
                                     <Binding Path="SymbolDetails.CharacterColor" />
                                     <Binding Path="SymbolDetails.CharacterSymbol" />
                                     <Binding Path="SymbolDetails.CharacterSymbolCategory" />
@@ -276,7 +249,7 @@
                         </Image>
 
                         <Border Name="Bd"
-                                  Grid.Column="1" Margin="4,0,0,0"           
+                                  Grid.Column="2" Margin="4,0,0,0"           
                                   Background="Transparent"
                                   BorderBrush="{TemplateBinding BorderBrush}"
                                   BorderThickness="{TemplateBinding BorderThickness}"
@@ -284,7 +257,7 @@
 
                             <TextBlock x:Name="PART_Header" 
                                            Text="{Binding Name}"
-                                           FontSize="16"
+                                           FontSize="18"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                             </TextBlock>
@@ -292,38 +265,13 @@
 
                         <ItemsPresenter x:Name="ItemsHost"
                                           Grid.Row="1"
-                                          Grid.Column="1"
-                                          Grid.ColumnSpan="3"/>
+                                          Grid.Column="2"
+                                          Grid.ColumnSpan="2"/>
                     
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsExpanded" Value="false">
                             <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
-                        </Trigger>
-                        <!--Trigger Property="HasItems" Value="false">
-                            <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
-                        </Trigger-->
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="HasHeader" Value="false"/>
-                                <Condition Property="Width" Value="Auto"/>
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_Header" Property="MinWidth" Value="75"/>
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="HasHeader" Value="false"/>
-                                <Condition Property="Height" Value="Auto"/>
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
-                        </MultiTrigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="White" />
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
-                                </Setter.Value>
-                            </Setter>                            
                         </Trigger>
                         <Trigger Property="IsSelected" Value="true">
                             <Setter Property="Background">

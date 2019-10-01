@@ -9,6 +9,16 @@ namespace Rogue.NET.Common.Extension
     public static class TypeExtension
     {
         /// <summary>
+        /// Returns the First or Default attribute of the supplied type
+        /// </summary>
+        public static T GetAttribute<T>(this Type type) where T : System.Attribute
+        {
+            var attributes = type.GetCustomAttributes(typeof(T), true);
+
+            return attributes.Any() ? (T)attributes.First() : default(T);
+        }
+
+        /// <summary>
         /// Creates an instance of the specified type using the default (parameterless) constructor
         /// </summary>
         public static T Construct<T>(this Type type)

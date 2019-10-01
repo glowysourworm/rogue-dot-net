@@ -1,11 +1,17 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
+using Rogue.NET.ScenarioEditor.Views;
+using Rogue.NET.ScenarioEditor.Views.Assets;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
+    [UIType(DisplayName = "Consumable",
+            Description = "Item that is consumed by the Player",
+            ViewType = typeof(Consumable))]
     public class ConsumableTemplateViewModel : DungeonObjectTemplateViewModel
     {
         private ConsumableType _type;

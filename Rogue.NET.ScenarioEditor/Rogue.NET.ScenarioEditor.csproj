@@ -286,33 +286,42 @@
     <Compile Include="Converter\EnemyAttackTypeMeleeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeSkillVisibilityConverter.cs" />
     <Compile Include="Converter\LayoutConnectionGeometryVisibilityConverter.cs" />
+    <Compile Include="Converter\ScenarioAssetBrowserSelectionBackgroundConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
-    <Compile Include="Events\AddAssetEvent.cs" />
-    <Compile Include="Events\AddGeneralAssetEvent.cs" />
+    <Compile Include="Events\Browser\AddLevelBranchEvent.cs" />
+    <Compile Include="Events\Browser\AddAssetEvent.cs" />
+    <Compile Include="Events\Browser\AddGeneralAssetEvent.cs" />
     <Compile Include="Events\AlterationEffectChangedEvent.cs" />
+    <Compile Include="Events\Browser\AddLevelEvent.cs" />
+    <Compile Include="Events\Browser\CollapseLevelTreeEvent.cs" />
+    <Compile Include="Events\Browser\CopyLevelBranchEvent.cs" />
+    <Compile Include="Events\Browser\LoadLevelBranchAssetsEvent.cs" />
+    <Compile Include="Events\Browser\RemoveLevelBranchEvent.cs" />
+    <Compile Include="Events\Browser\RenameLevelBranchEvent.cs" />
     <Compile Include="Events\BrushCopyEvent.cs" />
     <Compile Include="Events\BrushRemovedEvent.cs" />
     <Compile Include="Events\BrushAddedEvent.cs" />
-    <Compile Include="Events\CollapseAssetTreeEvent.cs" />
-    <Compile Include="Events\CopyAssetEvent.cs" />
+    <Compile Include="Events\Browser\CollapseAssetTreeEvent.cs" />
+    <Compile Include="Events\Browser\CopyAssetEvent.cs" />
+    <Compile Include="Events\Browser\LoadLevelEvent.cs" />
     <Compile Include="Events\LoadDefaultRegionViewEvent.cs" />
     <Compile Include="Events\LoadAlterationEffectRequestEvent.cs" />
     <Compile Include="Events\LoadNewAlterationEffectRequestEvent.cs" />
-    <Compile Include="Events\LoadAssetEvent.cs" />
+    <Compile Include="Events\Browser\LoadAssetEvent.cs" />
     <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
-    <Compile Include="Events\LoadConstructionEvent.cs" />
+    <Compile Include="Events\LoadDesignEvent.cs" />
     <Compile Include="Events\LoadScenarioEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
-    <Compile Include="Events\RemoveAssetEvent.cs" />
+    <Compile Include="Events\Browser\RemoveLevelEvent.cs" />
+    <Compile Include="Events\Browser\RemoveAssetEvent.cs" />
     <Compile Include="Events\RemoveGeneralAssetEvent.cs" />
-    <Compile Include="Events\RenameAssetEvent.cs" />
+    <Compile Include="Events\Browser\RenameAssetEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
     <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
     <Compile Include="Events\ScenarioLoadedEvent.cs" />
     <Compile Include="Events\ScenarioUpdateEvent.cs" />
-    <Compile Include="Events\LoadDifficultyChartEvent.cs" />
     <Compile Include="Controller\Interface\IScenarioEditorController.cs" />
     <Compile Include="Controller\ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
@@ -328,7 +337,6 @@
     <Compile Include="Service\ScenarioCollectionProvider.cs" />
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
     <Compile Include="Service\ScenarioDifficultyCalculationService.cs" />
-    <Compile Include="Utility\ConfigurationCollectionResolver.cs" />
     <Compile Include="Utility\DialogWindowFactory.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\ScenarioConfigurationMapper.cs" />
@@ -338,32 +346,25 @@
     <Compile Include="Utility\Undo\UndoPropertyChangedEventArgs.cs" />
     <Compile Include="Utility\Undo\UndoPropertyChangingEventArgs.cs" />
     <Compile Include="ViewModel\Attribute\UITypeAttribute.cs" />
-    <Compile Include="ViewModel\Constant\AssetType.cs" />
-    <Compile Include="ViewModel\Difficulty\DifficultyAssetBrowserViewModel.cs" />
-    <Compile Include="ViewModel\Difficulty\DifficultyAssetGroupViewModel.cs" />
-    <Compile Include="ViewModel\Difficulty\DifficultyAssetViewModel.cs" />
     <Compile Include="ViewModel\Difficulty\DifficultyChartViewModel.cs" />
     <Compile Include="ViewModel\Difficulty\Interface\IDifficultyChartViewModel.cs" />
-    <Compile Include="ViewModel\Difficulty\Interface\IDifficultyAssetBrowserViewModel.cs" />
-    <Compile Include="ViewModel\Difficulty\Interface\IDifficultyAssetGroupViewModel.cs" />
-    <Compile Include="ViewModel\Difficulty\Interface\IDifficultyAssetViewModel.cs" />
     <Compile Include="ViewModel\Difficulty\Interface\IProjectedQuantityViewModel.cs" />
     <Compile Include="ViewModel\Difficulty\ProjectedQuantityViewModel.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
-    <Compile Include="ViewModel\Constant\ConstructionType.cs" />
     <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />
-    <Compile Include="ViewModel\Interface\IPlacementGroupViewModel.cs" />
-    <Compile Include="ViewModel\Interface\IPlacementViewModel.cs" />
-    <Compile Include="ViewModel\Interface\IScenarioAssetBrowserViewModel.cs" />
-    <Compile Include="ViewModel\Interface\IScenarioAssetGroupViewModel.cs" />
-    <Compile Include="ViewModel\Interface\IScenarioAssetViewModel.cs" />
+    <Compile Include="ViewModel\Browser\Interface\IScenarioAssetBrowserViewModel.cs" />
+    <Compile Include="ViewModel\Browser\Interface\IScenarioAssetGroupViewModel.cs" />
+    <Compile Include="ViewModel\Browser\Interface\IScenarioAssetReadonlyViewModel.cs" />
+    <Compile Include="ViewModel\Browser\Interface\IScenarioAssetViewModel.cs" />
     <Compile Include="ViewModel\Interface\IScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\Interface\IScenarioDifficultyViewModel.cs" />
-    <Compile Include="ViewModel\PlacementGroupViewModel.cs" />
-    <Compile Include="ViewModel\PlacementViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioAssetBrowserViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioAssetGroupViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioAssetViewModel.cs" />
+    <Compile Include="ViewModel\Browser\Interface\IScenarioLevelBranchViewModel.cs" />
+    <Compile Include="ViewModel\Browser\Interface\IScenarioLevelBrowserViewModel.cs" />
+    <Compile Include="ViewModel\Browser\Interface\IScenarioLevelViewModel.cs" />
+    <Compile Include="ViewModel\Browser\ScenarioAssetBrowserViewModel.cs" />
+    <Compile Include="ViewModel\Browser\ScenarioAssetGroupViewModel.cs" />
+    <Compile Include="ViewModel\Browser\ScenarioAssetReadonlyViewModel.cs" />
+    <Compile Include="ViewModel\Browser\ScenarioAssetViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\DungeonObjectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolDetailsTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\TemplateViewModel.cs" />
@@ -455,8 +456,10 @@
       <LastGenOutput>ScenarioConfigurationContainer.Designer.cs</LastGenOutput>
     </Compile>
     <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationData.cs" />
-    <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\ScenarioDesignOverviewViewModel.cs" />
+    <Compile Include="ViewModel\Browser\ScenarioLevelBranchViewModel.cs" />
+    <Compile Include="ViewModel\Browser\ScenarioLevelBrowserViewModel.cs" />
+    <Compile Include="ViewModel\Browser\ScenarioLevelViewModel.cs" />
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateTemporaryCharacterEffectParameters.xaml.cs">
       <DependentUpon>CreateTemporaryCharacterEffectParameters.xaml</DependentUpon>
     </Compile>
@@ -634,30 +637,40 @@
     <Compile Include="Views\Assets\TemporaryCharacter.xaml.cs">
       <DependentUpon>TemporaryCharacter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Constants\DesignMode.cs" />
     <Compile Include="Views\Constants\RegionNames.cs" />
-    <Compile Include="Views\Construction\PlayerDesignItem.xaml.cs">
-      <DependentUpon>PlayerDesignItem.xaml</DependentUpon>
+    <Compile Include="Views\Design\DesignContainer.xaml.cs">
+      <DependentUpon>DesignContainer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Construction\ScenarioObjectPlacement.xaml.cs">
-      <DependentUpon>ScenarioObjectPlacement.xaml</DependentUpon>
+    <Compile Include="Views\Design\LevelBranchDesign\ConsumableDesign.xaml.cs">
+      <DependentUpon>ConsumableDesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Construction\EnemyPlacement.xaml.cs">
-      <DependentUpon>EnemyPlacement.xaml</DependentUpon>
+    <Compile Include="Views\Design\LevelBranchDesign\DoodadDesign.xaml.cs">
+      <DependentUpon>DoodadDesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Construction\General.xaml.cs">
-      <DependentUpon>General.xaml</DependentUpon>
+    <Compile Include="Views\Design\LevelBranchDesign\EnemyDesign.xaml.cs">
+      <DependentUpon>EnemyDesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Construction\ItemPlacement.xaml.cs">
-      <DependentUpon>ItemPlacement.xaml</DependentUpon>
+    <Compile Include="Views\Design\LevelBranchDesign\EquipmentDesign.xaml.cs">
+      <DependentUpon>EquipmentDesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Construction\LayoutDesign.xaml.cs">
+    <Compile Include="Views\Design\LevelBranchDesign\FriendlyDesign.xaml.cs">
+      <DependentUpon>FriendlyDesign.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Design\LevelBranchDesign\LayoutDesign.xaml.cs">
       <DependentUpon>LayoutDesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Construction\ObjectiveDesign.xaml.cs">
-      <DependentUpon>ObjectiveDesign.xaml</DependentUpon>
+    <Compile Include="Views\Design\LevelDesign.xaml.cs">
+      <DependentUpon>LevelDesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Construction\PlayerDesign.xaml.cs">
-      <DependentUpon>PlayerDesign.xaml</DependentUpon>
+    <Compile Include="Views\Assets\Player.xaml.cs">
+      <DependentUpon>Player.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Design\General.xaml.cs">
+      <DependentUpon>General.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Design\ObjectiveDesign.xaml.cs">
+      <DependentUpon>ObjectiveDesign.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\AnimationPreviewControl.xaml.cs">
       <DependentUpon>AnimationPreviewControl.xaml</DependentUpon>
@@ -714,7 +727,7 @@
     </Compile>
     <Compile Include="Views\Controls\Symbol\ViewModel\SvgSymbolViewModel.cs" />
     <Compile Include="Views\Controls\TemplateSelector\ListBuilderTemplateSelector.cs" />
-    <Compile Include="Views\DesignRegion\AssetContainerControl.xaml.cs">
+    <Compile Include="Views\Assets\AssetContainerControl.xaml.cs">
       <DependentUpon>AssetContainerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditorInstructions.xaml.cs">
@@ -723,17 +736,20 @@
     <Compile Include="Views\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ScenarioAssetBrowser.xaml.cs">
+    <Compile Include="Views\Browser\ScenarioAssetBrowser.xaml.cs">
       <DependentUpon>ScenarioAssetBrowser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Editor.xaml.cs">
       <DependentUpon>Editor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ScenarioConstruction.xaml.cs">
-      <DependentUpon>ScenarioConstruction.xaml</DependentUpon>
+    <Compile Include="Views\ScenarioDesign.xaml.cs">
+      <DependentUpon>ScenarioDesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ScenarioDesignOverview.xaml.cs">
+    <Compile Include="Views\Design\ScenarioDesignOverview.xaml.cs">
       <DependentUpon>ScenarioDesignOverview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Browser\ScenarioLevelBrowser.xaml.cs">
+      <DependentUpon>ScenarioLevelBrowser.xaml</DependentUpon>
     </Compile>
     <Page Include="Resources\Dictionaries\Converter.xaml">
       <SubType>Designer</SubType>
@@ -746,6 +762,10 @@
     <Page Include="Resources\Dictionaries\PlacementListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\ScenarioLevelBrowser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Dictionaries\ScenarioAssetBrowser.xaml">
       <SubType>Designer</SubType>
@@ -987,35 +1007,47 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\PlayerDesignItem.xaml">
+    <Page Include="Views\Design\DesignContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\ScenarioObjectPlacement.xaml">
+    <Page Include="Views\Design\LevelBranchDesign\ConsumableDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\EnemyPlacement.xaml">
+    <Page Include="Views\Design\LevelBranchDesign\DoodadDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\General.xaml">
+    <Page Include="Views\Design\LevelBranchDesign\EnemyDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\ItemPlacement.xaml">
+    <Page Include="Views\Design\LevelBranchDesign\EquipmentDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\LayoutDesign.xaml">
+    <Page Include="Views\Design\LevelBranchDesign\FriendlyDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\ObjectiveDesign.xaml">
+    <Page Include="Views\Design\LevelBranchDesign\LayoutDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\PlayerDesign.xaml">
+    <Page Include="Views\Design\LevelDesign.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\Player.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Design\General.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Design\ObjectiveDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1087,7 +1119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DesignRegion\AssetContainerControl.xaml">
+    <Page Include="Views\Assets\AssetContainerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1099,7 +1131,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ScenarioAssetBrowser.xaml">
+    <Page Include="Views\Browser\ScenarioAssetBrowser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1107,11 +1139,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ScenarioConstruction.xaml">
+    <Page Include="Views\ScenarioDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ScenarioDesignOverview.xaml">
+    <Page Include="Views\Design\ScenarioDesignOverview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Browser\ScenarioLevelBrowser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

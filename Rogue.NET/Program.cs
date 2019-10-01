@@ -31,7 +31,7 @@ namespace Rogue.NET
             // Load SVG Resources
             SvgCache.Load();
 
-            // Hide loading window
+            // Hide loading windowViewModel.Browser.ScenarioAssetViewModel
             loadingWindow.Hide();
 
             var application = new RogueApplication();

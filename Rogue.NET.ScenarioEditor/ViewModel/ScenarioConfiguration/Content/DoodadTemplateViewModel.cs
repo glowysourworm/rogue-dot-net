@@ -1,9 +1,15 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad;
+using Rogue.NET.ScenarioEditor.Views;
+using Rogue.NET.ScenarioEditor.Views.Assets;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
+    [UIType(DisplayName = "Scenario Object",
+            Description = "Item that is used by most characters. Players can use any Scenario Object. All other characters will trip automatic Scenario Object effects.",
+            ViewType = typeof(Doodad))]
     public class DoodadTemplateViewModel : DungeonObjectTemplateViewModel
     {
         private DoodadAlterationTemplateViewModel _automaticAlteration;
