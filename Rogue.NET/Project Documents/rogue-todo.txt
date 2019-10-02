@@ -2801,6 +2801,8 @@ IMMEDIATE TODO'S:
 				   Validate that ONE branch is created for objective levels (having multiple won't work). 
 
 				   VALIDATE UNIQUE LEVEL BRANCH NAMES (TODO: CHANGE THIS TO GUIDS)
+
+	- TODO: Editor dirty flag
 		  
 	
 						  

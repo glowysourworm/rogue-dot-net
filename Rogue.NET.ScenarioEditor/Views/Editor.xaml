@@ -221,7 +221,8 @@
         </Border>
 
         <Border Grid.Row="3" Grid.RowSpan="2" Margin="8"  BorderBrush="White" BorderThickness="1">
-            <region:RogueRegion region:RogueRegionManager.RegionName="{x:Static constants:RegionNames.BrowserRegion}" />
+            <region:RogueRegion region:RogueRegionManager.RegionName="{x:Static constants:RegionNames.BrowserRegion}"
+                                region:RogueRegionManager.DefaultViewType="{x:Type browser:ScenarioAssetBrowser}"/>
         </Border>
 
         <Border BorderBrush="White" BorderThickness="1"  Margin="8" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">

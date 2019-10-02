@@ -68,7 +68,6 @@ namespace Rogue.NET.ScenarioEditor
         public void Initialize()
         {
             _regionManager.PreRegisterView(RegionNames.MainRegion, typeof(Editor));
-            _regionManager.PreRegisterView(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
             _regionManager.PreRegisterView(RegionNames.BrowserRegion, typeof(ScenarioLevelBrowser));
 
             RegisterEditorEvents();
