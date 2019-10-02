@@ -10,6 +10,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using System;
 using System.ComponentModel.Composition;
@@ -23,87 +24,81 @@ namespace Rogue.NET.Core.Processing.Model.Content
         readonly IModelService _modelService;
         readonly ILayoutEngine _layoutEngine;
         readonly IScenarioMessageService _scenarioMessageService;
+        readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
 
         [ImportingConstructor]
         public AlterationProcessor(
                 IModelService modelService,
                 ILayoutEngine layoutEngine,
-                IScenarioMessageService scenarioMessageService)
+                IScenarioMessageService scenarioMessageService,
+                ISymbolDetailsGenerator symbolDetailsGenerator)
         {
             _modelService = modelService;
             _layoutEngine = layoutEngine;
             _scenarioMessageService = scenarioMessageService;
+            _symbolDetailsGenerator = symbolDetailsGenerator;
         }
 
         public ScenarioImage CalculateEffectiveSymbol(Character character)
         {
-            // TODO:SYMBOL
-            return character;
+            var symbol = new ScenarioImage();
 
-            //var symbol = new ScenarioImage();
+            // Map properties onto the symbol
+            character.MapOnto(symbol);
 
-            //// Map properties onto the symbol
-            //character.Update(symbol);
+            bool firstAlteration = true;
 
-            //bool firstAlteration = true;
+            foreach (var symbolChange in character.Alteration
+                                                  .GetSymbolChanges())
+            {
+                //Full symbol
+                if (symbolChange.IsFullSymbolChange)
+                {
+                    // Map details onto symbol
+                    _symbolDetailsGenerator.MapSymbolDetails(symbolChange.FullSymbolChangeDetails, symbol);
 
-            //foreach (var symbolDelta in character.Alteration
-            //                                     .GetSymbolChanges())
-            //{
-            //    //Full symbol
-            //    if (symbolDelta.IsFullSymbolDelta)
-            //        return new ScenarioImage()
-            //        {
-            //            CharacterColor = symbolDelta.CharacterColor,
-            //            CharacterSymbol = symbolDelta.SmileyAuraColor,
-                        
-            //            SmileyLightRadiusColor = symbolDelta.SmileyAuraColor,
-            //            SmileyBodyColor = symbolDelta.SmileyBodyColor,
-            //            SmileyLineColor = symbolDelta.SmileyLineColor,
-            //            SmileyExpression = symbolDelta.SmileyExpression
-            //        };
+                    // Return symbol
+                    return symbol;
+                }
 
-            //    //Aura
-            //    if (symbolDelta.IsAuraDelta)
-            //        symbol.SmileyLightRadiusColor = firstAlteration ?
-            //                                    symbolDelta.SmileyAuraColor :
-            //                                    ColorFilter.Add(symbol.SmileyLightRadiusColor, symbolDelta.SmileyAuraColor);
+                //Aura
+                if (symbolChange.IsSmileyLightRadiusColorChange)
+                    symbol.SmileyLightRadiusColor = firstAlteration ?
+                                                symbolChange.SmileyLightRadiusColor :
+                                                ColorFilter.Add(symbol.SmileyLightRadiusColor, symbolChange.SmileyLightRadiusColor);
 
-            //    //Body
-            //    if (symbolDelta.IsBodyDelta)
-            //        symbol.SmileyBodyColor = firstAlteration ?
-            //                                    symbolDelta.SmileyBodyColor :
-            //                                    ColorFilter.Add(symbol.SmileyBodyColor, symbolDelta.SmileyBodyColor);
+                //Body
+                if (symbolChange.IsSmileyBodyColorChange)
+                    symbol.SmileyBodyColor = firstAlteration ?
+                                                symbolChange.SmileyBodyColor :
+                                                ColorFilter.Add(symbol.SmileyBodyColor, symbolChange.SmileyBodyColor);
 
-            //    //Character symbol
-            //    if (symbolDelta.IsCharacterDelta)
-            //        symbol.CharacterSymbol = symbolDelta.CharacterSymbol;
+                //Line
+                if (symbolChange.IsSmileyLineColorChange)
+                    symbol.SmileyLineColor = firstAlteration ?
+                                                symbolChange.SmileyLineColor :
+                                                ColorFilter.Add(symbol.SmileyLineColor, symbolChange.SmileyLineColor);
 
-            //    //Character delta
-            //    if (symbolDelta.IsColorDelta)
-            //        symbol.CharacterColor = firstAlteration ?
-            //                                    symbolDelta.CharacterColor :
-            //                                    ColorFilter.Add(symbol.CharacterColor, symbolDelta.CharacterColor);
+                //Expression
+                if (symbolChange.IsSmileyExpressionChange)
+                    symbol.SmileyExpression = symbolChange.SmileyExpression;
 
-            //    // TODO:SYMBOL
+                //Character symbol
+                if (symbolChange.IsCharacterSymbolChange)
+                {
+                    symbol.CharacterSymbol = symbolChange.CharacterSymbol;
+                    symbol.CharacterSymbolCategory = symbolChange.CharacterSymbolCategory;
+                }
 
-            //    //Image
-            //    //if (symbolDelta.IsImageDelta)
-            //    //    symbol.Icon = symbolDelta.Icon;
+                //Character delta
+                if (symbolChange.IsCharacterColorChange)
+                    symbol.CharacterColor = firstAlteration ?
+                                                symbolChange.CharacterColor :
+                                                ColorFilter.Add(symbol.CharacterColor, symbolChange.CharacterColor);
 
-            //    //Line
-            //    if (symbolDelta.IsLineDelta)
-            //        symbol.SmileyLineColor = firstAlteration ?
-            //                                    symbolDelta.SmileyLineColor :
-            //                                    ColorFilter.Add(symbol.SmileyLineColor, symbolDelta.SmileyLineColor);
-
-            //    //Expression
-            //    if (symbolDelta.IsExpressionDelta)
-            //        symbol.SmileyExpression = symbolDelta.SmileyExpression;
-
-            //    firstAlteration = false;
-            //}
-            //return symbol;
+                firstAlteration = false;
+            }
+            return symbol;
         }
 
         public bool CalculateMeetsAlterationCost(Character character, AlterationCost cost)

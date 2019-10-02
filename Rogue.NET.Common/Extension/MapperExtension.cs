@@ -19,7 +19,7 @@ namespace Rogue.NET.Common.Extension
         /// <summary>
         /// Updates a given object from a sourc object using property name resolution
         /// </summary>
-        public static TDest Update<TSource, TDest>(this TSource source, TDest dest)
+        public static TDest MapOnto<TSource, TDest>(this TSource source, TDest dest)
         {
             return Mapper.Map<TSource>(source).Over<TDest>(dest);
         }
