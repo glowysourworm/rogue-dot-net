@@ -140,46 +140,53 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //Starting Consumables
             foreach (var consumableTemplate in template.StartingConsumables)
             {
-                if (_randomSequenceGenerator.Get() > consumableTemplate.GenerationProbability)
-                    continue;
+                // MUST GENERATE OBJECTIVE ITEMS
+                if (_randomSequenceGenerator.Get() < consumableTemplate.GenerationProbability ||
+                    consumableTemplate.TheTemplate.IsObjectiveItem)
+                {
 
-                var theTemplate = (ConsumableTemplate)consumableTemplate.TheTemplate;
-                if (theTemplate.IsUnique && template.HasBeenGenerated)
-                    continue;
+                    var theTemplate = consumableTemplate.TheTemplate;
 
-                var consumable = _itemGenerator.GenerateConsumable(theTemplate);
+                    if (theTemplate.IsUnique && theTemplate.HasBeenGenerated)
+                        continue;
 
-                character.Consumables.Add(consumable.Id, consumable);
+                    var consumable = _itemGenerator.GenerateConsumable(theTemplate);
+
+                    character.Consumables.Add(consumable.Id, consumable);
+                }
             }
 
             //Starting Equipment
             foreach (var equipmentTemplate in template.StartingEquipment)
             {
-                if (_randomSequenceGenerator.Get() > equipmentTemplate.GenerationProbability)
-                    continue;
-
-                var theTemplate = (EquipmentTemplate)equipmentTemplate.TheTemplate;
-
-                if (theTemplate.IsUnique && theTemplate.HasBeenGenerated)
-                    continue;
-
-                var equipment = _itemGenerator.GenerateEquipment(theTemplate);
-
-                // Equip on Startup
-                if (equipmentTemplate.EquipOnStartup)
+                // MUST GENERATE OBJECTIVE ITEMS
+                if (_randomSequenceGenerator.Get() < equipmentTemplate.GenerationProbability ||
+                    equipmentTemplate.TheTemplate.IsObjectiveItem)
                 {
-                    // Set Equipped
-                    equipment.IsEquipped = true;
 
-                    // Set any Alterations
-                    if (equipment.HasEquipAlteration)
-                        character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
+                    var theTemplate = (EquipmentTemplate)equipmentTemplate.TheTemplate;
 
-                    if (equipment.HasCurseAlteration)
-                        character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.CurseAlteration));
+                    if (theTemplate.IsUnique && theTemplate.HasBeenGenerated)
+                        continue;
+
+                    var equipment = _itemGenerator.GenerateEquipment(theTemplate);
+
+                    // Equip on Startup
+                    if (equipmentTemplate.EquipOnStartup)
+                    {
+                        // Set Equipped
+                        equipment.IsEquipped = true;
+
+                        // Set any Alterations
+                        if (equipment.HasEquipAlteration)
+                            character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
+
+                        if (equipment.HasCurseAlteration)
+                            character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.CurseAlteration));
+                    }
+
+                    character.Equipment.Add(equipment.Id, equipment);
                 }
-
-                character.Equipment.Add(equipment.Id, equipment);
             }
         }
         protected void SetNonPlayerCharacterProperties(NonPlayerCharacter character, NonPlayerCharacterTemplate template)

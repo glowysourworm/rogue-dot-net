@@ -2788,5 +2788,17 @@ IMMEDIATE TODO'S:
 			be nice to see a related chart (?). Just something simple to show someone.
 
 	- TODO: Level browser - collapse tree view button
+
+	- TODO: Add probability calculation to the generated asset
+
+	OBJECTIVE DESIGN:
+
+		- Right now, the objective relies on assets that must be created and dealt with somewhere in the scenario. But, this could change 
+		  into something that evolves the storyline. 
+
+		- For now: Highlight anything in the editor that deals with Objectives "Cyan" and show what it means. 
+
+				   Validate that ONE branch is created for objective levels (having multiple won't work). 
+		  
 	
 						  

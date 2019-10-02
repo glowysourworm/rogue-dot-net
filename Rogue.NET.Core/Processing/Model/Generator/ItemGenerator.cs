@@ -115,16 +115,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         public Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate)
         {
-            int num = _randomSequenceGenerator.CalculateGenerationNumber(probabilityTemplate.GenerationProbability);
-
-            return (num > 0) ? GenerateConsumable((ConsumableTemplate)probabilityTemplate.TheTemplate) : null;
+            return (_randomSequenceGenerator.Get() < probabilityTemplate.GenerationProbability) ? 
+                        GenerateConsumable((ConsumableTemplate)probabilityTemplate.TheTemplate) : null;
         }
 
         public Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, bool equipOnStartup = false)
         {
-            int num = _randomSequenceGenerator.CalculateGenerationNumber(probabilityTemplate.GenerationProbability);
-
-            var equipment = (num > 0) ? GenerateEquipment((EquipmentTemplate)probabilityTemplate.TheTemplate) : null;
+            var equipment = (_randomSequenceGenerator.Get() < probabilityTemplate.GenerationProbability) ? 
+                                GenerateEquipment((EquipmentTemplate)probabilityTemplate.TheTemplate) : null;
 
             if (equipment != null)
                 equipment.IsEquipped = probabilityTemplate.EquipOnStartup && equipOnStartup;

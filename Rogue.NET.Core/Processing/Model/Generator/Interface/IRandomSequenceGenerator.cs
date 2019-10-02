@@ -25,11 +25,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
         int Get(int inclusiveLowerBound, int exclusiveUpperBound);
 
         /// <summary>
-        /// Calculates generation number from generation rate for scenario content
-        /// </summary>
-        int CalculateGenerationNumber(double generationNumber);
-
-        /// <summary>
         /// Gets random value from a Range<T> object
         /// </summary>
         T GetRandomValue<T>(Range<T> range) where T : IComparable<T>;

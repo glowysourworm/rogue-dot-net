@@ -7,6 +7,7 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Component;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
@@ -43,31 +44,21 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public IEnumerable<Level> CreateDungeonLayouts(ScenarioConfigurationContainer configuration)
+        public IEnumerable<Level> CreateLayouts(IEnumerable<LayoutGenerationTemplate> layoutTemplates)
         {
             var levels = new List<Level>();
 
-            for (int i = 0; i < configuration.DungeonTemplate.NumberOfLevels; i++)
+            var levelNumber = 1;
+            foreach (var template in layoutTemplates)
             {
-                var levelNumber = i + 1;
-
-                // Layout templates in range
-                var layoutTemplates = configuration.DungeonTemplate
-                                                   .LayoutTemplates
-                                                   .Where(x => x.Level.Contains(levelNumber))
-                                                   .ToList();
-
-                // Choose random layout template in the level range
-                var template = _randomSequenceGenerator.GetWeightedRandom(layoutTemplates, x => x.GenerationRate);
-
-                var grid = CreateLayout(template);
+                var grid = CreateLayout(template.Asset);
                 var level = new Level(template.Name,
-                                       grid,
-                                       template.Type,
-                                       template.ConnectionType,
-                                       levelNumber,
-                                       template.WallColor,
-                                       template.DoorColor);
+                                      grid,
+                                      template.Asset.Type,
+                                      template.Asset.ConnectionType, 
+                                      levelNumber++,
+                                      template.Asset.WallColor,
+                                      template.Asset.DoorColor);
                 levels.Add(level);
             }
             return levels;

@@ -10,6 +10,7 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -50,6 +51,49 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Reseed the Random number generator
             _randomSequenceGenerator.Reseed(seed);
 
+            // Scenario Generation Procedure
+            //
+            // 1) Find and select level branches with:
+            //      A) Any Objective (SINGLE AND ONLY) (VALIDATED WITH EDITOR)
+            //      B) Any other branch
+            //
+            // 2) Draw layouts for each branch
+            //
+            // 3) Generate layouts
+            //
+            // 4) Generate -> Map Assets -> (Levels Finished)
+            //
+            // 5) Generate Player
+            //
+            // 6) Load Rogue-Encyclopedia (Meta-data)
+            //
+
+            // Select path through the scenario (level branch sequence)
+            var levelBranches = configuration.ScenarioDesign
+                                             .LevelDesigns
+                                             .Select(x => _randomSequenceGenerator.GetWeightedRandom(x.LevelBranches, z => z.GenerationWeight))
+                                             .Select(x => x.LevelBranch)
+                                             .Actualize();
+
+            // Select layouts for each branch
+            var levelLayouts = levelBranches.Select(x => _randomSequenceGenerator.GetWeightedRandom(x.Layouts, z => z.GenerationWeight))
+                                            .Actualize();
+
+            // *** Generate Layouts
+            var levels = _layoutGenerator.CreateLayouts(levelLayouts);
+
+            // Create dictionary of Level -> LayoutTemplate
+            var layoutDictionary = levels.Zip(levelLayouts, (level, layout) => new { Level = level, Layout = layout })
+                                         .ToDictionary(x => x.Level, x => x.Layout);
+
+            // Create dictionary of Level -> LevelBranch
+            var branchDictionary = levels.Zip(levelBranches, (level, branch) => new { Level = level, Branch = branch })
+                                         .ToDictionary(x => x.Level, x => x.Branch);
+
+            // *** Generate Contents
+            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, branchDictionary, layoutDictionary, survivorMode)
+                                                     .ToList();
+
             // Generate Attack Attributes
             scenario.AttackAttributes = configuration.AttackAttributes
                                                      .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
@@ -59,10 +103,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             scenario.Player = _characterGenerator
                                 .GeneratePlayer(configuration.PlayerTemplates
                                                              .First(x => x.Name == characterClassName));
-
-            var levels = _layoutGenerator.CreateDungeonLayouts(configuration);
-
-            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, scenario.AttackAttributes.Values, survivorMode).ToList();
 
             //Load Encyclopedia Rogue-Tanica (Consumables)
             foreach (var template in configuration.ConsumableTemplates)

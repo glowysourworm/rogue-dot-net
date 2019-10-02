@@ -1,10 +1,17 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
 using System.Collections.Generic;
@@ -35,21 +42,38 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         }
 
         public IEnumerable<Level> CreateContents(
-            IEnumerable<Level> levels, 
-            ScenarioConfigurationContainer configurationContainer, 
-            IEnumerable<AttackAttribute> scenarioAttributes,
-            bool survivorMode)
+                IEnumerable<Level> levels, 
+                IDictionary<Level, LevelBranchTemplate> selectedBranches,
+                IDictionary<Level, LayoutGenerationTemplate> selectedLayouts,
+                bool survivorMode)
         {
-            var levelNumber = 1;
             var result = new List<Level>();
 
-            for (int i=0;i<levels.Count();i++)
-                result.Add(GenerateLevelContent(levels.ElementAt(i), configurationContainer, scenarioAttributes, levelNumber++, survivorMode));
+            for (int i = 0; i < levels.Count(); i++)
+            {
+                // Get Level to map contents INTO
+                var level = levels.ElementAt(i);
+
+                // Get the level branch template from the scenario design
+                var branchTemplate = selectedBranches[level];
+
+                // Get the layout template that was selected from this branch
+                var layoutTemplate = selectedLayouts[level];
+
+                // Generate level contents from the template
+                GenerateLevelContent(level,
+                                     branchTemplate,
+                                     layoutTemplate,
+                                     i == levels.Count() - 1,
+                                     survivorMode);
+
+                result.Add(level);
+            }
 
             return result;
         }
 
-        private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, bool survivorMode)
+        private void GenerateLevelContent(Level level, LevelBranchTemplate branchTemplate, LayoutGenerationTemplate layoutTemplate, bool lastLevel, bool survivorMode)
         {
             // Create lists to know what cells are free
             var rooms = level.Grid.Rooms.ToList();
@@ -60,7 +84,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //         ANY NORMAL DOODADS
 
             //must have for each level (Except the last one) (MAPPED)
-            if (levelNumber != configurationContainer.DungeonTemplate.NumberOfLevels)
+            if (!lastLevel)
             {
                 var stairsDown = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsDownRogueName, DoodadNormalType.StairsDown);
                 stairsDown.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
@@ -76,12 +100,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             if ((level.Type == LayoutType.ConnectedRectangularRooms ||
                  level.Type == LayoutType.ConnectedCellularAutomata) &&
                 level.ConnectionType == LayoutConnectionType.Teleporter)
-                AddTeleporterLevelContent(level, configurationContainer, levelNumber, freeCells, freeRoomCells);
+                AddTeleporterLevelContent(level, freeCells, freeRoomCells);
 
             if ((level.Type == LayoutType.ConnectedRectangularRooms ||
                  level.Type == LayoutType.ConnectedCellularAutomata) &&
                 level.ConnectionType == LayoutConnectionType.TeleporterRandom)
-                AddTeleportRandomLevelContent(level, configurationContainer, levelNumber, freeCells, freeRoomCells);
+                AddTeleportRandomLevelContent(level, freeCells, freeRoomCells);
 
             // Every level has a save point if not in survivor mode - (MAPPED)
             if (!survivorMode)
@@ -92,93 +116,63 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             }
 
             // Applies to all levels - (UNMAPPED)
-            GenerateEnemies(level, configurationContainer, scenarioAttributes, levelNumber);
-            GenerateItems(level, configurationContainer, levelNumber);
-            GenerateDoodads(level, configurationContainer, levelNumber);
+            GenerateEnemies(level, branchTemplate);
+            GenerateItems(level, branchTemplate);
+            GenerateDoodads(level, branchTemplate);
 
-            MapLevel(level, configurationContainer, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
+            MapLevel(level, freeCells, freeRoomCells);
 
-            return level;
+            // Create party room if there's a room to use and the rate is greater than U[0,1] - (MAPPED)
+            if ((layoutTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()))
+                AddPartyRoomContent(level, branchTemplate, freeCells, freeRoomCells);
         }
-        private void GenerateDoodads(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber)
+        private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
         {
-            foreach (var doodadTemplate in configurationContainer.DoodadTemplates)
+            // Make a configured number of random draws from the doodad templates for this branch
+            for (int i = 0; i < branchTemplate.DoodadGeneration; i++)
             {
-                if (!doodadTemplate.Level.Contains(levelNumber))
-                    continue;
+                // Run generation method
+                var doodad = GenerateDoodad(branchTemplate);
 
-                if (doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated)
-                    continue;
-
-                int number = _randomSequenceGenerator.CalculateGenerationNumber(doodadTemplate.GenerationRate);
-
-                // If objective item (and hasn't been generated) - create at least one
-                for (int i = 0; (i < number || (doodadTemplate.IsObjectiveItem && !doodadTemplate.HasBeenGenerated))
-                                            && !(doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated); i++)
-                {
-                    level.AddContent(_doodadGenerator.GenerateMagicDoodad(doodadTemplate));
-                }
+                if (doodad != null)
+                    level.AddContent(doodad);
             }
         }
-        private void GenerateEnemies(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber)
+        private void GenerateEnemies(Level level, LevelBranchTemplate branchTemplate)
         {
-            foreach (var enemyTemplate in configurationContainer.EnemyTemplates)
+            // Make a configured number of random draws from the enemy templates for this branch
+            for (int i = 0; i < branchTemplate.EnemyGeneration; i++)
             {
-                if (!enemyTemplate.Level.Contains(levelNumber))
-                    continue;
+                // Run generation method
+                var enemy = GenerateEnemy(branchTemplate);
 
-                if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
-                    continue;
-
-                int number = _randomSequenceGenerator.CalculateGenerationNumber(enemyTemplate.GenerationRate);
-
-                for (int i = 0; (i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated))
-                                            && !(enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated); i++)
-                {
-                    level.AddContent(_characterGenerator.GenerateEnemy(enemyTemplate));
-                }
+                if (enemy != null)
+                    level.AddContent(enemy);
             }
         }
-        private void GenerateItems(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber)
+        private void GenerateItems(Level level, LevelBranchTemplate branchTemplate)
         {
-            // Equipment for the level
-            foreach (var template in configurationContainer.EquipmentTemplates)
+            // Make a configured number of random draws from the equipment templates for this branch
+            for (int i = 0; i < branchTemplate.EquipmentGeneration; i++)
             {
-                if (!template.Level.Contains(levelNumber))
-                    continue;
+                // Run generation method
+                var equipment = GenerateEquipment(branchTemplate);
 
-                if (template.IsUnique && template.HasBeenGenerated)
-                    continue;
-
-                int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
-
-                for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
-                                            && !(template.IsUnique && template.HasBeenGenerated); i++)
-                {
-                    level.AddContent(_itemGenerator.GenerateEquipment(template));
-                }
+                if (equipment != null)
+                    level.AddContent(equipment);
             }
 
-            // Consumables for the level
-            foreach (var template in configurationContainer.ConsumableTemplates)
+            // Make a configured number of random draws from the consumable templates for this branch
+            for (int i = 0; i < branchTemplate.ConsumableGeneration; i++)
             {
-                if (template.IsUnique && template.HasBeenGenerated)
-                    continue;
+                // Run generation method
+                var consumable = GenerateConsumable(branchTemplate);
 
-                if (template.Level.Contains(levelNumber))
-                {
-                    int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
-
-                    for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
-                                                && !(template.IsUnique && template.HasBeenGenerated); i++)
-                    {
-                        level.AddContent(_itemGenerator.GenerateConsumable(template));
-                    }
-                }
+                if (consumable != null)
+                    level.AddContent(consumable);
             }
-        }
-
-        private void AddTeleporterLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        }        
+        private void AddTeleporterLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
 
@@ -253,7 +247,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 level.AddContent(extraTeleport2);
             }
         }
-        private void AddTeleportRandomLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void AddTeleportRandomLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
 
@@ -271,82 +265,109 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 level.AddContent(doodad);
             }
         }
-        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void AddPartyRoomContent(Level level, LevelBranchTemplate branchTemplate, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
-            var rooms = level.Grid.Rooms.ToList();
-            var partyRoom = _randomSequenceGenerator.GetRandomElement(rooms);
+            // *** Party Room Procedure (TODO: Parameterize this at some point)
+            //
+            //     1) Choose Room at random
+            //     2) Draw random number of Enemies between [1, 5] -> Place Enemies
+            //     3) Draw random number of Consumables between [1, 3] -> Place Consumables
+            //     4) Draw random number of Equipment between [1, 2] -> Place Equipment
+            //     5) Repeat steps 2-4 until either:
+            //          A) Reach total asset number between [15, 30]
+            //       OR B) Run out of room
+            //
 
-            // Party room equipment - generate for each 
-            foreach (var template in configurationContainer.EquipmentTemplates)
+            var partyRoom = _randomSequenceGenerator.GetRandomElement(level.Grid.Rooms);
+
+            var totalAssetNumber = _randomSequenceGenerator.Get(15, 30);
+            var enemyNumber = _randomSequenceGenerator.Get(1, 5);
+            var consumableNumber = _randomSequenceGenerator.Get(1, 3);
+            var equipmentNumber = _randomSequenceGenerator.Get(1, 2);
+
+            var generatedAssets = 0;
+            var availableLocation = true;
+
+            // Generate -> Map assets while there's available room and the limit hasn't been exceeded
+            while ((generatedAssets < totalAssetNumber) && availableLocation)
             {
-                if (!template.Level.Contains(levelNumber))
-                    continue;
-
-                if (template.IsUnique && template.HasBeenGenerated)
-                    continue;
-
-                int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
-
-                for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
-                                            && !(template.IsUnique && template.HasBeenGenerated); i++)
+                // Enemies
+                for (int i = 0; (i < enemyNumber) && 
+                                (generatedAssets < totalAssetNumber) &&
+                                 availableLocation; i++)
                 {
+                    // If Asset generation fails - exit loop
+                    var enemy = GenerateEnemy(branchTemplate);
+
+                    if (enemy == null)
+                        break;
+
+                    // Draw random cell from remaining locations
                     var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
 
                     if (location != GridLocation.Empty)
                     {
-                        var equipment = _itemGenerator.GenerateEquipment(template);
-                        equipment.Location = location;
-                        level.AddContent(equipment);
-                    }
-                }
-            }
-
-            // Party room consumables
-            foreach (var template in configurationContainer.ConsumableTemplates)
-            {
-                if (template.IsUnique && template.HasBeenGenerated)
-                    continue;
-
-                if (template.Level.Contains(levelNumber))
-                {
-                    int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
-
-                    for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
-                                                && !(template.IsUnique && template.HasBeenGenerated); i++)
-                    {
-                        var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
-
-                        if (location != GridLocation.Empty)
-                        {
-                            var consumable = _itemGenerator.GenerateConsumable(template);
-                            consumable.Location = location;
-                            level.AddContent(consumable);
-                        }
-                    }
-                }
-            }
-            // Party room enemies
-            foreach (var enemyTemplate in configurationContainer.EnemyTemplates.Where(z => z.Level.Contains(levelNumber)))
-            {
-                if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
-                    continue;
-
-                int number = _randomSequenceGenerator.CalculateGenerationNumber(enemyTemplate.GenerationRate);
-
-                for (int i = 0; (i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated))
-                                            && !(enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated); i++)
-                {
-                    var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
-                    if (location != GridLocation.Empty)
-                    { 
-                        var enemy = _characterGenerator.GenerateEnemy(enemyTemplate);
+                        // Map the enemy - add to level content
                         enemy.Location = location;
                         level.AddContent(enemy);
+                        generatedAssets++;
                     }
+                    else
+                        availableLocation = false;
+                }
+
+                // Consumables
+                for (int i = 0; (i < consumableNumber) && 
+                                (generatedAssets < totalAssetNumber) &&
+                                 availableLocation; i++)
+                {
+                    // If Asset generation fails - exit loop
+                    var consumable = GenerateConsumable(branchTemplate);
+
+                    if (consumable == null)
+                        break;
+
+                    // Draw random cell from remaining locations
+                    var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
+
+                    if (location != GridLocation.Empty)
+                    {
+                        // Map the enemy - add to level content
+                        consumable.Location = location;
+                        level.AddContent(consumable);
+                        generatedAssets++;
+                    }
+                    else
+                        availableLocation = false;
+                }
+
+                // Equipment
+                for (int i = 0; (i < equipmentNumber) && 
+                                (generatedAssets < totalAssetNumber) &&
+                                availableLocation; i++)
+                {
+                    // If Asset generation fails - exit loop
+                    var equipment = GenerateEquipment(branchTemplate);
+
+                    if (equipment == null)
+                        break;
+
+                    // Draw random cell from remaining locations
+                    var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
+
+                    if (location != GridLocation.Empty)
+                    {
+                        // Map the enemy - add to level content
+                        equipment.Location = location;
+                        level.AddContent(equipment);
+                        generatedAssets++;
+                    }
+                    else
+                        availableLocation = false;
                 }
             }
         }
-        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void MapLevel(Level level, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
             var levelContents = level.GetContents();
 
@@ -367,13 +388,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 else
                     levelContents[i].Location = location;
             }
-
-            // Create party room if there's a room to use and the rate is greater than U[0,1]
-            if ((configurationContainer.DungeonTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()) &&
-                (level.Type == LayoutType.ConnectedRectangularRooms))
-                AddPartyRoomContent(level, configurationContainer, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
         }
-
         private GridLocation GetRandomCell(bool inRoom, Room room, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
             // Check overall collection of cells for remaining locations
@@ -415,6 +430,126 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                 return location;
             }
+        }
+
+        private DoodadMagic GenerateDoodad(LevelBranchTemplate branchTemplate)
+        {
+            // Get doodads that pass generation requirements
+            //
+            //  1) IsObjective -> MUST GENERATE
+            //  2) IsUnique -> Generate ONCE
+            //
+
+            var doodadsViable = branchTemplate.Doodads.Any(x => x.Asset.IsObjectiveItem &&
+                                                                  !x.Asset.HasBeenGenerated) ?
+                                branchTemplate.Doodads.Where(x => x.Asset.IsObjectiveItem &&
+                                                                  !x.Asset.HasBeenGenerated) :
+                                branchTemplate.Doodads.Where(x => !(x.Asset.IsUnique && x.Asset.HasBeenGenerated));
+
+            // If no viable doodads, then return
+            if (doodadsViable.None())
+                return null;
+
+            // Get weighted random draw from the branch template's doodad collection (SHARED REFERENCES TO PRIMARY ASSETS)
+            var doodadTemplate = _randomSequenceGenerator.GetWeightedRandom(doodadsViable, x => x.GenerationWeight);
+
+            // Generate doodad
+            return _doodadGenerator.GenerateMagicDoodad(doodadTemplate.Asset);
+        }
+        private Enemy GenerateEnemy(LevelBranchTemplate branchTemplate)
+        {
+            // Get enemies that pass generation requirements
+            //
+            //  1) IsObjective -> MUST GENERATE
+            //  2) IsUnique -> Generate ONCE
+            //
+
+            var enemiesViable = branchTemplate.Enemies.Any(x => GetMustGenerate(x.Asset)) ?
+                                branchTemplate.Enemies.Where(x => GetMustGenerate(x.Asset)) :
+                                branchTemplate.Enemies.Where(x => !(x.Asset.IsUnique && x.Asset.HasBeenGenerated));
+
+            // If no viable enemies, then return
+            if (enemiesViable.None())
+                return null;
+
+            // Get weighted random draw from the branch template's enemy collection (SHARED REFERENCES TO PRIMARY ASSETS)
+            var enemyTemplate = _randomSequenceGenerator.GetWeightedRandom(enemiesViable, x => x.GenerationWeight);
+
+            // Generate enemy
+            return _characterGenerator.GenerateEnemy(enemyTemplate.Asset);
+        }
+        private Equipment GenerateEquipment(LevelBranchTemplate branchTemplate)
+        {
+            // Get equipment that pass generation requirements
+            //
+            //  1) IsObjective -> MUST GENERATE
+            //  2) IsUnique -> Generate ONCE
+            //
+
+            var equipmentViable = branchTemplate.Equipment.Any(x => x.Asset.IsObjectiveItem &&
+                                                                  !x.Asset.HasBeenGenerated) ?
+                                    branchTemplate.Equipment.Where(x => x.Asset.IsObjectiveItem &&
+                                                                      !x.Asset.HasBeenGenerated) :
+                                    branchTemplate.Equipment.Where(x => !(x.Asset.IsUnique && x.Asset.HasBeenGenerated));
+
+            // If no viable enemies, then return
+            if (equipmentViable.None())
+                return null;
+
+            // Get weighted random draw from the branch template's equipment collection (SHARED REFERENCES TO PRIMARY ASSETS)
+            var equipmentTemplate = _randomSequenceGenerator.GetWeightedRandom(equipmentViable, x => x.GenerationWeight);
+
+            // Generate equipment
+            return _itemGenerator.GenerateEquipment(equipmentTemplate.Asset);
+        }
+        private Consumable GenerateConsumable(LevelBranchTemplate branchTemplate)
+        {
+            // Get consumable that pass generation requirements
+            //
+            //  1) IsObjective -> MUST GENERATE
+            //  2) IsUnique -> Generate ONCE
+            //
+
+            var consumablesViable = branchTemplate.Consumables.Any(x => x.Asset.IsObjectiveItem &&
+                                                                   !x.Asset.HasBeenGenerated) ?
+                                    branchTemplate.Consumables.Where(x => x.Asset.IsObjectiveItem &&
+                                                                         !x.Asset.HasBeenGenerated) :
+                                    branchTemplate.Consumables.Where(x => !(x.Asset.IsUnique && x.Asset.HasBeenGenerated));
+
+            // If no viable enemies, then return
+            if (consumablesViable.None())
+                return null;
+
+            // Get weighted random draw from the branch template's consumable collection (SHARED REFERENCES TO PRIMARY ASSETS)
+            var consumableTemplate = _randomSequenceGenerator.GetWeightedRandom(consumablesViable, x => x.GenerationWeight);
+
+            // Generate consumable
+            return _itemGenerator.GenerateConsumable(consumableTemplate.Asset);
+        }
+        private bool GetMustGenerate(CharacterTemplate character)
+        {
+            if (character.IsObjectiveItem && !character.HasBeenGenerated)
+                return true;
+
+            // Is Objective -> Has been generated -> BUT DIDN'T GENERATE OBJECTIVE CONSUMABLE
+            if (character.IsObjectiveItem &&
+                character.HasBeenGenerated &&
+                character.StartingConsumables.Any(x => x.TheTemplate.IsObjectiveItem && !x.TheTemplate.HasBeenGenerated))
+                throw new Exception("Generated character DID NOT GENERATE OBJECTIVE ITEM");
+
+            // Is Objective -> Has been generated -> BUT DIDN'T GENERATE OBJECTIVE EQUIPMENT
+            if (character.IsObjectiveItem &&
+                character.HasBeenGenerated &&
+                character.StartingEquipment.Any(x => x.TheTemplate.IsObjectiveItem && !x.TheTemplate.HasBeenGenerated))
+                throw new Exception("Generated character DID NOT GENERATE OBJECTIVE ITEM");
+
+            if (character.StartingConsumables.Any(x => x.TheTemplate.IsObjectiveItem && !x.TheTemplate.HasBeenGenerated))
+                return true;
+
+            if (character.StartingEquipment.Any(x => x.TheTemplate.IsObjectiveItem && !x.TheTemplate.HasBeenGenerated))
+                return true;
+
+            return false;
         }
     }
 }
