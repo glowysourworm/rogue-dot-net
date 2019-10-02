@@ -12,7 +12,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         
-        <TextBlock Foreground="White" Text="Scenario Design" FontSize="20" Margin="8" />
+        <TextBlock Foreground="White" Text="Scenario Design" FontSize="24" Margin="10" />
         
         <ListBox x:Name="DesignLB" 
                   FontSize="16"

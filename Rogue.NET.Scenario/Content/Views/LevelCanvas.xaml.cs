@@ -100,15 +100,15 @@ namespace Rogue.NET.Scenario.Content.Views
             // Make measurements relative to the LevelView
             var window = Window.GetWindow(this);
 
-            // Offset of this control relative to ContentControl parent
-            var offsetLocation = this.PointToScreen(location);
-
             // Add offset to bounds and player location
             var bounds = new Rect(window.RenderSize);
             var midpt = new Point(bounds.Width / 2.0D, bounds.Height / 2.0D);
 
-            _translateXform.X = midpt.X - (offsetLocation.X);
-            _translateXform.Y = midpt.Y - (offsetLocation.Y);
+            // TODO: FIX THIS
+            var fudgeFactor = new Point(30, 100);
+
+            _translateXform.X = midpt.X - (location.X + this.VisualOffset.X + fudgeFactor.X);
+            _translateXform.Y = midpt.Y - (location.Y + this.VisualOffset.Y + fudgeFactor.Y);
         }
 
         private void ShiftDisplay(ShiftDisplayType type)
