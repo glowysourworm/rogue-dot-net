@@ -7,40 +7,42 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
     public class LevelBranchTemplateViewModel : TemplateViewModel
     {
         private double _monsterGenerationPerStep;
-        private int _equipmentGeneration;
-        private int _consumableGeneration;
-        private int _enemyGeneration;
-        private int _friendlyGeneration;
-        private int _doodadGeneration;
+
+        private RangeViewModel<int> _equipmentGenerationRange;
+        private RangeViewModel<int> _consumableGenerationRange;
+        private RangeViewModel<int> _enemyGenerationRange;
+        private RangeViewModel<int> _friendlyGenerationRange;
+        private RangeViewModel<int> _doodadGenerationRange;
+
         public double MonsterGenerationPerStep
         {
             get { return _monsterGenerationPerStep; }
             set { this.RaiseAndSetIfChanged(ref _monsterGenerationPerStep, value); }
         }
-        public int EquipmentGeneration
+        public RangeViewModel<int> EquipmentGenerationRange
         {
-            get { return _equipmentGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _equipmentGeneration, value); }
+            get { return _equipmentGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _equipmentGenerationRange, value); }
         }
-        public int ConsumableGeneration
+        public RangeViewModel<int> EnemyGenerationRange
         {
-            get { return _consumableGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _consumableGeneration, value); }
+            get { return _enemyGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _enemyGenerationRange, value); }
         }
-        public int EnemyGeneration
+        public RangeViewModel<int> ConsumableGenerationRange
         {
-            get { return _enemyGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _enemyGeneration, value); }
+            get { return _consumableGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _consumableGenerationRange, value); }
         }
-        public int FriendlyGeneration
+        public RangeViewModel<int> FriendlyGenerationRange
         {
-            get { return _friendlyGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _friendlyGeneration, value); }
+            get { return _friendlyGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _friendlyGenerationRange, value); }
         }
-        public int DoodadGeneration
+        public RangeViewModel<int> DoodadGenerationRange
         {
-            get { return _doodadGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _doodadGeneration, value); }
+            get { return _doodadGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _doodadGenerationRange, value); }
         }
         public ObservableCollection<LayoutGenerationTemplateViewModel> Layouts { get; set; }
         public ObservableCollection<EquipmentGenerationTemplateViewModel> Equipment { get; set; }
@@ -52,11 +54,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
         {
             this.MonsterGenerationPerStep = ModelConstants.Scenario.MonsterGenerationPerStepDefault;
 
-            this.EquipmentGeneration = ModelConstants.Scenario.EquipmentGenerationDefault;
-            this.ConsumableGeneration = ModelConstants.Scenario.ConsumableGenerationDefault;
-            this.EnemyGeneration = ModelConstants.Scenario.EnemyGenerationDefault;
-            this.FriendlyGeneration = ModelConstants.Scenario.FriendlyGenerationDefault;
-            this.DoodadGeneration = ModelConstants.Scenario.DoodadGenerationDefault;
+            this.EquipmentGenerationRange = new RangeViewModel<int>(0, ModelConstants.Scenario.EquipmentGenerationDefault);
+            this.ConsumableGenerationRange = new RangeViewModel<int>(0, ModelConstants.Scenario.ConsumableGenerationDefault);
+            this.EnemyGenerationRange = new RangeViewModel<int>(0, ModelConstants.Scenario.EnemyGenerationDefault);
+            this.FriendlyGenerationRange = new RangeViewModel<int>(0, ModelConstants.Scenario.FriendlyGenerationDefault);
+            this.DoodadGenerationRange = new RangeViewModel<int>(0, ModelConstants.Scenario.DoodadGenerationDefault);
 
             this.Layouts = new ObservableCollection<LayoutGenerationTemplateViewModel>();
             this.Equipment = new ObservableCollection<EquipmentGenerationTemplateViewModel>();

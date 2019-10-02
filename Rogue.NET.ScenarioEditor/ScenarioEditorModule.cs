@@ -11,6 +11,7 @@ using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.Browser.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
@@ -550,11 +551,11 @@ namespace Rogue.NET.ScenarioEditor
                 copy.LevelBranch.Layouts.Add(layout);
 
             // Copy over other parameters
-            copy.LevelBranch.ConsumableGeneration = source.LevelBranch.ConsumableGeneration;
-            copy.LevelBranch.DoodadGeneration = source.LevelBranch.DoodadGeneration;
-            copy.LevelBranch.EnemyGeneration = source.LevelBranch.EnemyGeneration;
-            copy.LevelBranch.EquipmentGeneration = source.LevelBranch.EquipmentGeneration;
-            copy.LevelBranch.FriendlyGeneration = source.LevelBranch.FriendlyGeneration;
+            copy.LevelBranch.ConsumableGenerationRange = new RangeViewModel<int>(source.LevelBranch.ConsumableGenerationRange);
+            copy.LevelBranch.DoodadGenerationRange = new RangeViewModel<int>(source.LevelBranch.DoodadGenerationRange);
+            copy.LevelBranch.EnemyGenerationRange = new RangeViewModel<int>(source.LevelBranch.EnemyGenerationRange);
+            copy.LevelBranch.EquipmentGenerationRange = new RangeViewModel<int>(source.LevelBranch.EquipmentGenerationRange);
+            copy.LevelBranch.FriendlyGenerationRange = new RangeViewModel<int>(source.LevelBranch.FriendlyGenerationRange);
             copy.LevelBranch.MonsterGenerationPerStep = source.LevelBranch.MonsterGenerationPerStep;
 
             return copy;

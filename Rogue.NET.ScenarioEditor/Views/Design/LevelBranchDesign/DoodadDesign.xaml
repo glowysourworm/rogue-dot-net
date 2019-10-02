@@ -21,7 +21,7 @@
         <!-- Doodads Generation -->
         <Grid Margin="10">
             <TextBlock Text="Scenario Object Placement (# Draws)" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" />
-            <toolkit:IntegerUpDown Width="80" FontSize="18" Value="{Binding DoodadGeneration, StringFormat=P2}" Minimum="0" Maximum="50" Increment="1" Foreground="White" HorizontalAlignment="Right" />
+            <controls:Range Width="160" FontSize="18" DataContext="{Binding DoodadGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="10" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
         </Grid>
 
         <!-- Doodads -->

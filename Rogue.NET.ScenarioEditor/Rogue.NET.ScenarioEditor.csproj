@@ -449,7 +449,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Design\LevelTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Design\ScenarioDesignTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Extension\ObservableCollectionExtension.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\RangeViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationContainerViewModel.cs">

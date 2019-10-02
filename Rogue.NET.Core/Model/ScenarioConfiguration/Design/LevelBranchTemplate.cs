@@ -8,40 +8,42 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
     public class LevelBranchTemplate : Template
     {
         private double _monsterGenerationPerStep;
-        private int _equipmentGeneration;
-        private int _consumableGeneration;
-        private int _enemyGeneration;
-        private int _friendlyGeneration;
-        private int _doodadGeneration;
+
+        private Range<int> _equipmentGenerationRange;
+        private Range<int> _consumableGenerationRange;
+        private Range<int> _enemyGenerationRange;
+        private Range<int> _friendlyGenerationRange;
+        private Range<int> _doodadGenerationRange;
+
         public double MonsterGenerationPerStep
         {
             get { return _monsterGenerationPerStep; }
             set { this.RaiseAndSetIfChanged(ref _monsterGenerationPerStep, value); }
         }
-        public int EquipmentGeneration
+        public Range<int> EquipmentGenerationRange
         {
-            get { return _equipmentGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _equipmentGeneration, value); }
+            get { return _equipmentGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _equipmentGenerationRange, value); }
         }
-        public int ConsumableGeneration
+        public Range<int> EnemyGenerationRange
         {
-            get { return _consumableGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _consumableGeneration, value); }
+            get { return _enemyGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _enemyGenerationRange, value); }
         }
-        public int EnemyGeneration
+        public Range<int> ConsumableGenerationRange
         {
-            get { return _enemyGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _enemyGeneration, value); }
+            get { return _consumableGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _consumableGenerationRange, value); }
         }
-        public int FriendlyGeneration
+        public Range<int> FriendlyGenerationRange
         {
-            get { return _friendlyGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _friendlyGeneration, value); }
+            get { return _friendlyGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _friendlyGenerationRange, value); }
         }
-        public int DoodadGeneration
+        public Range<int> DoodadGenerationRange
         {
-            get { return _doodadGeneration; }
-            set { this.RaiseAndSetIfChanged(ref _doodadGeneration, value); }
+            get { return _doodadGenerationRange; }
+            set { this.RaiseAndSetIfChanged(ref _doodadGenerationRange, value); }
         }
         public List<LayoutGenerationTemplate> Layouts { get; set; }
         public List<EquipmentGenerationTemplate> Equipment { get; set; }
@@ -53,11 +55,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
         {
             this.MonsterGenerationPerStep = ModelConstants.Scenario.MonsterGenerationPerStepDefault;
 
-            this.EquipmentGeneration = ModelConstants.Scenario.EquipmentGenerationDefault;
-            this.ConsumableGeneration = ModelConstants.Scenario.ConsumableGenerationDefault;
-            this.EnemyGeneration = ModelConstants.Scenario.EnemyGenerationDefault;
-            this.FriendlyGeneration = ModelConstants.Scenario.FriendlyGenerationDefault;
-            this.DoodadGeneration = ModelConstants.Scenario.DoodadGenerationDefault;
+            this.EquipmentGenerationRange = new Range<int>(0, ModelConstants.Scenario.EquipmentGenerationDefault);
+            this.ConsumableGenerationRange = new Range<int>(0, ModelConstants.Scenario.ConsumableGenerationDefault);
+            this.EnemyGenerationRange = new Range<int>(0, ModelConstants.Scenario.EnemyGenerationDefault);
+            this.FriendlyGenerationRange = new Range<int>(0, ModelConstants.Scenario.FriendlyGenerationDefault);
+            this.DoodadGenerationRange = new Range<int>(0, ModelConstants.Scenario.DoodadGenerationDefault);
 
             this.Layouts = new List<LayoutGenerationTemplate>();
             this.Equipment = new List<EquipmentGenerationTemplate>();

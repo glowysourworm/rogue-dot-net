@@ -129,7 +129,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
         {
             // Make a configured number of random draws from the doodad templates for this branch
-            for (int i = 0; i < branchTemplate.DoodadGeneration; i++)
+            for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.DoodadGenerationRange); i++)
             {
                 // Run generation method
                 var doodad = GenerateDoodad(branchTemplate);
@@ -141,7 +141,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         private void GenerateEnemies(Level level, LevelBranchTemplate branchTemplate)
         {
             // Make a configured number of random draws from the enemy templates for this branch
-            for (int i = 0; i < branchTemplate.EnemyGeneration; i++)
+            for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.EnemyGenerationRange); i++)
             {
                 // Run generation method
                 var enemy = GenerateEnemy(branchTemplate);
@@ -153,7 +153,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         private void GenerateItems(Level level, LevelBranchTemplate branchTemplate)
         {
             // Make a configured number of random draws from the equipment templates for this branch
-            for (int i = 0; i < branchTemplate.EquipmentGeneration; i++)
+            for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.EquipmentGenerationRange); i++)
             {
                 // Run generation method
                 var equipment = GenerateEquipment(branchTemplate);
@@ -163,7 +163,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             }
 
             // Make a configured number of random draws from the consumable templates for this branch
-            for (int i = 0; i < branchTemplate.ConsumableGeneration; i++)
+            for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.ConsumableGenerationRange); i++)
             {
                 // Run generation method
                 var consumable = GenerateConsumable(branchTemplate);
