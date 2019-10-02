@@ -7,6 +7,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
 {
     public interface ILayoutGenerator
     {
-        IEnumerable<Level> CreateLayouts(IEnumerable<LayoutGenerationTemplate> layoutTemplates);
+        IEnumerable<Level> CreateLayouts(IEnumerable<string> levelBranchNames, IEnumerable<LayoutGenerationTemplate> layoutTemplates);
     }
 }

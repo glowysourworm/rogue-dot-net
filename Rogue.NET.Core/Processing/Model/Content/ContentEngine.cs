@@ -976,20 +976,19 @@ namespace Rogue.NET.Core.Processing.Model.Content
         private void ProcessMonsterGeneration()
         {
             // Create monster on generation rate roll
-            var createMonster = _modelService.ScenarioConfiguration.DungeonTemplate.MonsterGenerationBase > _randomSequenceGenerator.Get();
+            var createMonster = _modelService.GetLevelBranch().MonsterGenerationPerStep > _randomSequenceGenerator.Get();
 
             if (!createMonster)
                 return;
 
             // Select enemy templates with: 0) this level range, 2) non-objective, 3) non-unique enemies, 4) Generate on step
-            var enemyTemplates = _modelService.ScenarioConfiguration
-                                              .EnemyTemplates
+            var enemyTemplates = _modelService.GetLevelBranch()
+                                              .Enemies
                                               .Where(x =>
                                               {
-                                                  return !x.IsUnique &&
-                                                         !x.IsObjectiveItem &&
-                                                          x.GenerateOnStep &&
-                                                          x.Level.Contains(_modelService.Level.Number);
+                                                  return !x.Asset.IsUnique &&
+                                                         !x.Asset.IsObjectiveItem &&
+                                                          x.Asset.GenerateOnStep;
                                               })
                                               .ToList();
 
@@ -1008,8 +1007,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Create enemy from template
-            var template = enemyTemplates[_randomSequenceGenerator.Get(0, enemyTemplates.Count)];
-            var enemy = _characterGenerator.GenerateEnemy(template);
+            var template = _randomSequenceGenerator.GetWeightedRandom(enemyTemplates, x => x.GenerationWeight);
+            var enemy = _characterGenerator.GenerateEnemy(template.Asset);
             
             // Map enemy location to level
             enemy.Location = availableLocation;

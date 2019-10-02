@@ -8,7 +8,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
     public class DungeonObjectTemplate : Template
     {
         private SymbolDetailsTemplate _symbolDetails;
-        private Range<int> _level;
         private double _generationRate;
         private string _shortDescription;
         private string _longDescription;
@@ -26,18 +25,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 {
                     _symbolDetails = value;
                     OnPropertyChanged("SymbolDetails");
-                }
-            }
-        }
-        public Range<int> Level
-        {
-            get { return _level; }
-            set
-            {
-                if (_level != value)
-                {
-                    _level = value;
-                    OnPropertyChanged("Level");
                 }
             }
         }
@@ -129,7 +116,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         public DungeonObjectTemplate()
         {
             this.SymbolDetails = new SymbolDetailsTemplate();
-            this.Level = new Range<int>(1, 100);
 
             this.ShortDescription = "";
             this.LongDescription = "";
@@ -137,7 +123,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         public DungeonObjectTemplate(DungeonObjectTemplate tmp)
         {
             this.SymbolDetails = tmp.SymbolDetails;
-            this.Level = tmp.Level;
             this.GenerationRate = tmp.GenerationRate;
             this.ShortDescription = tmp.ShortDescription;
             this.LongDescription = tmp.LongDescription;

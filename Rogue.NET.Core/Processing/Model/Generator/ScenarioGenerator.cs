@@ -80,7 +80,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                             .Actualize();
 
             // *** Generate Layouts
-            var levels = _layoutGenerator.CreateLayouts(levelLayouts);
+            var levels = _layoutGenerator.CreateLayouts(levelBranches.Select(x => x.Name), levelLayouts);
 
             // Create dictionary of Level -> LayoutTemplate
             var layoutDictionary = levels.Zip(levelLayouts, (level, layout) => new { Level = level, Layout = layout })

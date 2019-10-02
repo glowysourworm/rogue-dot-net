@@ -513,7 +513,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         private void ProcessChangeLevel(ChangeLevelAlterationEffect effect)
         {
             // Total Number of Levels
-            var numberOfLevels = _modelService.ScenarioConfiguration.DungeonTemplate.NumberOfLevels;
+            var numberOfLevels = _modelService.GetNumberOfLevels();
 
             // Level Desired by Alteration
             var desiredLevel = (_modelService.Level.Number + effect.LevelChange);

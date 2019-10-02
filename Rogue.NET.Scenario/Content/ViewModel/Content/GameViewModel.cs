@@ -74,8 +74,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             // Have to wait to use IModelService until the level is loaded (TODO: Remove IModelService from this implementation)
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                this.ScenarioName = modelService.ScenarioConfiguration.DungeonTemplate.Name;
-                this.ScenarioDescription = modelService.ScenarioConfiguration.DungeonTemplate.ObjectiveDescription;
+                this.ScenarioName = modelService.GetScenarioName();
+                this.ScenarioDescription = modelService.GetScenarioDescription();
                 this.PlayerScenarioImage = new ScenarioImageViewModel(modelService.Player, modelService.Player.RogueName);
             });
 

@@ -237,7 +237,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             if (levelNumber < 0)
                 throw new ApplicationException("Trying to load level " + levelNumber.ToString());
 
-            else if (levelNumber > _scenarioContainer.Configuration.DungeonTemplate.NumberOfLevels)
+            else if (levelNumber > _scenarioContainer.Configuration.ScenarioDesign.LevelDesigns.Count)
                 throw new ApplicationException("Trying to load level " + levelNumber.ToString());
 
             // Check for Scenario Completed

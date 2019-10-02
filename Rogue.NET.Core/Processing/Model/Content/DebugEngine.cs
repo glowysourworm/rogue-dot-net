@@ -104,7 +104,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             var player = _modelService.Player;
             var level = _modelService.Level;
-            var template = _modelService.ScenarioConfiguration.DungeonTemplate.LayoutTemplates.First(x => x.Name == level.LayoutName);
 
             // *** Simulate Level
             //
@@ -115,8 +114,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
             //  4) Advance player to stairs down
             //  5) Generate Hunger
 
-            // Calculate Path Length
-            var pathLength = template.GetPathLength();
+            // Calculate Path Length (TODO)
+            var pathLength = 100; //template.GetPathLength();
 
             // Give all items and experience to the player and 
             // put player at exit

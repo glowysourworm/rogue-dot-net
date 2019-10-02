@@ -65,7 +65,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((e) =>
             {
                 this.Configuration = e.Configuration;
-                this.ScenarioName = e.Configuration.DungeonTemplate.Name;
+                this.ScenarioName = e.Configuration.ScenarioDesign.Name;
             });
 
             // Commands           

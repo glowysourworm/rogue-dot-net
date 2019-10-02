@@ -11,7 +11,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
     public class ScenarioConfigurationContainerViewModel : INotifyPropertyChanged, INotifyPropertyChanging
     {        
         // Primary Design Container
-        DungeonTemplateViewModel _dungeonTemplate;
         ScenarioDesignTemplateViewModel _scenarioDesign;
 
         // Asset Collections
@@ -28,11 +27,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         ObservableCollection<AttackAttributeTemplateViewModel> _attackAttributes;
         ObservableCollection<AlteredCharacterStateTemplateViewModel> _alteredCharacterStates;
 
-        public DungeonTemplateViewModel DungeonTemplate
-        {
-            get { return _dungeonTemplate; }
-            set { this.RaiseAndSetIfChanged(ref _dungeonTemplate, value); }
-        }
         public ScenarioDesignTemplateViewModel ScenarioDesign
         {
             get { return _scenarioDesign; }
@@ -93,7 +87,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
 
         public ScenarioConfigurationContainerViewModel()
         {
-            this.DungeonTemplate = new DungeonTemplateViewModel();
             this.ScenarioDesign = new ScenarioDesignTemplateViewModel();
 
             this.PlayerTemplates = new ObservableCollection<PlayerTemplateViewModel>();

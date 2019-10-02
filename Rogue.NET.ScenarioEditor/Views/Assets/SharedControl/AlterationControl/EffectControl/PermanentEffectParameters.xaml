@@ -5,15 +5,15 @@
     <StackPanel>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Strength" FontSize="16" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding StrengthRange}" LowLimit="-100" HighLimit="100" Width="300" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding StrengthRange}" LowLimit="-50" HighLimit="50" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Agility" FontSize="16" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding AgilityRange}" LowLimit="-100" HighLimit="100" Width="300" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding AgilityRange}" LowLimit="-50" HighLimit="50" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Intelligence" FontSize="16" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding IntelligenceRange}" LowLimit="-100" HighLimit="100" Width="300" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding IntelligenceRange}" LowLimit="-50" HighLimit="50" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Speed" FontSize="16" HorizontalAlignment="Left" />

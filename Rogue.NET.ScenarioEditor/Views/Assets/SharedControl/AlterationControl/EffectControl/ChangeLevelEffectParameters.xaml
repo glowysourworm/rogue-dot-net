@@ -4,6 +4,6 @@
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
     <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
         <TextBlock Foreground="White" FontSize="18" Margin="10" HorizontalAlignment="Left" />
-        <controls:Range DataContext="{Binding LevelChange}" HorizontalAlignment="Right" />
+        <controls:Range DataContext="{Binding LevelChange}" LowLimit="-10" HighLimit="10" HorizontalAlignment="Right" />
     </Grid>
 </UserControl>

@@ -117,8 +117,8 @@ namespace Rogue.NET.Intro.ViewModel
             {
                 this.Configurations.Add(new ScenarioViewModel()
                 {
-                    Name = config.DungeonTemplate.Name,
-                    Description = config.DungeonTemplate.ObjectiveDescription,
+                    Name = config.ScenarioDesign.Name,
+                    Description = config.ScenarioDesign.ObjectiveDescription,
                     SmileyExpression = config.PlayerTemplates.First().SymbolDetails.SmileyExpression,
                     SmileyBodyColor = ColorFilter.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
                     SmileyLineColor = ColorFilter.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyLineColor),

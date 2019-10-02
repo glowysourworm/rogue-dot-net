@@ -90,28 +90,25 @@ namespace Rogue.NET.Core.Processing.Service
                     return new List<ScenarioValidationResult>(){
                         new ScenarioValidationResult()
                         {
-                            Passed = configuration.DungeonTemplate.NumberOfLevels > 0 && configuration.DungeonTemplate.NumberOfLevels <= 500,
+                            Passed = configuration.ScenarioDesign.LevelDesigns.Count > 0 && configuration.ScenarioDesign.LevelDesigns.Count <= 500,
                             InnerMessage = null
                         }
                     };
                 })),
-                new ScenarioValidationRule("Layouts not set for portion of scenario", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                {
-                    var layoutGaps = Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
-                                               .Where(x => !configuration.DungeonTemplate.LayoutTemplates.Any(z => z.Level.Contains(x)));
-
-                    // Must have one of each objective
-                    return layoutGaps.Select(x =>
-                        new ScenarioValidationResult()
-                        {
-                            Passed = false,
-                            InnerMessage = "Level " + x.ToString() + " has no layout set"
-                        });
-                })),
+                //new ScenarioValidationRule("Layouts not set for portion of scenario", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                //{
+                //    var layoutGaps = configuration.ScenarioDesign.LevelDesigns.Where(x => x.LevelBranches)
+                //    // Must have one of each objective
+                //    return layoutGaps.Select(x =>
+                //        new ScenarioValidationResult()
+                //        {
+                //            Passed = false,
+                //            InnerMessage = "Level " + x.ToString() + " has no layout set"
+                //        });
+                //})),
                 new ScenarioValidationRule("Layout max size must be < 10,000 cells", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
-                    var layoutSizes = configuration.DungeonTemplate
-                                                   .LayoutTemplates
+                    var layoutSizes = configuration.LayoutTemplates
                                                    .Select(template =>
                                                    {
                                                        return new { Size = _layoutHeightConverter.Convert(template) * _layoutWidthConverter.Convert(template),
@@ -129,8 +126,7 @@ namespace Rogue.NET.Core.Processing.Service
                 })),
                 new ScenarioValidationRule("Layout Connection Geometry Type of Rectilinear should only be paired with a Room Placement Type of RectangularGrid", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
-                    var layouts = configuration.DungeonTemplate
-                                                .LayoutTemplates
+                    var layouts = configuration.LayoutTemplates
                                                 .Where(template =>
                                                 {
                                                     return template.ConnectionGeometryType == LayoutConnectionGeometryType.Rectilinear &&
@@ -151,8 +147,7 @@ namespace Rogue.NET.Core.Processing.Service
                 })),
                 new ScenarioValidationRule("Layout Corridor Connection Type must be Corridor, Teleporter, or TeleporterRandom, for any Minimum Spanning Tree type (Random Room Placement or Cellular Automata)", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
-                    var layouts = configuration.DungeonTemplate
-                                                .LayoutTemplates
+                    var layouts = configuration.LayoutTemplates
                                                 .Where(template =>
                                                 {
                                                     return template.ConnectionGeometryType == LayoutConnectionGeometryType.MinimumSpanningTree &&
@@ -253,7 +248,7 @@ namespace Rogue.NET.Core.Processing.Service
                 })),
                 new ScenarioValidationRule("Scenario Name Not Set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
-                    var passed = !string.IsNullOrEmpty(configuration.DungeonTemplate.Name);
+                    var passed = !string.IsNullOrEmpty(configuration.ScenarioDesign.Name);
 
                     return new List<ScenarioValidationResult>(){
                         new ScenarioValidationResult()
@@ -265,7 +260,7 @@ namespace Rogue.NET.Core.Processing.Service
                 })),
                 new ScenarioValidationRule("Scenario Name can only contain letters, numbers, and spaces", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
-                    var scenarioName = configuration.DungeonTemplate.Name;
+                    var scenarioName = configuration.ScenarioDesign.Name;
                     var passed = TextUtility.ValidateFileName(scenarioName);
 
                     return new List<ScenarioValidationResult>() {
@@ -413,20 +408,6 @@ namespace Rogue.NET.Core.Processing.Service
                     {
                         Passed = false,
                         InnerMessage = x.Name + " has generation rate of zero"
-                    });
-                })),
-                new ScenarioValidationRule("Asset level range outside of scenario level range", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                {
-                    var contentInvalid = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
-                                                                        .Union(configuration.DoodadTemplates)
-                                                                        .Union(configuration.EnemyTemplates)
-                                                                        .Union(configuration.EquipmentTemplates)
-                                                                        .Where(x => x.Level.Low < 1 || x.Level.High > configuration.DungeonTemplate.NumberOfLevels);
-
-                    return contentInvalid.Select(x => new ScenarioValidationResult()
-                    {
-                        Passed = false,
-                        InnerMessage = x.Name + " has a level range of " + x.Level.ToString()
                     });
                 }))
             };

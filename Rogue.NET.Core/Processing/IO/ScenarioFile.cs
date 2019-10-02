@@ -106,7 +106,7 @@ namespace Rogue.NET.Core.Processing.IO
             offset += statistics.Length;
             
             //Dynamic contents
-            for (int i=1;i<=dungeon.Configuration.DungeonTemplate.NumberOfLevels;i++)
+            for (int i=1;i<=dungeon.Configuration.ScenarioDesign.LevelDesigns.Count;i++)
             {
                 IndexedObject indexedLevel = _header.DynamicObjects.FirstOrDefault(z => z.Identifier == LEVEL_PREFIX + i.ToString());
                 if (indexedLevel == null)

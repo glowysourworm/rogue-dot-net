@@ -23,55 +23,55 @@
             <StackPanel>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Strength" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding StrengthRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding StrengthRange}" LowLimit="-50" HighLimit="50" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Agility" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding AgilityRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding AgilityRange}" LowLimit="-50" HighLimit="50" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Intelligence" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding IntelligenceRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding IntelligenceRange}" LowLimit="-50" HighLimit="50" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Speed" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding SpeedRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding SpeedRange}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Light Radius" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding LightRadiusRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding LightRadiusRange}" LowLimit="-20" HighLimit="20" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Food Usage (Per Turn)" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding FoodUsagePerTurnRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding FoodUsagePerTurnRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>                
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Hp Per Step" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding HpPerStepRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding HpPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Mp Per Step" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding MpPerStepRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding MpPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Attack" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding AttackRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding AttackRange}" LowLimit="-500" HighLimit="500" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Defense" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding DefenseRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding DefenseRange}" LowLimit="-500" HighLimit="500" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Magic Block Probability" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding MagicBlockProbabilityRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding MagicBlockProbabilityRange}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Dodge Probability" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding DodgeProbabilityRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding DodgeProbabilityRange}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Critical Hit" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding CriticalHit}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding CriticalHit}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
                 </Grid>                
             </StackPanel>
         </TabItem>

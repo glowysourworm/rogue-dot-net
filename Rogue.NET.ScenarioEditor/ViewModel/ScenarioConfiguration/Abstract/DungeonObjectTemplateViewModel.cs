@@ -5,7 +5,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
     public class DungeonObjectTemplateViewModel : TemplateViewModel
     {
         private SymbolDetailsTemplateViewModel _symbolDetails;
-        private RangeViewModel<int> _level;
         private double _generationRate;
         private string _shortDescription;
         private string _longDescription;
@@ -18,11 +17,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         {
             get { return _symbolDetails; }
             set { this.RaiseAndSetIfChanged(ref _symbolDetails, value); }
-        }
-        public RangeViewModel<int> Level
-        {
-            get { return _level; }
-            set { this.RaiseAndSetIfChanged(ref _level, value); }
         }
         public double GenerationRate
         {
@@ -63,7 +57,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         public DungeonObjectTemplateViewModel()
         {
             this.SymbolDetails = new SymbolDetailsTemplateViewModel();
-            this.Level = new RangeViewModel<int>(1, 100);
 
             this.ShortDescription = "";
             this.LongDescription = "";
@@ -71,7 +64,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         public DungeonObjectTemplateViewModel(DungeonObjectTemplateViewModel tmp)
         {
             this.SymbolDetails = tmp.SymbolDetails;
-            this.Level = tmp.Level;
             this.GenerationRate = tmp.GenerationRate;
             this.ShortDescription = tmp.ShortDescription;
             this.LongDescription = tmp.LongDescription;

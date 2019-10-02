@@ -18,19 +18,15 @@ namespace Rogue.NET.Core.Model.Scenario
     [Serializable]
     public class Level
     {
+        /// <summary>
+        /// Name of the level branch that was used to generate this level
+        /// </summary>
+        public string LevelBranchName { get; protected set; }
         public LevelGrid Grid { get; protected set; }
         public LayoutType Type { get; protected set; }
         public LayoutConnectionType ConnectionType { get; protected set; }
 
         public int Number { get; protected set; }
-
-#if DEBUG
-        /// <summary>
-        /// Stored layout name to support debug function
-        /// </summary>
-        public string LayoutName { get; protected set; }
-#endif
-
         public bool HasStairsUp { get { return this.StairsUp != null; } }
         public bool HasStairsDown { get { return this.StairsDown != null; } }
         public bool HasSavePoint { get { return this.SavePoint != null; } }
@@ -87,7 +83,7 @@ namespace Rogue.NET.Core.Model.Scenario
             protected set { _doodadNormals = new List<DoodadNormal>(value); }
         }
 
-        public Level(string layoutName,
+        public Level(string levelBranchName,
                      LevelGrid grid,
                      LayoutType layoutType,
                      LayoutConnectionType layoutConnectionType,
@@ -95,7 +91,7 @@ namespace Rogue.NET.Core.Model.Scenario
                      string wallColor,
                      string doorColor)
         {
-            Initialize(layoutName, 
+            Initialize(levelBranchName, 
                        grid, 
                        layoutType, 
                        layoutConnectionType, 
@@ -105,7 +101,7 @@ namespace Rogue.NET.Core.Model.Scenario
         }
 
         private void Initialize(
-                     string layoutName,
+                     string levelBranchName,
                      LevelGrid grid,
                      LayoutType layoutType,
                      LayoutConnectionType layoutConnectionType,
@@ -113,8 +109,7 @@ namespace Rogue.NET.Core.Model.Scenario
                      string wallColor,
                      string doorColor)
         {
-            // Stored to support Debug function
-            this.LayoutName = layoutName;
+            this.LevelBranchName = levelBranchName;
 
             this.Type = layoutType;
             this.ConnectionType = layoutConnectionType;

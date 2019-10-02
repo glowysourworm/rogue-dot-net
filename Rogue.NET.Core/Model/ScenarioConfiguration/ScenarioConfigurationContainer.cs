@@ -10,7 +10,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
     [Serializable]
     public class ScenarioConfigurationContainer
     {
-        public DungeonTemplate DungeonTemplate { get; set; }
         public ScenarioTemplate ScenarioDesign { get; set; }
         public List<PlayerTemplate> PlayerTemplates { get; set; }
         public List<LayoutTemplate> LayoutTemplates { get; set; }
@@ -29,7 +28,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.ScenarioDesign = new ScenarioTemplate();
             this.LayoutTemplates = new List<LayoutTemplate>();
 
-            this.DungeonTemplate = new DungeonTemplate();
             this.PlayerTemplates = new List<PlayerTemplate>();
             this.EnemyTemplates = new List<EnemyTemplate>();
             this.FriendlyTemplates = new List<FriendlyTemplate>();

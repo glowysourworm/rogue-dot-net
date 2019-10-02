@@ -19,6 +19,7 @@ using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 
 namespace Rogue.NET.Core.Processing.Service
 {
@@ -33,6 +34,9 @@ namespace Rogue.NET.Core.Processing.Service
         readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
         readonly IAttackAttributeGenerator _attackAttributeGenerator;
 
+        // Stored configuration for the scenario
+        ScenarioConfigurationContainer _configuration;
+
         // Dynamic (non-serialized) data about line-of-sight / visible line-of-sight / aura line-of-sight
         // per character (These must be re-created each level)
         ICharacterLayoutInformation _characterLayoutInformation;
@@ -40,7 +44,6 @@ namespace Rogue.NET.Core.Processing.Service
 
         // Enemy to have slain the player
         string _killedBy;
-
         public ICharacterLayoutInformation CharacterLayoutInformation { get { return _characterLayoutInformation; } }
         public ICharacterContentInformation CharacterContentInformation { get { return _characterContentInformation; } }
 
@@ -65,10 +68,11 @@ namespace Rogue.NET.Core.Processing.Service
             IDictionary<string, ScenarioMetaData> encyclopedia, 
             ScenarioConfigurationContainer configuration)
         {
+            _configuration = configuration;
+
             this.Level = level;
             this.Player = player;
             this.ScenarioEncyclopedia = encyclopedia;
-            this.ScenarioConfiguration = configuration;
             this.CharacterClasses = configuration.PlayerTemplates.Select(x =>
             {
                 var result = new ScenarioImage();
@@ -131,12 +135,13 @@ namespace Rogue.NET.Core.Processing.Service
             // Run Level Unload Process (Removes Temporary Characters / Returns Extractable Content)
             IEnumerable<ScenarioObject> extractedContent = this.Level.Unload();
 
+            _configuration = null;
+
             _characterContentInformation = null;
             _characterLayoutInformation = null;
 
             this.Level = null;
-            this.Player = null;
-            this.ScenarioConfiguration = null;
+            this.Player = null;            
             this.ScenarioEncyclopedia = null;
             this.CharacterClasses = null;
 
@@ -151,21 +156,42 @@ namespace Rogue.NET.Core.Processing.Service
 
         public IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; private set; }
 
-        public ScenarioConfigurationContainer ScenarioConfiguration { get; private set; }
-
         public IEnumerable<ScenarioImage> CharacterClasses { get; private set; }
 
         public IEnumerable<AttackAttribute> AttackAttributes
         {
             get
             {
-                return this.ScenarioConfiguration
+                return _configuration
                       .AttackAttributes
                       .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                       .Actualize();
             }
         }
 
+        public LevelBranchTemplate GetLevelBranch()
+        {
+            // TODO: Change this to use Guid to identify branch
+            return _configuration.ScenarioDesign
+                                 .LevelDesigns
+                                 .SelectMany(x => x.LevelBranches)
+                                 .First(x => x.LevelBranch.Name == this.Level.LevelBranchName)
+                                 .LevelBranch;
+        }
+
+        public string GetScenarioName()
+        {
+            return _configuration.ScenarioDesign.Name;
+        }
+        public string GetScenarioDescription()
+        {
+            return _configuration.ScenarioDesign.ObjectiveDescription;
+        }
+
+        public int GetNumberOfLevels()
+        {
+            return _configuration.ScenarioDesign.LevelDesigns.Count;
+        }
         public string GetDisplayName(ScenarioObject scenarioObject)
         {
             // TODO - HANDLE PROPER NOUNS (Example:  Player (assumed proper noun), Enemy that is Unique

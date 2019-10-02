@@ -44,15 +44,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public IEnumerable<Level> CreateLayouts(IEnumerable<LayoutGenerationTemplate> layoutTemplates)
+        public IEnumerable<Level> CreateLayouts(IEnumerable<string> levelBranchNames, IEnumerable<LayoutGenerationTemplate> layoutTemplates)
         {
             var levels = new List<Level>();
 
             var levelNumber = 1;
             foreach (var template in layoutTemplates)
             {
+                var levelBranchName = levelBranchNames.ElementAt(levelNumber - 1);
+
                 var grid = CreateLayout(template.Asset);
-                var level = new Level(template.Name,
+                var level = new Level(levelBranchName,
                                       grid,
                                       template.Asset.Type,
                                       template.Asset.ConnectionType, 

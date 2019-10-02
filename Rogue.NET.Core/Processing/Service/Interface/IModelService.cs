@@ -6,6 +6,7 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Service.Interface
@@ -62,14 +63,31 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; }
 
         /// <summary>
-        /// Configuration for the scenario
-        /// </summary>
-        ScenarioConfigurationContainer ScenarioConfiguration { get; }
-
-        /// <summary>
         /// Character Classes for the scenario
         /// </summary>
         IEnumerable<ScenarioImage> CharacterClasses { get; }
+
+        /// <summary>
+        /// Returns the name of the the scenario
+        /// </summary>
+        /// <returns></returns>
+        string GetScenarioName();
+
+        /// <summary>
+        /// Returns the objective description for the scenario
+        /// </summary>
+        /// <returns></returns>
+        string GetScenarioDescription();
+
+        /// <summary>
+        /// Returns template used to create the level (branch) - contains asset template references
+        /// </summary>
+        LevelBranchTemplate GetLevelBranch();
+
+        /// <summary>
+        /// Returns number of levels in the scenario
+        /// </summary>
+        int GetNumberOfLevels();
 
         /// <summary>
         /// Primary method to update visible cells that are now in view of the Player - along with

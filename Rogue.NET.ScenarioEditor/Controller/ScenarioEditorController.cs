@@ -102,7 +102,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             // Publish the Scenario Configuration
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(new ScenarioConfigurationData(_config, new BrushTemplateViewModel[] { }));
 
-            PublishOutputMessage("Created Scenario " + _config.DungeonTemplate.Name);
+            PublishOutputMessage("Created Scenario " + _config.ScenarioDesign.Name);
         }
 
         public void Open(string name, bool builtIn)
@@ -159,7 +159,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
                 SplashType = SplashEventType.Loading
             });
 
-            PublishOutputMessage("Saving " + _config.DungeonTemplate.Name + " Scenario File...");
+            PublishOutputMessage("Saving " + _config.ScenarioDesign.Name + " Scenario File...");
 
             // SET ALTERATION EFFECT NAMES BEFORE MAPPING (THIS COULD BE REDESIGNED)
             _alterationNameService.Execute(_config);
@@ -189,7 +189,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             if (builtInScenario)
                 _scenarioFileService.EmbedConfiguration(builtInScenarioType, config);
             else
-                _scenarioFileService.SaveConfiguration(_config.DungeonTemplate.Name, config);
+                _scenarioFileService.SaveConfiguration(_config.ScenarioDesign.Name, config);
 
             // Clear the Undo stack
             _rogueUndoService.Clear();

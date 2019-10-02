@@ -27,30 +27,12 @@
             <TextBlock FontSize="18" Foreground="White" Margin="10" Text="General Scenario Parameters" />
             <Grid Grid.Row="1" Margin="10">
                 <TabControl Background="Black">
-                    <TabItem Header="General" DataContext="{Binding DungeonTemplate}">
+                    <TabItem Header="General" DataContext="{Binding ScenarioDesign}">
                         <StackPanel>
                             <Grid Margin="10,10,10,5">
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Name" />
                                 <extension:UpdatingTextBox Text="{Binding Name, Mode=TwoWay}" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
                             </Grid>
-                            <Grid Margin="10,5,10,5">
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Number of Levels" />
-                                <toolkit:IntegerUpDown Value="{Binding NumberOfLevels, Mode=TwoWay}" Minimum="5" Maximum="200" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
-                            </Grid>
-                            <Grid Margin="10,5,10,5">
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Monster Generation (per step)" />
-                                <toolkit:DoubleUpDown Value="{Binding MonsterGenerationBase, Mode=TwoWay}" Minimum="0" Maximum="1" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
-                            </Grid>
-                            <Grid Margin="10,5,10,5">
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Party Room Generation (per level)" />
-                                <toolkit:DoubleUpDown Value="{Binding PartyRoomGenerationRate, Mode=TwoWay}" Minimum="0" Maximum="1" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
-                            </Grid>
-                            <Grid Margin="10,5,10,5">
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White">
-                                    <Run Text="Skill Point Multiplier" />
-                                </TextBlock>
-                                <toolkit:DoubleUpDown Value="{Binding SkillPointMultiplier, Mode=TwoWay}" Minimum="1" Maximum="100" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
-                            </Grid>                            
                             <StackPanel Margin="10,5,10,5">
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Description (should explain objective to player)" />
                                 <extension:UpdatingTextBox Margin="0,5,0,5" Text="{Binding ObjectiveDescription, Mode=TwoWay}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True"  Foreground="White" />

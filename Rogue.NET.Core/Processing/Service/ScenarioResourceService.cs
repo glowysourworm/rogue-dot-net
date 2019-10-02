@@ -41,7 +41,7 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioFileService = scenarioFileService;
             _scenarioImageSourceFactory = scenarioImageSourceFactory;
             _scenarioConfigurations = scenarioConfigurationCache.EmbeddedConfigurations
-                                                                .ToDictionary(x => x.DungeonTemplate.Name, x => x);
+                                                                .ToDictionary(x => x.ScenarioDesign.Name, x => x);
             _colors = ColorFilter.CreateColors();
         }
 
