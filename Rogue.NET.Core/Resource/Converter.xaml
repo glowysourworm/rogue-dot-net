@@ -45,7 +45,6 @@
     <converter:BoolInverseVisibilityCollapseConverter x:Key="BoolInverseVisibilityCollapseConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />
-    <converterItemGrid:ItemGridFontStyleConverter x:Key="ItemGridFontStyleConverter" />
     <converterItemGrid:ItemGridForegroundConverter x:Key="ItemGridForegroundConverter" />
     <converterItemGrid:ItemGridRowDetailsVisibilityConverter x:Key="ItemGridRowDetailsVisibilityConverter" />
     <converterItemGrid:ItemGridSelectionColorConverter x:Key="ItemGridSelectionColorConverter" />

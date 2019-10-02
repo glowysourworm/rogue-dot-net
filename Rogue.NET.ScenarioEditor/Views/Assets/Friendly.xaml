@@ -3,16 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              xmlns:characterShared="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl"
-             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.MarkupExtension"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl">
     <Grid>
         <TabControl Background="Black" TabStripPlacement="Left">
-            <TabItem Header="Symbol" x:Name="DefaultTab">
-                <symbol:SymbolEditor  DataContext="{Binding SymbolDetails}" />
+            <TabItem Header="General" x:Name="DefaultTab">
+                <region:RogueRegion>
+                    <region:RogueRegionManager.DefaultView>
+                        <markupExtension:MetaDataControlConstructor HasCursedSetting="False" HasObjectiveSetting="True" HasUniqueSetting="True" />
+                    </region:RogueRegionManager.DefaultView>
+                </region:RogueRegion>
             </TabItem>
-            <TabItem Header="Rogue-Encyclopedia">
-                <sharedControl:MetaDataControl HasCursedSetting="False" />
+            <TabItem Header="Symbol">
+                <symbol:SymbolEditor  DataContext="{Binding SymbolDetails}" />
             </TabItem>
             <TabItem Header="Parameters">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type characterShared:CharacterParameters}" />

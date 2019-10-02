@@ -256,10 +256,11 @@
                                   Padding="{TemplateBinding Padding}">
 
                             <TextBlock x:Name="PART_Header" 
-                                           Text="{Binding Name}"
-                                           FontSize="18"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                                       Text="{Binding Name}"
+                                       FontSize="18"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                             </TextBlock>
                         </Border>
 
@@ -290,6 +291,76 @@
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                         </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Goldenrod" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Red" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Purple" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>                        
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

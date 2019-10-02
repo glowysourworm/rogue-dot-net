@@ -6,6 +6,7 @@ using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
 using Rogue.NET.Core.Processing.Event.Scenario;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Events.Asset;
 using Rogue.NET.ScenarioEditor.Events.Browser;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
@@ -19,6 +20,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using Rogue.NET.ScenarioEditor.Views;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl;
 using Rogue.NET.ScenarioEditor.Views.Browser;
 using Rogue.NET.ScenarioEditor.Views.Constants;
 using Rogue.NET.ScenarioEditor.Views.Controls;
@@ -72,6 +74,7 @@ namespace Rogue.NET.ScenarioEditor
 
             RegisterEditorEvents();
             RegisterAssetEvents();
+            RegisterAssetBrowserEvents();
             RegisterGeneralAssetEvents();
             RegisterLevelDesignEvents();
             RegisterAlterationEffectEvents();
@@ -101,6 +104,22 @@ namespace Rogue.NET.ScenarioEditor
             });
         }
         private void RegisterAssetEvents()
+        {
+            // Rename event for scenario assets
+            _eventAggregator.GetEvent<RenameScenarioAssetEvent>().Subscribe(asset =>
+            {
+                // Show rename control
+                var view = new RenameControl();
+
+                view.DataContext = asset;
+
+                DialogWindowFactory.Show(view, "Rename Scenario Asset");
+
+                // Publish a special event to update source lists for specific views
+                PublishScenarioUpdate();
+            });
+        }
+        private void RegisterAssetBrowserEvents()
         {
             // Asset Events
             _eventAggregator.GetEvent<AddAssetEvent>().Subscribe((e) =>

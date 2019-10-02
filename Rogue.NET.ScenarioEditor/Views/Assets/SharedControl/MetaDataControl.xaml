@@ -17,44 +17,56 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <StackPanel Grid.Column="1">
-            <Grid Margin="10">
-                <TextBlock Text="Short Description" />
-                <TextBox Text="{Binding ShortDescription}" 
+    <StackPanel>
+        <Grid Margin="10">
+            <TextBlock Text="Name" FontSize="20" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBox IsReadOnly="True" Text="{Binding Name}" FontSize="18" Width="200" />
+                <Button x:Name="RenameButton" Padding="4" Content="Rename" Margin="10, 0, 0, 0" />
+            </StackPanel>
+        </Grid>              
+        <Grid Margin="10"
+              Visibility="{Binding HasObjectiveSetting, 
+                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MetaDataControl}},
+                                   Converter={StaticResource BoolVisibilityCollapseConverter}}">
+            <TextBlock Text="Is Objective (SCENARIO REQUIREMENT)" FontSize="20" Foreground="Cyan" />
+            <CheckBox x:Name="ObjectiveCB" IsChecked="{Binding IsObjectiveItem}" Checked="ObjectiveCB_Checked" HorizontalAlignment="Right" />
+        </Grid>        
+        <Grid Margin="10"
+                  Visibility="{Binding HasCursedSetting, 
+                                       RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MetaDataControl}},
+                                       Converter={StaticResource BoolVisibilityCollapseConverter}}">
+            <TextBlock Text="Is Cursed" FontSize="20" Foreground="Red" />
+            <CheckBox IsChecked="{Binding IsCursed}" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="10"
+                  Visibility="{Binding HasUniqueSetting, 
+                                       RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MetaDataControl}},
+                                       Converter={StaticResource BoolVisibilityCollapseConverter}}">
+            <TextBlock Text="Is Unique" FontSize="20" Foreground="Goldenrod" />
+            <CheckBox IsChecked="{Binding IsUnique}" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="10">
+            <TextBlock Text="Short Description" />
+            <TextBox Text="{Binding ShortDescription}" 
                          HorizontalAlignment="Right" 
                          AcceptsReturn="True"
                          HorizontalScrollBarVisibility="Disabled"
                          VerticalScrollBarVisibility="Auto"
                          TextWrapping="Wrap"
                          Height="60"
-                         Width="300" />
-            </Grid>
-            <Grid Margin="10">
-                <TextBlock Text="Long Description" />
-                <TextBox Text="{Binding LongDescription}" 
+                         Width="500" />
+        </Grid>
+        <Grid Margin="10">
+            <TextBlock Text="Long Description" />
+            <TextBox Text="{Binding LongDescription}" 
                          HorizontalAlignment="Right" 
                          AcceptsReturn="True"
                          HorizontalScrollBarVisibility="Disabled"
                          VerticalScrollBarVisibility="Auto"
                          TextWrapping="Wrap"
                          Height="100"
-                         Width="300" />
-            </Grid>
-            <Grid Margin="10"
-                  Visibility="{Binding HasCursedSetting, 
-                                       RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MetaDataControl}},
-                                       Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                <TextBlock Text="Is Cursed" />
-                <CheckBox IsChecked="{Binding IsCursed}" HorizontalAlignment="Right" />
-            </Grid>
-            <Grid Margin="10"
-                  Visibility="{Binding HasUniqueSetting, 
-                                       RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MetaDataControl}},
-                                       Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                <TextBlock Text="Is Unique" />
-                <CheckBox IsChecked="{Binding IsUnique}" HorizontalAlignment="Right" />
-            </Grid>
-        </StackPanel>
-    </Grid>
+                         Width="500" />
+        </Grid>
+    </StackPanel>
 </UserControl>

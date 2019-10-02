@@ -5,6 +5,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/Button.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/ScenarioAssetBrowser.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -79,10 +80,11 @@
                                   Padding="{TemplateBinding Padding}">
 
                             <TextBlock x:Name="PART_Header" 
-                                           Text="{Binding Name}"
-                                           FontSize="18"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                                       Text="{Binding Name}"
+                                       FontSize="18"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                             </TextBlock>
                         </Border>
 
@@ -113,6 +115,76 @@
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                         </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Goldenrod" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Red" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Purple" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -152,13 +224,14 @@
                                       ClickMode="Press"/>
 
                         <Border Name="Bd"
-                                  Grid.Column="2"                                  
+                                  Grid.Column="2"                                                   
                                   Background="Transparent"
                                   BorderBrush="Transparent"
                                   BorderThickness="{TemplateBinding BorderThickness}"
                                   Padding="{TemplateBinding Padding}">
-                            <ContentPresenter x:Name="PART_Header" ContentSource="Header"
-                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                            <ContentPresenter x:Name="PART_Header" 
+                                              ContentSource="Header"                                              
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
                         </Border>
 
                         <Button Grid.Column="3"
@@ -201,6 +274,9 @@
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
+                        <DataTrigger Binding="{Binding HasObjectiveAssets}" Value="True">
+                            <Setter Property="Foreground" Value="Cyan" />
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -250,10 +326,11 @@
                                   Padding="{TemplateBinding Padding}">
 
                             <TextBlock x:Name="PART_Header" 
-                                           Text="{Binding Name}"
-                                           FontSize="{TemplateBinding FontSize}"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                                        Text="{Binding Name}"
+                                        FontSize="{TemplateBinding FontSize}"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                             </TextBlock>
                         </Border>
 
@@ -282,10 +359,30 @@
                                               Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
                                               Tag="{x:Type contentViewModel:EquipmentTemplateViewModel}">
                                     <TreeViewItem.Header>
-                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                        <TextBlock FontSize="{TemplateBinding FontSize}">
                                             <Run Text="Equipment (" />
                                             <Run Text="{Binding Equipment.Count, Mode=OneWay}" />
                                             <Run Text=")" />
+                                            <TextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource ItemGridForegroundConverter}">
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding Path="HasEquipmentObjectiveAssets" />
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                </MultiBinding>
+                                            </TextBlock.Foreground>
                                         </TextBlock>
                                     </TreeViewItem.Header>
                                 </TreeViewItem>                                
@@ -296,10 +393,30 @@
                                               Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
                                               Tag="{x:Type contentViewModel:ConsumableTemplateViewModel}">
                                     <TreeViewItem.Header>
-                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                        <TextBlock FontSize="{TemplateBinding FontSize}">
                                             <Run Text="Consumables (" />
                                             <Run Text="{Binding Consumables.Count, Mode=OneWay}" />
                                             <Run Text=")" />
+                                            <TextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource ItemGridForegroundConverter}">
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding Path="HasConsumableObjectiveAssets" />
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                </MultiBinding>
+                                            </TextBlock.Foreground>                                            
                                         </TextBlock>
                                     </TreeViewItem.Header>
                                 </TreeViewItem>                                
@@ -310,10 +427,30 @@
                                               Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
                                               Tag="{x:Type contentViewModel:EnemyTemplateViewModel}">
                                     <TreeViewItem.Header>
-                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                        <TextBlock FontSize="{TemplateBinding FontSize}">
                                             <Run Text="Enemies (" />
                                             <Run Text="{Binding Enemies.Count, Mode=OneWay}" />
                                             <Run Text=")" />
+                                            <TextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource ItemGridForegroundConverter}">
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding Path="HasEnemyObjectiveAssets" />
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                </MultiBinding>
+                                            </TextBlock.Foreground>                                            
                                         </TextBlock>
                                     </TreeViewItem.Header>
                                 </TreeViewItem>                                
@@ -324,10 +461,30 @@
                                               Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
                                               Tag="{x:Type contentViewModel:FriendlyTemplateViewModel}">
                                     <TreeViewItem.Header>
-                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                        <TextBlock FontSize="{TemplateBinding FontSize}">
                                             <Run Text="Friendlies (" />
                                             <Run Text="{Binding Friendlies.Count, Mode=OneWay}" />
                                             <Run Text=")" />
+                                            <TextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource ItemGridForegroundConverter}">
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding Path="HasFriendlyObjectiveAssets" />
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                </MultiBinding>
+                                            </TextBlock.Foreground>                                            
                                         </TextBlock>
                                     </TreeViewItem.Header>
                                 </TreeViewItem>
@@ -338,10 +495,30 @@
                                               Style="{StaticResource LevelBranchAssetBrowserButtonStyle}"
                                               Tag="{x:Type contentViewModel:DoodadTemplateViewModel}">
                                     <TreeViewItem.Header>
-                                        <TextBlock Foreground="White" FontSize="{TemplateBinding FontSize}">
+                                        <TextBlock FontSize="{TemplateBinding FontSize}">
                                             <Run Text="Doodads (" />
                                             <Run Text="{Binding Doodads.Count, Mode=OneWay}" />
                                             <Run Text=")" />
+                                            <TextBlock.Foreground>
+                                                <MultiBinding Converter="{StaticResource ItemGridForegroundConverter}">
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                    <Binding Path="HasDoodadObjectiveAssets" />
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                </MultiBinding>
+                                            </TextBlock.Foreground>                                            
                                         </TextBlock>
                                     </TreeViewItem.Header>
                                 </TreeViewItem>                                
@@ -410,6 +587,9 @@
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
+                        <DataTrigger Binding="{Binding HasObjectiveAssets}" Value="True">
+                            <Setter Property="Foreground" Value="Cyan" />
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -529,7 +709,10 @@
                                     <SolidColorBrush Color="Blue" Opacity="0.5" />
                                 </Setter.Value>
                             </Setter>
-                        </Trigger>                        
+                        </Trigger>
+                        <DataTrigger Binding="{Binding HasObjectiveAssets}" Value="True">
+                            <Setter Property="Foreground" Value="Cyan" />
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

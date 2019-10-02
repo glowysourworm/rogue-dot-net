@@ -164,7 +164,6 @@
     <Compile Include="Converter\GreaterThanZeroVisibilityInverseConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridCombatTypeConverter.cs" />
-    <Compile Include="Converter\ItemGrid\ItemGridFontStyleConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridForegroundConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridRowDetailsVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridSelectionColorConverter.cs" />

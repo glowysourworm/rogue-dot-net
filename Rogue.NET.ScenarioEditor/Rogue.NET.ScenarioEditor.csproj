@@ -289,10 +289,11 @@
     <Compile Include="Converter\ScenarioAssetBrowserSelectionBackgroundConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
+    <Compile Include="Events\Asset\RenameScenarioAssetEvent.cs" />
     <Compile Include="Events\Browser\AddLevelBranchEvent.cs" />
     <Compile Include="Events\Browser\AddAssetEvent.cs" />
     <Compile Include="Events\Browser\AddGeneralAssetEvent.cs" />
-    <Compile Include="Events\AlterationEffectChangedEvent.cs" />
+    <Compile Include="Events\Asset\Alteration\AlterationEffectChangedEvent.cs" />
     <Compile Include="Events\Browser\AddLevelEvent.cs" />
     <Compile Include="Events\Browser\CollapseLevelTreeEvent.cs" />
     <Compile Include="Events\Browser\CopyLevelBranchEvent.cs" />
@@ -306,8 +307,8 @@
     <Compile Include="Events\Browser\CopyAssetEvent.cs" />
     <Compile Include="Events\Browser\LoadLevelEvent.cs" />
     <Compile Include="Events\LoadDefaultRegionViewEvent.cs" />
-    <Compile Include="Events\LoadAlterationEffectRequestEvent.cs" />
-    <Compile Include="Events\LoadNewAlterationEffectRequestEvent.cs" />
+    <Compile Include="Events\Asset\Alteration\LoadAlterationEffectRequestEvent.cs" />
+    <Compile Include="Events\Asset\Alteration\LoadNewAlterationEffectRequestEvent.cs" />
     <Compile Include="Events\Browser\LoadAssetEvent.cs" />
     <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
     <Compile Include="Events\LoadDesignEvent.cs" />
@@ -315,7 +316,7 @@
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
     <Compile Include="Events\Browser\RemoveLevelEvent.cs" />
     <Compile Include="Events\Browser\RemoveAssetEvent.cs" />
-    <Compile Include="Events\RemoveGeneralAssetEvent.cs" />
+    <Compile Include="Events\Asset\RemoveGeneralAssetEvent.cs" />
     <Compile Include="Events\Browser\RenameAssetEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
@@ -732,6 +733,7 @@
     <Compile Include="Views\EditorInstructions.xaml.cs">
       <DependentUpon>EditorInstructions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MarkupExtension\MetaDataControlConstructor.cs" />
     <Compile Include="Views\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>

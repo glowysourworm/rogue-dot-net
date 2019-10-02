@@ -11,6 +11,7 @@ using Rogue.NET.ScenarioEditor.Views.Controls.Symbol;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class Doodad : UserControl
     {

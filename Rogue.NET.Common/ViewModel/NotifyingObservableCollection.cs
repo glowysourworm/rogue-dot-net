@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Rogue.NET.Common.Extension.Event;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ namespace Rogue.NET.Common.ViewModel
     /// <typeparam name="T"></typeparam>
     public class NotifyingObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler ItemPropertyChanged;
+        public event SimpleEventHandler<NotifyingObservableCollection<T>, T, PropertyChangedEventArgs> ItemPropertyChanged;
 
         public NotifyingObservableCollection()
         {
@@ -65,7 +66,7 @@ namespace Rogue.NET.Common.ViewModel
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             if (this.ItemPropertyChanged != null)
-                this.ItemPropertyChanged(sender, e);
+                this.ItemPropertyChanged(this, (T)sender, e);
         }
     }
 }

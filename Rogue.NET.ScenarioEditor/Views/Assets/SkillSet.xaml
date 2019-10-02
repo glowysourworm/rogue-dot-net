@@ -2,8 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
-             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
-             xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.MarkupExtension"
              xmlns:skillSetControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SkillSetControl"
              Background="Black" FontSize="14">
     <UserControl.Resources>
@@ -17,11 +17,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <TabControl TabStripPlacement="Left" Background="Black">
+        <TabItem Header="General">
+            <region:RogueRegion>
+                <region:RogueRegionManager.DefaultView>
+                    <markupExtension:MetaDataControlConstructor HasCursedSetting="False" HasObjectiveSetting="False" HasUniqueSetting="False" />
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>
+        </TabItem>
         <TabItem Header="Symbol" x:Name="DefaultTab">
             <symbol:SymbolEditor DataContext="{Binding SymbolDetails}" />
-        </TabItem>
-        <TabItem Header="Rogue-Encyclopedia">
-            <sharedControl:MetaDataControl HasCursedSetting="False" HasUniqueSetting="False" />
         </TabItem>
         <TabItem Header="Skills">
             <StackPanel>

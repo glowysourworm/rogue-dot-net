@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class Friendly : UserControl
     {

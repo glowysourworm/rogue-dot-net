@@ -50,6 +50,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
         /// <param name="viewType">Type of view to pre-register</param>
         void PreRegisterView(string regionName, Type viewType);
 
+
         /// <summary>
         /// Loads the RogueRegion with the specified view type OR the last view
         /// instance with the same type. Loading is accomplished using the ServiceLocator

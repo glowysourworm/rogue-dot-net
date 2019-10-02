@@ -20,6 +20,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
         string _subType = "";
         SymbolDetailsTemplateViewModel _symbolDetailsViewModel;
         Type _assetType;
+        bool _isObjective;
+        bool _isUnique;
+        bool _isCursed;
+
         public string Type
         {
             get { return _type; }
@@ -40,12 +44,30 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
             get { return _assetType; }
             private set { this.RaiseAndSetIfChanged(ref _assetType, value); }
         }
+        public bool IsObjective
+        {
+            get { return _isObjective; }
+            private set { this.RaiseAndSetIfChanged(ref _isObjective, value); }
+        }
+
+        public bool IsUnique
+        {
+            get { return _isUnique; }
+            private set { this.RaiseAndSetIfChanged(ref _isUnique, value); }
+        }
+
+        public bool IsCursed
+        {
+            get { return _isCursed; }
+            private set { this.RaiseAndSetIfChanged(ref _isCursed, value); }
+        }
         public SymbolDetailsTemplateViewModel SymbolDetails
         {
             get { return _symbolDetailsViewModel; }
             set { this.RaiseAndSetIfChanged(ref _symbolDetailsViewModel, value); }
         }
         public ICommand LoadAssetCommand { get; set; }
+
         public ScenarioAssetReadonlyViewModel(IRogueEventAggregator eventAggregator, DungeonObjectTemplateViewModel templateViewModel)
         {
             this.Name = templateViewModel.Name;
@@ -57,6 +79,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
             this.SymbolDetails = templateViewModel.SymbolDetails;
             this.Type = templateViewModel.GetAttribute<UITypeAttribute>().DisplayName;
             this.AssetType = templateViewModel.GetType();
+
+            this.IsObjective = templateViewModel.IsObjectiveItem;
+            this.IsUnique = templateViewModel.IsUnique;
+            this.IsCursed = templateViewModel.IsCursed;
+
+            templateViewModel.PropertyChanged += (sender, e) =>
+            {
+                this.IsObjective = templateViewModel.IsObjectiveItem;
+                this.IsUnique = templateViewModel.IsUnique;
+                this.IsCursed = templateViewModel.IsCursed;
+            };
 
             Initialize(eventAggregator);
         }

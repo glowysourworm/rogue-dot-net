@@ -1,6 +1,4 @@
-﻿using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design;
-using System.Collections.ObjectModel;
+﻿using Rogue.NET.Common.ViewModel;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Browser.Interface
@@ -8,18 +6,24 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser.Interface
     public interface IScenarioLevelBranchViewModel
     {
         string Name { get; set; }
+        bool HasObjectiveAssets { get; set; }
+        bool HasEquipmentObjectiveAssets { get; set; }
+        bool HasConsumableObjectiveAssets { get; set; }
+        bool HasEnemyObjectiveAssets { get; set; }
+        bool HasFriendlyObjectiveAssets { get; set; }
+        bool HasDoodadObjectiveAssets { get; set; }
 
         // Readonly Assets don't have Remove / Rename / Copy / Delete commands (At this Tree-view level)
         //
         // NOTE*** These tree-view branches are just to show the assets in the level branch. Clicking should
         //         just load the asset into the editor - which WILL allow editing; but the tree-view shouldn't
         //         be able to rename / copy / add / remove any of the assets at THIS level. 
-        ObservableCollection<IScenarioAssetReadonlyViewModel> Layouts { get; set; }
-        ObservableCollection<IScenarioAssetReadonlyViewModel> Equipment { get; set; }
-        ObservableCollection<IScenarioAssetReadonlyViewModel> Consumables { get; set; }
-        ObservableCollection<IScenarioAssetReadonlyViewModel> Enemies { get; set; }
-        ObservableCollection<IScenarioAssetReadonlyViewModel> Friendlies { get; set; }
-        ObservableCollection<IScenarioAssetReadonlyViewModel> Doodads { get; set; }
+        NotifyingObservableCollection<IScenarioAssetReadonlyViewModel> Layouts { get; set; }
+        NotifyingObservableCollection<IScenarioAssetReadonlyViewModel> Equipment { get; set; }
+        NotifyingObservableCollection<IScenarioAssetReadonlyViewModel> Consumables { get; set; }
+        NotifyingObservableCollection<IScenarioAssetReadonlyViewModel> Enemies { get; set; }
+        NotifyingObservableCollection<IScenarioAssetReadonlyViewModel> Friendlies { get; set; }
+        NotifyingObservableCollection<IScenarioAssetReadonlyViewModel> Doodads { get; set; }
         ICommand RemoveLevelBranchCommand { get; set; }
         ICommand LoadLevelBranchAssetsCommand { get; set; }
         ICommand CopyLevelBranchCommand { get; set; }

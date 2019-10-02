@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
-    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class Player : UserControl
     {

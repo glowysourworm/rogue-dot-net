@@ -8,6 +8,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser.Interface
     public interface IScenarioLevelViewModel
     {
         string Name { get; set; }
+        bool HasObjectiveAssets { get; set; }
         ObservableCollection<IScenarioLevelBranchViewModel> LevelBranches { get; set; }
 
         /// <summary>

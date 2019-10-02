@@ -19,17 +19,17 @@ namespace Rogue.NET.Core.Converter.ItemGrid
             bool objective = (bool)values[2];
             bool unique = (bool)values[3];
 
-            if (cursed)
-                return equiped ? Brushes.Purple : Brushes.Red;
-
-            else if (equiped)
-                return Brushes.GreenYellow;
-
-            else if (objective)
+            if (objective)
                 return Brushes.Cyan;
 
-            else if (unique)
+            if (unique)
                 return Brushes.Goldenrod;
+
+            if (cursed)
+                return Brushes.Red;
+
+            if (equiped)
+                return Brushes.GreenYellow;
 
             else
                 return Brushes.White;

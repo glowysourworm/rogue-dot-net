@@ -108,12 +108,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
             this.GradientStops.ItemPropertyChanged += OnGradientStopsItemChanged;
         }
 
-        private void OnGradientStopsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnGradientStopsItemChanged(NotifyingObservableCollection<GradientStopTemplateViewModel> item1, GradientStopTemplateViewModel item2, PropertyChangedEventArgs item3)
         {
             OnBrushUpdateEvent();
         }
 
-        private void OnGradientStopsItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnGradientStopsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnBrushUpdateEvent();
         }

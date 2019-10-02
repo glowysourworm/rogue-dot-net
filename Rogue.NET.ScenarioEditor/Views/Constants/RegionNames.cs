@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Rogue.NET.ScenarioEditor.Views.Constants
 {
     /// <summary>
-    /// Maintains Region Name handles for regions that have multiple sub-views
+    /// Maintains Region Name handles for regions that have multiple sub-views. THESE IDENTIFY SINGLETON REGIONS
     /// </summary>
     public static class RegionNames
     {

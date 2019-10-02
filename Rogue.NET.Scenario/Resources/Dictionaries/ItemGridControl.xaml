@@ -70,16 +70,6 @@
                 </MultiBinding>
             </Setter.Value>
         </Setter>
-        <Setter Property="FontStyle">
-            <Setter.Value>
-                <MultiBinding Converter="{StaticResource ItemGridFontStyleConverter}">
-                    <Binding Path="IsEquipped" />
-                    <Binding Path="IsCursed" />
-                    <Binding Path="IsObjective" />
-                    <Binding Path="IsUnique" />
-                </MultiBinding>
-            </Setter.Value>
-        </Setter>
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Style.Triggers>
@@ -359,7 +349,13 @@
     <DataTemplate x:Key="ItemGridDisplayNameCellTemplate">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
             <TextBlock Text="{Binding DisplayName}" FontSize="16" />
+            <TextBlock Text="(C)"
+                       ToolTip="Cursed!"
+                       FontSize="14"
+                       Margin="6,0,0,0"
+                       Visibility="{Binding IsCursed, Converter={StaticResource BoolVisibilityCollapseConverter}, FallbackValue=Collapsed}"/>            
             <TextBlock Text="(E)"
+                       ToolTip="Equipped"
                        FontSize="14"
                        Margin="6,0,0,0"
                        Visibility="{Binding IsEquipped, Converter={StaticResource BoolVisibilityCollapseConverter}, FallbackValue=Collapsed}"/>
