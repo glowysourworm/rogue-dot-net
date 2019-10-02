@@ -18,7 +18,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             set { this.RaiseAndSetIfChanged(ref _baseType, value); }
         }
 
-        public AlteredCharacterStateTemplateViewModel()
+        public AlteredCharacterStateTemplateViewModel() : base()
         {
             this.BaseType = CharacterStateType.Normal;
         }

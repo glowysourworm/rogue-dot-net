@@ -26,8 +26,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Design
             _eventAggregator = eventAggregator;
 
             InitializeComponent();
-
-            this.AttributeSymbolButton.DataContext = new SymbolDetailsTemplateViewModel();
         }
 
         #region Attack Attribute
@@ -42,12 +40,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Design
 
             _eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new AttackAttributeTemplateViewModel()
             {
-                Name = this.AttributeTB.Text,
-                SymbolDetails = this.AttributeSymbolButton.DataContext as SymbolDetailsTemplateViewModel
+                Name = this.AttributeTB.Text
             });
 
             this.AttributeTB.Text = "";
-            this.AttributeSymbolButton.DataContext = new SymbolDetailsTemplateViewModel();
         }
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -55,19 +51,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Design
             if (selectedItem != null)
             {
                 _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);               
-            }
-        }
-        private void AttributeSymbolButton_Click(object sender, RoutedEventArgs e)
-        {
-            var symbolDetails = this.AttributeSymbolButton.DataContext as SymbolDetailsTemplateViewModel;
-            if (symbolDetails != null)
-            {
-                var view = new SymbolEditor();
-                view.DataContext = symbolDetails;
-                view.WindowMode = true;
-                view.Width = 600;
-
-                DialogWindowFactory.Show(view, "Rogue Symbol Editor");
             }
         }
         #endregion
@@ -83,12 +66,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Design
                 return;
 
             _eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new AlteredCharacterStateTemplateViewModel()
-            {
-                // TODO:SYMBOL
-                SymbolDetails = new SymbolDetailsTemplateViewModel()
-                {
-                    
-                },
+            {                
                 Name = this.AlteredStateTB.Text,
                 BaseType = (CharacterStateType)this.AlteredStateEnumCB.EnumValue
             });
@@ -104,11 +82,24 @@ namespace Rogue.NET.ScenarioEditor.Views.Design
                 _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);
             }
         }
-
-        private void AlteredStateLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void AlteredStateSymbolButton_Click(object sender, RoutedEventArgs e)
         {
-            if (e.AddedItems.Count > 0)
-                this.AlteredStateStack.DataContext = e.AddedItems[0];
+            var button = sender as Button;
+
+            if (button != null)
+            {
+                var viewModel = button.DataContext as AlteredCharacterStateTemplateViewModel;
+                if (viewModel != null)
+                {
+                    var view = new SymbolEditor();
+                    view.DataContext = viewModel.SymbolDetails;
+
+                    view.Width = 800;
+                    view.Height = 600;
+
+                    DialogWindowFactory.Show(view, "Rogue Symbol Editor");
+                }
+            }
         }
         #endregion
     }
