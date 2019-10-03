@@ -9,6 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview.Interface
 {
     public interface IScenarioOverviewViewModel
     {
-        SeriesCollection Series { get; set; }
+        SeriesCollection Series { get; set;  }
+
+        void SetSeries(string chartName, IProjectionSetViewModel projectionSet);
     }
 }

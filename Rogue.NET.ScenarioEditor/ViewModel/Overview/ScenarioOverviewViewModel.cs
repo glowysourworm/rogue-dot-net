@@ -10,6 +10,10 @@ using LiveCharts.Wpf;
 
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.ViewModel.Overview.Interface;
+using System.Windows.Media;
+using LiveCharts.Defaults;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using System;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
 {
@@ -17,49 +21,47 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
     [Export(typeof(IScenarioOverviewViewModel))]
     public class ScenarioOverviewViewModel : NotifyViewModel, IScenarioOverviewViewModel
     {
-        readonly IScenarioOverviewCalculationService _scenarioOverviewCalculationService;
-        readonly IRogueEventAggregator _eventAggregator;
+        string _chartName;
+        public string ChartName
+        {
+            get { return _chartName; }
+            set { this.RaiseAndSetIfChanged(ref _chartName, value); }
+        }
 
         public SeriesCollection Series { get; set; }
 
-        public ScenarioOverviewViewModel(
-            IRogueEventAggregator eventAggregator,
-            IScenarioOverviewCalculationService scenarioOverviewCalculationService)
+        public ScenarioOverviewViewModel()
         {
-            _scenarioOverviewCalculationService = scenarioOverviewCalculationService;
-            _eventAggregator = eventAggregator;
-
             this.Series = new SeriesCollection();
-
-            CalculateDifficulty();
         }
 
-        private void CalculateDifficulty()
+        public void SetSeries(string chartName, IProjectionSetViewModel projectionSet)
         {
-            //// Must pass validation before plotting charts
-            //if (!this.ValidationPassed)
-            //    return;
+            this.ChartName = chartName;
 
-            //this.DifficultySeries.Clear();
-            //this.DifficultySeries.AddRange(this.Charts.Where(x => x.Show).Select(x => CreateLineSeries(x.Title, this.IncludeAttackAttributes)));
-        }
+            if (this.Series.Any())
+                this.Series.Clear();
 
-        private LineSeries CreateLineSeries(string chartTitle, bool includeAttackAttributes)
-        {
-            var lineSeries = new LineSeries()
+            var hueLimit = Math.PI * 2.0;
+
+            for (int i=0;i<projectionSet.Count;i++)
             {
-                Title = chartTitle,
-                StrokeThickness = 2,
-                PointGeometrySize = 12,
-                Fill = null
-            };
+                var lineSeries = new LineSeries()
+                {
+                    Title = projectionSet.GetProjection(i).Key,
+                    StrokeThickness = 2,
+                    PointGeometrySize = 12,
+                    Fill = null
+                };
 
-            //lineSeries.Stroke = Brushes.GreenYellow;
-            //lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
-            //                        .CalculateHungerCurve(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
-            //                        .Select(x => new ObservablePoint(x.Level, x.Average)));
+                var projection = projectionSet.GetProjection(i).Value;
+                var points = projection.Select(x => new ObservablePoint(x.Level, x.Mean));
 
-            return lineSeries;
+                lineSeries.Stroke = BrushFilter.ShiftHSL(Brushes.Red, i * (hueLimit / projectionSet.Count), 0, 0, false);
+                lineSeries.Values = new ChartValues<ObservablePoint>(points);
+
+                this.Series.Add(lineSeries);
+            }
         }
     }
 }

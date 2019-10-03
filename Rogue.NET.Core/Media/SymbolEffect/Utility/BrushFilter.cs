@@ -57,9 +57,11 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 
         private static Brush ApplyFilter(Brush brush, Func<Color, Color> filter)
         {
+            // NOTE*** Using brush clones to apply changes to avoid freezable issues
+
             if (brush is SolidColorBrush)
             {
-                var solidColorBrush = brush as SolidColorBrush;
+                var solidColorBrush = brush.Clone() as SolidColorBrush;
 
                 solidColorBrush.Color = filter(solidColorBrush.Color);
 
@@ -67,7 +69,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             }
             else if (brush is LinearGradientBrush)
             {
-                var linearBrush = brush as LinearGradientBrush;
+                var linearBrush = brush.Clone() as LinearGradientBrush;
 
                 foreach (var stop in linearBrush.GradientStops)
                     stop.Color = filter(stop.Color);
@@ -76,7 +78,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             }
             else if (brush is RadialGradientBrush)
             {
-                var radialBrush = brush as RadialGradientBrush;
+                var radialBrush = brush.Clone() as RadialGradientBrush;
 
                 foreach (var stop in radialBrush.GradientStops)
                     stop.Color = filter(stop.Color);

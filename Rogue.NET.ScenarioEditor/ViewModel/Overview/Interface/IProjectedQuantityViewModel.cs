@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty.Interface
+namespace Rogue.NET.ScenarioEditor.ViewModel.Overview.Interface
 {
     public interface IProjectedQuantityViewModel
     {
-        double Low { get; set; }
-        double High { get; set; }
-        double Average { get; set; }
+        double Variance { get; set; }
+        double Mean { get; set; }
         int Level { get; set; }
+        string SeriesName { get; set; }
     }
 }

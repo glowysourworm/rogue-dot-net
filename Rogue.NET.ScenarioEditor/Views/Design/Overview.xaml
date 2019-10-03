@@ -20,83 +20,38 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Grid Background="Black" Visibility="{Binding ValidationPassed, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="250" />
-            </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <!-- Chart Title -->
+        <TextBlock Text="{Binding ChartName}" Foreground="White" FontSize="24" HorizontalAlignment="Center" />
 
-            <!-- Chart Area -->
-            <chart:CartesianChart Series="{Binding DifficultySeries}"
+        <!-- Chart Area -->
+        <chart:CartesianChart Series="{Binding Series }"
                               LegendLocation="None"
                               Foreground="White"
                               FontSize="16"
                               Margin="8"
                               Padding="8"
+                              Grid.Row="1"
                               x:Name="Chart">
-                <chart:CartesianChart.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#0F0000FF" Offset="0"/>
-                        <GradientStop Color="#FF000000" Offset="0.8"/>
-                    </LinearGradientBrush>
-                </chart:CartesianChart.Background>
-                <chart:CartesianChart.DataTooltip>
-                    <controls:ScenarioDifficultyChartTooltip />
-                </chart:CartesianChart.DataTooltip>
-                <chart:CartesianChart.AxisX>
-                    <chart:Axis Title="Scenario Level" FontSize="14" />
-                </chart:CartesianChart.AxisX>
-                <chart:CartesianChart.AxisY>
-                    <chart:Axis FontSize="14" />
-                </chart:CartesianChart.AxisY>
-            </chart:CartesianChart>
-
-            <TabControl Grid.Column="1" Background="Black">
-                <TabItem Header="Difficulty Charts" Background="Black">
-                    <!-- Chart Selector -->
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Button Style="{StaticResource ActionButton}" Command="{Binding CalculateCommand}" Width="80" Content="Calculate!" Padding="4" Margin="8" HorizontalAlignment="Right" />
-                        <!--Grid Margin="6" Grid.Row="1">
-                            <TextBlock FontSize="16" Foreground="LightSteelBlue" Text="Attack Attributes" HorizontalAlignment="Left" />
-                            <CheckBox IsChecked="{Binding IncludeAttackAttributes}" HorizontalAlignment="Right" />
-                        </-->
-                        <ListBox ItemsSource="{Binding Charts}" 
-                                 Margin="4" Grid.Row="2"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}"
-                                 Style="{StaticResource DarkListBoxStyle}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="2">
-                                        <TextBlock FontSize="16" Foreground="Beige" Text="{Binding Title}" HorizontalAlignment="Left" />
-                                        <CheckBox IsChecked="{Binding Show}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Included Assets" Background="Black">
-                    <!-- Included Assets -->
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                          VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TreeView x:Name="AssetTreeView"
-                              ItemContainerStyle="{DynamicResource AssetBrowserItemContainerStyle}" 
-                              Style="{DynamicResource AssetBrowserStyle}">
-                                <TreeViewItem x:Name="EnemiesItem" ItemsSource="{Binding Source={StaticResource EnemyAssetViewSource}}" ItemTemplate="{StaticResource DifficultyAssetDataTemplate}" Header="Enemies" />
-                                <TreeViewItem x:Name="EquipmentItem" ItemsSource="{Binding Source={StaticResource EquipmentAssetViewSource}}" ItemTemplate="{StaticResource DifficultyAssetDataTemplate}" Header="Equipment" />
-                                <TreeViewItem x:Name="ConsumablesItem" ItemsSource="{Binding Source={StaticResource ConsumableAssetViewSource}}" ItemTemplate="{StaticResource DifficultyAssetDataTemplate}" Header="Consumables" />
-                            </TreeView>
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-            </TabControl>
-        </Grid>
+            <chart:CartesianChart.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#0F0000FF" Offset="0"/>
+                    <GradientStop Color="#FF000000" Offset="0.8"/>
+                </LinearGradientBrush>
+            </chart:CartesianChart.Background>
+            <chart:CartesianChart.DataTooltip>
+                <controls:ScenarioDifficultyChartTooltip />
+            </chart:CartesianChart.DataTooltip>
+            <chart:CartesianChart.AxisX>
+                <chart:Axis Title="Scenario Level" FontSize="20" Foreground="White" />
+            </chart:CartesianChart.AxisX>
+            <chart:CartesianChart.AxisY>
+                <chart:Axis Title="Quantity" FontSize="20" Foreground="White" />
+            </chart:CartesianChart.AxisY>
+        </chart:CartesianChart>
     </Grid>
 </UserControl>

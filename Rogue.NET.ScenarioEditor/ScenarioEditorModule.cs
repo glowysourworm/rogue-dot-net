@@ -49,6 +49,9 @@ namespace Rogue.NET.ScenarioEditor
         readonly IScenarioConfigurationUndoService _undoService;
         readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
         readonly IScenarioCollectionProvider _scenarioCollectionProvider;
+        readonly IScenarioOverviewCalculationService _scenarioOverviewCalculationService;
+
+        DesignMode _designMode;
 
         [ImportingConstructor]
         public ScenarioEditorModule(
@@ -58,7 +61,8 @@ namespace Rogue.NET.ScenarioEditor
             IScenarioEditorController scenarioEditorController,
             IScenarioConfigurationUndoService scenarioConfigurationUndoService,
             IScenarioAssetReferenceService scenarioAssetReferenceService,
-            IScenarioCollectionProvider scenarioCollectionProvider)
+            IScenarioCollectionProvider scenarioCollectionProvider,
+            IScenarioOverviewCalculationService scenarioOverviewCalculationService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
@@ -67,6 +71,7 @@ namespace Rogue.NET.ScenarioEditor
             _undoService = scenarioConfigurationUndoService;
             _scenarioAssetReferenceService = scenarioAssetReferenceService;
             _scenarioCollectionProvider = scenarioCollectionProvider;
+            _scenarioOverviewCalculationService = scenarioOverviewCalculationService;
         }
 
         public void Initialize()
@@ -80,6 +85,9 @@ namespace Rogue.NET.ScenarioEditor
             RegisterGeneralAssetEvents();
             RegisterLevelDesignEvents();
             RegisterAlterationEffectEvents();
+
+            // Start in general design mode
+            ChangeDesignMode(DesignMode.General);
         }
         private void RegisterEditorEvents()
         {
@@ -619,21 +627,48 @@ namespace Rogue.NET.ScenarioEditor
             // Get the asset for loading into the design region
             var viewModel = _scenarioAssetController.GetAsset(assetViewModel.Name, assetViewModel.AssetType);
 
-            // Get the view name for this asset type
-            var viewType = assetViewModel.AssetType.GetAttribute<UITypeAttribute>().ViewType;
+            switch (_designMode)
+            {
+                default:
+                case DesignMode.General:
+                case DesignMode.Level:
+                case DesignMode.Validation:
+                    {
+                        // The default is to load asset region with asset data
 
-            // Region load AssetContainerControl -> Load Sub-Region with Asset View
-            var assetContainerView = _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(AssetContainerControl));
-            var assetView = _regionManager.LoadSingleInstance(RegionNames.AssetContainerRegion, viewType);
+                        // Get the view name for this asset type
+                        var viewType = assetViewModel.AssetType.GetAttribute<UITypeAttribute>().ViewType;
 
-            assetContainerView.DataContext = assetViewModel;
-            assetView.DataContext = viewModel;
+                        // Region load AssetContainerControl -> Load Sub-Region with Asset View
+                        var assetContainerView = _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(AssetContainerControl));
+                        var assetView = _regionManager.LoadSingleInstance(RegionNames.AssetContainerRegion, viewType);
+
+                        assetContainerView.DataContext = assetViewModel;
+                        assetView.DataContext = viewModel;
+
+                        // GO AHEAD AND PRE-CALCULATE ASSET OVERVIEW
+
+                        // Calculate an overview for the asset
+                        _scenarioOverviewCalculationService.CalculateOverview(viewModel);
+                    }
+                    break;
+                case DesignMode.Overview:
+                    {
+                        // For overview mode - calculate the asset overview
+
+                        // Calculate an overview for the asset
+                        _scenarioOverviewCalculationService.CalculateOverview(viewModel);
+                    }
+                    break;
+            }
 
             // Unblock the undo service
             _undoService.UnBlock();
         }
         private void ChangeDesignMode(DesignMode mode)
         {
+            _designMode = mode;
+
             // Load Design Region / Browser Region with appropriate view(s)
             switch (mode)
             {
@@ -647,7 +682,7 @@ namespace Rogue.NET.ScenarioEditor
                     _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
                     break;
                 case DesignMode.Overview:
-                    _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioLevelBrowser));
+                    _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
                     _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(Overview));
                     break;
                 case DesignMode.Validation:

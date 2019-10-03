@@ -336,10 +336,12 @@
     <Compile Include="Service\Interface\IScenarioCollectionProvider.cs" />
     <Compile Include="Service\Interface\IScenarioConfigurationUndoService.cs" />
     <Compile Include="Service\Interface\IScenarioOverviewCalculationService.cs" />
+    <Compile Include="Service\Interface\IScenarioSimulationService.cs" />
     <Compile Include="Service\ScenarioAssetReferenceService.cs" />
     <Compile Include="Service\ScenarioCollectionProvider.cs" />
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
     <Compile Include="Service\ScenarioOverviewCalculationService.cs" />
+    <Compile Include="Service\ScenarioSimulationService.cs" />
     <Compile Include="Utility\DialogWindowFactory.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\ScenarioConfigurationMapper.cs" />
@@ -349,8 +351,7 @@
     <Compile Include="Utility\Undo\UndoPropertyChangedEventArgs.cs" />
     <Compile Include="Utility\Undo\UndoPropertyChangingEventArgs.cs" />
     <Compile Include="ViewModel\Attribute\UITypeAttribute.cs" />
-    <Compile Include="ViewModel\Overview\OverviewChartViewModel.cs" />
-    <Compile Include="ViewModel\Overview\Interface\IOverviewChartViewModel.cs" />
+    <Compile Include="ViewModel\Overview\Interface\IProjectionSetViewModel.cs" />
     <Compile Include="ViewModel\Overview\Interface\IProjectedQuantityViewModel.cs" />
     <Compile Include="ViewModel\Overview\ProjectedQuantityViewModel.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
@@ -368,6 +369,7 @@
     <Compile Include="ViewModel\Browser\ScenarioAssetGroupViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioAssetReadonlyViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioAssetViewModel.cs" />
+    <Compile Include="ViewModel\Overview\ProjectionSetViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\DungeonObjectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolDetailsTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\TemplateViewModel.cs" />

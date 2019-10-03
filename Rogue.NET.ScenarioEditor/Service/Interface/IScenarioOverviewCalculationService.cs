@@ -1,6 +1,4 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.Difficulty.Interface;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
-using System.Collections.Generic;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 
 namespace Rogue.NET.ScenarioEditor.Service.Interface
 {
@@ -9,6 +7,9 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
     /// </summary>
     public interface IScenarioOverviewCalculationService
     {
-
+        /// <summary>
+        /// Calculates overview for the provided asset and stores the results in the appropriate place
+        /// </summary>
+        void CalculateOverview(TemplateViewModel templateViewModel);
     }
 }

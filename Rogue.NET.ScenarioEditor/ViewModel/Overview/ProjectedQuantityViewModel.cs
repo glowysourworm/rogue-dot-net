@@ -1,34 +1,38 @@
 ﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.ScenarioEditor.ViewModel.Difficulty.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.Overview.Interface;
 
-namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty
+namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
 {
     public class ProjectedQuantityViewModel : NotifyViewModel, IProjectedQuantityViewModel
     {
-        double _low;
-        double _high;
-        double _average;
+        string _seriesName;
+        double _variance;
+        double _mean;
         int _level;
 
-        public double Low
+        public double Variance
         {
-            get { return _low; }
-            set { this.RaiseAndSetIfChanged(ref _low, value); }
+            get { return _variance; }
+            set { this.RaiseAndSetIfChanged(ref _variance, value); }
         }
-        public double High
+        public double Mean
         {
-            get { return _high; }
-            set { this.RaiseAndSetIfChanged(ref _high, value); }
-        }
-        public double Average
-        {
-            get { return _average; }
-            set { this.RaiseAndSetIfChanged(ref _average, value); }
+            get { return _mean; }
+            set { this.RaiseAndSetIfChanged(ref _mean, value); }
         }
         public int Level
         {
             get { return _level; }
             set { this.RaiseAndSetIfChanged(ref _level, value); }
+        }
+        public string SeriesName
+        {
+            get { return _seriesName; }
+            set { this.RaiseAndSetIfChanged(ref _seriesName, value); }
+        }
+        public ProjectedQuantityViewModel()
+        {
+
         }
     }
 }
