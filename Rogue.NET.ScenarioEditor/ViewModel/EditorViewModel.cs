@@ -25,6 +25,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
         ScenarioConfigurationContainerViewModel _configuration;
         string _scenarioName;
+        bool _hasChanges;
 
 
         // Required configuration reference for binding global collections
@@ -37,6 +38,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         {
             get { return _scenarioName; }
             set { this.RaiseAndSetIfChanged(ref _scenarioName, value); }
+        }
+        public bool HasChanges
+        {
+            get { return _hasChanges; }
+            set { this.RaiseAndSetIfChanged(ref _hasChanges, value); }
         }
         public ICommand ExitCommand { get; private set; }
         public ICommand LoadBuiltInCommand { get; private set; }
@@ -55,6 +61,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             _rogueUndoService = rogueUndoService;
 
             this.ScenarioName = "My Scenario";
+            this.HasChanges = false;
 
             Initialize();
         }
@@ -66,12 +73,19 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 this.Configuration = e.Configuration;
                 this.ScenarioName = e.Configuration.ScenarioDesign.Name;
+                this.HasChanges = false;
+            });
+
+            // Listen for scenario changes
+            _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(scenarioCollectionProvider =>
+            {
+                this.HasChanges = true;
             });
 
             // Commands           
             this.SaveCommand = new DelegateCommand<string>((name) =>
             {
-                _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().Publish();
+                _eventAggregator.GetEvent<SaveScenarioEvent>().Publish();
             });
             this.OpenCommand = new DelegateCommand(() =>
             {

@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 
-namespace Rogue.NET.ScenarioEditor.Events
+namespace Rogue.NET.ScenarioEditor.Events.Asset
 {
     /// <summary>
     /// Event class to specify adding a shared asset to the Scenario Configuration. This 

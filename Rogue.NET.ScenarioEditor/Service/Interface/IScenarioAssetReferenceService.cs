@@ -59,5 +59,15 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         /// Updates SkillSet references on Player, and Alterations
         /// </summary>
         void UpdateSkillSets();
+
+        /// <summary>
+        /// Updates Doodad references for level branches 
+        /// </summary>
+        void UpdateDoodads();
+
+        /// <summary>
+        /// Updates Layout references for level branches
+        /// </summary>
+        void UpdateLayouts();
     }
 }

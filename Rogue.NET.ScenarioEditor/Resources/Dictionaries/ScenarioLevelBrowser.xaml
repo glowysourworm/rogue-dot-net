@@ -496,7 +496,7 @@
                                               Tag="{x:Type contentViewModel:DoodadTemplateViewModel}">
                                     <TreeViewItem.Header>
                                         <TextBlock FontSize="{TemplateBinding FontSize}">
-                                            <Run Text="Doodads (" />
+                                            <Run Text="Scenario Objects (" />
                                             <Run Text="{Binding Doodads.Count, Mode=OneWay}" />
                                             <Run Text=")" />
                                             <TextBlock.Foreground>

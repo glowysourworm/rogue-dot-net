@@ -18,8 +18,8 @@ using Rogue.NET.Core.Processing.Model.Static;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
-    [Export(typeof(IScenarioDifficultyCalculationService))]
-    public class ScenarioDifficultyCalculationService : IScenarioDifficultyCalculationService
+    [Export(typeof(IScenarioOverviewCalculationService))]
+    public class ScenarioOverviewCalculationService : IScenarioOverviewCalculationService
     {
 
     }

@@ -6,6 +6,11 @@ namespace Rogue.NET.ScenarioEditor.Controller.Interface
     {
         ScenarioConfigurationContainerViewModel CurrentConfig { get; }
 
+        /// <summary>
+        /// Runs a validation routine and publishes the result to the IScenarioValidationViewModel
+        /// </summary>
+        void Validate();
+
         void New();
         void Open(string name, bool builtIn);
         void Save();

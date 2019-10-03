@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
+using Rogue.NET.ScenarioEditor.Events.Asset.Alteration;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
 {

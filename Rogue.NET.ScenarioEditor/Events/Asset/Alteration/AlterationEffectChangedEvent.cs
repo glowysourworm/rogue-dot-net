@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.ScenarioEditor.Events
+namespace Rogue.NET.ScenarioEditor.Events.Asset.Alteration
 {
     public class AlterationEffectChangedEventArgs : EventArgs
     {

@@ -11,9 +11,12 @@ using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
+using Rogue.NET.ScenarioEditor.ViewModel.Validation.Interface;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Windows;
 
 namespace Rogue.NET.Controller.ScenarioEditor
@@ -23,12 +26,14 @@ namespace Rogue.NET.Controller.ScenarioEditor
     public class ScenarioEditorController : IScenarioEditorController
     {
         readonly IRogueEventAggregator _eventAggregator;
-        readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
         readonly IScenarioConfigurationUndoService _rogueUndoService;
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
         readonly IScenarioValidationService _scenarioValidationService;
         readonly IAlterationNameService _alterationNameService;
+
+        // Validation view model depends on controller services
+        readonly IScenarioValidationViewModel _scenarioValidationViewModel;
 
         readonly ScenarioConfigurationMapper _configurationMapper;
 
@@ -37,20 +42,21 @@ namespace Rogue.NET.Controller.ScenarioEditor
         [ImportingConstructor]
         public ScenarioEditorController(
             IRogueEventAggregator eventAggregator,
-            IScenarioAssetReferenceService scenarioAssetReferenceService,
             IScenarioConfigurationUndoService rogueUndoService,
             IScenarioResourceService scenarioResourceService,
             IScenarioFileService scenarioFileService,
             IScenarioValidationService scenarioValidationService,
-            IAlterationNameService alterationNameService)
+            IAlterationNameService alterationNameService,
+            IScenarioValidationViewModel scenarioValidationViewModel)
         {
             _eventAggregator = eventAggregator;
             _rogueUndoService = rogueUndoService;
-            _scenarioAssetReferenceService = scenarioAssetReferenceService;
             _scenarioResourceService = scenarioResourceService;
             _scenarioFileService = scenarioFileService;
             _scenarioValidationService = scenarioValidationService;
             _alterationNameService = alterationNameService;
+
+            _scenarioValidationViewModel = scenarioValidationViewModel;
 
             _configurationMapper = new ScenarioConfigurationMapper();
 
@@ -86,7 +92,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
                 New();
             });
         }
-
         public void New()
         {
             // Have to keep Undo Service in sync with the configuration
@@ -96,6 +101,9 @@ namespace Rogue.NET.Controller.ScenarioEditor
             // Create new Scenario Configuration
             _config = new ScenarioConfigurationContainerViewModel();
 
+            // Clear validation flags
+            _scenarioValidationViewModel.Clear();
+
             // Register with the Undo Service
             _rogueUndoService.Register(_config);
 
@@ -104,7 +112,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             PublishOutputMessage("Created Scenario " + _config.ScenarioDesign.Name);
         }
-
         public void Open(string name, bool builtIn)
         {
             // Show Splash Screen
@@ -131,6 +138,9 @@ namespace Rogue.NET.Controller.ScenarioEditor
             // Map to the view model
             _config = _configurationMapper.Map(config, out scenarioBrushes);
 
+            // Clear validation flags
+            _scenarioValidationViewModel.Clear();
+
             // Register with the Undo Service
             _rogueUndoService.Register(_config);
 
@@ -146,7 +156,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             PublishOutputMessage("Opened Scenario " + name);
         }
-
         public void Save()
         {
             Save(false);
@@ -169,7 +178,15 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             // Validate - if invalid and user chooses not to proceed - then hide the splash display and
             //            return.
-            if (!_scenarioValidationService.IsValid(config) &&
+            //
+            var validationMessages = _scenarioValidationService.Validate(config);
+
+            // Publish the validation results to the scenario validation view model
+            _scenarioValidationViewModel.Set(validationMessages);
+
+            // Validate - if invalid and user chooses not to proceed - then hide the splash display and
+            //            return.
+            if (!_scenarioValidationViewModel.ValidationPassed &&
                  MessageBox.Show("Scenario is not valid and will not be playable. Save anyway?",
                                  "Scenario Invalid",
                                  MessageBoxButton.YesNoCancel) != MessageBoxResult.Yes)
@@ -202,7 +219,22 @@ namespace Rogue.NET.Controller.ScenarioEditor
                 SplashType = SplashEventType.Loading
             });
         }
+        public void Validate()
+        {
+            // SET ALTERATION EFFECT NAMES BEFORE MAPPING (THIS COULD BE REDESIGNED)
+            _alterationNameService.Execute(_config);
 
+            // Map back to the model namespace
+            var config = _configurationMapper.MapBack(_config);
+
+            // Validate - if invalid and user chooses not to proceed - then hide the splash display and
+            //            return.
+            //
+            var validationMessages = _scenarioValidationService.Validate(config);
+
+            // Publish the validation results to the scenario validation view model
+            _scenarioValidationViewModel.Set(validationMessages);
+        }
         private void PublishOutputMessage(string msg)
         {
             _eventAggregator.GetEvent<ScenarioEditorMessageEvent>().Publish(new ScenarioEditorMessageEventArgs()

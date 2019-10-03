@@ -8,9 +8,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
         ScenarioConfigurationContainerViewModel Configuration { get; }
 
         string ScenarioName { get; set; }
+        bool HasChanges { get; set; }
 
         ICommand ExitCommand { get; }
-
         ICommand LoadBuiltInCommand { get; }
         ICommand SaveCommand { get; }
         ICommand NewCommand { get; }

@@ -157,7 +157,7 @@ namespace Rogue.NET.ScenarioEditor.Controller
             { }
 
             else if (assetType == typeof(LayoutTemplateViewModel))
-            { }
+                _scenarioAssetReferenceService.UpdateLayouts();
 
             else if (assetType == typeof(EnemyTemplateViewModel))
                 _scenarioAssetReferenceService.UpdateNonPlayerCharacters();
@@ -172,7 +172,7 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 _scenarioAssetReferenceService.UpdateItems();
 
             else if (assetType == typeof(DoodadTemplateViewModel))
-            { }
+                _scenarioAssetReferenceService.UpdateDoodads();
 
             else if (assetType == typeof(SkillSetTemplateViewModel))
                 _scenarioAssetReferenceService.UpdateSkillSets();

@@ -4,7 +4,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.Difficulty.Interface;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty
 {
-    public class DifficultyChartViewModel : NotifyViewModel, IDifficultyChartViewModel
+    public class OverviewChartViewModel : NotifyViewModel, IOverviewChartViewModel
     {
         string _title;
         bool _show;

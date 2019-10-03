@@ -4,7 +4,12 @@
              xmlns:input="clr-namespace:System.Windows.Input;assembly=System"
              xmlns:design="clr-namespace:Rogue.NET.ScenarioEditor.Views.Design">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Editor.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Editor.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>    
     <Grid>
         <Grid.RowDefinitions>
@@ -20,7 +25,34 @@
             <ListBoxItem x:Name="GeneralItem" Content="General" />
             <ListBoxItem x:Name="LevelDesign" Content="Level Design" />
             <ListBoxItem x:Name="ScenarioDesignOverviewItem" Content="Overview" />
-            <ListBoxItem x:Name="ValidationItem" Content="Validation" />
+            <ListBoxItem x:Name="ValidationItem">
+                <Grid>
+                    <TextBlock Text="Validation" HorizontalAlignment="Left" />
+                    <TextBlock Text="(Not Run)" Foreground="LightGray" HorizontalAlignment="Right">
+                        <TextBlock.Visibility>
+                            <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}" Mode="OneWay">
+                                <Binding Path="ValidationRequired" />
+                            </MultiBinding>
+                        </TextBlock.Visibility>
+                    </TextBlock>
+                    <TextBlock Text="(Passed)" Foreground="White" HorizontalAlignment="Right">
+                        <TextBlock.Visibility>
+                            <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}" Mode="OneWay">
+                                <Binding Path="ValidationRequired" Converter="{StaticResource BoolInverseConverter}" />
+                                <Binding Path="ValidationPassed" />
+                            </MultiBinding>
+                        </TextBlock.Visibility>
+                    </TextBlock>
+                    <TextBlock Text="(Failed)" Foreground="Red" HorizontalAlignment="Right">
+                        <TextBlock.Visibility>
+                            <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}" Mode="OneWay">
+                                <Binding Path="ValidationRequired" Converter="{StaticResource BoolInverseConverter}" />
+                                <Binding Path="ValidationPassed" Converter="{StaticResource BoolInverseConverter}" />
+                            </MultiBinding>
+                        </TextBlock.Visibility>                        
+                    </TextBlock>
+                </Grid>
+            </ListBoxItem>
         </ListBox>
     </Grid>
 </UserControl>

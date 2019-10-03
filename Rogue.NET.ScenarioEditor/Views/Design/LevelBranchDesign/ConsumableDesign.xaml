@@ -22,7 +22,7 @@
         <!-- Consumables Generation -->
         <Grid Margin="10">
             <TextBlock Text="Consumable Placement (# Draws)" Foreground="White" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
-            <controls:Range Width="160" FontSize="18" DataContext="{Binding ConsumableGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="20" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            <controls:Range Width="200" FontSize="18" DataContext="{Binding ConsumableGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="20" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
         </Grid>
 
         <!-- Consumables -->

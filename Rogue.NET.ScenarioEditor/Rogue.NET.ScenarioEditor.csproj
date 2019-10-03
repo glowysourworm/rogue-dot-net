@@ -289,6 +289,8 @@
     <Compile Include="Converter\ScenarioAssetBrowserSelectionBackgroundConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
+    <Compile Include="Converter\ValidationPassedForegroundConverter.cs" />
+    <Compile Include="Converter\ValidationPassedConverter.cs" />
     <Compile Include="Events\Asset\RenameScenarioAssetEvent.cs" />
     <Compile Include="Events\Browser\AddLevelBranchEvent.cs" />
     <Compile Include="Events\Browser\AddAssetEvent.cs" />
@@ -333,11 +335,11 @@
     <Compile Include="Service\Interface\IScenarioAssetReferenceService.cs" />
     <Compile Include="Service\Interface\IScenarioCollectionProvider.cs" />
     <Compile Include="Service\Interface\IScenarioConfigurationUndoService.cs" />
-    <Compile Include="Service\Interface\IScenarioDifficultyCalculationService.cs" />
+    <Compile Include="Service\Interface\IScenarioOverviewCalculationService.cs" />
     <Compile Include="Service\ScenarioAssetReferenceService.cs" />
     <Compile Include="Service\ScenarioCollectionProvider.cs" />
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
-    <Compile Include="Service\ScenarioDifficultyCalculationService.cs" />
+    <Compile Include="Service\ScenarioOverviewCalculationService.cs" />
     <Compile Include="Utility\DialogWindowFactory.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\ScenarioConfigurationMapper.cs" />
@@ -347,10 +349,10 @@
     <Compile Include="Utility\Undo\UndoPropertyChangedEventArgs.cs" />
     <Compile Include="Utility\Undo\UndoPropertyChangingEventArgs.cs" />
     <Compile Include="ViewModel\Attribute\UITypeAttribute.cs" />
-    <Compile Include="ViewModel\Difficulty\DifficultyChartViewModel.cs" />
-    <Compile Include="ViewModel\Difficulty\Interface\IDifficultyChartViewModel.cs" />
-    <Compile Include="ViewModel\Difficulty\Interface\IProjectedQuantityViewModel.cs" />
-    <Compile Include="ViewModel\Difficulty\ProjectedQuantityViewModel.cs" />
+    <Compile Include="ViewModel\Overview\OverviewChartViewModel.cs" />
+    <Compile Include="ViewModel\Overview\Interface\IOverviewChartViewModel.cs" />
+    <Compile Include="ViewModel\Overview\Interface\IProjectedQuantityViewModel.cs" />
+    <Compile Include="ViewModel\Overview\ProjectedQuantityViewModel.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
     <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioAssetBrowserViewModel.cs" />
@@ -358,7 +360,7 @@
     <Compile Include="ViewModel\Browser\Interface\IScenarioAssetReadonlyViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioAssetViewModel.cs" />
     <Compile Include="ViewModel\Interface\IScenarioConstructionViewModel.cs" />
-    <Compile Include="ViewModel\Interface\IScenarioDifficultyViewModel.cs" />
+    <Compile Include="ViewModel\Overview\Interface\IScenarioOverviewViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioLevelBranchViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioLevelBrowserViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioLevelViewModel.cs" />
@@ -456,10 +458,12 @@
       <LastGenOutput>ScenarioConfigurationContainer.Designer.cs</LastGenOutput>
     </Compile>
     <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationData.cs" />
-    <Compile Include="ViewModel\ScenarioDesignOverviewViewModel.cs" />
+    <Compile Include="ViewModel\Overview\ScenarioOverviewViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioLevelBranchViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioLevelBrowserViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioLevelViewModel.cs" />
+    <Compile Include="ViewModel\Validation\Interface\IScenarioValidationViewModel.cs" />
+    <Compile Include="ViewModel\Validation\ScenarioValidationViewModel.cs" />
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateTemporaryCharacterEffectParameters.xaml.cs">
       <DependentUpon>CreateTemporaryCharacterEffectParameters.xaml</DependentUpon>
     </Compile>
@@ -669,9 +673,6 @@
     <Compile Include="Views\Design\General.xaml.cs">
       <DependentUpon>General.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Design\ObjectiveDesign.xaml.cs">
-      <DependentUpon>ObjectiveDesign.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Controls\AnimationPreviewControl.xaml.cs">
       <DependentUpon>AnimationPreviewControl.xaml</DependentUpon>
     </Compile>
@@ -730,6 +731,9 @@
     <Compile Include="Views\Assets\AssetContainerControl.xaml.cs">
       <DependentUpon>AssetContainerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Design\Validation.xaml.cs">
+      <DependentUpon>Validation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditorInstructions.xaml.cs">
       <DependentUpon>EditorInstructions.xaml</DependentUpon>
     </Compile>
@@ -746,8 +750,8 @@
     <Compile Include="Views\ScenarioDesign.xaml.cs">
       <DependentUpon>ScenarioDesign.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Design\ScenarioDesignOverview.xaml.cs">
-      <DependentUpon>ScenarioDesignOverview.xaml</DependentUpon>
+    <Compile Include="Views\Design\Overview.xaml.cs">
+      <DependentUpon>Overview.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Browser\ScenarioLevelBrowser.xaml.cs">
       <DependentUpon>ScenarioLevelBrowser.xaml</DependentUpon>
@@ -769,6 +773,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Dictionaries\ScenarioAssetBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\Validation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1048,10 +1056,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Design\ObjectiveDesign.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Controls\AnimationPreviewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1124,6 +1128,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Design\Validation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditorInstructions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1144,7 +1152,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Design\ScenarioDesignOverview.xaml">
+    <Page Include="Views\Design\Overview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

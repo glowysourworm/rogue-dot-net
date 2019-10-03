@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.Validation.Interface;
 using Rogue.NET.ScenarioEditor.Views.Constants;
 using Rogue.NET.ScenarioEditor.Views.Design;
 using System.ComponentModel.Composition;
@@ -11,9 +12,11 @@ namespace Rogue.NET.ScenarioEditor.Views
     public partial class ScenarioDesign : UserControl
     {
         [ImportingConstructor]
-        public ScenarioDesign(IRogueEventAggregator eventAggregator)
+        public ScenarioDesign(IRogueEventAggregator eventAggregator, IScenarioValidationViewModel scenarioValidationViewModel)
         {
             InitializeComponent();
+
+            this.ValidationItem.DataContext = scenarioValidationViewModel;
 
             this.GeneralItem.PreviewMouseDown += (sender, e) =>
             {

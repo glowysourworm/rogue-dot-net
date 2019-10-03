@@ -58,7 +58,7 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdatePlayerClasses()
         {
-            // Nothing to do while Character Class is stored as a string
+            // Nothing to do while player class is stored as a string
         }
 
         public void UpdateAlteredCharacterStates()
@@ -90,7 +90,25 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateNonPlayerCharacters()
         {
-            // TODO ?  => Non Player Character Asset Collections Changed: {Friendly, Enemy}
+            // Update Level Branches
+            foreach (var branch in _scenarioCollectionProvider.Levels
+                                                              .SelectMany(x => x.LevelBranches)
+                                                              .Select(x => x.LevelBranch))
+            {
+                // Enemies
+                for (int i = branch.Enemies.Count - 1; i >= 0; i--)
+                {
+                    if (!_scenarioCollectionProvider.Enemies.Contains(branch.Enemies[i].Asset))
+                        branch.Enemies.RemoveAt(i);
+                }
+
+                // Friendlies
+                for (int i = branch.Friendlies.Count - 1; i >= 0; i--)
+                {
+                    if (!_scenarioCollectionProvider.Friendlies.Contains(branch.Friendlies[i].Asset))
+                        branch.Friendlies.RemoveAt(i);
+                }
+            }
         }
 
         public void UpdateItems()
@@ -115,6 +133,26 @@ namespace Rogue.NET.ScenarioEditor.Service
                 UpdateStartingConsumablesCollection(_scenarioCollectionProvider.Consumables, player.StartingConsumables);
                 UpdateStartingEquipmentCollection(_scenarioCollectionProvider.Equipment, player.StartingEquipment);
             }
+
+            // Update Level Branches (Asset references are shared - so starting items already set)
+            foreach (var branch in _scenarioCollectionProvider.Levels
+                                                              .SelectMany(x => x.LevelBranches)
+                                                              .Select(x => x.LevelBranch))
+            {
+                // Consumables
+                for (int i = branch.Consumables.Count - 1; i >= 0; i--)
+                {
+                    if (!_scenarioCollectionProvider.Consumables.Contains(branch.Consumables[i].Asset))
+                        branch.Consumables.RemoveAt(i);
+                }
+
+                // Equipment
+                for (int i = branch.Equipment.Count - 1; i >= 0; i--)
+                {
+                    if (!_scenarioCollectionProvider.Equipment.Contains(branch.Equipment[i].Asset))
+                        branch.Equipment.RemoveAt(i);
+                }
+            }
         }
 
         public void UpdateSkillSets()
@@ -131,6 +169,37 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Player Starting Skills
             foreach (var player in _scenarioCollectionProvider.PlayerClasses)
                 UpdateCollection(_scenarioCollectionProvider.SkillSets, player.Skills);
+        }
+
+        public void UpdateLayouts()
+        {
+            // Update Level Branches (Asset references are shared)
+            foreach (var branch in _scenarioCollectionProvider.Levels
+                                                              .SelectMany(x => x.LevelBranches)
+                                                              .Select(x => x.LevelBranch))
+            {
+                // Layouts
+                for (int i = branch.Layouts.Count - 1; i >= 0; i--)
+                {
+                    if (!_scenarioCollectionProvider.Layouts.Contains(branch.Layouts[i].Asset))
+                        branch.Layouts.RemoveAt(i);
+                }
+            }
+        }
+        public void UpdateDoodads()
+        {
+            // Update Level Branches (Asset references are shared)
+            foreach (var branch in _scenarioCollectionProvider.Levels
+                                                              .SelectMany(x => x.LevelBranches)
+                                                              .Select(x => x.LevelBranch))
+            {
+                // Layouts
+                for (int i = branch.Doodads.Count - 1; i >= 0; i--)
+                {
+                    if (!_scenarioCollectionProvider.Doodads.Contains(branch.Doodads[i].Asset))
+                        branch.Doodads.RemoveAt(i);
+                }
+            }
         }
 
         #endregion      

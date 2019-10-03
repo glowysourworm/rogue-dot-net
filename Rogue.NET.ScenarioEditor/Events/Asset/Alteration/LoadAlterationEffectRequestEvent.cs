@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using System;
 
-namespace Rogue.NET.ScenarioEditor.Events
+namespace Rogue.NET.ScenarioEditor.Events.Asset.Alteration
 {
     public class LoadAlterationEffectEventArgs : System.EventArgs
     {

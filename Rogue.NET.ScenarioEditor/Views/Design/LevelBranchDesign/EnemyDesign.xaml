@@ -22,13 +22,13 @@
         <!-- Monster Generation (Per Step) -->
         <Grid Margin="10">
             <TextBlock Text="Enemy Generation (Per Step)" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-            <toolkit:DoubleUpDown Width="80" FontSize="18" Value="{Binding MonsterGenerationPerStep, StringFormat=P2}" Minimum="0" Maximum="1" Increment="0.01" Foreground="White" HorizontalAlignment="Right" />
+            <toolkit:DoubleUpDown Width="200" FontSize="18" Value="{Binding MonsterGenerationPerStep, StringFormat=P2}" Minimum="0" Maximum="1" Increment="0.01" Foreground="White" HorizontalAlignment="Right" />
         </Grid>
 
         <!-- Enemy Generation -->
         <Grid Margin="10">
             <TextBlock Text="Enemy Placement (# Draws)" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-            <controls:Range Width="160" FontSize="18" DataContext="{Binding EnemyGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="50" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />            
+            <controls:Range Width="200" FontSize="18" DataContext="{Binding EnemyGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="50" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />            
         </Grid>
 
         <!-- Enemies -->

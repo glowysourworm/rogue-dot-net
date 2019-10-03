@@ -7,6 +7,7 @@ using Rogue.NET.Core.Processing.Event.Scenario;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Events.Asset;
+using Rogue.NET.ScenarioEditor.Events.Asset.Alteration;
 using Rogue.NET.ScenarioEditor.Events.Browser;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
@@ -28,6 +29,7 @@ using Rogue.NET.ScenarioEditor.Views.Design;
 using Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -164,11 +166,41 @@ namespace Rogue.NET.ScenarioEditor
             });
             _eventAggregator.GetEvent<CopyAssetEvent>().Subscribe((e) =>
             {
+                IEnumerable<string> existingNames;
+                var desiredAssetName = "Copy of " + e.Name;
+
+                if (e.AssetType == typeof(PlayerTemplateViewModel))
+                    existingNames = _scenarioCollectionProvider.PlayerClasses.Select(x => x.Name);
+
+                else if (e.AssetType == typeof(EquipmentTemplateViewModel))
+                    existingNames = _scenarioCollectionProvider.Equipment.Select(x => x.Name);
+
+                else if (e.AssetType == typeof(ConsumableTemplateViewModel))
+                    existingNames = _scenarioCollectionProvider.Consumables.Select(x => x.Name);
+
+                else if (e.AssetType == typeof(EnemyTemplateViewModel))
+                    existingNames = _scenarioCollectionProvider.Enemies.Select(x => x.Name);
+
+                else if (e.AssetType == typeof(FriendlyTemplateViewModel))
+                    existingNames = _scenarioCollectionProvider.Friendlies.Select(x => x.Name);
+
+                else if (e.AssetType == typeof(DoodadTemplateViewModel))
+                    existingNames = _scenarioCollectionProvider.Doodads.Select(x => x.Name);
+
+                else if (e.AssetType == typeof(LayoutTemplateViewModel))
+                    existingNames = _scenarioCollectionProvider.Layouts.Select(x => x.Name);
+
+                else if (e.AssetType == typeof(SkillSetTemplateViewModel))
+                    existingNames = _scenarioCollectionProvider.SkillSets.Select(x => x.Name);
+
+                else
+                    throw new Exception("Unhandled Asset Type");
+
                 // Create a copy of the asset
-                //_scenarioAssetController.CopyAsset(e.Name, e.AssetNewName, e.AssetType);
+                _scenarioAssetController.CopyAsset(e.Name, NameGenerator.Get(existingNames, desiredAssetName), e.AssetType);
 
                 // Publish a special event to update source lists for specific views
-                //PublishScenarioUpdate();
+                PublishScenarioUpdate();
             });
         }
         private void RegisterGeneralAssetEvents()
@@ -620,7 +652,7 @@ namespace Rogue.NET.ScenarioEditor
                     break;
                 case DesignMode.Validation:
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
-                    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
+                    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(Validation));
                     break;
                 default:
                     break;

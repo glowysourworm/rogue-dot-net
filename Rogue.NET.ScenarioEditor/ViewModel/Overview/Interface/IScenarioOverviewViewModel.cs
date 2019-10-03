@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
+namespace Rogue.NET.ScenarioEditor.ViewModel.Overview.Interface
 {
-    public interface IScenarioDifficultyViewModel
+    public interface IScenarioOverviewViewModel
     {
         
     }

@@ -2,7 +2,7 @@
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using System;
 
-namespace Rogue.NET.ScenarioEditor.Events
+namespace Rogue.NET.ScenarioEditor.Events.Asset.Alteration
 {
     //       This event was made to facilitate loading the alteration effect regions that
     //       exist as sub-control containers for asset controls.

@@ -2,7 +2,7 @@
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty.Interface
 {
-    public interface IDifficultyChartViewModel
+    public interface IOverviewChartViewModel
     {
         string Title { get; set; }
         bool Show { get; set; }
