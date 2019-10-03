@@ -43,13 +43,17 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             view.DialogViewFinishedEvent += OnDialogFinished;
 
             // Set view content
-            this.DialogContentBorder.Child = view as FrameworkElement;
+            // this.DialogContentBorder.Child = view as FrameworkElement;
+            this.DialogDockPanel.Children.Add(view as FrameworkElement);
         }
 
         private void OnDialogFinished(IDialogView view, object data)
         {
             // Unhook event to complete cycle
             view.DialogViewFinishedEvent -= OnDialogFinished;
+
+            // Remove view from dock panel
+            this.DialogDockPanel.Children.Clear();
             
             object commandData = null;
 

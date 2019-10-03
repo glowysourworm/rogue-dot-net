@@ -21,6 +21,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         public ProbabilityConsumableTemplateViewModel()
         {
             this.TheTemplate = new ConsumableTemplateViewModel();
+            this.GenerationProbability = 1.0D;
         }
     }
 }

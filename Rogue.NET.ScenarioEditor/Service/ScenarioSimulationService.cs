@@ -1,4 +1,5 @@
-﻿using Rogue.NET.ScenarioEditor.Service.Interface;
+﻿using Rogue.NET.Core.Processing.Model.Static;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.Overview;
 using Rogue.NET.ScenarioEditor.ViewModel.Overview.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
@@ -29,16 +30,36 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public IProjectionSetViewModel CalculateProjectedExperience(IEnumerable<LevelTemplateViewModel> levels)
         {
-            return CalculateProjectionSet(
-                    levels,
-                    new Func<TemplateViewModel, double>(enemyGenerationTemplate => (enemyGenerationTemplate as EnemyGenerationTemplateViewModel).GenerationWeight),
-                    new Func<LevelBranchTemplateViewModel, IEnumerable<TemplateViewModel>>(levelBranch => levelBranch.Enemies),
-                    new Func<TemplateViewModel, EnemyTemplateViewModel>(enemyGenerationTemplate => (enemyGenerationTemplate as EnemyGenerationTemplateViewModel).Asset),
-                    new Func<TemplateViewModel, double>(enemyTemplate => (enemyTemplate as EnemyTemplateViewModel).ExperienceGiven.GetAverage()),
-                    new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.EnemyGenerationRange.GetAverage()));
+            // First calculate enemy experience
+            var projectionSet =  CalculateProjectionSet(
+                                        levels,
+                                        new Func<TemplateViewModel, double>(enemyGenerationTemplate => (enemyGenerationTemplate as EnemyGenerationTemplateViewModel).GenerationWeight),
+                                        new Func<LevelBranchTemplateViewModel, IEnumerable<TemplateViewModel>>(levelBranch => levelBranch.Enemies),
+                                        new Func<TemplateViewModel, EnemyTemplateViewModel>(enemyGenerationTemplate => (enemyGenerationTemplate as EnemyGenerationTemplateViewModel).Asset),
+                                        new Func<TemplateViewModel, double>(enemyTemplate => (enemyTemplate as EnemyTemplateViewModel).ExperienceGiven.GetAverage()),
+                                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.EnemyGenerationRange.GetAverage()),
+                                        true);
+
+            // Use results to calculate expected player level
+            for (int i = 0;i< projectionSet.Count;i++)
+            {
+                var projection = projectionSet.GetProjection(i);
+
+                for (int j = 0; j < projection.Value.Count(); j++)
+                {
+                    var playerLevel = 0;
+                    while (PlayerCalculator.CalculateExperienceNext(playerLevel) < projection.Value.ElementAt(j).Mean)
+                        playerLevel++;
+
+                    // Setting the mean value to be the player level
+                    projection.Value.ElementAt(j).Mean = playerLevel;
+                }
+            }
+
+            return projectionSet;
         }
 
-        public IProjectionSetViewModel CalculateProjectedGeneration(IEnumerable<LevelTemplateViewModel> levels, TemplateViewModel asset)
+        public IProjectionSetViewModel CalculateProjectedGeneration(IEnumerable<LevelTemplateViewModel> levels, TemplateViewModel asset, bool cummulative)
         {
             if (asset is LayoutTemplateViewModel)
             {
@@ -52,7 +73,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                             // Moment selector selects this asset from the asset collection to include in the calculation
                             return layoutTemplate == asset ? 1.0 : 0.0;
                         }),
-                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => 1));
+                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => 1),
+                        cummulative);
             }
             else if (asset is EnemyTemplateViewModel)
             {
@@ -66,7 +88,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                             // Moment selector selects this asset from the asset collection to include in the calculation
                             return enemyTemplate == asset ? 1.0 : 0.0;
                         }),
-                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.EnemyGenerationRange.GetAverage()));
+                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.EnemyGenerationRange.GetAverage()),
+                        cummulative);
             }
             else if (asset is FriendlyTemplateViewModel)
             {
@@ -80,7 +103,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                             // Moment selector selects this asset from the asset collection to include in the calculation
                             return friendlyTemplate == asset ? 1.0 : 0.0;
                         }),
-                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.FriendlyGenerationRange.GetAverage()));
+                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.FriendlyGenerationRange.GetAverage()),
+                        cummulative);
             }
             else if (asset is EquipmentTemplateViewModel)
             {
@@ -94,7 +118,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                             // Moment selector selects this asset from the asset collection to include in the calculation
                             return equipmentTemplate == asset ? 1.0 : 0.0;
                         }),
-                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.EquipmentGenerationRange.GetAverage()));
+                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.EquipmentGenerationRange.GetAverage()),
+                        cummulative);
             }
             else if (asset is ConsumableTemplateViewModel)
             {
@@ -108,7 +133,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                             // Moment selector selects this asset from the asset collection to include in the calculation
                             return consumableTemplate == asset ? 1.0 : 0.0;
                         }),
-                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.ConsumableGenerationRange.GetAverage()));
+                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.ConsumableGenerationRange.GetAverage()),
+                        cummulative);
             }
             else if (asset is DoodadTemplateViewModel)
             {
@@ -122,7 +148,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                             // Moment selector selects this asset from the asset collection to include in the calculation
                             return doodadTemplate == asset ? 1.0 : 0.0;
                         }),
-                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.DoodadGenerationRange.GetAverage()));
+                        new Func<LevelBranchTemplateViewModel, int>(levelBranch => levelBranch.DoodadGenerationRange.GetAverage()),
+                        cummulative);
             }
             else
                 throw new Exception("Unhandled asset type ScenarioSimulationService");
@@ -145,7 +172,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                     Func<LevelBranchTemplateViewModel, IEnumerable<TemplateViewModel>> assetCollectionSelector,
                     Func<TemplateViewModel, TemplateViewModel> generationAssetAssetSelector,
                     Func<TemplateViewModel, double> momentSelector,
-                    Func<LevelBranchTemplateViewModel, int> generationExpectedValueSelector)
+                    Func<LevelBranchTemplateViewModel, int> generationExpectedValueSelector,
+                    bool cummulative)
         {
             // Probability = Level Branch Generation Probability * Asset Generation Probability
             //
@@ -156,9 +184,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Expected Value = (Generation #) * (Experience Expectation Value)
             //
 
-            var levelNumber = 0;
-
-            var projections = levels.Select(level =>
+            var projections = levels.Select((level, index) =>
             {
                 // Calculate probabilities for each branch
                 var branchProbabilities = level.LevelBranches.Select(x =>
@@ -204,13 +230,10 @@ namespace Rogue.NET.ScenarioEditor.Service
                     };
                 });
 
-                // NOTE** PRE-INCREMENTING LEVEL NUMBER
-                levelNumber++;
-
                 // For separate branches, group by branch and sum over the sub-quantity
                 return new ProjectedQuantityViewModel()
                 {
-                    Level = levelNumber,
+                    Level = index + 1,
                     Mean = moments.Sum(x => x.ValueMoment),
                     Variance = moments.Sum(x => x.ValueSecondMoment) - Math.Pow(moments.Sum(x => x.ValueMoment), 2),
                     SeriesName = level.Name + " Combined Branches"
@@ -220,7 +243,24 @@ namespace Rogue.NET.ScenarioEditor.Service
             var projectionSet = new ProjectionSetViewModel();
 
             if (projections.Any())
+            {
+                // Accumulate results for cummulative projections
+                if (cummulative)
+                {
+                    // Should be using moving average
+                    var cummulativeQuantity = 0.0;
+                    for (int i=0;i<projections.Count();i++)
+                    {
+                        cummulativeQuantity += projections.ElementAt(i).Mean;
+
+                        projections.ElementAt(i).Mean = cummulativeQuantity;
+
+                        // NOTE*** Not using the variance at the moment
+                    }
+                }
+
                 projectionSet.Add(projections.First().SeriesName, projections);
+            }
 
             return projectionSet;
         }

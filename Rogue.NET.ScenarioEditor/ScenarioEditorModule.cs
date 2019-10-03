@@ -106,6 +106,12 @@ namespace Rogue.NET.ScenarioEditor
                 ChangeDesignMode(type);
             });
 
+            // Re-load view on configuration loaded
+            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
+            {
+                ChangeDesignMode(_designMode);
+            });
+
             // Region Events
             _eventAggregator.GetEvent<LoadDefaultRegionViewEvent>().Subscribe(region =>
             {

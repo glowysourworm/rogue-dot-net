@@ -11,6 +11,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview.Interface
     {
         SeriesCollection Series { get; set;  }
 
+        string ChartName { get; set; }
+
+        bool Cummulative { get; set; }
+
         void SetSeries(string chartName, IProjectionSetViewModel projectionSet);
     }
 }

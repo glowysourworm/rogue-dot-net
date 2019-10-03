@@ -22,12 +22,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
     public class ScenarioOverviewViewModel : NotifyViewModel, IScenarioOverviewViewModel
     {
         string _chartName;
+        bool _cummulative;
         public string ChartName
         {
             get { return _chartName; }
             set { this.RaiseAndSetIfChanged(ref _chartName, value); }
         }
-
+        public bool Cummulative
+        {
+            get { return _cummulative; }
+            set { this.RaiseAndSetIfChanged(ref _cummulative, value); }
+        }
         public SeriesCollection Series { get; set; }
 
         public ScenarioOverviewViewModel()
@@ -39,8 +44,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
         {
             this.ChartName = chartName;
 
-            if (this.Series.Any())
-                this.Series.Clear();
+            // TODO: THIS THING FUCKING SUCKS! THERE'S A BUG IN LIVE CHARTS FOR CLEARING THE SERIES COLLECTION.....
+            //       ADDED TRY / CATCH TO AVOID A CRASH.
+            try
+            {
+                if (this.Series.Any())
+                    this.Series.Clear();
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
             var hueLimit = Math.PI * 2.0;
 

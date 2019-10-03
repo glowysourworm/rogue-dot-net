@@ -66,12 +66,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 ImageSource source;
 
                 if (type == SymbolType.Symbol)
+                {
                     source = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol, 0, 0, 0, false), 2.0);
+                    return new SvgSymbolViewModel(source, symbol, 0, 0, 0, false);
+                }
 
                 else
+                {
                     source = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol), 2.0);
-
-                return new SvgSymbolViewModel(source, symbol, 0, 0, 0);
+                    return new SvgSymbolViewModel(source, symbol);
+                }
             });
         }
 

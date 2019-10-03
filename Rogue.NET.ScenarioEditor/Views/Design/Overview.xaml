@@ -26,7 +26,10 @@
         </Grid.RowDefinitions>
         
         <!-- Chart Title -->
-        <TextBlock Text="{Binding ChartName}" Foreground="White" FontSize="24" HorizontalAlignment="Center" />
+        <TextBlock Text="{Binding ChartName}" Margin="10" Foreground="White" FontSize="24" HorizontalAlignment="Center" />
+
+        <!-- Cummulative -->
+        <CheckBox IsChecked="{Binding Cummulative, Mode=TwoWay}" Margin="10" Content="Cummulative" Foreground="White" FontSize="18" HorizontalAlignment="Right" />
 
         <!-- Chart Area -->
         <chart:CartesianChart Series="{Binding Series }"

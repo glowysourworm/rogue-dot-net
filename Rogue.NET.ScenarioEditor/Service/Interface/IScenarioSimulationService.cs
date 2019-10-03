@@ -17,6 +17,6 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
     {
         IProjectionSetViewModel CalculateProjectedExperience(IEnumerable<LevelTemplateViewModel> levels);
 
-        IProjectionSetViewModel CalculateProjectedGeneration(IEnumerable<LevelTemplateViewModel> levels, TemplateViewModel asset);
+        IProjectionSetViewModel CalculateProjectedGeneration(IEnumerable<LevelTemplateViewModel> levels, TemplateViewModel asset, bool cummulative);
     }
 }

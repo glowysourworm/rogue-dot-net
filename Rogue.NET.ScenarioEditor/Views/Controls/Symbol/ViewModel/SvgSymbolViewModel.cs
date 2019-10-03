@@ -1,5 +1,5 @@
 ﻿using Rogue.NET.Common.ViewModel;
-
+using Rogue.NET.Core.Model.Enums;
 using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
@@ -15,6 +15,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
         double _saturation;
         double _lightness;
         bool _useColorMask;
+        SymbolType _symbolType;
+
         public ImageSource ImageSource
         {
             get { return _imageSource; }
@@ -55,24 +57,50 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
             get { return _lightness; }
             set { this.RaiseAndSetIfChanged(ref _lightness, value); }
         }
+        public bool UseColorMask
+        {
+            get { return _useColorMask; }
+            set { this.RaiseAndSetIfChanged(ref _useColorMask, value); }
+        }
+        public SymbolType SymbolType
+        {
+            get { return _symbolType; }
+            set { this.RaiseAndSetIfChanged(ref _symbolType, value); }
+        }
+
+        // Character Symbol Constructor
         public SvgSymbolViewModel(ImageSource imageSource, string category, string character, double symbolScale)
         {
+            this.SymbolType = SymbolType.Character;
             this.ImageSource = imageSource;
             this.Category = category;
             this.Character = character;
             this.CharacterScale = symbolScale;
         }
+        // Symbol Constructor
         public SvgSymbolViewModel(ImageSource imageSource, 
                                   string symbol, 
                                   double hue, 
                                   double saturation, 
-                                  double lightness)
+                                  double lightness,
+                                  bool useColorMask)
         {
+            this.SymbolType = SymbolType.Symbol;
             this.ImageSource = imageSource;
             this.Symbol = symbol;
             this.Hue = hue;
             this.Saturation = saturation;
             this.Lightness = lightness;
+            this.UseColorMask = useColorMask;
+        }
+
+        // Game Symbol Constructor
+        public SvgSymbolViewModel(ImageSource imageSource,
+                                  string gameSymbol)
+        {
+            this.SymbolType = SymbolType.Game;
+            this.ImageSource = imageSource;
+            this.Symbol = gameSymbol;
         }
     }
 }

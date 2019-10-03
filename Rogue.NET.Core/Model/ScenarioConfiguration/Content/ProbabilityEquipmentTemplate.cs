@@ -47,6 +47,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         public ProbabilityEquipmentTemplate()
         {
             this.TheTemplate = new EquipmentTemplate();
+            this.GenerationProbability = 1.0D;
         }
     }
 }

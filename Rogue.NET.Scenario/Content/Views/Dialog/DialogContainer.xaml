@@ -12,6 +12,7 @@
             BorderThickness="0.75"
             Height="500"
             Width="700">
+        <DockPanel x:Name="DialogDockPanel" LastChildFill="True" />
     </Border>
     
 </UserControl>

@@ -22,6 +22,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         readonly IScenarioResourceService _scenarioResourceService;
         readonly ISvgCache _svgCache;
 
+        bool _loading = false;
+        bool _loaded = false;
+
         [ImportingConstructor]
         public SymbolChooser(IScenarioResourceService scenarioResourceService, ISvgCache svgCache)
         {
@@ -31,6 +34,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             InitializeComponent();
 
             bool loading = false;
+            bool loaded = false;
 
             this.BaseSymbolLB.SelectionChanged += (sender, e) =>
             {
@@ -49,7 +53,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
                 if (item != null && 
                     viewModel != null &&
-                   !loading)
+                   !_loading)
                 {
                     viewModel.Symbol = item.Symbol;
                     viewModel.SymbolHue = item.Hue;
@@ -58,36 +62,73 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 }
             };
 
-            this.Loaded += (sender, e) =>
+            this.DataContextChanged += (sender, e) =>
             {
                 var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
 
-                if (viewModel == null)
-                    return;
-
-                loading = true;
-
-                LoadBaseSymbols();
-
-                var baseSymbols = this.BaseSymbolLB.Items.Cast<SvgSymbolViewModel>();
-                var selectedSymbol = baseSymbols.FirstOrDefault(x => x.Symbol == viewModel.Symbol);
-
-                if (selectedSymbol != null)
+                if (viewModel != null)
                 {
-                    LoadColoredSymbols(selectedSymbol, viewModel.SymbolUseColorMask);
+                    if (!_loaded)
+                        Initialize();
 
-                    this.BaseSymbolLB.SelectedItem = selectedSymbol;
+                    this.BaseSymbolLB.SelectedItem = this.BaseSymbolLB
+                                                         .Items
+                                                         .Cast<SvgSymbolViewModel>()
+                                                         .FirstOrDefault(x => x.SymbolType == viewModel.SymbolType &&
+                                                                              x.Symbol == viewModel.Symbol);
 
-                    var items = this.ColoredSymbolLB.Items.Cast<SvgSymbolViewModel>();
+                    this.ColoredSymbolLB.SelectedItem = this.ColoredSymbolLB
+                                                            .Items
+                                                            .Cast<SvgSymbolViewModel>()
+                                                            .FirstOrDefault(x => x.SymbolType == viewModel.SymbolType &&
+                                                                                 x.Symbol == viewModel.Symbol &&
+                                                                                 x.Hue == viewModel.SymbolHue &&
+                                                                                 x.Saturation == viewModel.SymbolSaturation &&
+                                                                                 x.Lightness == viewModel.SymbolLightness &&
+                                                                                 x.UseColorMask == viewModel.SymbolUseColorMask);
 
-                    this.ColoredSymbolLB.SelectedItem = items.FirstOrDefault(x => x.Symbol == viewModel.Symbol &&
-                                                                                  x.Hue == viewModel.SymbolHue &&
-                                                                                  x.Saturation == viewModel.SymbolSaturation &&
-                                                                                  x.Lightness == viewModel.SymbolLightness);
+                    // Scroll into view
+                    if (this.BaseSymbolLB.SelectedIndex >= 0 &&
+                        this.BaseSymbolLB.SelectedIndex < this.BaseSymbolLB.Items.Count)
+                    {
+                        var index = this.BaseSymbolLB.SelectedIndex;
+                        var item = this.BaseSymbolLB.Items.GetItemAt(index);
+                        this.BaseSymbolLB.ScrollIntoView(item);
+                    }
                 }
-
-                loading = false;
             };
+        }
+
+        private void Initialize()
+        {
+            var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
+
+            if (viewModel == null)
+                return;
+
+            _loading = true;
+
+            LoadBaseSymbols();
+
+            var baseSymbols = this.BaseSymbolLB.Items.Cast<SvgSymbolViewModel>();
+            var selectedSymbol = baseSymbols.FirstOrDefault(x => x.Symbol == viewModel.Symbol);
+
+            if (selectedSymbol != null)
+            {
+                LoadColoredSymbols(selectedSymbol, viewModel.SymbolUseColorMask);
+
+                this.BaseSymbolLB.SelectedItem = selectedSymbol;
+
+                var items = this.ColoredSymbolLB.Items.Cast<SvgSymbolViewModel>();
+
+                this.ColoredSymbolLB.SelectedItem = items.FirstOrDefault(x => x.Symbol == viewModel.Symbol &&
+                                                                              x.Hue == viewModel.SymbolHue &&
+                                                                              x.Saturation == viewModel.SymbolSaturation &&
+                                                                              x.Lightness == viewModel.SymbolLightness);
+            }
+
+            _loaded = true;
+            _loading = false;
         }
 
         private void LoadBaseSymbols()
@@ -97,7 +138,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 var imageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol, 0, 0, 0, false), 2.0);
 
                 // Input color mask indicator only. The HSL parameters are based at zero because they're effects
-                return new SvgSymbolViewModel(imageSource, symbol, 0, 0, 0);
+                return new SvgSymbolViewModel(imageSource, symbol, 0, 0, 0, false);
             });
         }
         private void LoadColoredSymbols(SvgSymbolViewModel viewModel, bool useColorMask)
@@ -117,7 +158,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                                                                                             viewModel.Lightness,
                                                                                             useColorMask), 2.0);
 
-                result.Add(new SvgSymbolViewModel(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness));
+                result.Add(new SvgSymbolViewModel(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
 
                 cursor += increment;
             }
@@ -137,8 +178,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                                                                                             0.0,
                                                                                             useColorMask), 2.0);
 
-            result.Add(new SvgSymbolViewModel(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0));
-            result.Add(new SvgSymbolViewModel(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0));
+            result.Add(new SvgSymbolViewModel(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
+            result.Add(new SvgSymbolViewModel(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));
 
 
             this.ColoredSymbolLB.ItemsSource = result;

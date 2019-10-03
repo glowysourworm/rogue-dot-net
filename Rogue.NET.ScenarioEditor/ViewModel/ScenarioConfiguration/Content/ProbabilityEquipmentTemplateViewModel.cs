@@ -27,6 +27,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         public ProbabilityEquipmentTemplateViewModel()
         {
             this.TheTemplate = new EquipmentTemplateViewModel();
+            this.GenerationProbability = 1.0D;
         }
     }
 }

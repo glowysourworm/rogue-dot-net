@@ -44,7 +44,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             if (templateViewModel is LayoutTemplateViewModel)
             {
                 // Show the projected generation quantity
-                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel);
+                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel, _scenarioOverviewViewModel.Cummulative);
 
                 // Set projections to the view model
                 _scenarioOverviewViewModel.SetSeries(templateViewModel.Name + " Generation", projectionSet);
@@ -52,7 +52,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (templateViewModel is ConsumableTemplateViewModel)
             {
                 // Show the projected generation quantity
-                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel);
+                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel, _scenarioOverviewViewModel.Cummulative);
 
                 // Set projections to the view model
                 _scenarioOverviewViewModel.SetSeries(templateViewModel.Name + " Generation", projectionSet);
@@ -60,7 +60,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (templateViewModel is EquipmentTemplateViewModel)
             {
                 // Show the projected generation quantity
-                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel);
+                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel, _scenarioOverviewViewModel.Cummulative);
 
                 // Set projections to the view model
                 _scenarioOverviewViewModel.SetSeries(templateViewModel.Name + " Generation", projectionSet);
@@ -68,7 +68,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (templateViewModel is EnemyTemplateViewModel)
             {
                 // Show the projected generation quantity
-                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel);
+                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel, _scenarioOverviewViewModel.Cummulative);
 
                 // Set projections to the view model
                 _scenarioOverviewViewModel.SetSeries(templateViewModel.Name + " Generation", projectionSet);
@@ -76,7 +76,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (templateViewModel is FriendlyTemplateViewModel)
             {
                 // Show the projected generation quantity
-                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel);
+                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel, _scenarioOverviewViewModel.Cummulative);
 
                 // Set projections to the view model
                 _scenarioOverviewViewModel.SetSeries(templateViewModel.Name + " Generation", projectionSet);
@@ -84,7 +84,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (templateViewModel is DoodadTemplateViewModel)
             {
                 // Show the projected generation quantity
-                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel);
+                var projectionSet = _scenarioSimulationService.CalculateProjectedGeneration(_scenarioCollectionProvider.Levels, templateViewModel, _scenarioOverviewViewModel.Cummulative);
 
                 // Set projections to the view model
                 _scenarioOverviewViewModel.SetSeries(templateViewModel.Name + " Generation", projectionSet);

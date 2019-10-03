@@ -11,7 +11,15 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
         <!-- Header -->
         <TextBlock x:Name="ModeTB"  
                     Text="{Binding Path=DataContext.Header, ElementName=ConsumablesGrid}"
@@ -22,17 +30,24 @@
                     Margin="10" />
 
         <!-- Equipment Grid -->
-        <itemGrid:EquipmentItemGrid x:Name="EquipmentGrid" Margin="10, 0, 10, 10" />
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <itemGrid:EquipmentItemGrid x:Name="EquipmentGrid" Margin="10, 0, 10, 10" />
+        </ScrollViewer>
 
         <!-- Consumables Grid -->
-        <itemGrid:ConsumableItemGrid x:Name="ConsumablesGrid" Margin="10, 0, 10, 10" />
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <itemGrid:ConsumableItemGrid x:Name="ConsumablesGrid" Margin="10, 0, 10, 10" />
+        </ScrollViewer>
+        
 
         <!-- Ok Button (# Select) -->
         <Button x:Name="OkMultiSelectionButton"
                 Margin="10, 0, 10, 10"
                 HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
                 Width="120"
                 Height="48"
+                Grid.Row="3"
                 Style="{StaticResource ShinyTextRectangleButtonStyle}">
             <Button.Visibility>
                 <Binding Path="DataContext"
@@ -63,5 +78,5 @@
                 </TextBlock>
             </Button.Content>
         </Button>
-    </StackPanel>
+    </Grid>
 </UserControl>

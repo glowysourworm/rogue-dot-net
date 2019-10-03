@@ -37,6 +37,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         public ProbabilityConsumableTemplate()
         {
             this.TheTemplate = new ConsumableTemplate();
+            this.GenerationProbability = 1.0D;
         }
     }
 }
