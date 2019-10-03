@@ -20,10 +20,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Design
             InitializeComponent();
 
             this.DataContext = scenarioOverviewViewModel;
-
-            this.Loaded += (sender, e) =>
-            {
-            };
         }
     }
 }

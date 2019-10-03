@@ -648,7 +648,7 @@ namespace Rogue.NET.ScenarioEditor
                     break;
                 case DesignMode.Overview:
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioLevelBrowser));
-                    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
+                    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(Overview));
                     break;
                 case DesignMode.Validation:
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));

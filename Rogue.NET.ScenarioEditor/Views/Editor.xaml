@@ -179,13 +179,15 @@
                     </Button.InputBindings>
                 </Button>                
             </StackPanel>
-            <TextBlock x:Name="ScenarioNameTB" 
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,20,0" HorizontalAlignment="Right">
+                <TextBlock x:Name="ScenarioNameTB" 
                        Text="{Binding ScenarioName}" 
-                       Margin="0,0,20,0"
                        FontSize="24" 
-                       HorizontalAlignment="Right" 
                        VerticalAlignment="Center" 
                        Foreground="White" />
+                <TextBlock Text="*" Margin="5, 0, 0, 0" FontSize="24" Foreground="White" Visibility="{Binding HasChanges, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+            </StackPanel>
 
         </Grid>
         
