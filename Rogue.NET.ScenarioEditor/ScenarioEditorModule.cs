@@ -93,7 +93,7 @@ namespace Rogue.NET.ScenarioEditor
             // Design Mode Events
             _eventAggregator.GetEvent<LoadDesignEvent>().Subscribe((type) =>
             {
-                LoadDesign(type);
+                ChangeDesignMode(type);
             });
 
             // Region Events
@@ -218,7 +218,7 @@ namespace Rogue.NET.ScenarioEditor
                 _undoService.Clear();
 
                 // Reload designer
-                LoadDesign(DesignMode.General);
+                ChangeDesignMode(DesignMode.General);
             });
             _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Subscribe((e) =>
             {
@@ -262,7 +262,7 @@ namespace Rogue.NET.ScenarioEditor
                 _undoService.Clear();
 
                 // Reload designer
-                LoadDesign(DesignMode.General);
+                ChangeDesignMode(DesignMode.General);
             });
 
             // Brush Events
@@ -600,7 +600,7 @@ namespace Rogue.NET.ScenarioEditor
             // Unblock the undo service
             _undoService.UnBlock();
         }
-        private void LoadDesign(DesignMode mode)
+        private void ChangeDesignMode(DesignMode mode)
         {
             // Load Design Region / Browser Region with appropriate view(s)
             switch (mode)
@@ -610,15 +610,7 @@ namespace Rogue.NET.ScenarioEditor
                     _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(General))
                                   .DataContext = _scenarioEditorController.CurrentConfig;
                     break;
-                case DesignMode.Assets:
-                    _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
-                    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
-                    break;
                 case DesignMode.Level:
-                    _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioLevelBrowser));
-                    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
-                    break;
-                case DesignMode.Objective:
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioLevelBrowser));
                     _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
                     break;

@@ -19,25 +19,36 @@ using System.Collections;
 using System;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using System.ComponentModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
 {
     public class ScenarioAssetGroupViewModel : NotifyViewModel, IScenarioAssetGroupViewModel
     {
-        ObservableCollection<IScenarioAssetViewModel> _assets;
-        public ObservableCollection<IScenarioAssetViewModel> Assets
+        NotifyingObservableCollection<IScenarioAssetViewModel> _assets;
+        bool _hasObjectiveAssets;
+
+        public NotifyingObservableCollection<IScenarioAssetViewModel> Assets
         {
             get { return _assets; }
             set { this.RaiseAndSetIfChanged(ref _assets, value); }
         }
         public Type AssetType { get; private set; }
+        public bool HasObjectiveAssets
+        {
+            get { return _hasObjectiveAssets; }
+            set { this.RaiseAndSetIfChanged(ref _hasObjectiveAssets, value); }
+        }
         public ICommand AddAssetCommand { get; private set; }
         public ScenarioAssetGroupViewModel(
                 Type assetType,
                 IRogueEventAggregator eventAggregator)
         {
-            this.Assets = new ObservableCollection<IScenarioAssetViewModel>();
+            this.Assets = new NotifyingObservableCollection<IScenarioAssetViewModel>();
             this.AssetType = assetType;
+
+            // Listen for objective change
+            this.Assets.ItemPropertyChanged += OnAssetCollectionItemChanged;
 
             // Listen to scenario updates
             eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(scenarioCollectionProvider =>
@@ -73,6 +84,24 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
                 else
                     this.Assets.Add(new ScenarioAssetViewModel(eventAggregator, item as TemplateViewModel));
             }
+
+
+
+            CalculateHasObjectiveAssets();
+        }
+
+        private void OnAssetCollectionItemChanged(
+                        NotifyingObservableCollection<IScenarioAssetViewModel> collection, 
+                        IScenarioAssetViewModel asset, 
+                        PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsObjective")
+                CalculateHasObjectiveAssets();
+        }
+
+        private void CalculateHasObjectiveAssets()
+        {
+            this.HasObjectiveAssets = this.Assets.Any(x => x.IsObjective);
         }
 
         private IEnumerable GetAssetCollection(IScenarioCollectionProvider collectionProvider)

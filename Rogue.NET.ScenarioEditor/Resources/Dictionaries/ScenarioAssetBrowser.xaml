@@ -114,9 +114,11 @@
                                   BorderBrush="{TemplateBinding BorderBrush}"
                                   BorderThickness="{TemplateBinding BorderThickness}"
                                   Padding="{TemplateBinding Padding}">
-                            <ContentPresenter x:Name="PART_Header" ContentSource="Header"
-                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                            <ContentPresenter x:Name="PART_Header" 
+                                              ContentSource="Header"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
                         </Border>
+                        
                         <ItemsPresenter x:Name="ItemsHost"
                                           Grid.Row="1"
                                           Grid.Column="1"
@@ -145,7 +147,10 @@
                                     <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
                                 </Setter.Value>
                             </Setter>
-                        </Trigger>                        
+                        </Trigger>
+                        <DataTrigger Binding="{Binding HasObjectiveAssets}" Value="True">
+                            <Setter Property="Foreground" Value="Cyan" />
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

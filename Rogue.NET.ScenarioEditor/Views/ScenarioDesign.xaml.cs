@@ -20,16 +20,6 @@ namespace Rogue.NET.ScenarioEditor.Views
                 eventAggregator.GetEvent<LoadDesignEvent>()
                                .Publish(DesignMode.General);
             };
-            this.AssetsItem.PreviewMouseDown += (sender, e) =>
-            {
-                eventAggregator.GetEvent<LoadDesignEvent>()
-                               .Publish(DesignMode.Assets);
-            };
-            this.ObjectiveItem.PreviewMouseDown += (sender, e) =>
-            {
-                eventAggregator.GetEvent<LoadDesignEvent>()
-                               .Publish(DesignMode.Objective);
-            };
             this.LevelDesign.PreviewMouseDown += (sender, e) =>
             {
                 eventAggregator.GetEvent<LoadDesignEvent>()

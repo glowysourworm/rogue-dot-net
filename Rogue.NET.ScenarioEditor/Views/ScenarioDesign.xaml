@@ -18,8 +18,6 @@
                   FontSize="16"
                   Grid.Row="1">
             <ListBoxItem x:Name="GeneralItem" Content="General" />
-            <ListBoxItem x:Name="AssetsItem" Content="Scenario Assets" />
-            <ListBoxItem x:Name="ObjectiveItem" Content="Objective Design" />
             <ListBoxItem x:Name="LevelDesign" Content="Level Design" />
             <ListBoxItem x:Name="ScenarioDesignOverviewItem" Content="Overview" />
             <ListBoxItem x:Name="ValidationItem" Content="Validation" />

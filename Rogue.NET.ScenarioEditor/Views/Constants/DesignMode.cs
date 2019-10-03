@@ -14,19 +14,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Constants
         General,
 
         /// <summary>
-        /// Editing of Scenario Assets -> These are the collections stored directly under the scenario configuration container
-        /// </summary>
-        Assets,
-
-        /// <summary>
         /// Editing of levels and level branches.
         /// </summary>
         Level,
-
-        /// <summary>
-        /// Editing of the scenario objectives to select what is required
-        /// </summary>
-        Objective,
 
         /// <summary>
         /// This is the scenario overview - which includes difficulty charts and must run validation to show
