@@ -21,18 +21,18 @@
                     <GradientStop.Color>
                         <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
                             <Binding Path="SmileyAuraColor" />
-                            <Binding Path="Type" />
+                            <Binding Path="SymbolType" />
                         </MultiBinding>
                     </GradientStop.Color>
                 </GradientStop>
                 <GradientStop Color="Transparent" Offset="1" />
             </RadialGradientBrush>
         </Border.Background>
-        <Image  VerticalAlignment="Stretch" 
-                            HorizontalAlignment="Stretch"
-                            Height="30"
-                            Width="20"
-                            Stretch="None">
+        <Image  VerticalAlignment="Center" 
+                HorizontalAlignment="Center"
+                Height="30"
+                Width="20"
+                Stretch="None">
             <Image.Source>
                 <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
                     <MultiBinding.ConverterParameter>
