@@ -430,6 +430,7 @@
     <Compile Include="Processing\Event\Content\ShiftDisplayEvent.cs" />
     <Compile Include="Processing\Event\Content\GameUpdateEvent.cs" />
     <Compile Include="Processing\Event\Content\SkillTree\SkillTreeLoadAlterationEffectRegionEvent.cs" />
+    <Compile Include="Processing\Event\Content\ZoomEvent.cs" />
     <Compile Include="Processing\Event\GameSetupDisplayFinished.cs" />
     <Compile Include="Processing\Event\IntroFinishedEvent.cs" />
     <Compile Include="Processing\Event\RequestNaviateParametersDisplayEvent.cs" />

@@ -11,7 +11,7 @@
         public const double MpRegenBaseMultiplier = 0.01;
 
         public const double HaulFoodUsageDivisor = 1000;
-        public const double HaulMaxStrengthMultiplier = 4;
+        public const double HaulMaxStrengthMultiplier = 3.0;
         public const double MagicDefenseBase = 0.25;
         public const double CriticalHitBase = 0.1;        
         public const double MinSpeed = 0.1;

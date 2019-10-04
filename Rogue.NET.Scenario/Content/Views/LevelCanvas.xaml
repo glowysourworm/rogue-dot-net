@@ -1,45 +1,51 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.LevelCanvas"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Width="{Binding LevelContainerWidth}"
-             Height="{Binding LevelContainerHeight}" Background="LightCoral">
-    <Grid>
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:contentViews="clr-namespace:Rogue.NET.Scenario.Content.Views"
+             Background="LightCoral">
+    <Border BorderBrush="White" Background="#0F0000FF" CornerRadius="5" BorderThickness="1" Margin="5, 2, 5, 5" Padding="10">
+        
+        <!-- Clip Rendering Inside Padded Region -->
+        <Border ClipToBounds="True" Background="Transparent">
+            
+            <Grid>
 
-        <!-- Wall Layer -->
-        <Canvas   x:Name="WallCanvas"                  
+                <!-- Wall Layer -->
+                <Canvas   x:Name="WallCanvas"                  
                   Background="Transparent"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
                   OpacityMask="{Binding ExploredOpacityMask}"
                   Width="{Binding LevelWidth, FallbackValue=500}" 
                   Height="{Binding LevelHeight, FallbackValue=500}">
-            <ContentPresenter Content="{Binding WallLayout}" />
-        </Canvas>
+                    <ContentPresenter Content="{Binding WallLayout}" />
+                </Canvas>
 
-        <!-- Door Layer -->
-        <Canvas   x:Name="DoorCanvas"
+                <!-- Door Layer -->
+                <Canvas   x:Name="DoorCanvas"
                   OpacityMask="{Binding ExploredOpacityMask}"
                   Background="Transparent"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
                   Width="{Binding LevelWidth, FallbackValue=500}" 
                   Height="{Binding LevelHeight, FallbackValue=500}">
-            <ContentPresenter Content="{Binding DoorLayout}" />
-        </Canvas>
+                    <ContentPresenter Content="{Binding DoorLayout}" />
+                </Canvas>
 
-        <!-- Revealed Layer -->
-        <Canvas   x:Name="RevealedCanvas"
+                <!-- Revealed Layer -->
+                <Canvas   x:Name="RevealedCanvas"
                   OpacityMask="{Binding RevealedOpacityMask}"
                   Background="Transparent"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
                   Width="{Binding LevelWidth, FallbackValue=500}" 
                   Height="{Binding LevelHeight, FallbackValue=500}">
-            <ContentPresenter Content="{Binding RevealedLayout}" />
-        </Canvas>
+                    <ContentPresenter Content="{Binding RevealedLayout}" />
+                </Canvas>
 
-        <!-- Light Radii-->
-        <ItemsControl x:Name="LightRadiiItemsControl"
+                <!-- Light Radii-->
+                <ItemsControl x:Name="LightRadiiItemsControl"
                   ItemsSource="{Binding LightRadii}" 
                   OpacityMask="{Binding VisibleOpacityMask}"                      
                   DisplayMemberPath="Symbol"
@@ -49,15 +55,15 @@
                   VerticalAlignment="Top"                      
                   Width="{Binding LevelWidth, FallbackValue=500}" 
                   Height="{Binding LevelHeight, FallbackValue=500}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas ClipToBounds="False"  />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas ClipToBounds="False"  />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-        <!-- Auras -->
-        <ItemsControl x:Name="AuraItemsControl"
+                <!-- Auras -->
+                <ItemsControl x:Name="AuraItemsControl"
                   ItemsSource="{Binding Auras}" 
                   OpacityMask="{Binding VisibleOpacityMask}"
                   DisplayMemberPath="Symbol"
@@ -67,15 +73,15 @@
                   VerticalAlignment="Top"
                   Width="{Binding LevelWidth, FallbackValue=500}" 
                   Height="{Binding LevelHeight, FallbackValue=500}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas ClipToBounds="False" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas ClipToBounds="False" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-        <!-- Doodads -->
-        <ItemsControl x:Name="DoodadItemsControl"
+                <!-- Doodads -->
+                <ItemsControl x:Name="DoodadItemsControl"
                       ItemsSource="{Binding Doodads}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
@@ -83,15 +89,15 @@
                       VerticalAlignment="Top"
                       Width="{Binding LevelWidth, FallbackValue=500}" 
                       Height="{Binding LevelHeight, FallbackValue=500}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas ClipToBounds="False" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas ClipToBounds="False" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-        <!-- Items -->
-        <ItemsControl x:Name="ItemItemsControl"
+                <!-- Items -->
+                <ItemsControl x:Name="ItemItemsControl"
                       ItemsSource="{Binding Items}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
@@ -99,15 +105,15 @@
                       VerticalAlignment="Top"
                       Width="{Binding LevelWidth, FallbackValue=500}" 
                       Height="{Binding LevelHeight, FallbackValue=500}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas ClipToBounds="False" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>        
-        
-        <!-- Characters (Except Player) -->
-        <ItemsControl x:Name="CharacterItemsControl"
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas ClipToBounds="False" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <!-- Characters (Except Player) -->
+                <ItemsControl x:Name="CharacterItemsControl"
                       ItemsSource="{Binding Characters}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
@@ -115,28 +121,28 @@
                       VerticalAlignment="Top"
                       Width="{Binding LevelWidth, FallbackValue=500}" 
                       Height="{Binding LevelHeight, FallbackValue=500}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas ClipToBounds="False" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        
-        <!-- Player -->
-        <Canvas   x:Name="PlayerCanvas"                  
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas ClipToBounds="False" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <!-- Player -->
+                <Canvas   x:Name="PlayerCanvas"                  
                   Background="Transparent"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
                   Width="{Binding LevelWidth, FallbackValue=500}" 
                   Height="{Binding LevelHeight, FallbackValue=500}">
-            <ContentPresenter Canvas.Left="{Binding Player.Location.X}"
+                    <ContentPresenter Canvas.Left="{Binding Player.Location.X}"
                               Canvas.Top="{Binding Player.Location.Y}"
                               Content="{Binding Player}" />
-        </Canvas>
+                </Canvas>
 
-        <!-- Animations -->
-        <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->
-        <ItemsControl x:Name="AnimationItemsControl"
+                <!-- Animations -->
+                <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->
+                <ItemsControl x:Name="AnimationItemsControl"
                       ItemsSource="{Binding Animations}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
@@ -144,11 +150,14 @@
                       VerticalAlignment="Top"
                       Width="{Binding LevelWidth, FallbackValue=500}" 
                       Height="{Binding LevelHeight, FallbackValue=500}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas ClipToBounds="False" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-    </Grid>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas ClipToBounds="False" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+            </Grid>
+        </Border>
+    </Border>
 </UserControl>

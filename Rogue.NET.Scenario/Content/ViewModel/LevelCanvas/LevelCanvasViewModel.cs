@@ -37,6 +37,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         int _levelWidth;
         int _levelHeight;
 
+        double _zoomFactor;
+
         // Targeting animation (singular)
         AnimationQueue _targetAnimation;
 
@@ -177,8 +179,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             Geometry revealedGeometry = null;
 
             this.WallLayout.Data = _scenarioUIService.CreateWallLayout(out revealedGeometry);
-            this.WallLayout.Fill = Brushes.Transparent;
+            this.WallLayout.Fill = Brushes.Black;
             this.WallLayout.Stroke = new SolidColorBrush(wallColor);
+            this.WallLayout.StrokeEndLineCap = PenLineCap.Square;
+            this.WallLayout.StrokeStartLineCap = PenLineCap.Square;
+            this.WallLayout.StrokeLineJoin = PenLineJoin.Miter;
             this.WallLayout.StrokeThickness = 2;
 
             this.DoorLayout.Data = _scenarioUIService.CreateDoorLayout();
@@ -189,6 +194,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.RevealedLayout.Data = revealedGeometry;
             this.RevealedLayout.Fill = Brushes.Transparent;
             this.RevealedLayout.Stroke = Brushes.White;
+            this.RevealedLayout.StrokeEndLineCap = PenLineCap.Square;
+            this.RevealedLayout.StrokeStartLineCap = PenLineCap.Square;
+            this.RevealedLayout.StrokeLineJoin = PenLineJoin.Miter;
             this.RevealedLayout.StrokeThickness = 2;
 
             OnPropertyChanged(() => this.WallLayout);

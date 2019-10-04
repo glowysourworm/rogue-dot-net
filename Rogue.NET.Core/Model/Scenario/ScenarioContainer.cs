@@ -18,6 +18,9 @@ namespace Rogue.NET.Core.Model.Scenario
         public int CurrentLevel { get; set; }
         public bool SurvivorMode { get; set; }
 
+        // UI Parameters
+        public double ZoomFactor { get; set; }
+
         // Statistics for the scenario
         public ScenarioStatistics Statistics { get; set; }
 
@@ -39,6 +42,7 @@ namespace Rogue.NET.Core.Model.Scenario
             this.AttackAttributes = new Dictionary<string, AttackAttribute>();
             this.SaveLocation = PlayerStartLocation.StairsUp;
             this.Statistics = new ScenarioStatistics();
+            this.ZoomFactor = 1.0D;
         }
     }
 }

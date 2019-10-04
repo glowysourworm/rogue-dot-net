@@ -30,6 +30,7 @@ namespace Rogue.NET.Core.Processing.IO
         public const string SURVIVOR_MODE = "Survivor Mode";
         public const string ENCYCLOPEDIA = "Encyclopedia";
         public const string STATISTICS = "Statistics";
+        public const string ZOOM_FACTOR = "Zoom Factor";
 
         /// <summary>
         /// Prepend this to level number to identify level section (LEVEL_PREVIX + level.ToString())
@@ -63,6 +64,7 @@ namespace Rogue.NET.Core.Processing.IO
             byte[] survivorMode = BitConverter.GetBytes(dungeon.SurvivorMode);
             byte[] encyclopedia = BinarySerializer.SerializeAndCompress(dungeon.ScenarioEncyclopedia);
             byte[] statistics = BinarySerializer.SerializeAndCompress(dungeon.Statistics);
+            byte[] zoomFactor = BitConverter.GetBytes(dungeon.ZoomFactor);
 
             //Build the new header object and buffer simultaneously
             _header.StaticObjects.Clear();
@@ -104,7 +106,11 @@ namespace Rogue.NET.Core.Processing.IO
             dungeonFileStream.Write(statistics, 0, statistics.Length);
 
             offset += statistics.Length;
-            
+            _header.StaticObjects.Add(new IndexedObject(typeof(double), ZOOM_FACTOR, offset, zoomFactor.Length));
+            dungeonFileStream.Write(zoomFactor, 0, zoomFactor.Length);
+
+            offset += zoomFactor.Length;
+
             //Dynamic contents
             for (int i=1;i<=dungeon.Configuration.ScenarioDesign.LevelDesigns.Count;i++)
             {
@@ -186,6 +192,9 @@ namespace Rogue.NET.Core.Processing.IO
                         break;
                     case STATISTICS:
                         dungeon.Statistics = BinarySerializer.DeserializeAndDecompress<ScenarioStatistics>(buffer);
+                        break;
+                    case ZOOM_FACTOR:
+                        dungeon.ZoomFactor = BitConverter.ToDouble(buffer, 0);
                         break;
                 }
             }
@@ -321,6 +330,7 @@ namespace Rogue.NET.Core.Processing.IO
             byte[] currentLevel = BitConverter.GetBytes(dungeon.CurrentLevel);
             byte[] survivorMode = BitConverter.GetBytes(dungeon.SurvivorMode);
             byte[] statistics = BinarySerializer.SerializeAndCompress(dungeon.Statistics);
+            byte[] zoomFactor = BitConverter.GetBytes(dungeon.ZoomFactor);
             
             byte[] encyclopedia = BinarySerializer.SerializeAndCompress(dungeon.ScenarioEncyclopedia);
             //Add to allow other thread processing
@@ -364,10 +374,14 @@ namespace Rogue.NET.Core.Processing.IO
             dungeonFileStream.Write(encyclopedia, 0, encyclopedia.Length);
 
             offset += encyclopedia.Length;
-            header.StaticObjects.Add(new IndexedObject(typeof(bool), STATISTICS, offset, statistics.Length));
+            header.StaticObjects.Add(new IndexedObject(typeof(ScenarioStatistics), STATISTICS, offset, statistics.Length));
             dungeonFileStream.Write(statistics, 0, statistics.Length);
 
             offset += statistics.Length;
+            header.StaticObjects.Add(new IndexedObject(typeof(double), ZOOM_FACTOR, offset, zoomFactor.Length));
+            dungeonFileStream.Write(zoomFactor, 0, zoomFactor.Length);
+
+            offset += zoomFactor.Length;
 
             // compress levels on multiple threads
             var compressedDictionary = new ConcurrentDictionary<int, byte[]>();

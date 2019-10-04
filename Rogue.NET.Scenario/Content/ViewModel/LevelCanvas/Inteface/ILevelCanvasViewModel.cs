@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -14,7 +15,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
     /// <summary>
     /// Component responsible for data binding for the LevelCanvas
     /// </summary>
-    public interface ILevelCanvasViewModel
+    public interface ILevelCanvasViewModel : INotifyPropertyChanged
     {
         /// <summary>
         /// Wall layer of the layout

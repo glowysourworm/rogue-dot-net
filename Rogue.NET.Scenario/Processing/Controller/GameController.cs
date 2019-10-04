@@ -207,6 +207,9 @@ namespace Rogue.NET.Scenario.Processing.Controller
             _scenarioContainer.SaveLevel = _scenarioContainer.CurrentLevel;
             _scenarioContainer.SaveLocation = PlayerStartLocation.SavePoint;
 
+            // Update UI Parameters
+            _scenarioContainer.ZoomFactor = _modelService.ZoomFactor;
+
             // Update the ScenarioFile with unpacked levels
             _scenarioFile.Update(_scenarioContainer);
 
@@ -273,14 +276,25 @@ namespace Rogue.NET.Scenario.Processing.Controller
 
                 // Unload current model - pass extractable contents to next level with Player
                 IEnumerable<ScenarioObject> extractedContent = null;
+
+                // Propagate UI Parameters - Set default to saved zoom factor
+                double zoomFactor = _scenarioContainer.ZoomFactor;
+
                 if (_modelService.IsLoaded)
+                {
+                    // Content moved to next level
                     extractedContent = _modelService.Unload();
+
+                    // UI Parameters
+                    zoomFactor = _modelService.ZoomFactor;
+                }
 
                 // Register next level data with the model service
                 _modelService.Load(
-                    _scenarioContainer.Player,
+                    _scenarioContainer.Player,                    
                     location,
                     nextLevel,
+                    zoomFactor,
                     extractedContent ?? new ScenarioObject[] { },
                     _scenarioContainer.ScenarioEncyclopedia,
                     _scenarioContainer.Configuration);

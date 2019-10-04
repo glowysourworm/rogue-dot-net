@@ -21,6 +21,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
                 Player player,
                 PlayerStartLocation startLocation,
                 Level level,
+                double zoomFactor,
                 IEnumerable<ScenarioObject> previousLevelContent,
                 IDictionary<string, ScenarioMetaData> encyclopedia,
                 ScenarioConfigurationContainer configuration);
@@ -117,6 +118,11 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// </summary>
         /// <returns>Display name is the object is Identified</returns>
         string GetDisplayName(ScenarioImage scenarioImage);
+
+        /// <summary>
+        /// Gets / sets the zoom factor for the scenario
+        /// </summary>
+        double ZoomFactor { get; set; }
 
         /// <summary>
         /// Returns Empty (Attack = 0, Resistence = 0) Attack Attribute collection copied (Cloned) from

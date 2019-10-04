@@ -42,8 +42,12 @@ namespace Rogue.NET.Core.Processing.Service
         ICharacterLayoutInformation _characterLayoutInformation;
         ICharacterContentInformation _characterContentInformation;
 
+        // UI Parameters
+        double _zoomFactor;
+
         // Enemy to have slain the player
         string _killedBy;
+
         public ICharacterLayoutInformation CharacterLayoutInformation { get { return _characterLayoutInformation; } }
         public ICharacterContentInformation CharacterContentInformation { get { return _characterContentInformation; } }
 
@@ -64,6 +68,7 @@ namespace Rogue.NET.Core.Processing.Service
             Player player, 
             PlayerStartLocation startLocation,
             Level level, 
+            double zoomFactor,
             IEnumerable<ScenarioObject> injectedContents,
             IDictionary<string, ScenarioMetaData> encyclopedia, 
             ScenarioConfigurationContainer configuration)
@@ -72,6 +77,7 @@ namespace Rogue.NET.Core.Processing.Service
 
             this.Level = level;
             this.Player = player;
+            this.ZoomFactor = zoomFactor;
             this.ScenarioEncyclopedia = encyclopedia;
             this.CharacterClasses = configuration.PlayerTemplates.Select(x =>
             {
@@ -153,6 +159,8 @@ namespace Rogue.NET.Core.Processing.Service
         public Level Level { get; private set; }
 
         public Player Player { get; private set; }
+
+        public double ZoomFactor { get; set; }
 
         public IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; private set; }
 

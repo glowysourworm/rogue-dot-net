@@ -12,6 +12,9 @@ using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Scenario.Processing.Event.Content;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
+using Rogue.NET.Common.Extension;
+using System;
+using Rogue.NET.Core.Processing.Service.Interface;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -24,10 +27,6 @@ namespace Rogue.NET.Scenario.Content.Views
         TranslateTransform _translateXform = new TranslateTransform(0,0);
         ScaleTransform _scaleXform = new ScaleTransform(1,1);
 
-        bool _mouseDownWithControl = false;
-        Point _mouseDownWithControlPoint = new Point();
-
-        const int SCREEN_BUFFER = 300;
         const int SHIFT_AMOUNT = 60;
 
         public static readonly DependencyProperty PrimaryTransformProperty =
@@ -42,6 +41,7 @@ namespace Rogue.NET.Scenario.Content.Views
         [ImportingConstructor]
         public LevelCanvas(
             ILevelCanvasViewModel viewModel,
+            IModelService modelService,             // TODO: Find a way to remove the model service
             IRogueEventAggregator eventAggregator)
         {
             _viewModel = viewModel;
@@ -58,15 +58,15 @@ namespace Rogue.NET.Scenario.Content.Views
             transform.Children.Add(_translateXform);
 
             this.WallCanvas.RenderTransform = transform;
-            this.DoorCanvas.RenderTransform = transform;
             this.RevealedCanvas.RenderTransform = transform;
+            this.DoorCanvas.RenderTransform = transform;
             this.LightRadiiItemsControl.RenderTransform = transform;
             this.AuraItemsControl.RenderTransform = transform;
             this.DoodadItemsControl.RenderTransform = transform;
             this.ItemItemsControl.RenderTransform = transform;
             this.CharacterItemsControl.RenderTransform = transform;
-            this.AnimationItemsControl.RenderTransform = transform;
             this.PlayerCanvas.RenderTransform = transform;
+            this.AnimationItemsControl.RenderTransform = transform;
 
             this.Loaded += (sender, args) =>
             {
@@ -76,7 +76,8 @@ namespace Rogue.NET.Scenario.Content.Views
             // subscribe to event to center screen when level loaded
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                CenterOnLocation(_viewModel.Player.Location);
+                // Zoom() -> CenterOnLocation( player )
+                Zoom(modelService.ZoomFactor);
             });
             
             // subscribe to event to update RenderTransform on player move
@@ -91,6 +92,11 @@ namespace Rogue.NET.Scenario.Content.Views
             {
                 ShiftDisplay(type);
             });
+
+            eventAggregator.GetEvent<ZoomEvent>().Subscribe(eventData =>
+            {
+                Zoom(eventData.NewZoomFactor); 
+            });
         }
         public void CenterOnLocation(Point location)
         {
@@ -104,11 +110,11 @@ namespace Rogue.NET.Scenario.Content.Views
             var bounds = new Rect(window.RenderSize);
             var midpt = new Point(bounds.Width / 2.0D, bounds.Height / 2.0D);
 
-            // TODO: FIX THIS
-            var fudgeFactor = new Point(30, 100);
+            // Transform LevelCanvas -> Window
+            var adjustment = this.PlayerCanvas.TransformToAncestor(window).Transform(location);
 
-            _translateXform.X = midpt.X - (location.X + this.VisualOffset.X + fudgeFactor.X);
-            _translateXform.Y = midpt.Y - (location.Y + this.VisualOffset.Y + fudgeFactor.Y);
+            _translateXform.X += (midpt.X - (adjustment.X));
+            _translateXform.Y += (midpt.Y - (adjustment.Y));
         }
 
         private void ShiftDisplay(ShiftDisplayType type)
@@ -135,53 +141,19 @@ namespace Rogue.NET.Scenario.Content.Views
             }
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
+        public void Zoom(double zoomFactor)
         {
-            base.OnMouseMove(e);
+            _scaleXform.ScaleX = zoomFactor.Clip(1.0, 3.0);
+            _scaleXform.ScaleY = zoomFactor.Clip(1.0, 3.0);
 
-            if (Keyboard.Modifiers == ModifierKeys.Control)
-                this.Cursor = Cursors.ScrollAll;
-
-            else
-                this.Cursor = Cursors.Arrow;
-
-            if (Keyboard.Modifiers == ModifierKeys.Control && _mouseDownWithControl)
-            {
-                _translateXform.X += (int)(Mouse.GetPosition(this).X - _mouseDownWithControlPoint.X);
-                _translateXform.Y += (int)(Mouse.GetPosition(this).Y - _mouseDownWithControlPoint.Y);
-                _mouseDownWithControlPoint = Mouse.GetPosition(this);
-            }
-        }
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.LeftButton == MouseButtonState.Pressed)
-            {
-                _mouseDownWithControl = true;
-                _mouseDownWithControlPoint = Mouse.GetPosition(this);
-            }
-        }
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            base.OnMouseLeave(e);
-
-            this.Cursor = Cursors.Arrow;
-            _mouseDownWithControl = false;
-        }
-        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
-        {
-            base.OnPreviewMouseLeftButtonUp(e);
-            _mouseDownWithControl = false;
+            CenterOnLocation(_viewModel.Player.Location);
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-            var viewModel = this.DataContext as LevelCanvasViewModel;
-
-            if (viewModel != null)
+            if (_viewModel != null)
                 CenterOnLocation(_viewModel.Player.Location);
         }
     }

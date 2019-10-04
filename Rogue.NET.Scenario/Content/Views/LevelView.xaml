@@ -4,7 +4,8 @@
              xmlns:const="clr-namespace:Rogue.NET.Common.Constant;assembly=Rogue.NET.Common"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:scenarioContentView="clr-namespace:Rogue.NET.Scenario.Content.Views"
-             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core">
+             xmlns:contentView="clr-namespace:Rogue.NET.Scenario.Content.Views"
+             ClipToBounds="True">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,15 +16,15 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="300" x:Name="ColumnLHS" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="280" />
+            <ColumnDefinition Width="310" x:Name="ColumnRHS" />
         </Grid.ColumnDefinitions>
 
         <!-- Level Canvas -->
         <region:RogueRegion region:RogueRegionManager.RegionName="LevelCanvasRegion"
                             region:RogueRegionManager.DefaultViewType="{x:Type scenarioContentView:LevelCanvas}"
-                            Grid.ColumnSpan="3"
+                            Grid.Column="1"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch" />                            
 
@@ -53,72 +54,15 @@
                 BorderThickness="1"
                 CornerRadius="3">
             <StackPanel>
-                <!-- General Info Text -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <!-- Scenario Name (# Seed) / Survivor Mode -->
-                    <TextBlock x:Name="GeneralInfoTB" 
-                               Foreground="Beige" 
-                               Margin="8"
-                               FontSize="20" 
-                               HorizontalAlignment="Left">
-                        <Run Text="{Binding ScenarioName}" />
-                        <Run Text=" Scenario (# " />
-                        <Run Text="{Binding Seed}" />
-                        <Run Text=")" />
-                    </TextBlock>
 
-                    <!--TextBlock HorizontalAlignment="Right"
-                               Margin="8"
-                               Foreground="Beige"
-                               FontSize="14">
-                           <Run Text="Ticks: " />
-                           <Run Text="{Binding Ticks}" />
-                    </-->
-                </StackPanel>
-
-                <!-- Button Panel -->
-                <Border>
-                    <Border.Background>
-                        <SolidColorBrush Color="DarkBlue" Opacity="0.3" />
-                    </Border.Background>
-                    <StackPanel Orientation="Horizontal" Opacity="1" Margin="4">
-                        <Button x:Name="CenterButton" 
-                        Background="Black"
-                        BorderBrush="White"
-                        Click="CenterButton_Click" 
-                        Margin="4" 
-                        Width="28" 
-                        Style="{DynamicResource ShinyTextButtonStyle}" 
-                        Cursor="Hand" Height="28" ToolTip="Center on Player">
-                            <Button.Content>
-                                <coreView:Smiley Height="15" Width="10"
-                                         SmileyColor="{Binding PlayerScenarioImage.SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
-                                         SmileyLineColor="{Binding PlayerScenarioImage.SmileyLineColor, Converter={StaticResource StringColorConverter}}"
-                                         SmileyExpression="{Binding PlayerScenarioImage.SmileyExpression}" 
-                                         />
-                            </Button.Content>
-                        </Button>
-                        <Button x:Name="UpButton"     Content="&#xf062;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="UpButton_Click" Margin="4" Style="{DynamicResource ShinyTextButtonStyle}" Width="28" Cursor="Hand" ToolTip="Shift Display Up" Height="28" />
-                        <Button x:Name="DownButton"   Content="&#xf063;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="DownButton_Click" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Height="28" Margin="4" Cursor="Hand" ToolTip="Shift Display Down"/>
-                        <Button x:Name="LeftButton"   Content="&#xf060;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="LeftButton_Click" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Height="28" Margin="4" Cursor="Hand" ToolTip="Shift Display Left" />
-                        <Button x:Name="RightButton"  Content="&#xf061;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="RightButton_Click" Margin="4" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Cursor="Hand" Height="28" ToolTip="Shift Display Right"/>
-                        <Button x:Name="ObjectivesButton" Content="{Binding Source={x:Static const:GameSymbol.Write}, Converter={StaticResource SymbolGameImageSourceConverter}}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="ObjectivesButton_Click" Margin="4" Width="28" Style="{DynamicResource ShinyButtonStyle}" Cursor="Hand" Height="28" ToolTip="Scenario Objectives"/>
-                        <Button x:Name="HelpButton" 
-                                Content="{Binding Source={x:Static const:GameSymbol.Write}, Converter={StaticResource SymbolGameImageSourceConverter}}"
-                                Background="Black" 
-                                BorderBrush="White" 
-                                Click="HelpButton_Click"
-                                Width="28" 
-                                Style="{DynamicResource ShinyButtonStyle}" 
-                                Height="28" Margin="4" Cursor="Hand" ToolTip="Help"/>
-
-                    </StackPanel>
-                </Border>
+                <!-- Compass Control -->
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type contentView:CompassCtrl}"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Stretch"/>
 
                 <!-- Dialog Messages -->
                 <region:RogueRegion region:RogueRegionManager.RegionName="ScenarioMessageRegion"
                                     region:RogueRegionManager.DefaultViewType="{x:Type scenarioContentView:ScenarioMessageView}"
-                                    Margin="4"
                                     VerticalAlignment="Stretch"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch" 

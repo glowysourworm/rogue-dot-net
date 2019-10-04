@@ -17,6 +17,9 @@ namespace Rogue.NET.Scenario.Views
     {
         readonly IRogueEventAggregator _eventAggregator;
 
+        const int LHS_WIDTH = 300;
+        const int RHS_WIDTH = 310;
+
         [ImportingConstructor]
         public LevelView(GameViewModel viewModel, IRogueEventAggregator eventAggregator)
         {
@@ -34,16 +37,20 @@ namespace Rogue.NET.Scenario.Views
                 switch (action.Type)
                 {
                     case ToggleLevelViewControlsEventArgs.ToggleLevelViewControlsType.LeftHandSide:
-                        this.LeftHandSideControls.Visibility = leftCollapsed ? Visibility.Visible : Visibility.Collapsed;
-                        this.LeftHandSideCollapsedControls.Visibility = leftCollapsed ? Visibility.Collapsed : Visibility.Visible;
+                        //this.LeftHandSideControls.Visibility = leftCollapsed ? Visibility.Visible : Visibility.Collapsed;
+                        //this.LeftHandSideCollapsedControls.Visibility = leftCollapsed ? Visibility.Collapsed : Visibility.Visible;
+                        this.ColumnLHS.Width = new GridLength(this.ColumnLHS.Width.Value == 0 ? LHS_WIDTH : 0);
                         break;
                     case ToggleLevelViewControlsEventArgs.ToggleLevelViewControlsType.RightHandSide:
-                        this.RightHandSideControls.Visibility = rightCollapsed ? Visibility.Visible : Visibility.Collapsed;
+                        //this.RightHandSideControls.Visibility = rightCollapsed ? Visibility.Visible : Visibility.Collapsed;
+                        this.ColumnRHS.Width = new GridLength(this.ColumnRHS.Width.Value == 0 ? RHS_WIDTH : 0);
                         break;
                     case ToggleLevelViewControlsEventArgs.ToggleLevelViewControlsType.All:
-                        this.LeftHandSideControls.Visibility = leftCollapsed || rightCollapsed ? Visibility.Visible : Visibility.Collapsed;
-                        this.LeftHandSideCollapsedControls.Visibility = leftCollapsed || rightCollapsed ? Visibility.Collapsed : Visibility.Visible;
-                        this.RightHandSideControls.Visibility = leftCollapsed || rightCollapsed ? Visibility.Visible : Visibility.Collapsed;
+                        //this.LeftHandSideControls.Visibility = leftCollapsed || rightCollapsed ? Visibility.Visible : Visibility.Collapsed;
+                        //this.LeftHandSideCollapsedControls.Visibility = leftCollapsed || rightCollapsed ? Visibility.Collapsed : Visibility.Visible;
+                        //this.RightHandSideControls.Visibility = leftCollapsed || rightCollapsed ? Visibility.Visible : Visibility.Collapsed;
+                        this.ColumnLHS.Width = new GridLength(this.ColumnLHS.Width.Value == 0 ? LHS_WIDTH : 0);
+                        this.ColumnRHS.Width = new GridLength(this.ColumnRHS.Width.Value == 0 ? RHS_WIDTH : 0);
                         break;
                     default:
                         break;
