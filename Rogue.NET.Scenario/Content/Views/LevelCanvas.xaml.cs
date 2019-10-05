@@ -29,15 +29,6 @@ namespace Rogue.NET.Scenario.Content.Views
 
         const int SHIFT_AMOUNT = 60;
 
-        public static readonly DependencyProperty PrimaryTransformProperty =
-            DependencyProperty.Register("PrimaryTransform", typeof(Transform), typeof(LevelCanvas));
-
-        public Transform PrimaryTransform
-        {
-            get { return (Transform)GetValue(PrimaryTransformProperty); }
-            set { SetValue(PrimaryTransformProperty, value); }
-        }
-
         [ImportingConstructor]
         public LevelCanvas(
             ILevelCanvasViewModel viewModel,

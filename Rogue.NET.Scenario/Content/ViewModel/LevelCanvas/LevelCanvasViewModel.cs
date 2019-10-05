@@ -66,6 +66,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.DoorLayout = new Path();
             this.RevealedLayout = new Path();
 
+            this.WallLayout.HorizontalAlignment = HorizontalAlignment.Stretch;
+            this.DoorLayout.HorizontalAlignment = HorizontalAlignment.Stretch;
+            this.RevealedLayout.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            this.WallLayout.VerticalAlignment = VerticalAlignment.Stretch;
+            this.DoorLayout.VerticalAlignment = VerticalAlignment.Stretch;
+            this.RevealedLayout.VerticalAlignment = VerticalAlignment.Stretch;
+
             this.Animations = new ObservableCollection<FrameworkElement>();
             this.Auras = new ObservableCollection<LevelCanvasShape>();
             this.Doodads = new ObservableCollection<LevelCanvasImage>();
@@ -154,14 +162,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 OnPropertyChanged("LevelContainerHeight");
                 OnLevelDimensionChange();
             }
-        }
-        public int LevelContainerWidth
-        {
-            get { return _levelWidth + 200; }
-        }
-        public int LevelContainerHeight
-        {
-            get { return _levelHeight + 200; }
         }
         #endregion
 

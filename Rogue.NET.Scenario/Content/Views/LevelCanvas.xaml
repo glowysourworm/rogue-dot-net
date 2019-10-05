@@ -1,24 +1,26 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.LevelCanvas"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
-             xmlns:contentViews="clr-namespace:Rogue.NET.Scenario.Content.Views"
              Background="LightCoral">
-    <Border BorderBrush="White" Background="#0F0000FF" CornerRadius="5" BorderThickness="1" Margin="5, 2, 5, 5" Padding="10">
+    
+    <Border BorderBrush="White" 
+            Background="#0F0000FF" 
+            CornerRadius="5" 
+            BorderThickness="1" 
+            Margin="5, 2, 5, 5" 
+            Padding="10">
         
         <!-- Clip Rendering Inside Padded Region -->
-        <Border ClipToBounds="True" Background="Transparent">
+        <Border ClipToBounds="True" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             
             <Grid>
 
                 <!-- Wall Layer -->
                 <Canvas   x:Name="WallCanvas"                  
-                  Background="Transparent"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  OpacityMask="{Binding ExploredOpacityMask}"
-                  Width="{Binding LevelWidth, FallbackValue=500}" 
-                  Height="{Binding LevelHeight, FallbackValue=500}">
+                          Background="Transparent"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          OpacityMask="{Binding ExploredOpacityMask}">
                     <ContentPresenter Content="{Binding WallLayout}" />
                 </Canvas>
 
@@ -26,10 +28,8 @@
                 <Canvas   x:Name="DoorCanvas"
                   OpacityMask="{Binding ExploredOpacityMask}"
                   Background="Transparent"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Width="{Binding LevelWidth, FallbackValue=500}" 
-                  Height="{Binding LevelHeight, FallbackValue=500}">
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
                     <ContentPresenter Content="{Binding DoorLayout}" />
                 </Canvas>
 
@@ -38,9 +38,7 @@
                   OpacityMask="{Binding RevealedOpacityMask}"
                   Background="Transparent"
                   HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Width="{Binding LevelWidth, FallbackValue=500}" 
-                  Height="{Binding LevelHeight, FallbackValue=500}">
+                  VerticalAlignment="Top">
                     <ContentPresenter Content="{Binding RevealedLayout}" />
                 </Canvas>
 
@@ -51,10 +49,8 @@
                   DisplayMemberPath="Symbol"
                   BorderBrush="Transparent" 
                   BorderThickness="0"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"                      
-                  Width="{Binding LevelWidth, FallbackValue=500}" 
-                  Height="{Binding LevelHeight, FallbackValue=500}">
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas ClipToBounds="False"  />
@@ -69,10 +65,8 @@
                   DisplayMemberPath="Symbol"
                   BorderBrush="Transparent" 
                   BorderThickness="0"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Width="{Binding LevelWidth, FallbackValue=500}" 
-                  Height="{Binding LevelHeight, FallbackValue=500}">
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas ClipToBounds="False" />
@@ -85,10 +79,8 @@
                       ItemsSource="{Binding Doodads}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Width="{Binding LevelWidth, FallbackValue=500}" 
-                      Height="{Binding LevelHeight, FallbackValue=500}">
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas ClipToBounds="False" />
@@ -101,10 +93,8 @@
                       ItemsSource="{Binding Items}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Width="{Binding LevelWidth, FallbackValue=500}" 
-                      Height="{Binding LevelHeight, FallbackValue=500}">
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas ClipToBounds="False" />
@@ -117,10 +107,8 @@
                       ItemsSource="{Binding Characters}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Width="{Binding LevelWidth, FallbackValue=500}" 
-                      Height="{Binding LevelHeight, FallbackValue=500}">
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas ClipToBounds="False" />
@@ -130,14 +118,12 @@
 
                 <!-- Player -->
                 <Canvas   x:Name="PlayerCanvas"                  
-                  Background="Transparent"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Width="{Binding LevelWidth, FallbackValue=500}" 
-                  Height="{Binding LevelHeight, FallbackValue=500}">
+                          Background="Transparent"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch">
                     <ContentPresenter Canvas.Left="{Binding Player.Location.X}"
-                              Canvas.Top="{Binding Player.Location.Y}"
-                              Content="{Binding Player}" />
+                                      Canvas.Top="{Binding Player.Location.Y}"
+                                      Content="{Binding Player}" />
                 </Canvas>
 
                 <!-- Animations -->
@@ -146,10 +132,8 @@
                       ItemsSource="{Binding Animations}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Width="{Binding LevelWidth, FallbackValue=500}" 
-                      Height="{Binding LevelHeight, FallbackValue=500}">
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas ClipToBounds="False" />
