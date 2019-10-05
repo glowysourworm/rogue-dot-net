@@ -24,6 +24,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
         double _combatValue;
         bool _isEquipped;
         bool _isCursed;
+        bool _isCurseIdentified;
         bool _hasCharacterClassRequirement;
         string _characterClass;
         #endregion
@@ -73,6 +74,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
             get { return _isCursed; }
             set { this.RaiseAndSetIfChanged(ref _isCursed, value); }
         }
+        public bool IsCurseIdentified
+        {
+            get { return _isCurseIdentified; }
+            set { this.RaiseAndSetIfChanged(ref _isCurseIdentified, value); }
+        }
         public bool HasCharacterClassRequirement
         {
             get { return _hasCharacterClassRequirement; }
@@ -99,6 +105,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
 
             this.IsEquipped = equipment.IsEquipped;
             this.IsCursed = equipment.IsCursed;
+            this.IsCurseIdentified = metaData.IsCurseIdentified;
 
             this.HasCharacterClassRequirement = equipment.HasCharacterClassRequirement;
             this.RequiredLevel = equipment.LevelRequired;

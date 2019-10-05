@@ -11,13 +11,14 @@ namespace Rogue.NET.Core.Converter.ItemGrid
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length != 4 || values.Any(x => x == DependencyProperty.UnsetValue))
+            if (values.Length != 5 || values.Any(x => x == DependencyProperty.UnsetValue))
                 return Brushes.White;
 
             bool equiped = (bool)values[0];
             bool cursed = (bool)values[1];
-            bool objective = (bool)values[2];
-            bool unique = (bool)values[3];
+            bool isCurseIdentified = (bool)values[2];
+            bool objective = (bool)values[3];
+            bool unique = (bool)values[4];
 
             if (objective)
                 return Brushes.Cyan;
@@ -25,14 +26,13 @@ namespace Rogue.NET.Core.Converter.ItemGrid
             if (unique)
                 return Brushes.Goldenrod;
 
-            if (cursed)
+            if (cursed && isCurseIdentified)
                 return Brushes.Red;
 
             if (equiped)
                 return Brushes.GreenYellow;
 
-            else
-                return Brushes.White;
+            return Brushes.White;
         }
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {

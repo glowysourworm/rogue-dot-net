@@ -168,7 +168,6 @@
     <Compile Include="Converter\ItemGrid\ItemGridForegroundConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridRowDetailsVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridSelectionColorConverter.cs" />
-    <Compile Include="Converter\ItemGrid\ItemGridTooltipForegroundConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridZeroValueParameterConverter.cs" />
     <Compile Include="Converter\LessThanZeroConverter.cs" />
     <Compile Include="Converter\Model\ScenarioConfiguration\LayoutHeightConverter.cs" />

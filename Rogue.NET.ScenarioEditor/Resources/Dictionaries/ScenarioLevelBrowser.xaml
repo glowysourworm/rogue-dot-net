@@ -375,6 +375,11 @@
                                                             <system:Boolean>False</system:Boolean>
                                                         </Binding.Source>
                                                     </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>                                                    
                                                     <Binding Path="HasEquipmentObjectiveAssets" />
                                                     <Binding>
                                                         <Binding.Source>
@@ -409,6 +414,11 @@
                                                             <system:Boolean>False</system:Boolean>
                                                         </Binding.Source>
                                                     </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>                                                    
                                                     <Binding Path="HasConsumableObjectiveAssets" />
                                                     <Binding>
                                                         <Binding.Source>
@@ -443,6 +453,11 @@
                                                             <system:Boolean>False</system:Boolean>
                                                         </Binding.Source>
                                                     </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>                                                    
                                                     <Binding Path="HasEnemyObjectiveAssets" />
                                                     <Binding>
                                                         <Binding.Source>
@@ -477,6 +492,11 @@
                                                             <system:Boolean>False</system:Boolean>
                                                         </Binding.Source>
                                                     </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>                                                    
                                                     <Binding Path="HasFriendlyObjectiveAssets" />
                                                     <Binding>
                                                         <Binding.Source>
@@ -511,6 +531,11 @@
                                                             <system:Boolean>False</system:Boolean>
                                                         </Binding.Source>
                                                     </Binding>
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <system:Boolean>False</system:Boolean>
+                                                        </Binding.Source>
+                                                    </Binding>                                                    
                                                     <Binding Path="HasDoodadObjectiveAssets" />
                                                     <Binding>
                                                         <Binding.Source>

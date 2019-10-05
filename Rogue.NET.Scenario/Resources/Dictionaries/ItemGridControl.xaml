@@ -65,6 +65,7 @@
                 <MultiBinding Converter="{StaticResource ItemGridForegroundConverter}">
                     <Binding Path="IsEquipped" />
                     <Binding Path="IsCursed" />
+                    <Binding Path="IsCurseIdentified" />
                     <Binding Path="IsObjective" />
                     <Binding Path="IsUnique" />
                 </MultiBinding>
@@ -352,8 +353,14 @@
             <TextBlock Text="(C)"
                        ToolTip="Cursed!"
                        FontSize="14"
-                       Margin="6,0,0,0"
-                       Visibility="{Binding IsCursed, Converter={StaticResource BoolVisibilityCollapseConverter}, FallbackValue=Collapsed}"/>            
+                       Margin="6,0,0,0">
+                <TextBlock.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}" FallbackValue="Collapsed">
+                        <Binding Path="IsCursed" />
+                        <Binding Path="IsCurseIdentified" />
+                    </MultiBinding>                    
+                </TextBlock.Visibility>
+            </TextBlock>
             <TextBlock Text="(E)"
                        ToolTip="Equipped"
                        FontSize="14"

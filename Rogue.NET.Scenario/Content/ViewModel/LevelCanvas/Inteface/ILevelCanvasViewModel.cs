@@ -84,8 +84,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
 
         int LevelWidth { get; set; }
         int LevelHeight { get; set; }
-        int LevelContainerWidth { get; }
-        int LevelContainerHeight { get; }
 
         void UpdateLayout(CellRectangle levelBounds, Color wallColor, Color doorColor);
         void UpdateContent(IEnumerable<ScenarioObject> contents, Player player);

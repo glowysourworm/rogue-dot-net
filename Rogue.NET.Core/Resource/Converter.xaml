@@ -49,7 +49,6 @@
     <converterItemGrid:ItemGridForegroundConverter x:Key="ItemGridForegroundConverter" />
     <converterItemGrid:ItemGridRowDetailsVisibilityConverter x:Key="ItemGridRowDetailsVisibilityConverter" />
     <converterItemGrid:ItemGridSelectionColorConverter x:Key="ItemGridSelectionColorConverter" />
-    <converterItemGrid:ItemGridTooltipForegroundConverter x:Key="ItemGridTooltipForegroundConverter" />
     <converterItemGrid:ItemGridZeroValueParameterConverter x:Key="ItemGridZeroValueParameterConverter" />
     <converterItemGrid:ItemGridCombatTypeConverter x:Key="ItemGridCombatTypeConverter" />
     <converterModelScenarioConfiguration:LayoutHeightConverter x:Key="LayoutHeightConverter" />
