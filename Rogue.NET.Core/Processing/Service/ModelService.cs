@@ -32,7 +32,6 @@ namespace Rogue.NET.Core.Processing.Service
         readonly IRayTracer _rayTracer;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
-        readonly IAttackAttributeGenerator _attackAttributeGenerator;
 
         // Stored configuration for the scenario
         ScenarioConfigurationContainer _configuration;
@@ -41,9 +40,6 @@ namespace Rogue.NET.Core.Processing.Service
         // per character (These must be re-created each level)
         ICharacterLayoutInformation _characterLayoutInformation;
         ICharacterContentInformation _characterContentInformation;
-
-        // UI Parameters
-        double _zoomFactor;
 
         // Enemy to have slain the player
         string _killedBy;
@@ -55,13 +51,11 @@ namespace Rogue.NET.Core.Processing.Service
         public ModelService(
                 IRayTracer rayTracer, 
                 IRandomSequenceGenerator randomSequenceGenerator, 
-                ISymbolDetailsGenerator symbolDetailsGenerator,
-                IAttackAttributeGenerator attackAttributeGenerator)
+                ISymbolDetailsGenerator symbolDetailsGenerator)
         {
             _rayTracer = rayTracer;
             _randomSequenceGenerator = randomSequenceGenerator;
             _symbolDetailsGenerator = symbolDetailsGenerator;
-            _attackAttributeGenerator = attackAttributeGenerator;
         }
 
         public void Load(
@@ -165,17 +159,6 @@ namespace Rogue.NET.Core.Processing.Service
         public IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; private set; }
 
         public IEnumerable<ScenarioImage> CharacterClasses { get; private set; }
-
-        public IEnumerable<AttackAttribute> AttackAttributes
-        {
-            get
-            {
-                return _configuration
-                      .AttackAttributes
-                      .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                      .Actualize();
-            }
-        }
 
         public LevelBranchTemplate GetLevelBranch()
         {

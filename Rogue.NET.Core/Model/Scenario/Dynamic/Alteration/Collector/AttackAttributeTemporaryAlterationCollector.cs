@@ -6,9 +6,9 @@ using System.Linq;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
-using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {

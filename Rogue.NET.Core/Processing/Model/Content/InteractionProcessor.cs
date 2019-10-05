@@ -41,11 +41,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
         public void CalculateAttackAttributeHit(string alterationDisplayName, Character defender, IEnumerable<AttackAttribute> offenseAttributes)
         {
-            // Create detached attributes to send along the message publisher
-            var baseAttributes = _modelService.AttackAttributes;
-
             // Get the defender's attributes
-            var defenseAttributes = defender.GetMeleeAttributes(baseAttributes);
+            var defenseAttributes = defender.GetMeleeAttributes();
 
             // Apply the calculation, Filter the results, Create an Attack Attribute Dictionary
             var combatResults = CreateAttackAttributeResults(offenseAttributes, defenseAttributes);
@@ -91,9 +88,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var criticalHit = _randomSequenceGenerator.Get() <= attacker.GetCriticalHitProbability();
 
             // Attack attributes
-            var baseAttributes = _modelService.AttackAttributes;
-            var attackerAttributes = attacker.GetMeleeAttributes(baseAttributes);
-            var defenderAttributes = defender.GetMeleeAttributes(baseAttributes);
+            var attackerAttributes = attacker.GetMeleeAttributes();
+            var defenderAttributes = defender.GetMeleeAttributes();
 
             // Calculate Attack Attribute Melee
             var specializedHits = CreateAttackAttributeResults(attackerAttributes, defenderAttributes);
@@ -149,13 +145,34 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             return offensiveAttributes.Select(offensiveAttribute =>
             {
-                var defensiveAttribute = defensiveAttributes.First(x => x.RogueName == offensiveAttribute.RogueName);
+                // Get Defensive Attribute
+                var defensiveAttribute = defensiveAttributes.FirstOrDefault(x => x.RogueName == offensiveAttribute.RogueName);
 
-                return new
+                // Matching attribute found
+                if (defensiveAttribute != null)
                 {
-                    Value = Calculator.CalculateAttackAttributeMelee(offensiveAttribute.Attack, defensiveAttribute.Resistance, defensiveAttribute.Weakness),
-                    AttackAttribute = offensiveAttribute as ScenarioImage
-                };
+                    return new
+                    {
+                        Value = Calculator.CalculateAttackAttributeMelee(offensiveAttribute.Attack, 
+                                                                         defensiveAttribute.Resistance, 
+                                                                         defensiveAttribute.Weakness,
+                                                                         defensiveAttribute.Immune),
+                        AttackAttribute = offensiveAttribute as ScenarioImage
+                    };
+                }
+
+                // No matching attribute - fill in zeros
+                else
+                {
+                    return new
+                    {
+                        Value = Calculator.CalculateAttackAttributeMelee(offensiveAttribute.Attack,
+                                                                         0.0D,
+                                                                         0,
+                                                                         false),
+                        AttackAttribute = offensiveAttribute as ScenarioImage
+                    };
+                }
             })
             .Where(x => x.Value > 0)
             .ToDictionary(x => x.AttackAttribute, x => x.Value);

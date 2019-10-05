@@ -4,7 +4,8 @@
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"             
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core" 
-             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
+             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.MarkupExtension"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -59,14 +60,37 @@
                 </Grid>
             </StackPanel>
         </TabItem>
+        
+        <!-- Armor Attack Attributes -->
         <TabItem Header="Attack Attributes">
             <TabItem.Visibility>
                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorImbue}" />
+                </MultiBinding>
+            </TabItem.Visibility>
+            <region:RogueRegionManager.DefaultView>
+                <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1"
+                                                                        ShowAttack="False"
+                                                                        ShowResistance="True"
+                                                                        ShowWeakness="False"
+                                                                        ShowImmune="False" />
+            </region:RogueRegionManager.DefaultView>
+        </TabItem>
+
+        <!-- Weapon Attack Attributes -->
+        <TabItem Header="Attack Attributes">
+            <TabItem.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponImbue}" />
                 </MultiBinding>
             </TabItem.Visibility>
-            <commonControl:AlterationAttackAttributeListControl />
-        </TabItem>
+            <region:RogueRegionManager.DefaultView>
+                <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1"
+                                                                               ShowAttack="True"
+                                                                               ShowResistance="False"
+                                                                               ShowWeakness="False"
+                                                                               ShowImmune="False" />
+            </region:RogueRegionManager.DefaultView>
+        </TabItem>        
     </TabControl>
 </UserControl>

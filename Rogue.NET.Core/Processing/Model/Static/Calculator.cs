@@ -10,8 +10,11 @@ namespace Rogue.NET.Core.Processing.Model.Static
     /// </summary>
     public static class Calculator
     {
-        public static double CalculateAttackAttributeMelee(double attack, double resistance, int weakness)
+        public static double CalculateAttackAttributeMelee(double attack, double resistance, int weakness, bool immune)
         {
+            if (immune)
+                return 0;
+
             if (attack <= 0)
                 return 0;
 

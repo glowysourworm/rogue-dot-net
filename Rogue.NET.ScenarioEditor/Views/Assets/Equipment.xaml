@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
-             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"             
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"           
+             xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
              xmlns:equipment="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl"
              xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.MarkupExtension"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
@@ -51,8 +52,8 @@
                 <region:RogueRegion DataContext="{Binding EquipmentCurseAlteration}"
                                     region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentCurseAlterationControl}" />                
             </TabItem>
-            <TabItem Header="Attack Attributes">
-                <equipment:EquipmentAttackAttributes />
+            <TabItem Header="Attack Attributes" x:Name="AttackAttributesTab">
+                <!-- Construct in code to handle property changed binding -->
             </TabItem>
         </TabControl>
     </Grid>

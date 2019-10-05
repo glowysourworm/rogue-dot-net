@@ -94,7 +94,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             playerAdvancement = false;
 
             //Normal turn stuff
-            player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit(_modelService.AttackAttributes);
+            player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit();
             player.Mp += player.GetMpRegen();
 
             // Set Killed By if malign attribute hit is great enough

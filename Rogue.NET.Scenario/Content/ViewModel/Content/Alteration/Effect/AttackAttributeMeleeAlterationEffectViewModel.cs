@@ -27,7 +27,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>(
                 template.AttackAttributes
-                        .Where(x => x.Attack.IsSet() || x.Resistance.IsSet() || x.Weakness.IsSet())
+                        .Where(x => x.Attack.IsSet() || x.Resistance.IsSet() || x.Weakness.IsSet() || x.Immune)
                         .Select(x => new AttackAttributeViewModel(x)));
         }
     }

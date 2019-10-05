@@ -244,27 +244,28 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         private void UpdateAttackAttributeCollection(IList<AttackAttributeTemplateViewModel> source, IList<AttackAttributeTemplateViewModel> dest)
         {
-            // Create
+            // Update
             foreach (var attrib in source)
             {
-                if (!dest.Any(a => a.Name == attrib.Name))
-                    dest.Add(attrib.DeepClone());
+                var existing = dest.FirstOrDefault(a => a.Name == attrib.Name);
 
-                // Update
-                else
+                if (existing != null)
                 {
-                    var existing = dest.First(a => a.Name == attrib.Name);
                     existing.SymbolDetails.CharacterColor = attrib.SymbolDetails.CharacterColor;
                     existing.SymbolDetails.CharacterSymbol = attrib.SymbolDetails.CharacterSymbol;
                     existing.SymbolDetails.CharacterSymbolCategory = attrib.SymbolDetails.CharacterSymbolCategory;
+                    existing.SymbolDetails.CharacterScale = attrib.SymbolDetails.CharacterScale;
                     existing.SymbolDetails.Symbol = attrib.SymbolDetails.Symbol;
                     existing.SymbolDetails.SymbolHue = attrib.SymbolDetails.SymbolHue;
                     existing.SymbolDetails.SymbolLightness = attrib.SymbolDetails.SymbolLightness;
                     existing.SymbolDetails.SymbolSaturation = attrib.SymbolDetails.SymbolSaturation;
+                    existing.SymbolDetails.SymbolScale = attrib.SymbolDetails.SymbolScale;
+                    existing.SymbolDetails.SymbolUseColorMask = attrib.SymbolDetails.SymbolUseColorMask;
                     existing.SymbolDetails.SmileyAuraColor = attrib.SymbolDetails.SmileyAuraColor;
                     existing.SymbolDetails.SmileyBodyColor = attrib.SymbolDetails.SmileyBodyColor;
                     existing.SymbolDetails.SmileyLineColor = attrib.SymbolDetails.SmileyLineColor;
                     existing.SymbolDetails.SmileyExpression = attrib.SymbolDetails.SmileyExpression;
+                    existing.SymbolDetails.GameSymbol = attrib.SymbolDetails.GameSymbol;
                     existing.SymbolDetails.SymbolType = attrib.SymbolDetails.SymbolType;
                 }
             }

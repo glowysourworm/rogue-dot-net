@@ -5,7 +5,7 @@
              xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.MarkupExtension"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
-             xmlns:assets="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl">
+             xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl">
     <TabControl Background="Black" TabStripPlacement="Left">
 
         <!-- Player Symbol -->
@@ -71,13 +71,15 @@
 
         <!-- Player Attack Attributes -->
         <TabItem Header="Player Attack Attributes">
-            <ListBox ItemsSource="{Binding AttackAttributes}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <assets:AttackAttribute />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <region:RogueRegion DataContext="{Binding AttackAttributes}">
+                <region:RogueRegionManager.DefaultView>
+                    <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1000"
+                                                                               ShowAttack="True"
+                                                                               ShowResistance="True"
+                                                                               ShowWeakness="True"
+                                                                               ShowImmune="True" />
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>
         </TabItem>
         
         <!-- Player Equipment -->

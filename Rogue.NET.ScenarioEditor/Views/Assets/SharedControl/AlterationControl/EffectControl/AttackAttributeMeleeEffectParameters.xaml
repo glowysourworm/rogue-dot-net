@@ -1,6 +1,15 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.AttackAttributeMeleeEffectParameters"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
-    <commonControl:AlterationAttackAttributeListControl />
+             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.MarkupExtension"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common">
+    <region:RogueRegion DataContext="{Binding AttackAttributes}">
+        <region:RogueRegionManager.DefaultView>
+            <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1"
+                                                                               ShowAttack="True"
+                                                                               ShowResistance="False"
+                                                                               ShowWeakness="False"
+                                                                               ShowImmune="False" />
+        </region:RogueRegionManager.DefaultView>
+    </region:RogueRegion>
 </UserControl>

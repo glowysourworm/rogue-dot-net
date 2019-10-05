@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls" 
+             xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              Background="Black">
     <UserControl.Resources>
@@ -12,45 +13,60 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" Width="110">
-            <Image VerticalAlignment="Center" Margin="10">
-                <Image.Source>
-                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                        <Binding Path="SymbolDetails.CharacterColor" />
-                        <Binding Path="SymbolDetails.CharacterSymbol" />
-                        <Binding Path="SymbolDetails.CharacterSymbolCategory" />
-                        <Binding Path="SymbolDetails.CharacterScale" />
-                        <Binding Path="SymbolDetails.Symbol" />
-                        <Binding Path="SymbolDetails.SymbolHue" />
-                        <Binding Path="SymbolDetails.SymbolSaturation" />
-                        <Binding Path="SymbolDetails.SymbolLightness" />
-                        <Binding Path="SymbolDetails.SymbolScale" />
-                        <Binding Path="SymbolDetails.SymbolUseColorMask" />
-                        <Binding Path="SymbolDetails.SmileyExpression" />
-                        <Binding Path="SymbolDetails.SmileyAuraColor" />
-                        <Binding Path="SymbolDetails.SmileyBodyColor" />
-                        <Binding Path="SymbolDetails.SmileyLineColor" />
-                        <Binding Path="SymbolDetails.GameSymbol" />
-                        <Binding Path="SymbolDetails.SymbolType" />
-                    </MultiBinding>
-                </Image.Source>
-            </Image>
-            <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="18" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
-            <TextBlock Text="A" VerticalAlignment="Center" Foreground="Goldenrod" FontSize="16" />
-            <controls:Range DataContext="{Binding Attack}" LowLimit="0" HighLimit="500" Width="200" Margin="10, 0" />
-
-            <TextBlock Text="R" VerticalAlignment="Center" Foreground="LightSteelBlue" FontSize="16" />
-            <controls:Range DataContext="{Binding Resistance}" LowLimit="0" HighLimit="500" Width="200" Margin="10, 0" />
-
-            <TextBlock Text="W" VerticalAlignment="Center" Foreground="Red" FontSize="16" />
-            <controls:Range DataContext="{Binding Weakness}" LowLimit="0" HighLimit="10" Width="200" Margin="10, 0" />
-        </StackPanel>
-    </Grid>
+    <StackPanel>
+        <Grid Margin="0, 5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Image>
+                    <Image.Source>
+                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Double>1.5</system:Double>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="SymbolDetails.CharacterColor" />
+                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                            <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                            <Binding Path="SymbolDetails.CharacterScale" />
+                            <Binding Path="SymbolDetails.Symbol" />
+                            <Binding Path="SymbolDetails.SymbolHue" />
+                            <Binding Path="SymbolDetails.SymbolSaturation" />
+                            <Binding Path="SymbolDetails.SymbolLightness" />
+                            <Binding Path="SymbolDetails.SymbolScale" />
+                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
+                            <Binding Path="SymbolDetails.SmileyExpression" />
+                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                            <Binding Path="SymbolDetails.GameSymbol" />
+                            <Binding Path="SymbolDetails.SymbolType" />
+                        </MultiBinding>
+                    </Image.Source>
+                </Image>
+                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="20" Margin="10, 0, 0, 0" />
+            </StackPanel>
+        </Grid>
+        <Grid Margin="0, 5"
+              Visibility="{Binding ShowAttack, RelativeSource={RelativeSource AncestorType={x:Type sharedControl:AttackAttributeListControl}}, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+            <TextBlock Text="Attack" VerticalAlignment="Center" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+            <controls:Range DataContext="{Binding Attack}" FontSize="18" LowLimit="0" HighLimit="500" Width="300" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="0, 5"
+              Visibility="{Binding ShowResistance, RelativeSource={RelativeSource AncestorType={x:Type sharedControl:AttackAttributeListControl}}, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+              IsEnabled="{Binding Immune, Converter={StaticResource BoolInverseConverter}}">
+            <TextBlock Text="Resistance" VerticalAlignment="Center" Foreground="LightSteelBlue" FontSize="18" HorizontalAlignment="Left" />
+            <controls:Range DataContext="{Binding Resistance}" FontSize="18" LowLimit="0" HighLimit="500" Width="300" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="0, 5"
+              Visibility="{Binding ShowWeakness, RelativeSource={RelativeSource AncestorType={x:Type sharedControl:AttackAttributeListControl}}, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+              IsEnabled="{Binding Immune, Converter={StaticResource BoolInverseConverter}}">
+            <TextBlock Text="Weakness" VerticalAlignment="Center" Foreground="Red" FontSize="18" HorizontalAlignment="Left" />
+            <controls:Range DataContext="{Binding Weakness}" FontSize="18" LowLimit="0" HighLimit="500" Width="300" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="0, 5"
+              Visibility="{Binding ShowImmune, RelativeSource={RelativeSource AncestorType={x:Type sharedControl:AttackAttributeListControl}}, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <TextBlock Text="Immunity" Foreground="Purple" FontSize="18" VerticalAlignment="Center" Margin="0, 0, 10, 0" />
+                <CheckBox IsChecked="{Binding Immune}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+    </StackPanel>
 </UserControl>

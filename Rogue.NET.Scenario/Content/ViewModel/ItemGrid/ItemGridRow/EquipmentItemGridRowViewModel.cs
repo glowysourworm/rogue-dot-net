@@ -122,6 +122,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
                     viewModel.Attack = model.Attack;
                     viewModel.Resistance = model.Resistance;
                     viewModel.Weakness = model.Weakness;
+                    viewModel.Immune = model.Immune;
                 });
         }
     }

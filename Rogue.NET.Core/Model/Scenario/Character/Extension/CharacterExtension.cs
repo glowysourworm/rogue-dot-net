@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Processing.Model.Static;
 using System;
@@ -190,49 +191,43 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         /// <summary>
         /// Returns effective attack attributes for use with direct melee calculation
         /// </summary>
-        public static IEnumerable<AttackAttribute> GetMeleeAttributes(this Character character, IEnumerable<AttackAttribute> scenarioAttributes)
+        public static IEnumerable<AttackAttribute> GetMeleeAttributes(this Character character)
         {
-            // Create base attribute list from the scenario list
-            var result = scenarioAttributes.DeepClone();
-
-            // For Enemy characters - add on the intrinsic attributes
-            if (character is Enemy)
-            {
-                var enemy = character as Enemy;
-
-                // Add contributions from enemy list
-                result = result.Join(enemy.AttackAttributes.Values, x => x.RogueName, y => y.RogueName, (x, y) =>
-                {
-                    x.Attack += y.Attack;
-                    x.Resistance += y.Resistance;
-                    x.Weakness += y.Weakness;
-
-                    return x;
-                });
-            }
+            // Create base attribute list from the intrinsic character attributes
+            var result = character.AttackAttributes
+                                  .Values
+                                  .Select(x => x.DeepClone())
+                                  .ToList();
 
             // Alteration attack attribute contributions
             foreach (var friendlyAttackAttribute in character.Alteration
                                                              .GetAttackAttributes(AlterationAttackAttributeCombatType.FriendlyAggregate))
             {
-                var attribute = result.First(x => x.RogueName == friendlyAttackAttribute.RogueName);
-                
-                attribute.Resistance += friendlyAttackAttribute.Resistance;
-                attribute.Resistance += friendlyAttackAttribute.Resistance;
-                attribute.Resistance += friendlyAttackAttribute.Resistance;
+                // Get the matching attribute
+                var attribute = result.FirstOrDefault(x => x.RogueName == friendlyAttackAttribute.RogueName);
+
+                // Add a clone
+                if (attribute == null)
+                    result.Add(friendlyAttackAttribute.DeepClone());
+
+                // Add to the result
+                else
+                    attribute.Add(friendlyAttackAttribute, false);
             }
 
             //Equipment contributions
-            foreach (var equipment in character.Equipment.Values.Where(z => z.IsEquipped))
+            foreach (var equipmentAttackAttribute in character.Equipment.Values.Where(z => z.IsEquipped).SelectMany(x => x.AttackAttributes))
             {
-                foreach (var attribute in result)
-                {
-                    var passiveAttribute = equipment.AttackAttributes.First(y => y.RogueName == attribute.RogueName);
+                // Get the matching attribute
+                var attribute = result.FirstOrDefault(x => x.RogueName == equipmentAttackAttribute.RogueName);
 
-                    attribute.Attack += passiveAttribute.Attack;
-                    attribute.Resistance += passiveAttribute.Resistance;
-                    attribute.Weakness += passiveAttribute.Weakness;
-                }
+                // Add a clone
+                if (attribute == null)
+                    result.Add(equipmentAttackAttribute.DeepClone());
+
+                // Add to the result
+                else
+                    attribute.Add(equipmentAttackAttribute, false);
             }
 
             return result;
@@ -243,24 +238,36 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         /// Returns the end-of-turn malign attack attribute contribution used at the end
         /// of each character turn.
         /// </summary>
-        public static double GetMalignAttackAttributeHit(this Character character, IEnumerable<AttackAttribute> scenarioAttributes)
+        public static double GetMalignAttackAttributeHit(this Character character)
         {
             var result = 0D;
 
             // Get character effective attack attributes
-            var attackAttributes = character.GetMeleeAttributes(scenarioAttributes);
+            var attackAttributes = character.GetMeleeAttributes();
 
             // Malign attack attribute contributions
             foreach (var malignAttribute in character.Alteration
                                                     .GetAttackAttributes(AlterationAttackAttributeCombatType.MalignPerStep))
             {
-                var defensiveAttribute = attackAttributes.First(x => x.RogueName == malignAttribute.RogueName);
+                var defensiveAttribute = attackAttributes.FirstOrDefault(x => x.RogueName == malignAttribute.RogueName);
 
                 // Calculate the attack attribute hit
-                result += Calculator.CalculateAttackAttributeMelee(
-                                malignAttribute.Attack, 
-                                defensiveAttribute.Resistance, 
-                                defensiveAttribute.Weakness + malignAttribute.Weakness);
+                if (defensiveAttribute != null)
+                {
+                    result += Calculator.CalculateAttackAttributeMelee(
+                                    malignAttribute.Attack,
+                                    defensiveAttribute.Resistance,
+                                    defensiveAttribute.Weakness + malignAttribute.Weakness,
+                                    defensiveAttribute.Immune);
+                }
+                else
+                {
+                    result += Calculator.CalculateAttackAttributeMelee(
+                                    malignAttribute.Attack,
+                                    0.0,
+                                    malignAttribute.Weakness,
+                                    false);
+                }
             }
 
             return result;

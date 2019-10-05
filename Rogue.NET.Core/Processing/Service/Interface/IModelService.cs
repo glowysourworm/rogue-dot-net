@@ -123,11 +123,5 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// Gets / sets the zoom factor for the scenario
         /// </summary>
         double ZoomFactor { get; set; }
-
-        /// <summary>
-        /// Returns Empty (Attack = 0, Resistence = 0) Attack Attribute collection copied (Cloned) from
-        /// the configuration. This contains definitions for all attack attributes.
-        /// </summary>
-        IEnumerable<AttackAttribute> AttackAttributes { get; }
     }
 }

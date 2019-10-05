@@ -160,6 +160,7 @@
     <Compile Include="Converter\DualBoolVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\EnumDisplayAttributeDescriptionConverter.cs" />
     <Compile Include="Converter\EnumDisplayAttributeNameConverter.cs" />
+    <Compile Include="Converter\GreaterThanOrEqualParameterConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroVisibilityInverseConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroVisibilityConverter.cs" />
@@ -218,6 +219,7 @@
     <Compile Include="Model\ScenarioConfiguration\Design\LevelBranchTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Design\LevelTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Design\ScenarioTemplate.cs" />
+    <Compile Include="Model\Scenario\Alteration\Common\Extension\AttackAttributeExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\CreateFriendlyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\TeleportManualAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Friendly\FriendlyAlteration.cs" />
@@ -330,7 +332,7 @@
     <Compile Include="Model\Scenario\Alteration\Effect\StealAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\TransmuteAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\TransmuteAlterationEffectItem.cs" />
-    <Compile Include="Model\Scenario\Alteration\Extension\AlterationContainerExtension.cs" />
+    <Compile Include="Model\Scenario\Alteration\Common\Extension\AlterationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\IAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Animation\AnimationGroup.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\AttackAttributeAuraAlterationEffect.cs" />
@@ -492,7 +494,7 @@
     <Compile Include="Model\Scenario\Alteration\Common\AlterationCost.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlteredCharacterState.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AttackAttribute.cs" />
-    <Compile Include="Model\Scenario\Alteration\Extension\AlterationEffectExtension.cs" />
+    <Compile Include="Model\Scenario\Alteration\Common\Extension\AlterationEffectExtension.cs" />
     <Compile Include="Model\Scenario\Character\Behavior\Behavior.cs" />
     <Compile Include="Model\Scenario\Character\Behavior\BehaviorDetails.cs" />
     <Compile Include="Model\Scenario\Character\Character.cs" />

@@ -12,6 +12,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _attack;
         private RangeViewModel<double> _resistance;
         private RangeViewModel<int> _weakness;
+        private bool _immune;
 
         public RangeViewModel<double> Attack
         {
@@ -28,12 +29,18 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _weakness; }
             set { this.RaiseAndSetIfChanged(ref _weakness, value); }
         }
+        public bool Immune
+        {
+            get { return _immune; }
+            set { this.RaiseAndSetIfChanged(ref _immune, value); }
+        }
 
         public AttackAttributeTemplateViewModel()
         {
             this.Attack = new RangeViewModel<double>(0, 0);
             this.Resistance = new RangeViewModel<double>(0, 0);
             this.Weakness = new RangeViewModel<int>(0, 0);
+            this.Immune = false;
         }
     }
 }

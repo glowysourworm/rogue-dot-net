@@ -8,7 +8,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
     public class DungeonObjectTemplate : Template
     {
         private SymbolDetailsTemplate _symbolDetails;
-        private double _generationRate;
         private string _shortDescription;
         private string _longDescription;
         private bool _isCursed;
@@ -25,18 +24,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 {
                     _symbolDetails = value;
                     OnPropertyChanged("SymbolDetails");
-                }
-            }
-        }
-        public double GenerationRate
-        {
-            get { return _generationRate; }
-            set
-            {
-                if (_generationRate != value)
-                {
-                    _generationRate = value;
-                    OnPropertyChanged("GenerationRate");
                 }
             }
         }
@@ -119,16 +106,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 
             this.ShortDescription = "";
             this.LongDescription = "";
-        }
-        public DungeonObjectTemplate(DungeonObjectTemplate tmp)
-        {
-            this.SymbolDetails = tmp.SymbolDetails;
-            this.GenerationRate = tmp.GenerationRate;
-            this.ShortDescription = tmp.ShortDescription;
-            this.LongDescription = tmp.LongDescription;
-            this.IsCursed = tmp.IsCursed;
-            this.IsUnique = tmp.IsUnique;
-            this.IsObjectiveItem = tmp.IsObjectiveItem;
         }
     }
 }

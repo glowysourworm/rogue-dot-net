@@ -9,6 +9,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
         double _attack;
         double _resistance;
         double _weakness;
+        bool _immune;
 
         double _attackHigh;
         double _resistanceHigh;
@@ -19,6 +20,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             this.Attack = attackAttribute.Attack;
             this.Resistance = attackAttribute.Resistance;
             this.Weakness = attackAttribute.Weakness;
+            this.Immune = attackAttribute.Immune;
         }
 
         public AttackAttributeViewModel(AttackAttributeTemplate attackAttributeTemplate) 
@@ -30,6 +32,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             this.ResistanceHigh = attackAttributeTemplate.Resistance.High;
             this.Weakness = attackAttributeTemplate.Weakness.Low;
             this.WeaknessHigh = attackAttributeTemplate.Weakness.High;
+            this.Immune = attackAttributeTemplate.Immune;
         }
 
         public double Attack
@@ -46,6 +49,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
         {
             get { return _weakness; }
             set { this.RaiseAndSetIfChanged(ref _weakness, value); }
+        }
+        public bool Immune
+        {
+            get { return _immune; }
+            set { this.RaiseAndSetIfChanged(ref _immune, value); }
         }
 
         // Use for the case of a range (to show)

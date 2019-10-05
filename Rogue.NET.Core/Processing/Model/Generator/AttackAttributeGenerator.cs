@@ -30,6 +30,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             attackAttribute.Attack = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Attack);
             attackAttribute.Resistance = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Resistance);
             attackAttribute.Weakness = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Weakness);
+            attackAttribute.Immune = attackAttributeTemplate.Immune;
 
             return attackAttribute;
         }

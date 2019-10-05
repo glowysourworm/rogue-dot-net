@@ -15,7 +15,6 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
 using Rogue.NET.Core.Processing.Action;
@@ -27,6 +26,7 @@ using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
 
 namespace Rogue.NET.Core.Processing.Model.Content
 {

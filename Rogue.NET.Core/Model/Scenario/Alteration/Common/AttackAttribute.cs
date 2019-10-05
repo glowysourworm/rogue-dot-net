@@ -9,6 +9,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
         public double Attack { get; set; }
         public double Resistance { get; set; }
         public int Weakness { get; set; }
+        public bool Immune { get; set; }
 
         public AttackAttribute()
         {

@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
         public void ApplyBeginningOfTurn(NonPlayerCharacter character)
         {
-            character.Hp -= character.GetMalignAttackAttributeHit(_modelService.AttackAttributes);
+            character.Hp -= character.GetMalignAttackAttributeHit();
         }
 
         public void ApplyEndOfTurn(NonPlayerCharacter character, Player player, bool actionTaken)

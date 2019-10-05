@@ -62,28 +62,28 @@ namespace Rogue.NET.Core.Processing.Service
 
                     return new List<ScenarioValidationResult>(){ new ScenarioValidationResult(){Passed = result, InnerMessage = null } };
                 })),
-                new ScenarioValidationRule("Objective Generation Not Guaranteed", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                {
-                    var objectives = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
-                                                    .Union(configuration.DoodadTemplates)
-                                                    .Union(configuration.EnemyTemplates)
-                                                    .Union(configuration.EquipmentTemplates)
-                                                    .Where(x => x.IsObjectiveItem);
+                //new ScenarioValidationRule("Objective Generation Not Guaranteed", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                //{
+                //    var objectives = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
+                //                                    .Union(configuration.DoodadTemplates)
+                //                                    .Union(configuration.EnemyTemplates)
+                //                                    .Union(configuration.EquipmentTemplates)
+                //                                    .Where(x => x.IsObjectiveItem);
 
-                    var enemyEquipment = configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.Where(z => z.TheTemplate.IsObjectiveItem && z.GenerationProbability >= 1).Select(z => z.TheTemplate)).Cast<DungeonObjectTemplate>();
-                    var enemyConsumables = configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.Where(z => z.TheTemplate.IsObjectiveItem && z.GenerationProbability >= 1).Select(z => z.TheTemplate)).Cast<DungeonObjectTemplate>();
+                //    var enemyEquipment = configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.Where(z => z.TheTemplate.IsObjectiveItem && z.GenerationProbability >= 1).Select(z => z.TheTemplate)).Cast<DungeonObjectTemplate>();
+                //    var enemyConsumables = configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.Where(z => z.TheTemplate.IsObjectiveItem && z.GenerationProbability >= 1).Select(z => z.TheTemplate)).Cast<DungeonObjectTemplate>();
 
 
 
-                    var objectivesNotGuaranteed = objectives.Where(z => z.GenerationRate < 1 && !enemyEquipment.Contains(z) && !enemyConsumables.Contains(z));
+                //    var objectivesNotGuaranteed = objectives.Where(z => z.GenerationRate < 1 && !enemyEquipment.Contains(z) && !enemyConsumables.Contains(z));
 
-                    // Must have one of each objective
-                    return objectivesNotGuaranteed.Select(x => new ScenarioValidationResult()
-                    {
-                        Passed = false,
-                        InnerMessage = x.Name + " not guaranteed to be generated"
-                    });
-                })),
+                //    // Must have one of each objective
+                //    return objectivesNotGuaranteed.Select(x => new ScenarioValidationResult()
+                //    {
+                //        Passed = false,
+                //        InnerMessage = x.Name + " not guaranteed to be generated"
+                //    });
+                //})),
                 new ScenarioValidationRule("Number of levels must be > 0 and <= 500", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
                     // Must have one of each objective
@@ -393,24 +393,24 @@ namespace Rogue.NET.Core.Processing.Service
                                         Passed = false
                                     })
                                     .Actualize();
-                })),
+                })) }; //,
 
-            // Warnings
-            new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                {
-                    var contentNotSet = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
-                                                                        .Union(configuration.DoodadTemplates)
-                                                                        .Union(configuration.EnemyTemplates)
-                                                                        .Union(configuration.EquipmentTemplates)
-                                                                        .Where(x => x.GenerationRate <= 0);
+            //// Warnings
+            //new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+            //    {
+            //        var contentNotSet = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
+            //                                                            .Union(configuration.DoodadTemplates)
+            //                                                            .Union(configuration.EnemyTemplates)
+            //                                                            .Union(configuration.EquipmentTemplates)
+            //                                                            .Where(x => x.GenerationRate <= 0);
 
-                    return contentNotSet.Select(x => new ScenarioValidationResult()
-                    {
-                        Passed = false,
-                        InnerMessage = x.Name + " has generation rate of zero"
-                    });
-                }))
-            };
+            //        return contentNotSet.Select(x => new ScenarioValidationResult()
+            //        {
+            //            Passed = false,
+            //            InnerMessage = x.Name + " has generation rate of zero"
+            //        });
+            //    }))
+            //};
         }
 
         private string ValidateConsumableAlterationTypes(ConsumableTemplate template)

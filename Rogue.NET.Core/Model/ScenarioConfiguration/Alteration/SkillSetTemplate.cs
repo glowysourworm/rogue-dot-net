@@ -13,10 +13,5 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         {
             this.Skills = new List<SkillTemplate>();
         }
-        public SkillSetTemplate(DungeonObjectTemplate obj)
-            : base(obj)
-        {
-            this.Skills = new List<SkillTemplate>();
-        }
     }
 }

@@ -481,8 +481,8 @@
     <Compile Include="Views\Assets\Friendly.xaml.cs">
       <DependentUpon>Friendly.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeListControl.xaml.cs">
-      <DependentUpon>AlterationAttackAttributeListControl.xaml</DependentUpon>
+    <Compile Include="Views\Assets\SharedControl\AttackAttributeListControl.xaml.cs">
+      <DependentUpon>AttackAttributeListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAuraSourceParameters.xaml.cs">
       <DependentUpon>AlterationAuraSourceParameters.xaml</DependentUpon>
@@ -603,9 +603,6 @@
     </Compile>
     <Compile Include="Views\Assets\Enemy.xaml.cs">
       <DependentUpon>Enemy.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\CharacterControl\CharacterAttackAttributes.xaml.cs">
-      <DependentUpon>CharacterAttackAttributes.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\CharacterControl\CharacterBehavior.xaml.cs">
       <DependentUpon>CharacterBehavior.xaml</DependentUpon>
@@ -739,6 +736,7 @@
     <Compile Include="Views\EditorInstructions.xaml.cs">
       <DependentUpon>EditorInstructions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MarkupExtension\AttackAttributeListControlConstructor.cs" />
     <Compile Include="Views\MarkupExtension\MetaDataControlConstructor.cs" />
     <Compile Include="Views\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
@@ -802,7 +800,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeListControl.xaml">
+    <Page Include="Views\Assets\SharedControl\AttackAttributeListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -963,10 +961,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\Enemy.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\CharacterControl\CharacterAttackAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

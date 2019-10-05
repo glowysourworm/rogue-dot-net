@@ -6,7 +6,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Static;
 using System;
 
-namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
+namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
 {
     public static class AlterationEffectExtension
     {

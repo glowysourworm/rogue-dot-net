@@ -8,7 +8,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
 using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
 using System;
 
-namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
+namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
 {
     public static class AlterationContainerExtension
     {

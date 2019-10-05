@@ -522,30 +522,6 @@ namespace Rogue.NET.ScenarioEditor
                     // Construct the new alteration effect
                     var alterationEffect = (IAlterationEffectTemplateViewModel)e.AlterationEffectType.Construct();
 
-                    // Add Attack Attributes (SHOULD MOVE THIS)
-                    //
-                    // NOTE*** This needs to be done because of shared attack attribute assets. Design
-                    //         needs to be changed to avoid shared collections
-                    //
-                    // TODO: CLEAN THIS UP
-                    if (alterationEffect is AttackAttributeAuraAlterationEffectTemplateViewModel)
-                        (alterationEffect as AttackAttributeAuraAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
-
-                    else if (alterationEffect is AttackAttributeMeleeAlterationEffectTemplateViewModel)
-                        (alterationEffect as AttackAttributeMeleeAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
-
-                    else if (alterationEffect is AttackAttributePassiveAlterationEffectTemplateViewModel)
-                        (alterationEffect as AttackAttributePassiveAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
-
-                    else if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
-                        (alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
-
-                    else if (alterationEffect is EquipmentEnhanceAlterationEffectTemplateViewModel)
-                        (alterationEffect as EquipmentEnhanceAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
-
-                    else if (alterationEffect is EquipmentDamageAlterationEffectTemplateViewModel)
-                        (alterationEffect as EquipmentDamageAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
-
                     // Load the Region
                     var view = _regionManager.Load(container, e.AlterationEffectViewType);
 

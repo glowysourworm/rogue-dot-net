@@ -4,7 +4,8 @@
              xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
-             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
+             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.MarkupExtension"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common">
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </UserControl.Resources>
@@ -52,7 +53,15 @@
             <symbol:SymbolEffectEditor DataContext="{Binding SymbolAlteration}" />
         </TabItem>
         <TabItem Header="Attack Attributes">
-            <commonControl:AlterationAttackAttributeListControl />
+            <region:RogueRegion DataContext="{Binding AttackAttributes}">
+                <region:RogueRegionManager.DefaultView>
+                    <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1"
+                                                                               ShowAttack="True"
+                                                                               ShowResistance="True"
+                                                                               ShowWeakness="True"
+                                                                               ShowImmune="True" />
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>
         </TabItem>
     </TabControl>             
 </UserControl>

@@ -20,10 +20,10 @@ using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
-using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Core.Processing.Model.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Processing.Event.Backend.Enum;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
 
 namespace Rogue.NET.Core.Processing.Model.Content
 {

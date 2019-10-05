@@ -14,7 +14,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration

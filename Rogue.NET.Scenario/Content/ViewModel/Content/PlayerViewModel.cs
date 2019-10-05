@@ -9,7 +9,6 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
@@ -618,12 +617,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         var equipmentAttribute = equipment.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
                         attackAttribute.Attack += equipmentAttribute.Attack;
                         attackAttribute.Resistance += equipmentAttribute.Resistance;
+                        attackAttribute.Weakness += equipmentAttribute.Weakness;
+                        attackAttribute.Immune = attackAttribute.Immune || equipmentAttribute.Immune;
                     }
                 }
 
                 return aggregate;
             }).
-            Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0);
+            Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0 || x.Immune);
 
             this.MeleeAttackAttributes.Clear();
             this.MeleeAttackAttributes.AddRange(attackAttributes);
