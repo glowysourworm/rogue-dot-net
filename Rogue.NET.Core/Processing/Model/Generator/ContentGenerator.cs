@@ -195,6 +195,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 teleport2.Location = location2;
 
                 teleport1.PairId = teleport2.Id;
+                teleport2.PairId = teleport1.Id;
 
                 level.AddContent(teleport1);
                 level.AddContent(teleport2);
