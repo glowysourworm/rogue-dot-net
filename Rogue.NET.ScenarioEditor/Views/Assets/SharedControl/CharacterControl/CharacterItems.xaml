@@ -11,13 +11,13 @@
             <GroupBox Header="Consumables" Margin="10">
                 <controls:ListBuilder x:Name="ConsumablesLB" 
                                       DestinationItemsSource="{Binding StartingConsumables}"
-                                      Height="100" 
+                                      Height="200" 
                                       Margin="10" />
             </GroupBox>
             <GroupBox Header="Equipment" Margin="10">
                 <controls:ListBuilder x:Name="EquipmentLB" 
                                       DestinationItemsSource="{Binding StartingEquipment}"
-                                      Height="100" 
+                                      Height="200" 
                                       Margin="10" />
             </GroupBox>
         </StackPanel>
