@@ -82,6 +82,18 @@ namespace Rogue.NET.Scenario.Processing.Controller
                     animationData = _scenarioService.DequeueAnimationEventData();
                 }
 
+                // Projectile Animations
+
+                var projectileAnimationData = _scenarioService.DequeueProjectileAnimationEventData();
+                while (projectileAnimationData != null)
+                {
+                    // Process Animation (await)
+                    await ProcessProjectileAnimationEvent(projectileAnimationData);
+
+                    // Dequeue Next Animation
+                    projectileAnimationData = _scenarioService.DequeueProjectileAnimationEventData();
+                }
+
                 // Level Event
 
                 var levelEventData = _scenarioService.DequeueLevelEventData();
@@ -154,6 +166,10 @@ namespace Rogue.NET.Scenario.Processing.Controller
         private async Task ProcessAnimationEvent(AnimationEventData eventData)
         {
             await _eventAggregator.GetEvent<AnimationStartEvent>().Publish(eventData);
+        }
+        private async Task ProcessProjectileAnimationEvent(ProjectileAnimationEventData eventData)
+        {
+            await _eventAggregator.GetEvent<ProjectileAnimationStartEvent>().Publish(eventData);
         }
         private void ProcessLevelEvent(LevelEventData eventData)
         {

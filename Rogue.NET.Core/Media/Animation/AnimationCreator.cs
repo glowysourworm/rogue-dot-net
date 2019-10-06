@@ -7,20 +7,18 @@ using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Media.Interface;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Media.Animation.Interface;
 
-namespace Rogue.NET.Core.Media
+namespace Rogue.NET.Core.Media.Animation
 {
     [Export(typeof(IAnimationCreator))]
     public class AnimationCreator : IAnimationCreator
     {
         IRandomSequenceGenerator _randomSequenceGenerator;
-
-        const int DEFAULT_VELOCITY = 150; // milli-seconds (if set to negative or zero value)
 
         [ImportingConstructor]
         public AnimationCreator(IRandomSequenceGenerator randomSequenceGenerator)
@@ -28,7 +26,7 @@ namespace Rogue.NET.Core.Media
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public IEnumerable<AnimationQueue> CreateAnimation(AnimationData animation, Rect bounds, Point sourceLocation, Point[] targetLocations)
+        public AnimationQueue CreateAnimation(AnimationData animation, Rect bounds, Point sourceLocation, Point[] targetLocations)
         {
             switch (animation.BaseType)
             {
@@ -36,10 +34,7 @@ namespace Rogue.NET.Core.Media
                 case AnimationBaseType.ProjectileReverse:
                 case AnimationBaseType.Chain:
                 case AnimationBaseType.ChainReverse:
-                    return new AnimationQueue[]
-                    {
-                        CreateProjectileAnimation(animation, sourceLocation, targetLocations)
-                    };
+                    return CreateProjectileAnimation(animation, sourceLocation, targetLocations);
                 case AnimationBaseType.Aura:                
                 case AnimationBaseType.Barrage:
                 case AnimationBaseType.Spiral:
@@ -48,19 +43,48 @@ namespace Rogue.NET.Core.Media
                         switch (animation.PointTargetType)
                         {
                             case AnimationPointTargetType.Source:
-                                return new AnimationQueue[] { CreateSinglePointAnimation(animation, sourceLocation) };
-                            case AnimationPointTargetType.AffectedCharacters:
-                                return targetLocations.Select(location =>
-                                {
-                                    return CreateSinglePointAnimation(animation, location);
+                                return new AnimationQueue(new AnimationPrimitiveGroup[]{
+                                    CreateSinglePointAnimation(animation, sourceLocation)
                                 });
+                            case AnimationPointTargetType.AffectedCharacters:
+                                {
+                                    var animationGroups = targetLocations.Select(point =>
+                                    {
+                                        return CreateBubbles(animation.ChildCount,
+                                                              point,
+                                                              animation.RadiusFromFocus,
+                                                              animation.FillTemplate.GenerateBrush(),
+                                                              animation.FillTemplate.GenerateBrush(),
+                                                              animation.StrokeThickness,
+                                                              animation.Opacity1,
+                                                              animation.Opacity2,
+                                                              new Size(animation.Width1, animation.Height1),
+                                                              new Size(animation.Width2, animation.Height2),
+                                                              animation.RoamRadius,
+                                                              animation.Erradicity,
+                                                              animation.AnimationTime,
+                                                              animation.RepeatCount);
+                                    });
+
+                                    // Combine groups so that they're started simultaneously instead of in sequence
+                                    if (animationGroups.Any())
+                                    {
+                                        var combinedGroup = animationGroups.First();
+                                        for (int i = 1; i < animationGroups.Count(); i++)
+                                            combinedGroup.Combine(animationGroups.ElementAt(i));
+
+                                        return new AnimationQueue(new AnimationPrimitiveGroup[] { combinedGroup });
+                                    }
+                                    else
+                                        return AnimationQueue.Empty;
+                                }
                             default:
                                 throw new Exception("Unhandled Point Target Type");
                         }
                     }
                     
                 case AnimationBaseType.ScreenBlink:
-                    return new AnimationQueue[] { CreateScreenAnimation(animation, bounds) };
+                    return CreateScreenAnimation(animation, bounds);
                 default:
                     throw new Exception("Unhandled AnimationBaseType");
             }
@@ -74,40 +98,28 @@ namespace Rogue.NET.Core.Media
 
             switch (animation.BaseType)
             {
-                case AnimationBaseType.Bubbles:
-                    return CreateBubbles(animation.ChildCount, 
-                                         bounds, 
-                                         stroke, 
-                                         fill,
-                                         animation.StrokeThickness, 
-                                         animation.Opacity1, 
-                                         animation.Opacity2, 
-                                         new Size(animation.Width1, animation.Height1),
-                                         new Size(animation.Width2, animation.Height2), 
-                                         Math.Min(bounds.Width, bounds.Height), 
-                                         animation.Erradicity, 
-                                         animation.AnimationTime, 
-                                         animation.RepeatCount);
                 case AnimationBaseType.ScreenBlink:
-                    return new AnimationQueue(new Animation[]
-                    {
-                        GenerateTimedFigure(rectangle,
-                                            stroke,
-                                            fill,
-                                            animation.StrokeThickness,
-                                            animation.Opacity1,
-                                            animation.Opacity2,
-                                            animation.Erradicity,
-                                            animation.AnimationTime,
-                                            animation.RepeatCount,
-                                            animation.AutoReverse)
+                    return new AnimationQueue(new AnimationPrimitiveGroup[]{
+                        new AnimationPrimitiveGroup(new AnimationPrimitive[]
+                        {
+                            GenerateTimedFigure(rectangle,
+                                                stroke,
+                                                fill,
+                                                animation.StrokeThickness,
+                                                animation.Opacity1,
+                                                animation.Opacity2,
+                                                animation.Erradicity,
+                                                animation.AnimationTime,
+                                                animation.RepeatCount,
+                                                animation.AutoReverse)
+                        }, animation.AnimationTime) 
                     });
                 default:
                     throw new Exception("Unhandled Screen Animation Type");
             }
         }
 
-        private AnimationQueue CreateSinglePointAnimation(AnimationData animation, Point location)
+        private AnimationPrimitiveGroup CreateSinglePointAnimation(AnimationData animation, Point location)
         {
             var stroke = Brushes.Transparent;
             var fill = animation.FillTemplate.GenerateBrush();
@@ -131,7 +143,7 @@ namespace Rogue.NET.Core.Media
                                                 animation.Opacity1, animation.Opacity2, 
                                                 new Size(animation.Width1, animation.Height1),
                                                 new Size(animation.Width2, animation.Height2), 
-                                                animation.AccelerationRatio, animation.Erradicity, 
+                                                animation.Erradicity, 
                                                 animation.AnimationTime, animation.RepeatCount, animation.AutoReverse);
                 case AnimationBaseType.Bubbles:
                     return CreateEllipseBarrage(animation.ChildCount, 
@@ -142,7 +154,7 @@ namespace Rogue.NET.Core.Media
                                                 animation.Opacity1, animation.Opacity2, 
                                                 new Size(animation.Width1, animation.Height1),
                                                 new Size(animation.Width2, animation.Height2), 
-                                                animation.AccelerationRatio, animation.Erradicity,
+                                                animation.Erradicity,
                                                 animation.AnimationTime, animation.RepeatCount, animation.AutoReverse);
                 case AnimationBaseType.Spiral:
                     return CreateEllipseSpiral(animation.ChildCount, 
@@ -154,7 +166,7 @@ namespace Rogue.NET.Core.Media
                                                animation.Opacity1, animation.Opacity2, 
                                                new Size(animation.Width1, animation.Height1),
                                                new Size(animation.Width2, animation.Height2), 
-                                               animation.AccelerationRatio, animation.Erradicity,
+                                               animation.Erradicity,
                                                animation.AnimationTime, animation.RepeatCount, animation.AutoReverse);
                 default:
                     throw new Exception("Unhandled Single Point Animation Type");
@@ -168,53 +180,39 @@ namespace Rogue.NET.Core.Media
             var isReverse = animation.BaseType == AnimationBaseType.ChainReverse ||
                             animation.BaseType == AnimationBaseType.ProjectileReverse;
 
+            var points = new List<Point>();
 
             switch (animation.BaseType)
             {
                 case AnimationBaseType.Chain:
                 case AnimationBaseType.ChainReverse:
                     {
-                        // Re-calculating the source / targets for the animation
-                        var list = new List<Point>();
+                        // Re-calculating the source / targets for the animation to order them
                         var source = isReverse ? targetLocations.PickRandom() : sourceLocation;
                         var targets = targetLocations.Append(sourceLocation).Except(new Point[] { source });
-                        list.Add(source);
-                        list.AddRange(targets);
-
-                        // Create Projectile Path for the animation
-                        return new AnimationQueue(new Animation[]{GenerateProjectilePath(list.ToArray()
-                                , new Size(animation.Width1, animation.Height1)
-                                , new Size(animation.Width2, animation.Height2)
-                                , stroke
-                                , fill
-                                , animation.Opacity1, animation.Opacity2, animation.StrokeThickness
-                                , animation.AccelerationRatio, animation.Erradicity, animation.AnimationTime
-                                , animation.Velocity, animation.RepeatCount, animation.AutoReverse, animation.ConstantVelocity)});
+                        points.Add(source);
+                        points.AddRange(targets);
                     }
+                    break;
                 case AnimationBaseType.Projectile:
                 case AnimationBaseType.ProjectileReverse:
                     {
-                        var list = new List<Animation>();
-
-
-                        foreach (Point target in targetLocations)
-                        {
-                            Animation a = GenerateProjectilePath(
-                                isReverse ? new Point[] { target, sourceLocation } : new Point[] { sourceLocation, target }
-                                , new Size(animation.Width1, animation.Height1)
-                                , new Size(animation.Width2, animation.Height2)
-                                , Brushes.Transparent
-                                , animation.FillTemplate.GenerateBrush()
-                                , animation.Opacity1, animation.Opacity2, animation.StrokeThickness
-                                , animation.AccelerationRatio, animation.Erradicity, animation.AnimationTime
-                                , animation.Velocity, animation.RepeatCount, animation.AutoReverse, animation.ConstantVelocity);
-                            list.Add(a);
-                        }
-                        return new AnimationQueue(list.ToArray());
+                        points.Add(sourceLocation);
+                        points.Add(targetLocations.First());
                     }
+                    break;
                 default:
                     throw new Exception("Unhanded Projectile Animation Type");
             }
+
+            return CreateEllipseProjectilePath(points.ToArray(), stroke, fill,
+                                               animation.StrokeThickness,
+                                               animation.Opacity1, animation.Opacity2,
+                                               new Size(animation.Width1, animation.Height1),
+                                               new Size(animation.Width2, animation.Height2),
+                                               animation.Erradicity, animation.AnimationTime,
+                                               animation.Velocity, animation.RepeatCount,
+                                               animation.AutoReverse, animation.ConstantVelocity);
         }
 
         public AnimationQueue CreateTargetingAnimation(Point point, Color fillColor, Color strokeColor)
@@ -224,6 +222,8 @@ namespace Rogue.NET.Core.Media
             var verticalSize = new Size(1, 8);
             var pointSize = new Size(1, 1);
 
+            var animationTime = 300;
+
             var stroke = new SolidColorBrush(strokeColor);
             var fill = new SolidColorBrush(fillColor);
 
@@ -232,195 +232,224 @@ namespace Rogue.NET.Core.Media
             var southEast = new Point(cellBounds.BottomRight.X + length, cellBounds.BottomRight.Y + length);
             var southWest = new Point(cellBounds.BottomLeft.X - length, cellBounds.BottomLeft.Y + length);
 
-            var animation1 = GenerateProjectilePath(new Point[] { northWest, cellBounds.TopLeft }, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-            var animation2 = GenerateProjectilePath(new Point[] { northEast, cellBounds.TopRight }, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-            var animation3 = GenerateProjectilePath(new Point[] { southEast, cellBounds.BottomRight }, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-            var animation4 = GenerateProjectilePath(new Point[] { southWest, cellBounds.BottomLeft }, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-            var animation5 = GenerateTimedFigure(new RectangleGeometry(cellBounds), stroke, fill, 1, 0, 1, 1, 300, int.MaxValue, true);
+            var path1 = CreatePathGeometry(new Point[] { northWest, cellBounds.TopLeft });
+            var path2 = CreatePathGeometry(new Point[] { northEast, cellBounds.TopRight });
+            var path3 = CreatePathGeometry(new Point[] { southEast, cellBounds.BottomRight });
+            var path4 = CreatePathGeometry(new Point[] { southWest, cellBounds.BottomLeft });
 
-            return new AnimationQueue(new Animation[] { animation1, animation2, animation3, animation4, animation5 });
+            var animation1 = GeneratePathAnimation(path1, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, animationTime, int.MaxValue, false);
+            var animation2 = GeneratePathAnimation(path2, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, animationTime, int.MaxValue, false);
+            var animation3 = GeneratePathAnimation(path3, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, animationTime, int.MaxValue, false);
+            var animation4 = GeneratePathAnimation(path4, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, animationTime, int.MaxValue, false);
+            var animation5 = GenerateTimedFigure(new RectangleGeometry(cellBounds), stroke, fill, 1, 0, 1, 1, animationTime, int.MaxValue, true);
+
+            var animationGroup = new AnimationPrimitiveGroup(new AnimationPrimitive[] { animation1, animation2, animation3, animation4, animation5 }, animationTime);
+
+            return new AnimationQueue(new AnimationPrimitiveGroup[] { animationGroup });
         }
 
         #region (private) Animation Methods
-        private AnimationQueue CreateEllipseProjectile(Point p1, Point p2, Brush stroke, Brush fill, 
-            double strokethickness, double opacity1, double opacity2, Size s1, Size s2, double accRatio, int erradicity, int time, int velocity,
-            int repeatCount, bool autoreverse, bool constVelocity)
+        private AnimationQueue CreateEllipseProjectilePath(Point[] points, Brush stroke, Brush fill,
+                                                            double strokethickness, double opacity1, double opacity2,
+                                                            Size size1, Size size2, int erradicity,
+                                                            int time, int velocity, int repeatCount, bool autoreverse,
+                                                            bool constVelocity)
         {
-            Animation a = GenerateProjectilePath(new Point[] { p1, p2 }, s1, s2, stroke,fill,opacity1, opacity2, strokethickness, accRatio, erradicity, time, velocity, repeatCount, autoreverse, constVelocity);
-            return new AnimationQueue(new Animation[] { a });
+            var animationGroups = new List<AnimationPrimitiveGroup>();
+
+            // Generate animation groups for the path
+            for (int i=0;i < points.Length - 1;i++)
+            {
+                // Check constant velocity animation
+                var animationTime = constVelocity ? (int)Point.Subtract(points[i], points[i + 1]).Length / velocity : time;
+
+                // Set default minimum time
+                if (animationTime < 50)
+                    animationTime = 50;
+
+
+                var group = CreateEllipseProjectile(points[i], points[i + 1], stroke, fill, strokethickness, 
+                                                    opacity1, opacity2, size1, size2, erradicity,
+                                                    animationTime, velocity, repeatCount, autoreverse, constVelocity);
+
+                animationGroups.Add(group);
+            }
+
+            return new AnimationQueue(animationGroups);
+        }
+        private AnimationPrimitiveGroup CreateEllipseProjectile(Point point1, Point point2, Brush stroke, Brush fill, 
+                                                                double strokethickness, double opacity1, double opacity2, 
+                                                                Size size1, Size size2, int erradicity, int time, int velocity, 
+                                                                int repeatCount, bool autoreverse, bool constVelocity)
+        {
+            // Check constant velocity animation
+            var animationTime = constVelocity ? (int)Point.Subtract(point1, point2).Length / velocity : time;
+
+            // Set default minimum time
+            if (animationTime < 50)
+                animationTime = 50;
+
+            var path = CreatePathGeometry(new Point[] { point1, point2 });
+
+            var primitive = GeneratePathAnimation(path, size1, size2, stroke,fill,
+                                                  opacity1, opacity2, strokethickness, erradicity,
+                                                  animationTime, repeatCount, autoreverse);
+
+            return new AnimationPrimitiveGroup(new AnimationPrimitive[] { primitive }, animationTime);
         }
 
-        private AnimationQueue CreateEllipseBarrage(int count, Point focus, double radiusFromFocus, Brush stroke, 
-            Brush fill, double strokeThickness, double opacity1, double opacity2, Size s1, Size s2, double accRatio, int erradicity, 
-            int time, int repeatcount, bool autoreverse)
+        private AnimationPrimitiveGroup CreateEllipseBarrage(int count, Point focus, double radiusFromFocus, Brush stroke, 
+                                                             Brush fill, double strokeThickness, double opacity1, double opacity2, 
+                                                             Size size1, Size size2, int erradicity, 
+                                                             int time, int repeatcount, bool autoreverse)
         {
-            List<Animation> list = new List<Animation>();
+            var primitives = new List<AnimationPrimitive>();
+
             for (int i = 0; i < count; i++)
             {
                 double angle = _randomSequenceGenerator.Get() * Math.PI * 2;
                 double radius = _randomSequenceGenerator.Get() * radiusFromFocus;
-                Point p = new Point(focus.X + (radius * Math.Cos(angle)), focus.Y + (radius * Math.Sin(angle)));
-                Animation a = GenerateProjectilePath(new Point[] { p, focus }, s1, s2, stroke, fill,opacity1, opacity2, strokeThickness, accRatio, erradicity, time, 1,  repeatcount, autoreverse, false);
-                list.Add(a);
+
+                var point = new Point(focus.X + (radius * Math.Cos(angle)), focus.Y + (radius * Math.Sin(angle)));
+
+                var path = CreatePathGeometry(new Point[] { point, focus });
+
+                primitives.Add(GeneratePathAnimation(path, size1, size2, stroke, fill,opacity1, opacity2, 
+                                                     strokeThickness, erradicity, time, repeatcount, autoreverse));
             }
-            return new AnimationQueue(list.ToArray());
+
+            return new AnimationPrimitiveGroup(primitives, time);
         }
 
-        private AnimationQueue CreateEllipseSpiral(int count, Point focus, double radius, double spiralRate, 
-            Brush stroke, Brush fill, double strokeThickness, double opacity1, double opacity2, Size s1, Size s2, 
-            double accRatio, int erradicity, int time, int repeatcount, bool autoreverse)
+        private AnimationPrimitiveGroup CreateEllipseSpiral(int count, Point focus, double radius, double spiralRate, Brush stroke, Brush fill, 
+                                                            double strokeThickness, double opacity1, double opacity2, Size size1, Size size2, 
+                                                            int erradicity, int time, int repeatcount, bool autoreverse)
         {
-            List<Animation> list = new List<Animation>();
+            var primitives = new List<AnimationPrimitive>();
+
+            // Foreach ellipse on the spiral
             for (int i = 0; i < count; i++)
             {
-                List<Point> pts = new List<Point>();
+                // Calculate point to start the animation
+                var points = new List<Point>();
+
                 double startAngle = (2 * Math.PI * i) / count;
-                double angle = startAngle, da = 0.1;
+                double angle = startAngle, angleIncrement = 0.1;
+
+                // Calculate points in the spiral to animate
                 while (angle < (2 * Math.PI * (repeatcount + 1)) + startAngle)
                 {
                     double M = radius + ((angle - startAngle) * spiralRate);
                     Point p = new Point((M * Math.Cos(angle)) + focus.X, (M * Math.Sin(angle)) + focus.Y);
-                    pts.Add(p);
-                    angle += da;
+                    points.Add(p);
+                    angle += angleIncrement;
                 }
-                Animation a = GenerateProjectilePath(pts.ToArray(), s1, s2,stroke, fill, strokeThickness,opacity1, opacity2, accRatio, erradicity, time, 1, repeatcount, autoreverse, false);
-                list.Add(a);
-                pts.Clear();
-                pts = null;
+
+                // Create path using animation points
+                var path = CreatePathGeometry(points);
+
+                // Generate the path animation
+                primitives.Add(GeneratePathAnimation(path, size1, size2, stroke, fill, 
+                                                     opacity1, opacity2, strokeThickness, erradicity, 
+                                                     time, repeatcount, autoreverse));
             }
-            return new AnimationQueue(list.ToArray());
+
+            return new AnimationPrimitiveGroup(primitives, time);
         }
 
-        private AnimationQueue CreateAuraModulation(Point p, Brush stroke, Brush fill, double strokeThickness, double opacity1, double opacity2, Size s1, Size s2, int time, int repeatCount, bool autoreverse)
+        private AnimationPrimitiveGroup CreateAuraModulation(Point point, Brush stroke, Brush fill, double strokeThickness, double opacity1, double opacity2, Size size1, Size size2, int time, int repeatCount, bool autoreverse)
         {
-            Animation a = GenerateAuraAnimation(p, s1, s2,stroke, fill, opacity1, opacity2,  strokeThickness, 0, 1, time, repeatCount, autoreverse);
-            return new AnimationQueue(new Animation[] { a });
+            var primitive = GeneratePointAnimation(point, size1, size2, stroke, fill, opacity1, opacity2,
+                                                   strokeThickness, 1, time, repeatCount, autoreverse);
+
+            return new AnimationPrimitiveGroup(new AnimationPrimitive[] { primitive }, time);
         }
 
-        private AnimationQueue CreateBubbles(int count, Rect rect, Brush stroke, Brush fill, double strokeThickness, double opacity1, double opacity2, Size s1, Size s2, double roamRadius, int erradicity, int time, int repeatCount)
+        private AnimationPrimitiveGroup CreateBubbles(int count, Point focus, double radiusFromFocus, 
+                                                      Brush stroke, Brush fill, double strokeThickness, 
+                                                     double opacity1, double opacity2, Size size1, Size size2, 
+                                                     double roamRadius, int erradicity, int time, int repeatCount)
         {
-            List<Animation> list = new List<Animation>();
+            var result = new List<AnimationPrimitive>();
+
+            // Create roam points for the bubbles
             for (int i = 0; i < count; i++)
             {
-                List<Point> pts = new List<Point>();
-                for (int j = 0; j < erradicity; j++)
-                {
-                    Point pt = new Point(rect.X + (_randomSequenceGenerator.Get() * roamRadius), rect.Y + (_randomSequenceGenerator.Get() * roamRadius));
-                    pts.Add(pt);
-                }
-                Animation a = GenerateProjectilePath(pts.ToArray(), s1, s2,stroke, fill, opacity1, opacity2, strokeThickness, 0, erradicity, time, 1,repeatCount, false, false);
-                list.Add(a);
-                pts.Clear();
-                pts = null;
-            }
-            return new AnimationQueue(list.ToArray());
-        }
-
-        private AnimationQueue CreateBubbles(int count, Point focus, double radiusFromFocus, Brush stroke, Brush fill, double strokeThickness, double opacity1, double opacity2, Size s1, Size s2, double roamRadius, int erradicity, int time, int repeatCount)
-        {
-            List<Animation> list = new List<Animation>();
-            for (int i = 0; i < count; i++)
-            {
-                List<Point> pts = new List<Point>();
+                var roamPoints = new List<Point>();
 
                 //Get random point in radius from focus
-                double angle = _randomSequenceGenerator.Get() * Math.PI * 2;
-                double radius = _randomSequenceGenerator.Get() * radiusFromFocus;
-                Point pt = new Point(radius * Math.Cos(angle) + focus.X, radius * Math.Sin(angle) + focus.Y);
+                var angle = _randomSequenceGenerator.Get() * Math.PI * 2;
+                var radius = _randomSequenceGenerator.Get() * radiusFromFocus;
+                roamPoints.Add(new Point(radius * Math.Cos(angle) + focus.X, radius * Math.Sin(angle) + focus.Y));
 
+                // Calculate roam points
                 for (int j = 0; j < Math.Max(2, erradicity); j++)
                 {
+                    var lastRoamPoint = roamPoints.Last();
+
                     //Get random point in roam radius from that random point
                     double roam_a = _randomSequenceGenerator.Get() * Math.PI * 2;
                     double roam_r = _randomSequenceGenerator.Get() * roamRadius;
-                    Point p = new Point(roam_r * Math.Cos(roam_a) + pt.X, roam_r * Math.Sin(roam_a) + pt.Y);
-                    pts.Add(p);
+                    var roamPoint = new Point(roam_r * Math.Cos(roam_a) + lastRoamPoint.X, roam_r * Math.Sin(roam_a) + lastRoamPoint.Y);
+                    roamPoints.Add(roamPoint);
                 }
-                Animation a = GenerateProjectilePath(pts.ToArray(), s1, s2, stroke, fill, opacity1, opacity2, strokeThickness, 0, erradicity, time, 5, repeatCount, false, false);
-                list.Add(a);
-                pts.Clear();
-                pts = null;
+
+                // Create path for the animation
+                var path = CreatePathGeometry(roamPoints);
+
+                // Create animations for this bubble
+                result.Add(GeneratePathAnimation(path, size1, size2, stroke, fill, opacity1, opacity2, strokeThickness, 0, time, repeatCount, false));
             }
-            return new AnimationQueue(list.ToArray());
+            return new AnimationPrimitiveGroup(result, time);
         }
 
-        private AnimationQueue CreateFadingChain(Point[] pts, Brush stroke, double strokeThickness,double opacity1, double opacity2, int erradicity, int time, int repeatCount, bool autoreverse)
+        /// <summary>
+        /// Generates an opacity animated figure
+        /// </summary>
+        private AnimationPrimitive GenerateTimedFigure(Geometry geometry, 
+                                                       Brush stroke, 
+                                                       Brush fill, 
+                                                       double strokethickness, 
+                                                       double opacity1, 
+                                                       double opacity2, 
+                                                       int erradicity, 
+                                                       int time, 
+                                                       int repeatCount, 
+                                                       bool autoreverse)
         {
-            List<Animation> list = new List<Animation>();
-            for (int i = 0; i < pts.Length - 1; i++)
-            {
-                PathGeometry g = new PathGeometry();
-                PathFigure f = new PathFigure();
-                f.StartPoint = pts[i];
-                f.Segments.Add(new LineSegment(pts[i + 1], true));
-                AnimationPrimitive fig = new AnimationPrimitive();
-                DoubleAnimation anim = new DoubleAnimation(opacity1, opacity2, new Duration(new TimeSpan(0, 0, 0, 0,(int)((erradicity == 0) ? time : time / (double)erradicity))));
-                AnimationClock c = anim.CreateClock();
-                c.Controller.Begin();
-                c.Controller.Pause();
-                fig.SetGeometry(g);
-                fig.ApplyAnimationClock(Shape.OpacityProperty, c);
-                Animation a = new Animation(new ITimedGraphic[] { fig }, time);
-                a.SetStartupDelay((int)((time / (double)(pts.Length - 1)) * i));
-                list.Add(a);
-            }
-            return new AnimationQueue(list.ToArray());
-        }
+            var animation = new DoubleAnimation(opacity1, opacity2, new Duration(new TimeSpan(0, 0, 0, 0, (int)((erradicity == 0) ? time : time / (double)erradicity))));
+            animation.RepeatBehavior = new RepeatBehavior(repeatCount * erradicity);
+            animation.AutoReverse = autoreverse;
 
-        private Animation GenerateTimedFigure(Geometry g, Brush stroke, Brush fill, double strokethickness, double opacity1, double opacity2, int erradicity, int time, int repeatCount, bool autoreverse)
-        {
-            AnimationPrimitive prim = new AnimationPrimitive();
-            DoubleAnimation anim = new DoubleAnimation(opacity1, opacity2, new Duration(new TimeSpan(0, 0, 0, 0, (int)((erradicity == 0) ? time : time / (double)erradicity))));
-            anim.RepeatBehavior = new RepeatBehavior(repeatCount * erradicity);
-            anim.AutoReverse = autoreverse;
-            AnimationClock clock = anim.CreateClock();
+            var clock = animation.CreateClock();
             clock.Controller.Begin();
             clock.Controller.Pause();
-            prim.Fill = fill;
-            prim.Stroke = stroke;
-            prim.StrokeThickness = strokethickness;
-            prim.SetGeometry(g);
-            prim.ApplyAnimationClock(Shape.OpacityProperty, clock);
-            prim.SetAnimations(new AnimationClock[] { clock }, time);
-            return new Animation(new ITimedGraphic[] { prim }, time);
+
+            var primitive = new AnimationPrimitive(geometry, new AnimationClock[] { clock }, time);
+            primitive.Fill = fill;
+            primitive.Stroke = stroke;
+            primitive.StrokeThickness = strokethickness;
+            primitive.ApplyAnimationClock(Shape.OpacityProperty, clock);
+
+            return primitive;
         }
 
-        private Animation GenerateProjectilePath(Point[] points, Size size1, Size size2, Brush stroke, Brush fill, double opacity1, double opacity2, double strokeThickness, double accelerationRatio, int erradicity, int time, int velocity, int repeatCount, bool autoreverse, bool constVelocity)
+        private AnimationPrimitive GeneratePathAnimation(PathGeometry pathGeometry,
+                                                                 Size size1, 
+                                                                 Size size2, 
+                                                                 Brush stroke, 
+                                                                 Brush fill, 
+                                                                 double opacity1, 
+                                                                 double opacity2, 
+                                                                 double strokeThickness, 
+                                                                 int erradicity, 
+                                                                 int time, 
+                                                                 int repeatCount, 
+                                                                 bool autoreverse)
         {
-            //Generate Path geometry from points
-            var geometry = new PathGeometry();
-            var figure = new PathFigure();
-            var pathLength = 0D;
-
-            for (int i = 0; i < points.Length - 1; i++)
-            {
-                Point p1 = points[i];
-                Point p2 = points[i + 1];
-
-                if (i == 0)
-                    figure.StartPoint = p1;
-
-                figure.Segments.Add(new LineSegment(p2, false));
-                pathLength += Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2));
-            }
-            geometry.Figures.Add(figure);
-
-            //Check for const velocity
-            if (constVelocity)
-            {
-                //x = vt - making sure to set defaults if bad parameters
-                if (velocity <= 0)
-                    velocity = DEFAULT_VELOCITY;
-
-                //convert to seconds
-                time = (int)((pathLength * 1000) / velocity);
-                if (time <= 0)
-                    time = 500;
-            }
-
             //Generate Animations
-            var duration = new Duration(new TimeSpan(0, 0, 0, 0, (int)time));
-            var durationErradicity = (erradicity > 0) ? new Duration(new TimeSpan(0, 0, 0, 0, (int)(time / (double) erradicity))) : duration;
+            var duration = new Duration(TimeSpan.FromMilliseconds(time));
+            var durationErradicity = (erradicity > 0) ? new Duration(TimeSpan.FromMilliseconds((int)(time / (double) erradicity))) : duration;
             var repeatBehavior = new RepeatBehavior(repeatCount);
             var repeatErradicityBehavior = new RepeatBehavior(repeatCount * erradicity);
             var xAnimation = new DoubleAnimationUsingPath();
@@ -430,9 +459,9 @@ namespace Rogue.NET.Core.Media
             var heightAnimation = new DoubleAnimation(1, size2.Height / size1.Height, duration);
             var opacityAnimation = new DoubleAnimation(opacity1, opacity2, durationErradicity);
 
-            xAnimation.PathGeometry = geometry;
-            yAnimation.PathGeometry = geometry;
-            angleAnimation.PathGeometry = geometry;
+            xAnimation.PathGeometry = pathGeometry;
+            yAnimation.PathGeometry = pathGeometry;
+            angleAnimation.PathGeometry = pathGeometry;
             xAnimation.RepeatBehavior = repeatBehavior;
             yAnimation.RepeatBehavior = repeatBehavior;
             angleAnimation.RepeatBehavior = repeatBehavior;
@@ -492,72 +521,93 @@ namespace Rogue.NET.Core.Media
             scaleTransform.ApplyAnimationClock(ScaleTransform.ScaleXProperty, widthClock);
             scaleTransform.ApplyAnimationClock(ScaleTransform.ScaleYProperty, heightClock);
 
-            var animation = new AnimationPrimitive();
-            animation.SetGeometry(ellipse);
-            animation.RenderTransform = transform;
-            animation.ApplyAnimationClock(Shape.OpacityProperty, opacityClock);
+            var primitive = new AnimationPrimitive(ellipse, new AnimationClock[] { xClock, yClock, angleClock, widthClock, heightClock, opacityClock }, time);
+            primitive.RenderTransform = transform;
+            primitive.ApplyAnimationClock(Shape.OpacityProperty, opacityClock);
+            primitive.Fill = fill;
+            primitive.Stroke = stroke;
+            primitive.StrokeThickness = strokeThickness;
 
-            animation.SetAnimations(new AnimationClock[] { xClock, yClock, angleClock, widthClock, heightClock, opacityClock }, time);
-
-            animation.Fill = fill;
-            animation.Stroke = stroke;
-            animation.StrokeThickness = strokeThickness;
-
-            return new Animation(new AnimationPrimitive[] { animation }, time);
+            return primitive;
         }
 
-        private Animation GenerateAuraAnimation(Point pt, Size s1, Size s2, Brush stroke, Brush fill, double opacity1, double opacity2, double strokeThickness, double accelerationRatio, int erradicity, int time, int repeatCount, bool autoreverse)
+        private AnimationPrimitive GeneratePointAnimation(Point point, 
+                                                          Size size1, 
+                                                          Size size2, 
+                                                          Brush stroke, 
+                                                          Brush fill, 
+                                                          double opacity1, 
+                                                          double opacity2, 
+                                                          double strokeThickness, 
+                                                          int erradicity, 
+                                                          int time, 
+                                                          int repeatCount, 
+                                                          bool autoreverse)
         {
             //Generate Animations
-            Duration d = new Duration(new TimeSpan(0, 0, 0, 0, (int)time));
-            Duration dErr = (erradicity > 0) ? new Duration(new TimeSpan(0, 0, 0, 0, (int)(time / (double)erradicity))) : d;
-            RepeatBehavior rb = new RepeatBehavior(repeatCount);
-            RepeatBehavior rbErr = new RepeatBehavior(repeatCount * erradicity);
-            DoubleAnimation sxa = new DoubleAnimation(1, s2.Width / s1.Width, d);
-            DoubleAnimation sya = new DoubleAnimation(1, s2.Height / s1.Height, d);
-            DoubleAnimation oa = new DoubleAnimation(opacity1, opacity2, dErr);
-            sxa.RepeatBehavior = rbErr;
-            sya.RepeatBehavior = rbErr;
-            oa.RepeatBehavior = rbErr;
-            sxa.Duration = dErr;
-            sya.Duration = dErr;
-            oa.Duration = dErr;
-            sxa.AutoReverse = autoreverse;
-            sya.AutoReverse = autoreverse;
+            Duration duration = new Duration(new TimeSpan(0, 0, 0, 0, (int)time));
+            Duration durationErradicity = (erradicity > 0) ? new Duration(new TimeSpan(0, 0, 0, 0, (int)(time / (double)erradicity))) : duration;
+            RepeatBehavior repeatBehaviorErradicity = new RepeatBehavior(repeatCount * erradicity);
+            DoubleAnimation sizeAnimationX = new DoubleAnimation(1, size2.Width / size1.Width, duration);
+            DoubleAnimation sizeAnimationY = new DoubleAnimation(1, size2.Height / size1.Height, duration);
+            DoubleAnimation opacityAnimation = new DoubleAnimation(opacity1, opacity2, durationErradicity);
+            sizeAnimationX.RepeatBehavior = repeatBehaviorErradicity;
+            sizeAnimationY.RepeatBehavior = repeatBehaviorErradicity;
+            opacityAnimation.RepeatBehavior = repeatBehaviorErradicity;
+            sizeAnimationX.Duration = durationErradicity;
+            sizeAnimationY.Duration = durationErradicity;
+            opacityAnimation.Duration = durationErradicity;
+            sizeAnimationX.AutoReverse = autoreverse;
+            sizeAnimationY.AutoReverse = autoreverse;
 
-            AnimationClock csx = sxa.CreateClock();
-            AnimationClock csy = sya.CreateClock();
-            AnimationClock co = oa.CreateClock();
-            csx.Controller.Begin();
-            csy.Controller.Begin();
-            co.Controller.Begin();
-            csx.Controller.Pause();
-            csy.Controller.Pause();
-            co.Controller.Pause();
+            AnimationClock clockX = sizeAnimationX.CreateClock();
+            AnimationClock clockY = sizeAnimationY.CreateClock();
+            AnimationClock clockOpacity = opacityAnimation.CreateClock();
+            clockX.Controller.Begin();
+            clockY.Controller.Begin();
+            clockOpacity.Controller.Begin();
+            clockX.Controller.Pause();
+            clockY.Controller.Pause();
+            clockOpacity.Controller.Pause();
 
-            EllipseGeometry eg = new EllipseGeometry(new Point(0,0), s1.Width, s1.Height);
+            EllipseGeometry geometry = new EllipseGeometry(new Point(0,0), size1.Width, size1.Height);
 
-            ScaleTransform st = new ScaleTransform();
-            TranslateTransform tt = new TranslateTransform(pt.X, pt.Y);
-            TransformGroup tg = new TransformGroup();
-            tg.Children.Add(st);
-            tg.Children.Add(tt);
-            st.ApplyAnimationClock(ScaleTransform.ScaleXProperty, csx);
-            st.ApplyAnimationClock(ScaleTransform.ScaleYProperty, csy);
+            ScaleTransform scaleTransform = new ScaleTransform();
+            TranslateTransform translateTransform = new TranslateTransform(point.X, point.Y);
+            TransformGroup transform = new TransformGroup();
+            transform.Children.Add(scaleTransform);
+            transform.Children.Add(translateTransform);
+            scaleTransform.ApplyAnimationClock(ScaleTransform.ScaleXProperty, clockX);
+            scaleTransform.ApplyAnimationClock(ScaleTransform.ScaleYProperty, clockY);
             //st.CenterX = 0.5;
             //st.CenterY = 0.5;
 
-            AnimationPrimitive prim = new AnimationPrimitive();
-            prim.SetGeometry(eg);
-            prim.RenderTransform = tg;
+            AnimationPrimitive primitive = new AnimationPrimitive(geometry, new AnimationClock[] { clockX, clockY, clockOpacity }, time);
+            primitive.RenderTransform = transform;
             //prim.RenderTransformOrigin = new Point(.5, .5);
-            prim.ApplyAnimationClock(Shape.OpacityProperty, co);
-            prim.SetAnimations(new AnimationClock[] { csx, csy, co }, time);
-            prim.Fill = fill;
-            prim.Stroke = stroke;
-            prim.StrokeThickness = strokeThickness;
+            primitive.ApplyAnimationClock(Shape.OpacityProperty, clockOpacity);
+            primitive.Fill = fill;
+            primitive.Stroke = stroke;
+            primitive.StrokeThickness = strokeThickness;
 
-            return new Animation(new AnimationPrimitive[] { prim }, time);
+            return primitive;
+        }
+        private PathGeometry CreatePathGeometry(IEnumerable<Point> points)
+        {
+            if (points.Count() < 2)
+                throw new Exception("Trying to create path animation path with less than two points");
+
+            var geometry = new PathGeometry();
+            var figure = new PathFigure();
+
+            figure.StartPoint = points.First();
+
+            for (int i = 0; i < points.Count(); i++)
+                figure.Segments.Add(new LineSegment(points.ElementAt(i), true));
+
+            figure.IsClosed = false;
+
+            return geometry;
         }
         #endregion
     }

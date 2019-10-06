@@ -1,97 +1,165 @@
-﻿using System;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Media.Animation;
+using Rogue.NET.Core.Media.Animation.EventData;
+using Rogue.NET.Core.Media.Animation.Interface;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace Rogue.NET.Core.Media
+namespace Rogue.NET.Core.Media.Animation
 {
-    public class AnimationQueue : ITimedGraphic
+    /// <summary>
+    /// Plays AnimationPrimitiveGroup instances in order
+    /// </summary>
+    public class AnimationQueue : IAnimationPlayer
     {
-        public event EventHandler<AnimationTimeChangedEventArgs> AnimationTimeChanged;
-        public event TimerElapsedHandler TimeElapsed;
-        Animation[] _animations = null;
-        int _ct = 0;
+        public static AnimationQueue Empty = new AnimationQueue(new AnimationPrimitiveGroup[] { });
 
-        public int AnimationTime { get; set; }
-        public bool IsElapsed { get; set; }
-        public bool IsPaused { get; set; }
-        public int ElapsedTime { get; set; }
-        public AnimationQueue(Animation[] animations)
+        public event SimpleEventHandler<IAnimationPlayer, AnimationPlayerChangeEventData> AnimationPlayerChangeEvent;
+        public event SimpleEventHandler<AnimationPlayerStartEventData> AnimationPlayerStartEvent;
+        public event SimpleEventHandler<AnimationTimeChangedEventData> AnimationTimeChanged;
+
+        public int AnimationTime { get; private set; }
+
+        // Treating a list like a queue to simplfy logic
+        List<AnimationPrimitiveGroup> _queue;
+
+        AnimationPrimitiveGroup _workingAnimation;
+
+        /// <summary>
+        /// Stores animations in sequence
+        /// </summary>
+        /// <param name="primitiveGroups">sequence of animation groups</param>
+        public AnimationQueue(IEnumerable<AnimationPrimitiveGroup> animations)
         {
-            if (animations.Length > 0)
-                this.AnimationTime = animations[0].AnimationTime;
+            this.AnimationTime = animations.Sum(x => x.AnimationTime);
 
-            _animations = animations;
-
-            foreach (Animation a in animations)
-                a.TimeElapsed += new TimerElapsedHandler(OnAnimationTimeElapsed);
+            _queue = new List<AnimationPrimitiveGroup>(animations);
+            _workingAnimation = null;
         }
+
         public void Start()
         {
-            this.IsElapsed = false;
-            this.IsPaused = false;
-            foreach (Animation a in _animations)
-            {
-                a.AnimationTimeChanged += (obj, e) =>
-                {
-                    if (AnimationTimeChanged != null)
-                        AnimationTimeChanged(this, e);
-                };
-                a.Start();
-            }
+            // Check working animation to continue
+            if (_workingAnimation != null)
+                throw new Exception("Trying to start animation sequence while not completed - try pause / resume");
+
+            if (_queue.Any())
+                StartAnimation(_queue[0]);
         }
         public void Stop()
         {
-            this.IsPaused = false;
-            foreach (Animation a in _animations)
-                a.Stop();
+            if (_workingAnimation != null)
+                StopAnimation();
         }
         public void Pause()
         {
-            this.IsPaused = true;
-            foreach (Animation a in _animations)
-                a.Pause();
-        }
-        public void Seek(int milliSeconds)
-        {
-            foreach (Animation a in _animations)
-                a.Seek(milliSeconds);
+            if (_workingAnimation != null)
+                _workingAnimation.Pause();
         }
         public void Resume()
         {
-            this.IsPaused = false;
-            foreach (Animation a in _animations)
-                a.Resume();
+            if (_workingAnimation != null)
+                _workingAnimation.Resume();
         }
-        public void CleanUp()
+
+        private void StartAnimation(AnimationPrimitiveGroup nextGroup)
         {
-            for (int i=0;i<_animations.Length;i++)
-            {
-                _animations[i].CleanUp();
-                _animations[i] = null;
-            }
-        }
-        public void SetStartupDelay(int delay)
-        {
-            foreach (Animation a in _animations)
-                a.SetStartupDelay(delay);
-        }
-        public Graphic[] GetGraphics()
-        {
-            List<Graphic> list = new List<Graphic>();
-            foreach (Animation a in _animations)
-                list.AddRange(a.GetGraphics());
-            return list.ToArray();
-        }
-        private void OnAnimationTimeElapsed(ITimedGraphic sender)
-        {
-            _ct++;
-            if (_ct == _animations.Length)
-            {
-                if (TimeElapsed != null)
+            if (_workingAnimation != null)
+                throw new Exception("Working animation not completed before starting next");
+
+            _workingAnimation = nextGroup;
+
+            // Fire start event for listeners
+            if (this.AnimationPlayerStartEvent != null)
+                this.AnimationPlayerStartEvent(new AnimationPlayerStartEventData()
                 {
-                    this.IsElapsed = true;
-                    TimeElapsed(this);
-                }
+                    Primitives = _workingAnimation.GetPrimitives()
+                });
+
+            // Hook first primitive for the time changed event
+            _workingAnimation.AnimationTimeChanged += OnChildAnimationTimeChanged;
+            _workingAnimation.AnimationTimeElapsed += OnChildAnimationCompleted;
+            _workingAnimation.Start();
+        }
+
+        private void StopAnimation()
+        {
+            if (_workingAnimation == null)
+                throw new Exception("Working animation already stopped");
+
+            // Unhook time elapsed event
+            _workingAnimation.AnimationTimeElapsed -= OnChildAnimationCompleted;
+
+            // Unhook time changed event
+            _workingAnimation.AnimationTimeChanged -= OnChildAnimationTimeChanged;
+
+            // Stop the working animation
+            _workingAnimation.Stop();
+
+            // Set to null to make certain the queue's state
+            _workingAnimation = null;
+        }
+
+        private void OnChildAnimationCompleted(IAnimationPrimitive sender)
+        {
+            if (_workingAnimation != sender)
+                throw new Exception("Working animatino improperly hooked up");
+
+            // Unhook sender
+            _workingAnimation.AnimationTimeElapsed -= OnChildAnimationCompleted;
+
+            // Unhook time changed event
+            _workingAnimation.AnimationTimeChanged -= OnChildAnimationTimeChanged;
+
+            // Get index of working animation
+            var animationIndex = _queue.IndexOf(_workingAnimation) + 1;
+
+            // NEXT ANIMATION:  Notify Listeners -> Start next animation
+            if (animationIndex < _queue.Count)
+            {
+                // Get next animation group
+                var nextAnimation = _queue[animationIndex];
+
+                // Notify listeners of a switch-over
+                var oldPrimitives = _workingAnimation.GetPrimitives();
+                var newPrimitives = nextAnimation.GetPrimitives();
+
+                if (this.AnimationPlayerChangeEvent != null)
+                    this.AnimationPlayerChangeEvent(this, new AnimationPlayerChangeEventData()
+                    {
+                        OldPrimitives = oldPrimitives,
+                        NewPrimitives = newPrimitives,
+                        SequenceFinished = false
+                    });
+
+                // Set working animation to null
+                _workingAnimation = null;
+
+                StartAnimation(_queue[animationIndex]);
             }
+            // ANIMATION SEQUENCE COMPLETE:  Notify Listeners -> ()
+            else
+            {
+                // First, notify of the primtive change-over
+                if (this.AnimationPlayerChangeEvent != null)
+                    this.AnimationPlayerChangeEvent(this, new AnimationPlayerChangeEventData()
+                    {
+                        OldPrimitives = _workingAnimation.GetPrimitives(),
+                        NewPrimitives = null,
+                        SequenceFinished = true
+                    });
+
+                // Set working animation to null
+                _workingAnimation = null;
+            }
+        }
+
+        private void OnChildAnimationTimeChanged(AnimationTimeChangedEventData sender)
+        {
+            if (this.AnimationTimeChanged != null)
+                this.AnimationTimeChanged(sender);
         }
     }
 }

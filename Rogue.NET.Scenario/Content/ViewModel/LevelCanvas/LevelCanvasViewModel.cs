@@ -24,6 +24,10 @@ using Rogue.NET.Core.View;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Media.Animation;
+using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Media.Animation.Interface;
+using Rogue.NET.Core.Media.Animation.EventData;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -40,7 +44,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         double _zoomFactor;
 
         // Targeting animation (singular)
-        AnimationQueue _targetAnimation;
+        IAnimationPlayer _targetAnimationPlayer;
 
         // Elements for the layout
         Path _wallElement;
@@ -374,57 +378,71 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// Creates IRogue2TimedGraphic set for each of the animation templates and returns the
         /// last one as a handle
         /// </summary>
-        public async Task PlayAnimationSeries(IEnumerable<IEnumerable<AnimationQueue>> animations)
+        public async Task PlayAnimationSeries(IAnimationPlayer player)
         {
-            foreach (var animation in animations)
+            // Hook event to change-over graphics
+            player.AnimationPlayerStartEvent += OnAnimationPlayerStartEvent;
+            player.AnimationPlayerChangeEvent += OnAnimationPlayerChangeEvent;
+
+            // Run animations (SHARES MAIN THREAD VIA ASYNC / AWAIT)
+            player.Start();
+
+            // Start a delay (to allow processing of animation sequence)
+            await Task.Delay(player.AnimationTime);
+        }
+
+        private void OnAnimationPlayerStartEvent(AnimationPlayerStartEventData eventData)
+        {
+            // Add primitives to the canvas (view model)
+            foreach (var primitive in eventData.Primitives)
+                this.Animations.Add(primitive);
+        }
+        private void OnAnimationPlayerChangeEvent(IAnimationPlayer sender, AnimationPlayerChangeEventData eventData)
+        {
+            // Remove old primitives from the canvas
+            foreach (var primitive in eventData.OldPrimitives)
+                this.Animations.Remove(primitive);
+
+            // Add new primitives to the canvas (view model)
+            if (!eventData.SequenceFinished)
             {
-                foreach (var animationQueue in animation)
-                {
-                    foreach (var graphic in animationQueue.GetGraphics())
-                    {
-                        Canvas.SetZIndex(graphic, 100);
-                        this.Animations.Add(graphic);
-                    }
+                foreach (var primitive in eventData.NewPrimitives)
+                    this.Animations.Add(primitive);
+            }
 
-                    animationQueue.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
-                    animationQueue.Start();
-
-                    await Task.Delay(animationQueue.AnimationTime);
-                }
+            // SEQUENCE FINISHED:  Unhook events
+            else
+            {
+                sender.AnimationPlayerStartEvent -= OnAnimationPlayerStartEvent;
+                sender.AnimationPlayerChangeEvent -= OnAnimationPlayerChangeEvent;
             }
         }
-        private void OnAnimationTimerElapsed(ITimedGraphic sender)
-        {
-            foreach (var timedGraphic in sender.GetGraphics())
-                this.Animations.Remove(timedGraphic);
 
-            sender.TimeElapsed -= new TimerElapsedHandler(OnAnimationTimerElapsed);
-            sender.CleanUp();
+        public void PlayTargetAnimation(IAnimationPlayer targetAnimationPlayer)
+        {
+            _targetAnimationPlayer = targetAnimationPlayer;
+            _targetAnimationPlayer.AnimationPlayerStartEvent += OnStartTargetAnimation;
+
+            _targetAnimationPlayer.Start();
         }
 
-        public void PlayTargetAnimation(AnimationQueue animation)
+        private void OnStartTargetAnimation(AnimationPlayerStartEventData eventData)
         {
-            if (_targetAnimation != null)
-                StopTargetAnimation();
-
-            _targetAnimation = animation;
-
-            // Start the animation group
-            foreach (var graphic in animation.GetGraphics())
-                this.Animations.Add(graphic);
-
-            animation.Start();
+            // Add primitives to the canvas (view model)
+            foreach (var primitive in eventData.Primitives)
+                this.Animations.Add(primitive);
         }
+
         public void StopTargetAnimation()
         {
-            if (_targetAnimation != null)
+            if (_targetAnimationPlayer != null)
             {
-                foreach (var graphic in _targetAnimation.GetGraphics())
-                    this.Animations.Remove(graphic);
+                _targetAnimationPlayer.AnimationPlayerStartEvent -= OnStartTargetAnimation;
+                _targetAnimationPlayer.Stop();
+                _targetAnimationPlayer = null;
 
-                _targetAnimation.Stop();
-                _targetAnimation.CleanUp();
-                _targetAnimation = null;
+                // Go ahead and clear animations because we're exiting targeting mode
+                this.Animations.Clear();
             }
         }
         #endregion

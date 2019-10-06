@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Media;
+using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -91,8 +92,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
                                     IEnumerable<GridLocation> visibleLocations,
                                     IEnumerable<GridLocation> revealedLocations);
 
-        Task PlayAnimationSeries(IEnumerable<IEnumerable<AnimationQueue>> animations);
-        void PlayTargetAnimation(AnimationQueue animation);
+        Task PlayAnimationSeries(IAnimationPlayer animationPlayer);
+        void PlayTargetAnimation(IAnimationPlayer targetAnimationPlayer);
         void StopTargetAnimation();
     }
 }

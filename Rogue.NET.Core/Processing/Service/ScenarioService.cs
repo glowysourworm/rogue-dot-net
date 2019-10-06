@@ -50,6 +50,7 @@ namespace Rogue.NET.Core.Processing.Service
         Queue<TargetRequestEventData> _targetRequestEventDataQueue;
         Queue<DialogEventData> _dialogEventDataQueue;
         Queue<AnimationEventData> _animationEventDataQueue;
+        Queue<ProjectileAnimationEventData> _projectileAnimationEventDataQueue;
         Queue<ScenarioEventData> _scenarioEventDataQueue;
         Queue<LevelProcessingAction> _backendQueue;
 
@@ -80,6 +81,7 @@ namespace Rogue.NET.Core.Processing.Service
             _targetRequestEventDataQueue = new Queue<TargetRequestEventData>();
             _dialogEventDataQueue = new Queue<DialogEventData>();
             _animationEventDataQueue = new Queue<AnimationEventData>();
+            _projectileAnimationEventDataQueue = new Queue<ProjectileAnimationEventData>();
             _scenarioEventDataQueue = new Queue<ScenarioEventData>();
             _backendQueue = new Queue<LevelProcessingAction>();
             
@@ -88,6 +90,10 @@ namespace Rogue.NET.Core.Processing.Service
                 engine.AnimationEvent += (eventData) =>
                 {
                     _animationEventDataQueue.Enqueue(eventData);
+                };
+                engine.ProjectileAnimationEvent += (eventData) =>
+                {
+                    _projectileAnimationEventDataQueue.Enqueue(eventData);
                 };
                 engine.DialogEvent += (eventData) =>
                 {
@@ -364,6 +370,7 @@ namespace Rogue.NET.Core.Processing.Service
         public void ClearQueues()
         {
             _animationEventDataQueue.Clear();
+            _projectileAnimationEventDataQueue.Clear();
             _backendQueue.Clear();
             _dialogEventDataQueue.Clear();
             _levelEventDataQueue.Clear();
@@ -374,6 +381,11 @@ namespace Rogue.NET.Core.Processing.Service
         public AnimationEventData DequeueAnimationEventData()
         {
             return _animationEventDataQueue.Any() ? _animationEventDataQueue.Dequeue() : null;
+        }
+
+        public ProjectileAnimationEventData DequeueProjectileAnimationEventData()
+        {
+            return _projectileAnimationEventDataQueue.Any() ? _projectileAnimationEventDataQueue.Dequeue() : null;
         }
 
         public LevelEventData DequeueLevelEventData()

@@ -8,6 +8,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
     public abstract class BackendEngine
     {
         public event SimpleEventHandler<AnimationEventData> AnimationEvent;
+        public event SimpleEventHandler<ProjectileAnimationEventData> ProjectileAnimationEvent;
         public event SimpleEventHandler<DialogEventData> DialogEvent;
         public event SimpleEventHandler<LevelEventData> LevelEvent;
         public event SimpleEventHandler<TargetRequestEventData> TargetRequestEvent;
@@ -23,6 +24,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             if (this.AnimationEvent != null)
                 this.AnimationEvent(eventData);
+        }
+
+        protected virtual void OnProjectileAnimationEvent(ProjectileAnimationEventData eventData)
+        {
+            if (this.ProjectileAnimationEvent != null)
+                this.ProjectileAnimationEvent(eventData);
         }
 
         protected virtual void OnDialogEvent(DialogEventData eventData)

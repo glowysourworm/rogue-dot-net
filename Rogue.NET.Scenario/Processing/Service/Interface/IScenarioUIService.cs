@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Media;
+using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -23,7 +24,7 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
         void UpdateLightRadius(LevelCanvasShape canvasShape, Player player, Rect levelUIBounds);
         void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, Character character, Rect levelUIBounds);
 
-        IEnumerable<IEnumerable<AnimationQueue>> CreateAnimations(AnimationEventData eventData, Rect levelUIBounds);
-        AnimationQueue CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor);
+        IAnimationPlayer CreateAnimation(AnimationEventData eventData, Rect levelUIBounds);
+        IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor);
     }
 }

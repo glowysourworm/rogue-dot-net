@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Media;
-using Rogue.NET.Core.Media.Interface;
+﻿using Rogue.NET.Core.Media.Animation;
+using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
@@ -207,17 +207,17 @@ namespace Rogue.NET.Scenario.Processing.Service
             aura.Stroke = null;
         }
 
-        public IEnumerable<IEnumerable<AnimationQueue>> CreateAnimations(AnimationEventData eventData, Rect levelUIBounds)
+        public IAnimationPlayer CreateAnimation(AnimationEventData eventData, Rect levelUIBounds)
         {
             // Source / Target / Render bounds
             var source = _scenarioUIGeometryService.Cell2UI(eventData.SourceLocation, true);
             var targets = eventData.TargetLocations.Select(x => _scenarioUIGeometryService.Cell2UI(x, true)).ToArray();
 
             //Create animations
-            return eventData.Animations.Select(x => _animationCreator.CreateAnimation(x, levelUIBounds, source, targets));
+            return new AnimationStoryboard(eventData.Animations.Select(x => _animationCreator.CreateAnimation(x, levelUIBounds, source, targets)));
         }
 
-        public AnimationQueue CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor)
+        public IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor)
         {
             return _animationCreator.CreateTargetingAnimation(_scenarioUIGeometryService.Cell2UI(location), fillColor, strokeColor);
         }

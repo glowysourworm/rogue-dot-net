@@ -2809,6 +2809,27 @@ IMMEDIATE TODO'S:
 	- TODO: USE UNDO SERVICE TO GET THE DIRTY FLAG FOR THE EDITOR
 
 	- TODO: Remove experience range from enemies (DOESN'T MAKE SENSE!)
+
+	- TODO: Hide text for level requirement. Just say "You're not able to wear this yet"
+
+	THROW AND RANGE PROJECTILES:
+
+		Design has a few goals:
+
+			- Be able to "throw" any SVG
+
+			- Be able to assign orientable SVG's to projectile weapons.
+
+			- Have animation parameters for the projectiles (speed, rotation)
 		  
-	
-						  
+			- Have parameters for every object that is thrown:
+
+				Throw Quality:  Behaves just as attack / defense quality
+
+		- TODO: BREAK UP ANIMATIONS BY TYPE INSTEAD OF ENUM SELECTION
+		- TODO: Get rid of acceleration ratio / stroke template
+
+	- TODO:  Consider putting the scenario objectives in the top-left corner of the level canvas
+
+			
+			  

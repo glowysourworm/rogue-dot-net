@@ -94,7 +94,7 @@
             </Canvas>
             <Grid Grid.Row="1" Margin="5">
                 <TextBlock x:Name="AniamtionTimeTB" Text="{Binding Value, ElementName=AnimationSlider, StringFormat=F3}" Foreground="White" VerticalAlignment="Center" />
-                <Slider x:Name="AnimationSlider" ValueChanged="AnimationSlider_ValueChanged" Width="170" Margin="40,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <Slider x:Name="AnimationSlider" Width="170" Margin="40,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="StopButton" Click="StopButton_Click" Content="&#xf04d;" FontFamily="{StaticResource FontAwesome}"  Height="24" Width="24" Padding="6"/>
                     <Button x:Name="PlayButton" Click="PlayButton_Click" Content="&#xf04b;" FontFamily="{StaticResource FontAwesome}"  Height="24" Width="24" Padding="6" />

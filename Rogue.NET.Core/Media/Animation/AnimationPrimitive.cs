@@ -2,124 +2,121 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Media.Animation;
-using System.Timers;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
-namespace Rogue.NET.Core.Media
+using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Media.Animation.Interface;
+using Rogue.NET.Core.Media.Animation.EventData;
+
+namespace Rogue.NET.Core.Media.Animation
 {
-    public class AnimationPrimitive : Graphic, ITimedGraphic
+    /// <summary>
+    /// An animation primitive contains several clocks pertaining to its inherited shape
+    /// </summary>
+    public class AnimationPrimitive : Shape, IAnimationNotifier, IAnimationController, IAnimationPrimitive
     {
-        public event TimerElapsedHandler TimeElapsed;
-        public event EventHandler<AnimationTimeChangedEventArgs> AnimationTimeChanged;
+        // List of all animation clocks for this primitive
+        List<AnimationClock> _clocks;
 
-        int _ct = 0;
-        Timer _t = null;
+        // Saved reference to the first clock to use for firing events for the whole list
+        AnimationClock _firstClock;
 
-        public int AnimationTime { get; set; }
-        public bool IsElapsed { get; set; }
-        public bool IsPaused { get; set; }
-        public List<AnimationClock> Clocks { get; set; }
-        public void SetAnimations(AnimationClock[] clocks, int animationTime)
+        // Geometry for the shape
+        Geometry _geometry;
+
+        public event SimpleEventHandler<IAnimationPrimitive> AnimationTimeElapsed;
+        public event SimpleEventHandler<AnimationTimeChangedEventData> AnimationTimeChanged;
+
+        public int AnimationTime { get; private set; }
+
+        public AnimationPrimitive(Geometry geometry, AnimationClock[] clocks, int animationTime)
         {
-            this.Clocks = new List<AnimationClock>(clocks);
+            // Set the geometry for this shape
+            _geometry = geometry;
+
+            // Set animation clocks
+            _clocks = new List<AnimationClock>(clocks);
+
+            _firstClock = _clocks.FirstOrDefault();
 
             this.AnimationTime = animationTime;
-
-            foreach (AnimationClock s in clocks)
-                s.Completed += new EventHandler(OnClockCompleted);
         }
+
+        protected override Geometry DefiningGeometry { get { return _geometry; } }
+
+        public IEnumerable<AnimationPrimitive> GetPrimitives()
+        {
+            return new AnimationPrimitive[] { this };
+        }
+
         public void Start()
         {
-            this.IsElapsed = false;
-            this.IsPaused = false;
             StartAnimation();
-        }
-        public void CleanUp()
-        {
-            this.Clocks.Clear();
         }
         public void Stop()
         {
-            this.IsPaused = false;
-
-            if (_t != null)
-                _t.Stop();
-
-            foreach (AnimationClock c in this.Clocks)
-                c.Controller.Stop();
+            foreach (var clock in _clocks)
+                clock.Controller.Stop();
         }
         public void Pause()
         {
-            this.IsPaused = true;
-            foreach (AnimationClock c in this.Clocks)
-                c.Controller.Pause();
-        }
-        public void Seek(int milliSeconds)
-        {
-            foreach (AnimationClock c in this.Clocks)
-                c.Controller.Seek(new TimeSpan(0, 0, 0, 0, milliSeconds), TimeSeekOrigin.BeginTime);
+            foreach (var clock in _clocks)
+                clock.Controller.Pause();
         }
         public void Resume()
         {
-            this.IsPaused = false;
-            foreach (AnimationClock c in this.Clocks)
-                c.Controller.Resume();
-        }
-        public void SetStartupDelay(int delay)
-        {
-            _t = new Timer(delay);
-            _t.Elapsed += new ElapsedEventHandler(OnStartupDelayElapsed);
-            _t.Enabled = true;
-        }
-        private void OnStartupDelayElapsed(object sender, ElapsedEventArgs e)
-        {
-            _t.Elapsed -= new ElapsedEventHandler(OnStartupDelayElapsed);
-            _t.Enabled = false;
-            _t.Dispose();
-            _t = null;
-            StartAnimation();
-        }
-        public Graphic[] GetGraphics()
-        {
-            return new Graphic[] { this };
+            foreach (var clock in _clocks)
+                clock.Controller.Resume();
         }
         private void StartAnimation()
         {
-            if (_t != null)
+            // Hook up first clock to fire events for the group
+            if (_firstClock != null)
             {
-                foreach (AnimationClock c in this.Clocks)
+                // Hook first clock 
+                _firstClock.CurrentTimeInvalidated += OnCurrentTimeInvalidated;
+
+                // Hook completed event
+                foreach (var clock in _clocks)
+                    clock.Completed += new EventHandler(OnClockCompleted);
+
+                // Start clocks
+                foreach (var clock in _clocks)
                 {
-                    if (c.IsPaused)
-                        c.Controller.Resume();
+                    //if (clock.IsPaused)
+                    //    clock.Controller.Resume();
+                    //else
+                    //    clock.Controller.Begin();
+
+                    clock.Controller.Resume();
                 }
-                return;
-            }
-
-            _ct = 0;
-            foreach (AnimationClock c in this.Clocks)
-                c.Controller.Resume();
-
-            AnimationClock first = this.Clocks.FirstOrDefault();
-            if (first != null)
-            {
-                first.CurrentTimeInvalidated += (obj, e) => 
-                {
-                    if (AnimationTimeChanged != null)
-                        AnimationTimeChanged(this, 
-                            new AnimationTimeChangedEventArgs(first.CurrentTime.HasValue ? (int)first.CurrentTime.Value.TotalMilliseconds : 0));
-                };      
             }
         }
+
+        private void OnCurrentTimeInvalidated(object sender, EventArgs e)
+        {
+            var clock = sender as AnimationClock;
+
+            if (this.AnimationTimeChanged != null &&
+                clock != null)
+                this.AnimationTimeChanged(
+                    new AnimationTimeChangedEventData(clock.CurrentTime.HasValue ?
+                                                 (int)clock.CurrentTime.Value.TotalMilliseconds : 0));
+        }
+
         private void OnClockCompleted(object sender, EventArgs e)
         {
-            _ct++;
-            if (_ct == this.Clocks.Count)
-            {
-                if (TimeElapsed != null)
-                {
-                    this.IsElapsed = true;
-                    TimeElapsed(this);
-                }
-            }
+            if (sender == _firstClock &&
+                this.AnimationTimeElapsed != null)
+                this.AnimationTimeElapsed(this);
+            
+            // Unhook event
+            (sender as AnimationClock).Completed -= OnClockCompleted;
+
+            // Unhook primary clock
+            if (sender == _firstClock)
+                _firstClock.CurrentTimeInvalidated -= OnCurrentTimeInvalidated;
         }
     }
 }

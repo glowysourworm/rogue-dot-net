@@ -40,6 +40,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
 
         // Methods to dequeue event data
         AnimationEventData DequeueAnimationEventData();
+        ProjectileAnimationEventData DequeueProjectileAnimationEventData();
         LevelEventData DequeueLevelEventData();
         TargetRequestEventData DequeueTargetRequestEventData();
         DialogEventData DequeueDialogEventData();
