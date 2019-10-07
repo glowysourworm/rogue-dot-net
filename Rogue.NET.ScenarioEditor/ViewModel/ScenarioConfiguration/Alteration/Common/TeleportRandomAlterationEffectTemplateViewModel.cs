@@ -10,7 +10,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Teleport",
             Description = "Transports a source / target (affected) character to a random location",
-            ViewType = typeof(TeleportRandomEffectParameters))]
+            ViewType = typeof(TeleportRandomEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class TeleportRandomAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

@@ -11,7 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     [UIType(DisplayName = "Equipment",
             Description = "Item that is worn by the Player or Character",
-            ViewType = typeof(Equipment))]
+            ViewType = typeof(Equipment),
+            BaseType = UITypeAttributeBaseType.Asset)]
     public class EquipmentTemplateViewModel : DungeonObjectTemplateViewModel
     {
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }

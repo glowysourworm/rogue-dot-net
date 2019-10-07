@@ -10,7 +10,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 {
     [UIType(DisplayName = "Layout",
             Description = "Specification for the layout of a level of the game",
-            ViewType = typeof(LayoutViewType))]
+            ViewType = typeof(LayoutViewType),
+            BaseType = UITypeAttributeBaseType.Asset)]
     public class LayoutTemplateViewModel : TemplateViewModel
     {
         private int _width;

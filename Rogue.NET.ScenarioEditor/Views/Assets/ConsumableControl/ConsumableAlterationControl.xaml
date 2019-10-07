@@ -28,7 +28,7 @@
         </TabItem>
         <TabItem Header="Target Type">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationTargetType}"
-                                             EnumValue="{Binding AnimationGroup.TargetType, Mode=TwoWay}" />
+                                             EnumValue="{Binding Animation.TargetType, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Cost">
             <commonControl:AlterationCost DataContext="{Binding Cost}" />
@@ -44,7 +44,7 @@
         </TabItem>
         <TabItem Header="Animation">
             <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type sharedControl:Animation}"
-                                    DataContext="{Binding AnimationGroup}" />
+                                    DataContext="{Binding Animation}" />
         </TabItem>
     </TabControl>
 

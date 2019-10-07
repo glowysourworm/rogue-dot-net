@@ -22,7 +22,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private SkillSetTemplate _learnedSkill;
         private ConsumableAlterationTemplate _consumableAlteration;
         private ConsumableProjectileAlterationTemplate _consumableProjectileAlteration;
-        private AnimationGroupTemplate _ammoAnimationGroup;
         private string _noteMessage;
         private string _characterClass;
 
@@ -172,18 +171,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public AnimationGroupTemplate AmmoAnimationGroup
-        {
-            get { return _ammoAnimationGroup; }
-            set
-            {
-                if (_ammoAnimationGroup != value)
-                {
-                    _ammoAnimationGroup = value;
-                    OnPropertyChanged("AmmoAnimationGroup");
-                }
-            }
-        }
         public string NoteMessage
         {
             get { return _noteMessage; }
@@ -228,7 +215,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.SubType = ConsumableSubType.Food;
             this.ConsumableAlteration = new ConsumableAlterationTemplate();
             this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplate();
-            this.AmmoAnimationGroup = new AnimationGroupTemplate();
             this.LearnedSkill = new SkillSetTemplate();
             this.UseCount = new Range<int>(0, 0);
             this.IsObjectiveItem = false;

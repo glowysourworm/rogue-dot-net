@@ -5,6 +5,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Extension;
 using Rogue.NET.Core.Processing.Model.Validation;
@@ -328,13 +329,13 @@ namespace Rogue.NET.Core.Processing.Service
                                         // ...Where Animation
                                         .Where(x => x.HasAnimation)
                                         // ...Is Trying to Create a Projectile
-                                        .Where(x => x.AnimationGroup.Animations.Any(z => z.BaseType == AnimationBaseType.Chain ||
-                                                                                         z.BaseType == AnimationBaseType.ChainReverse ||
-                                                                                         z.BaseType == AnimationBaseType.Projectile ||
-                                                                                         z.BaseType == AnimationBaseType.ProjectileReverse))
+                                        .Where(x => x.Animation.Animations.Any(z => z is AnimationChainTemplate ||
+                                                                                    z is AnimationChainConstantVelocityTemplate ||
+                                                                                    z is AnimationProjectileTemplate ||
+                                                                                    z is AnimationProjectileConstantVelocityTemplate))
                                         // ...That will fire at the source character
-                                        .Where(x => x.AnimationGroup.TargetType == AlterationTargetType.AllInRange ||
-                                                    x.AnimationGroup.TargetType == AlterationTargetType.Source)
+                                        .Where(x => x.Animation.TargetType == AlterationTargetType.AllInRange ||
+                                                    x.Animation.TargetType == AlterationTargetType.Source)
                                         .Select(x =>
                         new ScenarioValidationResult()
                         {

@@ -11,7 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Create Temporary Character",
             Description = "Creates an Temporary Character",
-            ViewType = typeof(CreateTemporaryCharacterEffectParameters))]
+            ViewType = typeof(CreateTemporaryCharacterEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class CreateTemporaryCharacterAlterationEffectTemplateViewModel : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                                                                                                 IDoodadAlterationEffectTemplateViewModel,
                                                                                                 IEnemyAlterationEffectTemplateViewModel,

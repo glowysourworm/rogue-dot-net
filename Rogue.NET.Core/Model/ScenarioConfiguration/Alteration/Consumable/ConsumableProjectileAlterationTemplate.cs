@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable
     {
         public ConsumableProjectileAlterationTemplate()
         {
-            this.AnimationGroup = new AnimationGroupTemplate()
+            this.Animation = new AnimationSequenceTemplate()
             {
                 TargetType = AlterationTargetType.Target
             };

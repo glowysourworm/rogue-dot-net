@@ -10,7 +10,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Transmute",
             Description = "Creates a randomly drawn item from input items",
-            ViewType = typeof(TransmuteEffectParameters))]
+            ViewType = typeof(TransmuteEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class TransmuteAlterationEffectTemplateViewModel
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

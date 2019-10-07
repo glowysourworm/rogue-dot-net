@@ -2831,5 +2831,38 @@ IMMEDIATE TODO'S:
 
 	- TODO:  Consider putting the scenario objectives in the top-left corner of the level canvas
 
+	- TODO: What about a "Brings me back to life" thing? Suppose it's like a save point - but more of a Hoarcrux (?) Maybe a doodad-only effect(?) 
+
+	- TODO: Add explored / revealed walls / doors to the mini-map
+
+	- TODO: DON'T ALLOW USERS TO CREATE DUPLICATE NAMED ASSETS
+
+	- TODO: Add animation messaging to allow for character animations on the front-end. like "Animate these Character's positions (as a one-off)"
+
+	- TODO: Passive effect should have a can-see-invisible flag
+
+	DESIGN IDEA:  Always have trouble coming with a user-friendly name for "Alteration".
+
+				  Thought of an idea related to Alteration Meta-data / Categorization.
+
+				  Obviously, bringing them out using meta-data would be a way to start to describe them -
+				  so, adding some text there to show to the user might work. 
+
+				  We could even have a dynamic UI to show categories of effects - with user described names
+				  for each one.. like "Dark Magic Effects", "Environment Effects".. etc.. and decide a way
+				  to manage them.
+
+				  WE DEFINITELY NEED TO CATEGORIZE ALTERATIONS. So, adding data to describe them would be
+				  a start.
+
+	REGION MANAGER DESIGN:
+
+		HAD AN IDEA:  Having to fire a region event and listen for it is a repeated design issue. Could have the
+					  listener be the actual Region Manager. That way, just firing a RogueRegionEvent would be enough
+					  to load the region with a new view. The point of doing this is to centralize region loading.
+
+					  Currently, the IModule implementations contain the only instance of the region manager.
+
+	- TODO: Min-range for alteration ("Must be farther away to use Lightning 1")
 			
 			  

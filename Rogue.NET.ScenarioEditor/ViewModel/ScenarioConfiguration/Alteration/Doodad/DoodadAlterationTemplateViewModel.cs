@@ -11,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Do
     {
         public DoodadAlterationTemplateViewModel()
         {
-            this.AnimationGroup = new AnimationGroupTemplateViewModel();
+            this.Animation = new AnimationSequenceTemplateViewModel();
         }
     }
 }

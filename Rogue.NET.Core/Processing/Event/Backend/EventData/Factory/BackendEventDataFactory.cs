@@ -16,11 +16,11 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
     [Export(typeof(IBackendEventDataFactory))]
     public class BackendEventDataFactory : IBackendEventDataFactory
     {
-        public AnimationEventData Animation(IEnumerable<AnimationData> animations, GridLocation source, IEnumerable<GridLocation> targets)
+        public AnimationEventData Animation(AnimationSequence animation, GridLocation source, IEnumerable<GridLocation> targets)
         {
             return new AnimationEventData()
             {
-                Animations = animations,
+                Animation = animation,
                 SourceLocation = source,
                 TargetLocations = targets
             };

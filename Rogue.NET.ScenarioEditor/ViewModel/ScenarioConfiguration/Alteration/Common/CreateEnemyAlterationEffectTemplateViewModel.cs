@@ -11,7 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Create Enemy",
             Description = "Creates an Enemy Character",
-            ViewType = typeof(CreateEnemyEffectParameters))]
+            ViewType = typeof(CreateEnemyEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class CreateEnemyAlterationEffectTemplateViewModel : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                                                                                    IDoodadAlterationEffectTemplateViewModel,
                                                                                    IEnemyAlterationEffectTemplateViewModel,

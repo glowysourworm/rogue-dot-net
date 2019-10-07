@@ -11,7 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Attack Attribute (Combat)", 
             Description = "Creates a one-time hit towards the affected character(s)",
-            ViewType = typeof(AttackAttributeMeleeEffectParameters))]
+            ViewType = typeof(AttackAttributeMeleeEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class AttackAttributeMeleeAlterationEffectTemplateViewModel : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel, 
                                                                                             IConsumableProjectileAlterationEffectTemplateViewModel,
                                                                                             IDoodadAlterationEffectTemplateViewModel,

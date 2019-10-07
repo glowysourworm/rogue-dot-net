@@ -7,7 +7,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     [UIType(DisplayName = "Enemy",
             Description = "Character that is opposed to the player - which the player can attack",
-            ViewType = typeof(Enemy))]
+            ViewType = typeof(Enemy),
+            BaseType = UITypeAttributeBaseType.Asset)]
     public class EnemyTemplateViewModel : NonPlayerCharacterTemplateViewModel
     {
         private bool _generateOnStep;

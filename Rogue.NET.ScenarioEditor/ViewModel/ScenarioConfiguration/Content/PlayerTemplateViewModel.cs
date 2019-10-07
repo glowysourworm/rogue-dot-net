@@ -8,7 +8,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     [UIType(DisplayName = "Player Class",
             Description = "Type of character that your player will be - each has its own special attributes, items, and skills",
-            ViewType = typeof(Player))]
+            ViewType = typeof(Player),
+            BaseType = UITypeAttributeBaseType.Asset)]
     public class PlayerTemplateViewModel : CharacterTemplateViewModel
     {
         private string _class;

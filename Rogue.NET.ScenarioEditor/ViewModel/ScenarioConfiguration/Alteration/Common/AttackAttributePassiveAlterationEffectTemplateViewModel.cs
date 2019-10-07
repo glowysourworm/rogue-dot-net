@@ -13,7 +13,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Attack Attribute (Passive)",
             Description = "Creates a (Friendly or Malign) Attack Attribute affect on the source character",
-            ViewType = typeof(AttackAttributePassiveEffectParameters))]
+            ViewType = typeof(AttackAttributePassiveEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class AttackAttributePassiveAlterationEffectTemplateViewModel 
         : TemplateViewModel, IEquipmentCurseAlterationEffectTemplateViewModel,
                              IEquipmentEquipAlterationEffectTemplateViewModel,

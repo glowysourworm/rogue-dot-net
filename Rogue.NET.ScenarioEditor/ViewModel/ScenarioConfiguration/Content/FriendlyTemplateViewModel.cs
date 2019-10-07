@@ -6,7 +6,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     [UIType(DisplayName = "Friendly",
             Description = "Character that is aligned with the Player and will fight for them",
-            ViewType = typeof(Friendly))]
+            ViewType = typeof(Friendly),
+            BaseType = UITypeAttributeBaseType.Asset)]
     public class FriendlyTemplateViewModel : NonPlayerCharacterTemplateViewModel
     {
         public FriendlyTemplateViewModel()

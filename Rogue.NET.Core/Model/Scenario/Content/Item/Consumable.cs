@@ -14,7 +14,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public SkillSet LearnedSkill { get; set; }
         public ConsumableAlterationTemplate Alteration { get; set; }
         public ConsumableProjectileAlterationTemplate ProjectileAlteration { get; set; }
-        public AnimationGroup AmmoAnimationGroup { get; set; }
 
         public bool HasLearnedSkillSet { get; set; }
         public bool HasAlteration { get; set; }

@@ -13,7 +13,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Damage Equipment (Combat)",
             Description = "Modifies a Character's Equipment NEGATIVELY (during combat)",
-            ViewType = typeof(EquipmentDamageEffectParameters))]
+            ViewType = typeof(EquipmentDamageEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class EquipmentDamageAlterationEffectTemplateViewModel
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

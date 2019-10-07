@@ -534,13 +534,16 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 // Calculate hit - if enemy hit then queue ammunition alteration
                 var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
 
-                // Process the animation
-                if (ammo.AmmoAnimationGroup.Animations.Any())
-                {
-                    OnAnimationEvent(_backendEventDataFactory.Animation(ammo.AmmoAnimationGroup.Animations,
-                                                                        _modelService.Player.Location,
-                                                                        new GridLocation[] { targetedEnemy.Location }));
-                }
+
+                // TODO:ANIMATION - CHANGE THIS TO "SHOOT SVG"
+                //// Process the animation
+                //if (ammo.AmmoAnimationGroup.Animations.Any())
+                //{
+                //    // TODO:ANIMATION
+                //    //OnAnimationEvent(_backendEventDataFactory.Animation(ammo.AmmoAnimationGroup.Animations,
+                //    //                                                    _modelService.Player.Location,
+                //    //                                                    new GridLocation[] { targetedEnemy.Location }));
+                //}
 
                 // Clear the targeting service
                 _targetingService.Clear();

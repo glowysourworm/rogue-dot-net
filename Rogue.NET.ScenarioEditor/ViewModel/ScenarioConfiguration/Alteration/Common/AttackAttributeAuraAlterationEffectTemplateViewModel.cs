@@ -13,7 +13,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Attack Attribute (Aura)",
             Description = "Creates an Aura surrounding the source character (Friendly / Malign) that affects all characters in a specified range",
-            ViewType = typeof(AttackAttributeAuraEffectParameters))]
+            ViewType = typeof(AttackAttributeAuraEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class AttackAttributeAuraAlterationEffectTemplateViewModel 
         : TemplateViewModel, IEquipmentCurseAlterationEffectTemplateViewModel,
                              IEquipmentEquipAlterationEffectTemplateViewModel,

@@ -7,8 +7,8 @@ namespace Rogue.NET.Core.Media.Animation.Interface
 {
     public interface IAnimationCreator
     {
-        AnimationQueue CreateAnimation(AnimationData animation, Rect bounds, Point sourceLocation, Point[] targetLocations);
+        AnimationPrimitiveGroup CreateAnimation(AnimationBase animation, Rect bounds, Point sourceLocation, Point[] targetLocations);
 
-        AnimationQueue CreateTargetingAnimation(Point point, Color fillColor, Color strokeColor);
+        AnimationPrimitiveGroup CreateTargetingAnimation(Point point, Color fillColor);
     }
 }

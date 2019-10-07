@@ -12,7 +12,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface
 {
     public interface IBackendEventDataFactory
     {
-        AnimationEventData Animation(IEnumerable<AnimationData> animations, GridLocation source, IEnumerable<GridLocation> targets);
+        AnimationEventData Animation(AnimationSequence animation, GridLocation source, IEnumerable<GridLocation> targets);
         LevelEventData Event(LevelEventType type, string contentId);
         LevelEventData Event(LevelEventType type, string[] contentIds);
         LevelEventData ConsumableAddUpdate(string consumableId);

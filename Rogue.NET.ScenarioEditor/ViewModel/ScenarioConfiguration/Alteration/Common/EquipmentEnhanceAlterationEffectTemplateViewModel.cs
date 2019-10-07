@@ -17,7 +17,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Enhance Equipment",
             Description = "Modifies the Player's equipment with the option to use a dialog window",
-            ViewType = typeof(EquipmentEnhanceEffectParameters))]
+            ViewType = typeof(EquipmentEnhanceEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class EquipmentEnhanceAlterationEffectTemplateViewModel
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

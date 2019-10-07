@@ -10,7 +10,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Reveal",
             Description = "Reveals items, characters, or scenario objects in the level",
-            ViewType = typeof(RevealEffectParameters))]
+            ViewType = typeof(RevealEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class RevealAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

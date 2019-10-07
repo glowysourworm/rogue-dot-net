@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     [UIType(DisplayName = "Scenario Object",
             Description = "Item that is used by most characters. Players can use any Scenario Object. All other characters will trip automatic Scenario Object effects.",
-            ViewType = typeof(Doodad))]
+            ViewType = typeof(Doodad),
+            BaseType = UITypeAttributeBaseType.Asset)]
     public class DoodadTemplateViewModel : DungeonObjectTemplateViewModel
     {
         private DoodadAlterationTemplateViewModel _automaticAlteration;

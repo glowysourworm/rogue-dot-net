@@ -20,17 +20,17 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
     [Export]
     public partial class AnimationPreviewControl : UserControl
     {
-        readonly IAnimationCreator _animationCreator;
+        readonly IAnimationSequenceCreator _animationSequenceCreator;
         readonly IAnimationGenerator _animationGenerator;
 
-        AnimationStoryboard _animation;
+        IAnimationPlayer _animation;
 
         bool _updating = false;
 
         [ImportingConstructor]
-        public AnimationPreviewControl(IAnimationCreator animationCreator, IAnimationGenerator animationGenerator)
+        public AnimationPreviewControl(IAnimationSequenceCreator animationSequenceCreator, IAnimationGenerator animationGenerator)
         {
-            _animationCreator = animationCreator;
+            _animationSequenceCreator = animationSequenceCreator;
             _animationGenerator = animationGenerator;
 
             InitializeComponent();
@@ -38,7 +38,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
         private void PlayAnimation()
         {
-            var viewModel = this.DataContext as AnimationGroupTemplateViewModel;
+            var viewModel = this.DataContext as AnimationSequenceTemplateViewModel;
 
             if (viewModel != null)
             {
@@ -56,18 +56,18 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                 if (_animation != null)
                     StopAnimation();
 
-                // Map over animation list
-                var animations = viewModel.Animations.Select(x =>
-                {
-                    // Map ViewModel -> Template
-                    var template = x.Map<AnimationTemplateViewModel, AnimationTemplate>();
+                // Map to the Core namespace
+                var template = viewModel.Map<AnimationSequenceTemplateViewModel, AnimationSequenceTemplate>();
 
-                    // Generate Animation Data
-                    return _animationGenerator.GenerateAnimation(template);
-                });
+                // Create the animation sequence data
+                var animationSequence = _animationGenerator.GenerateAnimation(template);
+
+                // Create animation points
+                Point sourceLocation;
+                Point[] targetLocations = CreateTargetPoints(animationSequence.TargetType, out sourceLocation);
 
                 // Queue Animations
-                _animation = new AnimationStoryboard(animations.Select(x => CreateNewAnimation(x, viewModel.TargetType)).ToList());
+                _animation = _animationSequenceCreator.CreateAnimation(animationSequence, new Rect(this.TheCanvas.RenderSize), sourceLocation, targetLocations);
 
                 _animation.AnimationPlayerStartEvent += OnAnimationStart;
                 _animation.AnimationPlayerChangeEvent += OnAnimationChange;
@@ -138,23 +138,21 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             _updating = false;
         }
 
-        private bool Validate(AnimationGroupTemplateViewModel viewModel)
+        private bool Validate(AnimationSequenceTemplateViewModel viewModel)
         {
-            return !(viewModel.Animations.Any(x => x.BaseType == AnimationBaseType.Chain ||
-                                                  x.BaseType == AnimationBaseType.ChainReverse ||
-                                                  x.BaseType == AnimationBaseType.Projectile ||
-                                                  x.BaseType == AnimationBaseType.ProjectileReverse) &&
+            return !(viewModel.Animations.Any(x => x is AnimationChainTemplateViewModel ||
+                                                   x is AnimationChainConstantVelocityTemplateViewModel ||
+                                                   x is AnimationProjectileTemplateViewModel ||
+                                                   x is AnimationProjectileConstantVelocityTemplateViewModel) &&
                      viewModel.TargetType == AlterationTargetType.Source);
         }
 
-        private AnimationQueue CreateNewAnimation(AnimationData animation, AlterationTargetType targetType)
+        private Point[] CreateTargetPoints(AlterationTargetType targetType, out Point sourceLocation)
         {
             var playerLocation = new Point(Canvas.GetLeft(this.TheSmiley), Canvas.GetTop(this.TheSmiley));
             var enemy1Location = new Point(Canvas.GetLeft(this.TheEnemy), Canvas.GetTop(this.TheEnemy));
             var enemy2Location = new Point(Canvas.GetLeft(this.TheSecondEnemy), Canvas.GetTop(this.TheSecondEnemy));
             var enemy3Location = new Point(Canvas.GetLeft(this.TheThirdEnemy), Canvas.GetTop(this.TheThirdEnemy));
-
-            var bounds = new Rect(this.TheCanvas.RenderSize);
 
             playerLocation.X += ModelConstants.CellWidth / 2.0D;
             playerLocation.Y += ModelConstants.CellHeight / 2.0D;
@@ -165,16 +163,18 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             enemy3Location.X += ModelConstants.CellWidth / 2.0D;
             enemy3Location.Y += ModelConstants.CellHeight / 2.0D;
 
+            sourceLocation = playerLocation;
+
             switch (targetType)
             {
                 case AlterationTargetType.Source:
-                    return _animationCreator.CreateAnimation(animation, bounds, playerLocation, new Point[] { playerLocation });
+                    return new Point[] { playerLocation };
                 case AlterationTargetType.Target:
-                    return _animationCreator.CreateAnimation(animation, bounds, playerLocation, new Point[] { enemy1Location });
+                    return new Point[] { new Point[] { enemy1Location, enemy2Location, enemy3Location }.PickRandom() };
                 case AlterationTargetType.AllInRange:
-                    return _animationCreator.CreateAnimation(animation, bounds, playerLocation, new Point[] { enemy1Location, enemy2Location, enemy3Location, playerLocation });
+                    return new Point[] { enemy1Location, enemy2Location, enemy3Location, playerLocation };
                 case AlterationTargetType.AllInRangeExceptSource:
-                    return _animationCreator.CreateAnimation(animation, bounds, playerLocation, new Point[] { enemy1Location, enemy2Location, enemy3Location });
+                    return new Point[] { enemy1Location, enemy2Location, enemy3Location };
                 default:
                     throw new Exception("Unhandled AlterationTargetType");
             }

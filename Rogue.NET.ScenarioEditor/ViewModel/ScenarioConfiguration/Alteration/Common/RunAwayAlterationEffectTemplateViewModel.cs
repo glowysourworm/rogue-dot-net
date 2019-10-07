@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Run Away",
             Description = "Effect that causes an Enemy character to be removed from the scenario",
-            ViewType = typeof(RunAwayEffectParameters))]
+            ViewType = typeof(RunAwayEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class RunAwayAlterationEffectTemplateViewModel : TemplateViewModel, IEnemyAlterationEffectTemplateViewModel
     {
         public RunAwayAlterationEffectTemplateViewModel() { }

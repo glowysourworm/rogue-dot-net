@@ -17,7 +17,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
         public string AssetName { get; private set; }
         public string AlterationName { get; private set; }
         public IAlterationEffectTemplate Effect { get; private set; }
-        public AnimationGroupTemplate AnimationGroup { get; private set; }
+        public AnimationSequenceTemplate Animation { get; private set; }
         public bool HasAnimation { get; private set; }
 
         public AlterationProcessingContainer(string assetName, AlterationTemplate template)
@@ -25,8 +25,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = template.AnimationGroup;
-            this.HasAnimation = template.AnimationGroup.Animations.Count > 0;
+            this.Animation = template.Animation;
+            this.HasAnimation = template.Animation.Animations.Count > 0;
         }
 
         public AlterationProcessingContainer(string assetName, ConsumableAlterationTemplate template)
@@ -34,8 +34,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = template.AnimationGroup;
-            this.HasAnimation = template.AnimationGroup.Animations.Count > 0;
+            this.Animation = template.Animation;
+            this.HasAnimation = template.Animation.Animations.Count > 0;
         }
 
         public AlterationProcessingContainer(string assetName, ConsumableProjectileAlterationTemplate template)
@@ -43,8 +43,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = template.AnimationGroup;
-            this.HasAnimation = template.AnimationGroup.Animations.Count > 0;
+            this.Animation = template.Animation;
+            this.HasAnimation = template.Animation.Animations.Count > 0;
         }
 
         public AlterationProcessingContainer(string assetName, DoodadAlterationTemplate template)
@@ -52,8 +52,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = template.AnimationGroup;
-            this.HasAnimation = template.AnimationGroup.Animations.Count > 0;
+            this.Animation = template.Animation;
+            this.HasAnimation = template.Animation.Animations.Count > 0;
         }
 
         public AlterationProcessingContainer(string assetName, EnemyAlterationTemplate template)
@@ -61,8 +61,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = template.AnimationGroup;
-            this.HasAnimation = template.AnimationGroup.Animations.Count > 0;
+            this.Animation = template.Animation;
+            this.HasAnimation = template.Animation.Animations.Count > 0;
         }
 
         public AlterationProcessingContainer(string assetName, EquipmentAttackAlterationTemplate template)
@@ -70,8 +70,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = template.AnimationGroup;
-            this.HasAnimation = template.AnimationGroup.Animations.Count > 0;
+            this.Animation = template.Animation;
+            this.HasAnimation = template.Animation.Animations.Count > 0;
         }
 
         public AlterationProcessingContainer(string assetName, EquipmentCurseAlterationTemplate template)
@@ -79,7 +79,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = null;
+            this.Animation = null;
             this.HasAnimation = false;
         }
 
@@ -88,7 +88,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = null;
+            this.Animation = null;
             this.HasAnimation = false;
         }
 
@@ -97,8 +97,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             this.AssetName = assetName;
             this.AlterationName = template.Name;
             this.Effect = template.Effect;
-            this.AnimationGroup = template.AnimationGroup;
-            this.HasAnimation = template.AnimationGroup.Animations.Count > 0;
+            this.Animation = template.Animation;
+            this.HasAnimation = template.Animation.Animations.Count > 0;
         }
     }
 }

@@ -314,6 +314,7 @@
     <Compile Include="Events\Browser\LoadAssetEvent.cs" />
     <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
     <Compile Include="Events\LoadDesignEvent.cs" />
+    <Compile Include="Events\LoadRegionEvent.cs" />
     <Compile Include="Events\LoadScenarioEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
     <Compile Include="Events\Browser\RemoveLevelEvent.cs" />
@@ -337,11 +338,13 @@
     <Compile Include="Service\Interface\IScenarioConfigurationUndoService.cs" />
     <Compile Include="Service\Interface\IScenarioOverviewCalculationService.cs" />
     <Compile Include="Service\Interface\IScenarioSimulationService.cs" />
+    <Compile Include="Service\Interface\IUITypeAttributeProvider.cs" />
     <Compile Include="Service\ScenarioAssetReferenceService.cs" />
     <Compile Include="Service\ScenarioCollectionProvider.cs" />
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
     <Compile Include="Service\ScenarioOverviewCalculationService.cs" />
     <Compile Include="Service\ScenarioSimulationService.cs" />
+    <Compile Include="Service\UITypeAttributeProvider.cs" />
     <Compile Include="Utility\DialogWindowFactory.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\ScenarioConfigurationMapper.cs" />
@@ -351,6 +354,8 @@
     <Compile Include="Utility\Undo\UndoPropertyChangedEventArgs.cs" />
     <Compile Include="Utility\Undo\UndoPropertyChangingEventArgs.cs" />
     <Compile Include="ViewModel\Attribute\UITypeAttribute.cs" />
+    <Compile Include="ViewModel\Attribute\UITypeAttributeBaseType.cs" />
+    <Compile Include="ViewModel\Attribute\UITypeAttributeViewModel.cs" />
     <Compile Include="ViewModel\Overview\Interface\IProjectionSetViewModel.cs" />
     <Compile Include="ViewModel\Overview\Interface\IProjectedQuantityViewModel.cs" />
     <Compile Include="ViewModel\Overview\ProjectedQuantityViewModel.cs" />
@@ -425,8 +430,20 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\SkillTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Skill\SkillAlterationTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\TemporaryCharacter\TemporaryCharacterAlterationTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationGroupTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationAuraTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationBarrageTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationBaseTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationBlinkTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationBubblesTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationChainConstantVelocityTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationChainTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationEllipseBaseTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationLightningChainTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationLightningTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationProjectileConstantVelocityTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationProjectileTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationSequenceTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationSpiralTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\BrushTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\GradientStopTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\AttackAttributeTemplateViewModel.cs" />
@@ -474,6 +491,42 @@
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportManualEffectParameters.xaml.cs">
       <DependentUpon>TeleportManualEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationAuraParameters.xaml.cs">
+      <DependentUpon>AnimationAuraParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationBarrageParameters.xaml.cs">
+      <DependentUpon>AnimationBarrageParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationBlinkParameters.xaml.cs">
+      <DependentUpon>AnimationBlinkParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationBubblesParameters.xaml.cs">
+      <DependentUpon>AnimationBubblesParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationChainConstantVelocityParameters.xaml.cs">
+      <DependentUpon>AnimationChainConstantVelocityParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationChainParameters.xaml.cs">
+      <DependentUpon>AnimationChainParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationInstructions.xaml.cs">
+      <DependentUpon>AnimationInstructions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationLightningParameters.xaml.cs">
+      <DependentUpon>AnimationLightningParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationLightningChainParameters.xaml.cs">
+      <DependentUpon>AnimationLightningChainParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationSpiralParameters.xaml.cs">
+      <DependentUpon>AnimationSpiralParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationProjectileConstantVelocityParameters.xaml.cs">
+      <DependentUpon>AnimationProjectileConstantVelocityParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationProjectileParameters.xaml.cs">
+      <DependentUpon>AnimationProjectileParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\CharacterControl\CharacterBehaviorList.xaml.cs">
       <DependentUpon>CharacterBehaviorList.xaml</DependentUpon>
@@ -582,9 +635,6 @@
     </Compile>
     <Compile Include="Views\Assets\SharedControl\Animation.xaml.cs">
       <DependentUpon>Animation.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationParameters.xaml.cs">
-      <DependentUpon>AnimationParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AttackAttribute.xaml.cs">
       <DependentUpon>AttackAttribute.xaml</DependentUpon>
@@ -792,6 +842,54 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationAuraParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationBarrageParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationBlinkParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationBubblesParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationChainConstantVelocityParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationChainParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationInstructions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationLightningParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationLightningChainParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationSpiralParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationProjectileConstantVelocityParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationProjectileParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Assets\SharedControl\CharacterControl\CharacterBehaviorList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -933,10 +1031,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\SharedControl\Animation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Temporary",
             Description = "Causes a temporary change to a character's stats",
-            ViewType = typeof(TemporaryEffectParameters))]
+            ViewType = typeof(TemporaryEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class TemporaryAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel, 
                              IConsumableProjectileAlterationEffectTemplateViewModel,

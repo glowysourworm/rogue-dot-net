@@ -6,10 +6,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl
 {
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
-    public partial class AnimationParameters : UserControl
+    public partial class AnimationAuraParameters : UserControl
     {
         [ImportingConstructor]
-        public AnimationParameters(IRogueEventAggregator eventAggregator)
+        public AnimationAuraParameters(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
         }

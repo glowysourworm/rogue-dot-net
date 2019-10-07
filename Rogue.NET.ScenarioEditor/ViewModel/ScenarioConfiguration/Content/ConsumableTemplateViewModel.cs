@@ -11,7 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     [UIType(DisplayName = "Consumable",
             Description = "Item that is consumed by the Player",
-            ViewType = typeof(Consumable))]
+            ViewType = typeof(Consumable),
+            BaseType = UITypeAttributeBaseType.Asset)]
     public class ConsumableTemplateViewModel : DungeonObjectTemplateViewModel
     {
         private ConsumableType _type;
@@ -27,7 +28,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private SkillSetTemplateViewModel _learnedSkill;
         private ConsumableAlterationTemplateViewModel _consumableAlteration;
         private ConsumableProjectileAlterationTemplateViewModel _consumableProjectileAlteration;
-        private AnimationGroupTemplateViewModel _ammoAnimationGroup;
         private string _noteMessage;
         private string _characterClass;
 
@@ -92,11 +92,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _consumableProjectileAlteration; }
             set { this.RaiseAndSetIfChanged(ref _consumableProjectileAlteration, value); }
         }
-        public AnimationGroupTemplateViewModel AmmoAnimationGroup
-        {
-            get { return _ammoAnimationGroup; }
-            set { this.RaiseAndSetIfChanged(ref _ammoAnimationGroup, value); }
-        }
         public string NoteMessage
         {
             get { return _noteMessage; }
@@ -119,10 +114,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.SubType = ConsumableSubType.Food;
             this.ConsumableAlteration = new ConsumableAlterationTemplateViewModel();
             this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel();
-            this.AmmoAnimationGroup = new AnimationGroupTemplateViewModel()
-            {
-                TargetType = AlterationTargetType.Target
-            };
             this.LearnedSkill = new SkillSetTemplateViewModel();
             this.UseCount = new RangeViewModel<int>(0, 0);
             this.IsObjectiveItem = false;

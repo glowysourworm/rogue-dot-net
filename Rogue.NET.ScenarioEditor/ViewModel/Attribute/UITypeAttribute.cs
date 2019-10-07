@@ -22,5 +22,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Attribute
         /// The type of view that is the editor for this type
         /// </summary>
         public Type ViewType { get; set; }
+
+        /// <summary>
+        /// The base type to filter by (for a particular branch of the configuration)
+        /// </summary>
+        public UITypeAttributeBaseType BaseType { get; set; }
     }
 }

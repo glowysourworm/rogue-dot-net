@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
     {
         public CharacterAlignmentType AlignmentType { get; set; }
         public BehaviorDetails BehaviorDetails { get; set; }
-        public AnimationGroup DeathAnimation { get; set; }
+        public AnimationSequence DeathAnimation { get; set; }
         public double TurnCounter { get; set; }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public NonPlayerCharacter() : base()
         {
             this.BehaviorDetails = new BehaviorDetails();
-            this.DeathAnimation = new AnimationGroup();
+            this.DeathAnimation = new AnimationSequence();
             this.TurnCounter = 0;
         }
     }

@@ -8,7 +8,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
 {
     [UIType(DisplayName = "Skill Set",
             Description = "Set of skills that the Player can use",
-            ViewType = typeof(SkillSet))]
+            ViewType = typeof(SkillSet),
+            BaseType = UITypeAttributeBaseType.Asset)]
     public class SkillSetTemplateViewModel : DungeonObjectTemplateViewModel
     {
         public ObservableCollection<SkillTemplateViewModel> Skills { get; set; }

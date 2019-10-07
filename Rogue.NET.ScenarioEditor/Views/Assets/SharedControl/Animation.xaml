@@ -4,6 +4,7 @@
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:animation="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:animationViewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"        
              Background="Black">
     <UserControl.Resources>
@@ -14,11 +15,12 @@
             <TabItem Header="Animations">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="180" />
+                        <ColumnDefinition Width="200" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -32,11 +34,24 @@
                             <Button x:Name="RemoveAnimationButton" ToolTip="Remove Animation" Click="RemoveAnimationButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" Margin="0, 4, 4, 4" />
                         </StackPanel>
                     </StackPanel>
-                    
+
+                    <!-- Animation Type Selector -->
+                    <ComboBox x:Name="AnimationTypeCB" HorizontalAlignment="Stretch" Margin="8" Grid.Row="1">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="Transparent" ToolTip="{Binding Description}">
+                                    <Grid>
+                                        <TextBlock Foreground="White" FontSize="18" Text="{Binding DisplayName}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
                     <!-- Animation List -->
                     <ListBox x:Name="AnimationListBox" 
-                             Grid.Row="1" 
-                             Margin="8, 0, 8, 0"
+                             Grid.Row="2" 
+                             Margin="8, 0"
                              Height="200"
                              FontSize="18"
                              VerticalAlignment="Top"
@@ -45,22 +60,19 @@
 
 
                     <!-- Animation Parameters -->
-                    <TabControl TabStripPlacement="Top" 
+                    <TabControl x:Name="AnimationParametersTC"
+                                TabStripPlacement="Top" 
                                 Grid.Column="1"
-                                Grid.RowSpan="2"
+                                Grid.RowSpan="3"
                                 Background="Black"
                                 DataContext="{Binding SelectedItem, ElementName=AnimationListBox}">
-                        <TabItem Header="Type">
-                            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AnimationBaseType}"
-                                                             EnumValue="{Binding BaseType, Mode=TwoWay}" />
-                        </TabItem>
                         <TabItem Header="Point-Target Type">
                             <TabItem.Visibility>
                                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                                    <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Aura}" />
-                                    <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Barrage}" />
-                                    <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Bubbles}" />
-                                    <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Spiral}" />
+                                    <Binding Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationAuraTemplateViewModel}" />
+                                    <Binding Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationBarrageTemplateViewModel}" />
+                                    <Binding Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationBubblesTemplateViewModel}" />
+                                    <Binding Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationSpiralTemplateViewModel}" />
                                 </MultiBinding>
                             </TabItem.Visibility>
                             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AnimationPointTargetType}"
@@ -70,8 +82,8 @@
                             <region:RogueRegion DataContext="{Binding FillTemplate}" 
                                                 region:RogueRegionManager.DefaultViewType="{x:Type controls:BrushEditorControl}" />
                         </TabItem>
-                        <TabItem Header="Parameters">
-                            <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type animation:AnimationParameters}" />
+                        <TabItem Header="Parameters" x:Name="DefaultTab">
+                            <region:RogueRegion x:Name="AnimationParametersRegion" region:RogueRegionManager.DefaultViewType="{x:Type animation:AnimationInstructions}" />
                         </TabItem>
                     </TabControl>
                     

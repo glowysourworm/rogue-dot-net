@@ -27,6 +27,8 @@ using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Animation;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 
 namespace Rogue.NET.Core.Processing.Model.Content
 {
@@ -89,7 +91,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             // Run animations before applying alterations
             if (alteration.SupportsAnimations() &&
-                alteration.AnimationGroup.Animations.Count > 0)
+                alteration.Animation.Animations.Count > 0)
             {
                 // NOTE*** For animations refactored the animation type
                 //         to always assume affected characters. This will greatly simplify 
@@ -99,12 +101,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 //                     to be moved to the editor.
                 var animationIssueDetected = false;
 
-                alteration.AnimationGroup.Animations.ForEach(x =>
+                // TODO:ANIMATION REMOVE THIS
+                alteration.Animation.Animations.ForEach(x =>
                 {
-                    if (x.BaseType == AnimationBaseType.Chain ||
-                        x.BaseType == AnimationBaseType.ChainReverse ||
-                        x.BaseType == AnimationBaseType.Projectile ||
-                        x.BaseType == AnimationBaseType.ProjectileReverse)
+                    if (x is AnimationChain ||
+                        x is AnimationChainConstantVelocity ||
+                        x is AnimationProjectile ||
+                        x is AnimationProjectileConstantVelocity)
                     {
                         if (affectedCharacters.Any(z => z == actor))
                         {
@@ -118,10 +121,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                 if (!animationIssueDetected)
                 {
-                    OnAnimationEvent(_backendEventDataFactory.Animation(
-                                                alteration.AnimationGroup.Animations,
-                                                actor.Location,
-                                                affectedCharacters.Select(x => x.Location).Actualize()));
+                    // TODO:ANIMATION
+                    //OnAnimationEvent(_backendEventDataFactory.Animation(
+                    //                            alteration.AnimationGroup.Animations,
+                    //                            actor.Location,
+                    //                            affectedCharacters.Select(x => x.Location).Actualize()));
                 }
             }
 
@@ -340,15 +344,15 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private IEnumerable<Character> CalculateAffectedCharacters(ConsumableAlteration alteration, Character actor)
         {
-            return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
+            return CalculateAffectedCharacters(alteration.Animation.TargetType, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(DoodadAlteration alteration, Character actor)
         {
-            return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
+            return CalculateAffectedCharacters(alteration.Animation.TargetType, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(EnemyAlteration alteration, Character actor)
         {
-            return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
+            return CalculateAffectedCharacters(alteration.Animation.TargetType, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(EquipmentCurseAlteration alteration, Character actor)
         {
@@ -360,7 +364,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private IEnumerable<Character> CalculateAffectedCharacters(SkillAlteration alteration, Character actor)
         {
-            return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
+            return CalculateAffectedCharacters(alteration.Animation.TargetType, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(AlterationTargetType targetType, Character actor)
         {

@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable
     {
         public ConsumableAlterationTemplate()
         {
-            this.AnimationGroup = new AnimationGroupTemplate();
+            this.Animation = new AnimationSequenceTemplate();
             this.Cost = new AlterationCostTemplate();
         }
     }

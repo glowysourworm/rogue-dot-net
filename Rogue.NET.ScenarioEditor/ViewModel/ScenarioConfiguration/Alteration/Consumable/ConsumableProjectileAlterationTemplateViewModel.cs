@@ -11,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     {
         public ConsumableProjectileAlterationTemplateViewModel()
         {
-            this.AnimationGroup = new AnimationGroupTemplateViewModel()
+            this.Animation = new AnimationSequenceTemplateViewModel()
             {
                 TargetType = AlterationTargetType.Target
             };

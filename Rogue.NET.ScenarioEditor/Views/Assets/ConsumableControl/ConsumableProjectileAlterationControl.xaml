@@ -33,7 +33,7 @@
         </TabItem>
         <TabItem Header="Animation">
             <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type sharedControl:Animation}"
-                                    DataContext="{Binding AnimationGroup}" />
+                                    DataContext="{Binding Animation}" />
         </TabItem>
     </TabControl>
 </UserControl>

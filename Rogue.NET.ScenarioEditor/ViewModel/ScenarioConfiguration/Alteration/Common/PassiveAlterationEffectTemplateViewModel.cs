@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Passive",
             Description = "Creates a change to a character's stats that is activated / deactivated",
-            ViewType = typeof(PassiveEffectParameters))]
+            ViewType = typeof(PassiveEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class PassiveAlterationEffectTemplateViewModel 
         : TemplateViewModel, IEquipmentCurseAlterationEffectTemplateViewModel,
                     IEquipmentEquipAlterationEffectTemplateViewModel,

@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     {
         private CharacterAlignmentType _alignmentType;
         private BehaviorDetailsTemplate _behaviorDetails;
-        private AnimationGroupTemplate _deathAnimation;
+        private AnimationSequenceTemplate _deathAnimationSequence;
 
         public CharacterAlignmentType AlignmentType
         {
@@ -35,15 +35,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public AnimationGroupTemplate DeathAnimation
+        public AnimationSequenceTemplate DeathAnimation
         {
-            get { return _deathAnimation; }
+            get { return _deathAnimationSequence; }
             set
             {
-                if (_deathAnimation != value)
+                if (_deathAnimationSequence != value)
                 {
-                    _deathAnimation = value;
-                    OnPropertyChanged("DeathAnimation");
+                    _deathAnimationSequence = value;
+                    OnPropertyChanged("DeathAnimationSequence");
                 }
             }
         }
@@ -51,7 +51,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         public NonPlayerCharacterTemplate()
         {
             this.BehaviorDetails = new BehaviorDetailsTemplate();
-            this.DeathAnimation = new AnimationGroupTemplate()
+            this.DeathAnimation = new AnimationSequenceTemplate()
             {
                 TargetType = AlterationTargetType.Source
             };

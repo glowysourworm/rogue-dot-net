@@ -7,15 +7,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
 {
     public class AlterationTemplateViewModel : TemplateViewModel
     {
-        private AnimationGroupTemplateViewModel _animationGroup;
+        private AnimationSequenceTemplateViewModel _animation;
         private AlterationCostTemplateViewModel _cost;
         private IAlterationEffectTemplateViewModel _effect;
         private AlterationBlockType _blockType;
 
-        public AnimationGroupTemplateViewModel AnimationGroup
+        public AnimationSequenceTemplateViewModel Animation
         {
-            get { return _animationGroup; }
-            set { this.RaiseAndSetIfChanged(ref _animationGroup, value); }
+            get { return _animation; }
+            set { this.RaiseAndSetIfChanged(ref _animation, value); }
         }
         public AlterationCostTemplateViewModel Cost
         {
@@ -35,7 +35,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
 
         public AlterationTemplateViewModel()
         {
-            this.AnimationGroup = new AnimationGroupTemplateViewModel();
+            this.Animation = new AnimationSequenceTemplateViewModel();
             this.Cost = new AlterationCostTemplateViewModel();
         }
     }

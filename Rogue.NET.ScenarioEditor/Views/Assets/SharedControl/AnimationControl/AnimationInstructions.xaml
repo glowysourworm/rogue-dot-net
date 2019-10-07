@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl.AnimationInstructions"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel HorizontalAlignment="Stretch">
+
+        <TextBlock Foreground="White" FontSize="24" HorizontalAlignment="Left" Margin="10" Text="Animation Editor Instructions" />
+
+        <TextBlock TextWrapping="Wrap" Width="600" Foreground="White" FontSize="16" HorizontalAlignment="Left" Margin="10"
+                   Text="To create an animation select an animation type from the selection box to the left. This adds to the animation sequence list box. Then, select an animation in the sequence list box to edit its parameters. The preview tab will show you a preview of what it will do during game play." />
+
+    </StackPanel>
+</UserControl>

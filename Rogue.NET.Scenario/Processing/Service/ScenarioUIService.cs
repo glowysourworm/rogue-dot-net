@@ -27,7 +27,7 @@ namespace Rogue.NET.Scenario.Processing.Service
         readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IAlterationProcessor _alterationProcessor;
-        readonly IAnimationCreator _animationCreator;
+        readonly IAnimationSequenceCreator _animationSequenceCreator;
         readonly IModelService _modelService;
 
         [ImportingConstructor]
@@ -35,13 +35,13 @@ namespace Rogue.NET.Scenario.Processing.Service
                 IScenarioUIGeometryService scenarioUIGeometryService,
                 IScenarioResourceService scenarioResourceService,
                 IAlterationProcessor alterationProcessor,
-                IAnimationCreator animationCreator,
+                IAnimationSequenceCreator animationSequenceCreator,
                 IModelService modelService)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
             _scenarioResourceService = scenarioResourceService;
             _alterationProcessor = alterationProcessor;
-            _animationCreator = animationCreator;
+            _animationSequenceCreator = animationSequenceCreator;
             _modelService = modelService;
         }
 
@@ -132,8 +132,8 @@ namespace Rogue.NET.Scenario.Processing.Service
                 // Calculate invisibility
                 var character = (scenarioObject as NonPlayerCharacter);
 
-                isEnemyInvisible = character.AlignmentType == CharacterAlignmentType.EnemyAligned && 
-                                   character.Is(CharacterStateType.Invisible) && 
+                isEnemyInvisible = character.AlignmentType == CharacterAlignmentType.EnemyAligned &&
+                                   character.Is(CharacterStateType.Invisible) &&
                                    !_modelService.Player.Alteration.CanSeeInvisible();
 
                 effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(character);
@@ -214,12 +214,12 @@ namespace Rogue.NET.Scenario.Processing.Service
             var targets = eventData.TargetLocations.Select(x => _scenarioUIGeometryService.Cell2UI(x, true)).ToArray();
 
             //Create animations
-            return new AnimationStoryboard(eventData.Animations.Select(x => _animationCreator.CreateAnimation(x, levelUIBounds, source, targets)));
+            return _animationSequenceCreator.CreateAnimation(eventData.Animation, levelUIBounds, source, targets);
         }
 
         public IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor)
         {
-            return _animationCreator.CreateTargetingAnimation(_scenarioUIGeometryService.Cell2UI(location), fillColor, strokeColor);
+            return _animationSequenceCreator.CreateTargetingAnimation(_scenarioUIGeometryService.Cell2UI(location), fillColor, strokeColor);
         }
     }
 }

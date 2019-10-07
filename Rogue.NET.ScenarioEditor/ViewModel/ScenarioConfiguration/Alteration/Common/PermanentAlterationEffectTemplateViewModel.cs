@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Permanent",
             Description = "Creates a permanent change to a character's stats",
-            ViewType = typeof(PermanentEffectParameters))]
+            ViewType = typeof(PermanentEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class PermanentAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                     IConsumableProjectileAlterationEffectTemplateViewModel,

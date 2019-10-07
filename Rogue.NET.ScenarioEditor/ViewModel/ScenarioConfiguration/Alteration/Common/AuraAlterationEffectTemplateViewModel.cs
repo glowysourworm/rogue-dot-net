@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Aura",
             Description = "Causes a stat change to characters in range of the source character",
-            ViewType = typeof(AuraEffectParameters))]
+            ViewType = typeof(AuraEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class AuraAlterationEffectTemplateViewModel 
         : TemplateViewModel, IEquipmentCurseAlterationEffectTemplateViewModel,
                              IEquipmentEquipAlterationEffectTemplateViewModel,

@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
     {        
         public ConsumableAlteration()
         {
-            this.AnimationGroup = new AnimationGroup();
+            this.Animation = new AnimationSequence();
         }
 
         public override Type EffectInterfaceType

@@ -6,9 +6,10 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
 {
     [Serializable]
-    public class AnimationGroupTemplate : Template
+    public class AnimationSequenceTemplate : Template
     {
         AlterationTargetType _targetType;
+        bool _darkenBackground;
 
         public AlterationTargetType TargetType
         {
@@ -22,13 +23,25 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-
-        public List<AnimationTemplate> Animations { get; set; }
-
-        public AnimationGroupTemplate()
+        public bool DarkenBackground
         {
-            this.Animations = new List<AnimationTemplate>();
+            get { return _darkenBackground; }
+            set
+            {
+                if (_darkenBackground != value)
+                {
+                    _darkenBackground = value;
+                    OnPropertyChanged("DarkenBackground");
+                }
+            }
+        }
+        public List<AnimationBaseTemplate> Animations { get; set; }
+
+        public AnimationSequenceTemplate()
+        {
+            this.Animations = new List<AnimationBaseTemplate>();
             this.TargetType = AlterationTargetType.Source;
+            this.DarkenBackground = false;
         }
     }
 }

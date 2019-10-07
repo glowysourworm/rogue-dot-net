@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Change Level",
             Description = "Changes the scenario level by a specified amount",
-            ViewType = typeof(ChangeLevelEffectParameters))]
+            ViewType = typeof(ChangeLevelEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class ChangeLevelAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

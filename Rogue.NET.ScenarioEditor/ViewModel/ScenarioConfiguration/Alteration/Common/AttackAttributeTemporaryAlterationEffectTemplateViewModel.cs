@@ -12,7 +12,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Attack Attribute (Temporary)",
             Description = "Creates a timed (Friendly or Malign) contribution to the affected character(s) Attack Attributes",
-            ViewType = typeof(AttackAttributeTemporaryEffectParameters))]
+            ViewType = typeof(AttackAttributeTemporaryEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class AttackAttributeTemporaryAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel, 
                              IConsumableProjectileAlterationEffectTemplateViewModel,

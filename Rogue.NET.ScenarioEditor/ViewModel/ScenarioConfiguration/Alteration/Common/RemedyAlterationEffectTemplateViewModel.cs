@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Remedy",
             Description = "Removes all Temporary effects with the specified Altered Character State",
-            ViewType = typeof(RemedyEffectParameters))]
+            ViewType = typeof(RemedyEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class RemedyAlterationEffectTemplateViewModel : 
         TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                            IDoodadAlterationEffectTemplateViewModel,

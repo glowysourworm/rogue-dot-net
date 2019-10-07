@@ -11,7 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Create Friendly",
             Description = "Creates a Friendly Character",
-            ViewType = typeof(CreateFriendlyEffectParameters))]
+            ViewType = typeof(CreateFriendlyEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class CreateFriendlyAlterationEffectTemplateViewModel : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                                                                                       IDoodadAlterationEffectTemplateViewModel,
                                                                                       IEnemyAlterationEffectTemplateViewModel,

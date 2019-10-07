@@ -268,5 +268,10 @@ namespace Rogue.NET.Common.Extension
             for (int i = destCollection.Count - 1; i >= index; i--)
                 destCollection.RemoveAt(i);
         }
+
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> collection)
+        {
+            return MoreEnumerable.Shuffle(collection);
+        }
     }
 }

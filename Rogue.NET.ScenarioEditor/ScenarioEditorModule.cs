@@ -118,6 +118,10 @@ namespace Rogue.NET.ScenarioEditor
                 // Loads the default view (instance or type) for the specified region
                 _regionManager.LoadDefaultView(region);
             });
+            _eventAggregator.GetEvent<LoadRegionEvent>().Subscribe((region, eventData) =>
+            {
+                _regionManager.Load(region, eventData.ViewType);
+            });
         }
         private void RegisterAssetEvents()
         {

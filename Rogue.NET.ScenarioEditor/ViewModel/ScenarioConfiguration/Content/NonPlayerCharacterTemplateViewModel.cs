@@ -7,7 +7,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
     {
         private CharacterAlignmentType _alignmentType;
         private BehaviorDetailsTemplateViewModel _behaviorDetails;
-        private AnimationGroupTemplateViewModel _deathAnimation;
+        private AnimationSequenceTemplateViewModel _deathAnimation;
 
         public CharacterAlignmentType AlignmentType
         {
@@ -19,7 +19,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _behaviorDetails; }
             set { this.RaiseAndSetIfChanged(ref _behaviorDetails, value); }
         }
-        public AnimationGroupTemplateViewModel DeathAnimation
+        public AnimationSequenceTemplateViewModel DeathAnimation
         {
             get { return _deathAnimation; }
             set { this.RaiseAndSetIfChanged(ref _deathAnimation, value); }
@@ -28,7 +28,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         public NonPlayerCharacterTemplateViewModel()
         {
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
-            this.DeathAnimation = new AnimationGroupTemplateViewModel()
+            this.DeathAnimation = new AnimationSequenceTemplateViewModel()
             {
                 TargetType = AlterationTargetType.Source
             };

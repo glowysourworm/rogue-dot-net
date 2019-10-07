@@ -20,7 +20,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Sk
 
         public SkillAlterationTemplateViewModel()
         {
-            this.AnimationGroup = new AnimationGroupTemplateViewModel();
+            this.Animation = new AnimationSequenceTemplateViewModel();
             this.Cost = new AlterationCostTemplateViewModel();
             this.AuraParameters = new AuraSourceParametersTemplateViewModel();
         }

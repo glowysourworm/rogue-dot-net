@@ -10,7 +10,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Other",
             Description = "Choose an effect from a list of one-time effects [Identify, Uncurse]",
-            ViewType = typeof(OtherEffectParameters))]
+            ViewType = typeof(OtherEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class OtherAlterationEffectTemplateViewModel
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

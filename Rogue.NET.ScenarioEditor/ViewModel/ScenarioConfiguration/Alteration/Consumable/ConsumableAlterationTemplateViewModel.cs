@@ -11,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     {
         public ConsumableAlterationTemplateViewModel()
         {
-            this.AnimationGroup = new AnimationGroupTemplateViewModel();
+            this.Animation = new AnimationSequenceTemplateViewModel();
             this.Cost = new AlterationCostTemplateViewModel();
         }
     }

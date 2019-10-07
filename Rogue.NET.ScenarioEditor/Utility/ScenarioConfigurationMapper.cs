@@ -13,6 +13,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 
 namespace Rogue.NET.ScenarioEditor.Utility
 {
@@ -85,6 +90,42 @@ namespace Rogue.NET.ScenarioEditor.Utility
                                                   .Where(x => x is BrushTemplateViewModel)
                                                   .Select(x => x as BrushTemplateViewModel)
                                                   .ToList();
+
+            //foreach (var template in configuration.ConsumableTemplates)
+            //{
+            //    template.ConsumableAlteration = new ConsumableAlterationTemplateViewModel();
+            //    template.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel();
+            //    template.LearnedSkill = new SkillSetTemplateViewModel();
+            //}
+
+            //foreach (var template in configuration.DoodadTemplates)
+            //{
+            //    template.AutomaticAlteration = new DoodadAlterationTemplateViewModel();
+            //    template.InvokedAlteration = new DoodadAlterationTemplateViewModel();
+            //}
+
+            //foreach(var template in configuration.EnemyTemplates
+            //                                     .Cast<NonPlayerCharacterTemplateViewModel>()
+            //                                     .Union(configuration.FriendlyTemplates))
+            //{
+            //    foreach (var behavior in template.BehaviorDetails.Behaviors)
+            //        behavior.Alteration = new AlterationTemplateViewModel();
+
+            //    template.DeathAnimation = new AnimationSequenceTemplateViewModel();
+            //}
+
+            //foreach (var template in configuration.EquipmentTemplates)
+            //{
+            //    template.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplateViewModel();
+            //    template.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplateViewModel();
+            //    template.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplateViewModel();
+            //}
+
+            //foreach (var template in configuration.SkillTemplates)
+            //{
+            //    foreach (var skill in template.Skills)
+            //        skill.SkillAlteration = new ViewModel.ScenarioConfiguration.Alteration.Skill.SkillAlterationTemplateViewModel();
+            //}
 
             return configuration;
         }

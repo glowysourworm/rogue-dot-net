@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl.AnimationLightningParameters"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:wpftoolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <!-- Lightning Animation Parameters -->
+    <StackPanel>
+        <Grid Height="36">
+            <TextBlock FontSize="14" Foreground="White" Text="Animation Time (ms)" VerticalAlignment="Center" />
+            <wpftoolkit:IntegerUpDown Value="{Binding AnimationTime}" AllowSpin="True" AllowTextInput="True" Minimum="10" Maximum="10000" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+        </Grid>
+        <Grid Height="36">
+            <TextBlock FontSize="14" Foreground="White" Text="Increment Height Limit" VerticalAlignment="Center" />
+            <wpftoolkit:IntegerUpDown Value="{Binding IncrementHeightLimit}" Minimum="1" Maximum="50" AllowSpin="True" AllowTextInput="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+        </Grid>
+        <Grid Height="36">
+            <TextBlock FontSize="14" Foreground="White" Text="Increment Width Limit" VerticalAlignment="Center" />
+            <wpftoolkit:IntegerUpDown Value="{Binding IncrementWidthLimit}" Minimum="1" Maximum="50" AllowSpin="True" AllowTextInput="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+        </Grid>
+        <Grid Height="36">
+            <TextBlock FontSize="14" Foreground="White" Text="Hold End Time" VerticalAlignment="Center" />
+            <wpftoolkit:IntegerUpDown Value="{Binding HoldEndTime}" Minimum="0" Maximum="5000" AllowSpin="True" AllowTextInput="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+        </Grid>
+
+    </StackPanel>
+</UserControl>

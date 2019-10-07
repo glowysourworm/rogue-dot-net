@@ -6,7 +6,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData
 {
     public class AnimationEventData
     {
-        public IEnumerable<AnimationData> Animations { get; set; }
+        public AnimationSequence Animation { get; set; }
         public GridLocation SourceLocation { get; set; }
         public IEnumerable<GridLocation> TargetLocations { get; set; }
     }

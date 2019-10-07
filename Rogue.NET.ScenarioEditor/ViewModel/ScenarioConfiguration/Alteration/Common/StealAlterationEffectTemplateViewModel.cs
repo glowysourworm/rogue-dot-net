@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Steal",
             Description = "Allows a source character to steal a random item from a target character",
-            ViewType = typeof(StealEffectParameters))]
+            ViewType = typeof(StealEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class StealAlterationEffectTemplateViewModel : TemplateViewModel, IEnemyAlterationEffectTemplateViewModel,
                                                                              ISkillAlterationEffectTemplateViewModel
     {

@@ -24,9 +24,11 @@
                   HorizontalAlignment="Right">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Foreground="White"
-                               Text="{Binding DisplayName}" 
-                               ToolTip="{Binding Description}" />
+                    <Border Background="Transparent" ToolTip="{Binding Description}">
+                        <Grid>
+                            <TextBlock Foreground="White" FontSize="18" Text="{Binding DisplayName}" />
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

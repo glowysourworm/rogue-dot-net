@@ -9,20 +9,20 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     [Serializable]
     public class AlterationTemplate : Template
     {
-        private AnimationGroupTemplate _animationGroup;
+        private AnimationSequenceTemplate _animation;
         private AlterationCostTemplate _cost;
         private IAlterationEffectTemplate _effect;
         private AlterationBlockType _blockType;
 
-        public AnimationGroupTemplate AnimationGroup
+        public AnimationSequenceTemplate Animation
         {
-            get { return _animationGroup; }
+            get { return _animation; }
             set
             {
-                if (_animationGroup != value)
+                if (_animation != value)
                 {
-                    _animationGroup = value;
-                    OnPropertyChanged("AnimationGroup");
+                    _animation = value;
+                    OnPropertyChanged("Animation");
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 
         public AlterationTemplate()
         {
-            this.AnimationGroup = new AnimationGroupTemplate();
+            this.Animation = new AnimationSequenceTemplate();
             this.Cost = new AlterationCostTemplate();
         }
     }

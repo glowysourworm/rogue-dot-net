@@ -9,7 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Drain (Combat)",
             Description = "Transfers a character's Hp or Mp to another character (Combat Only)",
-            ViewType = typeof(DrainMeleeEffectParameters))]
+            ViewType = typeof(DrainMeleeEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
     public class DrainMeleeAlterationEffectTemplateViewModel
                     : TemplateViewModel, IEquipmentAttackAlterationEffectTemplateViewModel
     {

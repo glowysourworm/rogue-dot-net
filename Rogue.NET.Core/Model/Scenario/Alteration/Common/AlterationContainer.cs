@@ -46,13 +46,13 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
             }
         }
         public AlterationCost Cost { get; set; }
-        public AnimationGroup AnimationGroup { get; set; }
+        public AnimationSequence Animation { get; set; }
         public AlterationBlockType BlockType { get; set; }
 
         public AlterationContainer()
         {
             this.Cost = new AlterationCost();
-            this.AnimationGroup = new AnimationGroup();
+            this.Animation = new AnimationSequence();
         }
 
         /// <summary>
