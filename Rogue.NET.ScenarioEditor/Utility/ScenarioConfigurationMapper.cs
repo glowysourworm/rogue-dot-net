@@ -54,7 +54,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             // Foward Map
             foreach (var type in sourceTypes)
             {
-                var destType = destTypes.FirstOrDefault(x => x.Name == type.Name + "ViewModel");
+                var destType = destTypes.FirstOrDefault(x => x.Name == (type.Name + "ViewModel"));
 
                 if (destType != null)
                     _forwardTypeMap.Add(type, destType);
@@ -63,7 +63,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             // Reverse Map
             foreach (var type in destTypes)
             {
-                var sourceType = sourceTypes.FirstOrDefault(x => x.Name + "ViewModel" == type.Name);
+                var sourceType = sourceTypes.FirstOrDefault(x => (x.Name + "ViewModel") == type.Name);
 
                 if (sourceType != null)
                     _reverseTypeMap.Add(type, sourceType);
@@ -90,42 +90,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
                                                   .Where(x => x is BrushTemplateViewModel)
                                                   .Select(x => x as BrushTemplateViewModel)
                                                   .ToList();
-
-            //foreach (var template in configuration.ConsumableTemplates)
-            //{
-            //    template.ConsumableAlteration = new ConsumableAlterationTemplateViewModel();
-            //    template.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel();
-            //    template.LearnedSkill = new SkillSetTemplateViewModel();
-            //}
-
-            //foreach (var template in configuration.DoodadTemplates)
-            //{
-            //    template.AutomaticAlteration = new DoodadAlterationTemplateViewModel();
-            //    template.InvokedAlteration = new DoodadAlterationTemplateViewModel();
-            //}
-
-            //foreach(var template in configuration.EnemyTemplates
-            //                                     .Cast<NonPlayerCharacterTemplateViewModel>()
-            //                                     .Union(configuration.FriendlyTemplates))
-            //{
-            //    foreach (var behavior in template.BehaviorDetails.Behaviors)
-            //        behavior.Alteration = new AlterationTemplateViewModel();
-
-            //    template.DeathAnimation = new AnimationSequenceTemplateViewModel();
-            //}
-
-            //foreach (var template in configuration.EquipmentTemplates)
-            //{
-            //    template.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplateViewModel();
-            //    template.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplateViewModel();
-            //    template.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplateViewModel();
-            //}
-
-            //foreach (var template in configuration.SkillTemplates)
-            //{
-            //    foreach (var skill in template.Skills)
-            //        skill.SkillAlteration = new ViewModel.ScenarioConfiguration.Alteration.Skill.SkillAlterationTemplateViewModel();
-            //}
 
             return configuration;
         }
@@ -324,26 +288,37 @@ namespace Rogue.NET.ScenarioEditor.Utility
         public void MapCollectionInit(IList sourceCollection, IList destCollection, Type sourceItemType, Type destItemType, bool reverse)
         {
             // Create method call to MapBack<TSource, TDest> using reflection
-            var methodInfo = typeof(ScenarioConfigurationMapper).GetMethod("MapCollection");
-            var genericMethodInfo = methodInfo.MakeGenericMethod(sourceItemType, destItemType);
-
-            genericMethodInfo.Invoke(this, new object[] { sourceCollection, destCollection, reverse });
-        }
-
-        public void MapCollection<TSource, TDest>(IList<TSource> sourceCollection, IList<TDest> destCollection, bool reverse)
-        {
-            // Create method call to MapBack<TSource, TDest> using reflection
             var methodInfo = typeof(ScenarioConfigurationMapper).GetMethod("MapObject");
-            var genericMethodInfo = methodInfo.MakeGenericMethod(typeof(TSource), typeof(TDest));
+            var genericMethodInfo = methodInfo.MakeGenericMethod(sourceItemType, destItemType);
 
             // Use Recursion to map back object graph
             foreach (var sourceItem in sourceCollection)
             {
-                // Create destination item recursively
-                var destItem = (TDest)genericMethodInfo.Invoke(this, new object[] { sourceItem, reverse });
+                // This case is where the collection type is a base class for this inherited type
+                if (sourceItem.GetType() != sourceItemType)
+                {
+                    // Get the inherited types from the type maps
+                    var inheritedSourceItemType = sourceItem.GetType();
+                    var inheritedDestItemType = reverse ? _reverseTypeMap[inheritedSourceItemType] :
+                                                          _forwardTypeMap[inheritedSourceItemType];
 
-                // Add to destination collection
-                destCollection.Add(destItem);
+                    // Create type specific method call to MapObject<,>
+                    var inheritedTypeMethodInfo = typeof(ScenarioConfigurationMapper).GetMethod("MapObject");
+                    var inheritedTypeGenericMethodInfo = inheritedTypeMethodInfo.MakeGenericMethod(inheritedSourceItemType, inheritedDestItemType);
+
+                    // Invoke the method
+                    destCollection.Add(inheritedTypeGenericMethodInfo.Invoke(this, new object[] { sourceItem, reverse }));
+                }
+
+                // This case is where the type is the same inheritance level as the collection type
+                else
+                {
+                    // Create destination item recursively
+                    var destItem = genericMethodInfo.Invoke(this, new object[] { sourceItem, reverse });
+
+                    // Add to destination collection
+                    destCollection.Add(destItem);
+                }
             }
         }
 

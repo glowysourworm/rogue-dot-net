@@ -44,10 +44,12 @@ namespace Rogue.NET.Core.Media.Animation
                 throw new Exception("Improper use of scenario image projectile animation");
 
             // Set default velocity
-            var velocity = 250;    
+            var velocity = 250;         // pixels / sec
+            var angularVelocity = 2.5;  // rotations / sec
             
             // Calculate animation time
             var animationTime = (int)((Math.Abs(Point.Subtract(sourceLocation, targetLocation).Length) / velocity) * 1000.0);   // milliseconds
+            var rotationAngle = angularVelocity * (animationTime / 1000.0) * 360.0;
 
             // Create path geometry for the line
             var pathGeometry = new PathGeometry(new PathFigure[]
@@ -59,34 +61,55 @@ namespace Rogue.NET.Core.Media.Animation
             var duration = new Duration(TimeSpan.FromMilliseconds(animationTime));
             var xAnimation = new DoubleAnimationUsingPath();
             var yAnimation = new DoubleAnimationUsingPath();
+            var angleAnimation = new DoubleAnimation(0, rotationAngle, duration);
 
             xAnimation.PathGeometry = pathGeometry;
             xAnimation.Duration = duration;
+            xAnimation.Source = PathAnimationSource.X;
+            xAnimation.RepeatBehavior = new RepeatBehavior(1);
             yAnimation.PathGeometry = pathGeometry;
             yAnimation.Duration = duration;
+            yAnimation.Source = PathAnimationSource.Y;
+            yAnimation.RepeatBehavior = new RepeatBehavior(1);
+            angleAnimation.RepeatBehavior = new RepeatBehavior(1);
+
 
             var xClock = xAnimation.CreateClock();
             var yClock = yAnimation.CreateClock();
+            var angleClock = angleAnimation.CreateClock();
             xClock.Controller.Begin();
             yClock.Controller.Begin();
+            angleClock.Controller.Begin();
             xClock.Controller.Pause();
             yClock.Controller.Pause();
+            angleClock.Controller.Pause();
 
+            var transform = new TransformGroup();
             var translateTransform = new TranslateTransform();
+            var rotateTransform = new RotateTransform(0, 0.5, 0.5);
+
             translateTransform.ApplyAnimationClock(TranslateTransform.XProperty, xClock);
             translateTransform.ApplyAnimationClock(TranslateTransform.YProperty, yClock);
+            rotateTransform.ApplyAnimationClock(RotateTransform.AngleProperty, angleClock);
+
+            transform.Children.Add(rotateTransform);
+            transform.Children.Add(translateTransform);
 
             // Create geometry to house the drawing source
-            var cellBounds = new Rect(sourceLocation, new Size(ModelConstants.CellWidth, ModelConstants.CellHeight));
+            var cellBounds = new Rect(new Point(-1 * (ModelConstants.CellWidth / 2.0D), -1 * (ModelConstants.CellHeight / 2.0D)), 
+                                      new Size(ModelConstants.CellWidth, ModelConstants.CellHeight));
             var cellGeometry = new RectangleGeometry(cellBounds);
             var drawingBrush = new DrawingBrush(drawingImage.Drawing);
-            drawingBrush.AlignmentX = AlignmentX.Center;
-            drawingBrush.AlignmentY = AlignmentY.Center;
             drawingBrush.Viewbox = cellBounds;
-            drawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+            drawingBrush.ViewboxUnits = BrushMappingMode.RelativeToBoundingBox;
+            drawingBrush.Viewport = cellBounds;
+            drawingBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+            drawingBrush.Stretch = Stretch.Fill;
 
-            var primitive = new AnimationPrimitive(cellGeometry, new AnimationClock[] { xClock, yClock }, animationTime);
-            primitive.RenderTransform = translateTransform;
+            var primitive = new AnimationPrimitive(cellGeometry, new AnimationClock[] { xClock, yClock, angleClock }, animationTime);
+            primitive.Height = cellBounds.Height;
+            primitive.Width = cellBounds.Width;
+            primitive.RenderTransform = transform;
             primitive.Fill = drawingBrush;
 
             return new AnimationQueue(new AnimationPrimitiveGroup[]

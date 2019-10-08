@@ -89,6 +89,8 @@ namespace Rogue.NET.Scenario.Processing.Controller
             {
                 var levelUIBounds = new Rect(0, 0, _levelCanvasViewModel.LevelWidth, _levelCanvasViewModel.LevelHeight);
                 var animation = scenarioUIService.CreateAnimation(eventData, levelUIBounds);
+
+                await _levelCanvasViewModel.PlayAnimationSeries(animation);
             });
         }
 
