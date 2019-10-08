@@ -12099,7 +12099,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Resource\Svg\Game\SavePoint.svg" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Svg\Scenario\OrientedSymbol\Dart.svg" />
+    <EmbeddedResource Include="Resource\Svg\Scenario\OrientedSymbol\Rock.svg" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource\Svg\Scenario\OrientedSymbol\Arrow.svg" />
   </ItemGroup>

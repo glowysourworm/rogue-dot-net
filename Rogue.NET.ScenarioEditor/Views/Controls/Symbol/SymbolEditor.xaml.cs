@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using System;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
     [Export]
     public partial class SymbolEditor : UserControl
     {
+        public static readonly DependencyProperty IsOrientedSymbolProperty =
+            DependencyProperty.Register("IsOrientedSymbol", typeof(bool), typeof(SymbolEditor), new PropertyMetadata(false));
+
         public bool WindowMode
         {
             get { return this.ButtonGrid.Visibility == Visibility.Visible; }
@@ -20,6 +24,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 else
                     this.ButtonGrid.Visibility = Visibility.Collapsed; 
             }
+        }
+
+        public bool IsOrientedSymbol
+        {
+            get { return (bool)GetValue(IsOrientedSymbolProperty); }
+            set { SetValue(IsOrientedSymbolProperty, value); }
         }
 
         [ImportingConstructor]

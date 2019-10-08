@@ -28,7 +28,10 @@
             <!-- Symbol Type -->
             <Grid Margin="10">
                 <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Type" />
-                <views:EnumComboBox EnumValue="{Binding SymbolType, Mode=TwoWay}"  EnumType="{x:Type coreModelEnums:SymbolType}" Width="200" HorizontalAlignment="Right" Height="24" />
+                <views:EnumComboBox IsEnabled="{Binding IsOrientedSymbol, Converter={StaticResource BoolInverseConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                    EnumValue="{Binding SymbolType, Mode=TwoWay}"  
+                                    EnumType="{x:Type coreModelEnums:SymbolType}" 
+                                    Width="200" HorizontalAlignment="Right" Height="24" />
             </Grid>
             
             <!-- Smiley Editor -->

@@ -32,7 +32,9 @@
     <converter:GreaterThanZeroVisibilityInverseConverter x:Key="GreaterThanZeroVisibilityInverseConverter" />
     <converter:GreaterThanOrEqualParameterConverter x:Key="GreaterThanOrEqualParameterConverter" />
     <converter:ParameterEqualityBoolConverter x:Key="ParameterEqualityBoolConverter" />
+    <converter:ParameterEqualityInverseBoolConverter x:Key="ParameterEqualityInverseBoolConverter" />
     <converter:ParameterVisibilityCollapsedConverter x:Key="ParameterVisibilityCollapsedConverter" />
+    <converter:ParameterVisibilityCollapsedInverseConverter x:Key="ParameterVisibilityCollapsedInverseConverter" />
     <converter:ParameterVisibilityVisibleConverter x:Key="ParameterVisibilityVisibleConverter" />
     <converter:RadioButtonEnumConverter x:Key="RadioButtonEnumConverter" />
     <converter:StringColorConverter x:Key="StringColorConverter" />

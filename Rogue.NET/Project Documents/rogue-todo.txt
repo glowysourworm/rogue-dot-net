@@ -2869,5 +2869,8 @@ IMMEDIATE TODO'S:
 
 	- TODO: Add "Confine" option to the Bubbles animation. The roaming feature became unbounded - which is REALLY COOL. But, you may 
 			want both - confined looks more like an explosion.
+
+	- Idea: Random Objectives might be really fun.. but we already have level branches - so have to make use of them first.. plus, could have level
+			objectives to make the scenario more interesting.
 			
 			  

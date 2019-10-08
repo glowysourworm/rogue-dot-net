@@ -174,7 +174,9 @@
     <Compile Include="Converter\Model\ScenarioConfiguration\LayoutWidthConverter.cs" />
     <Compile Include="Converter\NonNullBoolConverter.cs" />
     <Compile Include="Converter\NonNullVisibilityConverter.cs" />
+    <Compile Include="Converter\ParameterEqualityInverseBoolConverter.cs" />
     <Compile Include="Converter\ParameterEqualityBoolConverter.cs" />
+    <Compile Include="Converter\ParameterVisibilityCollapsedInverseConverter.cs" />
     <Compile Include="Converter\ParameterVisibilityVisibleConverter.cs" />
     <Compile Include="Converter\ParameterVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\RadioButtonEnumConverter.cs" />
