@@ -62,7 +62,7 @@
             <controls:Range DataContext="{Binding HpRegen}" LowLimit="0" HighLimit="10" />
         </Grid>
         <Grid>
-            <TextBlock Foreground="White" Text="Mp" VerticalAlignment="Center" />
+            <TextBlock Foreground="White" Text="Mp Regen" VerticalAlignment="Center" />
             <controls:Range DataContext="{Binding MpRegen}" LowLimit="0" HighLimit="10" />
         </Grid>        
     </StackPanel>

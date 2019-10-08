@@ -1,23 +1,12 @@
-﻿using Rogue.NET.Common.Constant;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 
 namespace Rogue.NET.ScenarioEditor.Utility
 {

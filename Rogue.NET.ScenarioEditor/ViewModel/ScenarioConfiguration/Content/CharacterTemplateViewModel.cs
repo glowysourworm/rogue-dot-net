@@ -54,12 +54,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         public RangeViewModel<double> HpRegen
         {
             get { return _hpRegen; }
-            set { this.RaiseAndSetIfChanged(ref _mp, value); }
+            set { this.RaiseAndSetIfChanged(ref _hpRegen, value); }
         }
         public RangeViewModel<double> MpRegen
         {
             get { return _mpRegen; }
-            set { this.RaiseAndSetIfChanged(ref _mp, value); }
+            set { this.RaiseAndSetIfChanged(ref _mpRegen, value); }
         }
         public RangeViewModel<int> LightRadius
         {
