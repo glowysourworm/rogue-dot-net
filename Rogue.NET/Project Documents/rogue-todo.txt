@@ -2864,5 +2864,7 @@ IMMEDIATE TODO'S:
 					  Currently, the IModule implementations contain the only instance of the region manager.
 
 	- TODO: Min-range for alteration ("Must be farther away to use Lightning 1")
+
+	- TODO: Asuage hunger range selector has to be F2
 			
 			  

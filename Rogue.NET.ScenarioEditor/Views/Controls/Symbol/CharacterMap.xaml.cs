@@ -15,6 +15,7 @@ using Rogue.NET.Core.Processing.Symbol.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class CharacterMap : UserControl
     {

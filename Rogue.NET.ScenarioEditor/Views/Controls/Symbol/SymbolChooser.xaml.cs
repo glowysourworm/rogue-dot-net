@@ -16,6 +16,7 @@ using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class SymbolChooser : UserControl
     {
@@ -59,12 +60,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                     viewModel.SymbolHue = item.Hue;
                     viewModel.SymbolSaturation = item.Saturation;
                     viewModel.SymbolLightness = item.Lightness;
+                    //viewModel.SymbolUseColorMask = item.UseColorMask;
                 }
             };
 
             this.DataContextChanged += (sender, e) =>
             {
-                var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
+                var viewModel = e.NewValue as SymbolDetailsTemplateViewModel;
 
                 if (viewModel != null)
                 {

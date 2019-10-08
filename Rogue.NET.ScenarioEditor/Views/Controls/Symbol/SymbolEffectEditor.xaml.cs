@@ -10,6 +10,7 @@ using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class SymbolEffectEditor : UserControl
     {

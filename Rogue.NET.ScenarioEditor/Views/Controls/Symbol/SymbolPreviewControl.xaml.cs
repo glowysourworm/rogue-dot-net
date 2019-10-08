@@ -20,9 +20,6 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
-    /// <summary>
-    /// Interaction logic for SymbolPreviewControl.xaml
-    /// </summary>
     public partial class SymbolPreviewControl : UserControl
     {
         public SymbolPreviewControl()

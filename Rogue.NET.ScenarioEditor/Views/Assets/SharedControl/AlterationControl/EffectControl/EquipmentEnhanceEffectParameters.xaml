@@ -68,13 +68,15 @@
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorImbue}" />
                 </MultiBinding>
             </TabItem.Visibility>
-            <region:RogueRegionManager.DefaultView>
-                <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1"
+            <region:RogueRegion DataContext="{Binding AttackAttributes}">
+                <region:RogueRegionManager.DefaultView>
+                    <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1"
                                                                         ShowAttack="False"
                                                                         ShowResistance="True"
                                                                         ShowWeakness="False"
                                                                         ShowImmune="False" />
-            </region:RogueRegionManager.DefaultView>
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>
         </TabItem>
 
         <!-- Weapon Attack Attributes -->
@@ -84,13 +86,15 @@
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponImbue}" />
                 </MultiBinding>
             </TabItem.Visibility>
-            <region:RogueRegionManager.DefaultView>
-                <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1"
+            <region:RogueRegion DataContext="{Binding AttackAttributes}">
+                <region:RogueRegionManager.DefaultView>
+                    <markupExtension:AttackAttributeListControlConstructor AttackAttributeCountLimit="1"
                                                                                ShowAttack="True"
                                                                                ShowResistance="False"
                                                                                ShowWeakness="False"
                                                                                ShowImmune="False" />
-            </region:RogueRegionManager.DefaultView>
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>
         </TabItem>        
     </TabControl>
 </UserControl>
