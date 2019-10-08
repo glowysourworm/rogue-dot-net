@@ -2866,5 +2866,8 @@ IMMEDIATE TODO'S:
 	- TODO: Min-range for alteration ("Must be farther away to use Lightning 1")
 
 	- TODO: Asuage hunger range selector has to be F2
+
+	- TODO: Add "Confine" option to the Bubbles animation. The roaming feature became unbounded - which is REALLY COOL. But, you may 
+			want both - confined looks more like an explosion.
 			
 			  

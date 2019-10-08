@@ -4,11 +4,8 @@ using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Service.Interface;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -36,8 +33,29 @@ namespace Rogue.NET.Core.Media.Animation
             return new AnimationQueue(animationGroups);
         }
 
-        public IAnimationPlayer CreateScenarioImageProjectileAnimation(ScenarioImage scenarioImage, Point sourceLocation, Point targetLocation)
+        public IAnimationPlayer CreateThrowAnimation(ScenarioImage scenarioImage, Point sourceLocation, Point targetLocation)
         {
+            return CreateRotatingProjectileAnimation(scenarioImage, sourceLocation, targetLocation);
+        }
+
+        public IAnimationPlayer CreateAmmoAnimation(ScenarioImage scenarioImage, Point sourceLocation, Point targetLocation)
+        {
+            return CreateOrientedProjectileAnimation(scenarioImage, sourceLocation, targetLocation);
+        }
+
+        public IAnimationPlayer CreateTargetingAnimation(Point point, Color fillColor, Color strokeColor)
+        {
+            return new AnimationQueue(new AnimationPrimitiveGroup[] { _animationCreator.CreateTargetingAnimation(point, fillColor)});
+        }
+
+        private IAnimationPlayer CreateRotatingProjectileAnimation(ScenarioImage scenarioImage, Point sourceLocation, Point targetLocation)
+        {
+            // Projectile Animations
+            //
+            // Non-Ammo:           Create a rotating image along the path
+            // Ammo:               Create a non-rotating image directing the symbol "North" at the target
+            //
+
             var drawingImage = _scenarioResourceService.GetImageSource(scenarioImage, 1.0) as DrawingImage;
 
             if (drawingImage == null)
@@ -46,7 +64,7 @@ namespace Rogue.NET.Core.Media.Animation
             // Set default velocity
             var velocity = 250;         // pixels / sec
             var angularVelocity = 2.5;  // rotations / sec
-            
+
             // Calculate animation time
             var animationTime = (int)((Math.Abs(Point.Subtract(sourceLocation, targetLocation).Length) / velocity) * 1000.0);   // milliseconds
             var rotationAngle = angularVelocity * (animationTime / 1000.0) * 360.0;
@@ -96,8 +114,9 @@ namespace Rogue.NET.Core.Media.Animation
             transform.Children.Add(translateTransform);
 
             // Create geometry to house the drawing source
-            var cellBounds = new Rect(new Point(-1 * (ModelConstants.CellWidth / 2.0D), -1 * (ModelConstants.CellHeight / 2.0D)), 
+            var cellBounds = new Rect(new Point(-1 * (ModelConstants.CellWidth / 2.0D), -1 * (ModelConstants.CellHeight / 2.0D)),
                                       new Size(ModelConstants.CellWidth, ModelConstants.CellHeight));
+
             var cellGeometry = new RectangleGeometry(cellBounds);
             var drawingBrush = new DrawingBrush(drawingImage.Drawing);
             drawingBrush.Viewbox = cellBounds;
@@ -117,10 +136,88 @@ namespace Rogue.NET.Core.Media.Animation
                 new AnimationPrimitiveGroup(new AnimationPrimitive[] { primitive }, animationTime)
             });
         }
-
-        public IAnimationPlayer CreateTargetingAnimation(Point point, Color fillColor, Color strokeColor)
+        private IAnimationPlayer CreateOrientedProjectileAnimation(ScenarioImage scenarioImage, Point sourceLocation, Point targetLocation)
         {
-            return new AnimationQueue(new AnimationPrimitiveGroup[] { _animationCreator.CreateTargetingAnimation(point, fillColor)});
+            // Projectile Animations
+            //
+            // Non-Ammo:           Create a rotating image along the path
+            // Ammo:               Create a non-rotating image directing the symbol "North" at the target
+            //
+
+            var drawingImage = _scenarioResourceService.GetImageSource(scenarioImage, 1.0) as DrawingImage;
+
+            if (drawingImage == null)
+                throw new Exception("Improper use of scenario image projectile animation");
+
+            // Calculate orientation of image
+            var angle = Math.Atan2(targetLocation.Y - sourceLocation.Y, targetLocation.X - sourceLocation.X);
+            var orientationAngle = (angle * (180 / Math.PI)) + 90;
+
+            // Set default velocity
+            var velocity = 250;         // pixels / sec
+
+            // Calculate animation time
+            var animationTime = (int)((Math.Abs(Point.Subtract(sourceLocation, targetLocation).Length) / velocity) * 1000.0);   // milliseconds
+
+            // Create path geometry for the line
+            var pathGeometry = new PathGeometry(new PathFigure[]
+            {
+                new PathFigure(sourceLocation, new PathSegment[]{ new LineSegment(targetLocation, true) }, false)
+            });
+
+            //Generate Animations
+            var duration = new Duration(TimeSpan.FromMilliseconds(animationTime));
+            var xAnimation = new DoubleAnimationUsingPath();
+            var yAnimation = new DoubleAnimationUsingPath();
+
+            xAnimation.PathGeometry = pathGeometry;
+            xAnimation.Duration = duration;
+            xAnimation.Source = PathAnimationSource.X;
+            xAnimation.RepeatBehavior = new RepeatBehavior(1);
+            yAnimation.PathGeometry = pathGeometry;
+            yAnimation.Duration = duration;
+            yAnimation.Source = PathAnimationSource.Y;
+            yAnimation.RepeatBehavior = new RepeatBehavior(1);
+
+            var xClock = xAnimation.CreateClock();
+            var yClock = yAnimation.CreateClock();
+            xClock.Controller.Begin();
+            yClock.Controller.Begin();
+            xClock.Controller.Pause();
+            yClock.Controller.Pause();
+
+            var transform = new TransformGroup();
+            var translateTransform = new TranslateTransform();
+            var rotateTransform = new RotateTransform(orientationAngle, 0.5, 0.5);
+
+            translateTransform.ApplyAnimationClock(TranslateTransform.XProperty, xClock);
+            translateTransform.ApplyAnimationClock(TranslateTransform.YProperty, yClock);
+
+            transform.Children.Add(rotateTransform);
+            transform.Children.Add(translateTransform);
+
+            // Create geometry to house the drawing source
+            var cellBounds = new Rect(new Point(-1 * (ModelConstants.CellWidth / 2.0D), -1 * (ModelConstants.CellHeight / 2.0D)),
+                                      new Size(ModelConstants.CellWidth, ModelConstants.CellHeight));
+
+            var cellGeometry = new RectangleGeometry(cellBounds);
+            var drawingBrush = new DrawingBrush(drawingImage.Drawing);
+            drawingBrush.Viewbox = cellBounds;
+            drawingBrush.ViewboxUnits = BrushMappingMode.RelativeToBoundingBox;
+            drawingBrush.Viewport = cellBounds;
+            drawingBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+            drawingBrush.Stretch = Stretch.Fill;
+
+            var primitive = new AnimationPrimitive(cellGeometry, new AnimationClock[] { xClock, yClock }, animationTime);
+            primitive.Height = cellBounds.Height;
+            primitive.Width = cellBounds.Width;
+            primitive.RenderTransform = transform;
+            primitive.Fill = drawingBrush;
+
+            return new AnimationQueue(new AnimationPrimitiveGroup[]
+            {
+                new AnimationPrimitiveGroup(new AnimationPrimitive[] { primitive }, animationTime)
+            });
         }
     }
 }

@@ -222,7 +222,10 @@ namespace Rogue.NET.Scenario.Processing.Service
             var source = _scenarioUIGeometryService.Cell2UI(eventData.SourceLocation, true);
             var target = _scenarioUIGeometryService.Cell2UI(eventData.TargetLocation, true);
 
-            return _animationSequenceCreator.CreateScenarioImageProjectileAnimation(eventData.ProjectileImage, source, target);
+            if (!eventData.OrientedImage)
+                return _animationSequenceCreator.CreateThrowAnimation(eventData.ProjectileImage, source, target);
+            else
+                return _animationSequenceCreator.CreateAmmoAnimation(eventData.ProjectileImage, source, target);
         }
 
         public IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor)

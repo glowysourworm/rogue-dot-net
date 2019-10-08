@@ -13,5 +13,6 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData
         public ScenarioImage ProjectileImage { get; set; }
         public GridLocation SourceLocation { get; set; }
         public GridLocation TargetLocation { get; set; }
+        public bool OrientedImage { get; set; }
     }
 }

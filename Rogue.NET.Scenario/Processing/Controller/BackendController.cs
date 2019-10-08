@@ -70,19 +70,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             // 2) If (no further processing of either) Then completed (can accept new user command)
             while (processing)
             {
-                // High Priority (Animations)
-
-                var animationData = _scenarioService.DequeueAnimationEventData();
-                while (animationData != null)
-                {
-                    // Process Animation (await)
-                    await ProcessAnimationEvent(animationData);
-
-                    // Dequeue Next Animation
-                    animationData = _scenarioService.DequeueAnimationEventData();
-                }
-
-                // Projectile Animations
+                // Projectile Animations (Throwing, Ammo)
 
                 var projectileAnimationData = _scenarioService.DequeueProjectileAnimationEventData();
                 while (projectileAnimationData != null)
@@ -92,6 +80,18 @@ namespace Rogue.NET.Scenario.Processing.Controller
 
                     // Dequeue Next Animation
                     projectileAnimationData = _scenarioService.DequeueProjectileAnimationEventData();
+                }
+
+                // Animations (Alterations)
+
+                var animationData = _scenarioService.DequeueAnimationEventData();
+                while (animationData != null)
+                {
+                    // Process Animation (await)
+                    await ProcessAnimationEvent(animationData);
+
+                    // Dequeue Next Animation
+                    animationData = _scenarioService.DequeueAnimationEventData();
                 }
 
                 // Level Event

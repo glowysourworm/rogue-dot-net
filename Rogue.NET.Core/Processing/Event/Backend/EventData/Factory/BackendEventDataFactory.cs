@@ -26,13 +26,24 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
                 TargetLocations = targets
             };
         }
-        public ProjectileAnimationEventData Animation(ScenarioImage scenarioImage, GridLocation source, GridLocation target)
+        public ProjectileAnimationEventData ThrowAnimation(ScenarioImage scenarioImage, GridLocation source, GridLocation target)
         {
             return new ProjectileAnimationEventData()
             {
                 ProjectileImage = scenarioImage,
                 TargetLocation = target,
                 SourceLocation = source,
+                OrientedImage = false
+            };
+        }
+        public ProjectileAnimationEventData AmmoAnimation(ScenarioImage scenarioImage, GridLocation source, GridLocation target)
+        {
+            return new ProjectileAnimationEventData()
+            {
+                ProjectileImage = scenarioImage,
+                TargetLocation = target,
+                SourceLocation = source,
+                OrientedImage = true
             };
         }
         public LevelEventData Event(LevelEventType type, string contentId)

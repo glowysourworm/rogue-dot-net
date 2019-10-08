@@ -14,7 +14,8 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface
     public interface IBackendEventDataFactory
     {
         AnimationEventData Animation(AnimationSequence animation, GridLocation source, IEnumerable<GridLocation> targets);
-        ProjectileAnimationEventData Animation(ScenarioImage scenarioImage, GridLocation source, GridLocation target);
+        ProjectileAnimationEventData ThrowAnimation(ScenarioImage scenarioImage, GridLocation source, GridLocation target);
+        ProjectileAnimationEventData AmmoAnimation(ScenarioImage scenarioImage, GridLocation source, GridLocation target);
         LevelEventData Event(LevelEventType type, string contentId);
         LevelEventData Event(LevelEventType type, string[] contentIds);
         LevelEventData ConsumableAddUpdate(string consumableId);

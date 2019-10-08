@@ -56,7 +56,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.Items = new PagedObservableCollection<ScenarioMetaDataViewModel>(PAGE_SIZE);
 
             // Initialize the category as not known
-            this.Source = scenarioResourceService.GetImageSource(new ScenarioImage("Unknwon", GameSymbol.Identify), 1.0);
+            this.Source = scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol("Unknown", GameSymbol.Identify), 1.0);
         }
 
         /// <summary>

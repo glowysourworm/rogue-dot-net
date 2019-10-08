@@ -69,38 +69,53 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
         }
 
         // Character Symbol Constructor
-        public SvgSymbolViewModel(ImageSource imageSource, string category, string character, double symbolScale)
+        public static SvgSymbolViewModel CreateCharacterSymbol(ImageSource imageSource, string category, string character, double symbolScale)
         {
-            this.SymbolType = SymbolType.Character;
-            this.ImageSource = imageSource;
-            this.Category = category;
-            this.Character = character;
-            this.CharacterScale = symbolScale;
+            return new SvgSymbolViewModel()
+            {
+                SymbolType = SymbolType.Character,
+                ImageSource = imageSource,
+                Category = category,
+                Character = character,
+                CharacterScale = symbolScale
+            };
         }
-        // Symbol Constructor
-        public SvgSymbolViewModel(ImageSource imageSource, 
-                                  string symbol, 
-                                  double hue, 
-                                  double saturation, 
-                                  double lightness,
-                                  bool useColorMask)
+        public static SvgSymbolViewModel CreateSymbol(ImageSource imageSource, string symbol, double hue, double saturation, double lightness, bool useColorMask)
         {
-            this.SymbolType = SymbolType.Symbol;
-            this.ImageSource = imageSource;
-            this.Symbol = symbol;
-            this.Hue = hue;
-            this.Saturation = saturation;
-            this.Lightness = lightness;
-            this.UseColorMask = useColorMask;
+            return new SvgSymbolViewModel()
+            {
+                SymbolType = SymbolType.Symbol,
+                ImageSource = imageSource,
+                Symbol = symbol,
+                Hue = hue,
+                Saturation = saturation,
+                Lightness = lightness,
+                UseColorMask = useColorMask
+            };
+        }
+        public static SvgSymbolViewModel CreateOrientedSymbol(ImageSource imageSource, string symbol, double hue, double saturation, double lightness, bool useColorMask)
+        {
+            return new SvgSymbolViewModel()
+            {
+                SymbolType = SymbolType.OrientedSymbol,
+                ImageSource = imageSource,
+                Symbol = symbol,
+                Hue = hue,
+                Saturation = saturation,
+                Lightness = lightness,
+                UseColorMask = useColorMask
+            };
+        }
+        public static SvgSymbolViewModel CreateGameSymbol(ImageSource imageSource, string symbol)
+        {
+            return new SvgSymbolViewModel()
+            {
+                SymbolType = SymbolType.Game,
+                ImageSource = imageSource,
+                Symbol = symbol
+            };
         }
 
-        // Game Symbol Constructor
-        public SvgSymbolViewModel(ImageSource imageSource,
-                                  string gameSymbol)
-        {
-            this.SymbolType = SymbolType.Game;
-            this.ImageSource = imageSource;
-            this.Symbol = gameSymbol;
-        }
+        public SvgSymbolViewModel() { }
     }
 }

@@ -940,6 +940,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                     // Calculate hit - if enemy hit then queue Ammunition spell
                     _interactionProcessor.CalculateInteraction(character, targetCharacter, PhysicalAttackType.Range);
+
+                    // Queue animation
+                    OnProjectileAnimationEvent(_backendEventDataFactory.AmmoAnimation(ammo,
+                                                                                      character.Location,
+                                                                                      targetCharacter.Location));
                 }
             }
         }

@@ -32,43 +32,71 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
         // Game Symbol Details
         public string GameSymbol { get; set; }
-        public ScenarioImage() { }
-        public ScenarioImage(string name, string symbol, double symbolHue, double symbolSaturation, double symbolLightness, bool symbolUseColorMask)
-            : base(name)
-        {
-            this.SymbolType = SymbolType.Symbol;
-            this.Symbol = symbol;
-            this.SymbolHue = symbolHue;
-            this.SymbolSaturation = symbolSaturation;
-            this.SymbolLightness = symbolLightness;
-            this.SymbolUseColorMask = symbolUseColorMask;
 
-            this.SymbolScale = 1.0;
-        }
-        public ScenarioImage(string name, string gameSymbol)
-            : base(name)
+        // Static Constructors
+        public static ScenarioImage CreateSymbol(string name, string symbol, double hue, double saturation, double lightness, bool useColorMask)
         {
-            this.SymbolType = SymbolType.Game;
-            this.GameSymbol = gameSymbol;
+            return new ScenarioImage()
+            {
+                RogueName = name,
+                SymbolType = SymbolType.Symbol,
+                Symbol = symbol,
+                SymbolHue = hue,
+                SymbolSaturation = saturation,
+                SymbolLightness = lightness,
+                SymbolUseColorMask = useColorMask,
+                SymbolScale = 1.0D
+            };
         }
-        public ScenarioImage(string name, string characterSymbol, string characterSymbolCategory, string characterColor, double characterScale)
-            : base(name)
+        public static ScenarioImage CreateOrientedSymbol(string name, string orientedSymbol, double hue, double saturation, double lightness, bool useColorMask)
         {
-            this.SymbolType = SymbolType.Character;
-            this.CharacterColor = characterColor;
-            this.CharacterSymbol = characterSymbol;
-            this.CharacterSymbolCategory = characterSymbolCategory;
-            this.CharacterScale = characterScale;
+            return new ScenarioImage()
+            {
+                RogueName = name,
+                SymbolType = SymbolType.OrientedSymbol,
+                Symbol = orientedSymbol,
+                SymbolHue = hue,
+                SymbolSaturation = saturation,
+                SymbolLightness = lightness,
+                SymbolUseColorMask = useColorMask,
+                SymbolScale = 1.0D
+            };
         }
-        public ScenarioImage(string name, SmileyExpression expression, string smileyBodyColor, string smileyLineColor, string smileyAuraColor)
-            : base(name)
+        public static ScenarioImage CreateGameSymbol(string name, string gameSymbol)
         {
-            this.SymbolType = SymbolType.Smiley;
-            this.SmileyExpression = expression;
-            this.SmileyLightRadiusColor = smileyAuraColor;
-            this.SmileyBodyColor = smileyBodyColor;
-            this.SmileyLineColor = smileyLineColor;
+            return new ScenarioImage()
+            {
+                RogueName = name,
+                SymbolType = SymbolType.Game,
+                GameSymbol = gameSymbol
+            };
         }
+        public static ScenarioImage CreateCharacterSymbol(string name, string characterSymbol, string characterSymbolCategory, string characterColor, double characterScale)
+        {
+            return new ScenarioImage()
+            {
+                RogueName = name,
+                SymbolType = SymbolType.Character,
+                CharacterSymbol = characterSymbol,
+                CharacterSymbolCategory = characterSymbolCategory,
+                CharacterColor = characterColor,
+                CharacterScale = characterScale
+            };
+        }
+        public static ScenarioImage CreateSmiley(string name, SmileyExpression expression, string smileyBodyColor, string smileyLineColor, string smileyLightRadiusColor)
+        {
+            return new ScenarioImage()
+            {
+                RogueName = name,
+                SymbolType = SymbolType.Smiley,
+                SmileyExpression = expression,
+                SmileyBodyColor= smileyBodyColor,
+                SmileyLightRadiusColor = smileyLightRadiusColor,
+                SmileyLineColor = smileyLineColor
+            };
+        }
+
+        public ScenarioImage() { }
         public ScenarioImage(SymbolDetailsTemplate template)
             : base(template.Name)
         {

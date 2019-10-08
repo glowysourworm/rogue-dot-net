@@ -21,18 +21,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         readonly IScenarioResourceService _scenarioResourceService;
         readonly ISvgCache _svgCache;
 
-        public static readonly DependencyProperty SymbolTypeProperty =
-            DependencyProperty.Register("SymbolType", typeof(SymbolType), typeof(SymbolComboBox),
-                new PropertyMetadata(new PropertyChangedCallback(OnSymbolTypeChanged)));
-
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(string), typeof(SymbolComboBox));
 
-        public SymbolType SymbolType
-        {
-            get { return (SymbolType)GetValue(SymbolTypeProperty); }
-            set { SetValue(SymbolTypeProperty, value); }
-        }
         public string Value
         {
             get { return (string)GetValue(ValueProperty); }
@@ -46,7 +37,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             _svgCache = ServiceLocator.Current.GetInstance<ISvgCache>();
 
             InitializeComponent();
-            Initialize(this.SymbolType);
+            Initialize();
 
             this.TheCB.SelectionChanged += (sender, e) =>
             {
@@ -55,40 +46,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             };
         }
 
-        private void Initialize(SymbolType type)
+        private void Initialize()
         {
-            if (type != SymbolType.Game &&
-                type != SymbolType.Symbol)
-                type = SymbolType.Symbol;
-
-            this.TheCB.ItemsSource = _svgCache.GetResourceNames(type).Select(symbol =>
+            this.TheCB.ItemsSource = _svgCache.GetResourceNames(SymbolType.Game).Select(symbol =>
             {
-                ImageSource source;
-
-                if (type == SymbolType.Symbol)
-                {
-                    source = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol, 0, 0, 0, false), 2.0);
-                    return new SvgSymbolViewModel(source, symbol, 0, 0, 0, false);
-                }
-
-                else
-                {
-                    source = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol), 2.0);
-                    return new SvgSymbolViewModel(source, symbol);
-                }
+                var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0);
+                return SvgSymbolViewModel.CreateGameSymbol(source, symbol);
             });
-        }
-
-        private static void OnSymbolTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = d as SymbolComboBox;
-            
-            if (control != null &&
-                e.NewValue != null)
-            {
-                var type = (SymbolType)e.NewValue;
-                control.Initialize(type);
-            }
         }
     }
 }

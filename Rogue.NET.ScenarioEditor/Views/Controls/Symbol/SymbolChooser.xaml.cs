@@ -9,6 +9,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
@@ -24,7 +25,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         readonly ISvgCache _svgCache;
 
         bool _loading = false;
-        bool _loaded = false;
 
         [ImportingConstructor]
         public SymbolChooser(IScenarioResourceService scenarioResourceService, ISvgCache svgCache)
@@ -49,7 +49,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
                 var item = e.AddedItems.Count > 0 ? (SvgSymbolViewModel)e.AddedItems[0] : null;
 
-                if (item != null && 
+                if (item != null &&
                     viewModel != null &&
                    !_loading)
                 {
@@ -63,81 +63,88 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
             this.DataContextChanged += (sender, e) =>
             {
-                var viewModel = e.NewValue as SymbolDetailsTemplateViewModel;
+                var oldViewModel = e.OldValue as SymbolDetailsTemplateViewModel;
+                var newViewModel = e.NewValue as SymbolDetailsTemplateViewModel;
 
-                if (viewModel != null)
+                // Unhook old property change event
+                if (oldViewModel != null)
+                    oldViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
+                if (newViewModel != null)
                 {
-                    if (!_loaded)
-                        Initialize();
+                    newViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
-                    this.BaseSymbolLB.SelectedItem = this.BaseSymbolLB
-                                                         .Items
-                                                         .Cast<SvgSymbolViewModel>()
-                                                         .FirstOrDefault(x => x.SymbolType == viewModel.SymbolType &&
-                                                                              x.Symbol == viewModel.Symbol);
-
-                    this.ColoredSymbolLB.SelectedItem = this.ColoredSymbolLB
-                                                            .Items
-                                                            .Cast<SvgSymbolViewModel>()
-                                                            .FirstOrDefault(x => x.SymbolType == viewModel.SymbolType &&
-                                                                                 x.Symbol == viewModel.Symbol &&
-                                                                                 x.Hue == viewModel.SymbolHue &&
-                                                                                 x.Saturation == viewModel.SymbolSaturation &&
-                                                                                 x.Lightness == viewModel.SymbolLightness &&
-                                                                                 x.UseColorMask == viewModel.SymbolUseColorMask);
-
-                    // Scroll into view
-                    if (this.BaseSymbolLB.SelectedIndex >= 0 &&
-                        this.BaseSymbolLB.SelectedIndex < this.BaseSymbolLB.Items.Count)
-                    {
-                        var index = this.BaseSymbolLB.SelectedIndex;
-                        var item = this.BaseSymbolLB.Items.GetItemAt(index);
-                        this.BaseSymbolLB.ScrollIntoView(item);
-                    }
+                    Initialize(newViewModel);
+                    BringSelectionIntoView(newViewModel);
                 }
             };
         }
 
-        private void Initialize()
+        private void Initialize(SymbolDetailsTemplateViewModel viewModel)
         {
-            var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
-
-            if (viewModel == null)
+            if (viewModel.SymbolType != SymbolType.Symbol &&
+                viewModel.SymbolType != SymbolType.OrientedSymbol)
                 return;
 
             _loading = true;
 
-            LoadBaseSymbols();
+            LoadBaseSymbols(viewModel.SymbolType);
 
             var baseSymbols = this.BaseSymbolLB.Items.Cast<SvgSymbolViewModel>();
             var selectedSymbol = baseSymbols.FirstOrDefault(x => x.Symbol == viewModel.Symbol);
 
             if (selectedSymbol != null)
-            {
                 LoadColoredSymbols(selectedSymbol, viewModel.SymbolUseColorMask);
 
-                this.BaseSymbolLB.SelectedItem = selectedSymbol;
-
-                var items = this.ColoredSymbolLB.Items.Cast<SvgSymbolViewModel>();
-
-                this.ColoredSymbolLB.SelectedItem = items.FirstOrDefault(x => x.Symbol == viewModel.Symbol &&
-                                                                              x.Hue == viewModel.SymbolHue &&
-                                                                              x.Saturation == viewModel.SymbolSaturation &&
-                                                                              x.Lightness == viewModel.SymbolLightness);
-            }
-
-            _loaded = true;
             _loading = false;
         }
 
-        private void LoadBaseSymbols()
+        private void BringSelectionIntoView(SymbolDetailsTemplateViewModel viewModel)
         {
-            this.BaseSymbolLB.ItemsSource = _svgCache.GetResourceNames(SymbolType.Symbol).Select(symbol =>
-            {
-                var imageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol, 0, 0, 0, false), 2.0);
+            this.BaseSymbolLB.SelectedItem = this.BaseSymbolLB
+                                                 .Items
+                                                 .Cast<SvgSymbolViewModel>()
+                                                 .FirstOrDefault(x => x.SymbolType == viewModel.SymbolType &&
+                                                                      x.Symbol == viewModel.Symbol);
 
-                // Input color mask indicator only. The HSL parameters are based at zero because they're effects
-                return new SvgSymbolViewModel(imageSource, symbol, 0, 0, 0, false);
+            this.ColoredSymbolLB.SelectedItem = this.ColoredSymbolLB
+                                                    .Items
+                                                    .Cast<SvgSymbolViewModel>()
+                                                    .FirstOrDefault(x => x.SymbolType == viewModel.SymbolType &&
+                                                                         x.Symbol == viewModel.Symbol &&
+                                                                         x.Hue == viewModel.SymbolHue &&
+                                                                         x.Saturation == viewModel.SymbolSaturation &&
+                                                                         x.Lightness == viewModel.SymbolLightness &&
+                                                                         x.UseColorMask == viewModel.SymbolUseColorMask);
+
+            // Scroll into view
+            if (this.BaseSymbolLB.SelectedIndex >= 0 &&
+                this.BaseSymbolLB.SelectedIndex < this.BaseSymbolLB.Items.Count)
+            {
+                var index = this.BaseSymbolLB.SelectedIndex;
+                var item = this.BaseSymbolLB.Items.GetItemAt(index);
+                this.BaseSymbolLB.ScrollIntoView(item);
+            }
+        }
+
+        private void LoadBaseSymbols(SymbolType type)
+        {
+            this.BaseSymbolLB.ItemsSource = _svgCache.GetResourceNames(type).Select(symbol =>
+            {
+                if (type == SymbolType.Symbol)
+                {
+                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateSymbol(symbol, symbol, 0, 0, 0, false), 2.0);
+
+                    // Input color mask indicator only. The HSL parameters are based at zero because they're effects
+                    return SvgSymbolViewModel.CreateSymbol(imageSource, symbol, 0, 0, 0, false);
+                }
+                else // Oriented Symbol
+                {
+                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateOrientedSymbol(symbol, symbol, 0, 0, 0, false), 2.0);
+
+                    // Input color mask indicator only. The HSL parameters are based at zero because they're effects
+                    return SvgSymbolViewModel.CreateOrientedSymbol(imageSource, symbol, 0, 0, 0, false);
+                }
             });
         }
         private void LoadColoredSymbols(SvgSymbolViewModel viewModel, bool useColorMask)
@@ -150,36 +157,80 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             while (cursor <= (Math.PI * 2))
             {
                 var hue = (viewModel.Hue + cursor);
-                var imageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(viewModel.Symbol,
-                                                                                            viewModel.Symbol,
-                                                                                            hue,
-                                                                                            viewModel.Saturation,
-                                                                                            viewModel.Lightness,
-                                                                                            useColorMask), 2.0);
 
-                result.Add(new SvgSymbolViewModel(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
+                switch (viewModel.SymbolType)
+                {
+                    default:
+                    case SymbolType.Game:
+                    case SymbolType.Smiley:
+                    case SymbolType.Character:
+                        throw new Exception("Unsupported symbol type SymbolChooser");
+                    case SymbolType.Symbol:
+                        {
+                            // Create symbol type image
+                            var scenarioImage = ScenarioImage.CreateSymbol(viewModel.Symbol, viewModel.Symbol, hue,
+                                                                           viewModel.Saturation, viewModel.Lightness, useColorMask);
+
+                            // Fetch image source
+                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0);
+
+                            // Add to result
+                            result.Add(SvgSymbolViewModel.CreateSymbol(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
+                        }
+                        break;
+                    case SymbolType.OrientedSymbol:
+                        {
+                            // Create symbol type image
+                            var scenarioImage = ScenarioImage.CreateOrientedSymbol(viewModel.Symbol, viewModel.Symbol, hue,
+                                                                                   viewModel.Saturation, viewModel.Lightness, useColorMask);
+
+                            // Fetch image source
+                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0);
+
+                            // Add to result
+                            result.Add(SvgSymbolViewModel.CreateOrientedSymbol(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
+                        }
+                        break;
+                }
+                
 
                 cursor += increment;
             }
 
-            // Light / Dark
-            var lightImageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(viewModel.Symbol,
-                                                                                             viewModel.Symbol,
-                                                                                             0.0,
-                                                                                             0.0,
-                                                                                             1.0,
-                                                                                             useColorMask), 2.0);
+            switch (viewModel.SymbolType)
+            {
+                default:
+                case SymbolType.Game:
+                case SymbolType.Smiley:
+                case SymbolType.Character:
+                    throw new Exception("Unsupported symbol type SymbolChooser");
+                case SymbolType.Symbol:
+                    {
+                        // Light / Dark
+                        var lightImage = ScenarioImage.CreateSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask);
+                        var darkImage = ScenarioImage.CreateSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, -1, 0.0, useColorMask);
 
-            var darkImageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(viewModel.Symbol,
-                                                                                            viewModel.Symbol,
-                                                                                            0.0,
-                                                                                            -1,
-                                                                                            0.0,
-                                                                                            useColorMask), 2.0);
+                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0);
+                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0);
 
-            result.Add(new SvgSymbolViewModel(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
-            result.Add(new SvgSymbolViewModel(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));
+                        result.Add(SvgSymbolViewModel.CreateSymbol(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
+                        result.Add(SvgSymbolViewModel.CreateSymbol(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));
+                    }
+                    break;
+                case SymbolType.OrientedSymbol:
+                    {
+                        // Light / Dark
+                        var lightImage = ScenarioImage.CreateOrientedSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask);
+                        var darkImage = ScenarioImage.CreateOrientedSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, -1, 0.0, useColorMask);
 
+                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0);
+                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0);
+
+                        result.Add(SvgSymbolViewModel.CreateOrientedSymbol(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
+                        result.Add(SvgSymbolViewModel.CreateOrientedSymbol(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));
+                    }
+                    break;
+            }
 
             this.ColoredSymbolLB.ItemsSource = result;
         }
@@ -216,6 +267,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
             if (svgViewModel != null)
                 LoadColoredSymbols(svgViewModel, false);
+        }
+
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SymbolType")
+            {
+                Initialize((sender as SymbolDetailsTemplateViewModel));
+            }
         }
     }
 }

@@ -50,20 +50,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
             this.Location = GridLocation.Empty;
         }
-        public ScenarioObject(string name, string characterSymbol, string characterSymbolCategory, string characterColor, double characterScale)
-            : base(name, characterSymbol, characterSymbolCategory, characterColor, characterScale)
-        {
-            this.Location = GridLocation.Empty;
-        }
-        public ScenarioObject(string name, SmileyExpression expression, string body, string line, string aura)
-            : base(name, expression, body, line, aura)
-        {
-            this.Location = GridLocation.Empty;
-        }
 
         public override string ToString()
         {
-            return this.RogueName + (this.Location ?? GridLocation.Empty).ToString();
+            return this.RogueName + " | " + (this.Location ?? GridLocation.Empty).ToString();
         }
     }
 }

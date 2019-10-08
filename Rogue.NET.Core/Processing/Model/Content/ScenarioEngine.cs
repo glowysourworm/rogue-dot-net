@@ -271,7 +271,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, itemId));
 
             // Queue projectile animation
-            OnProjectileAnimationEvent(_backendEventDataFactory.Animation(thrownItem, player.Location, targetedCharacter.Location));
+            OnProjectileAnimationEvent(_backendEventDataFactory.ThrowAnimation(thrownItem, player.Location, targetedCharacter.Location));
 
             // Check for a projectile alteration - queue after the projectile animation
             if (thrownItem.HasProjectileAlteration)
@@ -536,12 +536,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                 // Calculate hit - if enemy hit then queue ammunition alteration
                 var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
-
-
+                
                 // Process the animation
-                OnProjectileAnimationEvent(_backendEventDataFactory.Animation(ammo,
-                                                                              _modelService.Player.Location,
-                                                                              targetedEnemy.Location));
+                OnProjectileAnimationEvent(_backendEventDataFactory.AmmoAnimation(ammo,
+                                                                                  _modelService.Player.Location,
+                                                                                  targetedEnemy.Location));
 
                 // Clear the targeting service
                 _targetingService.Clear();

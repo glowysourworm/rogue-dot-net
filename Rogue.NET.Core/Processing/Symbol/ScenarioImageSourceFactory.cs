@@ -118,6 +118,7 @@ namespace Rogue.NET.Core.Processing.Symbol
             {
                 case SymbolType.Character:
                 case SymbolType.Symbol:
+                case SymbolType.OrientedSymbol:
                 case SymbolType.Game:
                     {
                         // Fetch / Load the drawing from the cache
@@ -149,6 +150,7 @@ namespace Rogue.NET.Core.Processing.Symbol
             {
                 case SymbolType.Character:
                 case SymbolType.Symbol:
+                case SymbolType.OrientedSymbol:
                 case SymbolType.Game:
                     {
                         // Fetch / Load the drawing from the cache
@@ -237,6 +239,7 @@ namespace Rogue.NET.Core.Processing.Symbol
                     }
                     break;
                 case SymbolType.Symbol:
+                case SymbolType.OrientedSymbol:
                     {
                         // Apply base scale - requested by calling code
                         drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);

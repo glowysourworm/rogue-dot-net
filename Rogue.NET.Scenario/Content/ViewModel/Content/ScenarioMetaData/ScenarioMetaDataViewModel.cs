@@ -127,7 +127,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
                 this.Source = scenarioResourceService.GetImageSource(metaData, 1.0);
 
             else
-                this.Source = scenarioResourceService.GetImageSource(new ScenarioImage("Unknwon", GameSymbol.Identify), 1.0);
+                this.Source = scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol("Unknown", GameSymbol.Identify), 1.0);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

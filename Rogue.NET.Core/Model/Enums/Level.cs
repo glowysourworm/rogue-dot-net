@@ -184,6 +184,11 @@ namespace Rogue.NET.Core.Model.Enums
         /// <summary>
         /// Image resources are drawn from the Game sub-folder (see svg resources)
         /// </summary>
-        Game
+        Game,
+
+        /// <summary>
+        /// Image resources are drawn from the OrientedSymbol sub-folder (see svg resources)
+        /// </summary>
+        OrientedSymbol
     }
 }

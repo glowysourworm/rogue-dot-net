@@ -100,13 +100,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             this.SymbolLB.ItemsSource = _svgCache.GetCharacterResourceNames(category).Select(characterName =>
             {
                 // Load Image Source
-                var imageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(characterName,
-                                                                                            characterName,
-                                                                                            category,
-                                                                                            Colors.White.ToString(),
-                                                                                            1.0), 1.0);
+                var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateCharacterSymbol(characterName,
+                                                                                                            characterName,
+                                                                                                            category,
+                                                                                                            Colors.White.ToString(),
+                                                                                                            1.0), 1.0);
 
-                return new SvgSymbolViewModel(imageSource, category, characterName, 1.0);
+                return SvgSymbolViewModel.CreateCharacterSymbol(imageSource, category, characterName, 1.0);
             });
         }
     }

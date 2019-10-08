@@ -30,6 +30,7 @@ namespace Rogue.NET.Core.Processing.Symbol
         readonly static IDictionary<string, DrawingGroup> _cache;
         readonly static IEnumerable<string> _gameResourceNames;
         readonly static IEnumerable<string> _symbolResourceNames;
+        readonly static IEnumerable<string> _orientedSymbolResourceNames;
         readonly static IDictionary<string, List<string>> _characterResourceNames;
 
         // These are paths that are absolute prefixes to the sub-folders
@@ -39,6 +40,7 @@ namespace Rogue.NET.Core.Processing.Symbol
         const string SVG_FOLDER_GAME = "Game";
         const string SVG_FOLDER_SCENARIO_CHARACTER = "Scenario.Character";
         const string SVG_FOLDER_SCENARIO_SYMBOL = "Scenario.Symbol";
+        const string SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL = "Scenario.OrientedSymbol";
         static SvgCache()
         {
             // Create static SVG cache to feed other image caches
@@ -47,6 +49,7 @@ namespace Rogue.NET.Core.Processing.Symbol
             // Load and store resource names
             _gameResourceNames = GetResourceNamesImpl(SymbolType.Game);
             _symbolResourceNames = GetResourceNamesImpl(SymbolType.Symbol);
+            _orientedSymbolResourceNames = GetResourceNamesImpl(SymbolType.OrientedSymbol);
             _characterResourceNames = GetCharacterResourceNamesImpl();
 
             // Load default drawing
@@ -92,6 +95,8 @@ namespace Rogue.NET.Core.Processing.Symbol
                     return _symbolResourceNames;
                 case SymbolType.Game:
                     return _gameResourceNames;
+                case SymbolType.OrientedSymbol:
+                    return _orientedSymbolResourceNames;
             }
         }
         public IEnumerable<string> GetCharacterCategories()
@@ -123,20 +128,25 @@ namespace Rogue.NET.Core.Processing.Symbol
                     return string.Join(".", SVG_PATH_PREFIX,
                                             SVG_FOLDER_GAME,
                                             cacheImage.GameSymbol);
+                case SymbolType.OrientedSymbol:
+                    return string.Join(".", SVG_PATH_PREFIX,
+                                            SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL,
+                                            cacheImage.Symbol);
             }
         }
         private static IEnumerable<string> GetResourceNamesImpl(SymbolType type)
         {
             if (type != SymbolType.Game &&
-                type != SymbolType.Symbol)
-                throw new ArgumentException("Get Resource Names only returns Game / Symbol type names");
+                type != SymbolType.Symbol && 
+                type != SymbolType.OrientedSymbol)
+                throw new ArgumentException("Get Resource Names only returns Game / Symbol / Oriented Symbol type names");
 
             var assembly = typeof(ZipEncoder).Assembly;
 
             // Parse the names like the folder structure
             //
-            var folder = type == SymbolType.Symbol ? SVG_FOLDER_SCENARIO_SYMBOL
-                                                   : SVG_FOLDER_GAME;
+            var folder = type == SymbolType.Symbol ? SVG_FOLDER_SCENARIO_SYMBOL : 
+                         type == SymbolType.OrientedSymbol ? SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL : SVG_FOLDER_GAME;
 
             var path = string.Join(".", SVG_PATH_PREFIX, folder);
 
@@ -194,6 +204,8 @@ namespace Rogue.NET.Core.Processing.Symbol
                     return LoadSymbolSVG(cacheImage.Symbol);
                 case SymbolType.Game:
                     return LoadGameSVG(cacheImage.GameSymbol);
+                case SymbolType.OrientedSymbol:
+                    return LoadOrientedSymbolSVG(cacheImage.Symbol);
             }
         }
         private static DrawingGroup LoadGameSVG(string gameSymbol)
@@ -203,6 +215,10 @@ namespace Rogue.NET.Core.Processing.Symbol
         private static DrawingGroup LoadSymbolSVG(string symbol)
         {
             return LoadSVG(SVG_FOLDER_SCENARIO_SYMBOL, "", symbol);
+        }
+        private static DrawingGroup LoadOrientedSymbolSVG(string symbol)
+        {
+            return LoadSVG(SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL, "", symbol);
         }
         private static DrawingGroup LoadCharacterSVG(string character, string characterCategory)
         {

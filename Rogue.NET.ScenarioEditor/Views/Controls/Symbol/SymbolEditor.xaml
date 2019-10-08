@@ -71,7 +71,13 @@
             </GroupBox>
 
             <!-- Symbol Editor -->
-            <GroupBox Visibility="{Binding SymbolType, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolType.Symbol}}" Margin="10" Header="Symbol Parameters">
+            <GroupBox  Margin="10" Header="Symbol Parameters">
+                <GroupBox.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.Symbol}" />
+                        <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.OrientedSymbol}" />
+                    </MultiBinding>
+                </GroupBox.Visibility>
                 <Grid Margin="10">
                     <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type symbol:SymbolChooser}" />
                 </Grid>
@@ -81,7 +87,7 @@
             <GroupBox Visibility="{Binding SymbolType, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolType.Game}}" Margin="10" Header="Game Symbol Parameters">
                 <Grid Margin="10">
                     <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Game Symbol" />
-                    <symbol:SymbolComboBox Width="300" Value="{Binding GameSymbol, Mode=TwoWay}" SymbolType="Game" HorizontalAlignment="Right" />
+                    <symbol:SymbolComboBox Width="300" Value="{Binding GameSymbol, Mode=TwoWay}" HorizontalAlignment="Right" />
                 </Grid>
             </GroupBox>
 

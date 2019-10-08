@@ -11,6 +11,8 @@ namespace Rogue.NET.Core.Media.Animation.Interface
 
         IAnimationPlayer CreateTargetingAnimation(Point point, Color fillColor, Color strokeColor);
 
-        IAnimationPlayer CreateScenarioImageProjectileAnimation(ScenarioImage scenarioImage, Point sourceLocation, Point targetLocation);
+        IAnimationPlayer CreateThrowAnimation(ScenarioImage scenarioImage, Point sourceLocation, Point targetLocation);
+
+        IAnimationPlayer CreateAmmoAnimation(ScenarioImage scenarioImage, Point sourceLocation, Point targetLocation);
     }
 }
