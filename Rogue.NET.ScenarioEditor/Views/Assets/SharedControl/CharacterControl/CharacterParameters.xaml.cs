@@ -15,21 +15,5 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
         {
             InitializeComponent();
         }
-
-        private void DeathAnimationsLB_AddEvent(object sender, object e)
-        {
-            // TODO:ANIMATION
-            //var viewModel = this.DataContext as EnemyTemplateViewModel;
-            //if (viewModel != null)
-            //    viewModel.DeathAnimationSequence.Animations.Add(e as AnimationTemplateViewModel);
-        }
-
-        private void DeathAnimationsLB_RemoveEvent(object sender, object e)
-        {
-            // TODO:ANIMATION
-            //var viewModel = this.DataContext as EnemyTemplateViewModel;
-            //if (viewModel != null)
-            //    viewModel.DeathAnimationSequence.Animations.Remove(e as AnimationTemplateViewModel);
-        }
     }
 }

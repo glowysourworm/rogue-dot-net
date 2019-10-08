@@ -64,8 +64,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             return new ConsumableAlteration()
             {
-                // TODO:ANIMATION
-                //AnimationGroup = _animationGenerator.GenerateAnimation(template.AnimationGroup),
+                Animation = _animationGenerator.GenerateAnimation(template.Animation),
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect as IConsumableAlterationEffectTemplate),
                 RogueName = template.Name
@@ -111,8 +110,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         public ConsumableProjectileAlteration GenerateAlteration(ConsumableProjectileAlterationTemplate template)
         {
             return new ConsumableProjectileAlteration()
-            {// TODO:ANIMATION
-                //AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+            {
+                Animation = _animationGenerator.GenerateAnimation(template.Animation),
                 Effect = GenerateAlterationEffect(template.Effect as IConsumableProjectileAlterationEffectTemplate),
                 RogueName = template.Name
             };
@@ -121,8 +120,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         public DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template)
         {
             return new DoodadAlteration()
-            {// TODO:ANIMATION
-                //AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+            {
+                Animation = _animationGenerator.GenerateAnimation(template.Animation),
                 Effect = GenerateAlterationEffect(template.Effect as IDoodadAlterationEffectTemplate),
                 RogueName = template.Name
             };
@@ -131,8 +130,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         public EnemyAlteration GenerateAlteration(EnemyAlterationTemplate template)
         {
             return new EnemyAlteration()
-            {// TODO:ANIMATION
-                //AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),                
+            {
+                Animation = _animationGenerator.GenerateAnimation(template.Animation),                
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect as IEnemyAlterationEffectTemplate),
                 RogueName = template.Name
@@ -142,8 +141,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         public FriendlyAlteration GenerateAlteration(FriendlyAlterationTemplate template)
         {
             return new FriendlyAlteration()
-            {// TODO:ANIMATION
-                //AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+            {
+                Animation = _animationGenerator.GenerateAnimation(template.Animation),
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect as IFriendlyAlterationEffectTemplate),
                 RogueName = template.Name
@@ -153,8 +152,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         public TemporaryCharacterAlteration GenerateAlteration(TemporaryCharacterAlterationTemplate template)
         {
             return new TemporaryCharacterAlteration()
-            {// TODO:ANIMATION
-                //AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+            {
+                Animation = _animationGenerator.GenerateAnimation(template.Animation),
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect as ITemporaryCharacterAlterationEffectTemplate),
                 RogueName = template.Name
@@ -164,8 +163,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         public EquipmentAttackAlteration GenerateAlteration(EquipmentAttackAlterationTemplate template)
         {
             return new EquipmentAttackAlteration()
-            {// TODO:ANIMATION
-                //AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+            {
+                Animation = _animationGenerator.GenerateAnimation(template.Animation),
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect as IEquipmentAttackAlterationEffectTemplate),
                 RogueName = template.Name                
@@ -203,8 +202,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         public SkillAlteration GenerateAlteration(SkillAlterationTemplate template)
         {
             return new SkillAlteration()
-            {// TODO:ANIMATION
-                //AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+            {
+                Animation = _animationGenerator.GenerateAnimation(template.Animation),
                 AuraParameters = new AuraSourceParameters()
                 {
                     AuraColor = template.AuraParameters.AuraColor,

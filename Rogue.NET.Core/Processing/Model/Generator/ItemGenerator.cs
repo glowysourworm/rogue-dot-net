@@ -85,7 +85,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             consumable.Alteration = consumableTemplate.ConsumableAlteration;
             consumable.ProjectileAlteration = consumableTemplate.ConsumableProjectileAlteration;
             consumable.LearnedSkill = _skillSetGenerator.GenerateSkillSet(consumableTemplate.LearnedSkill);
-            // TODO:ANIMATION consumable.AmmoAnimationGroup = _animationGenerator.GenerateAnimationGroup(consumableTemplate.AmmoAnimationGroup);
             consumable.HasLearnedSkillSet = consumableTemplate.HasLearnedSkill;
             consumable.HasAlteration = consumableTemplate.HasAlteration;
             consumable.HasProjectileAlteration = consumableTemplate.HasProjectileAlteration;

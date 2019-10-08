@@ -201,7 +201,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             character.BehaviorDetails.RandomizerTurnCount = template.BehaviorDetails.RandomizerTurnCount;
             character.BehaviorDetails.UseRandomizer = template.BehaviorDetails.UseRandomizer;
 
-            // TODO:ANIMATION character.DeathAnimation = _animationGenerator.GenerateAnimationGroup(template.DeathAnimation);
+            character.DeathAnimation = _animationGenerator.GenerateAnimation(template.DeathAnimation);
         }
     }
 }
