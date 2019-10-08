@@ -122,6 +122,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             character.Hp = _randomSequenceGenerator.GetRandomValue(template.Hp);
             character.Mp = _randomSequenceGenerator.GetRandomValue(template.Mp);
+            character.HpRegenBase = _randomSequenceGenerator.GetRandomValue(template.HpRegen);
+            character.MpRegenBase = _randomSequenceGenerator.GetRandomValue(template.MpRegen);
             character.MpMax = character.Mp;
             character.HpMax = character.Hp;
             character.AgilityBase = _randomSequenceGenerator.GetRandomValue(template.Agility);

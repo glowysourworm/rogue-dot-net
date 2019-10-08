@@ -17,6 +17,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _speed;
         private RangeViewModel<double> _hp;
         private RangeViewModel<double> _mp;
+        private RangeViewModel<double> _hpRegen;
+        private RangeViewModel<double> _mpRegen;
         private RangeViewModel<int> _lightRadius;
 
         public RangeViewModel<double> Strength
@@ -49,6 +51,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _mp; }
             set { this.RaiseAndSetIfChanged(ref _mp, value); }
         }
+        public RangeViewModel<double> HpRegen
+        {
+            get { return _hpRegen; }
+            set { this.RaiseAndSetIfChanged(ref _mp, value); }
+        }
+        public RangeViewModel<double> MpRegen
+        {
+            get { return _mpRegen; }
+            set { this.RaiseAndSetIfChanged(ref _mp, value); }
+        }
         public RangeViewModel<int> LightRadius
         {
             get { return _lightRadius; }
@@ -63,6 +75,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Speed = new RangeViewModel<double>(0.5, 0.5);
             this.Hp = new RangeViewModel<double>(10, 20);
             this.Mp = new RangeViewModel<double>(2, 5);
+            this.HpRegen = new RangeViewModel<double>(0, 0);
+            this.MpRegen = new RangeViewModel<double>(0, 0);
             this.LightRadius = new RangeViewModel<int>(5, 5);
 
             this.StartingConsumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>();

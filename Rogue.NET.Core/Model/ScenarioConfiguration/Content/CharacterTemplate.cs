@@ -18,6 +18,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _speed;
         private Range<double> _hp;
         private Range<double> _mp;
+        private Range<double> _hpRegen;
+        private Range<double> _mpRegen;
         private Range<int> _lightRadius;
 
         public Range<double> Strength
@@ -92,6 +94,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public Range<double> HpRegen
+        {
+            get { return _hpRegen; }
+            set
+            {
+                if (_hpRegen != value)
+                {
+                    _hpRegen = value;
+                    OnPropertyChanged("HpRegen");
+                }
+            }
+        }
+        public Range<double> MpRegen
+        {
+            get { return _mpRegen; }
+            set
+            {
+                if (_mpRegen != value)
+                {
+                    _mpRegen = value;
+                    OnPropertyChanged("MpRegen");
+                }
+            }
+        }
         public Range<int> LightRadius
         {
             get { return _lightRadius; }
@@ -113,6 +139,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Speed = new Range<double>(0.5, 0.5);       // Exclude 0 because Paralyzed altered state
             this.Hp = new Range<double>(10, 20);
             this.Mp = new Range<double>(2, 5);
+            this.HpRegen = new Range<double>(0, 0);
+            this.MpRegen = new Range<double>(0, 0);
             this.LightRadius = new Range<int>(5, 5);
 
             this.StartingConsumables = new List<ProbabilityConsumableTemplate>();

@@ -24,8 +24,8 @@
                        Text="You can add a Use Alteration, Projectile Alteration, and/or a Learned Skill to the Consumable. For example, a special piece of food that also acts as a grenade would have a Use Alteration and a Projectile Alteration." 
                        Foreground="White" />
         </StackPanel>
-        <TextBlock Grid.Row="1" Foreground="White" Text="Has Use Alteration" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="2" Foreground="White" Text="Has Projectile Alteration" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="1" Foreground="White" Text="Has Use Effect" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="2" Foreground="White" Text="Has Projectile Effect" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="3" Foreground="White" Text="Has Learned Skill" Margin="10" VerticalAlignment="Center" />        
         <CheckBox IsChecked="{Binding HasAlteration}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" />
         <CheckBox IsChecked="{Binding HasProjectileAlteration}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />

@@ -19,6 +19,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         private RangeViewModel<int> _class;
         private RangeViewModel<double> _quality;
+        private RangeViewModel<double> _throwQuality;
         private EquipmentType _type;
         private CharacterBaseAttribute _combatType;
         private EquipmentAttackAlterationTemplateViewModel _equipmentAttackAlteration;
@@ -52,6 +53,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _quality; }
             set { this.RaiseAndSetIfChanged(ref _quality, value); }
+        }
+        public RangeViewModel<double> ThrowQuality
+        {
+            get { return _throwQuality; }
+            set { this.RaiseAndSetIfChanged(ref _throwQuality, value); }
         }
         public EquipmentType Type
         {
@@ -111,9 +117,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         public EquipmentTemplateViewModel()
         {
-            this.Class = new RangeViewModel<int>(0, 10);
-            this.Type = EquipmentType.Ring;
-            this.Quality = new RangeViewModel<double>(0, 100);
+            this.Class = new RangeViewModel<int>(0, 1);
+            this.Type = EquipmentType.Amulet;
+            this.Quality = new RangeViewModel<double>(0, 5);
+            this.ThrowQuality = new RangeViewModel<double>(0, 5);
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.HasCharacterClassRequirement = false;

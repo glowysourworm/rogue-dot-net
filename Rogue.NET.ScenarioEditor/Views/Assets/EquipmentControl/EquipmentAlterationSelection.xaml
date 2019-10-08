@@ -23,9 +23,9 @@
                        Foreground="White" />
         </StackPanel>
 
-        <TextBlock Grid.Row="1" FontSize="16" Foreground="White" Text="Has Attack Alteration" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="2" FontSize="16" Foreground="White" Text="Has Equip Alteration" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="3" FontSize="16" Foreground="White" Text="Has Curse Alteration (Is Cursed)" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="1" FontSize="16" Foreground="White" Text="Has Attack Effect" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="2" FontSize="16" Foreground="White" Text="Has Equip Effect" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="3" FontSize="16" Foreground="White" Text="Has Curse Effect" Margin="10" VerticalAlignment="Center" />
         <CheckBox IsChecked="{Binding HasAttackAlteration, Mode=TwoWay}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" />
         <CheckBox IsChecked="{Binding HasEquipAlteration, Mode=TwoWay}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
         <CheckBox IsChecked="{Binding HasCurseAlteration, Mode=TwoWay}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" />

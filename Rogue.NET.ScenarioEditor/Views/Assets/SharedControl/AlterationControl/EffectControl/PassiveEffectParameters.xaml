@@ -21,6 +21,14 @@
         </TabItem>
         <TabItem Header="Parameters">
             <StackPanel>
+                
+                <!-- Can See Invisible -->
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Can See Invisible Characters" />
+                    <CheckBox IsChecked="{Binding CanSeeInvisibleCharacters}" HorizontalAlignment="Right" />
+                </Grid>
+                
+                <!-- Character Stats -->
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Strength" FontSize="16" HorizontalAlignment="Left" />
                     <controls:Range DataContext="{Binding StrengthRange}" LowLimit="-50" HighLimit="50" Width="300" HorizontalAlignment="Right" />
@@ -61,18 +69,6 @@
                     <TextBlock Foreground="White" Text="Defense" FontSize="16" HorizontalAlignment="Left" />
                     <controls:Range DataContext="{Binding DefenseRange}" LowLimit="-500" HighLimit="500" Width="300" HorizontalAlignment="Right" />
                 </Grid>
-                <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Magic Block Probability" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding MagicBlockProbabilityRange}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
-                </Grid>
-                <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Dodge Probability" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding DodgeProbabilityRange}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
-                </Grid>
-                <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Critical Hit" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding CriticalHit}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
-                </Grid>                
             </StackPanel>
         </TabItem>
     </TabControl>

@@ -67,7 +67,7 @@
         </TabItem>
 
         <!-- Skill Alteration -->
-        <TabItem Header="Skill Effect">
+        <TabItem Header="Skill Effect (Alteration)">
             <region:RogueRegion DataContext="{Binding SkillAlteration}" 
                                 region:RogueRegionManager.DefaultViewType="{x:Type skillSet:SkillAlterationControl}" />
         </TabItem>

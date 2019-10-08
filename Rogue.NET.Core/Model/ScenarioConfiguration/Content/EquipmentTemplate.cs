@@ -14,6 +14,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         private Range<int> _class;
         private Range<double> _quality;
+        private Range<double> _throwQuality;
         private EquipmentType _type;
         private CharacterBaseAttribute _combatType;
         private EquipmentAttackAlterationTemplate _equipmentAttackAlteration;
@@ -73,6 +74,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _quality = value;
                     OnPropertyChanged("Quality");
+                }
+            }
+        }
+        public Range<double> ThrowQuality
+        {
+            get { return _throwQuality; }
+            set
+            {
+                if (_throwQuality != value)
+                {
+                    _throwQuality = value;
+                    OnPropertyChanged("ThrowQuality");
                 }
             }
         }
@@ -214,7 +227,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Class = new Range<int>(0, 10);
             this.Type = EquipmentType.Ring;
             this.CombatType = CharacterBaseAttribute.Strength;
-            this.Quality = new Range<double>(0, 100);
+            this.Quality = new Range<double>(0, 5);
+            this.ThrowQuality = new Range<double>(0, 5);
             this.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplate();
             this.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplate();
             this.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplate();

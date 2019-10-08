@@ -54,6 +54,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
                     viewModel.HasLearnedSkill = false;
                     viewModel.HasProjectileAlteration = false;
                     viewModel.Type = ConsumableType.OneUse;
+                    viewModel.LevelRequired = 0;
                     viewModel.SymbolDetails.SymbolType = SymbolType.OrientedSymbol;
                 }
             }

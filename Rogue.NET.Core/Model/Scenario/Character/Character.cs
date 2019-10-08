@@ -36,8 +36,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double IntelligenceBase { get; set; }
         public double AgilityBase { get; set; }
         public double SpeedBase { get; set; }
-        public double HpRegenBase { get { return ModelConstants.HpRegenBaseMultiplier * this.StrengthBase; } }
-        public double MpRegenBase { get { return ModelConstants.MpRegenBaseMultiplier * this.IntelligenceBase; } }
+        public double HpRegenBase { get; set; }
+        public double MpRegenBase { get; set; }
         public double LightRadiusBase { get; set; }
         public double Hp { get; set; }
         public double Mp { get; set; }
