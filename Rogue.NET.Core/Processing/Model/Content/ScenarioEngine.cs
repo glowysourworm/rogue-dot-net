@@ -264,7 +264,16 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return LevelContinuationAction.DoNothing;
             }
 
-            // TBD: Create general consumable for projectiles that has melee parameters
+            // Remove item from inventory
+            player.Consumables.Remove(itemId);
+
+            // Queue Level Update - Player Consumables Remove
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, itemId));
+
+            // Queue projectile animation
+            OnProjectileAnimationEvent(_backendEventDataFactory.Animation(thrownItem, player.Location, targetedCharacter.Location));
+
+            // Check for a projectile alteration - queue after the projectile animation
             if (thrownItem.HasProjectileAlteration)
             {
                 // Create Alteration 
@@ -275,12 +284,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 {
                     // Queue the alteration and remove the item
                     _alterationEngine.Queue(_modelService.Player, alteration);
-
-                    // Remove item from inventory
-                    player.Consumables.Remove(itemId);
-
-                    // Queue Level Update - Player Consumables Remove
-                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, itemId));
 
                     return LevelContinuationAction.ProcessTurnNoRegeneration;
                 }
@@ -535,15 +538,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
 
 
-                // TODO:ANIMATION - CHANGE THIS TO "SHOOT SVG"
-                //// Process the animation
-                //if (ammo.AmmoAnimationGroup.Animations.Any())
-                //{
-                //    // TODO:ANIMATION
-                //    //OnAnimationEvent(_backendEventDataFactory.Animation(ammo.AmmoAnimationGroup.Animations,
-                //    //                                                    _modelService.Player.Location,
-                //    //                                                    new GridLocation[] { targetedEnemy.Location }));
-                //}
+                // Process the animation
+                OnProjectileAnimationEvent(_backendEventDataFactory.Animation(ammo,
+                                                                              _modelService.Player.Location,
+                                                                              targetedEnemy.Location));
 
                 // Clear the targeting service
                 _targetingService.Clear();

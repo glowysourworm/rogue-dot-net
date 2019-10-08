@@ -34,9 +34,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
             InitializeComponent();
 
-            bool loading = false;
-            bool loaded = false;
-
             this.BaseSymbolLB.SelectionChanged += (sender, e) =>
             {
                 var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;

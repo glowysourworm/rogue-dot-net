@@ -25,6 +25,7 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
         void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, Character character, Rect levelUIBounds);
 
         IAnimationPlayer CreateAnimation(AnimationEventData eventData, Rect levelUIBounds);
+        IAnimationPlayer CreateAnimation(ProjectileAnimationEventData eventData, Rect levelUIBounds);
         IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor);
     }
 }

@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Event.Backend.Enum;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
@@ -13,6 +14,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface
     public interface IBackendEventDataFactory
     {
         AnimationEventData Animation(AnimationSequence animation, GridLocation source, IEnumerable<GridLocation> targets);
+        ProjectileAnimationEventData Animation(ScenarioImage scenarioImage, GridLocation source, GridLocation target);
         LevelEventData Event(LevelEventType type, string contentId);
         LevelEventData Event(LevelEventType type, string[] contentIds);
         LevelEventData ConsumableAddUpdate(string consumableId);

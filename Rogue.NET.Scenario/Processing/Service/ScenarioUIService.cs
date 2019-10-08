@@ -217,6 +217,14 @@ namespace Rogue.NET.Scenario.Processing.Service
             return _animationSequenceCreator.CreateAnimation(eventData.Animation, levelUIBounds, source, targets);
         }
 
+        public IAnimationPlayer CreateAnimation(ProjectileAnimationEventData eventData, Rect levelUIBounds)
+        {
+            var source = _scenarioUIGeometryService.Cell2UI(eventData.SourceLocation, true);
+            var target = _scenarioUIGeometryService.Cell2UI(eventData.TargetLocation, true);
+
+            return _animationSequenceCreator.CreateScenarioImageProjectileAnimation(eventData.ProjectileImage, source, target);
+        }
+
         public IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor)
         {
             return _animationSequenceCreator.CreateTargetingAnimation(_scenarioUIGeometryService.Cell2UI(location), fillColor, strokeColor);

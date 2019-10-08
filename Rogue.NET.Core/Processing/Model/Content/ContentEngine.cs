@@ -239,10 +239,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             level.RemoveContent(character);
 
-            // TODO:ANIMATION
             // Queue Animation for enemy death
-            //if (character.DeathAnimation.Animations.Count > 0)
-            //    OnAnimationEvent(_backendEventDataFactory.Animation(character.DeathAnimation.Animations, character.Location, new GridLocation[] { character.Location }));
+            if (character.DeathAnimation.Animations.Count > 0)
+                OnAnimationEvent(_backendEventDataFactory.Animation(character.DeathAnimation, character.Location, new GridLocation[] { character.Location }));
 
             // (ENEMY ONLY) Calculate player gains
             if (character is Enemy)
@@ -941,13 +940,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                     // Calculate hit - if enemy hit then queue Ammunition spell
                     _interactionProcessor.CalculateInteraction(character, targetCharacter, PhysicalAttackType.Range);
-
-                    // TODO:ANIMATION
-                    // Process the spell associated with the ammo
-                    //if (ammo.AmmoAnimationGroup.Animations.Any())
-                    //    OnAnimationEvent(_backendEventDataFactory.Animation(ammo.AmmoAnimationGroup.Animations,
-                    //                                                         character.Location,
-                    //                                                         new GridLocation[] { _modelService.Player.Location }));
                 }
             }
         }

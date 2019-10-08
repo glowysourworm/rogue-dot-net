@@ -101,31 +101,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 //                     to be moved to the editor.
                 var animationIssueDetected = false;
 
-                // TODO:ANIMATION REMOVE THIS
-                alteration.Animation.Animations.ForEach(x =>
-                {
-                    if (x is AnimationChain ||
-                        x is AnimationChainConstantVelocity ||
-                        x is AnimationProjectile ||
-                        x is AnimationProjectileConstantVelocity)
-                    {
-                        if (affectedCharacters.Any(z => z == actor))
-                        {
-                            animationIssueDetected = true;
-
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Bad,
-                                                            "***Alteration has improper animation usage - " + alteration.RogueName);
-                        }
-                    }
-                });
-
                 if (!animationIssueDetected)
                 {
-                    // TODO:ANIMATION
-                    //OnAnimationEvent(_backendEventDataFactory.Animation(
-                    //                            alteration.AnimationGroup.Animations,
-                    //                            actor.Location,
-                    //                            affectedCharacters.Select(x => x.Location).Actualize()));
+                    OnAnimationEvent(_backendEventDataFactory.Animation(
+                                                alteration.Animation,
+                                                actor.Location,
+                                                affectedCharacters.Select(x => x.Location).Actualize()));
                 }
             }
 

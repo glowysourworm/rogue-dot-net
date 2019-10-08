@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Command.Frontend.Data;
@@ -86,7 +87,8 @@ namespace Rogue.NET.Scenario.Processing.Controller
 
             eventAggregator.GetEvent<ProjectileAnimationStartEvent>().Subscribe(async eventData =>
             {
-
+                var levelUIBounds = new Rect(0, 0, _levelCanvasViewModel.LevelWidth, _levelCanvasViewModel.LevelHeight);
+                var animation = scenarioUIService.CreateAnimation(eventData, levelUIBounds);
             });
         }
 
