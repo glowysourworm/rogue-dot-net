@@ -29,9 +29,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
         public double MpPerStep { get; set; }
         public double Attack { get; set; }
         public double Defense { get; set; }
-        public double MentalBlockProbability { get; set; }
-        public double DodgeProbability { get; set; }
-        public double CriticalHit { get; set; }
 
         public bool IsStackable { get; set; }
         public bool HasAlteredState { get; set; }

@@ -186,40 +186,17 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
 
                         return 0D;
                     }
+                // TODO:ATTRIBUTE
                 case CharacterAttribute.Dodge:
                     {
-                        if (effect is AuraAlterationEffect)
-                            return (effect as AuraAlterationEffect).DodgeProbability;
-
-                        else if (effect is PassiveAlterationEffect)
-                            return (effect as PassiveAlterationEffect).DodgeProbability;
-
-                        else if (effect is TemporaryAlterationEffect)
-                            return (effect as TemporaryAlterationEffect).DodgeProbability;
-
                         return 0D;
                     }
                 case CharacterAttribute.MagicBlock:
                     {
-                        if (effect is AuraAlterationEffect)
-                            return (effect as AuraAlterationEffect).MagicBlockProbability;
-
-                        else if (effect is PassiveAlterationEffect)
-                            return (effect as PassiveAlterationEffect).MagicBlockProbability;
-
-                        else if (effect is TemporaryAlterationEffect)
-                            return (effect as TemporaryAlterationEffect).MentalBlockProbability;
-
                         return 0D;
                     }
                 case CharacterAttribute.CriticalHit:
                     {
-                        if (effect is PassiveAlterationEffect)
-                            return (effect as PassiveAlterationEffect).CriticalHit;
-
-                        else if (effect is TemporaryAlterationEffect)
-                            return (effect as TemporaryAlterationEffect).CriticalHit;
-
                         return 0D;
                     }
                 case CharacterAttribute.FoodUsagePerTurn:

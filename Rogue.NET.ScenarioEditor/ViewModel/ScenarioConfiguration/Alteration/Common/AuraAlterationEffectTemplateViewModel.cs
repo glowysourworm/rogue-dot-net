@@ -25,8 +25,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _mpPerStepRange;
         private RangeViewModel<double> _attackRange;
         private RangeViewModel<double> _defenseRange;
-        private RangeViewModel<double> _magicBlockProbabilityRange;
-        private RangeViewModel<double> _dodgeProbabilityRange;
 
         public SymbolEffectTemplateViewModel SymbolAlteration
         {
@@ -73,16 +71,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _defenseRange; }
             set { this.RaiseAndSetIfChanged(ref _defenseRange, value); }
         }
-        public RangeViewModel<double> MagicBlockProbabilityRange
-        {
-            get { return _magicBlockProbabilityRange; }
-            set { this.RaiseAndSetIfChanged(ref _magicBlockProbabilityRange, value); }
-        }
-        public RangeViewModel<double> DodgeProbabilityRange
-        {
-            get { return _dodgeProbabilityRange; }
-            set { this.RaiseAndSetIfChanged(ref _dodgeProbabilityRange, value); }
-        }
 
         public AuraAlterationEffectTemplateViewModel()
         {
@@ -92,10 +80,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.SpeedRange = new RangeViewModel<double>(0, 0);
             this.AttackRange = new RangeViewModel<double>(0, 0);
             this.DefenseRange = new RangeViewModel<double>(0, 0);
-            this.DodgeProbabilityRange = new RangeViewModel<double>(0, 0);
             this.HpPerStepRange = new RangeViewModel<double>(0, 0);
             this.IntelligenceRange = new RangeViewModel<double>(0, 0);
-            this.MagicBlockProbabilityRange = new RangeViewModel<double>(0, 0);
             this.MpPerStepRange = new RangeViewModel<double>(0, 0);
             this.StrengthRange = new RangeViewModel<double>(0, 0);
         }

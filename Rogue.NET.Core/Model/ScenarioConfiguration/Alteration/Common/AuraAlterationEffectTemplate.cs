@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using System;
 
@@ -20,8 +19,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _mpPerStepRange;
         private Range<double> _attackRange;
         private Range<double> _defenseRange;
-        private Range<double> _magicBlockProbabilityRange;
-        private Range<double> _dodgeProbabilityRange;
 
         public SymbolEffectTemplate SymbolAlteration
         {
@@ -131,30 +128,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> MagicBlockProbabilityRange
-        {
-            get { return _magicBlockProbabilityRange; }
-            set
-            {
-                if (_magicBlockProbabilityRange != value)
-                {
-                    _magicBlockProbabilityRange = value;
-                    OnPropertyChanged("MagicBlockProbabilityRange");
-                }
-            }
-        }
-        public Range<double> DodgeProbabilityRange
-        {
-            get { return _dodgeProbabilityRange; }
-            set
-            {
-                if (_dodgeProbabilityRange != value)
-                {
-                    _dodgeProbabilityRange = value;
-                    OnPropertyChanged("DodgeProbabilityRange");
-                }
-            }
-        }
+
 
         public AuraAlterationEffectTemplate()
         {
@@ -164,10 +138,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.SpeedRange = new Range<double>(0, 0);
             this.AttackRange = new Range<double>(0, 0);
             this.DefenseRange = new Range<double>(0, 0);
-            this.DodgeProbabilityRange = new Range<double>(0, 0);
             this.HpPerStepRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);
-            this.MagicBlockProbabilityRange = new Range<double>(0, 0);
             this.MpPerStepRange = new Range<double>(0, 0);
             this.StrengthRange = new Range<double>(0, 0);
         }

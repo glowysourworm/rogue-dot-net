@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
@@ -36,7 +37,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
         public AuraSourceParametersTemplate()
         {
-
+            this.AuraColor = Colors.White.ToString();
+            this.AuraRange = 2;
         }
     }
 }

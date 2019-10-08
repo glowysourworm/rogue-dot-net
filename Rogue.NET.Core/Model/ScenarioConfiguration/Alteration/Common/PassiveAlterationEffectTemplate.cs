@@ -23,9 +23,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _mpPerStepRange;
         private Range<double> _attackRange;
         private Range<double> _defenseRange;
-        private Range<double> _magicBlockProbabilityRange;
-        private Range<double> _dodgeProbabilityRange;
-        private Range<double> _criticalHit;
 
         public SymbolEffectTemplate SymbolAlteration
         {
@@ -171,42 +168,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> MagicBlockProbabilityRange
-        {
-            get { return _magicBlockProbabilityRange; }
-            set
-            {
-                if (_magicBlockProbabilityRange != value)
-                {
-                    _magicBlockProbabilityRange = value;
-                    OnPropertyChanged("MagicBlockProbabilityRange");
-                }
-            }
-        }
-        public Range<double> DodgeProbabilityRange
-        {
-            get { return _dodgeProbabilityRange; }
-            set
-            {
-                if (_dodgeProbabilityRange != value)
-                {
-                    _dodgeProbabilityRange = value;
-                    OnPropertyChanged("DodgeProbabilityRange");
-                }
-            }
-        }
-        public Range<double> CriticalHit
-        {
-            get { return _criticalHit; }
-            set
-            {
-                if (_criticalHit != value)
-                {
-                    _criticalHit = value;
-                    OnPropertyChanged("CriticalHit");
-                }
-            }
-        }
 
         public PassiveAlterationEffectTemplate()
         {
@@ -217,15 +178,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.AttackRange = new Range<double>(0, 0);
             this.LightRadiusRange = new Range<double>(0, 0);
             this.DefenseRange = new Range<double>(0, 0);
-            this.DodgeProbabilityRange = new Range<double>(0, 0);
             this.FoodUsagePerTurnRange = new Range<double>(0, 0);
             this.HpPerStepRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);
-            this.MagicBlockProbabilityRange = new Range<double>(0, 0);
             this.MpPerStepRange = new Range<double>(0, 0);
             this.StrengthRange = new Range<double>(0, 0);
-
-            this.CriticalHit = new Range<double>(0, 0);
         }
     }
 }

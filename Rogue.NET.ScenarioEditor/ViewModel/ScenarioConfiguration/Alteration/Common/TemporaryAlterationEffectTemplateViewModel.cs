@@ -34,13 +34,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _mpPerStepRange;
         private RangeViewModel<double> _attackRange;
         private RangeViewModel<double> _defenseRange;
-        private RangeViewModel<double> _mentalBlockProbabilityRange;
-        private RangeViewModel<double> _dodgeProbabilityRange;
         private RangeViewModel<double> _experienceRange;
         private RangeViewModel<double> _hungerRange;
         private RangeViewModel<double> _hpRange;
         private RangeViewModel<double> _mpRange;
-        private RangeViewModel<double> _criticalHit;
         private bool _isStackable;
         private bool _hasAlteredState;
         public SymbolEffectTemplateViewModel SymbolAlteration
@@ -113,16 +110,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _defenseRange; }
             set { this.RaiseAndSetIfChanged(ref _defenseRange, value); }
         }
-        public RangeViewModel<double> MentalBlockProbabilityRange
-        {
-            get { return _mentalBlockProbabilityRange; }
-            set { this.RaiseAndSetIfChanged(ref _mentalBlockProbabilityRange, value); }
-        }
-        public RangeViewModel<double> DodgeProbabilityRange
-        {
-            get { return _dodgeProbabilityRange; }
-            set { this.RaiseAndSetIfChanged(ref _dodgeProbabilityRange, value); }
-        }
         public RangeViewModel<double> ExperienceRange
         {
             get { return _experienceRange; }
@@ -142,11 +129,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _mpRange; }
             set { this.RaiseAndSetIfChanged(ref _mpRange, value); }
-        }
-        public RangeViewModel<double> CriticalHit
-        {
-            get { return _criticalHit; }
-            set { this.RaiseAndSetIfChanged(ref _criticalHit, value); }
         }
         public bool IsStackable
         {
@@ -169,20 +151,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.AttackRange = new RangeViewModel<double>(0, 0);
             this.LightRadiusRange = new RangeViewModel<double>(0, 0);
             this.DefenseRange = new RangeViewModel<double>(0, 0);
-            this.DodgeProbabilityRange = new RangeViewModel<double>(0, 0);
             this.ExperienceRange = new RangeViewModel<double>(0, 0);
             this.FoodUsagePerTurnRange = new RangeViewModel<double>(0, 0);
             this.HpPerStepRange = new RangeViewModel<double>(0, 0);
             this.HpRange = new RangeViewModel<double>(0, 0);
             this.HungerRange = new RangeViewModel<double>(0, 0);
             this.IntelligenceRange = new RangeViewModel<double>(0, 0);
-            this.MentalBlockProbabilityRange = new RangeViewModel<double>(0, 0);
             this.MpPerStepRange = new RangeViewModel<double>(0, 0);
             this.MpRange = new RangeViewModel<double>(0, 0);
             this.SpeedRange = new RangeViewModel<double>(0, 0);
             this.StrengthRange = new RangeViewModel<double>(0, 0);
-
-            this.CriticalHit = new RangeViewModel<double>(0, 0);
 
             this.AlteredState = new AlteredCharacterStateTemplateViewModel();
         }

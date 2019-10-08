@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
@@ -23,6 +24,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _auraRange, value); }
         }
 
-        public AuraSourceParametersTemplateViewModel() { }
+        public AuraSourceParametersTemplateViewModel()
+        {
+            this.AuraColor = Colors.White.ToString();
+            this.AuraRange = 2;
+        }
     }
 }

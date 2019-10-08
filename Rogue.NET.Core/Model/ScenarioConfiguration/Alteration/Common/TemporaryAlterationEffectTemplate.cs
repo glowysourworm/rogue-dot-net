@@ -28,15 +28,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _mpPerStepRange;
         private Range<double> _attackRange;
         private Range<double> _defenseRange;
-        private Range<double> _mentalBlockProbabilityRange;
-        private Range<double> _dodgeProbabilityRange;
         private Range<double> _experienceRange;
         private Range<double> _hungerRange;
         private Range<double> _hpRange;
         private Range<double> _mpRange;
-        private Range<double> _criticalHit;
         private bool _isStackable;
         private bool _hasAlteredState;
+
         public SymbolEffectTemplate SymbolAlteration
         {
             get { return _symbolAlteration; }
@@ -205,30 +203,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> MentalBlockProbabilityRange
-        {
-            get { return _mentalBlockProbabilityRange; }
-            set
-            {
-                if (_mentalBlockProbabilityRange != value)
-                {
-                    _mentalBlockProbabilityRange = value;
-                    OnPropertyChanged("MentalBlockProbabilityRange");
-                }
-            }
-        }
-        public Range<double> DodgeProbabilityRange
-        {
-            get { return _dodgeProbabilityRange; }
-            set
-            {
-                if (_dodgeProbabilityRange != value)
-                {
-                    _dodgeProbabilityRange = value;
-                    OnPropertyChanged("DodgeProbabilityRange");
-                }
-            }
-        }
         public Range<double> ExperienceRange
         {
             get { return _experienceRange; }
@@ -277,18 +251,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> CriticalHit
-        {
-            get { return _criticalHit; }
-            set
-            {
-                if (_criticalHit != value)
-                {
-                    _criticalHit = value;
-                    OnPropertyChanged("CriticalHit");
-                }
-            }
-        }
         public bool IsStackable
         {
             get { return _isStackable; }
@@ -325,19 +287,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.AttackRange = new Range<double>(0, 0);
             this.LightRadiusRange = new Range<double>(0, 0);
             this.DefenseRange = new Range<double>(0, 0);
-            this.DodgeProbabilityRange = new Range<double>(0, 0);
             this.ExperienceRange = new Range<double>(0, 0);
             this.FoodUsagePerTurnRange = new Range<double>(0, 0);
             this.HpPerStepRange = new Range<double>(0, 0);
             this.HpRange = new Range<double>(0, 0);
             this.HungerRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);
-            this.MentalBlockProbabilityRange = new Range<double>(0, 0);
             this.MpPerStepRange = new Range<double>(0, 0);
             this.MpRange = new Range<double>(0, 0);
             this.StrengthRange = new Range<double>(0, 0);
-
-            this.CriticalHit = new Range<double>(0, 0);
         }
     }
 }

@@ -54,15 +54,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
 
             if (effect.Defense != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Defense", effect.Defense.ToString("F1")));
-
-            if (effect.MagicBlockProbability != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Mental Block", effect.MagicBlockProbability.ToString("F1")));
-
-            if (effect.DodgeProbability != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Dodge", effect.DodgeProbability.ToString("F1")));
-
-            if (effect.CriticalHit != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Critical Hit", effect.CriticalHit.ToString("F1")));
         }
 
         public PassiveAlterationEffectViewModel(PassiveAlterationEffectTemplate template) : base(template)
@@ -99,15 +90,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             
             if (template.DefenseRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Defense", template.DefenseRange.ToString()));
-
-            if (template.MagicBlockProbabilityRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Mental Block", template.MagicBlockProbabilityRange.ToString()));
-
-            if (template.DodgeProbabilityRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Dodge", template.DodgeProbabilityRange.ToString()));
-
-            if (template.CriticalHit.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Critical Hit", template.CriticalHit.ToString()));
         }
     }
 }

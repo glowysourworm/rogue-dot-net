@@ -60,14 +60,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (effect.Attack != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Attack", effect.Attack.ToString("F1")));
 
-            if (effect.CriticalHit != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("CriticalHit", effect.CriticalHit.ToString("F1")));
-
             if (effect.Defense != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Defense", effect.Defense.ToString("F1")));
-
-            if (effect.DodgeProbability != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Dodge", effect.DodgeProbability.ToString("N0")));
 
             if (effect.FoodUsagePerTurn != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Food Usage (per turn)", effect.FoodUsagePerTurn.ToString("F1")));
@@ -86,9 +80,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
 
             if (effect.LightRadius != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Light Radius", effect.LightRadius.ToString("F1")));
-
-            if (effect.MentalBlockProbability != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Mental Block", effect.MentalBlockProbability.ToString("F1")));
 
             if (effect.Speed != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", effect.Speed.ToString("F1")));
@@ -112,14 +103,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (template.AttackRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Attack", template.AttackRange.ToString()));
 
-            if (template.CriticalHit.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("CriticalHit", template.CriticalHit.ToString()));
-
             if (template.DefenseRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Defense", template.DefenseRange.ToString()));
-
-            if (template.DodgeProbabilityRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Dodge", template.DodgeProbabilityRange.ToString()));
 
             if (template.FoodUsagePerTurnRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Food Usage (per turn)", template.FoodUsagePerTurnRange.ToString()));
@@ -138,9 +123,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
 
             if (template.LightRadiusRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Light Radius", template.LightRadiusRange.ToString()));
-
-            if (template.MentalBlockProbabilityRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Mental Block", template.MentalBlockProbabilityRange.ToString()));
 
             if (template.SpeedRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", template.SpeedRange.ToString()));
