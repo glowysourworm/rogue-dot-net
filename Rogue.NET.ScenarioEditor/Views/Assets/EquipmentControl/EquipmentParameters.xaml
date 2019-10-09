@@ -44,6 +44,10 @@
                         <TextBlock Grid.Row="7" Foreground="White" Text="Quality" VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="5">
+                        <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding ThrowQuality}" LowLimit="0" HighLimit="50" Height="24" Grid.Column="1" Grid.Row="8" />
+                        <TextBlock Grid.Row="7" Foreground="White" Text="Throw Quality" VerticalAlignment="Center" />
+                    </Grid>                    
+                    <Grid Margin="5">
                         <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Weight" VerticalAlignment="Center" />
                         <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="100" Increment="0.1" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
                     </Grid>

@@ -10,6 +10,7 @@ using Rogue.NET.ScenarioEditor.Events.Asset.Alteration;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class ConsumableAlterationControl : UserControl
     {

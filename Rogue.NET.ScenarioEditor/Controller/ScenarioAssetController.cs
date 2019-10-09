@@ -4,6 +4,9 @@ using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System;
@@ -37,31 +40,108 @@ namespace Rogue.NET.ScenarioEditor.Controller
         /// <summary>
         /// Adds an asset with a pre-calculated name
         /// </summary>
-        public void AddAsset(Type assetType, string uniqueName)
+        public bool AddAsset(Type assetType, string uniqueName)
         {
             if (assetType == typeof(PlayerTemplateViewModel))
-                _scenarioCollectionProvider.PlayerClasses.Add(new PlayerTemplateViewModel() { Name = uniqueName });
+            {
+                if (_scenarioCollectionProvider.PlayerClasses.Any(x => x.Name == uniqueName))
+                    return false;
+                else
+                    _scenarioCollectionProvider.PlayerClasses.Add(new PlayerTemplateViewModel() { Name = uniqueName });
+            }
 
             else if (assetType == typeof(LayoutTemplateViewModel))
-                _scenarioCollectionProvider.Layouts.Add(new LayoutTemplateViewModel() { Name = uniqueName });
+            {
+                if (_scenarioCollectionProvider.Layouts.Any(x => x.Name == uniqueName))
+                    return false;
+                else
+                    _scenarioCollectionProvider.Layouts.Add(new LayoutTemplateViewModel() { Name = uniqueName });
+            }
 
             else if (assetType == typeof(EnemyTemplateViewModel))
-                _scenarioCollectionProvider.Enemies.Add(new EnemyTemplateViewModel() { Name = uniqueName });
+            {
+                if (_scenarioCollectionProvider.Enemies.Any(x => x.Name == uniqueName))
+                    return false;
+                else
+                    _scenarioCollectionProvider.Enemies.Add(new EnemyTemplateViewModel() { Name = uniqueName });
+            }
 
             else if (assetType == typeof(FriendlyTemplateViewModel))
-                _scenarioCollectionProvider.Friendlies.Add(new FriendlyTemplateViewModel() { Name = uniqueName });
+            {
+                if (_scenarioCollectionProvider.Friendlies.Any(x => x.Name == uniqueName))
+                    return false;
+                else
+                    _scenarioCollectionProvider.Friendlies.Add(new FriendlyTemplateViewModel() { Name = uniqueName });
+            }
 
             else if (assetType == typeof(EquipmentTemplateViewModel))
-                _scenarioCollectionProvider.Equipment.Add(new EquipmentTemplateViewModel() { Name = uniqueName });
+            {
+                if (_scenarioCollectionProvider.Equipment.Any(x => x.Name == uniqueName))
+                    return false;
+                else
+                    _scenarioCollectionProvider.Equipment.Add(new EquipmentTemplateViewModel()
+                    {
+                        Name = uniqueName,
+                        EquipmentAttackAlteration = new EquipmentAttackAlterationTemplateViewModel()
+                        {
+                            Name = uniqueName + " Attack Effect"
+                        },
+                        EquipmentCurseAlteration = new EquipmentCurseAlterationTemplateViewModel()
+                        {
+                            Name = uniqueName + " Curse Effect"
+                        },
+                        EquipmentEquipAlteration = new EquipmentEquipAlterationTemplateViewModel()
+                        {
+                            Name = uniqueName + " Effect"
+                        }
+                    });
+            }
 
             else if (assetType == typeof(ConsumableTemplateViewModel))
-                _scenarioCollectionProvider.Consumables.Add(new ConsumableTemplateViewModel() { Name = uniqueName });
+            {
+                if (_scenarioCollectionProvider.Consumables.Any(x => x.Name == uniqueName))
+                    return false;
+                else
+                    _scenarioCollectionProvider.Consumables.Add(new ConsumableTemplateViewModel()
+                    {
+                        Name = uniqueName,
+                        ConsumableAlteration = new ConsumableAlterationTemplateViewModel()
+                        {
+                            Name = uniqueName + " Effect"
+                        },
+                        ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel()
+                        {
+                            Name = uniqueName + " Throw Effect"
+                        }
+                    });
+            }
 
             else if (assetType == typeof(DoodadTemplateViewModel))
-                _scenarioCollectionProvider.Doodads.Add(new DoodadTemplateViewModel() { Name = uniqueName });
+            {
+                if (_scenarioCollectionProvider.Doodads.Any(x => x.Name == uniqueName))
+                    return false;
+                else
+                    _scenarioCollectionProvider.Doodads.Add(new DoodadTemplateViewModel()
+                    {
+                        Name = uniqueName,
+                        InvokedAlteration = new DoodadAlterationTemplateViewModel()
+                        {
+                            Name = uniqueName + " Use Effect"
+                        },
+                        AutomaticAlteration = new DoodadAlterationTemplateViewModel()
+                        {
+                            Name = uniqueName + " Effect"
+                        }
+                    });
+            }
 
             else if (assetType == typeof(SkillSetTemplateViewModel))
-                _scenarioCollectionProvider.SkillSets.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
+            {
+                if (_scenarioCollectionProvider.SkillSets.Any(x => x.Name == uniqueName))
+                    return false;
+                else
+                    _scenarioCollectionProvider.SkillSets.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
+            }
 
             else
                 throw new Exception("Unhandled Asset Type ScenarioAssetController");
@@ -75,6 +155,8 @@ namespace Rogue.NET.ScenarioEditor.Controller
 
             // Restore Undo Service
             _undoService.UnBlock();
+
+            return true;
         }
 
         // TODO:SERIALIZATION - ABANDON GUID'S ENTIRELY. GET RID OF ANYTHING IN THE NAMESPACES THAT OVERRIDES 

@@ -692,6 +692,9 @@
     </Compile>
     <Compile Include="Views\Constants\DesignMode.cs" />
     <Compile Include="Views\Constants\RegionNames.cs" />
+    <Compile Include="Views\Controls\NameControl.xaml.cs">
+      <DependentUpon>NameControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Design\DesignContainer.xaml.cs">
       <DependentUpon>DesignContainer.xaml</DependentUpon>
     </Compile>
@@ -1105,6 +1108,10 @@
     <Page Include="Views\Assets\TemporaryCharacter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\NameControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Design\DesignContainer.xaml">
       <SubType>Designer</SubType>

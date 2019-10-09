@@ -393,10 +393,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                     // Be sure to de-activate alterations
                     if (equipment.HasEquipAlteration)
-                        actee.Alteration.Remove(equipment.EquipAlteration.Guid);
+                        actee.Alteration.Remove(equipment.EquipAlteration.Name);
 
                     if (equipment.HasCurseAlteration)
-                        actee.Alteration.Remove(equipment.CurseAlteration.Guid);
+                        actee.Alteration.Remove(equipment.CurseAlteration.Name);
 
                     // Update UI
                     if (actor is Player)

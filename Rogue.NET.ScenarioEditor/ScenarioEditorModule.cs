@@ -14,6 +14,7 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.Browser.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
@@ -144,10 +145,31 @@ namespace Rogue.NET.ScenarioEditor
             // Asset Events
             _eventAggregator.GetEvent<AddAssetEvent>().Subscribe((e) =>
             {
-                _scenarioAssetController.AddAsset(e.AssetType, e.AssetUniqueName);
+                var uiDescription = e.AssetType.GetAttribute<UITypeAttribute>();
 
-                //Publish a special event to update source lists for specific views
-                PublishScenarioUpdate();
+                if (uiDescription == null)
+                    throw new Exception("Un-described UIType Asset");
+
+                var view = new NameControl();
+                view.NameTB.Text = e.AssetUniqueName;
+
+                if (DialogWindowFactory.Show(view, "Add " + uiDescription.DisplayName + " Asset"))
+                {
+                    if (string.IsNullOrWhiteSpace(view.NameTB.Text))
+                    {
+                        MessageBox.Show("Names must be unique to the asset type and non-empty", "Invalid Asset Name");
+                        return;
+                    }
+
+                    // Check that name was unique
+                    if (_scenarioAssetController.AddAsset(e.AssetType, view.NameTB.Text))
+                    {
+                        //Publish a special event to update source lists for specific views
+                        PublishScenarioUpdate();
+                    }
+                    else
+                        MessageBox.Show("Names must be unique to the asset type and non-empty", "Invalid Asset Name");
+                }
             });
             _eventAggregator.GetEvent<LoadAssetEvent>().Subscribe((e) =>
             {
@@ -629,7 +651,11 @@ namespace Rogue.NET.ScenarioEditor
                         var assetContainerView = _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(AssetContainerControl));
                         var assetView = _regionManager.LoadSingleInstance(RegionNames.AssetContainerRegion, viewType);
 
-                        assetContainerView.DataContext = assetViewModel;
+                        // KLUDGE: Didn't want to bother dealing with the type name
+                        (assetContainerView as AssetContainerControl).AssetTypeTextRun.Text = assetViewModel.AssetType.GetAttribute<UITypeAttribute>().DisplayName;
+
+                        // Set view data contexts
+                        assetContainerView.DataContext = viewModel;
                         assetView.DataContext = viewModel;
 
                         // GO AHEAD AND PRE-CALCULATE ASSET OVERVIEW

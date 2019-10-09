@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System.ComponentModel.Composition;
 using System.Windows;
@@ -7,6 +8,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class CharacterBehaviorList : UserControl
     {
@@ -41,7 +43,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
             if (viewModel != null)
                 viewModel.BehaviorDetails.Behaviors.Add(new BehaviorTemplateViewModel()
                 {
-                    Name = (viewModel.BehaviorDetails.Behaviors.Count + 1).ToOrdinal() + " Behavior"
+                    Name = (viewModel.BehaviorDetails.Behaviors.Count + 1).ToOrdinal() + " Behavior",
+                    Alteration = new AlterationTemplateViewModel()
+                    {
+                        Name = (viewModel.BehaviorDetails.Behaviors.Count + 1).ToOrdinal() + " Behavior Effect"
+                    }
                 });
         }
     }

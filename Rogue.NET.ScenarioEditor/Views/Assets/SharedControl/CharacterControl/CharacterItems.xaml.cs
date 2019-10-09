@@ -8,6 +8,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class CharacterItems : UserControl
     {

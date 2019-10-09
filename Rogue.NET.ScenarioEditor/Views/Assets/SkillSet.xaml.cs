@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Skill;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -32,7 +33,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             // Create a new skill with a user name input
             var view = new RenameControl();
             var defaultName = NameGenerator.Get(viewModel.Skills.Select(x => x.Name), viewModel.Name);
-            var skill = new SkillTemplateViewModel();
+            var skill = new SkillTemplateViewModel()
+            {
+                // NOTE*** SETTING DEFAULT FOR ALTERATION
+                SkillAlteration = new SkillAlterationTemplateViewModel()
+                {
+                    Name = viewModel.Name + " Effect"
+                }
+            };
 
             // Set the name using the RenameControl
             view.DataContext = skill;

@@ -7,6 +7,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class CharacterParameters : UserControl
     {
