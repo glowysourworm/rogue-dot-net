@@ -116,9 +116,6 @@
     		<RowDefinition Height="*"/>
     		<RowDefinition Height="*"/>
     		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
     	</Grid.RowDefinitions>
         <common:ProgressBar x:Name="Strength" BarColor1="#FF876900" Header="Strength" TextFormat="F2" Value="{Binding StrengthBase}" ValueMax="100" ValueTextBrush="#FFFFC8C8" Margin="0,2,0,2" Value2="{Binding Strength}"/>
         <common:ProgressBar x:Name="Agility" Grid.Row="1" BarColor1="#FF0A8300" Header="Agility" TextFormat="F2" ValueMax="100" Value="{Binding AgilityBase}" Margin="0,2,0,2" ValueTextBrush="#FFC1FFC8" Value2="{Binding Agility}"/>
@@ -130,8 +127,5 @@
         <common:ProgressBar x:Name="Aura" Grid.Row="7" BarColor1="White" Header="Aura" TextFormat="N0" ValueMax="25" Value2="{Binding AuraRadius}" Value="{Binding AuraRadiusBase}" Margin="0,2,0,2" ValueTextBrush="Gray"/>
         <common:ProgressBar x:Name="Attack" Grid.Row="8" BarColor1="#FF727272" TextFormat="F2" Header="Attack" ValueMax="500" Value="{Binding AttackBase}" Margin="0,2,0,2" Value2="{Binding Attack}"/>
         <common:ProgressBar x:Name="Defense" Grid.Row="9" BarColor1="#FF813B00" Header="Defense" TextFormat="F2" Value="{Binding DefenseBase}" ValueMax="100" Margin="0,2,0,2" Value2="{Binding Defense}"/>
-        <common:ProgressBar x:Name="Dodge" Grid.Row="12" BarColor1="#FD007A89" ValueMax="1" Value="{Binding DodgeBase}" TextFormat="F3" Header="Dodge" Margin="0,2,0,2" ValueTextBrush="#FFEAE3FF" Value2="{Binding Dodge}"/>
-        <common:ProgressBar x:Name="MagicBlock" Grid.Row="11" Header="Magic Block" Margin="0,2,0,2" BarColor1="#FF6500FF" ValueMax="1" Value="{Binding MagicBlockBase}" Value2="{Binding MagicBlock}" TextFormat="F3" />
-        <common:ProgressBar x:Name="CriticalHit" Grid.Row="10" Header="Critical Hit" Margin="0,2,0,2" BarColor1="#FFFFaa00" ValueMax="1" Value="{Binding CriticalHitProbability}" Value2="{Binding CriticalHitProbability}" TextFormat="F3" />
     </Grid>
 </UserControl>

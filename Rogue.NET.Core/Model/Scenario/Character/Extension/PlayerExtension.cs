@@ -77,9 +77,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 case CharacterAttribute.Speed:
                     return player.GetSpeed();
                 case CharacterAttribute.HpRegen:
-                    return player.GetHpRegen();
+                    return player.GetTotalHpRegen();
                 case CharacterAttribute.StaminaRegen:
-                    return player.GetStaminaRegen();
+                    return player.GetTotalStaminaRegen();
                 case CharacterAttribute.LightRadius:
                     return player.GetLightRadius();
                 case CharacterAttribute.Attack:

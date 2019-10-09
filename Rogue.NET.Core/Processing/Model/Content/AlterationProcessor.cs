@@ -116,7 +116,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (character.Stamina - cost.Stamina < 0)
             {
                 if (isPlayer)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough MP");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Stamina");
 
                 return false;
             }

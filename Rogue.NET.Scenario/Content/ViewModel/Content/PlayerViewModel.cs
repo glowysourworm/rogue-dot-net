@@ -524,11 +524,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.DefenseBase = player.GetDefenseBase();
             this.FoodUsagePerTurn = player.GetFoodUsagePerTurn();
             this.FoodUsagePerTurnBase = player.FoodUsagePerTurnBase;
-            this.HpRegen = player.GetHpRegen();
+            this.HpRegen = player.GetTotalHpRegen();
             this.HpRegenBase = player.HpRegenBase;
             this.Intelligence = player.GetIntelligence();
             this.IntelligenceBase = player.IntelligenceBase;
-            this.StaminaRegen = player.GetStaminaRegen();
+            this.StaminaRegen = player.GetTotalStaminaRegen();
             this.StaminaRegenBase = player.StaminaRegenBase;
             this.Strength = player.GetStrength();
             this.StrengthBase = player.StrengthBase;

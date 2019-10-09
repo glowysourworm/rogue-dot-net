@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
@@ -28,13 +30,43 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
         public void ApplyBeginningOfTurn(NonPlayerCharacter character)
         {
-            character.Hp -= character.GetMalignAttackAttributeHit();
+            var malignAttackAttributeHit = character.GetMalignAttackAttributeHit();
+
+            // Subtract attack from defender stamina -> then Hp
+            var appliedToHp = (malignAttackAttributeHit - character.Stamina).LowLimit(0);
+
+            character.Stamina -= malignAttackAttributeHit;
+            character.Hp -= appliedToHp;
         }
 
         public void ApplyEndOfTurn(NonPlayerCharacter character, Player player, bool actionTaken)
         {
-            character.Hp += actionTaken ? 0 : character.GetHpRegen();
-            character.Stamina += character.GetStaminaRegen();
+            var staminaRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
+            var hpRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.HpRegen);
+
+            // Penalized for action taken - no natural regeneration
+            if (actionTaken)
+            {
+                // First, regenerate stamina
+                character.Stamina += staminaRegenerationAlteration;
+
+                // Then, allow Hp regeneration
+                if (character.Stamina >= character.StaminaMax)
+                    character.Hp += hpRegenerationAlteration;
+            }
+            else
+            {
+                // First, regenerate stamina
+                character.Stamina += character.GetTotalStaminaRegen();
+
+                // Then, allow Hp regeneration
+                if (character.Stamina >= character.StaminaMax)
+                    character.Hp += character.GetTotalHpRegen();
+
+                // Override if character has any alterations present
+                else if (hpRegenerationAlteration > 0)
+                    character.Hp += hpRegenerationAlteration;
+            }
 
             // Increment event times - ignore messages to publish
             character.Alteration.DecrementEventTimes();

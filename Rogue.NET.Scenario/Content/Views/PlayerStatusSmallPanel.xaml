@@ -27,7 +27,7 @@
                     <Run Text="{Binding HpMax, StringFormat=F1}" />
         </TextBlock>
 
-        <TextBlock Foreground="Orange" FontSize="16" Margin="4">
+        <TextBlock Foreground="CornflowerBlue" FontSize="16" Margin="4">
                     <Run Text="Stamina: " />
                     <Run Text="{Binding Stamina, StringFormat=F1}" />
                     <Run Text=" / " />
@@ -48,7 +48,7 @@
                     <Run Text="{Binding ExperienceNext, StringFormat=N0}" />
         </TextBlock>
 
-        <TextBlock Foreground="LightGoldenrodYellow" FontSize="16" Margin="4">
+        <TextBlock Foreground="Tan" FontSize="16" Margin="4">
                     <Run Text="Haul: " />
                     <Run Text="{Binding Haul, StringFormat=F1}" />
                     <Run Text=" / " />

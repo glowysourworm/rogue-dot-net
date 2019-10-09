@@ -51,10 +51,10 @@
         </Grid>
 
         <commonView:ProgressBar Height="20" BarColor1="Red" ValueMax="{Binding HpMax}" Value="{Binding Hp}" Margin="0,2" x:Name="HPBar" VerticalAlignment="Stretch" ValueTextBrush="#FFFFFFAA" Value2="{Binding Hp}" />
-        <commonView:ProgressBar Height="20" BarColor1="Orange" ValueMax="{Binding StaminaMax}" Value="{Binding Stamina}" Margin="0,2" x:Name="StaminaBar" VerticalAlignment="Stretch" Header="MP" ValueTextBrush="#FFCCCCFF" Value2="{Binding Stamina}"/>
+        <commonView:ProgressBar Height="20" BarColor1="CornflowerBlue" ValueMax="{Binding StaminaMax}" Value="{Binding Stamina}" Margin="0,2" x:Name="StaminaBar" VerticalAlignment="Stretch" Header="Stamina" ValueTextBrush="Blue" Value2="{Binding Stamina}"/>
         <commonView:ProgressBar Height="20" BarColor1="DarkGreen" ValueMax="100" Value="{Binding Hunger}" Margin="0,2" x:Name="HungerBar" VerticalAlignment="Stretch" Header="Hunger" ValueTextBrush="#FF9AFFA0" Value2="{Binding Hunger}"/>
         <commonView:ProgressBar Height="20" BarColor1="Cyan" ValueMax="{Binding ExperienceNext}" Value="{Binding Experience}" Margin="0,2" x:Name="ExperienceBar" VerticalAlignment="Stretch" Header="Exp" ValueTextBrush="#FF00838E" Value2="{Binding Experience}"/>
-        <commonView:ProgressBar Height="20" BarColor1="Goldenrod" ValueMax="{Binding HaulMax}" Value="{Binding Haul}" Margin="0,2" x:Name="HaulBar" VerticalAlignment="Stretch" Header="Haul" ValueTextBrush="#FF9E6300" Value2="{Binding Haul}"/>
+        <commonView:ProgressBar Height="20" BarColor1="Tan" ValueMax="{Binding HaulMax}" Value="{Binding Haul}" Margin="0,2" x:Name="HaulBar" VerticalAlignment="Stretch" Header="Haul" ValueTextBrush="Brown" Value2="{Binding Haul}"/>
 
         <!-- Active Skill Set -->
         <Border Margin="0,4" BorderBrush="#3FFFFFFF" BorderThickness="0.75" CornerRadius="3" Padding="4">

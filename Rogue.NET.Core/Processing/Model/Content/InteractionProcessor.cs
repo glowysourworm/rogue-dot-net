@@ -56,7 +56,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (combatValue > 0)
             {
                 // Apply the effect
-                defender.Hp -= combatValue;
+                // Subtract attack from defender stamina -> then Hp
+                var appliedToHp = (combatValue - defender.Stamina).LowLimit(0);
+
+                defender.Stamina -= combatValue;
+                defender.Hp -= appliedToHp;
 
                 _scenarioMessageService.PublishAlterationMessage(messagePriotity, alterationDisplayName, "HP", combatValue, true, combatResults);
             }
@@ -107,7 +111,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 // if (criticalHit)
                 //    attack *= 2;
 
-                defender.Hp -= attack;
+                // Subtract attack from defender stamina -> then Hp
+                var appliedToHp = (attack - defender.Stamina).LowLimit(0);
+
+                defender.Stamina -= attack;
+                defender.Hp -= appliedToHp;
 
                 _scenarioMessageService.PublishMeleeMessage(
                     (attacker is Enemy) ? ScenarioMessagePriority.Bad : ScenarioMessagePriority.Normal, 
@@ -153,7 +161,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Attacker Hits
             else
             {
-                defender.Hp -= attack;
+                // Subtract attack from defender stamina -> then Hp
+                var appliedToHp = (attack - defender.Stamina).LowLimit(0);
+
+                defender.Stamina -= attack;
+                defender.Hp -= appliedToHp;
 
                 _scenarioMessageService.PublishMeleeMessage(
                     (attacker is Enemy) ? ScenarioMessagePriority.Bad : ScenarioMessagePriority.Normal,

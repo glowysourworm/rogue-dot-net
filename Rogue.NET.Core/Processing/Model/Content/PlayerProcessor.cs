@@ -94,9 +94,40 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Initialize Player Advancement
             playerAdvancement = false;
 
-            //Normal turn stuff
-            player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit();
-            player.Stamina += player.GetStaminaRegen();
+            // Apply Malign Attack Attribute Hits
+            var malignAttackAttributeHit = player.GetMalignAttackAttributeHit();
+            var appliedToHp = (malignAttackAttributeHit - player.Stamina).LowLimit(0);
+
+            player.Stamina -= malignAttackAttributeHit;
+            player.Hp -= appliedToHp;
+
+            // Apply Regeneration
+            var staminaRegenerationAlteration = player.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
+            var hpRegenerationAlteration = player.Alteration.GetAttribute(CharacterAttribute.HpRegen);
+
+            // Penalized for action taken - no natural regeneration
+            if (!regenerate)
+            {
+                // First, regenerate stamina
+                player.Stamina += staminaRegenerationAlteration;
+
+                // Then, allow Hp regeneration
+                if (player.Stamina >= player.StaminaMax)
+                    player.Hp += hpRegenerationAlteration;
+            }
+            else
+            {
+                // First, regenerate stamina
+                player.Stamina += player.GetTotalStaminaRegen();
+
+                // Then, allow Hp regeneration
+                if (player.Stamina >= player.StaminaMax)
+                    player.Hp += player.GetTotalHpRegen();
+
+                // Override if character has any alterations present
+                else if (hpRegenerationAlteration > 0)
+                    player.Hp += hpRegenerationAlteration;
+            }
 
             // Set Killed By if malign attribute hit is great enough
             if (player.Hp <= 0)

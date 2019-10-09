@@ -34,11 +34,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             return character.GetStrengthBase() * ModelConstants.Melee.DefenseBaseMultiplier;
         }
-        public static double GetStaminaRegen(this Character character)
+        public static double GetTotalStaminaRegen(this Character character)
         {
             return character.StaminaRegenBase + character.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
         }
-        public static double GetHpRegen(this Character character)
+        public static double GetTotalHpRegen(this Character character)
         {
             return character.HpRegenBase + character.Alteration.GetAttribute(CharacterAttribute.HpRegen);
         }
