@@ -46,11 +46,11 @@
                 <controls:Range DataContext="{Binding Agility}" LowLimit="1" HighLimit="10" Margin="0,4,0,4" Grid.Column="1" Grid.Row="1" />
                 <controls:Range DataContext="{Binding Intelligence}" LowLimit="1" HighLimit="10" Margin="0,4,0,4" Grid.Column="1" Grid.Row="2" />
                 <controls:Range DataContext="{Binding Speed}" LowLimit=".1" HighLimit="1" Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" />
-                <controls:Range DataContext="{Binding LightRadius}" LowLimit="1" HighLimit="20" Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" />
+                <controls:Range DataContext="{Binding LightRadius}" LowLimit="1" HighLimit="20" Increment="1" StringFormat="N0" Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" />
                 <controls:Range DataContext="{Binding Hp}" LowLimit="5" HighLimit="50" Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" />
-                <controls:Range DataContext="{Binding Stamina}" LowLimit="0" HighLimit="50" Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" />
-                <controls:Range DataContext="{Binding HpRegen}" LowLimit="0" HighLimit="10" Margin="0,4,0,4" Grid.Column="1" Grid.Row="7" />
-                <controls:Range DataContext="{Binding StaminaRegen}" LowLimit="0" HighLimit="10" Margin="0,4,0,4" Grid.Column="1" Grid.Row="8" />
+                <controls:Range DataContext="{Binding Stamina}" LowLimit="1" HighLimit="50" Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" />
+                <controls:Range DataContext="{Binding HpRegen}" LowLimit="0.01" HighLimit="10" Increment="0.01" Margin="0,4,0,4" Grid.Column="1" Grid.Row="7" />
+                <controls:Range DataContext="{Binding StaminaRegen}" LowLimit="0.01" HighLimit="10" Increment="0.01" Margin="0,4,0,4" Grid.Column="1" Grid.Row="8" />
 
                 <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />

@@ -35,7 +35,7 @@
                     <!-- Lifetime -->
                     <Grid Margin="10">
                         <TextBlock Foreground="White" Text="Character Lifetime" VerticalAlignment="Center" />
-                        <controls:Range DataContext="{Binding LifetimeCounter}" LowLimit="5" HighLimit="10000" />
+                        <controls:Range DataContext="{Binding LifetimeCounter}" LowLimit="5" HighLimit="10000" Increment="1" StringFormat="N0" />
                     </Grid>
                     
                     <!-- Alignment -->

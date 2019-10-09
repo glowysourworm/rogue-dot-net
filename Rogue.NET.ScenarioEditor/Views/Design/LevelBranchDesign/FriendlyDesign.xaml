@@ -22,7 +22,7 @@
         <!-- Friendly Generation -->
         <Grid Margin="10">
             <TextBlock Text="Friendly Placement (# Draws)" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" />
-            <controls:Range Width="200" FontSize="18" DataContext="{Binding FriendlyGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="10" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />            
+            <controls:Range Width="200" FontSize="18" DataContext="{Binding FriendlyGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="10" Increment="1" StringFormat="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />            
         </Grid>
 
         <!-- Friendlies -->

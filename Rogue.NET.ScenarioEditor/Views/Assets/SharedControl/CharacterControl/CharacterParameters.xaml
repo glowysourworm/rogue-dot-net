@@ -47,7 +47,7 @@
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Light Radius" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding LightRadius}" LowLimit="1" HighLimit="20" />
+            <controls:Range DataContext="{Binding LightRadius}" LowLimit="1" HighLimit="20" Increment="1" StringFormat="N0" />
         </Grid>        
         <Grid>
             <TextBlock Foreground="White" Text="Hp" VerticalAlignment="Center" />
@@ -59,11 +59,11 @@
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Hp Regen" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding HpRegen}" LowLimit="0" HighLimit="10" />
+            <controls:Range DataContext="{Binding HpRegen}" LowLimit="0.01" HighLimit="10" />
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Stamina Regen" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding StaminaRegen}" LowLimit="0" HighLimit="10" />
+            <controls:Range DataContext="{Binding StaminaRegen}" LowLimit="0.01" HighLimit="10" />
         </Grid>        
     </StackPanel>
 </UserControl>

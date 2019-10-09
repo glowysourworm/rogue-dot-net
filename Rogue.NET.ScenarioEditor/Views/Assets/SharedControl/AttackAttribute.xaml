@@ -59,7 +59,7 @@
               Visibility="{Binding ShowWeakness, RelativeSource={RelativeSource AncestorType={x:Type sharedControl:AttackAttributeListControl}}, Converter={StaticResource BoolVisibilityCollapseConverter}}"
               IsEnabled="{Binding Immune, Converter={StaticResource BoolInverseConverter}}">
             <TextBlock Text="Weakness" VerticalAlignment="Center" Foreground="Red" FontSize="18" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding Weakness}" FontSize="18" LowLimit="0" HighLimit="500" Width="300" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding Weakness}" FontSize="18" LowLimit="0" HighLimit="10" Increment="1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="0, 5"
               Visibility="{Binding ShowImmune, RelativeSource={RelativeSource AncestorType={x:Type sharedControl:AttackAttributeListControl}}, Converter={StaticResource BoolVisibilityCollapseConverter}}">

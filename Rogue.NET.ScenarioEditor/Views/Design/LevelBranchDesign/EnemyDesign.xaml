@@ -28,7 +28,7 @@
         <!-- Enemy Generation -->
         <Grid Margin="10">
             <TextBlock Text="Enemy Placement (# Draws)" Foreground="White" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-            <controls:Range Width="200" FontSize="18" DataContext="{Binding EnemyGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="50" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />            
+            <controls:Range Width="200" FontSize="18" DataContext="{Binding EnemyGenerationRange, StringFormat=P2}" LowLimit="0" HighLimit="50" Increment="1" StringFormat="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />            
         </Grid>
 
         <!-- Enemies -->

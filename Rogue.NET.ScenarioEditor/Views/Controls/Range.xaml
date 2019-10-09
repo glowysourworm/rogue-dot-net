@@ -15,33 +15,37 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <TextBlock x:Name="LowText" 
-                   Text="{Binding LowLimit, StringFormat=N0, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}" 
+                   Text="{Binding LowLimit, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}" 
                    Foreground="White" 
                    HorizontalAlignment="Center" 
-                   VerticalAlignment="Center" />
+                   VerticalAlignment="Center">
+        </TextBlock>
         <TextBlock x:Name="HighText" 
-                   Text="{Binding HighLimit, StringFormat=N0, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}" 
+                   Text="{Binding HighLimit, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}" 
                    Foreground="White" 
                    Grid.Column="3" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center" />
+        
         <wpftoolkit:DoubleUpDown x:Name="LowUD" 
                                  AllowTextInput="True" 
                                  AllowSpin="True"
-                                 Increment="0.01"
+                                 Increment="{Binding Increment, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}"
                                  Value="{Binding Low, Mode=TwoWay}" 
                                  Minimum="{Binding LowLimit, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}" 
                                  Maximum="{Binding High, Mode=TwoWay}"
+                                 FormatString="{Binding StringFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}"
                                  Margin="0,0,2,0" 
                                  Grid.Column="1" />
         
         <wpftoolkit:DoubleUpDown x:Name="HighUD" 
                                  AllowTextInput="True" 
                                  AllowSpin="True"
-                                 Increment="0.01"
+                                 Increment="{Binding Increment, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}"
                                  Value="{Binding High, Mode=TwoWay}" 
                                  Minimum="{Binding Low}" 
                                  Maximum="{Binding HighLimit, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}"
+                                 FormatString="{Binding StringFormat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:Range}}}"
                                  Margin="2,0,0,0" 
                                  Grid.Column="2" />
     </Grid>

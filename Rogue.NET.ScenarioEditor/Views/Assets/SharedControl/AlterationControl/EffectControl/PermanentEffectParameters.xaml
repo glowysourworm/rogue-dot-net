@@ -21,7 +21,7 @@
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Light Radius" FontSize="16" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding LightRadiusRange}" LowLimit="-20" HighLimit="20" Width="300" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding LightRadiusRange}" LowLimit="-20" HighLimit="20" Increment="1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Experience" FontSize="16" HorizontalAlignment="Left" />

@@ -16,7 +16,7 @@
                 <!-- Event Time -->
                 <Grid Margin="10">
                     <TextBlock Text="Event Time" Foreground="White" />
-                    <controls:Range DataContext="{Binding EventTime}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding EventTime}" LowLimit="5" HighLimit="2000" Increment="1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
                 </Grid>
 
                 <!-- Is Stackable -->
