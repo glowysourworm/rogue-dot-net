@@ -46,11 +46,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             }
             else
             {
-                this.LowUD.Increment = 0.1;
-                this.HighUD.Increment = 0.1;
+                this.LowUD.Increment = 0.01;
+                this.HighUD.Increment = 0.01;
 
-                this.LowUD.FormatString = "F1";
-                this.HighUD.FormatString = "F1";
+                this.LowUD.FormatString = "F2";
+                this.HighUD.FormatString = "F2";
             }
         }
     }
