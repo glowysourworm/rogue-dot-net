@@ -19,7 +19,7 @@
             </TextBlock>
         </Grid>
 
-        <!-- Alteration Attributes { Hp, Mp } -->
+        <!-- Alteration Attributes { Hp, Stamina } -->
         <ItemsControl ItemsSource="{Binding AlterationEffectAttributes}" Margin="4">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>

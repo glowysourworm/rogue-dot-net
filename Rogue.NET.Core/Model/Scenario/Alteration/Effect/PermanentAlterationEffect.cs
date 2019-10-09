@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
         public double Experience { get; set; }
         public double Hunger { get; set; }
         public double Hp { get; set; }
-        public double Mp { get; set; }
+        public double Stamina { get; set; }
 
         public PermanentAlterationEffect()
         {

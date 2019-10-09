@@ -113,7 +113,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return false;
             }
 
-            if (character.Mp - cost.Mp < 0)
+            if (character.Stamina - cost.Stamina < 0)
             {
                 if (isPlayer)
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough MP");
@@ -144,7 +144,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public bool CalculateCharacterMeetsAlterationCost(Character character, AlterationCostTemplate cost)
         {
             return (character.Hp - cost.Hp) >= 0 &&
-                   (character.Mp - cost.Mp) >= 0;
+                   (character.Stamina - cost.Stamina) >= 0;
         }
         public bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost)
         {
@@ -154,9 +154,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return false;
             }
 
-            if (player.Mp - cost.Mp < 0)
+            if (player.Stamina - cost.Stamina < 0)
             {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough MP");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Stamina");
                 return false;
             }
 
@@ -190,7 +190,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             character.SpeedBase += alterationEffect.Speed;
             character.LightRadiusBase += alterationEffect.LightRadius;
             character.Hp += alterationEffect.Hp;
-            character.Mp += alterationEffect.Mp;
+            character.Stamina += alterationEffect.Stamina;
 
             // Player Specific - (Also Publish Messages)
             if (character is Player)
@@ -257,11 +257,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hp has changed by " + alterationEffect.Hp.ToString("F2"));
 
                 // Mp
-                if (alterationEffect.Mp > 0)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Mp has changed by " + alterationEffect.Mp.ToString("N0"));
+                if (alterationEffect.Stamina > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Stamina has changed by " + alterationEffect.Stamina.ToString("N0"));
 
-                else if (alterationEffect.Mp < 0)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Mp has changed by " + alterationEffect.Mp.ToString("N0"));
+                else if (alterationEffect.Stamina < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Stamina has changed by " + alterationEffect.Stamina.ToString("N0"));
             }
         }
         public void ApplyRemedy(Character character, RemedyAlterationEffect alterationEffect)
@@ -442,8 +442,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
             actor.Hp += effect.Hp;
             affectedCharacter.Hp -= effect.Hp;
 
-            actor.Mp += effect.Mp;
-            affectedCharacter.Mp -= effect.Mp;
+            actor.Stamina += effect.Stamina;
+            affectedCharacter.Stamina -= effect.Stamina;
 
             // TODO: Clean up ApplyLimits extension to a singe method
             if (actor is Player)
@@ -469,13 +469,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                              _modelService.GetDisplayName(affectedCharacter));
             }
 
-            if (effect.Mp > 0)
+            if (effect.Stamina > 0)
             {
                 _scenarioMessageService
                     .Publish(ScenarioMessagePriority.Normal,
-                             "{0} has drained {1} Mp from {2}",
+                             "{0} has drained {1} Stamina from {2}",
                              _modelService.GetDisplayName(actor),
-                             effect.Mp.ToString("F1"),
+                             effect.Stamina.ToString("F1"),
                              _modelService.GetDisplayName(affectedCharacter));
             }
         }
@@ -485,12 +485,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
             player.Experience -= alterationCost.Experience;
             player.Hp -= alterationCost.Hp;
             player.Hunger += alterationCost.Hunger;
-            player.Mp -= alterationCost.Mp;
+            player.Stamina -= alterationCost.Stamina;
         }
         protected void ApplyOneTimeAlterationCost(NonPlayerCharacter character, AlterationCost alterationCost)
         {
             character.Hp -= alterationCost.Hp;
-            character.Mp -= alterationCost.Mp;
+            character.Stamina -= alterationCost.Stamina;
         }
     }
 }

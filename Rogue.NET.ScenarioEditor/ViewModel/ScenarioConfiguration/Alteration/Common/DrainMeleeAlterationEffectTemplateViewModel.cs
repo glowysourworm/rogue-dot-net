@@ -8,30 +8,30 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 {
     [Serializable]
     [UIType(DisplayName = "Drain (Combat)",
-            Description = "Transfers a character's Hp or Mp to another character (Combat Only)",
+            Description = "Transfers a character's Hp or Stamina to another character (Combat Only)",
             ViewType = typeof(DrainMeleeEffectParameters),
             BaseType = UITypeAttributeBaseType.Alteration)]
     public class DrainMeleeAlterationEffectTemplateViewModel
                     : TemplateViewModel, IEquipmentAttackAlterationEffectTemplateViewModel
     {
         RangeViewModel<double> _hp;
-        RangeViewModel<double> _mp;
+        RangeViewModel<double> _stamina;
 
         public RangeViewModel<double> Hp
         {
             get { return _hp; }
             set { this.RaiseAndSetIfChanged(ref _hp, value); }
         }
-        public RangeViewModel<double> Mp
+        public RangeViewModel<double> Stamina
         {
-            get { return _mp; }
-            set { this.RaiseAndSetIfChanged(ref _mp, value); }
+            get { return _stamina; }
+            set { this.RaiseAndSetIfChanged(ref _stamina, value); }
         }
 
         public DrainMeleeAlterationEffectTemplateViewModel()
         {
             this.Hp = new RangeViewModel<double>(0, 0);
-            this.Mp = new RangeViewModel<double>(0, 0);
+            this.Stamina = new RangeViewModel<double>(0, 0);
         }
     }
 }

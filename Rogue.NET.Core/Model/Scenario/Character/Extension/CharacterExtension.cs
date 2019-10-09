@@ -13,14 +13,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 {
     public static class CharacterExtension
     {
-        public static double GetMentalBlockBase(this Character character)
-        {
-            return character.IntelligenceBase / 100;
-        }
-        public static double GetDodgeBase(this Character character)
-        {
-            return character.AgilityBase / 100;
-        }
         public static double GetHaulMax(this Character character)
         {
             return character.StrengthBase * ModelConstants.HaulMaxStrengthMultiplier;
@@ -42,9 +34,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             return character.GetStrengthBase() * ModelConstants.Melee.DefenseBaseMultiplier;
         }
-        public static double GetMpRegen(this Character character)
+        public static double GetStaminaRegen(this Character character)
         {
-            return character.MpRegenBase + character.Alteration.GetAttribute(CharacterAttribute.MpRegen);
+            return character.StaminaRegenBase + character.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
         }
         public static double GetHpRegen(this Character character)
         {
@@ -85,24 +77,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             result += character.Alteration.GetAttribute(CharacterAttribute.LightRadius);
 
             return Math.Max(0.1, result);
-        }
-        public static double GetMentalBlock(this Character character)
-        {
-            var result = character.GetMentalBlockBase();
-
-            // Alteration
-            result += character.Alteration.GetAttribute(CharacterAttribute.MagicBlock);
-
-            return result.Clip();
-        }
-        public static double GetDodge(this Character character)
-        {
-            var result = character.GetDodgeBase();
-
-            // Alteration
-            result += character.Alteration.GetAttribute(CharacterAttribute.Dodge);
-
-            return result.Clip();
         }
         public static double GetSpeed(this Character character)
         {
@@ -187,15 +161,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                                           character.GetIntelligence();
 
             return MeleeCalculator.GetAttackValue(equipment.GetThrowValue(), characterAttributeValue);
-        }
-        public static double GetCriticalHitProbability(this Character character)
-        {
-            var result = ModelConstants.CriticalHitBase;
-
-            // Alteration
-            result += character.Alteration.GetAttribute(CharacterAttribute.CriticalHit);
-
-            return result.Clip();
         }
 
         /// <summary>

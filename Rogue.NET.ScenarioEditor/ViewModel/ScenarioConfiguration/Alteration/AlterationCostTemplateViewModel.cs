@@ -8,7 +8,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private double _experience;
         private double _hunger;
         private double _hp;
-        private double _mp;
+        private double _stamina;
 
         public double Experience
         {
@@ -25,10 +25,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _hp; }
             set { this.RaiseAndSetIfChanged(ref _hp, value); }
         }
-        public double Mp
+        public double Stamina
         {
-            get { return _mp; }
-            set { this.RaiseAndSetIfChanged(ref _mp, value); }
+            get { return _stamina; }
+            set { this.RaiseAndSetIfChanged(ref _stamina, value); }
+        }
+
+        public AlterationCostTemplateViewModel()
+        {
+
         }
     }
 }

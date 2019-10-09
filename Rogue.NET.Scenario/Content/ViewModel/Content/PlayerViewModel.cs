@@ -37,43 +37,35 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         #region (private) Backing Fields
         int _level;
-        int _skillPointsEarned;
         int _skillPoints;
         string _class;
         double _experience;
         double _experienceNext;
-        double _skillPointExperience;
-        double _skillPointExperienceNext;
         double _hunger;
         double _haul;
         double _haulMax;
         double _hpMax;
-        double _mpMax;
+        double _staminaMax;
         double _hp;
-        double _mp;
+        double _stamina;
         double _attack;
         double _attackBase;
         double _defense;
         double _defenseBase;
-        double _dodge;
-        double _dodgeBase;
         double _foodUsagePerTurn;
         double _foodUsagePerTurnBase;
-        double _criticalHitProbability;
         double _hpRegen;
         double _hpRegenBase;
-        double _mpRegen;
-        double _mpRegenBase;
+        double _staminaRegen;
+        double _staminaRegenBase;
         double _strength;
         double _strengthBase;
         double _agility;
         double _agilityBase;
         double _intelligence;
         double _intelligenceBase;
-        double _auraRadius;
-        double _auraRadiusBase;
-        double _magicBlock;
-        double _magicBlockBase;
+        double _lightRadius;
+        double _lightRadiusBase;
         double _speed;
         double _speedBase;
         SkillSetViewModel _activeSkillSet;
@@ -127,20 +119,20 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _hpMax; }
             set { this.RaiseAndSetIfChanged(ref _hpMax, value); }
         }
-        public double MpMax
+        public double StaminaMax
         {
-            get { return _mpMax; }
-            set { this.RaiseAndSetIfChanged(ref _mpMax, value); }
+            get { return _staminaMax; }
+            set { this.RaiseAndSetIfChanged(ref _staminaMax, value); }
         }
         public double Hp
         {
             get { return _hp; }
             set { this.RaiseAndSetIfChanged(ref _hp, value); }
         }
-        public double Mp
+        public double Stamina
         {
-            get { return _mp; }
-            set { this.RaiseAndSetIfChanged(ref _mp, value); }
+            get { return _stamina; }
+            set { this.RaiseAndSetIfChanged(ref _stamina, value); }
         }
         public double Haul
         {
@@ -172,16 +164,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _defenseBase; }
             set { this.RaiseAndSetIfChanged(ref _defenseBase, value); }
         }
-        public double Dodge
-        {
-            get { return _dodge; }
-            set { this.RaiseAndSetIfChanged(ref _dodge, value); }
-        }
-        public double DodgeBase
-        {
-            get { return _dodgeBase; }
-            set { this.RaiseAndSetIfChanged(ref _dodgeBase, value); }
-        }
         public double FoodUsagePerTurn
         {
             get { return _foodUsagePerTurn; }
@@ -191,11 +173,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             get { return _foodUsagePerTurnBase; }
             set { this.RaiseAndSetIfChanged(ref _foodUsagePerTurnBase, value); }
-        }
-        public double CriticalHitProbability
-        {
-            get { return _criticalHitProbability; }
-            set { this.RaiseAndSetIfChanged(ref _criticalHitProbability, value); }
         }
         public double HpRegen
         {
@@ -207,15 +184,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _hpRegenBase; }
             set { this.RaiseAndSetIfChanged(ref _hpRegenBase, value); }
         }
-        public double MpRegen
+        public double StaminaRegen
         {
-            get { return _mpRegen; }
-            set { this.RaiseAndSetIfChanged(ref _mpRegen, value); }
+            get { return _staminaRegen; }
+            set { this.RaiseAndSetIfChanged(ref _staminaRegen, value); }
         }
-        public double MpRegenBase
+        public double StaminaRegenBase
         {
-            get { return _mpRegenBase; }
-            set { this.RaiseAndSetIfChanged(ref _mpRegenBase, value); }
+            get { return _staminaRegenBase; }
+            set { this.RaiseAndSetIfChanged(ref _staminaRegenBase, value); }
         }
         public double Strength
         {
@@ -247,25 +224,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _intelligenceBase; }
             set { this.RaiseAndSetIfChanged(ref _intelligenceBase, value); }
         }
-        public double AuraRadius
+        public double LightRadius
         {
-            get { return _auraRadius; }
-            set { this.RaiseAndSetIfChanged(ref _auraRadius, value); }
+            get { return _lightRadius; }
+            set { this.RaiseAndSetIfChanged(ref _lightRadius, value); }
         }
-        public double AuraRadiusBase
+        public double LightRadiusBase
         {
-            get { return _auraRadiusBase; }
-            set { this.RaiseAndSetIfChanged(ref _auraRadiusBase, value); }
-        }
-        public double MagicBlock
-        {
-            get { return _magicBlock; }
-            set { this.RaiseAndSetIfChanged(ref _magicBlock, value); }
-        }
-        public double MagicBlockBase
-        {
-            get { return _magicBlockBase; }
-            set { this.RaiseAndSetIfChanged(ref _magicBlockBase, value); }
+            get { return _lightRadiusBase; }
+            set { this.RaiseAndSetIfChanged(ref _lightRadiusBase, value); }
         }
         public double Speed
         {
@@ -488,8 +455,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Hp = player.Hp;
             this.HpMax = player.HpMax;
             this.Hunger = player.Hunger;
-            this.Mp = player.Mp;
-            this.MpMax = player.MpMax;
+            this.Stamina = player.Stamina;
+            this.StaminaMax = player.StaminaMax;
             this.SkillPoints = player.SkillPoints;
             this.RogueName = player.RogueName;
 
@@ -551,23 +518,18 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.AgilityBase = player.AgilityBase;
             this.Attack = player.GetAttack();
             this.AttackBase = player.GetAttackBase();
-            this.AuraRadius = player.GetLightRadius();
-            this.AuraRadiusBase = player.LightRadiusBase;
-            this.CriticalHitProbability = player.GetCriticalHitProbability();
+            this.LightRadius = player.GetLightRadius();
+            this.LightRadiusBase = player.LightRadiusBase;
             this.Defense = player.GetDefense();
             this.DefenseBase = player.GetDefenseBase();
-            this.Dodge = player.GetDodge();
-            this.DodgeBase = player.GetDodgeBase();
             this.FoodUsagePerTurn = player.GetFoodUsagePerTurn();
             this.FoodUsagePerTurnBase = player.FoodUsagePerTurnBase;
             this.HpRegen = player.GetHpRegen();
             this.HpRegenBase = player.HpRegenBase;
             this.Intelligence = player.GetIntelligence();
             this.IntelligenceBase = player.IntelligenceBase;
-            this.MagicBlock = player.GetMentalBlock();
-            this.MagicBlockBase = player.GetMentalBlockBase();
-            this.MpRegen = player.GetMpRegen();
-            this.MpRegenBase = player.MpRegenBase;
+            this.StaminaRegen = player.GetStaminaRegen();
+            this.StaminaRegenBase = player.StaminaRegenBase;
             this.Strength = player.GetStrength();
             this.StrengthBase = player.StrengthBase;
             this.Speed = player.GetSpeed();

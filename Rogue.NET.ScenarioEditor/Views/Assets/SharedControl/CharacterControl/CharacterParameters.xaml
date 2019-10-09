@@ -54,16 +54,16 @@
             <controls:Range DataContext="{Binding Hp}" LowLimit="1" HighLimit="10000" />
         </Grid>
         <Grid>
-            <TextBlock Foreground="White" Text="Mp" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding Mp}" LowLimit="1" HighLimit="10000" />
+            <TextBlock Foreground="White" Text="Stamina" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding Stamina}" LowLimit="1" HighLimit="10000" />
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Hp Regen" VerticalAlignment="Center" />
             <controls:Range DataContext="{Binding HpRegen}" LowLimit="0" HighLimit="10" />
         </Grid>
         <Grid>
-            <TextBlock Foreground="White" Text="Mp Regen" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding MpRegen}" LowLimit="0" HighLimit="10" />
+            <TextBlock Foreground="White" Text="Stamina Regen" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding StaminaRegen}" LowLimit="0" HighLimit="10" />
         </Grid>        
     </StackPanel>
 </UserControl>

@@ -29,7 +29,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _experienceRange;
         private RangeViewModel<double> _hungerRange;
         private RangeViewModel<double> _hpRange;
-        private RangeViewModel<double> _mpRange;
+        private RangeViewModel<double> _staminaRange;
 
         public RangeViewModel<double> StrengthRange
         {
@@ -71,10 +71,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _hpRange; }
             set { this.RaiseAndSetIfChanged(ref _hpRange, value); }
         }
-        public RangeViewModel<double> MpRange
+        public RangeViewModel<double> StaminaRange
         {
-            get { return _mpRange; }
-            set { this.RaiseAndSetIfChanged(ref _mpRange, value); }
+            get { return _staminaRange; }
+            set { this.RaiseAndSetIfChanged(ref _staminaRange, value); }
         }
 
         public PermanentAlterationEffectTemplateViewModel()
@@ -86,7 +86,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.HpRange = new RangeViewModel<double>(0, 0);
             this.HungerRange = new RangeViewModel<double>(0, 0);
             this.IntelligenceRange = new RangeViewModel<double>(0, 0);
-            this.MpRange = new RangeViewModel<double>(0, 0);
+            this.StaminaRange = new RangeViewModel<double>(0, 0);
             this.StrengthRange = new RangeViewModel<double>(0, 0);
         }
     }

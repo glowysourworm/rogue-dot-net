@@ -51,15 +51,16 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             var attributesChanged = new List<Tuple<string, double, Color>>();
 
-            // Hp Max
-            var change = PlayerCalculator.CalculateHpGain(player.StrengthBase * _randomSequenceGenerator.Get());
-            player.HpMax += change;
-            attributesChanged.Add(new Tuple<string, double, Color>("HP", change, Colors.Red));
+            // TODO:STATS
+            //// Hp Max
+            //var change = PlayerCalculator.CalculateHpGain(player.StrengthBase * _randomSequenceGenerator.Get());
+            //player.HpMax += change;
+            //attributesChanged.Add(new Tuple<string, double, Color>("HP", change, Colors.Red));
 
-            // Mp Max
-            change = PlayerCalculator.CalculateMpGain(player.IntelligenceBase * _randomSequenceGenerator.Get());
-            player.MpMax += change;
-            attributesChanged.Add(new Tuple<string, double, Color>("MP", change, Colors.Blue));
+            //// Mp Max
+            //change = PlayerCalculator.CalculateMpGain(player.IntelligenceBase * _randomSequenceGenerator.Get());
+            //player.StaminaMax += change;
+            //attributesChanged.Add(new Tuple<string, double, Color>("MP", change, Colors.Blue));
 
             // Level :)
             player.Level++;
@@ -95,7 +96,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             //Normal turn stuff
             player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit();
-            player.Mp += player.GetMpRegen();
+            player.Stamina += player.GetStaminaRegen();
 
             // Set Killed By if malign attribute hit is great enough
             if (player.Hp <= 0)
@@ -132,7 +133,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                 // Refill HP and MP as a bonus
                 player.Hp = player.HpMax;
-                player.Mp = player.MpMax;
+                player.Stamina = player.StaminaMax;
 
                 // Mark player advancement
                 playerAdvancement = true;
@@ -180,7 +181,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             foreach (var alterationCost in player.Alteration.GetAlterationCosts())
             {
                 player.Hp -= alterationCost.Value.Hp;
-                player.Mp -= alterationCost.Value.Mp;
+                player.Stamina -= alterationCost.Value.Stamina;
                 player.Hunger += alterationCost.Value.Hunger;
                 player.Experience -= alterationCost.Value.Experience;
             }

@@ -25,13 +25,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _lightRadiusRange;
         private Range<double> _foodUsagePerTurnRange;
         private Range<double> _hpPerStepRange;
-        private Range<double> _mpPerStepRange;
+        private Range<double> _staminaPerStepRange;
         private Range<double> _attackRange;
         private Range<double> _defenseRange;
-        private Range<double> _experienceRange;
-        private Range<double> _hungerRange;
-        private Range<double> _hpRange;
-        private Range<double> _mpRange;
         private bool _isStackable;
         private bool _hasAlteredState;
 
@@ -167,15 +163,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> MpPerStepRange
+        public Range<double> StaminaPerStepRange
         {
-            get { return _mpPerStepRange; }
+            get { return _staminaPerStepRange; }
             set
             {
-                if (_mpPerStepRange != value)
+                if (_staminaPerStepRange != value)
                 {
-                    _mpPerStepRange = value;
-                    OnPropertyChanged("MpPerStepRange");
+                    _staminaPerStepRange = value;
+                    OnPropertyChanged("StaminaPerStepRange");
                 }
             }
         }
@@ -200,54 +196,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _defenseRange = value;
                     OnPropertyChanged("DefenseRange");
-                }
-            }
-        }
-        public Range<double> ExperienceRange
-        {
-            get { return _experienceRange; }
-            set
-            {
-                if (_experienceRange != value)
-                {
-                    _experienceRange = value;
-                    OnPropertyChanged("ExperienceRange");
-                }
-            }
-        }
-        public Range<double> HungerRange
-        {
-            get { return _hungerRange; }
-            set
-            {
-                if (_hungerRange != value)
-                {
-                    _hungerRange = value;
-                    OnPropertyChanged("HungerRange");
-                }
-            }
-        }
-        public Range<double> HpRange
-        {
-            get { return _hpRange; }
-            set
-            {
-                if (_hpRange != value)
-                {
-                    _hpRange = value;
-                    OnPropertyChanged("HpRange");
-                }
-            }
-        }
-        public Range<double> MpRange
-        {
-            get { return _mpRange; }
-            set
-            {
-                if (_mpRange != value)
-                {
-                    _mpRange = value;
-                    OnPropertyChanged("MpRange");
                 }
             }
         }
@@ -287,14 +235,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.AttackRange = new Range<double>(0, 0);
             this.LightRadiusRange = new Range<double>(0, 0);
             this.DefenseRange = new Range<double>(0, 0);
-            this.ExperienceRange = new Range<double>(0, 0);
             this.FoodUsagePerTurnRange = new Range<double>(0, 0);
             this.HpPerStepRange = new Range<double>(0, 0);
-            this.HpRange = new Range<double>(0, 0);
-            this.HungerRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);
-            this.MpPerStepRange = new Range<double>(0, 0);
-            this.MpRange = new Range<double>(0, 0);
+            this.StaminaPerStepRange = new Range<double>(0, 0);
             this.StrengthRange = new Range<double>(0, 0);
         }
     }

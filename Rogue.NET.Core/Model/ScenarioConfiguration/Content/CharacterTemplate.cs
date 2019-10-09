@@ -17,9 +17,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _intelligence;
         private Range<double> _speed;
         private Range<double> _hp;
-        private Range<double> _mp;
+        private Range<double> _stamina;
         private Range<double> _hpRegen;
-        private Range<double> _mpRegen;
+        private Range<double> _staminaRegen;
         private Range<int> _lightRadius;
 
         public Range<double> Strength
@@ -82,15 +82,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public Range<double> Mp
+        public Range<double> Stamina
         {
-            get { return _mp; }
+            get { return _stamina; }
             set
             {
-                if (_mp != value)
+                if (_stamina != value)
                 {
-                    _mp = value;
-                    OnPropertyChanged("Mp");
+                    _stamina = value;
+                    OnPropertyChanged("Stamina");
                 }
             }
         }
@@ -106,15 +106,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public Range<double> MpRegen
+        public Range<double> StaminaRegen
         {
-            get { return _mpRegen; }
+            get { return _staminaRegen; }
             set
             {
-                if (_mpRegen != value)
+                if (_staminaRegen != value)
                 {
-                    _mpRegen = value;
-                    OnPropertyChanged("MpRegen");
+                    _staminaRegen = value;
+                    OnPropertyChanged("StaminaRegen");
                 }
             }
         }
@@ -138,9 +138,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Intelligence = new Range<double>(2, 3);
             this.Speed = new Range<double>(0.5, 0.5);       // Exclude 0 because Paralyzed altered state
             this.Hp = new Range<double>(10, 20);
-            this.Mp = new Range<double>(2, 5);
+            this.Stamina = new Range<double>(2, 5);
             this.HpRegen = new Range<double>(0, 0);
-            this.MpRegen = new Range<double>(0, 0);
+            this.StaminaRegen = new Range<double>(0, 0);
             this.LightRadius = new Range<int>(5, 5);
 
             this.StartingConsumables = new List<ProbabilityConsumableTemplate>();

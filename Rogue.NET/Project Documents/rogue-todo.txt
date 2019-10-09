@@ -2871,5 +2871,7 @@ IMMEDIATE TODO'S:
 	- TODO: Constrain Notes to be simple like Ammo.
 
 	- TODO: Add hints to the validation message results
+
+	- TODO: Change MP -> Stamina. Don't allow NATURAL HP Regen until Stamina is completely full; but do allow HP Regen if there's an alteration.
 			
 			  

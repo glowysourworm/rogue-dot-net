@@ -121,10 +121,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             character.RogueName = template.Name;
 
             character.Hp = _randomSequenceGenerator.GetRandomValue(template.Hp);
-            character.Mp = _randomSequenceGenerator.GetRandomValue(template.Mp);
+            character.Stamina = _randomSequenceGenerator.GetRandomValue(template.Stamina);
             character.HpRegenBase = _randomSequenceGenerator.GetRandomValue(template.HpRegen);
-            character.MpRegenBase = _randomSequenceGenerator.GetRandomValue(template.MpRegen);
-            character.MpMax = character.Mp;
+            character.StaminaRegenBase = _randomSequenceGenerator.GetRandomValue(template.StaminaRegen);
+            character.StaminaMax = character.Stamina;
             character.HpMax = character.Hp;
             character.AgilityBase = _randomSequenceGenerator.GetRandomValue(template.Agility);
             character.StrengthBase = _randomSequenceGenerator.GetRandomValue(template.Strength);

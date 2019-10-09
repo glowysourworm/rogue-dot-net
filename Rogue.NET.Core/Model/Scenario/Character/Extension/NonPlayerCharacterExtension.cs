@@ -32,14 +32,14 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         }
         public static void ApplyLimits(this NonPlayerCharacter character)
         {
-            if (character.Mp < 0)
-                character.Mp = 0;
+            if (character.Stamina < 0)
+                character.Stamina = 0;
 
             if (character.Hp > character.HpMax)
                 character.Hp = character.HpMax;
 
-            if (character.Mp > character.MpMax)
-                character.Mp = character.MpMax;
+            if (character.Stamina > character.StaminaMax)
+                character.Stamina = character.StaminaMax;
 
             if (character.SpeedBase < ModelConstants.MinSpeed)
                 character.SpeedBase = ModelConstants.MinSpeed;

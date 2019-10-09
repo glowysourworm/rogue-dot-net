@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
         public double LightRadius { get; set; }
         public double FoodUsagePerTurn { get; set; }
         public double HpPerStep { get; set; }
-        public double MpPerStep { get; set; }
+        public double StaminaPerStep { get; set; }
         public double Attack { get; set; }
         public double Defense { get; set; }
 

@@ -41,7 +41,7 @@
                               SelectedValue="{Binding AlteredState.Name}"
                               SelectedValuePath="Name"
                               DisplayMemberPath="Name" 
-                              HorizontalAlignment="Right" Height="24"  Width="250" />
+                              HorizontalAlignment="Right" Height="24"  Width="200" />
                 </Grid>
                 
                 <!-- Can See Invisible -->
@@ -83,8 +83,8 @@
                     <controls:Range DataContext="{Binding HpPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Mp Per Step" />
-                    <controls:Range DataContext="{Binding MpPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
+                    <TextBlock Foreground="White" Text="Stamina Per Step" />
+                    <controls:Range DataContext="{Binding StaminaPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Attack" />

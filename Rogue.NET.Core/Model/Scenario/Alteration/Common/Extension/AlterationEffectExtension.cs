@@ -50,10 +50,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
 
                         return 0D;
                     }
-                case CharacterAttribute.Mp:
+                case CharacterAttribute.Stamina:
                     {
                         if (effect is PermanentAlterationEffect)
-                            return (effect as PermanentAlterationEffect).Mp;
+                            return (effect as PermanentAlterationEffect).Stamina;
 
                         return 0D;
                     }
@@ -134,16 +134,16 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
 
                         return 0D;
                     }
-                case CharacterAttribute.MpRegen:
+                case CharacterAttribute.StaminaRegen:
                     {
                         if (effect is AuraAlterationEffect)
-                            return (effect as AuraAlterationEffect).MpPerStep;
+                            return (effect as AuraAlterationEffect).StaminaPerStep;
 
                         else if (effect is PassiveAlterationEffect)
-                            return (effect as PassiveAlterationEffect).MpPerStep;
+                            return (effect as PassiveAlterationEffect).StaminaPerStep;
 
                         else if (effect is TemporaryAlterationEffect)
-                            return (effect as TemporaryAlterationEffect).MpPerStep;
+                            return (effect as TemporaryAlterationEffect).StaminaPerStep;
 
                         return 0D;
                     }
@@ -184,19 +184,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
                         else if (effect is TemporaryAlterationEffect)
                             return (effect as TemporaryAlterationEffect).Defense;
 
-                        return 0D;
-                    }
-                // TODO:ATTRIBUTE
-                case CharacterAttribute.Dodge:
-                    {
-                        return 0D;
-                    }
-                case CharacterAttribute.MagicBlock:
-                    {
-                        return 0D;
-                    }
-                case CharacterAttribute.CriticalHit:
-                    {
                         return 0D;
                     }
                 case CharacterAttribute.FoodUsagePerTurn:

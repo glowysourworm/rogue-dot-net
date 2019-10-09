@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
         : RogueBase, IEquipmentAttackAlterationEffect
     {
         public double Hp { get; set; }
-        public double Mp { get; set; }
+        public double Stamina { get; set; }
 
         public DrainMeleeAlterationEffect()
         {

@@ -31,15 +31,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _lightRadiusRange;
         private RangeViewModel<double> _foodUsagePerTurnRange;
         private RangeViewModel<double> _hpPerStepRange;
-        private RangeViewModel<double> _mpPerStepRange;
+        private RangeViewModel<double> _staminaPerStepRange;
         private RangeViewModel<double> _attackRange;
         private RangeViewModel<double> _defenseRange;
-        private RangeViewModel<double> _experienceRange;
-        private RangeViewModel<double> _hungerRange;
-        private RangeViewModel<double> _hpRange;
-        private RangeViewModel<double> _mpRange;
         private bool _isStackable;
         private bool _hasAlteredState;
+
         public SymbolEffectTemplateViewModel SymbolAlteration
         {
             get { return _symbolAlteration; }
@@ -95,10 +92,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _hpPerStepRange; }
             set { this.RaiseAndSetIfChanged(ref _hpPerStepRange, value); }
         }
-        public RangeViewModel<double> MpPerStepRange
+        public RangeViewModel<double> StaminaPerStepRange
         {
-            get { return _mpPerStepRange; }
-            set { this.RaiseAndSetIfChanged(ref _mpPerStepRange, value); }
+            get { return _staminaPerStepRange; }
+            set { this.RaiseAndSetIfChanged(ref _staminaPerStepRange, value); }
         }
         public RangeViewModel<double> AttackRange
         {
@@ -109,26 +106,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _defenseRange; }
             set { this.RaiseAndSetIfChanged(ref _defenseRange, value); }
-        }
-        public RangeViewModel<double> ExperienceRange
-        {
-            get { return _experienceRange; }
-            set { this.RaiseAndSetIfChanged(ref _experienceRange, value); }
-        }
-        public RangeViewModel<double> HungerRange
-        {
-            get { return _hungerRange; }
-            set { this.RaiseAndSetIfChanged(ref _hungerRange, value); }
-        }
-        public RangeViewModel<double> HpRange
-        {
-            get { return _hpRange; }
-            set { this.RaiseAndSetIfChanged(ref _hpRange, value); }
-        }
-        public RangeViewModel<double> MpRange
-        {
-            get { return _mpRange; }
-            set { this.RaiseAndSetIfChanged(ref _mpRange, value); }
         }
         public bool IsStackable
         {
@@ -151,15 +128,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.AttackRange = new RangeViewModel<double>(0, 0);
             this.LightRadiusRange = new RangeViewModel<double>(0, 0);
             this.DefenseRange = new RangeViewModel<double>(0, 0);
-            this.ExperienceRange = new RangeViewModel<double>(0, 0);
             this.FoodUsagePerTurnRange = new RangeViewModel<double>(0, 0);
             this.HpPerStepRange = new RangeViewModel<double>(0, 0);
-            this.HpRange = new RangeViewModel<double>(0, 0);
-            this.HungerRange = new RangeViewModel<double>(0, 0);
             this.IntelligenceRange = new RangeViewModel<double>(0, 0);
-            this.MpPerStepRange = new RangeViewModel<double>(0, 0);
-            this.MpRange = new RangeViewModel<double>(0, 0);
             this.SpeedRange = new RangeViewModel<double>(0, 0);
+            this.StaminaPerStepRange = new RangeViewModel<double>(0, 0);
             this.StrengthRange = new RangeViewModel<double>(0, 0);
 
             this.AlteredState = new AlteredCharacterStateTemplateViewModel();

@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
         public double Experience { get; set; }
         public double Hunger { get; set; }
         public double Hp { get; set; }
-        public double Mp { get; set; }
+        public double Stamina { get; set; }
 
         public AlterationCost() { }
     }

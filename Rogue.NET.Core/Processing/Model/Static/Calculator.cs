@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System;
 using System.Drawing;
 
@@ -26,39 +27,38 @@ namespace Rogue.NET.Core.Processing.Model.Static
         }
 
         /// <summary>
-        /// Calculates relative dodge probability between two characters. This number could be positive or
-        /// negative [-1, 1] depending on the relative agility. Then, adds dodgeBase to this number and clips
-        /// the result to [0,1].
+        /// Calculates relative probability between two characters. This will take the ratio of the defender's
+        /// attribute to the attacker's attribute and return a value that asymptotically approaches 1 at infinity;
+        /// and zero at zero. The purpose of this method is to lend some number to a balance between an attacker
+        /// and defender. (Examples:  Dodge, Mental Block, Miss, etc...)
         /// </summary>
-        public static double CalculateDodgeProbability(double dodgeBase, double defenderAgility, double attackerAgility)
+        public static double CalculateAttributeProbability(double defenderAttribute, double attackerAttribute)
         {
-            if (defenderAgility <= 0)
+            if (defenderAttribute <= 0)
                 return 0;
 
-            if (attackerAgility <= 0)
+            if (attackerAttribute <= 0)
                 return 0;
 
-            // Calculated based on asymptotic functions using an effective ratio to calculate a dodge adjustment.
+            // Calculated based on asymptotic functions using the ratio of the defender to the attacker's attribute values.
             // 
             // The ATan functions define two separate asymptotes from [0.001,1] and [1, 1000]. These are based on
             // limits of the character agility [0.1, 100]. These are strictly enforced by the "Apply Limits" methods
             // on the characters; and by the Scenario Editor. The Range of values is [-0.5, 0] to [0, 0.5] for the
-            // output of the piece-wise function.
-            var agilityRatio = defenderAgility / attackerAgility;
+            // output of the piece-wise function. Adding a base of 0.5 offsets it approx. to give a range from [0, 1) (asymptotically)
+            var agilityRatio = defenderAttribute / attackerAttribute;
 
-            var dodgeRelative = 0D;
+            var relativeProbability = 0D;
 
             // Scaled for pseudo-logarithmic dynamics from [0.001, 1]
             if (agilityRatio <= 1)
-                dodgeRelative = 0.637 * Math.Atan(agilityRatio - 1);
+                relativeProbability = (0.637 * Math.Atan(agilityRatio - 1)) + 0.5;
 
             else
-                dodgeRelative = 0.318 * Math.Atan(agilityRatio - 1);
-
-            var result = dodgeBase + dodgeRelative;
+                relativeProbability = 0.318 * Math.Atan(agilityRatio - 1) + 0.5;
 
             // Clip result and return
-            return Math.Min(Math.Max(result, 0), 1);
+            return relativeProbability.Clip(0, 1.0);
         }
 
         public static double EuclideanDistance(GridLocation location1, GridLocation location2)

@@ -136,20 +136,16 @@ namespace Rogue.NET.Core.Model.Enums
     public enum CharacterAttribute
     {
         Hp,
-        Mp,
+        Stamina,
         Strength,
         Agility,
         Intelligence,
         Speed,
         HpRegen,
-        MpRegen,
+        StaminaRegen,
         LightRadius,
         Attack,
         Defense,
-        Dodge,
-        // TODO:ALTERATION (Change name to MentalBlock)
-        MagicBlock,
-        CriticalHit,
         FoodUsagePerTurn
     }
 

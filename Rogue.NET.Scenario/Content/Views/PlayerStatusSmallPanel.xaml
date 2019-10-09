@@ -27,11 +27,11 @@
                     <Run Text="{Binding HpMax, StringFormat=F1}" />
         </TextBlock>
 
-        <TextBlock Foreground="Blue" FontSize="16" Margin="4">
-                    <Run Text="MP: " />
-                    <Run Text="{Binding Mp, StringFormat=F1}" />
+        <TextBlock Foreground="Orange" FontSize="16" Margin="4">
+                    <Run Text="Stamina: " />
+                    <Run Text="{Binding Stamina, StringFormat=F1}" />
                     <Run Text=" / " />
-                    <Run Text="{Binding MpMax, StringFormat=F1}" />
+                    <Run Text="{Binding StaminaMax, StringFormat=F1}" />
         </TextBlock>
 
         <TextBlock Foreground="LawnGreen" FontSize="16" Margin="4">

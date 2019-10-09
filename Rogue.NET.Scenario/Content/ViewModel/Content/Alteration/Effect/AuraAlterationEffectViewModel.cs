@@ -31,8 +31,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (effect.HpPerStep != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", effect.HpPerStep.ToString("F1")));
 
-            if (effect.MpPerStep != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Mp Regen", effect.MpPerStep.ToString("F1")));
+            if (effect.StaminaPerStep != 0)
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina Regen", effect.StaminaPerStep.ToString("F1")));
 
             if (effect.Attack != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Attack", effect.Attack.ToString("F1")));
@@ -60,8 +60,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (template.HpPerStepRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", template.HpPerStepRange.ToString()));
 
-            if (template.MpPerStepRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Mp Regen", template.MpPerStepRange.ToString()));
+            if (template.StaminaPerStepRange.IsSet())
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina Regen", template.StaminaPerStepRange.ToString()));
 
             if (template.AttackRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Attack", template.AttackRange.ToString()));

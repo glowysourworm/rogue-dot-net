@@ -34,7 +34,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public void ApplyEndOfTurn(NonPlayerCharacter character, Player player, bool actionTaken)
         {
             character.Hp += actionTaken ? 0 : character.GetHpRegen();
-            character.Mp += character.GetMpRegen();
+            character.Stamina += character.GetStaminaRegen();
 
             // Increment event times - ignore messages to publish
             character.Alteration.DecrementEventTimes();

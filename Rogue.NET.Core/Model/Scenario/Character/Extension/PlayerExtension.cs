@@ -20,14 +20,14 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             if (player.Hp < 0)
                 player.Hp = 0;
 
-            if (player.Mp < 0)
-                player.Mp = 0;
+            if (player.Stamina < 0)
+                player.Stamina = 0;
 
             if (player.Hp > player.HpMax)
                 player.Hp = player.HpMax;
 
-            if (player.Mp > player.MpMax)
-                player.Mp = player.MpMax;
+            if (player.Stamina > player.StaminaMax)
+                player.Stamina = player.StaminaMax;
 
             if (player.Hunger < 0)
                 player.Hunger = 0;
@@ -66,8 +66,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             {
                 case CharacterAttribute.Hp:
                     return player.Hp;
-                case CharacterAttribute.Mp:
-                    return player.Mp;
+                case CharacterAttribute.Stamina:
+                    return player.Stamina;
                 case CharacterAttribute.Strength:
                     return player.GetStrength();
                 case CharacterAttribute.Agility:
@@ -78,20 +78,14 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                     return player.GetSpeed();
                 case CharacterAttribute.HpRegen:
                     return player.GetHpRegen();
-                case CharacterAttribute.MpRegen:
-                    return player.GetMpRegen();
+                case CharacterAttribute.StaminaRegen:
+                    return player.GetStaminaRegen();
                 case CharacterAttribute.LightRadius:
                     return player.GetLightRadius();
                 case CharacterAttribute.Attack:
                     return player.GetAttack();
                 case CharacterAttribute.Defense:
                     return player.GetDefense();
-                case CharacterAttribute.Dodge:
-                    return player.GetDodge();
-                case CharacterAttribute.MagicBlock:
-                    return player.GetMentalBlock();
-                case CharacterAttribute.CriticalHit:
-                    return player.GetCriticalHitProbability();
                 case CharacterAttribute.FoodUsagePerTurn:
                     return player.GetFoodUsagePerTurn();
                 default:

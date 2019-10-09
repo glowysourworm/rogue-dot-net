@@ -22,7 +22,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _agilityRange;
         private RangeViewModel<double> _speedRange;
         private RangeViewModel<double> _hpPerStepRange;
-        private RangeViewModel<double> _mpPerStepRange;
+        private RangeViewModel<double> _staminaPerStepRange;
         private RangeViewModel<double> _attackRange;
         private RangeViewModel<double> _defenseRange;
 
@@ -56,10 +56,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _hpPerStepRange; }
             set { this.RaiseAndSetIfChanged(ref _hpPerStepRange, value); }
         }
-        public RangeViewModel<double> MpPerStepRange
+        public RangeViewModel<double> StaminaPerStepRange
         {
-            get { return _mpPerStepRange; }
-            set { this.RaiseAndSetIfChanged(ref _mpPerStepRange, value); }
+            get { return _staminaPerStepRange; }
+            set { this.RaiseAndSetIfChanged(ref _staminaPerStepRange, value); }
         }
         public RangeViewModel<double> AttackRange
         {
@@ -82,7 +82,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.DefenseRange = new RangeViewModel<double>(0, 0);
             this.HpPerStepRange = new RangeViewModel<double>(0, 0);
             this.IntelligenceRange = new RangeViewModel<double>(0, 0);
-            this.MpPerStepRange = new RangeViewModel<double>(0, 0);
+            this.StaminaPerStepRange = new RangeViewModel<double>(0, 0);
             this.StrengthRange = new RangeViewModel<double>(0, 0);
         }
     }

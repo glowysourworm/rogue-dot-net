@@ -36,8 +36,8 @@
             <controls:Range DataContext="{Binding HpRange}" LowLimit="-5000" HighLimit="5000" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" Text="Mp" FontSize="16" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding MpRange}" LowLimit="-5000" HighLimit="5000" Width="300" HorizontalAlignment="Right" />
+            <TextBlock Foreground="White" Text="Stamina" FontSize="16" HorizontalAlignment="Left" />
+            <controls:Range DataContext="{Binding StaminaRange}" LowLimit="-5000" HighLimit="5000" Width="300" HorizontalAlignment="Right" />
         </Grid>
     </StackPanel>
 </UserControl>

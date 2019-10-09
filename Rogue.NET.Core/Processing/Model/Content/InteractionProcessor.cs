@@ -82,8 +82,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Calculate dodge
             var dodge = CalculateDodge(attacker, defender);
 
+            // TODO:STATS
             // Calculate critical hit
-            var criticalHit = _randomSequenceGenerator.Get() <= attacker.GetCriticalHitProbability();
+            // var criticalHit = _randomSequenceGenerator.Get() <= attacker.GetCriticalHitProbability();
 
             // Attack attributes
             var attackerAttributes = attacker.GetMeleeAttributes();
@@ -101,9 +102,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Attacker Hits
             else
             {
+                // TODO:STATS
                 //Critical hit
-                if (criticalHit)
-                    attack *= 2;
+                // if (criticalHit)
+                //    attack *= 2;
 
                 defender.Hp -= attack;
 
@@ -112,7 +114,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     _modelService.GetDisplayName(attacker), 
                     _modelService.GetDisplayName(defender), 
                     attackBase, 
-                    criticalHit,
+                    //criticalHit,
+                    false,
                     specializedHits.Count > 0,
                     specializedHits);
 
@@ -170,7 +173,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public bool CalculateDodge(Character attacker, Character defender)
         {
             // Calculate dodge
-            var dodgeProbability = Calculator.CalculateDodgeProbability(defender.GetDodge(), defender.GetAgility(), attacker.GetAgility());
+            var dodgeProbability = Calculator.CalculateAttributeProbability(defender.GetAgility(), attacker.GetAgility());
 
             // Return random draw
             return _randomSequenceGenerator.Get() < dodgeProbability;
@@ -181,9 +184,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             switch (blockType)
             {
                 case AlterationBlockType.Mental:
-                    return _randomSequenceGenerator.Get() < defender.GetMentalBlock().Clip();
+                    return _randomSequenceGenerator.Get() < Calculator.CalculateAttributeProbability(defender.GetIntelligence(), attacker.GetIntelligence());
                 case AlterationBlockType.Physical:
-                    return _randomSequenceGenerator.Get() < defender.GetDodge().Clip();
+                    return _randomSequenceGenerator.Get() < Calculator.CalculateAttributeProbability(defender.GetAgility(), attacker.GetAgility());
                 case AlterationBlockType.NonBlockable:
                     return false;
                 default:

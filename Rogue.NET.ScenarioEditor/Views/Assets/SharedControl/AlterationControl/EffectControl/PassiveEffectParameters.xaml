@@ -58,8 +58,8 @@
                     <controls:Range DataContext="{Binding HpPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Mp Per Step" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding MpPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
+                    <TextBlock Foreground="White" Text="Stamina Per Step" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding StaminaPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Attack" FontSize="16" HorizontalAlignment="Left" />

@@ -8,20 +8,11 @@
         public const string UnIdentifiedDisplayName = "???";
 
         public const double HaulFoodUsageDivisor = 1000;
-        public const double HaulMaxStrengthMultiplier = 3.0;
-        public const double MagicDefenseBase = 0.25;
-        public const double CriticalHitBase = 0.1;        
+        public const double HaulMaxStrengthMultiplier = 3.0; 
         public const double MinSpeed = 0.1;
         public const double MaxSpeed = 1;
         public const double MinFiringDistance = 2.0D;
         public const double HpLowFraction = 0.1D;
-
-        public const double SkillLowProgressIncrement = 0.001;
-        public const double SkillMediumProgressIncrement = 0.005;
-        public const double SkillHighProgressIncrement = 0.01;
-        public const double SkillLowHungerIncrement = 0.1;
-        public const double SkillMediumHungerIncrement = 0.75;
-        public const double SkillHighHungerIncrement = 1.5;
 
         public const string DoodadSavePointRogueName = "Save Point";
         public const string DoodadStairsUpRogueName = "Stairs Up";
@@ -45,24 +36,6 @@
         {
             public const double AttackBaseMultiplier = 1.0D;
             public const double DefenseBaseMultiplier = 0.2D;
-        }
-
-        public static class LevelGains
-        {
-            /// <summary>
-            /// Base Multiplier for any attribute gain
-            /// </summary>
-            public const double LevelGainBase = 0.5;
-
-            /// <summary>
-            /// Linear offset to guarantee progression of attributes
-            /// </summary>
-            public const double LinearOffset = 0.1D;
-
-            // Additional multipliers
-            public const double HpGainMultiplier = 2.0D;
-            public const double MpGainMultiplier = 2.0D;
-            public const double AttributeEmphasisMultiplier = 2.0D;
         }
 
         public static class EquipmentMultipliers

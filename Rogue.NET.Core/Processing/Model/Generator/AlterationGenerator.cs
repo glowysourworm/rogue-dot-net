@@ -56,7 +56,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 Experience = template.Experience,
                 Hp = template.Hp,
                 Hunger = template.Hunger,
-                Mp = template.Mp
+                Stamina = template.Stamina
             };
         }
 
@@ -582,7 +582,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 Defense = _randomSequenceGenerator.GetRandomValue(template.DefenseRange),
                 HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
-                MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),
+                StaminaPerStep = _randomSequenceGenerator.GetRandomValue(template.StaminaPerStepRange),
                 RogueName = template.Name,
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
@@ -637,7 +637,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new DrainMeleeAlterationEffect()
             {
                 Hp = _randomSequenceGenerator.GetRandomValue(template.Hp),
-                Mp = _randomSequenceGenerator.GetRandomValue(template.Mp)
+                Stamina = _randomSequenceGenerator.GetRandomValue(template.Stamina)
             };
         }
 
@@ -687,7 +687,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
-                MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),
+                StaminaPerStep = _randomSequenceGenerator.GetRandomValue(template.StaminaPerStepRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
                 SymbolAlteration = template.SymbolAlteration,
@@ -705,7 +705,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 Hunger = _randomSequenceGenerator.GetRandomValue(template.HungerRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
-                Mp = _randomSequenceGenerator.GetRandomValue(template.MpRange),
+                Stamina = _randomSequenceGenerator.GetRandomValue(template.StaminaRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
                 RogueName = template.Name
@@ -771,7 +771,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 IsStackable = template.IsStackable,
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
-                MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),
+                StaminaPerStep = _randomSequenceGenerator.GetRandomValue(template.StaminaPerStepRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
                 SymbolAlteration = template.SymbolAlteration,

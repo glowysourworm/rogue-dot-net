@@ -21,8 +21,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             if (cost.Hp != 0)
                 this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Hp", cost.Hp.ToString("F1")));
 
-            if (cost.Mp != 0)
-                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Mp", cost.Mp.ToString("F1")));
+            if (cost.Stamina != 0)
+                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Stamina", cost.Stamina.ToString("F1")));
         }
 
         public AlterationCostViewModel(AlterationCostTemplate template)
@@ -38,8 +38,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             if (template.Hp != 0)
                 this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Hp", template.Hp.ToString("F1")));
 
-            if (template.Mp != 0)
-                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Mp", template.Mp.ToString("F1")));
+            if (template.Stamina != 0)
+                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Stamina", template.Stamina.ToString("F1")));
         }
     }
 }

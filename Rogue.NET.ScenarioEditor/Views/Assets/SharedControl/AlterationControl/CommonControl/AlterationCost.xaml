@@ -17,8 +17,8 @@
             <toolkit:DoubleUpDown Value="{Binding Hp, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
         </Grid>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Mp" />
-            <toolkit:DoubleUpDown Value="{Binding Mp, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
+            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Stamina" />
+            <toolkit:DoubleUpDown Value="{Binding Stamina, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hunger" />

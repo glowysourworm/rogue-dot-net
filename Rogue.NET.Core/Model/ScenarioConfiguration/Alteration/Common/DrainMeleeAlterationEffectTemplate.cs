@@ -6,14 +6,14 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     /// <summary>
-    /// Alteration Effect that causes Hp or Mp to be drained from one character to another during 
+    /// Alteration Effect that causes Hp or Stamina to be drained from one character to another during 
     /// Melee Combat ONLY
     /// </summary>
     [Serializable]
     public class DrainMeleeAlterationEffectTemplate : Template, IEquipmentAttackAlterationEffectTemplate
     {
         Range<double> _hp;
-        Range<double> _mp;
+        Range<double> _stamina;
 
         public Range<double> Hp
         {
@@ -27,15 +27,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> Mp
+        public Range<double> Stamina
         {
-            get { return _mp; }
+            get { return _stamina; }
             set
             {
-                if (_mp != value)
+                if (_stamina != value)
                 {
-                    _mp = value;
-                    OnPropertyChanged("Mp");
+                    _stamina = value;
+                    OnPropertyChanged("Stamina");
                 }
             }
         }
@@ -43,7 +43,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         public DrainMeleeAlterationEffectTemplate()
         {
             this.Hp = new Range<double>(0, 0);
-            this.Mp = new Range<double>(0, 0);
+            this.Stamina = new Range<double>(0, 0);
         }
     }
 }

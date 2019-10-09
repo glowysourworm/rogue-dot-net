@@ -8,8 +8,8 @@
             <controls:Range DataContext="{Binding Hp}" LowLimit="0" HighLimit="20" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" Text="Mp" FontSize="16" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding Mp}" LowLimit="0" HighLimit="20" Width="300" HorizontalAlignment="Right" />
+            <TextBlock Foreground="White" Text="Stamina" FontSize="16" HorizontalAlignment="Left" />
+            <controls:Range DataContext="{Binding Stamina}" LowLimit="0" HighLimit="20" Width="300" HorizontalAlignment="Right" />
         </Grid>
     </StackPanel>
 </UserControl>

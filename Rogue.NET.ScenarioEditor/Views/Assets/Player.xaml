@@ -48,9 +48,9 @@
                 <controls:Range DataContext="{Binding Speed}" LowLimit=".1" HighLimit="1" Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" />
                 <controls:Range DataContext="{Binding LightRadius}" LowLimit="1" HighLimit="20" Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" />
                 <controls:Range DataContext="{Binding Hp}" LowLimit="5" HighLimit="50" Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" />
-                <controls:Range DataContext="{Binding Mp}" LowLimit="5" HighLimit="50" Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" />
+                <controls:Range DataContext="{Binding Stamina}" LowLimit="5" HighLimit="50" Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" />
                 <controls:Range DataContext="{Binding HpRegen}" LowLimit="0" HighLimit="10" Margin="0,4,0,4" Grid.Column="1" Grid.Row="7" />
-                <controls:Range DataContext="{Binding MpRegen}" LowLimit="0" HighLimit="10" Margin="0,4,0,4" Grid.Column="1" Grid.Row="8" />
+                <controls:Range DataContext="{Binding StaminaRegen}" LowLimit="0" HighLimit="10" Margin="0,4,0,4" Grid.Column="1" Grid.Row="8" />
 
                 <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
@@ -58,9 +58,9 @@
                 <TextBlock Grid.Row="3" Foreground="White" Text="Speed" Margin="10" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="4" Foreground="White" Text="Light Radius" Margin="10" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="5" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
-                <TextBlock Grid.Row="6" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
+                <TextBlock Grid.Row="6" Foreground="White" Text="Stamina" Margin="10" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="7" Foreground="White" Text="Hp Regen" Margin="10" VerticalAlignment="Center" />
-                <TextBlock Grid.Row="8" Foreground="White" Text="Mp Regen" Margin="10" VerticalAlignment="Center" />                
+                <TextBlock Grid.Row="8" Foreground="White" Text="Stamina Regen" Margin="10" VerticalAlignment="Center" />                
 
             </Grid>
         </TabItem>

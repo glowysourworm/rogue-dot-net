@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _experienceRange;
         private Range<double> _hungerRange;
         private Range<double> _hpRange;
-        private Range<double> _mpRange;
+        private Range<double> _staminaRange;
 
         public Range<double> StrengthRange
         {
@@ -121,15 +121,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> MpRange
+        public Range<double> StaminaRange
         {
-            get { return _mpRange; }
+            get { return _staminaRange; }
             set
             {
-                if (_mpRange != value)
+                if (_staminaRange != value)
                 {
-                    _mpRange = value;
-                    OnPropertyChanged("MpRange");
+                    _staminaRange = value;
+                    OnPropertyChanged("StaminaRange");
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.HpRange = new Range<double>(0, 0);
             this.HungerRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);
-            this.MpRange = new Range<double>(0, 0);
+            this.StaminaRange = new Range<double>(0, 0);
             this.StrengthRange = new Range<double>(0, 0);
         }
     }
