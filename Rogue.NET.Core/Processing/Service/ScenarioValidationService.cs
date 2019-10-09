@@ -7,6 +7,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Extension;
 using Rogue.NET.Core.Processing.Model.Validation;
 using Rogue.NET.Core.Processing.Model.Validation.Interface;
@@ -58,33 +59,126 @@ namespace Rogue.NET.Core.Processing.Service
                     var result = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
                                     .Union(configuration.DoodadTemplates)
                                     .Union(configuration.EnemyTemplates)
+                                    .Union(configuration.FriendlyTemplates)
                                     .Union(configuration.EquipmentTemplates)
                                     .Any(x => x.IsObjectiveItem);
 
                     return new List<ScenarioValidationResult>(){ new ScenarioValidationResult(){Passed = result, InnerMessage = null } };
                 })),
-                //new ScenarioValidationRule("Objective Generation Not Guaranteed", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                //{
-                //    var objectives = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
-                //                                    .Union(configuration.DoodadTemplates)
-                //                                    .Union(configuration.EnemyTemplates)
-                //                                    .Union(configuration.EquipmentTemplates)
-                //                                    .Where(x => x.IsObjectiveItem);
+                new ScenarioValidationRule("Levels with Scenario Objective must only have a single branch", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var result = new List<ScenarioValidationResult>();
 
-                //    var enemyEquipment = configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.Where(z => z.TheTemplate.IsObjectiveItem && z.GenerationProbability >= 1).Select(z => z.TheTemplate)).Cast<DungeonObjectTemplate>();
-                //    var enemyConsumables = configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.Where(z => z.TheTemplate.IsObjectiveItem && z.GenerationProbability >= 1).Select(z => z.TheTemplate)).Cast<DungeonObjectTemplate>();
+                    foreach (var level in configuration.ScenarioDesign.LevelDesigns)
+                    {
+                        var consumables = level.LevelBranches
+                                                     .SelectMany(x => x.LevelBranch.Consumables)
+                                                     .Where(x => x.Asset.IsObjectiveItem);
 
+                        var equipment = level.LevelBranches
+                                                   .SelectMany(x => x.LevelBranch.Equipment)
+                                                   .Where(x => x.Asset.IsObjectiveItem);
 
+                        var doodads = level.LevelBranches
+                                                 .SelectMany(x => x.LevelBranch.Doodads)
+                                                 .Where(x => x.Asset.IsObjectiveItem);
 
-                //    var objectivesNotGuaranteed = objectives.Where(z => z.GenerationRate < 1 && !enemyEquipment.Contains(z) && !enemyConsumables.Contains(z));
+                        var enemies = level.LevelBranches
+                                                 .SelectMany(x => x.LevelBranch.Enemies)
+                                                 .Where(x => x.Asset.IsObjectiveItem || 
+                                                             x.Asset.StartingConsumables.Any(z => z.TheTemplate.IsObjectiveItem) ||
+                                                             x.Asset.StartingEquipment.Any(z => z.TheTemplate.IsObjectiveItem));
 
-                //    // Must have one of each objective
-                //    return objectivesNotGuaranteed.Select(x => new ScenarioValidationResult()
-                //    {
-                //        Passed = false,
-                //        InnerMessage = x.Name + " not guaranteed to be generated"
-                //    });
-                //})),
+                        var friendlies = level.LevelBranches
+                                                    .SelectMany(x => x.LevelBranch.Friendlies)
+                                                    .Where(x => x.Asset.IsObjectiveItem);
+
+                        var hasObjective = consumables.Any() || equipment.Any() || doodads.Any() || enemies.Any() || friendlies.Any();
+
+                        if (level.LevelBranches.Count > 1 && hasObjective)
+                            result.Add(new ScenarioValidationResult()
+                            {
+                                Passed = false,
+                                InnerMessage = level.Name + " can only have one branch because of objective assets"
+                            });
+                    }
+
+                    return result;
+                })),
+                new ScenarioValidationRule("Objective Generation Not Guaranteed", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var result = new List<ScenarioValidationResult>();
+
+                    foreach (var level in configuration.ScenarioDesign.LevelDesigns)
+                    {
+                        var consumables = level.LevelBranches
+                                                     .Select(x => new { Assets = x.LevelBranch.Consumables, Branch = x.LevelBranch })
+                                                     .Where(x => x.Assets.Any(z => z.Asset.IsObjectiveItem));
+
+                        var equipment = level.LevelBranches
+                                                     .Select(x => new { Assets = x.LevelBranch.Equipment, Branch = x.LevelBranch })
+                                                     .Where(x => x.Assets.Any(z => z.Asset.IsObjectiveItem));
+
+                        var doodads = level.LevelBranches
+                                                     .Select(x => new { Assets = x.LevelBranch.Doodads, Branch = x.LevelBranch })
+                                                     .Where(x => x.Assets.Any(z => z.Asset.IsObjectiveItem));
+
+                        var enemies = level.LevelBranches
+                                                 .Select(x => new { Assets = x.LevelBranch.Enemies, Branch = x.LevelBranch })
+                                                 .Where(x => x.Assets.Any(z => z.Asset.IsObjectiveItem) ||
+                                                             x.Assets.Any(z => z.Asset.StartingConsumables.Any(a => a.TheTemplate.IsObjectiveItem)) ||
+                                                             x.Assets.Any(z => z.Asset.StartingEquipment.Any(a => a.TheTemplate.IsObjectiveItem)));
+
+                        var friendlies = level.LevelBranches
+                                                     .Select(x => new { Assets = x.LevelBranch.Friendlies, Branch = x.LevelBranch })
+                                                     .Where(x => x.Assets.Any(z => z.Asset.IsObjectiveItem));
+
+                        result.AddRange(consumables.Where(x => x.Branch.ConsumableGenerationRange.GetAverage() < 1).Select(x => new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Asset Generation Not Guaranteed on Level: " + level.Name + " Branch:  " + x.Branch.Name
+                        }));
+
+                        result.AddRange(equipment.Where(x => x.Branch.EquipmentGenerationRange.GetAverage() < 1).Select(x => new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Asset Generation Not Guaranteed on Level: " + level.Name + " Branch:  " + x.Branch.Name
+                        }));
+
+                        result.AddRange(doodads.Where(x => x.Branch.DoodadGenerationRange.GetAverage() < 1).Select(x => new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Asset Generation Not Guaranteed on Level: " + level.Name + " Branch:  " + x.Branch.Name
+                        }));
+
+                        result.AddRange(enemies.Where(x => x.Branch.EnemyGenerationRange.GetAverage() < 1).Select(x => new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Asset Generation Not Guaranteed on Level: " + level.Name + " Branch:  " + x.Branch.Name
+                        }));
+
+                        result.AddRange(friendlies.Where(x => x.Branch.FriendlyGenerationRange.GetAverage() < 1).Select(x => new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Asset Generation Not Guaranteed on Level: " + level.Name + " Branch:  " + x.Branch.Name
+                        }));
+                    }
+                    return result;
+                })),
+                new ScenarioValidationRule("Layouts not set for portion of scenario", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var layoutGaps = configuration.ScenarioDesign       
+                                                  .LevelDesigns
+                                                  .Where(x => x.LevelBranches.Any(z => z.LevelBranch.Layouts.None()));
+
+                    // Must have one of each objective
+                    return layoutGaps.Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Level " + x.Name + " has no layout set for one or more branches"
+                        });
+                })),
                 new ScenarioValidationRule("Number of levels must be > 0 and <= 500", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
                     // Must have one of each objective
@@ -96,17 +190,6 @@ namespace Rogue.NET.Core.Processing.Service
                         }
                     };
                 })),
-                //new ScenarioValidationRule("Layouts not set for portion of scenario", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                //{
-                //    var layoutGaps = configuration.ScenarioDesign.LevelDesigns.Where(x => x.LevelBranches)
-                //    // Must have one of each objective
-                //    return layoutGaps.Select(x =>
-                //        new ScenarioValidationResult()
-                //        {
-                //            Passed = false,
-                //            InnerMessage = "Level " + x.ToString() + " has no layout set"
-                //        });
-                //})),
                 new ScenarioValidationRule("Layout max size must be < 10,000 cells", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
                     var layoutSizes = configuration.LayoutTemplates
@@ -305,11 +388,13 @@ namespace Rogue.NET.Core.Processing.Service
 
                         }).Actualize();
                 })),
-                new ScenarioValidationRule("Enemies must have Parameters > 0", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                new ScenarioValidationRule("Characters must have Parameters > 0", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
                     return configuration.EnemyTemplates
+                                        .Cast<CharacterTemplate>()
+                                        .Union(configuration.FriendlyTemplates)
+                                        .Union(configuration.PlayerTemplates)
                                         .Where(x => x.Hp.High <= 0 || x.Hp.Low <= 0 ||
-                                                    x.Mp.High <= 0 || x.Mp.Low <= 0 ||
                                                     x.Agility.High <= 0 || x.Agility.Low <= 0 ||
                                                     x.Intelligence.High <= 0 || x.Intelligence.Low <= 0 ||
                                                     x.LightRadius.High <= 0 || x.LightRadius.Low <= 0 ||
@@ -319,7 +404,7 @@ namespace Rogue.NET.Core.Processing.Service
                         new ScenarioValidationResult()
                         {
                             Passed = false,
-                            InnerMessage = x.Name + " must have parameters > 0"
+                            InnerMessage = x.Name + " must have parameters greater than zero for Hp, Agility, Intelligence, Light Radius, Speed, and Strength"
 
                         }).Actualize();
                 })),
