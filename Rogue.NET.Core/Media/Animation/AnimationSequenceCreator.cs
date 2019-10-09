@@ -154,7 +154,7 @@ namespace Rogue.NET.Core.Media.Animation
             var orientationAngle = (angle * (180 / Math.PI)) + 90;
 
             // Set default velocity
-            var velocity = 250;         // pixels / sec
+            var velocity = 300;         // pixels / sec
 
             // Calculate animation time
             var animationTime = (int)((Math.Abs(Point.Subtract(sourceLocation, targetLocation).Length) / velocity) * 1000.0);   // milliseconds

@@ -487,15 +487,37 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                 // Calculate hit - if enemy hit then queue ammunition alteration
                 var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
-                
+                var animationTarget = targetedEnemy.Location;
+
+                // Enemy missed -> Re-calculate target location near enemy
+                if (!enemyHit)
+                {
+                    var adjacentLocations = _layoutEngine.GetFreeAdjacentLocations(targetedEnemy.Location);
+
+                    if (adjacentLocations.Any())
+                    {
+                        animationTarget = adjacentLocations.PickRandom();
+
+                        // Add item to level contents and place on the map
+                        ammo.Location = animationTarget;
+
+                        // Add content to level
+                        _modelService.Level.AddContent(ammo);
+
+                        // Signal front end to update UI
+                        OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, ammo.Id));
+                    }
+                }
+
                 // Process the animation
                 OnProjectileAnimationEvent(_backendEventDataFactory.AmmoAnimation(ammo,
                                                                                   _modelService.Player.Location,
                                                                                   targetedEnemy.Location));
-
-                // Clear the targeting service
-                _targetingService.Clear();
             }
+
+            // Clear the targeting service
+            _targetingService.Clear();
+
             return LevelContinuationAction.ProcessTurn;
         }
         public void SelectSkill(string skillId)
