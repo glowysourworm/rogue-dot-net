@@ -2820,14 +2820,9 @@ IMMEDIATE TODO'S:
 
 			- Be able to assign orientable SVG's to projectile weapons.
 
-			- Have animation parameters for the projectiles (speed, rotation)
-		  
 			- Have parameters for every object that is thrown:
 
 				Throw Quality:  Behaves just as attack / defense quality
-
-		- TODO: BREAK UP ANIMATIONS BY TYPE INSTEAD OF ENUM SELECTION
-		- TODO: Get rid of acceleration ratio / stroke template
 
 	- TODO:  Consider putting the scenario objectives in the top-left corner of the level canvas
 
