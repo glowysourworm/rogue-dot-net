@@ -21,6 +21,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
 
         public int Class { get; set; }
         public double Quality { get; set; }
+        public double ThrowQuality { get; set; }
         public EquipmentType Type { get; set; }
         public CharacterBaseAttribute CombatType { get; set; }
 

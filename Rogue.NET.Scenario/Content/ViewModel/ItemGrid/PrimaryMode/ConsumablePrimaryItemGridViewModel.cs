@@ -111,7 +111,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode
                            (item.SubType == ConsumableSubType.Note) ||
                            (isIdentify && canUseIdentify);
                 case ConsumablePrimaryMode.Throw:
-                    return item.HasProjectileAlteration;
+                    return true;
                 case ConsumablePrimaryMode.Drop:
                     return true;
                 default:

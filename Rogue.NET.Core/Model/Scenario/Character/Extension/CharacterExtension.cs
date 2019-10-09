@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Processing.Model.Static;
 using System;
@@ -177,6 +178,15 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var result = defense + character.Alteration.GetAttribute(CharacterAttribute.Defense);
 
             return Math.Max(0, result);
+        }
+        public static double GetThrowAttack(this Character character, Equipment equipment)
+        {
+            // Get the character attribute for calculating the attack value
+            var characterAttributeValue = equipment.CombatType == CharacterBaseAttribute.Strength ? character.GetStrength() :
+                                          equipment.CombatType == CharacterBaseAttribute.Agility ? character.GetAgility() :
+                                          character.GetIntelligence();
+
+            return MeleeCalculator.GetAttackValue(equipment.GetThrowValue(), characterAttributeValue);
         }
         public static double GetCriticalHitProbability(this Character character)
         {

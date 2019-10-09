@@ -5,6 +5,8 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
@@ -23,20 +25,17 @@ namespace Rogue.NET.Core.Processing.Model.Content
     {
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly IPlayerProcessor _playerProcessor;
         readonly IModelService _modelService;
 
         [ImportingConstructor]
         public InteractionProcessor(
             IModelService modelService,
             IScenarioMessageService scenarioMessageService,
-            IRandomSequenceGenerator randomSequenceGenerator,
-            IPlayerProcessor playerProcessor)
+            IRandomSequenceGenerator randomSequenceGenerator)
         {
             _modelService = modelService;
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
-            _playerProcessor = playerProcessor;
         }
 
         public void CalculateAttackAttributeHit(string alterationDisplayName, Character defender, IEnumerable<AttackAttribute> offenseAttributes)
@@ -81,8 +80,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var attackBase = attack;
 
             // Calculate dodge
-            var dodgeProbability = Calculator.CalculateDodgeProbability(defender.GetDodge(), defender.GetAgility(), attacker.GetAgility());
-            var dodge = _randomSequenceGenerator.Get() < dodgeProbability;
+            var dodge = CalculateDodge(attacker, defender);
 
             // Calculate critical hit
             var criticalHit = _randomSequenceGenerator.Get() <= attacker.GetCriticalHitProbability();
@@ -122,6 +120,60 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             return result;
+        }
+
+        public bool CalculateEquipmentThrow(Character attacker, Character defender, Equipment thrownItem)
+        {
+            // Result implies that the item hit the defender
+            var result = false;
+
+            // Start with standard melee - randomized
+            var attack = Math.Max(_randomSequenceGenerator.Get() * (attacker.GetThrowAttack(thrownItem) - defender.GetDefense()), 0);
+            var attackBase = attack;
+
+            // Calculate dodge
+            var dodge = CalculateDodge(attacker, defender);
+
+            // Attack attributes - take from the Equipment's attack attributes
+            var attackerAttributes = thrownItem.AttackAttributes;
+            var defenderAttributes = defender.GetMeleeAttributes();
+
+            // Calculate Attack Attribute Melee
+            var specializedHits = CreateAttackAttributeResults(attackerAttributes, defenderAttributes);
+
+            // Add Results to attack
+            attack += specializedHits.Sum(x => x.Value);
+
+            if (attack <= 0 || dodge)
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, attacker.RogueName + " Misses");
+
+            // Attacker Hits
+            else
+            {
+                defender.Hp -= attack;
+
+                _scenarioMessageService.PublishMeleeMessage(
+                    (attacker is Enemy) ? ScenarioMessagePriority.Bad : ScenarioMessagePriority.Normal,
+                    _modelService.GetDisplayName(attacker),
+                    _modelService.GetDisplayName(defender),
+                    attackBase,
+                    false,
+                    specializedHits.Count > 0,
+                    specializedHits);
+
+                result = true;
+            }
+
+            return result;
+        }
+
+        public bool CalculateDodge(Character attacker, Character defender)
+        {
+            // Calculate dodge
+            var dodgeProbability = Calculator.CalculateDodgeProbability(defender.GetDodge(), defender.GetAgility(), attacker.GetAgility());
+
+            // Return random draw
+            return _randomSequenceGenerator.Get() < dodgeProbability;
         }
 
         public bool CalculateAlterationBlock(Character attacker, Character defender, AlterationBlockType blockType)

@@ -68,5 +68,37 @@ namespace Rogue.NET.Core.Processing.Model.Static
                     throw new Exception("Trying to calculate defense value for " + equipmentType.ToString());
             }
         }
+
+        public static double GetThrowValue(EquipmentType equipmentType, int classs, double quality)
+        {
+            switch (equipmentType)
+            {
+                // Defense Type Equipment
+                case EquipmentType.Armor:
+                    return ((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.Armor;
+                case EquipmentType.Shoulder:
+                    return (((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.Shoulder);
+                case EquipmentType.Boots:
+                    return (((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.Boots);
+                case EquipmentType.Gauntlets:
+                    return (((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.Gauntlets);
+                case EquipmentType.Belt:
+                    return (((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.Belt);
+                case EquipmentType.Shield:
+                    return (((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.Shield);
+                case EquipmentType.Helmet:
+                    return (((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.Helmet);
+
+                // Attack Type Equipment
+                case EquipmentType.OneHandedMeleeWeapon:
+                    return ((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.OneHandedMeleeWeapon;
+                case EquipmentType.TwoHandedMeleeWeapon:
+                    return ((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.TwoHandedMeleeWeapon;
+                case EquipmentType.RangeWeapon:
+                    return ((classs + 1) * quality) * ModelConstants.EquipmentMultipliers.RangeWeapon;
+                default:
+                    return 0;
+            }
+        }
     }
 }

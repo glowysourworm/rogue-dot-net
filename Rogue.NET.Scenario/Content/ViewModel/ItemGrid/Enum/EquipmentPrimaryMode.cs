@@ -12,6 +12,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum
     public enum EquipmentPrimaryMode
     {
         Equip,
+        Throw,
         Drop
     }
 }

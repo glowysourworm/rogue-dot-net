@@ -63,5 +63,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item.Extension
 
             return EquipmentCalculator.GetDefenseValue(equipment.Type, equipment.Class, equipment.Quality);
         }
+
+        public static double GetThrowValue(this Equipment equipment)
+        {
+            if (!equipment.IsWeaponType() && !equipment.IsArmorType())
+                return 0;
+
+            return EquipmentCalculator.GetThrowValue(equipment.Type, equipment.Class, equipment.ThrowQuality);
+        }
     }
 }

@@ -61,6 +61,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             equipment.Weight = equipmentTemplate.Weight;
             equipment.LevelRequired = equipmentTemplate.LevelRequired;
             equipment.Quality = _randomSequenceGenerator.GetRandomValue(equipmentTemplate.Quality);
+            equipment.ThrowQuality = _randomSequenceGenerator.GetRandomValue(equipmentTemplate.ThrowQuality);
 
             equipment.AttackAttributes = equipmentTemplate.AttackAttributes
                                                           .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))

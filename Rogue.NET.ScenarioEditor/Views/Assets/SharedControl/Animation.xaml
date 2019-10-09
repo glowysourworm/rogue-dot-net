@@ -69,10 +69,10 @@
                         <TabItem Header="Point-Target Type">
                             <TabItem.Visibility>
                                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                                    <Binding Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationAuraTemplateViewModel}" />
-                                    <Binding Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationBarrageTemplateViewModel}" />
-                                    <Binding Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationBubblesTemplateViewModel}" />
-                                    <Binding Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationSpiralTemplateViewModel}" />
+                                    <Binding Converter="{StaticResource ParameterTypeEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationAuraTemplateViewModel}" />
+                                    <Binding Converter="{StaticResource ParameterTypeEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationBarrageTemplateViewModel}" />
+                                    <Binding Converter="{StaticResource ParameterTypeEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationBubblesTemplateViewModel}" />
+                                    <Binding Converter="{StaticResource ParameterTypeEqualityBoolConverter}" ConverterParameter="{x:Type animationViewModel:AnimationSpiralTemplateViewModel}" />
                                 </MultiBinding>
                             </TabItem.Visibility>
                             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AnimationPointTargetType}"

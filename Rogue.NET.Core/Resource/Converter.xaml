@@ -32,6 +32,7 @@
     <converter:GreaterThanZeroVisibilityInverseConverter x:Key="GreaterThanZeroVisibilityInverseConverter" />
     <converter:GreaterThanOrEqualParameterConverter x:Key="GreaterThanOrEqualParameterConverter" />
     <converter:ParameterEqualityBoolConverter x:Key="ParameterEqualityBoolConverter" />
+    <converter:ParameterTypeEqualityBoolConverter x:Key="ParameterTypeEqualityBoolConverter" />
     <converter:ParameterEqualityInverseBoolConverter x:Key="ParameterEqualityInverseBoolConverter" />
     <converter:ParameterVisibilityCollapsedConverter x:Key="ParameterVisibilityCollapsedConverter" />
     <converter:ParameterVisibilityCollapsedInverseConverter x:Key="ParameterVisibilityCollapsedInverseConverter" />

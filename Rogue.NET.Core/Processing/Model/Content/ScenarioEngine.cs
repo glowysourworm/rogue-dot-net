@@ -24,6 +24,7 @@ using Rogue.NET.Core.Processing.Model.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Processing.Event.Backend.Enum;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Processing.Model.Content
 {
@@ -234,64 +235,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         public LevelContinuationAction Throw(string itemId)
         {
-            var targetedCharacter = _targetingService.GetTargetedCharacter();
-            var player = _modelService.Player;
-            var thrownItem = player.Consumables[itemId];
+            if (_modelService.Player.Consumables.ContainsKey(itemId))
+                return ThrowConsumable(itemId);
 
-            // Check that thrown item has level requirement met (ALSO DONE ON FRONT END)
-            if (thrownItem.LevelRequired > player.Level)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", thrownItem.LevelRequired.ToString());
-                return LevelContinuationAction.DoNothing;
-            }
+            else if (_modelService.Player.Equipment.ContainsKey(itemId))
+                return ThrowEquipment(itemId);
 
-            // Check Character Class Requirement
-            if (thrownItem.HasCharacterClassRequirement &&
-                player.Class != thrownItem.CharacterClass)
-            {
-                _scenarioMessageService.Publish(
-                    ScenarioMessagePriority.Normal,
-                    "Required Character Class Not Met!",
-                    thrownItem.CharacterClass);
-
-                return LevelContinuationAction.DoNothing;
-            }
-
-            // Must select a target
-            if (targetedCharacter == null)
-            {
-                OnTargetingRequesetEvent(_backendEventDataFactory.TargetRequest(TargetRequestType.Throw, itemId));
-                return LevelContinuationAction.DoNothing;
-            }
-
-            // Remove item from inventory
-            player.Consumables.Remove(itemId);
-
-            // Queue Level Update - Player Consumables Remove
-            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, itemId));
-
-            // Queue projectile animation
-            OnProjectileAnimationEvent(_backendEventDataFactory.ThrowAnimation(thrownItem, player.Location, targetedCharacter.Location));
-
-            // Check for a projectile alteration - queue after the projectile animation
-            if (thrownItem.HasProjectileAlteration)
-            {
-                // Create Alteration 
-                var alteration = _alterationGenerator.GenerateAlteration(thrownItem.ProjectileAlteration);
-
-                // If Alteration Cost is Met (PUBLISHES MESSAGES)
-                if (_alterationEngine.Validate(_modelService.Player, alteration))
-                {
-                    // Queue the alteration and remove the item
-                    _alterationEngine.Queue(_modelService.Player, alteration);
-
-                    return LevelContinuationAction.ProcessTurnNoRegeneration;
-                }
-                else
-                    return LevelContinuationAction.ProcessTurnNoRegeneration;
-            }
-
-            return LevelContinuationAction.DoNothing;
+            else
+                throw new Exception("Throw item not in the player's inventory");
         }
         public LevelContinuationAction Consume(string itemId)
         {
@@ -861,5 +812,175 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             throw new NotImplementedException();
         }
+
+        #region (private) Sub-Methods
+        private LevelContinuationAction ThrowEquipment(string itemId)
+        {
+            var targetedCharacter = _targetingService.GetTargetedCharacter();
+            var player = _modelService.Player;
+            var thrownItem = player.Equipment[itemId];
+
+            // Check that thrown item has level requirement met (ALSO DONE ON FRONT END)
+            if (thrownItem.LevelRequired > player.Level)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", thrownItem.LevelRequired.ToString());
+                return LevelContinuationAction.DoNothing;
+            }
+
+            // Check Character Class Requirement
+            if (thrownItem.HasCharacterClassRequirement &&
+                player.Class != thrownItem.CharacterClass)
+            {
+                _scenarioMessageService.Publish(
+                    ScenarioMessagePriority.Normal,
+                    "Required Character Class Not Met!",
+                    thrownItem.CharacterClass);
+
+                return LevelContinuationAction.DoNothing;
+            }
+
+            // Must select a target
+            if (targetedCharacter == null)
+            {
+                OnTargetingRequesetEvent(_backendEventDataFactory.TargetRequest(TargetRequestType.Throw, itemId));
+                return LevelContinuationAction.DoNothing;
+            }
+
+            // Check to see if item is equipped
+            if (thrownItem.IsEquipped)
+            {
+                // Attempt to Un-Equip item
+                if (!_contentEngine.Equip(itemId))
+                    return LevelContinuationAction.DoNothing;
+            }
+
+            // Remove item from inventory
+            player.Equipment.Remove(itemId);
+
+            // Queue Level Update - Player Consumables Remove
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentRemove, itemId));
+
+            // Default animation target location is the target's location
+            var animationTarget = targetedCharacter.Location;
+
+            // Calculate Equipment Throw Hit - If there's a miss then try to place item on the map next to the targeted character
+            if (!_interactionProcessor.CalculateEquipmentThrow(_modelService.Player, targetedCharacter, thrownItem))
+            {
+                var adjacentLocations = _layoutEngine.GetFreeAdjacentLocations(targetedCharacter.Location);
+
+                if (adjacentLocations.Any())
+                {
+                    animationTarget = adjacentLocations.PickRandom();
+
+                    // Add item to level contents and place on the map
+                    thrownItem.Location = animationTarget;
+
+                    // Add content to level
+                    _modelService.Level.AddContent(thrownItem);
+
+                    // Signal front end to update UI
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, thrownItem.Id));
+                }
+            }
+
+            // Queue projectile animation
+            OnProjectileAnimationEvent(_backendEventDataFactory.ThrowAnimation(thrownItem, player.Location, animationTarget));
+
+            // Clear the targeting service
+            _targetingService.Clear();
+
+            return LevelContinuationAction.ProcessTurnNoRegeneration;
+        }
+        private LevelContinuationAction ThrowConsumable(string itemId)
+        {
+            var targetedCharacter = _targetingService.GetTargetedCharacter();
+            var player = _modelService.Player;
+            var thrownItem = player.Consumables[itemId];
+
+            // Check that thrown item has level requirement met (ALSO DONE ON FRONT END)
+            if (thrownItem.LevelRequired > player.Level)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", thrownItem.LevelRequired.ToString());
+                return LevelContinuationAction.DoNothing;
+            }
+
+            // Check Character Class Requirement
+            if (thrownItem.HasCharacterClassRequirement &&
+                player.Class != thrownItem.CharacterClass)
+            {
+                _scenarioMessageService.Publish(
+                    ScenarioMessagePriority.Normal,
+                    "Required Character Class Not Met!",
+                    thrownItem.CharacterClass);
+
+                return LevelContinuationAction.DoNothing;
+            }
+
+            // Must select a target
+            if (targetedCharacter == null)
+            {
+                OnTargetingRequesetEvent(_backendEventDataFactory.TargetRequest(TargetRequestType.Throw, itemId));
+                return LevelContinuationAction.DoNothing;
+            }
+
+            // Remove item from inventory
+            player.Consumables.Remove(itemId);
+
+            // Queue Level Update - Player Consumables Remove
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, itemId));
+
+            // Set the animation target location
+            var animationTarget = targetedCharacter.Location;
+
+            // Calcualte Dodge
+            var dodge = _interactionProcessor.CalculateDodge(_modelService.Player, targetedCharacter);
+
+            // If there is a dodge (or miss) - place the item on the ground near the defender and don't queue alteration
+            if (dodge)
+            {
+                var adjacentLocations = _layoutEngine.GetFreeAdjacentLocations(targetedCharacter.Location);
+
+                if (adjacentLocations.Any())
+                {
+                    animationTarget = adjacentLocations.PickRandom();
+
+                    // Add item to level contents and place on the map
+                    thrownItem.Location = animationTarget;
+
+                    // Add content to level
+                    _modelService.Level.AddContent(thrownItem);
+
+                    // Signal front end to update UI
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, thrownItem.Id));
+                }
+            }
+
+            // Queue projectile animation
+            OnProjectileAnimationEvent(_backendEventDataFactory.ThrowAnimation(thrownItem, player.Location, animationTarget));
+
+            // Check for a projectile alteration - queue after the projectile animation
+            if (thrownItem.HasProjectileAlteration && !dodge)
+            {
+                // Create Alteration 
+                var alteration = _alterationGenerator.GenerateAlteration(thrownItem.ProjectileAlteration);
+
+                // NOTE*** THERE SHOULD NOT BE ANY VALIDATION NEEDED FOR PROJECTILE ALTERATIONS
+
+                // If Alteration Cost is Met (PUBLISHES MESSAGES)
+                if (_alterationEngine.Validate(_modelService.Player, alteration))
+                {
+                    // Queue the alteration and remove the item
+                    _alterationEngine.Queue(_modelService.Player, alteration);
+                }
+
+                // Else -> Player loses out on alteration
+            }
+
+            // Clear the targeting service
+            _targetingService.Clear();
+
+            return LevelContinuationAction.ProcessTurnNoRegeneration;
+        }
+        #endregion
     }
 }

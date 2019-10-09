@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using System.Collections.Generic;
 
@@ -26,6 +27,18 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
         /// HP is deducted from the defending character.
         /// </summary>
         bool CalculateInteraction(Character attacker, Character defender, PhysicalAttackType interactionType);
+
+        /// <summary>
+        /// Calculates an equipment throw interaction between an attacker and defender. This will return true
+        /// if the item hits the defender; publish any messages to the front-end; and subtract the hit from the
+        /// defender's stats.
+        /// </summary>
+        bool CalculateEquipmentThrow(Character attacker, Character defender, Equipment thrownItem);
+
+        /// <summary>
+        /// Calculates dodge randomly from the attack and defender's stats.
+        /// </summary>
+        bool CalculateDodge(Character attacker, Character defender);
 
         /// <summary>
         /// Calculates a block to an alteration

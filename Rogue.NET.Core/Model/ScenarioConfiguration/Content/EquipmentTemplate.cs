@@ -228,7 +228,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Type = EquipmentType.Ring;
             this.CombatType = CharacterBaseAttribute.Strength;
             this.Quality = new Range<double>(0, 5);
-            this.ThrowQuality = new Range<double>(0, 5);
+            this.ThrowQuality = new Range<double>(0, 0);
             this.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplate();
             this.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplate();
             this.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplate();

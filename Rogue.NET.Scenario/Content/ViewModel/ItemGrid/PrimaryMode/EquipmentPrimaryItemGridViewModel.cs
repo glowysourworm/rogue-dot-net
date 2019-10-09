@@ -46,6 +46,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode
                         return "Equip";
                     case EquipmentPrimaryMode.Drop:
                         return "Drop";
+                    case EquipmentPrimaryMode.Throw:
+                        return "Throw";
                     default:
                         throw new Exception("Unhandled EquipmentPrimaryMode");
                 }
@@ -61,6 +63,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode
                         return Brushes.White;
                     case EquipmentPrimaryMode.Drop:
                         return Brushes.Red;
+                    case EquipmentPrimaryMode.Throw:
+                        return Brushes.Orange;
                     default:
                         throw new Exception("Unhandled EquipmentPrimaryMode");
                 }
@@ -73,6 +77,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode
                 case EquipmentPrimaryMode.Equip:
                     return eventAggregator.GetEvent<LevelCommand>()
                                           .Publish(new LevelCommandData(LevelCommandType.Equip, Compass.Null, itemId));
+                case EquipmentPrimaryMode.Throw:
+                    return eventAggregator.GetEvent<LevelCommand>()
+                                          .Publish(new LevelCommandData(LevelCommandType.Throw, Compass.Null, itemId));
                 case EquipmentPrimaryMode.Drop:
                     return eventAggregator.GetEvent<LevelCommand>()
                                           .Publish(new LevelCommandData(LevelCommandType.Drop, Compass.Null, itemId));
@@ -85,7 +92,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode
             switch (this.PrimaryMode)
             {
                 case EquipmentPrimaryMode.Equip:
-                case EquipmentPrimaryMode.Drop:
+                case EquipmentPrimaryMode.Throw:
+                case EquipmentPrimaryMode.Drop:                
                     return true;
                 default:
                     throw new Exception("Unhandled EquipmentPrimaryMode");

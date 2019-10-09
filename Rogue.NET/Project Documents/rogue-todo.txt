@@ -2875,8 +2875,6 @@ IMMEDIATE TODO'S:
 
 	- TODO: Constrain Notes to be simple like Ammo.
 
-	- TODO: Remove strength -> hp regen and intelligence -> mp regen  AND Add option to level up to select more mp-regen, hp-regen (?)
-
 	- TODO: Add hints to the validation message results
 			
 			  
