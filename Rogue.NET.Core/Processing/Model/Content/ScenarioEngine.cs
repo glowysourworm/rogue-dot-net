@@ -832,7 +832,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Unique, 
-                    string.Format("{0} has earned {1} Skill Points",
+                    string.Format("{0} has earned {1} Skill Point(s)",
                                   player.RogueName,
                                   (skillPoints - player.SkillPoints).ToString()));
 
@@ -842,6 +842,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Publish advancement messages
             if (attributeList.Count > 0)
                 _scenarioMessageService.PublishPlayerAdvancement(ScenarioMessagePriority.Good, player.RogueName, player.Level, attributeList);
+
+            // Set Hp, Stamina to max and reset Hunger
+            player.Hp = player.HpMax;
+            player.Stamina = player.StaminaMax;
+            player.Hunger = 0;
+
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, player.Id));
         }
 
         public void ApplyEndOfTurn()

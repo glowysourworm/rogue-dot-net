@@ -1,8 +1,17 @@
 ﻿
+using Rogue.NET.Core.Model.Enums;
+using System.Windows.Media;
+
 namespace Rogue.NET.Core.Processing.Event.Backend.EventData
 {
     public class DialogPlayerAdvancementEventData : DialogEventData
     {
+        public string PlayerName { get; set; }
+        public int PlayerLevel { get; set; }
+        public Color SmileyColor { get; set; }
+        public Color SmileyLineColor { get; set; }
+        public SmileyExpression SmileyExpression { get; set; }
+
         public int PlayerPoints { get; set; }
 
         public double HpPerPoint { get; set; }

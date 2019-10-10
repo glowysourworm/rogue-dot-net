@@ -192,6 +192,13 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
 
                         (view as UserControl).DataContext = new PlayerAdvancementViewModel()
                         {
+                            PlayerName = playerUpdate.PlayerName,
+                            PlayerLevel = playerUpdate.PlayerLevel,
+
+                            SmileyColor = playerUpdate.SmileyColor,
+                            SmileyExpression = playerUpdate.SmileyExpression,
+                            SmileyLineColor = playerUpdate.SmileyLineColor,
+
                             AgilityPerPoint = playerUpdate.AgilityPerPoint,
                             HpPerPoint = playerUpdate.HpPerPoint,
                             IntelligencePerPoint = playerUpdate.IntelligencePerPoint,

@@ -1,9 +1,17 @@
 ﻿using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.Model.Enums;
+using System.Windows.Media;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Dialog
 {
     public class PlayerAdvancementViewModel : NotifyViewModel
     {
+        string _playerName;
+        Color _smileyColor;
+        Color _smileyLineColor;
+        SmileyExpression _smileyExpression;
+        int _playerLevel;
+
         int _playerPoints;
         double _hp;
         double _stamina;
@@ -25,6 +33,32 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Dialog
         double _agilityPerPoint;
         double _intelligencePerPoint;
         int _skillPointsPerPoint;
+
+        public string PlayerName
+        {
+            get { return _playerName; }
+            set { this.RaiseAndSetIfChanged(ref _playerName, value); }
+        }
+        public int PlayerLevel
+        {
+            get { return _playerLevel; }
+            set { this.RaiseAndSetIfChanged(ref _playerLevel, value); }
+        }
+        public Color SmileyColor
+        {
+            get { return _smileyColor; }
+            set { this.RaiseAndSetIfChanged(ref _smileyColor, value); }
+        }
+        public Color SmileyLineColor
+        {
+            get { return _smileyLineColor; }
+            set { this.RaiseAndSetIfChanged(ref _smileyLineColor, value); }
+        }
+        public SmileyExpression SmileyExpression
+        {
+            get { return _smileyExpression; }
+            set { this.RaiseAndSetIfChanged(ref _smileyExpression, value); }
+        }
 
         public int PlayerPoints
         {

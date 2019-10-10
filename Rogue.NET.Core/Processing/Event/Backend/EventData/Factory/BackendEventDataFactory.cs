@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Animation;
@@ -174,6 +175,8 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
         {
             var eventData = new DialogPlayerAdvancementEventData()
             {
+                PlayerName = player.RogueName,
+                PlayerLevel = player.Level,
                 Type = DialogEventType.PlayerAdvancement,
                 Hp = player.HpMax,
                 Stamina = player.StaminaMax,
@@ -181,7 +184,10 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
                 Intelligence = player.IntelligenceBase,
                 Strength = player.StrengthBase,
                 PlayerPoints = playerPoints,
-                SkillPoints = player.SkillPoints
+                SkillPoints = player.SkillPoints,
+                SmileyColor = ColorFilter.Convert(player.SmileyBodyColor),
+                SmileyLineColor = ColorFilter.Convert(player.SmileyLineColor),
+                SmileyExpression = player.SmileyExpression
             };
 
             double hp = 0, stamina = 0, strength = 0, agility = 0, intelligence = 0;

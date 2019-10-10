@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.Dialog.PlayerAdvancementDialogView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,7 +32,21 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <TextBlock Grid.Column="1" Margin="4" HorizontalAlignment="Right" FontSize="18" Foreground="Tan">
+            <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <coreView:Smiley Height="30" 
+                             Width="20" 
+                             SmileyColor="{Binding SmileyColor}"
+                             SmileyLineColor="{Binding SmileyLineColor}"
+                             SmileyExpression="{Binding SmileyExpression}" />
+                <TextBlock FontSize="24" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <Run Text="{Binding PlayerName}" />
+                    <Run Text=" Has Reached Level " />
+                    <Run Text="{Binding PlayerLevel}" />
+                    <Run Text="!" />
+                </TextBlock>
+            </StackPanel>
+
+            <TextBlock Grid.Column="1" Margin="4" HorizontalAlignment="Right" FontSize="20" Foreground="Tan" VerticalAlignment="Center">
                 <Run Text="Character Points Remaining: " />
                 <Run Text="{Binding PlayerPoints}" />
             </TextBlock>
@@ -40,8 +55,16 @@
             <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />
 
             <!-- Attribute Text -->
-            <TextBlock Grid.Row="2" Margin="4" Text="Hp" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Red" />
-            <TextBlock Grid.Row="3" Margin="4" Text="Stamina" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Tan" />
+            <TextBlock Grid.Row="2" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="18" Foreground="Red">
+                <Run Text="Hp (" />
+                <Run Text="{Binding HpPerPoint}" />
+                <Run Text=" Per Point):" />
+            </TextBlock>
+            <TextBlock Grid.Row="3" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="18" Foreground="Tan">
+                <Run Text="Stamina (" />
+                <Run Text="{Binding StaminaPerPoint}" />
+                <Run Text=" Per Point):" />                
+            </TextBlock>
 
             <!-- Attribute +/- Text and Buttons -->
             <TextBlock Grid.Row="2" Grid.Column="1" Margin="4" Text="{Binding NewHp, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Beige" />
@@ -60,14 +83,26 @@
             <Rectangle Grid.Row="4" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />
 
             <!-- Attribute Text -->
-            <TextBlock Grid.Row="5" Margin="4" Text="Strength" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
-            <TextBlock Grid.Row="6" Margin="4" Text="Agility" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="YellowGreen" />
-            <TextBlock Grid.Row="7" Margin="4" Text="Intelligence" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Blue" />
+            <TextBlock Grid.Row="5" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod">
+                <Run Text="Strength (" />
+                <Run Text="{Binding StrengthPerPoint}" />
+                <Run Text=" Per Point):" />
+            </TextBlock>
+            <TextBlock Grid.Row="6" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="18" Foreground="YellowGreen" >
+                <Run Text="Agility (" />
+                <Run Text="{Binding AgilityPerPoint}" />
+                <Run Text=" Per Point):" />                
+            </TextBlock>
+            <TextBlock Grid.Row="7" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="18" Foreground="Blue">
+                <Run Text="Intelligence (" />
+                <Run Text="{Binding AgilityPerPoint}" />
+                <Run Text=" Per Point):" />
+            </TextBlock>
 
             <!-- Attribute +/- Text and Buttons -->
-            <TextBlock Grid.Row="5" Grid.Column="1" Margin="4" Text="{Binding NewStrength, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
-            <TextBlock Grid.Row="6" Grid.Column="1" Margin="4" Text="{Binding NewAgility, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="YellowGreen" />
-            <TextBlock Grid.Row="7" Grid.Column="1" Margin="4" Text="{Binding NewIntelligence, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Blue" />
+            <TextBlock Grid.Row="5" Grid.Column="1" Margin="4" Text="{Binding NewStrength, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Beige" />
+            <TextBlock Grid.Row="6" Grid.Column="1" Margin="4" Text="{Binding NewAgility, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Beige" />
+            <TextBlock Grid.Row="7" Grid.Column="1" Margin="4" Text="{Binding NewIntelligence, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Beige" />
             
             <StackPanel Grid.Row="5" Grid.Column="1" Margin="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button x:Name="StrengthMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
@@ -86,8 +121,12 @@
             <Rectangle Grid.Row="8" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />            
             
             <!-- Skill Points -->
-            <TextBlock Grid.Row="9" Text="Skill Points:" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Silver" />
-            <TextBlock Grid.Row="9" Grid.Column="1" Margin="4" Text="{Binding NewSkillPoints}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Silver" />
+            <TextBlock Grid.Row="9" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="18" Foreground="Silver">
+                <Run Text="Skill Points (" />
+                <Run Text="{Binding SkillPointsPerPoint}" />
+                <Run Text=" Per Point):" />                
+            </TextBlock>
+            <TextBlock Grid.Row="9" Grid.Column="1" Margin="4" Text="{Binding NewSkillPoints}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Beige" />
             <StackPanel Grid.Row="9" Grid.Column="1" Margin="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button x:Name="SkillPointsMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
                 <Button x:Name="SkillPointsPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />

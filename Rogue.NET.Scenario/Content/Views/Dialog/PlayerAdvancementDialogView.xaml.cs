@@ -19,6 +19,13 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
         {
             InitializeComponent();
 
+            this.DataContextChanged += (sender, e) =>
+            {
+                var viewModel = e.NewValue as PlayerAdvancementViewModel;
+                if (viewModel != null)
+                    OnPointsChanged(viewModel);
+            };
+
             this.AcceptButton.Click += (sender, e) =>
             {
                 if (this.DialogViewFinishedEvent != null)
