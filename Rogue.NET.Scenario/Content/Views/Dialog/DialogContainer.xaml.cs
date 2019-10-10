@@ -101,6 +101,8 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
 
                         commandData = new PlayerAdvancementCommandData()
                         {
+                            Hp = viewModel.NewHp,
+                            Stamina = viewModel.NewStamina,
                             Agility = viewModel.NewAgility,
                             Intelligence = viewModel.NewIntelligence,
                             SkillPoints = viewModel.NewSkillPoints,
@@ -190,12 +192,23 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
 
                         (view as UserControl).DataContext = new PlayerAdvancementViewModel()
                         {
+                            AgilityPerPoint = playerUpdate.AgilityPerPoint,
+                            HpPerPoint = playerUpdate.HpPerPoint,
+                            IntelligencePerPoint = playerUpdate.IntelligencePerPoint,
+                            SkillPointsPerPoint = playerUpdate.SkillPointsPerPoint,
+                            StaminaPerPoint = playerUpdate.StaminaPerPoint,
+                            StrengthPerPoint = playerUpdate.StrengthPerPoint,
+                            
+                            Hp = playerUpdate.Hp,
+                            Stamina = playerUpdate.Stamina,
                             Agility = playerUpdate.Agility,
                             Intelligence = playerUpdate.Intelligence,
                             Strength = playerUpdate.Strength,
                             SkillPoints = playerUpdate.SkillPoints,
 
                             // Initialize the new variables
+                            NewHp = playerUpdate.Hp,
+                            NewStamina = playerUpdate.Stamina,
                             NewAgility = playerUpdate.Agility,
                             NewIntelligence = playerUpdate.Intelligence,
                             NewStrength = playerUpdate.Strength,

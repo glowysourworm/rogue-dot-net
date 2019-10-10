@@ -26,6 +26,36 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             };
 
             // + / - Buttons
+            this.HpMinusButton.Click += (sender, e) =>
+            {
+                var viewModel = this.DataContext as PlayerAdvancementViewModel;
+                if (viewModel != null)
+                {
+                    // Subtract a point and add it to the player points
+                    if (viewModel.NewHp > viewModel.Hp)
+                    {
+                        viewModel.NewHp -= viewModel.HpPerPoint;
+                        viewModel.PlayerPoints++;
+
+                        OnPointsChanged(viewModel);
+                    }
+                }
+            };
+            this.StaminaMinusButton.Click += (sender, e) =>
+            {
+                var viewModel = this.DataContext as PlayerAdvancementViewModel;
+                if (viewModel != null)
+                {
+                    // Subtract a point and add it to the player points
+                    if (viewModel.NewStamina > viewModel.Stamina)
+                    {
+                        viewModel.NewStamina -= viewModel.StaminaPerPoint;
+                        viewModel.PlayerPoints++;
+
+                        OnPointsChanged(viewModel);
+                    }
+                }
+            };
             this.AgilityMinusButton.Click += (sender, e) =>
             {
                 var viewModel = this.DataContext as PlayerAdvancementViewModel;
@@ -34,7 +64,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                     // Subtract a point and add it to the player points
                     if (viewModel.NewAgility > viewModel.Agility)
                     {
-                        viewModel.NewAgility--;
+                        viewModel.NewAgility -= viewModel.AgilityPerPoint;
                         viewModel.PlayerPoints++;
 
                         OnPointsChanged(viewModel);
@@ -49,7 +79,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                     // Subtract a point and add it to the player points
                     if (viewModel.NewIntelligence > viewModel.Intelligence)
                     {
-                        viewModel.NewIntelligence--;
+                        viewModel.NewIntelligence -= viewModel.IntelligencePerPoint;
                         viewModel.PlayerPoints++;
 
                         OnPointsChanged(viewModel);
@@ -64,7 +94,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                     // Subtract a point and add it to the player points
                     if (viewModel.NewStrength > viewModel.Strength)
                     {
-                        viewModel.NewStrength--;
+                        viewModel.NewStrength -= viewModel.StrengthPerPoint;
                         viewModel.PlayerPoints++;
 
                         OnPointsChanged(viewModel);
@@ -79,7 +109,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                     // Subtract a point and add it to the player points
                     if (viewModel.NewSkillPoints > viewModel.SkillPoints)
                     {
-                        viewModel.NewSkillPoints -= 3;
+                        viewModel.NewSkillPoints -= viewModel.SkillPointsPerPoint;
                         viewModel.PlayerPoints++;
 
                         OnPointsChanged(viewModel);
@@ -87,13 +117,37 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 }
             };
 
+            this.HpPlusButton.Click += (sender, e) =>
+            {
+                var viewModel = this.DataContext as PlayerAdvancementViewModel;
+                if (viewModel != null &&
+                    viewModel.PlayerPoints > 0)
+                {
+                    viewModel.NewHp += viewModel.HpPerPoint;
+                    viewModel.PlayerPoints--;
+
+                    OnPointsChanged(viewModel);
+                }
+            };
+            this.StaminaPlusButton.Click += (sender, e) =>
+            {
+                var viewModel = this.DataContext as PlayerAdvancementViewModel;
+                if (viewModel != null &&
+                    viewModel.PlayerPoints > 0)
+                {
+                    viewModel.NewStamina += viewModel.StaminaPerPoint;
+                    viewModel.PlayerPoints--;
+
+                    OnPointsChanged(viewModel);
+                }
+            };
             this.AgilityPlusButton.Click += (sender, e) =>
             {
                 var viewModel = this.DataContext as PlayerAdvancementViewModel;
                 if (viewModel != null &&
                     viewModel.PlayerPoints > 0)
                 {
-                    viewModel.NewAgility++;
+                    viewModel.NewAgility += viewModel.AgilityPerPoint;
                     viewModel.PlayerPoints--;
 
                     OnPointsChanged(viewModel);
@@ -105,7 +159,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 if (viewModel != null &&
                     viewModel.PlayerPoints > 0)
                 {
-                    viewModel.NewIntelligence++;
+                    viewModel.NewIntelligence += viewModel.IntelligencePerPoint;
                     viewModel.PlayerPoints--;
 
                     OnPointsChanged(viewModel);
@@ -117,7 +171,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 if (viewModel != null &&
                     viewModel.PlayerPoints > 0)
                 {
-                    viewModel.NewStrength++;
+                    viewModel.NewStrength += viewModel.StrengthPerPoint;
                     viewModel.PlayerPoints--;
 
                     OnPointsChanged(viewModel);
@@ -129,7 +183,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 if (viewModel != null &&
                     viewModel.PlayerPoints > 0)
                 {
-                    viewModel.NewSkillPoints += 3;
+                    viewModel.NewSkillPoints += viewModel.SkillPointsPerPoint;
                     viewModel.PlayerPoints--;
 
                     OnPointsChanged(viewModel);

@@ -8,6 +8,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Event.Backend.Enum;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
+using Rogue.NET.Core.Processing.Service.Interface;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
@@ -17,6 +18,14 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
     [Export(typeof(IBackendEventDataFactory))]
     public class BackendEventDataFactory : IBackendEventDataFactory
     {
+        readonly IModelService _modelService;
+
+        [ImportingConstructor]
+        public BackendEventDataFactory(IModelService modelService)
+        {
+            _modelService = modelService;
+        }
+
         public AnimationEventData Animation(AnimationSequence animation, GridLocation source, IEnumerable<GridLocation> targets)
         {
             return new AnimationEventData()
@@ -163,15 +172,31 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
         }
         public DialogEventData DialogPlayerAdvancement(Player player, int playerPoints)
         {
-            return new DialogPlayerAdvancementEventData()
+            var eventData = new DialogPlayerAdvancementEventData()
             {
                 Type = DialogEventType.PlayerAdvancement,
+                Hp = player.HpMax,
+                Stamina = player.StaminaMax,
                 Agility = player.AgilityBase,
                 Intelligence = player.IntelligenceBase,
                 Strength = player.StrengthBase,
                 PlayerPoints = playerPoints,
                 SkillPoints = player.SkillPoints
             };
+
+            double hp = 0, stamina = 0, strength = 0, agility = 0, intelligence = 0;
+            int skillPoints = 0;
+
+            _modelService.GetPlayerAdvancementParameters(ref hp, ref stamina, ref strength, ref agility, ref intelligence, ref skillPoints);
+
+            eventData.HpPerPoint = hp;
+            eventData.StaminaPerPoint = stamina;
+            eventData.StrengthPerPoint = strength;
+            eventData.AgilityPerPoint = agility;
+            eventData.IntelligencePerPoint = intelligence;
+            eventData.SkillPointsPerPoint = skillPoints;
+
+            return eventData;
         }
     }
 }

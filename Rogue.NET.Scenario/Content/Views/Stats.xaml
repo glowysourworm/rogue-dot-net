@@ -1,131 +1,297 @@
-﻿<UserControl
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.StatsControl" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
-             xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
-             x:Class="Rogue.NET.Scenario.Content.Views.StatsControl" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"   
              BorderBrush="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Converter.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="HeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black">
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="{TemplateBinding Content}" Background="Black" Foreground="LightBlue" FontSize="16" Padding="2,8,8,8" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="ColumnHeaderGripperStyle" TargetType="{x:Type Thumb}">
-                <Setter Property="Width" Value="8"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Cursor" Value="SizeWE"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Thumb}">
-                            <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="Rogue2DataGridColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                            <Grid>
-                                <Microsoft_Windows_Themes:DataGridHeaderBorder BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" IsClickable="{TemplateBinding CanUserSort}" IsPressed="{TemplateBinding IsPressed}" IsHovered="{TemplateBinding IsMouseOver}" Padding="{TemplateBinding Padding}" SortDirection="{TemplateBinding SortDirection}" SeparatorBrush="{TemplateBinding SeparatorBrush}" SeparatorVisibility="{TemplateBinding SeparatorVisibility}" Background="Black">
-                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                </Microsoft_Windows_Themes:DataGridHeaderBorder>
-                                <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}"/>
-                                <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}"/>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <DataTemplate x:Key="ImageColTemplate">
-                <Grid Width="36" Height="36">
-                    <Image Source="{Binding Source}"/>
-                </Grid>
-            </DataTemplate>
-            <DataTemplate x:Key="ProgressBarTemplate">
-                <Grid>
-                    <common:ProgressBar Margin="0,0,-0.001,-0.001" 
-                                            BarColor1="{Binding DataContext.CalculatedColor}" 
-                                            TextFormat="F2" 
-                                            Value="{Binding DataContext.TheValue}" 
-                                            ValueMax="{Binding DataContext.Max}" 
-                                            Height="24"/>
-                </Grid>
-            </DataTemplate>
-            <Style x:Key="Rogue2DataGridRowStyle" TargetType="{x:Type DataGridRow}">
-                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-                <Setter Property="SnapsToDevicePixels" Value="true"/>
-                <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
-                <Setter Property="ValidationErrorTemplate">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <TextBlock Foreground="Red" Margin="2,0,0,0" Text="!" VerticalAlignment="Center"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type DataGridRow}">
-                            <Border x:Name="DGR_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                                <SelectiveScrollingGrid>
-                                    <SelectiveScrollingGrid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </SelectiveScrollingGrid.ColumnDefinitions>
-                                    <SelectiveScrollingGrid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </SelectiveScrollingGrid.RowDefinitions>
-                                    <DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                    <DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}"/>
-                                    <DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
-                                </SelectiveScrollingGrid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
-
     </UserControl.Resources>
-    <Grid>
-    	<Grid.ColumnDefinitions>
-    		<ColumnDefinition/>
-    	</Grid.ColumnDefinitions>
-    	<Grid.RowDefinitions>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    		<RowDefinition Height="*"/>
-    	</Grid.RowDefinitions>
-        <common:ProgressBar x:Name="Strength" BarColor1="#FF876900" Header="Strength" TextFormat="F2" Value="{Binding StrengthBase}" ValueMax="100" ValueTextBrush="#FFFFC8C8" Margin="0,2,0,2" Value2="{Binding Strength}"/>
-        <common:ProgressBar x:Name="Agility" Grid.Row="1" BarColor1="#FF0A8300" Header="Agility" TextFormat="F2" ValueMax="100" Value="{Binding AgilityBase}" Margin="0,2,0,2" ValueTextBrush="#FFC1FFC8" Value2="{Binding Agility}"/>
-        <common:ProgressBar x:Name="Intelligence" Grid.Row="2" Header="Intelligence" BarColor1="#FF350097" Value="{Binding IntelligenceBase}" ValueMax="100" TextFormat="F2" Margin="0,2,0,2" ValueTextBrush="#FFC1BFFF" Value2="{Binding Intelligence}"/>
-        <common:ProgressBar x:Name="Speed" Grid.Row="3" Header="Speed" Margin="0,2,0,2" BarColor1="LimeGreen" ValueMax="1" Value="{Binding SpeedBase}" Value2="{Binding Speed}" TextFormat="F3" />
-        <common:ProgressBar x:Name="HpRegen" Grid.Row="4" BarColor1="#FD830000" Value="{Binding HpRegenBase}" TextFormat="F2" Header="Hp Regen" ValueMax="10" Margin="0,2,0,2" ValueTextBrush="#FFFFB8B8" Value2="{Binding HpRegen}"/>
-        <common:ProgressBar x:Name="StaminaRegen" Grid.Row="5" BarColor1="#FF00007C" TextFormat="F2" ValueMax="10" Value="{Binding StaminaRegenBase}" Header="Stamina Regen" Margin="0,2,0,2" ValueTextBrush="#FFBDB4FF" Value2="{Binding StaminaRegen}"/>
-        <common:ProgressBar x:Name="FoodUsage" Grid.Row="6" BarColor1="#FF5C4800" TextFormat="F3" Value="{Binding FoodUsagePerTurnBase}" ValueMax="5" Header="Food Usage" Margin="0,2,0,2" ValueTextBrush="#FFF8FFB6" Value2="{Binding FoodUsagePerTurn}" Invert="True"/>
-        <common:ProgressBar x:Name="Aura" Grid.Row="7" BarColor1="White" Header="Aura" TextFormat="N0" ValueMax="25" Value2="{Binding AuraRadius}" Value="{Binding AuraRadiusBase}" Margin="0,2,0,2" ValueTextBrush="Gray"/>
-        <common:ProgressBar x:Name="Attack" Grid.Row="8" BarColor1="#FF727272" TextFormat="F2" Header="Attack" ValueMax="500" Value="{Binding AttackBase}" Margin="0,2,0,2" Value2="{Binding Attack}"/>
-        <common:ProgressBar x:Name="Defense" Grid.Row="9" BarColor1="#FF813B00" Header="Defense" TextFormat="F2" Value="{Binding DefenseBase}" ValueMax="100" Margin="0,2,0,2" Value2="{Binding Defense}"/>
-    </Grid>
+    <StackPanel>
+
+        <!-- Attack -->
+        <Grid Margin="3">
+            <TextBlock Text="Attack" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding AttackBase, StringFormat=F2}" Foreground="Beige" FontSize="20" VerticalAlignment="Center" />
+                <TextBlock FontSize="20" VerticalAlignment="Center" >
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="AttackBase" />
+                            <Binding Path="Attack" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="AttackBase" />
+                            <Binding Path="Attack" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Defense -->
+        <Grid Margin="3">
+            <TextBlock Text="Defense" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding DefenseBase, StringFormat=F2}" Foreground="Beige" FontSize="20" VerticalAlignment="Center" />
+                <TextBlock FontSize="20" VerticalAlignment="Center" >
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="DefenseBase" />
+                            <Binding Path="Defense" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="DefenseBase" />
+                            <Binding Path="Defense" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Strength -->
+        <Grid Margin="3">
+            <TextBlock Text="Strength" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding StrengthBase, StringFormat=F2}" Foreground="Beige" FontSize="20" VerticalAlignment="Center"  />
+                <TextBlock FontSize="20" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="StrengthBase" />
+                            <Binding Path="Strength" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="StrengthBase" />
+                            <Binding Path="Strength" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>                    
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Agility -->
+        <Grid Margin="3">
+            <TextBlock Text="Agility" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding AgilityBase, StringFormat=F2}" Foreground="Beige" FontSize="20"  VerticalAlignment="Center"/>
+                <TextBlock FontSize="20" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="AgilityBase" />
+                            <Binding Path="Agility" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="AgilityBase" />
+                            <Binding Path="Agility" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Intelligence -->
+        <Grid Margin="3">
+            <TextBlock Text="Intelligence" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding IntelligenceBase, StringFormat=F2}" Foreground="Beige" FontSize="20" VerticalAlignment="Center" />
+                <TextBlock FontSize="20" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="IntelligenceBase" />
+                            <Binding Path="Intelligence" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="IntelligenceBase" />
+                            <Binding Path="Intelligence" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Speed -->
+        <Grid Margin="3">
+            <TextBlock Text="Speed" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding SpeedBase, StringFormat=F1}" Foreground="Beige" FontSize="20"  VerticalAlignment="Center"/>
+                <TextBlock FontSize="20" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="SpeedBase" />
+                            <Binding Path="Speed" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="SpeedBase" />
+                            <Binding Path="Speed" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Hp Regen -->
+        <Grid Margin="3">
+            <TextBlock Text="Hp Regen" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding HpRegenBase, StringFormat=F1}" Foreground="Beige" FontSize="20"  VerticalAlignment="Center"/>
+                <TextBlock FontSize="20" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="HpRegenBase" />
+                            <Binding Path="HpRegen" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="HpRegenBase" />
+                            <Binding Path="HpRegen" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Stamina Regen -->
+        <Grid Margin="3">
+            <TextBlock Text="Stamina Regen" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding StaminaRegenBase, StringFormat=F2}" Foreground="Beige" FontSize="20" VerticalAlignment="Center" />
+                <TextBlock FontSize="20" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="StaminaRegenBase" />
+                            <Binding Path="StaminaRegen" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="StaminaRegenBase" />
+                            <Binding Path="StaminaRegen" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Food Usage -->
+        <Grid Margin="3">
+            <TextBlock Text="Food Usage" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding FoodUsagePerTurnBase, StringFormat=F2}" Foreground="Beige" FontSize="20" VerticalAlignment="Center" />
+                <TextBlock FontSize="20" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="FoodUsagePerTurnBase" />
+                            <Binding Path="FoodUsagePerTurn" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </MultiBinding.ConverterParameter>                            
+                            <Binding Path="FoodUsagePerTurnBase" />
+                            <Binding Path="FoodUsagePerTurn" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- Light Radius -->
+        <Grid Margin="3">
+            <TextBlock Text="Light Radius" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                <TextBlock Text="{Binding LightRadiusBase, StringFormat=F2}" Foreground="Beige" FontSize="20" VerticalAlignment="Center" />
+                <TextBlock FontSize="20" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueTextConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="LightRadiusBase" />
+                            <Binding Path="LightRadius" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Foreground>
+                        <MultiBinding Converter="{StaticResource CharacterStatsValueForegroundConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Boolean>False</system:Boolean>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="LightRadiusBase" />
+                            <Binding Path="LightRadius" />
+                        </MultiBinding>
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+        
+    </StackPanel>
 </UserControl>

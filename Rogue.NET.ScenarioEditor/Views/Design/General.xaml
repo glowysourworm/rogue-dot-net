@@ -5,6 +5,7 @@
              xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              Background="Black">
     <UserControl.Resources>
@@ -27,14 +28,38 @@
                 <TabControl Background="Black">
                     <TabItem Header="General" DataContext="{Binding ScenarioDesign}">
                         <StackPanel>
-                            <Grid Margin="10,10,10,5">
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Name" />
-                                <extension:UpdatingTextBox Text="{Binding Name, Mode=TwoWay}" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
+                            <Grid Margin="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Name" FontSize="18" />
+                                <extension:UpdatingTextBox Text="{Binding Name, Mode=TwoWay}" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="18" />
                             </Grid>
-                            <StackPanel Margin="10,5,10,5">
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Description (should explain objective to player)" />
-                                <extension:UpdatingTextBox Margin="0,5,0,5" Text="{Binding ObjectiveDescription, Mode=TwoWay}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True"  Foreground="White" />
+                            <StackPanel Margin="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Hp Per Character Point (On Level Up)" FontSize="18" />
+                                <toolkit:IntegerUpDown Value="{Binding HpPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="1" Maximum="20" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
                             </StackPanel>
+                            <StackPanel Margin="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Stamina Per Character Point (On Level Up)" FontSize="18" />
+                                <toolkit:IntegerUpDown Value="{Binding StaminaPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="1" Maximum="20" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+                            </StackPanel>
+                            <StackPanel Margin="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Skill Points Per Character Point (On Level Up)"  FontSize="18"/>
+                                <toolkit:IntegerUpDown Value="{Binding SkillPointsPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="1" Maximum="10" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+                            </StackPanel>
+                            <StackPanel Margin="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Agility Per Character Point (On Level Up)" FontSize="18" />
+                                <toolkit:DoubleUpDown Value="{Binding AgilityPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="0.5" Maximum="5" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+                            </StackPanel>
+                            <StackPanel Margin="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Intelligence Per Character Point (On Level Up)" FontSize="18" />
+                                <toolkit:DoubleUpDown Value="{Binding IntelligencePerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="0.5" Maximum="5" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+                            </StackPanel>
+                            <StackPanel Margin="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Strength Per Character Point (On Level Up)" FontSize="18" />
+                                <toolkit:DoubleUpDown Value="{Binding StrengthPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="0.5" Maximum="5" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+                            </StackPanel>                            
+                            <StackPanel Margin="10">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Description (should explain objective to player)" FontSize="18" />
+                                <extension:UpdatingTextBox Text="{Binding ObjectiveDescription, Mode=TwoWay}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True" FontSize="18" Foreground="White" />
+                            </StackPanel>                            
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="Attack Attributes">

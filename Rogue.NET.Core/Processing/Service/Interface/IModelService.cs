@@ -69,6 +69,13 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         IEnumerable<ScenarioImage> CharacterClasses { get; }
 
         /// <summary>
+        /// Method to populate player advancement parameters
+        /// </summary>
+        void GetPlayerAdvancementParameters(ref double hpPerPoint, ref double staminaPerPoint,
+                                            ref double strengthPerPoint, ref double agilityPerPoint, ref double intelligencePerPoint,
+                                            ref int skillPointsPerPoint);
+
+        /// <summary>
         /// Returns the name of the the scenario
         /// </summary>
         /// <returns></returns>

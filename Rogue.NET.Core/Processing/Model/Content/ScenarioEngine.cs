@@ -787,11 +787,25 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             return LevelContinuationAction.ProcessTurn;
         }
-        public void PlayerAdvancement(double strength, double agility, double intelligence, int skillPoints)
+        public void PlayerAdvancement(double hp, double stamina, double strength, double agility, double intelligence, int skillPoints)
         {
             var player = _modelService.Player;
 
             var attributeList = new List<Tuple<string, double, Color>>();
+
+            if (player.HpMax != hp)
+            {
+                attributeList.Add(new Tuple<string, double, Color>("Hp", hp, Colors.Red));
+
+                player.HpMax = hp;
+            }
+
+            if (player.StaminaMax != stamina)
+            {
+                attributeList.Add(new Tuple<string, double, Color>("Stamina", stamina, Colors.Tan));
+
+                player.StaminaMax = stamina;
+            }
 
             if (player.StrengthBase != strength)
             {

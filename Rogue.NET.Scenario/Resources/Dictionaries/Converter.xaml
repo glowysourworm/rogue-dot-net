@@ -7,4 +7,6 @@
     <scenarioConverter:ItemGridViewModelTypeMultipleSelectionVisibilityConverter x:Key="ItemGridViewModelTypeMultipleSelectionVisibilityConverter" />
     <scenarioConverter:ItemGridViewModelTypeMultipleSelectionVisibilityInverseConverter x:Key="ItemGridViewModelTypeMultipleSelectionVisibilityInverseConverter" />
     <scenarioConverter:ScenarioObjectiveTypeCompletionConverter x:Key="ScenarioObjectiveTypeCompletionConverter" />
+    <scenarioConverter:CharacterStatsValueForegroundConverter x:Key="CharacterStatsValueForegroundConverter" />
+    <scenarioConverter:CharacterStatsValueTextConverter x:Key="CharacterStatsValueTextConverter" />
 </ResourceDictionary>

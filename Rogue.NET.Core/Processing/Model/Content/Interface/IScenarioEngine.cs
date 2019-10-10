@@ -29,6 +29,6 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
         void UnlockSkill(string skillId);
         LevelContinuationAction InvokePlayerSkill();
         LevelContinuationAction InvokeDoodad();
-        void PlayerAdvancement(double strength, double agility, double intelligence, int skillPoints);
+        void PlayerAdvancement(double hp, double stamina, double strength, double agility, double intelligence, int skillPoints);
     }
 }

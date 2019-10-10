@@ -21,6 +21,9 @@
                 <RowDefinition Height="10" />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition Height="10" />
+                <RowDefinition />
+                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition Height="10" />
                 <RowDefinition />
@@ -28,7 +31,7 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <TextBlock Grid.Column="1" Margin="8" HorizontalAlignment="Right" FontSize="18" Foreground="Tan">
+            <TextBlock Grid.Column="1" Margin="4" HorizontalAlignment="Right" FontSize="18" Foreground="Tan">
                 <Run Text="Character Points Remaining: " />
                 <Run Text="{Binding PlayerPoints}" />
             </TextBlock>
@@ -37,41 +40,61 @@
             <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />
 
             <!-- Attribute Text -->
-            <TextBlock Grid.Row="2" Margin="8" Text="Strength" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Red" />
-            <TextBlock Grid.Row="3" Margin="8" Text="Agility" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="YellowGreen" />
-            <TextBlock Grid.Row="4" Margin="8" Text="Intelligence" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Blue" />
+            <TextBlock Grid.Row="2" Margin="4" Text="Hp" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Red" />
+            <TextBlock Grid.Row="3" Margin="4" Text="Stamina" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Tan" />
 
             <!-- Attribute +/- Text and Buttons -->
-            <TextBlock Grid.Row="2" Grid.Column="1" Margin="8" Text="{Binding NewStrength, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
-            <TextBlock Grid.Row="3" Grid.Column="1" Margin="8" Text="{Binding NewAgility, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
-            <TextBlock Grid.Row="4" Grid.Column="1" Margin="8" Text="{Binding NewIntelligence, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Margin="4" Text="{Binding NewHp, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Beige" />
+            <TextBlock Grid.Row="3" Grid.Column="1" Margin="4" Text="{Binding NewStamina, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Beige" />
 
-            <StackPanel Grid.Row="2" Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button x:Name="StrengthPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
-                <Button x:Name="StrengthMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="HpMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+                <Button x:Name="HpPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
             </StackPanel>
-            <StackPanel Grid.Row="3" Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button x:Name="AgilityPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
-                <Button x:Name="AgilityMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
-            </StackPanel>
-            <StackPanel Grid.Row="4" Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button x:Name="IntelligencePlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
-                <Button x:Name="IntelligenceMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+            <StackPanel Grid.Row="3" Grid.Column="1" Margin="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="StaminaMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+                <Button x:Name="StaminaPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
             </StackPanel>
 
             <!-- Separator -->
-            <Rectangle Grid.Row="5" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />
+            <Rectangle Grid.Row="4" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />
 
+            <!-- Attribute Text -->
+            <TextBlock Grid.Row="5" Margin="4" Text="Strength" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
+            <TextBlock Grid.Row="6" Margin="4" Text="Agility" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="YellowGreen" />
+            <TextBlock Grid.Row="7" Margin="4" Text="Intelligence" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Blue" />
+
+            <!-- Attribute +/- Text and Buttons -->
+            <TextBlock Grid.Row="5" Grid.Column="1" Margin="4" Text="{Binding NewStrength, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
+            <TextBlock Grid.Row="6" Grid.Column="1" Margin="4" Text="{Binding NewAgility, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="YellowGreen" />
+            <TextBlock Grid.Row="7" Grid.Column="1" Margin="4" Text="{Binding NewIntelligence, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Blue" />
+            
+            <StackPanel Grid.Row="5" Grid.Column="1" Margin="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="StrengthMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+                <Button x:Name="StrengthPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
+            </StackPanel>
+            <StackPanel Grid.Row="6" Grid.Column="1" Margin="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="AgilityMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />                
+                <Button x:Name="AgilityPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
+            </StackPanel>
+            <StackPanel Grid.Row="7" Grid.Column="1" Margin="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="IntelligenceMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+                <Button x:Name="IntelligencePlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
+            </StackPanel>
+
+            <!-- Separator -->
+            <Rectangle Grid.Row="8" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />            
+            
             <!-- Skill Points -->
-            <TextBlock Grid.Row="6" Text="Skill Points (3 Per Point):" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Tan" />
-            <TextBlock Grid.Row="6" Grid.Column="1" Margin="8" Text="{Binding NewSkillPoints}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
-            <StackPanel Grid.Row="6" Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button x:Name="SkillPointsPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
+            <TextBlock Grid.Row="9" Text="Skill Points:" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Silver" />
+            <TextBlock Grid.Row="9" Grid.Column="1" Margin="4" Text="{Binding NewSkillPoints}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Silver" />
+            <StackPanel Grid.Row="9" Grid.Column="1" Margin="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button x:Name="SkillPointsMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+                <Button x:Name="SkillPointsPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
             </StackPanel>
 
             <!-- Dismiss Button -->
-            <Button x:Name="AcceptButton" Grid.Row="7" Grid.Column="1" Cursor="Hand" Margin="8" Height="48" Width="48" Style="{StaticResource ShinyTextButtonStyle}" Content="OK" FontSize="18" Foreground="White" Background="Black" HorizontalAlignment="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+            <Button x:Name="AcceptButton" IsEnabled="False" Grid.Row="10" Grid.Column="1" Cursor="Hand" Margin="4" Height="48" Width="48" Style="{StaticResource ShinyTextButtonStyle}" Content="OK" FontSize="18" Foreground="White" Background="Black" HorizontalAlignment="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
 
         </Grid>
     </Border>

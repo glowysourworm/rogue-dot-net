@@ -170,6 +170,18 @@ namespace Rogue.NET.Core.Processing.Service
                                  .LevelBranch;
         }
 
+        public void GetPlayerAdvancementParameters(ref double hpPerPoint, ref double staminaPerPoint, 
+                                                   ref double strengthPerPoint, ref double agilityPerPoint, 
+                                                   ref double intelligencePerPoint, ref int skillPointsPerPoint)
+        {
+            hpPerPoint = _configuration.ScenarioDesign.HpPerCharacterPoint;
+            staminaPerPoint = _configuration.ScenarioDesign.StaminaPerCharacterPoint;
+            strengthPerPoint = _configuration.ScenarioDesign.StrengthPerCharacterPoint;
+            agilityPerPoint = _configuration.ScenarioDesign.AgilityPerCharacterPoint;
+            intelligencePerPoint = _configuration.ScenarioDesign.IntelligencePerCharacterPoint;
+            skillPointsPerPoint = _configuration.ScenarioDesign.SkillPointsPerCharacterPoint;
+        }
+
         public string GetScenarioName()
         {
             return _configuration.ScenarioDesign.Name;

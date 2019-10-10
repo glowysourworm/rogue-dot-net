@@ -408,6 +408,8 @@
     <Compile Include="Content\Views\SkillTree.xaml.cs">
       <DependentUpon>SkillTree.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\CharacterStatsValueForegroundConverter.cs" />
+    <Compile Include="Converter\CharacterStatsValueTextConverter.cs" />
     <Compile Include="Processing\Controller\Enum\GameCommandMode.cs" />
     <Compile Include="Processing\Controller\FrontendController.cs" />
     <Compile Include="Processing\Controller\Interface\IFrontendController.cs" />
