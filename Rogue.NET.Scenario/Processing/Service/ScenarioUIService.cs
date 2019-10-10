@@ -12,6 +12,7 @@ using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
 using Rogue.NET.Scenario.Processing.Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -157,13 +158,16 @@ namespace Rogue.NET.Scenario.Processing.Service
             content.Location = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
         }
 
-        public void UpdateLightRadius(LevelCanvasShape canvasShape, Player player, Rect levelUIBounds)
+        public void UpdateLightRadius(LevelCanvasShape canvasShape, Character character, Rect levelUIBounds)
         {
-            var point = _scenarioUIGeometryService.Cell2UI(player.Location, true);
-            var lightRadiusUI = player.GetLightRadius() * ModelConstants.CellHeight;
+            if (character.SymbolType != SymbolType.Smiley)
+                throw new Exception("Trying to create light radius for non-smiley symbol");
+
+            var point = _scenarioUIGeometryService.Cell2UI(character.Location, true);
+            var lightRadiusUI = character.GetLightRadius() * ModelConstants.CellHeight;
 
             // Effective Character Symbol
-            var effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(player);
+            var effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(character);
 
             // Make the full size of the level - then apply the level opacity mask drawing
             (canvasShape.RenderedGeometry as RectangleGeometry).Rect = levelUIBounds;

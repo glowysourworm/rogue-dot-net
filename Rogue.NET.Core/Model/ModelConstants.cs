@@ -36,6 +36,8 @@ namespace Rogue.NET.Core.Model
         }
         public static class FrontEnd
         {
+            public static readonly Brush LevelBackground = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0x0F));
+
             public static readonly Brush AttackForeground = Brushes.Silver;
             public static readonly Brush DefenseForeground = Brushes.Beige;
             public static readonly Brush StrengthForeground = Brushes.Goldenrod;

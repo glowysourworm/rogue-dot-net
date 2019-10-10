@@ -28,6 +28,7 @@ using Rogue.NET.Core.Media.Animation;
 using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.Animation.EventData;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -151,8 +152,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             set
             {
                 _levelWidth = value;
-                OnPropertyChanged("LevelWidth");
-                OnPropertyChanged("LevelContainerWidth");
+                OnPropertyChanged(() => this.LevelWidth);
                 OnLevelDimensionChange();
             }
         }
@@ -162,8 +162,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             set
             {
                 _levelHeight = value;
-                OnPropertyChanged("LevelHeight");
-                OnPropertyChanged("LevelContainerHeight");
+                OnPropertyChanged(() => this.LevelHeight);
                 OnLevelDimensionChange();
             }
         }
@@ -233,6 +232,20 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
                     else
                         this.Characters.Add(CreateContent(scenarioObject));
+
+                    // Check for Character Light Radius
+                    if (character.SymbolType == SymbolType.Smiley)
+                    {
+                        var characterLightRadius = this.LightRadii.FirstOrDefault(x => x.ScenarioObjectId == character.Id);
+
+                        // Update Light Radius
+                        if (characterLightRadius != null)
+                            _scenarioUIService.UpdateLightRadius(characterLightRadius, character, new Rect(0, 0, this.LevelWidth, this.LevelHeight));
+
+                        // Add Light Radius
+                        else
+                            this.LightRadii.Add(CreateLightRadius(character));
+                    }
 
                     // Auras
                     var characterAuras = character.Alteration.GetAuraSourceParameters();
@@ -314,9 +327,21 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var visibleGeometry = _scenarioUIService.CreateGeometry(visibleLocations);
             var revealedGeometry = _scenarioUIService.CreateGeometry(revealedLocations);
 
-            this.ExploredOpacityMask.Drawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), exploredGeometry);
-            this.VisibleOpacityMask.Drawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), visibleGeometry);
-            this.RevealedOpacityMask.Drawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), revealedGeometry);
+
+            // Top Layer = Visible Mask ^ Explored Mask ^ Revealed Mask
+            this.VisibleOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
+                                                                  new Pen(Brushes.Transparent, 0),
+                                                                  visibleGeometry);
+
+            // Middle Layer = Explored Geometry
+            this.ExploredOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground, 
+                                                                   new Pen(Brushes.Transparent, 0),
+                                                                   exploredGeometry);
+
+            // Bottom Layer = Revealed Mask
+            this.RevealedOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground, 
+                                                                   new Pen(Brushes.Transparent, 0),
+                                                                   revealedGeometry);
 
             OnPropertyChanged(() => this.ExploredOpacityMask);
             OnPropertyChanged(() => this.VisibleOpacityMask);
@@ -343,11 +368,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             return image;
         }
 
-        private LevelCanvasShape CreateLightRadius(Player player)
+        private LevelCanvasShape CreateLightRadius(Character character)
         {
-            var canvasShape = new LevelCanvasShape(player.Id, player.Id, new RectangleGeometry());
+            var canvasShape = new LevelCanvasShape(character.Id, character.Id, new RectangleGeometry());
 
-            _scenarioUIService.UpdateLightRadius(canvasShape, player, new Rect(0, 0, this.LevelWidth, this.LevelHeight));
+            _scenarioUIService.UpdateLightRadius(canvasShape, character, new Rect(0, 0, this.LevelWidth, this.LevelHeight));
 
             return canvasShape;
         }
