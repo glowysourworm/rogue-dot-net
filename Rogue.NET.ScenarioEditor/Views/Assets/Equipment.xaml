@@ -37,17 +37,17 @@
             <TabItem Header="Parameters">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentParameters}" />
             </TabItem>
-            <TabItem Header="Attack Alteration"
+            <TabItem Header="Attack Effect"
                      Visibility="{Binding HasAttackAlteration, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <region:RogueRegion DataContext="{Binding EquipmentAttackAlteration}"
                                     region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentAttackAlterationControl}" />
             </TabItem>
-            <TabItem Header="Equip Alteration"
+            <TabItem Header="Equip Effect"
                      Visibility="{Binding HasEquipAlteration, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <region:RogueRegion DataContext="{Binding EquipmentEquipAlteration}"
                                     region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentEquipAlterationControl}" />                
             </TabItem>
-            <TabItem Header="Curse Alteration"
+            <TabItem Header="Curse Effect"
                      Visibility="{Binding HasCurseAlteration, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <region:RogueRegion DataContext="{Binding EquipmentCurseAlteration}"
                                     region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentCurseAlterationControl}" />                

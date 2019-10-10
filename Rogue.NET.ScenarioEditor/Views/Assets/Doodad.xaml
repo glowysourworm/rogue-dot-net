@@ -72,13 +72,13 @@
                 </Grid>
             </StackPanel>
         </TabItem>
-        <TabItem Header="Automatic Alteration"
+        <TabItem Header="Automatic Effect"
                  Visibility="{Binding IsAutomatic, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type doodad:DoodadAlterationControl}"
                                 DataContext="{Binding AutomaticAlteration}">
             </region:RogueRegion>
         </TabItem>
-        <TabItem Header="Invoked Alteration"
+        <TabItem Header="Invoked Effect"
                  Visibility="{Binding IsInvoked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type doodad:DoodadAlterationControl}"
                                 DataContext="{Binding InvokedAlteration}">

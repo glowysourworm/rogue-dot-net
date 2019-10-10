@@ -24,11 +24,11 @@ namespace Rogue.NET.Scenario.Converter
             var value = (double)values[1];
             var invert = (bool)parameter;
 
-            if (value > 0)
-                return invert ? Brushes.Red : Brushes.YellowGreen;
+            if ((value - baseValue) > 0)
+                return invert ? Brushes.Red : Brushes.GreenYellow;
 
-            else if (value < 0)
-                return invert ? Brushes.YellowGreen : Brushes.Red;
+            else if ((value - baseValue) < 0)
+                return invert ? Brushes.GreenYellow : Brushes.Red;
 
             else
                 return Brushes.White;

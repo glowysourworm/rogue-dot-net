@@ -143,5 +143,39 @@ namespace Rogue.NET.Scenario.Content.Views
             else
                 CycleControls(visibleCtrl, _ctrlList[index + 1], true);
         }
+
+        private void CycleTo(FrameworkElement control)
+        {
+            var visibleCtrl = _ctrlList.FirstOrDefault(z => z.Visibility == System.Windows.Visibility.Visible);
+            var visibleCtrlIndex = _ctrlList.IndexOf(visibleCtrl);
+            var nextCtrlIndex = _ctrlList.IndexOf(control);
+
+            CycleControls(visibleCtrl, control, (nextCtrlIndex > visibleCtrlIndex));
+        }
+
+        private void EquipmentRB_Click(object sender, RoutedEventArgs e)
+        {
+            CycleTo(this.EquipmentCtrl);
+        }
+
+        private void CosumablesRB_Click(object sender, RoutedEventArgs e)
+        {
+            CycleTo(this.ConsumablesCtrl);
+        }
+
+        private void SkillsRB_Click(object sender, RoutedEventArgs e)
+        {
+            CycleTo(this.SkillCtrl);
+        }
+
+        private void StatsRB_Click(object sender, RoutedEventArgs e)
+        {
+            CycleTo(this.StatsCtrl);
+        }
+
+        private void AlterationsRB_Click(object sender, RoutedEventArgs e)
+        {
+            CycleTo(this.AlterationsCtrl);
+        }
     }
 }

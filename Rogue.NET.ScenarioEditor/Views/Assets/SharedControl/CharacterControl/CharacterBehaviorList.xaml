@@ -77,7 +77,7 @@
                                 </Grid>
                             </StackPanel>
                         </TabItem>
-                        <TabItem Header="Behavior Alteration"
+                        <TabItem Header="Behavior Effect"
                                  Visibility="{Binding AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
                             <Grid>
                                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type behavior:CharacterAlterationControl}"

@@ -20,17 +20,22 @@
         <Rectangle Fill="DarkBlue" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />
         <Rectangle Fill="DarkBlue" Height="36" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />
 
-        <region:RogueRegion x:Name="AttackAttributesCtrl" Grid.Row="1"  Visibility="Collapsed"
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+            <Grid>
+                <region:RogueRegion x:Name="AttackAttributesCtrl" 
                             region:RogueRegionManager.RegionName="EquipmentSubpanelAttackAttributesRegion"
                             region:RogueRegionManager.DefaultViewType="{x:Type contentView:AttackAttributesCtrl}" />
 
-        <region:RogueRegion x:Name="AlterationsCtrl" Grid.Row="1"  Visibility="Collapsed" 
+                <region:RogueRegion x:Name="AlterationsCtrl" Visibility="Collapsed" 
                             region:RogueRegionManager.RegionName="EquipmentSubpanelAlterationRegion"
-                            region:RogueRegionManager.DefaultViewType="{x:Type contentView:AlterationCtrl}" />                            
+                            region:RogueRegionManager.DefaultViewType="{x:Type contentView:AlterationCtrl}" />
 
-        <region:RogueRegion x:Name="StatsCtrl" Grid.Row="1"  Visibility="Collapsed" 
+                <region:RogueRegion x:Name="StatsCtrl" Visibility="Collapsed" 
                             region:RogueRegionManager.RegionName="EquipmentSubpanelStatsRegion"
-                            region:RogueRegionManager.DefaultViewType="{x:Type contentView:StatsControl}" />                            
+                            region:RogueRegionManager.DefaultViewType="{x:Type contentView:StatsControl}" />
+            </Grid>
+        </ScrollViewer>
+                       
         
         <Grid Margin="4,0,4,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <Button Style="{StaticResource ShinyTextButtonStyle}" Content="&#xf060;" FontFamily="{StaticResource FontAwesome}" Cursor="Hand" x:Name="LeftButton" Click="LeftButton_Click" Margin="0,0,2,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Left" Grid.Row="2" />
@@ -39,9 +44,9 @@
         </Grid>
         
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
-            <RadioButton x:Name="AttackAttributesRB" IsEnabled="False" Tag="Attack Attributes" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
-            <RadioButton x:Name="AlterationsRB" IsEnabled="False" Tag="Alterations" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
-            <RadioButton x:Name="StatsRB" IsEnabled="False" Tag="Stats" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
+            <RadioButton x:Name="AttackAttributesRB" Click="AttackAttributesRB_Click" Tag="Attack Attributes" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
+            <RadioButton x:Name="AlterationsRB" Click="AlterationsRB_Click" Tag="Alterations" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
+            <RadioButton x:Name="StatsRB" Click="StatsRB_Click" Tag="Stats" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
         </StackPanel>
     </Grid>
 </UserControl>

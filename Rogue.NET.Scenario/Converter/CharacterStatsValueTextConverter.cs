@@ -21,9 +21,8 @@ namespace Rogue.NET.Scenario.Converter
             var baseValue = (double)values[0];
             var value = (double)values[1];
 
-            return value > 0 ? " + " + value.ToString("F2") :
-                   value < 0 ? " - " + value.ToString("F2") :
-                   "";
+            return (value - baseValue) >= 0 ? " (+ " + (value - baseValue).ToString("F2") + ")" :
+                                              " (- " + (value - baseValue).ToString("F2") + ")";
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

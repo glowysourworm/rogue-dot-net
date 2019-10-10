@@ -1,4 +1,6 @@
-﻿namespace Rogue.NET.Core.Model
+﻿using System.Windows.Media;
+
+namespace Rogue.NET.Core.Model
 {
     public static class ModelConstants
     {
@@ -31,6 +33,19 @@
             public const int ConsumableGenerationDefault = 4;
             public const int EquipmentGenerationDefault = 2;
             public const int DoodadGenerationDefault = 2;
+        }
+        public static class FrontEnd
+        {
+            public static readonly Brush AttackForeground = Brushes.Silver;
+            public static readonly Brush DefenseForeground = Brushes.Beige;
+            public static readonly Brush StrengthForeground = Brushes.Goldenrod;
+            public static readonly Brush AgilityForeground = Brushes.YellowGreen;
+            public static readonly Brush IntelligenceForeground = Brushes.Blue;
+            public static readonly Brush SpeedForeground = Brushes.Magenta;
+            public static readonly Brush HpRegenForeground = Brushes.DarkRed;
+            public static readonly Brush StaminaRegenForeground = Brushes.RosyBrown;
+            public static readonly Brush FoodUsageForeground = Brushes.Green;
+            public static readonly Brush LightRadiusForeground = Brushes.Yellow;
         }
         public static class Melee
         {
