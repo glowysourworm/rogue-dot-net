@@ -70,6 +70,21 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl
                 this.AttackAttributeCB.ItemsSource = provider.AttackAttributes;
             });
 
+            this.DataContextChanged += (sender, e) =>
+            {
+                var viewModel = e.NewValue as IList<AttackAttributeTemplateViewModel>;
+
+                // If limit met - then disable the combobox and add button
+                if (viewModel != null)
+                {
+                    var limitMet = viewModel.Count >= this.AttackAttributeCountLimit;
+
+                    this.AttackAttributeCB.IsEnabled = !limitMet;
+                    this.AddButton.IsEnabled = !limitMet;
+                    this.LimitTB.Visibility = limitMet ? Visibility.Visible : Visibility.Collapsed;
+                }
+            };
+
             this.Loaded += (sender, e) =>
             {
                 this.AttackAttributeCB.ItemsSource = scenarioCollectionProvider.AttackAttributes;
