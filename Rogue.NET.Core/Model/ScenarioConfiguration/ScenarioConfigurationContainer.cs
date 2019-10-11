@@ -1,9 +1,12 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration
 {
@@ -19,15 +22,16 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<EquipmentTemplate> EquipmentTemplates { get; set; }
         public List<ConsumableTemplate> ConsumableTemplates { get; set; }
         public List<DoodadTemplate> DoodadTemplates { get; set; }
+
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
         public List<AlteredCharacterStateTemplate> AlteredCharacterStates { get; set; }
+        public List<SymbolPoolItemTemplate> SymbolPool { get; set; }
 
         public ScenarioConfigurationContainer()
         {
-            // TODO:LEVEL
             this.ScenarioDesign = new ScenarioTemplate();
-            this.LayoutTemplates = new List<LayoutTemplate>();
 
+            this.LayoutTemplates = new List<LayoutTemplate>();
             this.PlayerTemplates = new List<PlayerTemplate>();
             this.EnemyTemplates = new List<EnemyTemplate>();
             this.FriendlyTemplates = new List<FriendlyTemplate>();
@@ -35,8 +39,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.ConsumableTemplates = new List<ConsumableTemplate>();
             this.SkillTemplates = new List<SkillSetTemplate>();
             this.DoodadTemplates = new List<DoodadTemplate>();
+
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredCharacterStates = new List<AlteredCharacterStateTemplate>();
+            this.SymbolPool = new List<SymbolPoolItemTemplate>();
         }
     }
 }

@@ -33,7 +33,25 @@
                                     EnumType="{x:Type coreModelEnums:SymbolType}" 
                                     Width="200" HorizontalAlignment="Right" Height="24" />
             </Grid>
+
+            <!-- Symbol Pool Randomize Flag -->
+            <Grid Margin="10"
+                  Visibility="{Binding AllowSymbolRandomization, Converter={StaticResource BoolVisibilityCollapseConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
+                <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Randomize Symbol" />
+                <CheckBox IsChecked="{Binding Randomize}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" />
+            </Grid>            
             
+            <!-- Symbol Pool Category -->
+            <Grid Margin="10"
+                  Visibility="{Binding Randomize, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Category (to select symbol pool)" />
+                <ComboBox x:Name="SymbolPoolCategoryCB"
+                          SelectedValue="{Binding SymbolPoolCategory}"
+                          SelectedValuePath="SymbolPoolCategory"
+                          DisplayMemberPath="SymbolPoolCategory"
+                          Width="200" HorizontalAlignment="Right" Height="24" />
+            </Grid>
+
             <!-- Smiley Editor -->
             <GroupBox Visibility="{Binding SymbolType, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolType.Smiley}}"  Margin="10" Header="Smiley Parameters">
                 <StackPanel>

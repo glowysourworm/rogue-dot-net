@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign.AlteredCharacterStates"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>    
+    <Grid HorizontalAlignment="Stretch">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock FontSize="18" TextWrapping="Wrap" Margin="10" Foreground="White" Width="600"  HorizontalAlignment="Left"
+                   Text="Altered Character States are altered states that you can define here; and are available to attach to alterations. They are based on types supported by Rogue.NET such as &quot;Can't Move&quot; (Paralyzed) or &quot;Moves Randomly&quot; (Confused). Use these to define an array of special types to attach to your Alterations. NOTE*** These types support Remedies - which are applied to remove Alteration Effects with these altered types." />
+
+        <Grid Margin="10,0" Grid.Row="1" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="8" VerticalAlignment="Top" Text="New Altered State: " Foreground="White" />
+                <extension:UpdatingTextBox x:Name="AlteredStateTB" VerticalAlignment="Top" Margin="8" Width="100" />
+                <commonView:EnumComboBox x:Name="AlteredStateEnumCB" EnumType="{x:Type coreModelEnums:CharacterStateType}" VerticalAlignment="Top" Margin="8" Width="140" />
+                <Button x:Name="AddAlteredStateButton" ToolTip="Add" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                <Button x:Name="RemoveAlteredStateButton" ToolTip="Remove" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+            </StackPanel>
+        </Grid>
+
+        <ListBox x:Name="AlteredStateLB" 
+                    Grid.Row="2"
+                    Height="360"
+                    Margin="10"
+                    ItemsSource="{Binding}"      
+                    SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            
+                            <!-- Symbol Preview -->
+                            <symbol:SymbolControl DataContext="{Binding SymbolDetails}" HorizontalAlignment="Left" Margin="5" />
+                            
+                            <commonView:EnumComboBox EnumValue="{Binding BaseType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterStateType}" FontSize="18" VerticalAlignment="Center" Margin="5" Width="140" />
+                            
+                            <TextBlock VerticalAlignment="Center" FontSize="18" Margin="5">
+                                                    <Run Text="(Base Type) " />
+                                                    <Run Text="{Binding BaseType}" />
+                            </TextBlock>
+                            
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="18" HorizontalAlignment="Left" Margin="5" />
+                            
+                        </StackPanel>
+
+                        <Button x:Name="AlteredStateSymbolButton"
+                                Click="AlteredStateSymbolButton_Click"
+                                Content="Edit Symbol"
+                                Padding="6"
+                                Cursor="Hand"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center" />
+
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

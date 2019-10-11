@@ -11,6 +11,9 @@ using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Common.Extension;
+using System;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -23,6 +26,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         readonly ICharacterGenerator _characterGenerator;
         readonly IAttackAttributeGenerator _attackAttributeGenerator;
         readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
+        readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         [ImportingConstructor]
@@ -33,6 +37,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             ICharacterGenerator characterGenerator,
             IAttackAttributeGenerator attackAttributeGenerator,
             IScenarioMetaDataGenerator scenarioMetaDataGenerator,
+            ISymbolDetailsGenerator symbolDetailsGenerator,
             IRandomSequenceGenerator randomSequenceGenerator)
         {
             _eventAggregator = eventAggregator;
@@ -41,6 +46,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _characterGenerator = characterGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
             _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
+            _symbolDetailsGenerator = symbolDetailsGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
@@ -50,6 +56,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             // Reseed the Random number generator
             _randomSequenceGenerator.Reseed(seed);
+
+            // Randomize symbols
+            RandomizeSymbols(configuration);
 
             // Scenario Generation Procedure
             //
@@ -229,6 +238,87 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             }
 
             return scenario;
+        }
+
+        /// <summary>
+        /// Modifies symbols for consumable / equipment / doodads to randomize them using the configuration symbol pools
+        /// </summary>
+        private void RandomizeSymbols(ScenarioConfigurationContainer configuration)
+        {
+            // Procedure
+            //
+            // Symbol Pool Category:  Defines a category to pool random symbols for any asset with that category.
+            // Symbol Pool:           Defines a pool of EXTRA symbols to ADD TO the asset's category.
+            // Randomize:             Allows asset's symbol to be used to randomize; and randomizes THAT symbol.
+            //
+            // 1) Find symbols on assets of the symbol pool category (Consumables, Doodads, Equipment ONLY)
+            // 2) Add symbol pool symbols to these as the total pool to draw from
+            // 3) Draw a random symbol
+            // 4) Map its properties onto the asset's symbol details
+            // 5) Store the symbol reference so as not to re-use it.
+            //
+
+            var usedSymbols = new Dictionary<string, List<SymbolDetailsTemplate>>();
+
+            var mapSymbolFunction = new Action<SymbolDetailsTemplate, 
+                                               IEnumerable<SymbolDetailsTemplate>, 
+                                               SymbolPoolItemTemplate>((symbolDetails, assetCategorySymbols, symbolPool) =>
+            {
+                // Get previously used symbols
+                if (usedSymbols.ContainsKey(symbolPool.SymbolPoolCategory))
+                {
+                    // Symbol Pool[Symbol Category] + Asset Symbols[Symbol Category]
+                    var allSymbols = symbolPool.Symbols.Union(assetCategorySymbols);
+
+                    // Calculate remaining symbols
+                    var remainingSymbols = allSymbols.Except(usedSymbols[symbolPool.SymbolPoolCategory]);
+
+                    // Map symbol by property
+                    var randomSymbol = _randomSequenceGenerator.GetRandomElement(remainingSymbols);
+
+                    randomSymbol.MapOnto(symbolDetails);
+
+                    usedSymbols[symbolPool.SymbolPoolCategory].Add(randomSymbol);
+                }
+                else
+                {
+                    // Symbol Pool[Symbol Category] + Asset Symbols[Symbol Category]
+                    var allSymbols = symbolPool.Symbols.Union(assetCategorySymbols);
+
+                    // Map symbol by property
+                    var randomSymbol = _randomSequenceGenerator.GetRandomElement(allSymbols);
+
+                    randomSymbol.MapOnto(symbolDetails);
+
+                    usedSymbols.Add(symbolPool.SymbolPoolCategory, new List<SymbolDetailsTemplate>() { randomSymbol });
+                }
+            });
+
+            // Calculate random symbols for all user-set randomizable symbols
+            //
+            var randomizableSymbols = configuration.ConsumableTemplates
+                                                   .Cast<DungeonObjectTemplate>()
+                                                   .Union(configuration.EquipmentTemplates)
+                                                   .Union(configuration.DoodadTemplates)
+                                                   .Where(x => x.SymbolDetails.Randomize)
+                                                   .Select(x => x.SymbolDetails)
+                                                   .Actualize();
+
+            // NOTE*** ALL RANDOMIZED SYMBOLS MUST HAVE A VALID CATEGORY (See Scenario Configuration Validator)
+            foreach (var symbolDetails in randomizableSymbols)
+            {
+                // Get symbol pool for this category
+                var categorySymbolPool = configuration.SymbolPool.FirstOrDefault(x => x.SymbolPoolCategory == symbolDetails.SymbolPoolCategory);
+
+                if (categorySymbolPool == null)
+                    throw new Exception("Symbol Pool Not Created for one of the symbol categories");
+
+                // Get all asset symbols for this category
+                var assetCategorySymbols = randomizableSymbols.Where(x => x.SymbolPoolCategory == symbolDetails.SymbolPoolCategory);
+
+                // Map a random symbol's properties onto this one
+                mapSymbolFunction(symbolDetails, assetCategorySymbols, categorySymbolPool);
+            }
         }
     }
 }

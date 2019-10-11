@@ -25,7 +25,7 @@
                         <CheckBox  IsChecked="{Binding IsFullSymbolChange, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="10"
-                              Visibility="{Binding IsFullSymbolChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                          Visibility="{Binding IsFullSymbolChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                         <symbol:SymbolEditor DataContext="{Binding FullSymbolChangeDetails}" HorizontalAlignment="Stretch"  />
                     </Grid>
                 </StackPanel>

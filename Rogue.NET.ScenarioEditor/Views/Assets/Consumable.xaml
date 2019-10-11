@@ -26,6 +26,7 @@
             </TabItem>
             <TabItem Header="Symbol">
                 <symbol:SymbolEditor DataContext="{Binding SymbolDetails}"
+                                     AllowSymbolRandomization="True"
                                      IsOrientedSymbol="{Binding DataContext.SubType, RelativeSource={RelativeSource AncestorType=TabItem, Mode=FindAncestor}, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableSubType.Ammo}}"/>
             </TabItem>
             <TabItem Header="Type">

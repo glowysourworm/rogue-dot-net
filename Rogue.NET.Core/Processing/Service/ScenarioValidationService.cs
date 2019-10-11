@@ -443,30 +443,53 @@ namespace Rogue.NET.Core.Processing.Service
 
                         }).Actualize();
                 })),
-                new ScenarioValidationRule("Character Class Requirement must have a Character Class Set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                new ScenarioValidationRule("Randomized Symbols MUST have a valid Symbol Category", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
+                    var symbolPoolCategories = configuration.SymbolPool.Select(x => x.SymbolPoolCategory).Actualize();
+
+                    // This only affects randomizable symbols: Consumables, Equipment, and Doodads
+                    var nonCategorizedSymbols = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
+                                                             .Union(configuration.EquipmentTemplates)
+                                                             .Union(configuration.DoodadTemplates)
+                                                             .Where(x => x.SymbolDetails.Randomize)
+                                                             .Where(x => !symbolPoolCategories.Contains(x.SymbolDetails.SymbolPoolCategory))
+                                                             .Actualize();
+
+
+                    return nonCategorizedSymbols.Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = x.Name + " has no valid Symbol Category"
+
+                        }).Actualize();
+                })),
+                new ScenarioValidationRule("Character Class Requirement must have a valid Character Class Set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var characterClasses = configuration.PlayerTemplates.Select(x => x.Name).Actualize();
+
                     var equipment = configuration.EquipmentTemplates
                                                  .Where(x => x.HasCharacterClassRequirement)
-                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass))
+                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass) || !characterClasses.Contains(x.CharacterClass))
                                                  .Select(x => "Equipment -> " + x.Name)
                                                  .Actualize();
 
                     var consumables = configuration.EquipmentTemplates
                                                  .Where(x => x.HasCharacterClassRequirement)
-                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass))
+                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass) || !characterClasses.Contains(x.CharacterClass))
                                                  .Select(x => "Consumable -> " + x.Name)
                                                  .Actualize();
 
                     var doodads = configuration.DoodadTemplates
                                                  .Where(x => x.HasCharacterClassRequirement)
-                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass))
+                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass) || !characterClasses.Contains(x.CharacterClass))
                                                  .Select(x => "Doodad -> " + x.Name)
                                                  .Actualize();
 
                     var skills = configuration.SkillTemplates
                                               .SelectMany(x => x.Skills)
                                                  .Where(x => x.HasCharacterClassRequirement)
-                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass))
+                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass) || !characterClasses.Contains(x.CharacterClass))
                                                  .Select(x => "Skill -> " + x.Name)
                                                  .Actualize();
 

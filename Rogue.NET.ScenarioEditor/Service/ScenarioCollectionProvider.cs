@@ -3,6 +3,7 @@ using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
@@ -34,6 +35,7 @@ namespace Rogue.NET.ScenarioEditor.Service
         // Shared Non-Calculated "General" Assets
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; private set; }
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; private set; }
+        public ObservableCollection<SymbolPoolItemTemplateViewModel> SymbolPool { get; private set; }
 
         // "General Assets" - these are calculated and provided by the ScenarioEditorModule
         public ObservableCollection<BrushTemplateViewModel> Brushes { get; private set; }
@@ -72,6 +74,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Shared Non-calculated "General" Assets
             this.AlteredCharacterStates = configurationData.Configuration.AlteredCharacterStates;
             this.AttackAttributes = configurationData.Configuration.AttackAttributes;
+            this.SymbolPool = configurationData.Configuration.SymbolPool;
 
             // "General (calculated) Assets"
             this.Brushes.Clear();

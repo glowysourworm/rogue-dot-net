@@ -25,7 +25,8 @@
                 </region:RogueRegion>
             </TabItem>
             <TabItem Header="Symbol">
-                <symbol:SymbolEditor DataContext="{Binding SymbolDetails}"/>
+                <symbol:SymbolEditor DataContext="{Binding SymbolDetails}"
+                                     AllowSymbolRandomization="True" />
             </TabItem>
             <TabItem Header="Type">
                 <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:EquipmentType}"

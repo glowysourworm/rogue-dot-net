@@ -44,6 +44,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             var view = new SymbolEditor();
             view.DataContext = (this.DataContext as DoodadTemplateViewModel).SymbolDetails;
             view.WindowMode = true;
+            view.AllowSymbolRandomization = true;
             view.Width = 600;
 
             DialogWindowFactory.Show(view, "Rogue Symbol Editor");

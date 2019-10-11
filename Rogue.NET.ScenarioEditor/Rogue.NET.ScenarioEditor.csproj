@@ -377,6 +377,7 @@
     <Compile Include="ViewModel\Overview\ProjectionSetViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\DungeonObjectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolDetailsTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolPoolItemTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\TemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationCostTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationTemplateViewModel.cs" />
@@ -695,8 +696,23 @@
     <Compile Include="Views\Controls\NameControl.xaml.cs">
       <DependentUpon>NameControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\Symbol\SymbolControl.xaml.cs">
+      <DependentUpon>SymbolControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Design\DesignContainer.xaml.cs">
       <DependentUpon>DesignContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Design\GeneralDesign\AlteredCharacterStates.xaml.cs">
+      <DependentUpon>AlteredCharacterStates.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Design\GeneralDesign\AttackAttributes.xaml.cs">
+      <DependentUpon>AttackAttributes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Design\GeneralDesign\ScenarioDesign.xaml.cs">
+      <DependentUpon>ScenarioDesign.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Design\GeneralDesign\SymbolRandomization.xaml.cs">
+      <DependentUpon>SymbolRandomization.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Design\LevelBranchDesign\ConsumableDesign.xaml.cs">
       <DependentUpon>ConsumableDesign.xaml</DependentUpon>
@@ -1113,7 +1129,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Controls\Symbol\SymbolControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Design\DesignContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Design\GeneralDesign\AlteredCharacterStates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Design\GeneralDesign\AttackAttributes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Design\GeneralDesign\ScenarioDesign.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Design\GeneralDesign\SymbolRandomization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

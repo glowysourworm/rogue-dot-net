@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign.SymbolRandomization"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewsControlsSymbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/DarkListBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        
+        <TextBlock Foreground="White" FontSize="18" TextWrapping="Wrap" Width="600" Margin="10" HorizontalAlignment="Left"
+                   Text="Symbols for Equipment, Consumables, and Scenario Objects can be randomly drawn from the symbols below when the scenario is generated. You can add more symbols to these pools; but this will not affect the one you've already created for the asset. You must create symbol categories here to be set on the individual assets." />
+
+        <!-- Add / Remove Symbol Category -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
+            <TextBlock Text="Create Symbol Category" FontSize="18" Foreground="White"/>
+            <TextBox x:Name="SymbolCategoryTB" Width="200" FontSize="18" Foreground="White" Margin="10, 0, 0, 0" />
+            <Button x:Name="AddSymbolCategoryButton" ToolTip="Add Symbol Category" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" Margin="10, 0, 0, 0" />
+            <Button x:Name="RemoveSymbolCategoryButton" ToolTip="Remove Selected Symbol Category" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+        </StackPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="300" />
+            </Grid.RowDefinitions>
+
+            <!-- Symbol Categories -->
+            <ListBox x:Name="SymbolCategoryLB"
+                     ItemsSource="{Binding SymbolPool}"
+                     VerticalAlignment="Stretch"
+                     DisplayMemberPath="SymbolPoolCategory" 
+                     FontSize="18"
+                     Margin="5" />
+
+            <!-- Asset Symbols (For Selected Category) -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Stretch" Margin="5">
+
+                <TextBlock Margin="0, 3" FontSize="20" Foreground="White" HorizontalAlignment="Left">
+                    <Run Text="Asset Symbols" />
+                    <Run Text=" (" />
+                    <Run Text="{Binding ElementName=SymbolCategoryLB, Path=SelectedItem.SymbolPoolCategory}" />
+                    <Run Text=")" />
+                </TextBlock>
+
+                <!-- Asset Symbol List -->
+                <ListBox x:Name="AssetSymbolLB"                  
+                         Style="{StaticResource DarkListBoxStyle}"
+                         ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}"
+                         HorizontalAlignment="Stretch"
+                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                         Height="90"
+                         Margin="0, 3">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <viewsControlsSymbol:SymbolPreviewControl />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+
+                <TextBlock Margin="0, 3" FontSize="20" Foreground="White" Text="Extra Symbols for Randomization" HorizontalAlignment="Left" />
+
+                <!-- Symbol Pool List -->
+                <Grid HorizontalAlignment="Stretch">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <ListBox x:Name="SymbolPoolLB" 
+                             Style="{StaticResource DarkListBoxStyle}"
+                             HorizontalAlignment="Stretch"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             Height="90"
+                             Margin="0, 3">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <viewsControlsSymbol:SymbolPreviewControl />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                    
+                    <!-- Add / Remove Buttons -->
+                    <Grid Margin="3" Grid.Column="1">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
+                            <Button x:Name="AddSymbolButton" ToolTip="Add Symbol" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                            <Button x:Name="RemoveSymbolButton" ToolTip="Remove Symbol" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                        </StackPanel>
+
+                        <Button x:Name="EditSymbolButton" Content="Edit Symbol" Cursor="Hand" Foreground="White" FontSize="18" Padding="6" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+                    </Grid>                    
+                    
+                </Grid>
+
+            </StackPanel>
+
+        </Grid>
+
+    </StackPanel>
+</UserControl>

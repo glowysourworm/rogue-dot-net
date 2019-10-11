@@ -8,6 +8,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
     [Serializable]
     public class SymbolDetailsTemplate : Template
     {
+        private string _symbolPoolCategory;
+        private bool _randomize;
         private SymbolType _symbolType;
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
@@ -25,6 +27,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         private bool _symbolUseColorMask;
         private string _gameSymbol;
 
+        public string SymbolPoolCategory
+        {
+            get { return _symbolPoolCategory; }
+            set
+            {
+                if (_symbolPoolCategory != value)
+                {
+                    _symbolPoolCategory = value;
+                    OnPropertyChanged("SymbolPoolCategory");
+                }
+            }
+        }
+        public bool Randomize
+        {
+            get { return _randomize; }
+            set
+            {
+                if (_randomize != value)
+                {
+                    _randomize = value;
+                    OnPropertyChanged("Randomize");
+                }
+            }
+        }
         public SymbolType SymbolType
         {
             get { return _symbolType; }

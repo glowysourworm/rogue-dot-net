@@ -7,6 +7,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
 {
     public class SymbolDetailsTemplateViewModel : TemplateViewModel
     {
+        private string _symbolPoolCategory;
+        private bool _randomize;
         private SymbolType _symbolType;
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
@@ -24,6 +26,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         private bool _symbolUseColorMask;
         private string _gameSymbol;
 
+        public string SymbolPoolCategory
+        {
+            get { return _symbolPoolCategory; }
+            set { this.RaiseAndSetIfChanged(ref _symbolPoolCategory, value); }
+        }
+        public bool Randomize
+        {
+            get { return _randomize; }
+            set { this.RaiseAndSetIfChanged(ref _randomize, value); }
+        }
         public SymbolType SymbolType
         {
             get { return _symbolType; }

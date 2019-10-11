@@ -685,9 +685,21 @@ namespace Rogue.NET.ScenarioEditor
             switch (mode)
             {
                 case DesignMode.General:
-                    _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
-                    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(General))
-                                  .DataContext = _scenarioEditorController.CurrentConfig;
+                    {
+                        // Add Design Container
+                        var container = _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(DesignContainer)) as DesignContainer;
+
+                        // KLUDGE: Didn't want to build view model for this one..
+                        container.DesignNameTextBlock.Text = "";
+                        container.DesignTypeTextRun.Text = "Scenario Design";
+
+                        // Load Design Container Contents
+                        _regionManager.LoadSingleInstance(RegionNames.DesignContainerRegion, typeof(General))
+                                      .DataContext = _scenarioEditorController.CurrentConfig;
+
+                        // Load Asset Browser
+                        _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
+                    }
                     break;
                 case DesignMode.Level:
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioLevelBrowser));

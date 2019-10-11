@@ -2873,5 +2873,10 @@ IMMEDIATE TODO'S:
 	- TODO: Add hints to the validation message results
 
 	- TODO: Change MP -> Stamina. Don't allow NATURAL HP Regen until Stamina is completely full; but do allow HP Regen if there's an alteration.
+
+	- TODO: Ok... Don't know why I didn't think to do this... but, next time the symbol details get refactored - use a sub-control like the 
+			"SymbolControl" to contain ALL THE SYMBOL DETAILS PROPERTIES IN A MULTI-BINDING.
+
+	- TODO: Add confirmation boxes to the editor for most delete / remove operations
 			
 			  

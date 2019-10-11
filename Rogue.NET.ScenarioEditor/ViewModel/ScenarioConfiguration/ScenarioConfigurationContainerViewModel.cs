@@ -1,9 +1,13 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
@@ -26,6 +30,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         // "General" Assets
         ObservableCollection<AttackAttributeTemplateViewModel> _attackAttributes;
         ObservableCollection<AlteredCharacterStateTemplateViewModel> _alteredCharacterStates;
+        ObservableCollection<SymbolPoolItemTemplateViewModel> _symbolPool;
+        ObservableCollection<SymbolPoolItemTemplateViewModel> _equipmentSymbolPools;
+        ObservableCollection<SymbolPoolItemTemplateViewModel> _doodadSymbolPools;
 
         public ScenarioDesignTemplateViewModel ScenarioDesign
         {
@@ -84,6 +91,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             get { return _alteredCharacterStates; }
             set { this.RaiseAndSetIfChanged(ref _alteredCharacterStates, value); }
         }
+        public ObservableCollection<SymbolPoolItemTemplateViewModel> SymbolPool
+        {
+            get { return _symbolPool; }
+            set { this.RaiseAndSetIfChanged(ref _symbolPool, value); }
+        }
 
         public ScenarioConfigurationContainerViewModel()
         {
@@ -97,8 +109,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             this.ConsumableTemplates = new ObservableCollection<ConsumableTemplateViewModel>();
             this.SkillTemplates = new ObservableCollection<SkillSetTemplateViewModel>();
             this.DoodadTemplates = new ObservableCollection<DoodadTemplateViewModel>();
+
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.AlteredCharacterStates = new ObservableCollection<AlteredCharacterStateTemplateViewModel>();
+            this.SymbolPool = new ObservableCollection<SymbolPoolItemTemplateViewModel>();
         }
 
         public event PropertyChangingEventHandler PropertyChanging;

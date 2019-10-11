@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign.ScenarioDesign"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        <Grid Margin="10, 5">
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Name" FontSize="18" />
+            <extension:UpdatingTextBox Text="{Binding Name, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="18" Width="180" />
+        </Grid>
+        <StackPanel Margin="10, 5">
+            <TextBlock Margin="0, 5" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Description (should explain objective to player)" FontSize="18" />
+            <extension:UpdatingTextBox Text="{Binding ObjectiveDescription, Mode=TwoWay}"  HorizontalAlignment="Left" VerticalAlignment="Stretch" TextWrapping="Wrap" Width="600" AcceptsReturn="True" FontSize="18" Foreground="White" />
+        </StackPanel>
+        <Grid Margin="10, 10, 10, 5">
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Hp Per Character Point (On Level Up)" FontSize="18" />
+            <toolkit:IntegerUpDown Value="{Binding HpPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="1" Maximum="20" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+        </Grid>
+        <Grid Margin="10, 5">
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Stamina Per Character Point (On Level Up)" FontSize="18" />
+            <toolkit:IntegerUpDown Value="{Binding StaminaPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="1" Maximum="20" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+        </Grid>
+        <Grid Margin="10, 5">
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Skill Points Per Character Point (On Level Up)"  FontSize="18"/>
+            <toolkit:IntegerUpDown Value="{Binding SkillPointsPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="1" Maximum="10" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+        </Grid>
+        <Grid Margin="10, 5">
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Agility Per Character Point (On Level Up)" FontSize="18" />
+            <toolkit:DoubleUpDown Value="{Binding AgilityPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="0.5" Maximum="5" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+        </Grid>
+        <Grid Margin="10, 5">
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Intelligence Per Character Point (On Level Up)" FontSize="18" />
+            <toolkit:DoubleUpDown Value="{Binding IntelligencePerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="0.5" Maximum="5" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+        </Grid>
+        <Grid Margin="10, 5">
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Strength Per Character Point (On Level Up)" FontSize="18" />
+            <toolkit:DoubleUpDown Value="{Binding StrengthPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="0.5" Maximum="5" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+        </Grid>
+    </StackPanel>
+</UserControl>
