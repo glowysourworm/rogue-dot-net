@@ -6,7 +6,6 @@ using System;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
-    [Serializable]
     [UIType(DisplayName = "Change Level",
             Description = "Changes the scenario level by a specified amount",
             ViewType = typeof(ChangeLevelEffectParameters),

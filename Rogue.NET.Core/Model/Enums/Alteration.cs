@@ -19,15 +19,15 @@ namespace Rogue.NET.Core.Model.Enums
     public enum AlterationBlockType
     {
         [Display(Name = "Non Blockable",
-                 Description = "Alteration can't be blocked")]
+                 Description = "Effect can't be blocked")]
         NonBlockable = 0,
 
         [Display(Name = "Mental",
-                 Description = "Alteration must be blocked using the Intelligence attribute")]
+                 Description = "Effect must be blocked using the Intelligence attribute")]
         Mental = 1,
 
         [Display(Name = "Physical",
-                 Description = "Alteration must be blocked using the Agility attribute")]
+                 Description = "Effect must be blocked using the Agility attribute")]
         Physical = 2
     }
 

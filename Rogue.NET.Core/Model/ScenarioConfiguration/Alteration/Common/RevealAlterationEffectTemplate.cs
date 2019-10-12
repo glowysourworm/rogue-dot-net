@@ -6,10 +6,9 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    public class RevealAlterationEffectTemplate 
-        : Template, IConsumableAlterationEffectTemplate,
-                    IDoodadAlterationEffectTemplate,
-                    ISkillAlterationEffectTemplate
+    public class RevealAlterationEffectTemplate : Template, IConsumableAlterationEffectTemplate,
+                                                            IDoodadAlterationEffectTemplate,
+                                                            ISkillAlterationEffectTemplate
     {
         AlterationRevealType _type;
 

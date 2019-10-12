@@ -2885,6 +2885,6 @@ IMMEDIATE TODO'S:
     IMMEDIATE TODO: REMOVE TEMPORARY CHARACTER FROM NON-ASSET STATUS!!! JUST CREATE A FRIENDLY THAT IS NON-UNIQUE AND NON-OBJECTIVE AND GIVE THE
 					LIFETIME COUNTER TO THE EFFECT ALTERATION.
 
-	- TODO: Detect Magic (Alteration Alignment), Detect Magic Type (Alteration Category), Detect Attack Attribute
+	- TODO: Detect Magic (Alteration Alignment), Detect Magic Type (Alteration Category), Block Alteration Alteration Effect
 			
 			  

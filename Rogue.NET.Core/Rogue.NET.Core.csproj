@@ -215,10 +215,15 @@
     <Compile Include="Model\ScenarioConfiguration\Abstract\SymbolPoolItemTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationCategoryTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\BlockAlterationAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateTemporaryCharacterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateFriendlyAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\DetectAlterationAlignmentAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\DetectAlterationAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\IdentifyAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\SymbolEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TeleportManualAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\UncurseAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Friendly\FriendlyAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\ITemporaryCharacterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\TemporaryCharacter\TemporaryCharacterAlterationTemplate.cs" />
