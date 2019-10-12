@@ -65,13 +65,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         {
             var view = new AttackAttributeListControl(eventAggregator, scenarioCollectionProvider);
 
-            view.DataContext = viewModel.AttackAttributes;
-
             view.AttackAttributeCountLimit = 1;
             view.ShowAttack = IsWeaponType(viewModel.Type);
             view.ShowResistance = IsArmorType(viewModel.Type);
             view.ShowWeakness = IsArmorType(viewModel.Type);
             view.ShowImmune = IsArmorType(viewModel.Type);
+
+            view.DataContext = viewModel.AttackAttributes;
 
             this.AttackAttributesTab.Content = view;
         }

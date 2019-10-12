@@ -213,6 +213,7 @@
     <Compile Include="Model\ResourceCache\Interface\IScenarioConfigurationCache.cs" />
     <Compile Include="Model\ResourceCache\ScenarioConfigurationCache.cs" />
     <Compile Include="Model\ScenarioConfiguration\Abstract\SymbolPoolItemTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationCategoryTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateTemporaryCharacterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateFriendlyAlterationEffectTemplate.cs" />

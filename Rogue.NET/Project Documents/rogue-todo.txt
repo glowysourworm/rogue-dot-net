@@ -2878,5 +2878,13 @@ IMMEDIATE TODO'S:
 			"SymbolControl" to contain ALL THE SYMBOL DETAILS PROPERTIES IN A MULTI-BINDING.
 
 	- TODO: Add confirmation boxes to the editor for most delete / remove operations
+
+	- TODO: Learn how to build a MarkupExtension with public properties that are BindingExpressions. This should easily be used to create a
+			default view for a region.
+
+    IMMEDIATE TODO: REMOVE TEMPORARY CHARACTER FROM NON-ASSET STATUS!!! JUST CREATE A FRIENDLY THAT IS NON-UNIQUE AND NON-OBJECTIVE AND GIVE THE
+					LIFETIME COUNTER TO THE EFFECT ALTERATION.
+
+	- TODO: Detect Magic (Alteration Alignment), Detect Magic Type (Alteration Category), Detect Attack Attribute
 			
 			  

@@ -52,7 +52,23 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Effect applied to all characters in numeric range of source")]
         AllInRangeExceptSource = 3
     }
-    
+    /// <summary>
+    /// Describes an alteration 
+    /// </summary>
+    public enum AlterationAlignmentType : int
+    {
+        [Display(Name = "Neutral",
+                 Description = "Effect that is associated as something that is neither 'Good' nor 'Bad'")]
+        Neutral = 0,
+
+        [Display(Name = "Good",
+                 Description = "Effect that is associated as positive for your character")]
+        Good = 1,
+
+        [Display(Name = "Bad",
+                 Description = "Effect that is associated as negative for your character")]
+        Bad = 2
+    }
     public enum AlterationRandomPlacementType : int
     {
         [Display(Name = "In Level",

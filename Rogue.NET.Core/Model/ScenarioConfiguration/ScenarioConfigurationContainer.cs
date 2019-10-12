@@ -26,6 +26,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
         public List<AlteredCharacterStateTemplate> AlteredCharacterStates { get; set; }
         public List<SymbolPoolItemTemplate> SymbolPool { get; set; }
+        public List<AlterationCategoryTemplate> AlterationCategories { get; set; }
 
         public ScenarioConfigurationContainer()
         {
@@ -43,6 +44,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredCharacterStates = new List<AlteredCharacterStateTemplate>();
             this.SymbolPool = new List<SymbolPoolItemTemplate>();
+            this.AlterationCategories = new List<AlterationCategoryTemplate>();
         }
     }
 }

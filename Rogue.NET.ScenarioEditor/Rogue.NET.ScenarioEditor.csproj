@@ -379,6 +379,7 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolDetailsTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolPoolItemTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\TemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationCategoryTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationCostTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlteredCharacterStateTemplateViewModel.cs" />
@@ -484,6 +485,9 @@
     <Compile Include="ViewModel\Browser\ScenarioLevelViewModel.cs" />
     <Compile Include="ViewModel\Validation\Interface\IScenarioValidationViewModel.cs" />
     <Compile Include="ViewModel\Validation\ScenarioValidationViewModel.cs" />
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationGeneral.xaml.cs">
+      <DependentUpon>AlterationGeneral.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateTemporaryCharacterEffectParameters.xaml.cs">
       <DependentUpon>CreateTemporaryCharacterEffectParameters.xaml</DependentUpon>
     </Compile>
@@ -702,6 +706,9 @@
     <Compile Include="Views\Design\DesignContainer.xaml.cs">
       <DependentUpon>DesignContainer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Design\GeneralDesign\AlterationCategories.xaml.cs">
+      <DependentUpon>AlterationCategories.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Design\GeneralDesign\AlteredCharacterStates.xaml.cs">
       <DependentUpon>AlteredCharacterStates.xaml</DependentUpon>
     </Compile>
@@ -846,6 +853,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Dictionaries\Validation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationGeneral.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1134,6 +1145,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Design\DesignContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Design\GeneralDesign\AlterationCategories.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -30,6 +30,7 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; }
         ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; }
         ObservableCollection<SymbolPoolItemTemplateViewModel> SymbolPool { get; }
+        ObservableCollection<AlterationCategoryTemplateViewModel> AlterationCategories { get; }
 
         // Shared Calculated Assets
         ObservableCollection<BrushTemplateViewModel> Brushes { get; }

@@ -3,6 +3,7 @@ using Rogue.NET.Core.Converter.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
@@ -461,6 +462,72 @@ namespace Rogue.NET.Core.Processing.Service
                         {
                             Passed = false,
                             InnerMessage = x.Name + " has no valid Symbol Category"
+
+                        }).Actualize();
+                })),
+                new ScenarioValidationRule("All Effects must have a valid Effect Category", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var projectileAlterations = configuration.ConsumableTemplates
+                                                             .Where(x => x.HasAlteration)
+                                                             .Select(x => x.ConsumableAlteration)
+                                                             .Cast<AlterationTemplate>();
+
+                    var consumeAlterations = configuration.ConsumableTemplates
+                                                          .Where(x => x.HasProjectileAlteration)
+                                                          .Select(x => x.ConsumableProjectileAlteration)
+                                                          .Cast<AlterationTemplate>();
+
+                    var equipmentAttackAlterations = configuration.EquipmentTemplates
+                                                                  .Where(x => x.HasAttackAlteration)
+                                                                  .Select(x => x.EquipmentAttackAlteration)
+                                                                  .Cast<AlterationTemplate>();
+
+                    var equipmentEquipAlterations = configuration.EquipmentTemplates
+                                                                  .Where(x => x.HasEquipAlteration)
+                                                                  .Select(x => x.EquipmentEquipAlteration)
+                                                                  .Cast<AlterationTemplate>();
+
+                    var equipmentCurseAlterations = configuration.EquipmentTemplates
+                                                                  .Where(x => x.HasCurseAlteration)
+                                                                  .Select(x => x.EquipmentCurseAlteration)
+                                                                  .Cast<AlterationTemplate>();
+
+                    var doodadAutomaticAlterations = configuration.DoodadTemplates
+                                                                  .Where(x => x.IsAutomatic)
+                                                                  .Select(x => x.AutomaticAlteration)
+                                                                  .Cast<AlterationTemplate>();
+
+                    var doodadInvokeAlterations = configuration.DoodadTemplates
+                                                              .Where(x => x.IsInvoked)
+                                                              .Select(x => x.InvokedAlteration)
+                                                              .Cast<AlterationTemplate>();
+
+                    var skillAlterations = configuration.SkillTemplates
+                                                        .SelectMany(x => x.Skills)
+                                                        .Select(x => x.SkillAlteration);
+
+                    var behaviorAlterations = configuration.EnemyTemplates.Cast<NonPlayerCharacterTemplate>()
+                                                           .Union(configuration.FriendlyTemplates)
+                                                           .SelectMany(x => x.BehaviorDetails.Behaviors)
+                                                           .Where(x => x.AttackType == CharacterAttackType.Alteration)
+                                                           .Select(x => x.Alteration);
+
+                    var allAlterations = projectileAlterations.Union(consumeAlterations)
+                                                              .Union(equipmentAttackAlterations)
+                                                              .Union(equipmentEquipAlterations)
+                                                              .Union(equipmentCurseAlterations)
+                                                              .Union(doodadAutomaticAlterations)
+                                                              .Union(doodadInvokeAlterations)
+                                                              .Union(skillAlterations)
+                                                              .Union(behaviorAlterations);
+
+                    return allAlterations.Where(x => x.AlterationCategory == null || 
+                                                     !configuration.AlterationCategories.Contains(x.AlterationCategory))
+                                         .Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = x.Name + " has no valid Alteration Category"
 
                         }).Actualize();
                 })),

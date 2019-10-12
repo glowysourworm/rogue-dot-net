@@ -43,10 +43,12 @@
 
     <SolidColorBrush x:Key="ControlBackgroundBrush" Color="#FF333333" />
 
-    <LinearGradientBrush x:Key="SelectedBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+    <!--LinearGradientBrush x:Key="SelectedBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
         <GradientStop Color="{StaticResource TopGradientSelectColor}" Offset="0" />
         <GradientStop Color="{StaticResource BottomGradientSelectColor}" Offset="1" />
-    </LinearGradientBrush>
+    </-->
+    <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#3FFFFFFF" />
+    <SolidColorBrush x:Key="SelectedTextBrush" Color="LightBlue" />
 
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#FF787878" />
@@ -837,11 +839,7 @@
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Style.Triggers>
             <Trigger Property="Selector.IsSelected" Value="True">
-                <Setter Property="Foreground">
-                    <Setter.Value>
-                        <SolidColorBrush Color="{DynamicResource BlackColor}" />
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Foreground" Value="{Binding SelectedTextBrush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -2170,11 +2168,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="Selector.IsSelected" Value="True">
-                <Setter Property="Foreground" >
-                    <Setter.Value>
-                        <SolidColorBrush Color="{DynamicResource BlackColor}"/>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Foreground" Value="{StaticResource SelectedTextBrush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -2350,11 +2344,7 @@
     <Style d:IsControlPart="True" TargetType="{x:Type TreeViewItem}">
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground">
-                    <Setter.Value>
-                        <SolidColorBrush Color="{DynamicResource BlackColor}"/>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Foreground" Value="{Binding SelectedTextBrush}" />
             </Trigger>
         </Style.Triggers>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />

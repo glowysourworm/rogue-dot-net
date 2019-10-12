@@ -11,7 +11,19 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private AlterationCostTemplateViewModel _cost;
         private IAlterationEffectTemplateViewModel _effect;
         private AlterationBlockType _blockType;
+        private string _description;
+        private AlterationCategoryTemplateViewModel _alterationCategory;
 
+        public string Description
+        {
+            get { return _description; }
+            set { this.RaiseAndSetIfChanged(ref _description, value); }
+        }
+        public AlterationCategoryTemplateViewModel AlterationCategory
+        {
+            get { return _alterationCategory; }
+            set { this.RaiseAndSetIfChanged(ref _alterationCategory, value); }
+        }
         public AnimationSequenceTemplateViewModel Animation
         {
             get { return _animation; }
@@ -37,6 +49,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             this.Animation = new AnimationSequenceTemplateViewModel();
             this.Cost = new AlterationCostTemplateViewModel();
+            this.Description = "";
         }
     }
 }

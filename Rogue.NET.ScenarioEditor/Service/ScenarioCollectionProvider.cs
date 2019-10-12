@@ -36,6 +36,7 @@ namespace Rogue.NET.ScenarioEditor.Service
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; private set; }
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; private set; }
         public ObservableCollection<SymbolPoolItemTemplateViewModel> SymbolPool { get; private set; }
+        public ObservableCollection<AlterationCategoryTemplateViewModel> AlterationCategories { get; private set; }
 
         // "General Assets" - these are calculated and provided by the ScenarioEditorModule
         public ObservableCollection<BrushTemplateViewModel> Brushes { get; private set; }
@@ -75,6 +76,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             this.AlteredCharacterStates = configurationData.Configuration.AlteredCharacterStates;
             this.AttackAttributes = configurationData.Configuration.AttackAttributes;
             this.SymbolPool = configurationData.Configuration.SymbolPool;
+            this.AlterationCategories = configurationData.Configuration.AlterationCategories;
 
             // "General (calculated) Assets"
             this.Brushes.Clear();

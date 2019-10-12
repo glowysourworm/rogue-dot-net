@@ -20,5 +20,8 @@
             <region:RogueRegion DataContext="{Binding AlteredCharacterStates}"
                                 region:RogueRegionManager.DefaultViewType="{x:Type generalDesign:AlteredCharacterStates}" />            
         </TabItem>
+        <TabItem Header="Asset Effect Categories">
+            <generalDesign:AlterationCategories DataContext="{Binding AlterationCategories}" />
+        </TabItem>
     </TabControl>
 </UserControl>
