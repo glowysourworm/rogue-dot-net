@@ -1,10 +1,7 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Media.SymbolEffect.Utility;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Processing.Symbol.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
 using System;
@@ -13,7 +10,6 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
@@ -22,15 +18,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
     public partial class SymbolChooser : UserControl
     {
         readonly IScenarioResourceService _scenarioResourceService;
-        readonly ISvgCache _svgCache;
 
         bool _loading = false;
 
         [ImportingConstructor]
-        public SymbolChooser(IScenarioResourceService scenarioResourceService, ISvgCache svgCache)
+        public SymbolChooser(IScenarioResourceService scenarioResourceService)
         {
             _scenarioResourceService = scenarioResourceService;
-            _svgCache = svgCache;
 
             InitializeComponent();
 
@@ -129,7 +123,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
         private void LoadBaseSymbols(SymbolType type)
         {
-            this.BaseSymbolLB.ItemsSource = _svgCache.GetResourceNames(type).Select(symbol =>
+            this.BaseSymbolLB.ItemsSource = _scenarioResourceService.GetResourceNames(type).Select(symbol =>
             {
                 if (type == SymbolType.Symbol)
                 {
@@ -192,7 +186,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                         }
                         break;
                 }
-                
+
 
                 cursor += increment;
             }

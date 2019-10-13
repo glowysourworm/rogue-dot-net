@@ -3,11 +3,7 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ResourceCache;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Processing.Symbol.Interface;
+using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using SharpVectors.Converters;
 using SharpVectors.Renderers.Wpf;
 using System;
@@ -15,11 +11,9 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace Rogue.NET.Core.Processing.Symbol
+namespace Rogue.NET.Core.Processing.Service.Cache
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(ISvgCache))]
@@ -137,7 +131,7 @@ namespace Rogue.NET.Core.Processing.Symbol
         private static IEnumerable<string> GetResourceNamesImpl(SymbolType type)
         {
             if (type != SymbolType.Game &&
-                type != SymbolType.Symbol && 
+                type != SymbolType.Symbol &&
                 type != SymbolType.OrientedSymbol)
                 throw new ArgumentException("Get Resource Names only returns Game / Symbol / Oriented Symbol type names");
 
@@ -145,7 +139,7 @@ namespace Rogue.NET.Core.Processing.Symbol
 
             // Parse the names like the folder structure
             //
-            var folder = type == SymbolType.Symbol ? SVG_FOLDER_SCENARIO_SYMBOL : 
+            var folder = type == SymbolType.Symbol ? SVG_FOLDER_SCENARIO_SYMBOL :
                          type == SymbolType.OrientedSymbol ? SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL : SVG_FOLDER_GAME;
 
             var path = string.Join(".", SVG_PATH_PREFIX, folder);
@@ -187,7 +181,7 @@ namespace Rogue.NET.Core.Processing.Symbol
                                        return new { Category = pieces[0].Trim(), FileName = pieces[1].Trim() };
                                    })
                                    .GroupBy(x => x.Category)
-                                   .ToDictionary(x => x.Key, 
+                                   .ToDictionary(x => x.Key,
                                                  x => x.Select(z => z.FileName)
                                                        .ToList());
         }

@@ -10,8 +10,6 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
 {
     public class SavedGameViewModel : NotifyViewModel
     {
-        readonly IRogueEventAggregator _eventAggregator;
-
         public string Name { get; set; }
         public SmileyExpression SmileyExpression { get; set; }
         public Color SmileyBodyColor { get; set; }
@@ -19,38 +17,8 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
         public int CurrentLevel { get; set; }
         public bool ObjectiveAcheived { get; set; }
 
-        public ICommand DeleteScenarioCommand
+        public SavedGameViewModel()
         {
-            get
-            {
-                return new DelegateCommand(() =>
-                {
-                    _eventAggregator.GetEvent<DeleteScenarioEvent>()
-                                    .Publish(new DeleteScenarioEventArgs()
-                    {
-                        ScenarioName = this.Name
-                    });
-                });
-            }
-        }
-        public ICommand StartScenarioCommand
-        {
-            get
-            {
-                return new DelegateCommand(() =>
-                {
-                    _eventAggregator.GetEvent<OpenScenarioEvent>()
-                                    .Publish(new OpenScenarioEventArgs()
-                    {
-                        ScenarioName = this.Name
-                    });
-                });
-            }
-        }
-
-        public SavedGameViewModel(IRogueEventAggregator eventAggregator)
-        {
-            _eventAggregator = eventAggregator;
         }
     }
 }

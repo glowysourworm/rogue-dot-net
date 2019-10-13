@@ -1,23 +1,20 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Extension;
 using Rogue.NET.Core.Media.SymbolEffect;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ResourceCache;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Processing.Symbol.Interface;
+using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Rogue.NET.Core.Processing.Symbol
+namespace Rogue.NET.Core.Processing.Service.Cache
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioImageSourceFactory))]
@@ -201,7 +198,7 @@ namespace Rogue.NET.Core.Processing.Symbol
             switch (cacheImage.Type)
             {
                 // Smiley symbol scaling is handled else-where
-                case SymbolType.Smiley:                
+                case SymbolType.Smiley:
                 default:
                     return;
                 case SymbolType.Game:
@@ -232,7 +229,7 @@ namespace Rogue.NET.Core.Processing.Symbol
                         // Additional user-input scale
                         else
                             drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
-                        
+
 
                         // Apply Coloring
                         DrawingFilter.ApplyEffect(drawing, new ClampEffect(cacheImage.CharacterColor));

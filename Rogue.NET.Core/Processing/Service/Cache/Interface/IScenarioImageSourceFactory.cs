@@ -3,7 +3,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Rogue.NET.Core.Processing.Symbol.Interface
+namespace Rogue.NET.Core.Processing.Service.Cache.Interface
 {
     /// <summary>
     /// Component that creates and manages caching of scenario image sources

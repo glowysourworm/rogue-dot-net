@@ -1,17 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.Practices.ServiceLocation;
+using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Processing.Service.Cache.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
-using Rogue.NET.Core.Processing.Symbol.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
@@ -20,12 +17,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
     public partial class CharacterMap : UserControl
     {
         readonly IScenarioResourceService _scenarioResourceService;
-        readonly ISvgCache _svgCache;
+
         public CharacterMap()
         {
             _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
-            _svgCache = ServiceLocator.Current.GetInstance<ISvgCache>();
-            
+
             InitializeComponent();
 
             bool loading = false;
@@ -49,7 +45,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 var symbol = e.AddedItems.Count > 0 ? (SvgSymbolViewModel)e.AddedItems[0] : null;
                 var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
 
-                if (symbol != null && 
+                if (symbol != null &&
                     viewModel != null &&
                    !loading)
                 {
@@ -92,12 +88,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
         private void LoadCategories()
         {
-            this.CategoryLB.ItemsSource = _svgCache.GetCharacterCategories();
+            this.CategoryLB.ItemsSource = _scenarioResourceService.GetCharacterCategories();
         }
         private void LoadCharacters(string category)
         {
             // Create symbols for the specified category
-            this.SymbolLB.ItemsSource = _svgCache.GetCharacterResourceNames(category).Select(characterName =>
+            this.SymbolLB.ItemsSource = _scenarioResourceService.GetCharacterResourceNames(category).Select(characterName =>
             {
                 // Load Image Source
                 var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateCharacterSymbol(characterName,

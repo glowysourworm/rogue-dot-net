@@ -29,6 +29,7 @@ using Rogue.NET.Core.Processing.Event.ScenarioEditor;
 using Rogue.NET.Scenario.Processing.Event;
 using Rogue.NET.Scenario.Processing.Event.Content;
 using Rogue.NET.Scenario.Processing.Event.Content.SkillTree;
+using System.Linq;
 
 namespace Rogue.NET.Scenario
 {
@@ -38,19 +39,19 @@ namespace Rogue.NET.Scenario
         readonly IRogueRegionManager _regionManager;
         readonly IRogueEventAggregator _eventAggregator;
         readonly IGameController _gameController;
-        readonly IScenarioFileService _scenarioFileService;
+        readonly IScenarioResourceService _scenarioResourceService;
 
         [ImportingConstructor]
         public ScenarioModule(
             IRogueRegionManager regionManager,
             IRogueEventAggregator eventAggregator,
             IGameController gameController,
-            IScenarioFileService scenarioFileService)
+            IScenarioResourceService scenarioResourceService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _gameController = gameController;
-            _scenarioFileService = scenarioFileService;
+            _scenarioResourceService = scenarioResourceService;
         }
 
         public void Initialize()
@@ -205,8 +206,11 @@ namespace Rogue.NET.Scenario
                 var result = MessageBox.Show("Are you sure you want to delete this scenario?", "Delete " + e.ScenarioName, MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes || result == MessageBoxResult.OK)
                 {
+                    // Get Scenario to delete (TODO: PASS IN THE SCENARIO)
+                    var scenario = _scenarioResourceService.GetScenarios().First(x => x.Player.RogueName == e.ScenarioName);
+
                     // Delete the file
-                    _scenarioFileService.DeleteScenario(e.ScenarioName);
+                    _scenarioResourceService.DeleteScenario(scenario);
 
                     // Notify listeners
                     _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish();

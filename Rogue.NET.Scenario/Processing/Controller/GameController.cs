@@ -26,7 +26,6 @@ namespace Rogue.NET.Scenario.Processing.Controller
     public class GameController : IGameController
     {
         readonly IScenarioResourceService _scenarioResourceService;
-        readonly IScenarioFileService _scenarioFileService;
         readonly IScenarioStatisticsService _statisticsService;
         readonly IScenarioObjectiveService _scenarioObjectiveService;
         readonly IRogueEventAggregator _eventAggregator;
@@ -40,7 +39,6 @@ namespace Rogue.NET.Scenario.Processing.Controller
         [ImportingConstructor]
         public GameController(
             IScenarioResourceService resourceService,
-            IScenarioFileService scenarioFileService,
             IScenarioStatisticsService scenarioStatisticsService,
             IScenarioObjectiveService scenarioObjectiveService,
             IRogueEventAggregator eventAggregator,
@@ -50,7 +48,6 @@ namespace Rogue.NET.Scenario.Processing.Controller
         {
             _statisticsService = scenarioStatisticsService;
             _scenarioObjectiveService = scenarioObjectiveService;
-            _scenarioFileService = scenarioFileService;
             _scenarioResourceService = resourceService;
             _eventAggregator = eventAggregator;
             _scenarioGenerator = scenarioGenerator;
@@ -64,6 +61,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((e) =>
             {
                 var config = _scenarioResourceService.GetScenarioConfiguration(e.ScenarioName);
+
                 if (config != null)
                     New(config, e.RogueName, e.CharacterClassName, e.Seed, e.SurvivorMode);
             });
@@ -166,8 +164,8 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 _scenarioContainer = null;
             }
 
-            //Read dungeon file - TODO: Handle exceptions
-            _scenarioContainer = _scenarioFileService.OpenScenarioFile(playerName);
+            //Read dungeon file - TODO: No real need for "Open"; so need some small refactoring
+            _scenarioContainer = _scenarioResourceService.GetScenarios().FirstOrDefault(x => x.Player.RogueName == playerName);
 
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
@@ -194,7 +192,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             _scenarioContainer.ZoomFactor = _modelService.ZoomFactor;
 
             // Save scenario file to disk
-            _scenarioFileService.SaveScenarioFile(_scenarioContainer, _scenarioContainer.Player.RogueName);
+            _scenarioResourceService.SaveScenario(_scenarioContainer);
 
             // Hide Splash
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()

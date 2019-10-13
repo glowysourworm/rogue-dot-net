@@ -1,15 +1,13 @@
-﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Scenario.Intro.ViewModel;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Processing.Event.Scenario;
 using Rogue.NET.Core.Processing.Service.Interface;
-
+using Rogue.NET.Scenario.Intro.ViewModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Windows.Media;
 using System.Linq;
-using Rogue.NET.Core.Processing.Event.Scenario;
-using Rogue.NET.Core.Processing.Event.Core;
-using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using System.Windows.Media;
 
 namespace Rogue.NET.Intro.ViewModel
 {
@@ -18,7 +16,6 @@ namespace Rogue.NET.Intro.ViewModel
     public class GameSetupViewModel : NotifyViewModel
     {
         readonly IScenarioResourceService _scenarioResourceService;
-        readonly IScenarioFileService _scenarioFileService;
         readonly IRogueEventAggregator _eventAggregator;
 
         #region Fields
@@ -69,11 +66,9 @@ namespace Rogue.NET.Intro.ViewModel
 
         [ImportingConstructor]
         public GameSetupViewModel(
-                IScenarioResourceService scenarioResourceService, 
-                IScenarioFileService scenarioFileService, 
+                IScenarioResourceService scenarioResourceService,
                 IRogueEventAggregator eventAggregator)
         {
-            _scenarioFileService = scenarioFileService;
             _scenarioResourceService = scenarioResourceService;
             _eventAggregator = eventAggregator;
 
@@ -82,10 +77,6 @@ namespace Rogue.NET.Intro.ViewModel
                 Reinitialize();
             });
             _eventAggregator.GetEvent<ScenarioSavedEvent>().Subscribe(() =>
-            {
-                Reinitialize();
-            });
-            _eventAggregator.GetEvent<ResourcesInitializedEvent>().Subscribe(() =>
             {
                 Reinitialize();
             });
@@ -100,9 +91,9 @@ namespace Rogue.NET.Intro.ViewModel
             this.Scenarios.Clear();
             this.Configurations.Clear();
 
-            foreach (var scenarioContainer in _scenarioFileService.GetScenarios())
+            foreach (var scenarioContainer in _scenarioResourceService.GetScenarios())
             {
-                this.Scenarios.Add(new SavedGameViewModel(_eventAggregator)
+                this.Scenarios.Add(new SavedGameViewModel()
                 {
                     Name = scenarioContainer.Player.RogueName,
                     SmileyExpression = scenarioContainer.Player.SmileyExpression,
@@ -112,7 +103,8 @@ namespace Rogue.NET.Intro.ViewModel
             }
 
             // Select Configurations with at least ONE PLAYER TEMPLATE (Character Class)
-            foreach (var config in _scenarioResourceService.GetScenarioConfigurations()
+            foreach (var config in _scenarioResourceService.EmbeddedConfigurations
+                                                           .Union(_scenarioResourceService.UserConfigurations)
                                                            .Where(x => x.PlayerTemplates.Any()))
             {
                 this.Configurations.Add(new ScenarioViewModel()

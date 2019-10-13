@@ -2,7 +2,7 @@
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
-namespace Rogue.NET.Core.Model.ResourceCache
+namespace Rogue.NET.Core.Processing.Service.Cache
 {
     public class ScenarioCacheImage
     {

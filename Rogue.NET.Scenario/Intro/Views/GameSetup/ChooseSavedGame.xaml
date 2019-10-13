@@ -56,7 +56,7 @@
                             <TextBlock Foreground="White" FontSize="28" Text="{Binding Name}" Margin="60,10,10,10" VerticalAlignment="Bottom" />
                             <Grid HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="BackButton" Command="{Binding DeleteScenarioCommand}" Height="24" Width="24" Cursor="Hand">
+                                    <Button x:Name="DeleteButton" Click="DeleteButton_Click" Height="24" Width="24" Cursor="Hand">
                                         <Button.Template>
                                             <ControlTemplate>
                                                 <Border x:Name="border" CornerRadius="4,0,0,4" Background="Transparent" BorderBrush="White" BorderThickness="1">
@@ -72,7 +72,7 @@
                                             </ControlTemplate>
                                         </Button.Template>
                                     </Button>
-                                    <Button x:Name="GoButton" Command="{Binding StartScenarioCommand}" Height="24" Width="24" Cursor="Hand">
+                                    <Button x:Name="GoButton" Click="GoButton_Click" Height="24" Width="24" Cursor="Hand">
                                         <Button.Template>
                                             <ControlTemplate>
                                                 <Border x:Name="border" CornerRadius="0,4,4,0" Background="Transparent" BorderBrush="White" BorderThickness="1">

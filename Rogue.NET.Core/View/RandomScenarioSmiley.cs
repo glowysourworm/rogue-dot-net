@@ -2,8 +2,8 @@
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ResourceCache.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Processing.Service.Interface;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
@@ -18,13 +18,14 @@ namespace Rogue.NET.Core.View
 
         public RandomScenarioSmiley()
         {
-            var configurationCache = ServiceLocator.Current.GetInstance<IScenarioConfigurationCache>();
+            var resourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
 
             if (!_IS_LOADED)
             {
-                _configurationSmileyFaces = configurationCache.EmbeddedConfigurations
-                                                              .SelectMany(x => x.PlayerTemplates.Select(z => new ScenarioImage(z.SymbolDetails)))
-                                                              .Actualize();
+                _configurationSmileyFaces = resourceService.EmbeddedConfigurations
+                                                           .Union(resourceService.UserConfigurations)
+                                                           .SelectMany(x => x.PlayerTemplates.Select(z => new ScenarioImage(z.SymbolDetails)))
+                                                           .Actualize();
 
                 _chosenSmileyFaces = new List<ScenarioImage>();
 
@@ -60,7 +61,7 @@ namespace Rogue.NET.Core.View
                 };
             }
 
-            
+
 
             // Set Traits from randomly picked character class
             this.SmileyColor = ColorFilter.Convert(chosenSmileyFace.SmileyBodyColor);

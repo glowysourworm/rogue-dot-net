@@ -1,25 +1,18 @@
-﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
+﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Common.Extension;
-
-using System.ComponentModel.Composition;
-using System.Windows.Controls;
+using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Processing.Service.Cache.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
 using System.Linq;
-using System;
-using System.Windows.Media;
 using System.Windows;
-using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.Core.Processing.Symbol.Interface;
+using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
     public partial class SymbolComboBox : UserControl
     {
         readonly IScenarioResourceService _scenarioResourceService;
-        readonly ISvgCache _svgCache;
 
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(string), typeof(SymbolComboBox));
@@ -34,7 +27,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         {
             // TODO: Figure out better mechanism for binding
             _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
-            _svgCache = ServiceLocator.Current.GetInstance<ISvgCache>();
 
             InitializeComponent();
             Initialize();
@@ -48,7 +40,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
         private void Initialize()
         {
-            this.TheCB.ItemsSource = _svgCache.GetResourceNames(SymbolType.Game).Select(symbol =>
+            this.TheCB.ItemsSource = _scenarioResourceService.GetResourceNames(SymbolType.Game).Select(symbol =>
             {
                 var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0);
                 return SvgSymbolViewModel.CreateGameSymbol(source, symbol);

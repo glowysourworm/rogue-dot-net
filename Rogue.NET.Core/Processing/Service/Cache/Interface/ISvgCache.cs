@@ -1,9 +1,8 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ResourceCache;
 using System.Collections.Generic;
 using System.Windows.Media;
 
-namespace Rogue.NET.Core.Processing.Symbol.Interface
+namespace Rogue.NET.Core.Processing.Service.Cache.Interface
 {
     public interface ISvgCache
     {

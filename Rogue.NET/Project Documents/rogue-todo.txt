@@ -2887,4 +2887,7 @@ IMMEDIATE TODO'S:
 
 	- TODO: CHECK TO MAKE SURE DOODADS DON'T CHARGE FOR ALTERATIONS - Maybe set the CostType = None in the AlterationSpecificationContainer.
 			
+	- TODO: ALLOW NON-SMILEY PLAYER. (Going to require auras / light radii for any symbol we choose to support - i'm thinking Character and Smiley)
+
+	- TODO: When "Opening" Scenario Configuration - have to show what's available in memory. Since we're pre-loading all data.
 			  

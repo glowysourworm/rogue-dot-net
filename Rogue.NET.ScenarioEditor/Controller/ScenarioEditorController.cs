@@ -29,7 +29,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
         readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioConfigurationUndoService _rogueUndoService;
         readonly IScenarioResourceService _scenarioResourceService;
-        readonly IScenarioFileService _scenarioFileService;
         readonly IScenarioValidationService _scenarioValidationService;
         readonly IAlterationNameService _alterationNameService;
 
@@ -45,7 +44,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
             IRogueEventAggregator eventAggregator,
             IScenarioConfigurationUndoService rogueUndoService,
             IScenarioResourceService scenarioResourceService,
-            IScenarioFileService scenarioFileService,
             IScenarioValidationService scenarioValidationService,
             IAlterationNameService alterationNameService,
             IScenarioValidationViewModel scenarioValidationViewModel)
@@ -53,7 +51,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _eventAggregator = eventAggregator;
             _rogueUndoService = rogueUndoService;
             _scenarioResourceService = scenarioResourceService;
-            _scenarioFileService = scenarioFileService;
             _scenarioValidationService = scenarioValidationService;
             _alterationNameService = alterationNameService;
 
@@ -126,18 +123,14 @@ namespace Rogue.NET.Controller.ScenarioEditor
             if (_config != null)
                 _rogueUndoService.Clear();
 
-            // Open the Scenario Configuration from file
-            ScenarioConfigurationContainer config;
-            if (builtIn)
-                config = _scenarioResourceService.GetScenarioConfiguration((ConfigResources)Enum.Parse(typeof(ConfigResources), name));
-            else
-                config = _scenarioFileService.OpenConfiguration(name);
+            // Load Scenario Configuration from the resource service
+            var configuration = _scenarioResourceService.GetScenarioConfiguration(name);
 
             // Collection of brushes from mapping the configuration
             IEnumerable<BrushTemplateViewModel> scenarioBrushes;
 
             // Map to the view model
-            _config = _configurationMapper.Map(config, out scenarioBrushes);
+            _config = _configurationMapper.Map(configuration, out scenarioBrushes);
 
             // Clear validation flags
             _scenarioValidationViewModel.Clear();
@@ -205,9 +198,9 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             // Save the configuration
             if (builtInScenario)
-                _scenarioFileService.EmbedConfiguration(builtInScenarioType, config);
+                _scenarioResourceService.EmbedConfiguration(config);
             else
-                _scenarioFileService.SaveConfiguration(_config.ScenarioDesign.Name, config);
+                _scenarioResourceService.SaveConfiguration(config);
 
             // Clear the Undo stack
             _rogueUndoService.Clear();

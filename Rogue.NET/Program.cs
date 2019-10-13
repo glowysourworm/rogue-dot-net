@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO;
-using Rogue.NET.Common.Utility;
-using Rogue.NET.Core.Model.ResourceCache;
-using Rogue.NET.ModalDialog;
+﻿using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
-using Rogue.NET.Core.Processing.Symbol;
+using Rogue.NET.Core.Processing.Service.Cache;
+using Rogue.NET.ModalDialog;
+using System;
+using System.IO;
 
 namespace Rogue.NET
 {
@@ -27,6 +26,9 @@ namespace Rogue.NET
 
             // Load all configurations prior to running application
             ScenarioConfigurationCache.Load();
+
+            // Load all saved games
+            ScenarioCache.Load();
 
             // Load SVG Resources
             SvgCache.Load();
