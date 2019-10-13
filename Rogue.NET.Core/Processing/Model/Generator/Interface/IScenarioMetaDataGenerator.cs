@@ -1,5 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 

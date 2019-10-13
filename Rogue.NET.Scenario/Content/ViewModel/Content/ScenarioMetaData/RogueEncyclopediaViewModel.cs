@@ -4,14 +4,15 @@ using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Event.Level;
 
 using System;
 using System.Linq;
 using System.ComponentModel.Composition;
 
-using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
-using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Processing.Event.Level;
+using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.Abstract.ScenarioMetaData;
+
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
@@ -104,15 +105,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
                 constructor(OBJECTIVE_NAME, OBJECTIVE_NAME, "Enemies, Items, or Objects that are your mission objective")
 
               // Filter all empty categories (always leave objective category)
-            }.Where(x => modelService.ScenarioEncyclopedia
-                                     .Values
-                                     .Any(z => z.Type == x.CategoryName) || x.IsObjectiveCategory));
+            }.Where(x => modelService.ScenarioEncyclopedia.Contains(z => z.Type == x.CategoryName) || x.IsObjectiveCategory));
         }
 
         private void UpdateOrAdd(IModelService modelService, IScenarioResourceService scenarioResourceService)
         {
             // To locate the ScenarioMetaDataViewModel -> find category by Type
-            foreach (var metaData in modelService.ScenarioEncyclopedia.Values)
+            modelService.ScenarioEncyclopedia.ModifyEach(metaData =>
             {
                 // Update base category
                 UpdateCategory(this.Categories.PagedFirstOrDefault(x => x.CategoryName == metaData.Type), metaData, scenarioResourceService);
@@ -120,7 +119,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
                 // Update the objective category
                 if (metaData.IsObjective)
                     UpdateCategory(this.Categories.PagedFirst(x => x.CategoryName == OBJECTIVE_NAME), metaData, scenarioResourceService);
-            }
+            });
 
             OnPropertyChanged("Categories");
         }

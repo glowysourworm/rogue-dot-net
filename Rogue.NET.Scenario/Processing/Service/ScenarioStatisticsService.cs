@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.Scenario.Statistic;
 using Rogue.NET.Scenario.Processing.Service.Interface;
 using System.ComponentModel.Composition;

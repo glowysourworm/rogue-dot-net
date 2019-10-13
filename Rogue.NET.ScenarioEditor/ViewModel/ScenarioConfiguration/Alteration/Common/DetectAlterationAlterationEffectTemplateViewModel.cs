@@ -1,10 +1,15 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
-using System;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
-    public class DetectAlterationAlterationEffectTemplateViewModel 
+    [UIType(DisplayName = "Detect Effect",
+            Description = "Effect that lets you reveal assets with the specified effect category",
+            ViewType = typeof(DetectEffectParameters),
+            BaseType = UITypeAttributeBaseType.Alteration)]
+    public class DetectAlterationAlterationEffectTemplateViewModel
                     : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                                          IDoodadAlterationEffectTemplateViewModel,
                                          ISkillAlterationEffectTemplateViewModel

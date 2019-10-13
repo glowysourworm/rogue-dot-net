@@ -14,13 +14,16 @@ using Rogue.NET.Common.Extension;
 using System;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioGenerator))]
     public class ScenarioGenerator : IScenarioGenerator
     {
-        readonly IRogueEventAggregator _eventAggregator;
         readonly ILayoutGenerator _layoutGenerator;
         readonly IContentGenerator _contentGenerator;
         readonly ICharacterGenerator _characterGenerator;
@@ -31,7 +34,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         [ImportingConstructor]
         public ScenarioGenerator(
-            IRogueEventAggregator eventAggregator,
             ILayoutGenerator layoutGenerator,
             IContentGenerator contentGenerator,
             ICharacterGenerator characterGenerator,
@@ -40,7 +42,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             ISymbolDetailsGenerator symbolDetailsGenerator,
             IRandomSequenceGenerator randomSequenceGenerator)
         {
-            _eventAggregator = eventAggregator;
             _layoutGenerator = layoutGenerator;
             _contentGenerator = contentGenerator;
             _characterGenerator = characterGenerator;
@@ -99,56 +100,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var branchDictionary = levels.Zip(levelBranches, (level, branch) => new { Level = level, Branch = branch })
                                          .ToDictionary(x => x.Level, x => x.Branch);
 
+            // Create static scenario data for generation
+            var characterClasses = CreateCharacterClasses(configuration);
+            var alterationCategories = CreateAlterationCategories(configuration);
+            var encyclopedia = CreateEncyclopedia(configuration);
+
+            scenario.Encyclopedia.Initialize(encyclopedia, characterClasses, alterationCategories);
+
             // *** Generate Contents
-            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, branchDictionary, layoutDictionary, survivorMode)
+            scenario.Levels = _contentGenerator.CreateContents(levels, scenario.Encyclopedia, branchDictionary, layoutDictionary, survivorMode)
                                                      .ToList();
 
-            // Generate Attack Attributes
-            scenario.AttackAttributes = configuration.AttackAttributes
-                                                     .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                                                     .ToDictionary(x => x.RogueName, x => x);
-
             // Generate Player
-            scenario.Player = _characterGenerator
-                                .GeneratePlayer(configuration.PlayerTemplates
-                                                             .First(x => x.Name == characterClassName));
-
-            //Load Encyclopedia Rogue-Tanica (Consumables)
-            foreach (var template in configuration.ConsumableTemplates)
-                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
-
-            //Load Encyclopedia Rogue-Tanica (Equipment)
-            foreach (var template in configuration.EquipmentTemplates)
-                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
-
-            //Load Encyclopedia Rogue-Tanica (Enemies)
-            foreach (var template in configuration.EnemyTemplates)
-                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
-
-            //Load Encyclopedia Rogue-Tanica (Friendlies)
-            foreach (var template in configuration.FriendlyTemplates)
-                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
-
-            //Load Encyclopedia Rogue-Tanica (Doodads)
-            foreach (var template in configuration.DoodadTemplates)
-                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
-
-            //Load Encyclopedia Rogue-Tanica (Skill Sets)
-            foreach (var template in configuration.SkillTemplates)
-                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
-
-            //Load Encyclopedia Rogue-Tanica (Normal Doodads)
-            scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadSavePointRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.SavePoint));
-            scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadStairsDownRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.StairsDown));
-            scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadStairsUpRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.StairsUp));
-            scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadTeleporterARogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Teleport1));
-            scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadTeleporterBRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Teleport2));
-            scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadTeleporterRandomRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.TeleportRandom));
+            scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplates.First(x => x.Name == characterClassName), scenario.Encyclopedia);
 
             //Identify player skills / equipment / consumables / and character classes
             foreach (var skillSet in scenario.Player.SkillSets)
             {
-                scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
+                scenario.Encyclopedia[skillSet.RogueName].IsIdentified = true;
 
                 // Also setup skill AreRequirementsMet flag based on player level for skills that have zero cost
                 foreach (var skill in skillSet.Skills)
@@ -157,17 +126,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             foreach (var equipment in scenario.Player.Equipment.Values)
             {
-                scenario.ScenarioEncyclopedia[equipment.RogueName].IsIdentified = true;
+                scenario.Encyclopedia[equipment.RogueName].IsIdentified = true;
                 equipment.IsIdentified = true;
             }
 
             foreach (var consumable in scenario.Player.Consumables.Values)
             {
-                scenario.ScenarioEncyclopedia[consumable.RogueName].IsIdentified = true;
+                scenario.Encyclopedia[consumable.RogueName].IsIdentified = true;
                 consumable.IsIdentified = true;
             }
 
-            // Load Encyclopedia Rogue-Tanica (Temporary Characters) (A little more to do here to get all alterations)
             foreach (var skillSet in configuration.SkillTemplates)
             {
                 foreach (var skill in skillSet.Skills)
@@ -183,8 +151,68 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         // Identify Temporary Characters involved with player skill set
                         if (scenario.Player.SkillSets.Any(x => x.RogueName == skillSet.Name))
                             metaData.IsIdentified = true;
+                    }
+                }
+            }
 
-                        scenario.ScenarioEncyclopedia.Add(template.Name, metaData);
+            return scenario;
+        }
+
+        /// <summary>
+        /// Creates Scenario MetaData and INITIALIZES IsIdentified FLAGS FOR SCENARIO
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        private IDictionary<string, ScenarioMetaData> CreateEncyclopedia(ScenarioConfigurationContainer configuration)
+        {
+            Dictionary<string, ScenarioMetaData> encyclopedia = new Dictionary<string, ScenarioMetaData>();
+
+            //Load Encyclopedia Rogue-Tanica (Consumables)
+            foreach (var template in configuration.ConsumableTemplates)
+                encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
+            //Load Encyclopedia Rogue-Tanica (Equipment)
+            foreach (var template in configuration.EquipmentTemplates)
+                encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
+            //Load Encyclopedia Rogue-Tanica (Enemies)
+            foreach (var template in configuration.EnemyTemplates)
+                encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
+            //Load Encyclopedia Rogue-Tanica (Friendlies)
+            foreach (var template in configuration.FriendlyTemplates)
+                encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
+            //Load Encyclopedia Rogue-Tanica (Doodads)
+            foreach (var template in configuration.DoodadTemplates)
+                encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
+            //Load Encyclopedia Rogue-Tanica (Skill Sets)
+            foreach (var template in configuration.SkillTemplates)
+                encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
+            //Load Encyclopedia Rogue-Tanica (Normal Doodads)
+            encyclopedia.Add(ModelConstants.DoodadSavePointRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.SavePoint));
+            encyclopedia.Add(ModelConstants.DoodadStairsDownRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.StairsDown));
+            encyclopedia.Add(ModelConstants.DoodadStairsUpRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.StairsUp));
+            encyclopedia.Add(ModelConstants.DoodadTeleporterARogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Teleport1));
+            encyclopedia.Add(ModelConstants.DoodadTeleporterBRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Teleport2));
+            encyclopedia.Add(ModelConstants.DoodadTeleporterRandomRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.TeleportRandom));
+
+            // Load Encyclopedia Rogue-Tanica (Temporary Characters) (A little more to do here to get all alterations)
+            foreach (var skillSet in configuration.SkillTemplates)
+            {
+                foreach (var skill in skillSet.Skills)
+                {
+                    if (skill.SkillAlteration.Effect is CreateTemporaryCharacterAlterationEffectTemplate)
+                    {
+                        // Add the Temporary Character Template Meta-data
+                        var template = (skill.SkillAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
+
+                        // Create Scenario Meta Data
+                        var metaData = _scenarioMetaDataGenerator.CreateScenarioMetaData(template);
+
+                        encyclopedia.Add(template.Name, metaData);
                     }
                 }
             }
@@ -197,7 +225,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     {
                         // Add the Temporary Character Template Meta-data
                         var template = (behavior.Alteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
-                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                        encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
                     }
                 }
             }
@@ -210,7 +238,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     {
                         // Add the Temporary Character Template Meta-data
                         var template = (doodad.AutomaticAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
-                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                        encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
                     }
                 }
                 if (doodad.IsInvoked)
@@ -219,7 +247,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     {
                         // Add the Temporary Character Template Meta-data
                         var template = (doodad.InvokedAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
-                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                        encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
                     }
                 }
             }
@@ -232,12 +260,42 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     {
                         // Add the Temporary Character Template Meta-data
                         var template = (consumable.ConsumableAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
-                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                        encyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
                     }
                 }
             }
 
-            return scenario;
+            return encyclopedia;
+        }
+
+        private IEnumerable<ScenarioImage> CreateCharacterClasses(ScenarioConfigurationContainer configuration)
+        {
+            return configuration.PlayerTemplates.Select(x =>
+            {
+                var result = new ScenarioImage();
+
+                result.RogueName = x.Name;
+
+                _symbolDetailsGenerator.MapSymbolDetails(x.SymbolDetails, result);
+
+                return result;
+
+            }).Actualize();
+        }
+
+        private IEnumerable<AlterationCategory> CreateAlterationCategories(ScenarioConfigurationContainer configuration)
+        {
+            return configuration.AlterationCategories.Select(x =>
+            {
+                var result = new AlterationCategory();
+
+                result.RogueName = x.Name;
+                result.AlignmentType = x.AlignmentType;
+
+                _symbolDetailsGenerator.MapSymbolDetails(x.SymbolDetails, result);
+
+                return result;
+            }).Actualize();
         }
 
         /// <summary>

@@ -1,16 +1,15 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using System;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.Scenario
 {
+    [Serializable]
     public class ScenarioContainer
     {
-        public List<Level> LoadedLevels { get; set; }
+        public List<Level> Levels { get; set; }
         public Player Player { get; set; }
         public PlayerStartLocation SaveLocation { get; set; }
         public int Seed { get; set; }
@@ -28,18 +27,14 @@ namespace Rogue.NET.Core.Model.Scenario
         public ScenarioConfigurationContainer Configuration { get; set; }
 
         // Store Item Metadata
-        public IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; set; }
-
-        // Attack Attributes
-        public IDictionary<string, AttackAttribute> AttackAttributes { get; set; }
+        public ScenarioEncyclopedia Encyclopedia { get; set; }
 
         public ScenarioContainer()
         {
             this.Player = new Player();
-            this.LoadedLevels = new List<Level>();
+            this.Levels = new List<Level>();
             this.CurrentLevel = 1;
-            this.ScenarioEncyclopedia = new Dictionary<string, ScenarioMetaData>();
-            this.AttackAttributes = new Dictionary<string, AttackAttribute>();
+            this.Encyclopedia = new ScenarioEncyclopedia();
             this.SaveLocation = PlayerStartLocation.StairsUp;
             this.Statistics = new ScenarioStatistics();
             this.ZoomFactor = 1.0D;

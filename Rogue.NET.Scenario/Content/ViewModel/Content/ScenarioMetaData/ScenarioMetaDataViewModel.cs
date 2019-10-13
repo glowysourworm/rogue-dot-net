@@ -1,17 +1,15 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Service.Interface;
-
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Linq;
+using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.Abstract.ScenarioMetaData;
 
-using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
-using Rogue.NET.Common.Constant;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
@@ -29,7 +27,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         bool _isUnique;
         bool _isCurseIdentified;
         DungeonMetaDataObjectTypes _objectType;
-        
+
 
         public string Id
         {

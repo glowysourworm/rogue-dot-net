@@ -224,6 +224,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (alteration.Effect is AuraAlterationEffect)
                 actor.Alteration.Apply(alteration);
 
+            else if (alteration.Effect is BlockAlterationAlterationEffect)
+                actor.Alteration.Apply(alteration);
+
             else if (alteration.Effect is ChangeLevelAlterationEffect)
                 ProcessChangeLevel(alteration.Effect as ChangeLevelAlterationEffect);
 
@@ -236,6 +239,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (alteration.Effect is CreateTemporaryCharacterAlterationEffect)
                 ProcessCreateTemporaryCharacter(alteration.Effect as CreateTemporaryCharacterAlterationEffect, actor);
 
+            else if (alteration.Effect is DetectAlterationAlignmentAlterationEffect)
+                ProcessDetectAlteration(alteration.Effect as DetectAlterationAlignmentAlterationEffect);
+
+            else if (alteration.Effect is DetectAlterationAlterationEffect)
+                ProcessDetectAlteration(alteration.Effect as DetectAlterationAlterationEffect);
+
             else if (alteration.Effect is DrainMeleeAlterationEffect)
                 _alterationProcessor.ApplyDrainMeleeEffect(actor, affectedCharacter, alteration.Effect as DrainMeleeAlterationEffect);
 
@@ -245,20 +254,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (alteration.Effect is EquipmentEnhanceAlterationEffect)
                 ProcessEquipmentEnhance(alteration.Effect as EquipmentEnhanceAlterationEffect, affectedCharacter);
 
-            else if (alteration.Effect is OtherAlterationEffect)
-            {
-                switch ((alteration.Effect as OtherAlterationEffect).Type)
-                {
-                    case AlterationOtherEffectType.Identify:
-                        OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Identify));
-                        break;
-                    case AlterationOtherEffectType.Uncurse:
-                        OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Uncurse));
-                        break;
-                    default:
-                        break;
-                }
-            }
+            else if (alteration.Effect is IdentifyAlterationEffect)
+                OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Identify));
 
             else if (alteration.Effect is PassiveAlterationEffect)
                 affectedCharacter.Alteration.Apply(alteration);
@@ -286,6 +283,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             else if (alteration.Effect is TransmuteAlterationEffect)
                 OnDialogEvent(_backendEventDataFactory.DialogAlterationEffect(alteration.Effect));
+
+            else if (alteration.Effect is UncurseAlterationEffect)
+                OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Uncurse));
 
             else
                 throw new Exception("Unhandled Alteration Effect Type IAlterationEngine.ApplyAlteration");
@@ -511,21 +511,21 @@ namespace Rogue.NET.Core.Processing.Model.Content
         private void ProcessCreateEnemy(CreateEnemyAlterationEffect effect, Character actor)
         {
             // Create Enemy
-            var enemy = _characterGenerator.GenerateEnemy(effect.Enemy);
+            var enemy = _characterGenerator.GenerateEnemy(effect.Enemy, _modelService.ScenarioEncyclopedia);
 
             ProcessCreateNonPlayerCharacter(enemy, effect.RandomPlacementType, effect.Range, actor);
         }
         private void ProcessCreateFriendly(CreateFriendlyAlterationEffect effect, Character actor)
         {
             // Create Friendly
-            var friendly = _characterGenerator.GenerateFriendly(effect.Friendly);
+            var friendly = _characterGenerator.GenerateFriendly(effect.Friendly, _modelService.ScenarioEncyclopedia);
 
             ProcessCreateNonPlayerCharacter(friendly, effect.RandomPlacementType, effect.Range, actor);
         }
         private void ProcessCreateTemporaryCharacter(CreateTemporaryCharacterAlterationEffect effect, Character actor)
         {
             // Create Temporary Character
-            var temporaryCharacter = _characterGenerator.GenerateTemporaryCharacter(effect.TemporaryCharacter);
+            var temporaryCharacter = _characterGenerator.GenerateTemporaryCharacter(effect.TemporaryCharacter, _modelService.ScenarioEncyclopedia);
 
             ProcessCreateNonPlayerCharacter(temporaryCharacter, effect.RandomPlacementType, effect.Range, actor);
         }
@@ -565,6 +565,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Notify UI
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, character.Id));
+        }
+        private void ProcessDetectAlteration(DetectAlterationAlterationEffect effect)
+        {
+
+        }
+        private void ProcessDetectAlteration(DetectAlterationAlignmentAlterationEffect effect)
+        {
+
         }
         private void ProcessEquipmentEnhance(EquipmentEnhanceAlterationEffect effect, Character affectedCharacter)
         {

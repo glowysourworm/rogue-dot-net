@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Behavior;
@@ -11,6 +12,7 @@ using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(ICharacterGenerator))]
     public class CharacterGenerator : ICharacterGenerator
     {
@@ -44,11 +46,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _alterationGenerator = alterationGenerator;
         }
 
-        public Player GeneratePlayer(PlayerTemplate playerTemplate)
+        public Player GeneratePlayer(PlayerTemplate playerTemplate, ScenarioEncyclopedia encyclopedia)
         {
             var player = new Player();
 
-            SetCharacterProperties(player, playerTemplate);
+            SetCharacterProperties(player, playerTemplate, encyclopedia);
 
             player.FoodUsagePerTurnBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.FoodUsage);
             player.Class = playerTemplate.Name; // TODO: Have to move character class name to PlayerTemplate.Class
@@ -66,7 +68,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             return player;
         }
-        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate)
+        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, ScenarioEncyclopedia encyclopedia)
         {
             if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate unique enemy twice");
@@ -75,13 +77,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             enemy.ExperienceGiven = _randomSequenceGenerator.GetRandomValue(enemyTemplate.ExperienceGiven);
 
-            SetCharacterProperties(enemy, enemyTemplate);
+            SetCharacterProperties(enemy, enemyTemplate, encyclopedia);
             SetNonPlayerCharacterProperties(enemy, enemyTemplate);
 
             enemyTemplate.HasBeenGenerated = true;
             return enemy;
         }
-        public Friendly GenerateFriendly(FriendlyTemplate template)
+        public Friendly GenerateFriendly(FriendlyTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             if (template.IsUnique && template.HasBeenGenerated)
                 throw new Exception("Trying to generate unique friendly twice");
@@ -91,13 +93,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             friendly.AlignmentType = CharacterAlignmentType.PlayerAligned;
             friendly.InPlayerParty = false;
 
-            SetCharacterProperties(friendly, template);
+            SetCharacterProperties(friendly, template, encyclopedia);
             SetNonPlayerCharacterProperties(friendly, template);
 
             template.HasBeenGenerated = true;
             return friendly;
         }
-        public TemporaryCharacter GenerateTemporaryCharacter(TemporaryCharacterTemplate template)
+        public TemporaryCharacter GenerateTemporaryCharacter(TemporaryCharacterTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             // Temporary Characters Shouldn't be treated as Assets
             //
@@ -109,14 +111,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             temporaryCharacter.AlignmentType = template.AlignmentType;
             temporaryCharacter.LifetimeCounter = _randomSequenceGenerator.GetRandomValue(template.LifetimeCounter);
 
-            SetCharacterProperties(temporaryCharacter, template);
+            SetCharacterProperties(temporaryCharacter, template, encyclopedia);
             SetNonPlayerCharacterProperties(temporaryCharacter, template);
 
             template.HasBeenGenerated = true;
             return temporaryCharacter;
         }
 
-        protected void SetCharacterProperties(Character character, CharacterTemplate template)
+        protected void SetCharacterProperties(Character character, CharacterTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             character.RogueName = template.Name;
 
@@ -181,7 +183,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                         // Set any Alterations
                         if (equipment.HasEquipAlteration)
-                            character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
+                            character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.EquipAlteration, encyclopedia));
 
                         if (equipment.HasCurseAlteration)
                             character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.CurseAlteration));

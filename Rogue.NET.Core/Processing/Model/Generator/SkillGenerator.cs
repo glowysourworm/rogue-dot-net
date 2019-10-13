@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(ISkillGenerator))]
     public class SkillGenerator : ISkillGenerator
     {

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+﻿using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
 using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
@@ -20,11 +21,13 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.TemporaryCharacter;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IAlterationGenerator))]
     public class AlterationGenerator : IAlterationGenerator
     {
@@ -60,24 +63,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
-        public ConsumableAlteration GenerateAlteration(ConsumableAlterationTemplate template)
+        public ConsumableAlteration GenerateAlteration(ConsumableAlterationTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             return new ConsumableAlteration()
             {
                 Animation = _animationGenerator.GenerateAnimation(template.Animation),
                 Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect as IConsumableAlterationEffectTemplate),
+                Effect = GenerateAlterationEffect(template.Effect as IConsumableAlterationEffectTemplate, encyclopedia),
                 RogueName = template.Name
             };
         }
 
-        public AlterationContainer GenerateAlteration(AlterationTemplate template)
+        public AlterationContainer GenerateAlteration(AlterationTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             if (template is ConsumableProjectileAlterationTemplate)
                 return GenerateAlteration(template as ConsumableProjectileAlterationTemplate);
 
             else if (template is ConsumableAlterationTemplate)
-                return GenerateAlteration(template as ConsumableAlterationTemplate);
+                return GenerateAlteration(template as ConsumableAlterationTemplate, encyclopedia);
 
             else if (template is EnemyAlterationTemplate)
                 return GenerateAlteration(template as EnemyAlterationTemplate);
@@ -92,16 +95,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 return GenerateAlteration(template as EquipmentAttackAlterationTemplate);
 
             else if (template is EquipmentEquipAlterationTemplate)
-                return GenerateAlteration(template as EquipmentEquipAlterationTemplate);
+                return GenerateAlteration(template as EquipmentEquipAlterationTemplate, encyclopedia);
 
             else if (template is EquipmentCurseAlterationTemplate)
                 return GenerateAlteration(template as EquipmentCurseAlterationTemplate);
 
             else if (template is DoodadAlterationTemplate)
-                return GenerateAlteration(template as DoodadAlterationTemplate);
+                return GenerateAlteration(template as DoodadAlterationTemplate, encyclopedia);
 
             else if (template is SkillAlterationTemplate)
-                return GenerateAlteration(template as SkillAlterationTemplate);
+                return GenerateAlteration(template as SkillAlterationTemplate, encyclopedia);
 
             else
                 throw new Exception("Unhandled AlterationTemplate Type");
@@ -117,12 +120,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
-        public DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template)
+        public DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             return new DoodadAlteration()
             {
                 Animation = _animationGenerator.GenerateAnimation(template.Animation),
-                Effect = GenerateAlterationEffect(template.Effect as IDoodadAlterationEffectTemplate),
+                Effect = GenerateAlterationEffect(template.Effect as IDoodadAlterationEffectTemplate, encyclopedia),
                 RogueName = template.Name
             };
         }
@@ -185,7 +188,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
-        public EquipmentEquipAlteration GenerateAlteration(EquipmentEquipAlterationTemplate template)
+        public EquipmentEquipAlteration GenerateAlteration(EquipmentEquipAlterationTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             return new EquipmentEquipAlteration()
             {
@@ -194,12 +197,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     AuraColor = template.AuraParameters.AuraColor,
                     AuraRange = template.AuraParameters.AuraRange
                 },
-                Effect = GenerateAlterationEffect(template.Effect as IEquipmentEquipAlterationEffectTemplate),
+                Effect = GenerateAlterationEffect(template.Effect as IEquipmentEquipAlterationEffectTemplate, encyclopedia),
                 RogueName = template.Name
             };
         }
 
-        public SkillAlteration GenerateAlteration(SkillAlterationTemplate template)
+        public SkillAlteration GenerateAlteration(SkillAlterationTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             return new SkillAlteration()
             {
@@ -210,13 +213,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     AuraRange = template.AuraParameters.AuraRange
                 },
                 Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect as ISkillAlterationEffectTemplate),
+                Effect = GenerateAlterationEffect(template.Effect as ISkillAlterationEffectTemplate, encyclopedia),
                 RogueName = template.Name
             };
         }
 
         #region Interface Type Inspectors
-        protected IConsumableAlterationEffect GenerateAlterationEffect(IConsumableAlterationEffectTemplate template)
+        protected IConsumableAlterationEffect GenerateAlterationEffect(IConsumableAlterationEffectTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             if (template is AttackAttributeMeleeAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeMeleeAlterationEffectTemplate);
@@ -236,14 +239,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is CreateTemporaryCharacterAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateTemporaryCharacterAlterationEffectTemplate);
 
+            else if (template is DetectAlterationAlignmentAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as DetectAlterationAlignmentAlterationEffectTemplate);
+
+            else if (template is DetectAlterationAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as DetectAlterationAlterationEffectTemplate, encyclopedia);
+
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
             else if (template is EquipmentEnhanceAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
 
-            else if (template is OtherAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as OtherAlterationEffectTemplate);
+            else if (template is IdentifyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as IdentifyAlterationEffectTemplate);
 
             else if (template is PermanentAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
@@ -262,6 +271,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else if (template is TransmuteAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TransmuteAlterationEffectTemplate);
+
+            else if (template is UncurseAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as UncurseAlterationEffectTemplate);
 
             else
                 throw new Exception("Unhandled IConsumableAlterationEffectTemplate Type");
@@ -285,7 +297,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 throw new Exception("Unhandled IConsumableProjectileAlterationEffect Type");
         }
 
-        protected IDoodadAlterationEffect GenerateAlterationEffect(IDoodadAlterationEffectTemplate template)
+        protected IDoodadAlterationEffect GenerateAlterationEffect(IDoodadAlterationEffectTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             if (template is AttackAttributeMeleeAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeMeleeAlterationEffectTemplate);
@@ -305,14 +317,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is CreateTemporaryCharacterAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateTemporaryCharacterAlterationEffectTemplate);
 
+            else if (template is DetectAlterationAlignmentAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as DetectAlterationAlignmentAlterationEffectTemplate);
+
+            else if (template is DetectAlterationAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as DetectAlterationAlterationEffectTemplate, encyclopedia);
+
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
             else if (template is EquipmentEnhanceAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
 
-            else if (template is OtherAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as OtherAlterationEffectTemplate);
+            else if (template is IdentifyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as IdentifyAlterationEffectTemplate);
 
             else if (template is PermanentAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
@@ -331,6 +349,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else if (template is TransmuteAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TransmuteAlterationEffectTemplate);
+
+            else if (template is UncurseAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as UncurseAlterationEffectTemplate);
 
             else
                 throw new Exception("Unhandled IDoodadAlterationEffectTemplate Type");
@@ -426,7 +447,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 throw new Exception("Unhandled IEquipmentCurseAlterationEffect Type");
         }
 
-        protected IEquipmentEquipAlterationEffect GenerateAlterationEffect(IEquipmentEquipAlterationEffectTemplate template)
+        protected IEquipmentEquipAlterationEffect GenerateAlterationEffect(IEquipmentEquipAlterationEffectTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             if (template is AttackAttributeAuraAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeAuraAlterationEffectTemplate);
@@ -436,6 +457,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else if (template is AuraAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AuraAlterationEffectTemplate);
+
+            else if (template is BlockAlterationAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as BlockAlterationAlterationEffectTemplate, encyclopedia);
 
             else if (template is PassiveAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PassiveAlterationEffectTemplate);
@@ -462,7 +486,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 throw new Exception("Unhandled ITemporaryCharacterAlterationEffectTemplate Type");
         }
 
-        protected ISkillAlterationEffect GenerateAlterationEffect(ISkillAlterationEffectTemplate template)
+        protected ISkillAlterationEffect GenerateAlterationEffect(ISkillAlterationEffectTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             if (template is AttackAttributeAuraAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeAuraAlterationEffectTemplate);
@@ -479,6 +503,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is AuraAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AuraAlterationEffectTemplate);
 
+            else if (template is BlockAlterationAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as BlockAlterationAlterationEffectTemplate, encyclopedia);
+
             else if (template is ChangeLevelAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as ChangeLevelAlterationEffectTemplate);
 
@@ -491,11 +518,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is CreateTemporaryCharacterAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateTemporaryCharacterAlterationEffectTemplate);
 
+            else if (template is DetectAlterationAlignmentAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as DetectAlterationAlignmentAlterationEffectTemplate);
+
+            else if (template is DetectAlterationAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as DetectAlterationAlterationEffectTemplate, encyclopedia);
+
             else if (template is EquipmentEnhanceAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
 
-            else if (template is OtherAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as OtherAlterationEffectTemplate);
+            else if (template is IdentifyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as IdentifyAlterationEffectTemplate);
 
             else if (template is PassiveAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PassiveAlterationEffectTemplate);
@@ -520,6 +553,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else if (template is TransmuteAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TransmuteAlterationEffectTemplate);
+
+            else if (template is UncurseAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as UncurseAlterationEffectTemplate);
 
             else
                 throw new Exception("Unhandled ISkillAlterationEffectTemplate Type");
@@ -590,6 +626,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
+        protected BlockAlterationAlterationEffect GenerateAlterationEffect(BlockAlterationAlterationEffectTemplate template, ScenarioEncyclopedia encyclopedia)
+        {
+            return new BlockAlterationAlterationEffect()
+            {
+                AlterationCategory = encyclopedia.AlterationCategories.First(x => x.RogueName == template.AlterationCategory.Name),
+                RogueName = template.Name
+            };
+        }
+
         protected ChangeLevelAlterationEffect GenerateAlterationEffect(ChangeLevelAlterationEffectTemplate template)
         {
             return new ChangeLevelAlterationEffect()
@@ -632,6 +677,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
+        protected DetectAlterationAlterationEffect GenerateAlterationEffect(DetectAlterationAlterationEffectTemplate template, ScenarioEncyclopedia encyclopedia)
+        {
+            return new DetectAlterationAlterationEffect()
+            {
+                AlterationCategory = encyclopedia.AlterationCategories.First(x => x.RogueName == template.AlterationCategory.Name),
+                RogueName = template.Name
+            };
+        }
+
+        protected DetectAlterationAlignmentAlterationEffect GenerateAlterationEffect(DetectAlterationAlignmentAlterationEffectTemplate template)
+        {
+            return new DetectAlterationAlignmentAlterationEffect()
+            {
+                AlignmentType = template.AlignmentType,
+                RogueName = template.Name
+            };
+        }
+
         protected DrainMeleeAlterationEffect GenerateAlterationEffect(DrainMeleeAlterationEffectTemplate template)
         {
             return new DrainMeleeAlterationEffect()
@@ -666,11 +729,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
-        protected OtherAlterationEffect GenerateAlterationEffect(OtherAlterationEffectTemplate template)
+        protected IdentifyAlterationEffect GenerateAlterationEffect(IdentifyAlterationEffectTemplate template)
         {
-            return new OtherAlterationEffect()
+            return new IdentifyAlterationEffect()
             {
-                Type = template.Type,
+                IdentifyAll = template.IdentifyAll,
+                RogueName = template.Name
+            };
+        }
+
+        protected UncurseAlterationEffect GenerateAlterationEffect(UncurseAlterationEffectTemplate template)
+        {
+            return new UncurseAlterationEffect()
+            {
+                UncurseAll = template.UncurseAll,
                 RogueName = template.Name
             };
         }

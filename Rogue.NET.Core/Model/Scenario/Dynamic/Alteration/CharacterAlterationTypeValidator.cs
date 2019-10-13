@@ -8,11 +8,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
 {
     public class CharacterAlterationTypeValidator
     {
-        // Types that ARE supported by the corresponding interface but ARE NOT collected
-        // by the CharacterAlteration
+        // Types that ARE supported  but ARE NOT collected by the CharacterAlteration
         //
-        // Example:  ICharacterAlterationEffect -> _characterAlterationList will show the SUPPORTED implementation types
-        //                                         that are NOT collected.
         readonly IList<Type> _alterationEffectList;
 
         public CharacterAlterationTypeValidator()
@@ -24,20 +21,22 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
 
         private void Initialize()
         {
-            // ICharacterAlterationEffect
             _alterationEffectList.Add(typeof(AttackAttributeMeleeAlterationEffect));
             _alterationEffectList.Add(typeof(ChangeLevelAlterationEffect));
             _alterationEffectList.Add(typeof(CreateEnemyAlterationEffect));
+            _alterationEffectList.Add(typeof(DetectAlterationAlterationEffect));
+            _alterationEffectList.Add(typeof(DetectAlterationAlignmentAlterationEffect));
             _alterationEffectList.Add(typeof(DrainMeleeAlterationEffect));
             _alterationEffectList.Add(typeof(EquipmentDamageAlterationEffect));
             _alterationEffectList.Add(typeof(EquipmentEnhanceAlterationEffect));
-            _alterationEffectList.Add(typeof(OtherAlterationEffect));
+            _alterationEffectList.Add(typeof(IdentifyAlterationEffect));
             _alterationEffectList.Add(typeof(PermanentAlterationEffect));
             _alterationEffectList.Add(typeof(RevealAlterationEffect));
             _alterationEffectList.Add(typeof(RunAwayAlterationEffect));
             _alterationEffectList.Add(typeof(StealAlterationEffect));
             _alterationEffectList.Add(typeof(TeleportRandomAlterationEffect));
             _alterationEffectList.Add(typeof(TransmuteAlterationEffect));
+            _alterationEffectList.Add(typeof(UncurseAlterationEffect));
         }
 
         /// <summary>

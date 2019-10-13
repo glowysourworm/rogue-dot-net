@@ -403,7 +403,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             SynchronizeCollection(
                 sortedSkillSets, 
                 this.SkillSets, 
-                x => new SkillSetViewModel(x, player, _modelService.ScenarioEncyclopedia, _eventAggregator),
+                x => new SkillSetViewModel(x, player,_eventAggregator),
                 (source, dest) =>
                 {
                     // Update

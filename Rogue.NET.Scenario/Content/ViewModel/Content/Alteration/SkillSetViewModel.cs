@@ -2,6 +2,7 @@
 using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
@@ -18,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
+using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.Abstract.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {
@@ -76,7 +77,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
         public ObservableCollection<SkillViewModel> Skills { get; set; }
 
-        public SkillSetViewModel(SkillSet skillSet, Player player, IDictionary<string, ScenarioMetaDataClass> encyclopedia, IRogueEventAggregator eventAggregator) : base(skillSet, skillSet.RogueName)
+        public SkillSetViewModel(SkillSet skillSet, Player player, IRogueEventAggregator eventAggregator) : base(skillSet, skillSet.RogueName)
         {
             this.IsActive = skillSet.IsActive;
             this.IsTurnedOn = skillSet.IsTurnedOn;

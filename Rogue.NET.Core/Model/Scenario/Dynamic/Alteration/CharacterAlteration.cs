@@ -33,6 +33,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         protected AttackAttributeTemporaryAlterationCollector AttackAttributeTemporaryCollector { get; set; }
         protected AuraSourceAlterationCollector AuraSourceCollector { get; set; }
         protected AuraTargetAlterationCollector AuraTargetCollector { get; set; }
+        protected BlockAlterationAlterationCollector BlockAlterationCollector { get; set; }
         protected PassiveAlterationCollector PassiveCollector { get; set; }
         protected TemporaryAlterationCollector TemporaryCollector { get; set; }
 
@@ -59,6 +60,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             this.AttackAttributeTemporaryCollector = new AttackAttributeTemporaryAlterationCollector();
             this.AuraSourceCollector = new AuraSourceAlterationCollector();
             this.AuraTargetCollector = new AuraTargetAlterationCollector();
+            this.BlockAlterationCollector = new BlockAlterationAlterationCollector();
             this.PassiveCollector = new PassiveAlterationCollector();
             this.TemporaryCollector = new TemporaryAlterationCollector();
 
@@ -68,6 +70,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
                 this.AttackAttributePassiveCollector,
                 this.AttackAttributeTemporaryCollector,
                 this.AuraSourceCollector,
+                this.BlockAlterationCollector,
                 this.PassiveCollector,
                 this.TemporaryCollector
             };
@@ -80,6 +83,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
                 this.AttackAttributeTemporaryCollector,
                 this.AuraTargetCollector,
                 this.AuraSourceCollector,
+                this.BlockAlterationCollector,
                 this.PassiveCollector,
                 this.TemporaryCollector
             };
@@ -162,6 +166,14 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             });
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns true if any character's alterations block the specified category
+        /// </summary>
+        public bool IsAlterationBlocked(AlterationCategory alterationCategory)
+        {
+            return this.BlockAlterationCollector.IsAlterationBlocked(alterationCategory);
         }
 
         /// <summary>
@@ -435,6 +447,9 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             else if (alteration.Effect.GetType() == typeof(AuraAlterationEffect))
                 this.AuraSourceCollector.Apply(alteration);
 
+            else if (alteration.Effect.GetType() == typeof(BlockAlterationAlterationEffect))
+                this.BlockAlterationCollector.Apply(alteration);
+
             else if (alteration.Effect.GetType() == typeof(PassiveAlterationEffect))
                 this.PassiveCollector.Apply(alteration);
 
@@ -460,6 +475,9 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
 
             else if (alteration.Effect.GetType() == typeof(AuraAlterationEffect))
                 this.AuraSourceCollector.Apply(alteration);
+
+            else if (alteration.Effect.GetType() == typeof(BlockAlterationAlterationEffect))
+                this.BlockAlterationCollector.Apply(alteration);
 
             else if (alteration.Effect.GetType() == typeof(PassiveAlterationEffect))
                 this.PassiveCollector.Apply(alteration);

@@ -64,7 +64,7 @@ namespace Rogue.NET.Core.Processing.Service
             Level level, 
             double zoomFactor,
             IEnumerable<ScenarioObject> injectedContents,
-            IDictionary<string, ScenarioMetaData> encyclopedia, 
+            ScenarioEncyclopedia encyclopedia,
             ScenarioConfigurationContainer configuration)
         {
             _configuration = configuration;
@@ -73,17 +73,6 @@ namespace Rogue.NET.Core.Processing.Service
             this.Player = player;
             this.ZoomFactor = zoomFactor;
             this.ScenarioEncyclopedia = encyclopedia;
-            this.CharacterClasses = configuration.PlayerTemplates.Select(x =>
-            {
-                var result = new ScenarioImage();
-
-                result.RogueName = x.Name;
-
-                _symbolDetailsGenerator.MapSymbolDetails(x.SymbolDetails, result);
-
-                return result;
-
-            }).Actualize();
 
             switch (startLocation)
             {
@@ -143,7 +132,6 @@ namespace Rogue.NET.Core.Processing.Service
             this.Level = null;
             this.Player = null;            
             this.ScenarioEncyclopedia = null;
-            this.CharacterClasses = null;
 
             return extractedContent;
         }
@@ -156,9 +144,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         public double ZoomFactor { get; set; }
 
-        public IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; private set; }
-
-        public IEnumerable<ScenarioImage> CharacterClasses { get; private set; }
+        public ScenarioEncyclopedia ScenarioEncyclopedia { get; private set; }
 
         public LevelBranchTemplate GetLevelBranch()
         {

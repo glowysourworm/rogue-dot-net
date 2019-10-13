@@ -7,6 +7,7 @@ using System;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IAnimationGenerator))]
     public class AnimationGenerator : IAnimationGenerator
     {

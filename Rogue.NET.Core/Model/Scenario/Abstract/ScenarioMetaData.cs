@@ -5,7 +5,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
 using System.Collections.Generic;
 
-namespace Rogue.NET.Core.Model.Scenario
+namespace Rogue.NET.Core.Model.Scenario.Abstract
 {
     /// <summary>
     /// Storage for Data about in-game items: Equipment, Consumables, Enemies, Doodads, etc...

@@ -2,16 +2,12 @@
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
 using System.Collections.Generic;
@@ -20,6 +16,7 @@ using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IContentGenerator))]
     public class ContentGenerator : IContentGenerator
     {
@@ -42,7 +39,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         }
 
         public IEnumerable<Level> CreateContents(
-                IEnumerable<Level> levels, 
+                IEnumerable<Level> levels,
+                ScenarioEncyclopedia encyclopedia,
                 IDictionary<Level, LevelBranchTemplate> selectedBranches,
                 IDictionary<Level, LayoutGenerationTemplate> selectedLayouts,
                 bool survivorMode)
@@ -64,6 +62,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 GenerateLevelContent(level,
                                      branchTemplate,
                                      layoutTemplate,
+                                     encyclopedia,
                                      i == levels.Count() - 1,
                                      survivorMode);
 
@@ -73,7 +72,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return result;
         }
 
-        private void GenerateLevelContent(Level level, LevelBranchTemplate branchTemplate, LayoutGenerationTemplate layoutTemplate, bool lastLevel, bool survivorMode)
+        private void GenerateLevelContent(Level level, LevelBranchTemplate branchTemplate, LayoutGenerationTemplate layoutTemplate, ScenarioEncyclopedia encyclopedia, bool lastLevel, bool survivorMode)
         {
             // Create lists to know what cells are free
             var rooms = level.Grid.Rooms.ToList();
@@ -116,7 +115,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             }
 
             // Applies to all levels - (UNMAPPED)
-            GenerateEnemies(level, branchTemplate);
+            GenerateEnemies(level, branchTemplate, encyclopedia);
             GenerateItems(level, branchTemplate);
             GenerateDoodads(level, branchTemplate);
 
@@ -124,7 +123,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             // Create party room if there's a room to use and the rate is greater than U[0,1] - (MAPPED)
             if ((layoutTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()))
-                AddPartyRoomContent(level, branchTemplate, freeCells, freeRoomCells);
+                AddPartyRoomContent(level, branchTemplate, encyclopedia, freeCells, freeRoomCells);
         }
         private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
         {
@@ -138,13 +137,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     level.AddContent(doodad);
             }
         }
-        private void GenerateEnemies(Level level, LevelBranchTemplate branchTemplate)
+        private void GenerateEnemies(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia)
         {
             // Make a configured number of random draws from the enemy templates for this branch
             for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.EnemyGenerationRange); i++)
             {
                 // Run generation method
-                var enemy = GenerateEnemy(branchTemplate);
+                var enemy = GenerateEnemy(branchTemplate, encyclopedia);
 
                 if (enemy != null)
                     level.AddContent(enemy);
@@ -171,7 +170,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 if (consumable != null)
                     level.AddContent(consumable);
             }
-        }        
+        }
         private void AddTeleporterLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
@@ -266,7 +265,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 level.AddContent(doodad);
             }
         }
-        private void AddPartyRoomContent(Level level, LevelBranchTemplate branchTemplate, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void AddPartyRoomContent(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
             // *** Party Room Procedure (TODO: Parameterize this at some point)
             //
@@ -293,12 +292,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             while ((generatedAssets < totalAssetNumber) && availableLocation)
             {
                 // Enemies
-                for (int i = 0; (i < enemyNumber) && 
+                for (int i = 0; (i < enemyNumber) &&
                                 (generatedAssets < totalAssetNumber) &&
                                  availableLocation; i++)
                 {
                     // If Asset generation fails - exit loop
-                    var enemy = GenerateEnemy(branchTemplate);
+                    var enemy = GenerateEnemy(branchTemplate, encyclopedia);
 
                     if (enemy == null)
                         break;
@@ -318,7 +317,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }
 
                 // Consumables
-                for (int i = 0; (i < consumableNumber) && 
+                for (int i = 0; (i < consumableNumber) &&
                                 (generatedAssets < totalAssetNumber) &&
                                  availableLocation; i++)
                 {
@@ -343,7 +342,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }
 
                 // Equipment
-                for (int i = 0; (i < equipmentNumber) && 
+                for (int i = 0; (i < equipmentNumber) &&
                                 (generatedAssets < totalAssetNumber) &&
                                 availableLocation; i++)
                 {
@@ -375,7 +374,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Map Level Contents:  Set locations for each ScenarioObject. Removal of these can be
             // done based on the total length of the levelContents array - which will be altered during
             // the loop interally to the Level.
-            for (int i= levelContents.Length - 1; i >= 0; i--)
+            for (int i = levelContents.Length - 1; i >= 0; i--)
             {
                 // Already Placed
                 if (levelContents[i] is DoodadNormal)
@@ -457,7 +456,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Generate doodad
             return _doodadGenerator.GenerateMagicDoodad(doodadTemplate.Asset);
         }
-        private Enemy GenerateEnemy(LevelBranchTemplate branchTemplate)
+        private Enemy GenerateEnemy(LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia)
         {
             // Get enemies that pass generation requirements
             //
@@ -477,7 +476,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var enemyTemplate = _randomSequenceGenerator.GetWeightedRandom(enemiesViable, x => x.GenerationWeight);
 
             // Generate enemy
-            return _characterGenerator.GenerateEnemy(enemyTemplate.Asset);
+            return _characterGenerator.GenerateEnemy(enemyTemplate.Asset, encyclopedia);
         }
         private Equipment GenerateEquipment(LevelBranchTemplate branchTemplate)
         {

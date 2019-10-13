@@ -22,6 +22,7 @@ using TriangleNet.Meshing;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(ILayoutGenerator))]
     public class LayoutGenerator : ILayoutGenerator
     {

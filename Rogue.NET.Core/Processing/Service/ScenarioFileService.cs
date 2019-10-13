@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Processing.IO;
 using Rogue.NET.Core.Processing.Service.Interface;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -25,7 +25,7 @@ namespace Rogue.NET.Core.Processing.Service
         }
         public void EmbedConfiguration(ConfigResources configResource, ScenarioConfigurationContainer configuration)
         {
-            var file = Path.Combine(ResourceConstants.EmbeddedScenarioDirectory, configResource.ToString()) + "." + 
+            var file = Path.Combine(ResourceConstants.EmbeddedScenarioDirectory, configResource.ToString()) + "." +
                                     ResourceConstants.ScenarioConfigurationExtension;
 
             File.WriteAllBytes(file, BinarySerializer.Serialize(configuration));
@@ -36,38 +36,35 @@ namespace Rogue.NET.Core.Processing.Service
 
             return (ScenarioConfigurationContainer)BinarySerializer.Deserialize(File.ReadAllBytes(path));
         }
-        public IDictionary<string, ScenarioFileHeader> GetScenarioHeaders()
-        {
-            var scenarioFiles = Directory.GetFiles(ResourceConstants.SavedGameDirectory);
-            var scenarioHeaders = new Dictionary<string, ScenarioFileHeader>();
-            foreach (var file in scenarioFiles)
-            {
-                var header = ScenarioFile.OpenHeader(File.ReadAllBytes(file));
-                var name = Path.GetFileNameWithoutExtension(file);
-                if (header != null)
-                    scenarioHeaders.Add(name, header);
-            }
-
-            return scenarioHeaders;
-        }
-        public void SaveScenarioFile(ScenarioFile scenarioFile, string playerName)
-        {
-            var buffer = scenarioFile.Save();
-
-            File.WriteAllBytes(ResourceConstants.SavedGameDirectory + "\\" + playerName + "." + ResourceConstants.ScenarioExtension, buffer);
-        }
-        public ScenarioFile OpenScenarioFile(string playerName)
-        {
-            var buffer = File.ReadAllBytes(ResourceConstants.SavedGameDirectory + "\\" + playerName + "." + ResourceConstants.ScenarioExtension);
-
-            return ScenarioFile.Open(buffer);
-        }
         public void DeleteScenario(string name)
         {
             var path = Path.Combine(ResourceConstants.SavedGameDirectory, name + "." + ResourceConstants.ScenarioExtension);
 
             if (File.Exists(path))
                 File.Delete(path);
+        }
+
+        public IEnumerable<ScenarioContainer> GetScenarios()
+        {
+            var scenarioFiles = Directory.GetFiles(ResourceConstants.SavedGameDirectory);
+            var scenarios = new List<ScenarioContainer>();
+
+            foreach (var file in scenarioFiles)
+            {
+                scenarios.Add((ScenarioContainer)BinarySerializer.DeserializeFromFile(file));
+            }
+
+            return scenarios;
+        }
+
+        public ScenarioContainer OpenScenarioFile(string playerName)
+        {
+            return (ScenarioContainer)BinarySerializer.DeserializeFromFile(ResourceConstants.SavedGameDirectory + "\\" + playerName + "." + ResourceConstants.ScenarioExtension);
+        }
+
+        public void SaveScenarioFile(ScenarioContainer scenario, string playerName)
+        {
+            BinarySerializer.SerializeToFile(ResourceConstants.SavedGameDirectory + "\\" + playerName + "." + ResourceConstants.ScenarioExtension, scenario);
         }
     }
 }

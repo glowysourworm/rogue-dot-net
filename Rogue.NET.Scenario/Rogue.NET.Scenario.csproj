@@ -217,10 +217,14 @@
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\CreateTemporaryCharacterAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\CreateFriendlyAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\CreateEnemyAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\BlockAlterationAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\DetectAlterationAlignmentAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\DrainMeleeAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\EquipmentDamageAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\EquipmentEnhanceAlterationEffectViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Alteration\Effect\OtherAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\DetectAlterationAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\UncurseAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\IdentifyAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\PermanentAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\PassiveAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\RemedyAlterationEffectViewModel.cs" />

@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Media;
 
-using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
+using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.Abstract.ScenarioMetaData;
 
 namespace Rogue.NET.Core.Converter.ScenarioMetaData
 {

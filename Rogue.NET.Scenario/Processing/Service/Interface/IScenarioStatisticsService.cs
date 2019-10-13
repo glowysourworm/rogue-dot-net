@@ -1,7 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Scenario.Content.Doodad;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 
 namespace Rogue.NET.Scenario.Processing.Service.Interface
 {

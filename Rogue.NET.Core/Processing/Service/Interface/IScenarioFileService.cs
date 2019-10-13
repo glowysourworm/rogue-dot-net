@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Processing.IO;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Service.Interface
@@ -11,10 +11,12 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         void EmbedConfiguration(ConfigResources configResource, ScenarioConfigurationContainer configuration);
         ScenarioConfigurationContainer OpenConfiguration(string scenarioConfigurationName);
 
-        IDictionary<string, ScenarioFileHeader> GetScenarioHeaders();
+        IEnumerable<ScenarioContainer> GetScenarios();
         
-        ScenarioFile OpenScenarioFile(string playerName);
-        void SaveScenarioFile(ScenarioFile scenarioFile, string playerName);
+        ScenarioContainer OpenScenarioFile(string playerName);
+
+        void SaveScenarioFile(ScenarioContainer scenario, string playerName);
+
         void DeleteScenario(string name);
     }
 }

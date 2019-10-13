@@ -1,8 +1,7 @@
 ﻿using Rogue.NET.Common.Constant;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
@@ -13,6 +12,7 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioMetaDataGenerator))]
     public class ScenarioMetaDataGenerator : IScenarioMetaDataGenerator
     {

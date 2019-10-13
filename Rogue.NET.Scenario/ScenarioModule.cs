@@ -165,7 +165,7 @@ namespace Rogue.NET.Scenario
                 else if (payload is EquipmentEnhanceAlterationEffectViewModel)
                     _regionManager.Load(region, typeof(EquipmentEnhanceAlterationEffectView));
 
-                else if (payload is OtherAlterationEffectViewModel)
+                else if (payload is IdentifyAlterationEffectViewModel)
                     _regionManager.Load(region, typeof(OtherAlterationEffectView));
 
                 else if (payload is PassiveAlterationEffectViewModel)

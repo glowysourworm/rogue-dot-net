@@ -84,6 +84,9 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (effect is AuraAlterationEffectTemplateViewModel)
                 (effect as AuraAlterationEffectTemplateViewModel).Name = name;
 
+            else if (effect is BlockAlterationAlterationEffectTemplateViewModel)
+                (effect as BlockAlterationAlterationEffectTemplateViewModel).Name = name;
+
             else if (effect is ChangeLevelAlterationEffectTemplateViewModel)
                 (effect as ChangeLevelAlterationEffectTemplateViewModel).Name = name;
 
@@ -96,6 +99,12 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (effect is CreateTemporaryCharacterAlterationEffectTemplateViewModel)
                 (effect as CreateTemporaryCharacterAlterationEffectTemplateViewModel).Name = name;
 
+            else if (effect is DetectAlterationAlignmentAlterationEffectTemplateViewModel)
+                (effect as DetectAlterationAlignmentAlterationEffectTemplateViewModel).Name = name;
+
+            else if (effect is DetectAlterationAlterationEffectTemplateViewModel)
+                (effect as DetectAlterationAlterationEffectTemplateViewModel).Name = name;
+
             else if (effect is DrainMeleeAlterationEffectTemplateViewModel)
                 (effect as DrainMeleeAlterationEffectTemplateViewModel).Name = name;
 
@@ -105,8 +114,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (effect is EquipmentEnhanceAlterationEffectTemplateViewModel)
                 (effect as EquipmentEnhanceAlterationEffectTemplateViewModel).Name = name;
 
-            else if (effect is OtherAlterationEffectTemplateViewModel)
-                (effect as OtherAlterationEffectTemplateViewModel).Name = name;
+            else if (effect is IdentifyAlterationEffectTemplateViewModel)
+                (effect as IdentifyAlterationEffectTemplateViewModel).Name = name;
 
             else if (effect is PassiveAlterationEffectTemplateViewModel)
                 (effect as PassiveAlterationEffectTemplateViewModel).Name = name;
@@ -137,6 +146,9 @@ namespace Rogue.NET.ScenarioEditor.Service
 
             else if (effect is TransmuteAlterationEffectTemplateViewModel)
                 (effect as TransmuteAlterationEffectTemplateViewModel).Name = name;
+
+            else if (effect is UncurseAlterationEffectTemplateViewModel)
+                (effect as UncurseAlterationEffectTemplateViewModel).Name = name;
 
             else
                 throw new Exception("Unhandled Alteration Effect Type");

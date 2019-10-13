@@ -52,6 +52,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is AuraAlterationEffect)
                 return new AuraAlterationEffectViewModel(effect as AuraAlterationEffect);
 
+            else if (effect is BlockAlterationAlterationEffect)
+                return new BlockAlterationAlterationEffectViewModel(effect as BlockAlterationAlterationEffect);
+
             else if (effect is ChangeLevelAlterationEffect)
                 return new ChangeLevelAlterationEffectViewModel(effect as ChangeLevelAlterationEffect);
 
@@ -64,6 +67,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is CreateTemporaryCharacterAlterationEffect)
                 return new CreateTemporaryCharacterAlterationEffectViewModel(effect as CreateTemporaryCharacterAlterationEffect);
 
+            else if (effect is DetectAlterationAlignmentAlterationEffect)
+                return new DetectAlterationAlignmentAlterationEffectViewModel(effect as DetectAlterationAlignmentAlterationEffect);
+
+            else if (effect is DetectAlterationAlterationEffect)
+                return new DetectAlterationAlterationEffectViewModel(effect as DetectAlterationAlterationEffect);
+
+            else if (effect is DrainMeleeAlterationEffect)
+                return new DrainMeleeAlterationEffectViewModel(effect as DrainMeleeAlterationEffect);
+
             else if (effect is DrainMeleeAlterationEffect)
                 return new DrainMeleeAlterationEffectViewModel(effect as DrainMeleeAlterationEffect);
 
@@ -73,8 +85,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is EquipmentEnhanceAlterationEffect)
                 return new EquipmentEnhanceAlterationEffectViewModel(effect as EquipmentEnhanceAlterationEffect);
 
-            else if (effect is OtherAlterationEffect)
-                return new OtherAlterationEffectViewModel(effect as OtherAlterationEffect);
+            else if (effect is IdentifyAlterationEffect)
+                return new IdentifyAlterationEffectViewModel(effect as IdentifyAlterationEffect);
 
             else if (effect is PassiveAlterationEffect)
                 return new PassiveAlterationEffectViewModel(effect as PassiveAlterationEffect);
@@ -103,6 +115,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is TransmuteAlterationEffect)
                 return new TransmuteAlterationEffectViewModel(effect as TransmuteAlterationEffect);
 
+            else if (effect is UncurseAlterationEffect)
+                return new UncurseAlterationEffectViewModel(effect as UncurseAlterationEffect);
+
             else
                 throw new Exception("Unknown IAlterationEffect AlterationViewModel");
         }
@@ -127,6 +142,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is AuraAlterationEffectTemplate)
                 return new AuraAlterationEffectViewModel(effect as AuraAlterationEffectTemplate);
 
+            else if (effect is BlockAlterationAlterationEffectTemplate)
+                return new BlockAlterationAlterationEffectViewModel(effect as BlockAlterationAlterationEffectTemplate);
+
             else if (effect is ChangeLevelAlterationEffectTemplate)
                 return new ChangeLevelAlterationEffectViewModel(effect as ChangeLevelAlterationEffectTemplate);
 
@@ -139,6 +157,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is CreateTemporaryCharacterAlterationEffectTemplate)
                 return new CreateTemporaryCharacterAlterationEffectViewModel(effect as CreateTemporaryCharacterAlterationEffectTemplate);
 
+            else if (effect is DetectAlterationAlignmentAlterationEffectTemplate)
+                return new DetectAlterationAlignmentAlterationEffectViewModel(effect as DetectAlterationAlignmentAlterationEffectTemplate);
+
+            else if (effect is DetectAlterationAlterationEffect)
+                return new DetectAlterationAlterationEffectViewModel(effect as DetectAlterationAlterationEffect);
+
             else if (effect is DrainMeleeAlterationEffectTemplate)
                 return new DrainMeleeAlterationEffectViewModel(effect as DrainMeleeAlterationEffectTemplate);
 
@@ -148,8 +172,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is EquipmentEnhanceAlterationEffectTemplate)
                 return new EquipmentEnhanceAlterationEffectViewModel(effect as EquipmentEnhanceAlterationEffectTemplate);
 
-            else if (effect is OtherAlterationEffectTemplate)
-                return new OtherAlterationEffectViewModel(effect as OtherAlterationEffectTemplate);
+            else if (effect is IdentifyAlterationEffectTemplate)
+                return new IdentifyAlterationEffectViewModel(effect as IdentifyAlterationEffectTemplate);
 
             else if (effect is PassiveAlterationEffectTemplate)
                 return new PassiveAlterationEffectViewModel(effect as PassiveAlterationEffectTemplate);
@@ -177,6 +201,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
 
             else if (effect is TransmuteAlterationEffectTemplate)
                 return new TransmuteAlterationEffectViewModel(effect as TransmuteAlterationEffectTemplate);
+
+            else if (effect is UncurseAlterationEffectTemplate)
+                return new UncurseAlterationEffectViewModel(effect as UncurseAlterationEffectTemplate);
 
             else
                 throw new Exception("Unknown IAlterationEffect AlterationViewModel");

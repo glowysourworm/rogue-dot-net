@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.Scenario.Content;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -100,7 +100,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
         /// which means that they stack on top of each other in the item grid. Certain properties may then be
         /// aggregate (such as weight). BY CONVENTION SIMILAR ITEMS INCLUDES THE ITEM
         /// </summary>
-        public ItemGridGroupedRowViewModel(T item, ScenarioMetaData metaData, string displayName, bool isEnabled, IEnumerable<T> groupedItems) 
+        public ItemGridGroupedRowViewModel(T item, ScenarioMetaData metaData, string displayName, bool isEnabled, IEnumerable<T> groupedItems)
                 : base(item, metaData, displayName, isEnabled)
         {
             _groupedItems = new List<T>(groupedItems);

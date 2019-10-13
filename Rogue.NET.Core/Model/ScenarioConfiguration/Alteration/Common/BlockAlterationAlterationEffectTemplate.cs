@@ -1,10 +1,7 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
@@ -13,16 +10,22 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                                                                      ISkillAlterationEffectTemplate
     {
         AlterationCategoryTemplate _alterationCategory;
+        SymbolEffectTemplate _symbolAlteration;
 
         public AlterationCategoryTemplate AlterationCategory
         {
             get { return _alterationCategory; }
             set { this.RaiseAndSetIfChanged(ref _alterationCategory, value); }
         }
+        public SymbolEffectTemplate SymbolAlteration
+        {
+            get { return _symbolAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _symbolAlteration, value); }
+        }
 
         public BlockAlterationAlterationEffectTemplate()
         {
-
+            this.SymbolAlteration = new SymbolEffectTemplate();
         }
     }
 }

@@ -53,12 +53,15 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(AttackAttributePassiveAlterationEffect), AlterationCostType.PerStep },
                     { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.PerStep },
                     { typeof(AuraAlterationEffect), AlterationCostType.PerStep },
+                    { typeof(BlockAlterationAlterationEffect), AlterationCostType.PerStep },
                     { typeof(ChangeLevelAlterationEffect), AlterationCostType.OneTime },
                     { typeof(CreateEnemyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(CreateFriendlyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(CreateTemporaryCharacterAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlignmentAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlterationEffect), AlterationCostType.OneTime },
                     { typeof(EquipmentEnhanceAlterationEffect), AlterationCostType.OneTime },
-                    { typeof(OtherAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(IdentifyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(PassiveAlterationEffect), AlterationCostType.PerStep },
                     { typeof(PermanentAlterationEffect), AlterationCostType.OneTime },
                     { typeof(RemedyAlterationEffect), AlterationCostType.OneTime },
@@ -67,7 +70,8 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(TeleportManualAlterationEffect), AlterationCostType.OneTime },
                     { typeof(TeleportRandomAlterationEffect), AlterationCostType.OneTime },
                     { typeof(TemporaryAlterationEffect), AlterationCostType.OneTime },
-                    { typeof(TransmuteAlterationEffect), AlterationCostType.OneTime }
+                    { typeof(TransmuteAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(UncurseAlterationEffect), AlterationCostType.OneTime }
                 });
             // IEnemyAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
@@ -113,6 +117,7 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(AttackAttributeAuraAlterationEffect), AlterationCostType.PerStep },
                     { typeof(AttackAttributePassiveAlterationEffect), AlterationCostType.PerStep },
                     { typeof(AuraAlterationEffect), AlterationCostType.PerStep },
+                    { typeof(BlockAlterationAlterationEffect), AlterationCostType.PerStep },
                     { typeof(PassiveAlterationEffect), AlterationCostType.PerStep }
                 });
             // IEquipmentCurseAlterationEffect -> AlterationCostType (NONE FOR CURSES)
@@ -132,15 +137,18 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(CreateEnemyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(CreateFriendlyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(CreateTemporaryCharacterAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlignmentAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlterationEffect), AlterationCostType.OneTime },
                     { typeof(EquipmentDamageAlterationEffect), AlterationCostType.OneTime },
                     { typeof(EquipmentEnhanceAlterationEffect), AlterationCostType.OneTime },
-                    { typeof(OtherAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(IdentifyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(PermanentAlterationEffect), AlterationCostType.OneTime },
                     { typeof(RemedyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(RevealAlterationEffect), AlterationCostType.OneTime },
                     { typeof(TeleportRandomAlterationEffect), AlterationCostType.OneTime },
                     { typeof(TemporaryAlterationEffect), AlterationCostType.OneTime },
-                    { typeof(TransmuteAlterationEffect), AlterationCostType.OneTime }
+                    { typeof(TransmuteAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(UncurseAlterationEffect), AlterationCostType.OneTime }
                 });
             // IConsumableAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
@@ -151,15 +159,18 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(CreateEnemyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(CreateFriendlyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(CreateTemporaryCharacterAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlignmentAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlterationEffect), AlterationCostType.OneTime },
                     { typeof(EquipmentDamageAlterationEffect), AlterationCostType.OneTime },
                     { typeof(EquipmentEnhanceAlterationEffect), AlterationCostType.OneTime },
-                    { typeof(OtherAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(IdentifyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(PermanentAlterationEffect), AlterationCostType.OneTime },
                     { typeof(RemedyAlterationEffect), AlterationCostType.OneTime },
                     { typeof(RevealAlterationEffect), AlterationCostType.OneTime },
                     { typeof(TeleportRandomAlterationEffect), AlterationCostType.OneTime },
                     { typeof(TemporaryAlterationEffect), AlterationCostType.OneTime },
-                    { typeof(TransmuteAlterationEffect), AlterationCostType.OneTime }
+                    { typeof(TransmuteAlterationEffect), AlterationCostType.OneTime },
+                    { typeof(UncurseAlterationEffect), AlterationCostType.OneTime }
                 });
 
             // IConsumableProjectileAlterationEffect -> AlterationCostType
@@ -180,12 +191,15 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(AttackAttributePassiveAlterationEffect), false },
                     { typeof(AttackAttributeTemporaryAlterationEffect), true },
                     { typeof(AuraAlterationEffect), false },
+                    { typeof(BlockAlterationAlterationEffect), false },
                     { typeof(ChangeLevelAlterationEffect), false },
                     { typeof(CreateEnemyAlterationEffect), false },
                     { typeof(CreateFriendlyAlterationEffect), false },
                     { typeof(CreateTemporaryCharacterAlterationEffect), false },
+                    { typeof(DetectAlterationAlignmentAlterationEffect), false },
+                    { typeof(DetectAlterationAlterationEffect), false },
                     { typeof(EquipmentEnhanceAlterationEffect), false },
-                    { typeof(OtherAlterationEffect), false },
+                    { typeof(IdentifyAlterationEffect), false },
                     { typeof(PassiveAlterationEffect), false },
                     { typeof(PermanentAlterationEffect), true },
                     { typeof(RemedyAlterationEffect), false },
@@ -194,7 +208,8 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(TeleportManualAlterationEffect), false },
                     { typeof(TeleportRandomAlterationEffect), false },
                     { typeof(TemporaryAlterationEffect), true },
-                    { typeof(TransmuteAlterationEffect), false }
+                    { typeof(TransmuteAlterationEffect), false },
+                    { typeof(UncurseAlterationEffect), false }
                 });
             // IEnemyAlterationEffect -> Block Support
             _alterationBlockingSupport.Add(
@@ -239,6 +254,7 @@ namespace Rogue.NET.Core.Model.Static
                 typeof(IEquipmentEquipAlterationEffect), new Dictionary<Type, bool>(){
                     { typeof(AttackAttributeAuraAlterationEffect), false },
                     { typeof(AttackAttributePassiveAlterationEffect), false },
+                    { typeof(BlockAlterationAlterationEffect), false },
                     { typeof(AuraAlterationEffect), false },
                     { typeof(PassiveAlterationEffect), false }
                 });
@@ -259,15 +275,18 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(CreateEnemyAlterationEffect), false },
                     { typeof(CreateFriendlyAlterationEffect), false },
                     { typeof(CreateTemporaryCharacterAlterationEffect), false },
+                    { typeof(DetectAlterationAlignmentAlterationEffect), false },
+                    { typeof(DetectAlterationAlterationEffect), false },
                     { typeof(EquipmentDamageAlterationEffect), false },
                     { typeof(EquipmentEnhanceAlterationEffect), false },
-                    { typeof(OtherAlterationEffect), false },
+                    { typeof(IdentifyAlterationEffect), false },
                     { typeof(PermanentAlterationEffect), false },
                     { typeof(RemedyAlterationEffect), false },
                     { typeof(RevealAlterationEffect), false },
                     { typeof(TeleportRandomAlterationEffect), false },
                     { typeof(TemporaryAlterationEffect), false },
-                    { typeof(TransmuteAlterationEffect), false }
+                    { typeof(TransmuteAlterationEffect), false },
+                    { typeof(UncurseAlterationEffect), false }
                 });
             // IConsumableAlterationEffect -> Block Support (NONE FOR DOODADS)
             _alterationBlockingSupport.Add(
@@ -278,15 +297,18 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(CreateEnemyAlterationEffect), false },
                     { typeof(CreateFriendlyAlterationEffect), false },
                     { typeof(CreateTemporaryCharacterAlterationEffect), false },
+                    { typeof(DetectAlterationAlignmentAlterationEffect), false },
+                    { typeof(DetectAlterationAlterationEffect), false },
                     { typeof(EquipmentDamageAlterationEffect), false },
                     { typeof(EquipmentEnhanceAlterationEffect), false },
-                    { typeof(OtherAlterationEffect), false },
+                    { typeof(IdentifyAlterationEffect), false },
                     { typeof(PermanentAlterationEffect), false },
                     { typeof(RemedyAlterationEffect), false },
                     { typeof(RevealAlterationEffect), false },
                     { typeof(TeleportRandomAlterationEffect), false },
                     { typeof(TemporaryAlterationEffect), false },
-                    { typeof(TransmuteAlterationEffect), false }
+                    { typeof(TransmuteAlterationEffect), false },
+                    { typeof(UncurseAlterationEffect), false }
                 });
             // IConsumableProjectileAlterationEffect -> Block Support (NONE FOR PROJECTILES)
             _alterationBlockingSupport.Add(
@@ -307,12 +329,15 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(AuraAlterationEffectTemplate), AlterationCostType.PerStep },
+                    { typeof(BlockAlterationAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(ChangeLevelAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(CreateEnemyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(CreateFriendlyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(CreateTemporaryCharacterAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlignmentAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(EquipmentEnhanceAlterationEffectTemplate), AlterationCostType.OneTime },
-                    { typeof(OtherAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(IdentifyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(PassiveAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(PermanentAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(RemedyAlterationEffectTemplate), AlterationCostType.OneTime },
@@ -321,7 +346,8 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(TeleportManualAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(TeleportRandomAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(TemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
-                    { typeof(TransmuteAlterationEffectTemplate), AlterationCostType.OneTime }
+                    { typeof(TransmuteAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(UncurseAlterationEffectTemplate), AlterationCostType.OneTime }
                 });
             // IEnemyAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
@@ -367,6 +393,7 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(AttackAttributeAuraAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(AuraAlterationEffectTemplate), AlterationCostType.PerStep },
+                    { typeof(BlockAlterationAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(PassiveAlterationEffectTemplate), AlterationCostType.PerStep }
                 });
             // IEquipmentCurseAlterationEffectTemplate -> AlterationCostType (NONE FOR CURSES)
@@ -386,15 +413,18 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(CreateEnemyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(CreateFriendlyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(CreateTemporaryCharacterAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlignmentAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(EquipmentDamageAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(EquipmentEnhanceAlterationEffectTemplate), AlterationCostType.OneTime },
-                    { typeof(OtherAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(IdentifyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(PermanentAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(RemedyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(RevealAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(TeleportRandomAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(TemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
-                    { typeof(TransmuteAlterationEffectTemplate), AlterationCostType.OneTime }
+                    { typeof(TransmuteAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(UncurseAlterationEffectTemplate), AlterationCostType.OneTime }
                 });
             // IConsumableAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
@@ -405,15 +435,18 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(CreateEnemyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(CreateFriendlyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(CreateTemporaryCharacterAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlignmentAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(DetectAlterationAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(EquipmentDamageAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(EquipmentEnhanceAlterationEffectTemplate), AlterationCostType.OneTime },
-                    { typeof(OtherAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(IdentifyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(PermanentAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(RemedyAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(RevealAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(TeleportRandomAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(TemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
-                    { typeof(TransmuteAlterationEffectTemplate), AlterationCostType.OneTime }
+                    { typeof(TransmuteAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(UncurseAlterationEffectTemplate), AlterationCostType.OneTime }
                 });
             // IConsumableProjectileAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
@@ -433,12 +466,15 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), false },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), true },
                     { typeof(AuraAlterationEffectTemplate), false },
+                    { typeof(BlockAlterationAlterationEffectTemplate), false },
                     { typeof(ChangeLevelAlterationEffectTemplate), false },
                     { typeof(CreateEnemyAlterationEffectTemplate), false },
                     { typeof(CreateFriendlyAlterationEffectTemplate), false },
                     { typeof(CreateTemporaryCharacterAlterationEffectTemplate), false },
+                    { typeof(DetectAlterationAlignmentAlterationEffectTemplate), false },
+                    { typeof(DetectAlterationAlterationEffectTemplate), false },
                     { typeof(EquipmentEnhanceAlterationEffectTemplate), false },
-                    { typeof(OtherAlterationEffectTemplate), false },
+                    { typeof(IdentifyAlterationEffectTemplate), false },
                     { typeof(PassiveAlterationEffectTemplate), false },
                     { typeof(PermanentAlterationEffectTemplate), true },
                     { typeof(RemedyAlterationEffectTemplate), false },
@@ -447,7 +483,8 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(TeleportManualAlterationEffectTemplate), false },
                     { typeof(TeleportRandomAlterationEffectTemplate), false },
                     { typeof(TemporaryAlterationEffectTemplate), true },
-                    { typeof(TransmuteAlterationEffectTemplate), false }
+                    { typeof(TransmuteAlterationEffectTemplate), false },
+                    { typeof(UncurseAlterationEffectTemplate), false }
                 });
             // IEnemyAlterationEffectTemplate -> Block Support
             _alterationTemplateBlockingSupport.Add(
@@ -492,6 +529,7 @@ namespace Rogue.NET.Core.Model.Static
                 typeof(IEquipmentEquipAlterationEffectTemplate), new Dictionary<Type, bool>(){
                     { typeof(AttackAttributeAuraAlterationEffectTemplate), false },
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), false },
+                    { typeof(BlockAlterationAlterationEffectTemplate), false },
                     { typeof(AuraAlterationEffectTemplate), false },
                     { typeof(PassiveAlterationEffectTemplate), false }
                 });
@@ -512,15 +550,18 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(CreateEnemyAlterationEffectTemplate), false },
                     { typeof(CreateFriendlyAlterationEffectTemplate), false },
                     { typeof(CreateTemporaryCharacterAlterationEffectTemplate), false },
+                    { typeof(DetectAlterationAlignmentAlterationEffectTemplate), false },
+                    { typeof(DetectAlterationAlterationEffectTemplate), false },
                     { typeof(EquipmentDamageAlterationEffectTemplate), false },
                     { typeof(EquipmentEnhanceAlterationEffectTemplate), false },
-                    { typeof(OtherAlterationEffectTemplate), false },
+                    { typeof(IdentifyAlterationEffectTemplate), false },
                     { typeof(PermanentAlterationEffectTemplate), false },
                     { typeof(RemedyAlterationEffectTemplate), false },
                     { typeof(RevealAlterationEffectTemplate), false },
                     { typeof(TeleportRandomAlterationEffectTemplate), false },
                     { typeof(TemporaryAlterationEffectTemplate), false },
-                    { typeof(TransmuteAlterationEffectTemplate), false }
+                    { typeof(TransmuteAlterationEffectTemplate), false },
+                    { typeof(UncurseAlterationEffectTemplate), false }
                 });
             // IConsumableAlterationEffectTemplate -> Block Support (NONE FOR DOODADS)
             _alterationTemplateBlockingSupport.Add(
@@ -531,15 +572,18 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(CreateEnemyAlterationEffectTemplate), false },
                     { typeof(CreateFriendlyAlterationEffectTemplate), false },
                     { typeof(CreateTemporaryCharacterAlterationEffectTemplate), false },
+                    { typeof(DetectAlterationAlignmentAlterationEffectTemplate), false },
+                    { typeof(DetectAlterationAlterationEffectTemplate), false },
                     { typeof(EquipmentDamageAlterationEffectTemplate), false },
                     { typeof(EquipmentEnhanceAlterationEffectTemplate), false },
-                    { typeof(OtherAlterationEffectTemplate), false },
+                    { typeof(IdentifyAlterationEffectTemplate), false },
                     { typeof(PermanentAlterationEffectTemplate), false },
                     { typeof(RemedyAlterationEffectTemplate), false },
                     { typeof(RevealAlterationEffectTemplate), false },
                     { typeof(TeleportRandomAlterationEffectTemplate), false },
                     { typeof(TemporaryAlterationEffectTemplate), false },
-                    { typeof(TransmuteAlterationEffectTemplate), false }
+                    { typeof(TransmuteAlterationEffectTemplate), false },
+                    { typeof(UncurseAlterationEffectTemplate), false }
                 });
             // IConsumableProjectileAlterationEffectTemplate -> Block Support (NONE FOR PROJECTILES)
             _alterationTemplateBlockingSupport.Add(

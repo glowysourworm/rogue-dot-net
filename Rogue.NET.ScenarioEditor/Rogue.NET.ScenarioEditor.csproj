@@ -400,7 +400,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\DrainMeleeAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\IdentifyAlterationEffectTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\OtherAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\PassiveAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\PermanentAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\RemedyAlterationEffectTemplateViewModel.cs" />
@@ -493,11 +492,26 @@
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationGeneral.xaml.cs">
       <DependentUpon>AlterationGeneral.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\BlockEffectParameters.xaml.cs">
+      <DependentUpon>BlockEffectParameters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateTemporaryCharacterEffectParameters.xaml.cs">
       <DependentUpon>CreateTemporaryCharacterEffectParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateFriendlyEffectParameters.xaml.cs">
       <DependentUpon>CreateFriendlyEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\DetectEffectAlignmentParameters.xaml.cs">
+      <DependentUpon>DetectEffectAlignmentParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\DetectEffectParameters.xaml.cs">
+      <DependentUpon>DetectEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\UncurseEffectParameters.xaml.cs">
+      <DependentUpon>UncurseEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\IdentifyEffectParameters.xaml.cs">
+      <DependentUpon>IdentifyEffectParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportManualEffectParameters.xaml.cs">
       <DependentUpon>TeleportManualEffectParameters.xaml</DependentUpon>
@@ -594,9 +608,6 @@
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentDamageEffectParameters.xaml.cs">
       <DependentUpon>EquipmentDamageEffectParameters.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\OtherEffectParameters.xaml.cs">
-      <DependentUpon>OtherEffectParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\PassiveEffectParameters.xaml.cs">
       <DependentUpon>PassiveEffectParameters.xaml</DependentUpon>
@@ -865,11 +876,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\BlockEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateTemporaryCharacterEffectParameters.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateFriendlyEffectParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\DetectEffectAlignmentParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\DetectEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\UncurseEffectParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\IdentifyEffectParameters.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -998,10 +1029,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentDamageEffectParameters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\OtherEffectParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

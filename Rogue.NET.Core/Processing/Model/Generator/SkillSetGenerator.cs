@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(ISkillSetGenerator))]
     public class SkillSetGenerator : ISkillSetGenerator
     {

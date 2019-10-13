@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+﻿using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
 using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
 using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
@@ -14,6 +15,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Friendly;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.TemporaryCharacter;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Interface
 {
@@ -24,16 +26,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
     {
         AlterationCost GenerateAlterationCost(AlterationCostTemplate template);
 
-        AlterationContainer GenerateAlteration(AlterationTemplate template);
-        ConsumableAlteration GenerateAlteration(ConsumableAlterationTemplate template);
+        AlterationContainer GenerateAlteration(AlterationTemplate template, ScenarioEncyclopedia encyclopedia);
+        ConsumableAlteration GenerateAlteration(ConsumableAlterationTemplate template, ScenarioEncyclopedia encyclopedia);
         ConsumableProjectileAlteration GenerateAlteration(ConsumableProjectileAlterationTemplate template);
-        DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template);
+        DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template, ScenarioEncyclopedia encyclopedia);
         EnemyAlteration GenerateAlteration(EnemyAlterationTemplate template);
         FriendlyAlteration GenerateAlteration(FriendlyAlterationTemplate template);
         EquipmentAttackAlteration GenerateAlteration(EquipmentAttackAlterationTemplate template);
         EquipmentCurseAlteration GenerateAlteration(EquipmentCurseAlterationTemplate template);
-        EquipmentEquipAlteration GenerateAlteration(EquipmentEquipAlterationTemplate template);
+        EquipmentEquipAlteration GenerateAlteration(EquipmentEquipAlterationTemplate template, ScenarioEncyclopedia encyclopedia);
         TemporaryCharacterAlteration GenerateAlteration(TemporaryCharacterAlterationTemplate template);
-        SkillAlteration GenerateAlteration(SkillAlterationTemplate template);
+        SkillAlteration GenerateAlteration(SkillAlterationTemplate template, ScenarioEncyclopedia alterationCategories);
     }
 }

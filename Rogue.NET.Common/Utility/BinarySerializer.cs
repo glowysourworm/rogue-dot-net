@@ -29,23 +29,6 @@ namespace Rogue.NET.Common.Utility
             }
         }
 
-        public static byte[] SerializeAndCompress(object obj)
-        {
-            var formatter = new BinaryFormatter();
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, obj);
-                var buffer = stream.GetBuffer();
-                return ZipEncoder.Compress(buffer);
-            }
-        }
-
-        public static T DeserializeAndDecompress<T>(byte[] compressedBuffer)
-        {
-            var buffer = ZipEncoder.Decompress(compressedBuffer);
-            return (T)Deserialize(buffer);
-        }
-
         public static void SerializeToFile(string file, object obj)
         {
             File.WriteAllBytes(file, Serialize(obj));

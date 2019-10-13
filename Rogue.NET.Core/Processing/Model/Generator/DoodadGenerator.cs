@@ -8,6 +8,7 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IDoodadGenerator))]
     public class DoodadGenerator : IDoodadGenerator
     {

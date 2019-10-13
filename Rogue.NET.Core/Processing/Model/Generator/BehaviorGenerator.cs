@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IBehaviorGenerator))]
     public class BehaviorGenerator : IBehaviorGenerator
     {

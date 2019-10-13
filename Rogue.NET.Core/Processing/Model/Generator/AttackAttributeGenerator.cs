@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IAttackAttributeGenerator))]
     public class AttackAttributeGenerator : IAttackAttributeGenerator
     {

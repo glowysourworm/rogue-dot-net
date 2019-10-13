@@ -9,7 +9,6 @@ using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Core.Processing.Event.Scenario;
-using Rogue.NET.Core.Processing.IO;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Processing.Controller.Interface;
@@ -36,7 +35,6 @@ namespace Rogue.NET.Scenario.Processing.Controller
         readonly IModelService _modelService;
 
         // PRIMARY MODEL STATE
-        ScenarioFile _scenarioFile;
         ScenarioContainer _scenarioContainer;
 
         [ImportingConstructor]
@@ -109,9 +107,6 @@ namespace Rogue.NET.Scenario.Processing.Controller
             // Continue Scenario
             _eventAggregator.GetEvent<ContinueScenarioEvent>().Subscribe(() =>
             {
-                //Unpack snapshot from file
-                _scenarioContainer = _scenarioFile.Unpack();
-
                 LoadCurrentLevel();
             });
         }
@@ -119,7 +114,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
         public void New(ScenarioConfigurationContainer configuration, string characterName, string characterClassName, int seed, bool survivorMode)
         {
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
-            {                
+            {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
             });
@@ -142,12 +137,6 @@ namespace Rogue.NET.Scenario.Processing.Controller
             _scenarioContainer.Configuration = configuration;
             _scenarioContainer.SurvivorMode = survivorMode;
             _scenarioContainer.Statistics.StartTime = DateTime.Now;
-
-            //Compress to dungeon file
-            _scenarioFile = ScenarioFile.Create(_scenarioContainer);
-
-            //Unpack bare minimum to dungeon object - get levels as needed
-            _scenarioContainer = _scenarioFile.Unpack();
 
             // Loads level and fires event to listeners
             LoadCurrentLevel();
@@ -178,13 +167,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             }
 
             //Read dungeon file - TODO: Handle exceptions
-            _scenarioFile = _scenarioFileService.OpenScenarioFile(playerName);
-
-            if (_scenarioFile == null)
-                return;
-
-            //Unpack bare minimum to dungeon object - get levels as needed
-            _scenarioContainer = _scenarioFile.Unpack();
+            _scenarioContainer = _scenarioFileService.OpenScenarioFile(playerName);
 
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
@@ -210,11 +193,8 @@ namespace Rogue.NET.Scenario.Processing.Controller
             // Update UI Parameters
             _scenarioContainer.ZoomFactor = _modelService.ZoomFactor;
 
-            // Update the ScenarioFile with unpacked levels
-            _scenarioFile.Update(_scenarioContainer);
-
             // Save scenario file to disk
-            _scenarioFileService.SaveScenarioFile(_scenarioFile, _scenarioContainer.Player.RogueName);
+            _scenarioFileService.SaveScenarioFile(_scenarioContainer, _scenarioContainer.Player.RogueName);
 
             // Hide Splash
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
@@ -267,12 +247,10 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 _scenarioContainer.CurrentLevel = levelNumber;
 
                 //If level is not loaded - must load it from the dungeon file
-                var nextLevel = _scenarioContainer.LoadedLevels.FirstOrDefault(level => level.Number == levelNumber);
+                var nextLevel = _scenarioContainer.Levels.FirstOrDefault(level => level.Number == levelNumber);
+
                 if (nextLevel == null)
-                {
-                    nextLevel = _scenarioFile.Checkout(levelNumber);
-                    _scenarioContainer.LoadedLevels.Add(nextLevel);
-                }
+                    throw new Exception("Level " + levelNumber.ToString() + " not found in the Scenario Container");
 
                 // Unload current model - pass extractable contents to next level with Player
                 IEnumerable<ScenarioObject> extractedContent = null;
@@ -291,12 +269,12 @@ namespace Rogue.NET.Scenario.Processing.Controller
 
                 // Register next level data with the model service
                 _modelService.Load(
-                    _scenarioContainer.Player,                    
+                    _scenarioContainer.Player,
                     location,
                     nextLevel,
                     zoomFactor,
                     extractedContent ?? new ScenarioObject[] { },
-                    _scenarioContainer.ScenarioEncyclopedia,
+                    _scenarioContainer.Encyclopedia,
                     _scenarioContainer.Configuration);
 
                 // Notify Listeners - Level Loaded -> Game Update

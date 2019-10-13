@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IItemGenerator))]
     public class ItemGenerator : IItemGenerator
     {

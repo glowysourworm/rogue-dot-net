@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
                 Level level,
                 double zoomFactor,
                 IEnumerable<ScenarioObject> previousLevelContent,
-                IDictionary<string, ScenarioMetaData> encyclopedia,
+                ScenarioEncyclopedia encyclopedia,
                 ScenarioConfigurationContainer configuration);
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         bool IsLoaded { get; }
 
         /// <summary>
-        /// Currently loaded Scenario Level
+        /// Currently loaded Scenario Level TODO: REMOVE THIS EXPOSURE OF THE LEVEL OBJECT
         /// </summary>
         Level Level { get; }
 
@@ -59,14 +59,9 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         ICharacterContentInformation CharacterContentInformation { get; }
 
         /// <summary>
-        /// "Encyclopedia" Rogue-Tanica. Contains all the meta-data for the Scenario objects.
+        /// "Encyclopedia" Rogue-Tanica. Contains all the meta-data for the Scenario objects, alteration categories, and character classes
         /// </summary>
-        IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; }
-
-        /// <summary>
-        /// Character Classes for the scenario
-        /// </summary>
-        IEnumerable<ScenarioImage> CharacterClasses { get; }
+        ScenarioEncyclopedia ScenarioEncyclopedia { get; }
 
         /// <summary>
         /// Method to populate player advancement parameters

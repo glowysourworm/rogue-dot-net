@@ -2,10 +2,6 @@
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
@@ -14,12 +10,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                                                                                IDoodadAlterationEffectTemplate,
                                                                                ISkillAlterationEffectTemplate
     {
-        AlterationAlignmentType AlterationAlignmentType;
+        AlterationAlignmentType _alignmentType;
 
-        public AlterationAlignmentType AlterationType
+        public AlterationAlignmentType AlignmentType
         {
-            get { return AlterationAlignmentType; }
-            set { this.RaiseAndSetIfChanged(ref AlterationAlignmentType, value); }
+            get { return _alignmentType; }
+            set { this.RaiseAndSetIfChanged(ref _alignmentType, value); }
         }
 
         public DetectAlterationAlignmentAlterationEffectTemplate()

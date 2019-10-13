@@ -433,7 +433,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     doodad.HasBeenUsed = true;
 
                     // Create Alteration
-                    var alteration = _alterationGenerator.GenerateAlteration(doodad.AutomaticAlteration);
+                    var alteration = _alterationGenerator.GenerateAlteration(doodad.AutomaticAlteration, _modelService.ScenarioEncyclopedia);
 
                     // Validate Alteration Cost -> Queue with animation
                     if (_alterationEngine.Validate(character, alteration))
@@ -547,7 +547,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Fire equip alteration -> This will activate any passive effects after animating
             if (equipment.HasEquipAlteration)
-                _alterationEngine.Queue(_modelService.Player, _alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
+                _alterationEngine.Queue(_modelService.Player, _alterationGenerator.GenerateAlteration(equipment.EquipAlteration, _modelService.ScenarioEncyclopedia));
 
             if (equipment.HasCurseAlteration && equipment.IsCursed)
                 _alterationEngine.Queue(_modelService.Player, _alterationGenerator.GenerateAlteration(equipment.CurseAlteration));
@@ -956,7 +956,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var template = character.BehaviorDetails.CurrentBehavior.Alteration;
 
             // Create the alteration
-            alteration = _alterationGenerator.GenerateAlteration(template);
+            alteration = _alterationGenerator.GenerateAlteration(template, _modelService.ScenarioEncyclopedia);
 
             // Post alteration message 
             _scenarioMessageService.PublishAlterationCombatMessage(
@@ -1007,7 +1007,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Create enemy from template
             var template = _randomSequenceGenerator.GetWeightedRandom(enemyTemplates, x => x.GenerationWeight);
-            var enemy = _characterGenerator.GenerateEnemy(template.Asset);
+            var enemy = _characterGenerator.GenerateEnemy(template.Asset, _modelService.ScenarioEncyclopedia);
             
             // Map enemy location to level
             enemy.Location = availableLocation;

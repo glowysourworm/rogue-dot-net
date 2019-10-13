@@ -254,9 +254,15 @@
     <Compile Include="Model\ScenarioConfiguration\Design\LevelBranchTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Design\LevelTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Design\ScenarioTemplate.cs" />
+    <Compile Include="Model\Scenario\Alteration\Common\AlterationCategory.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\Extension\AttackAttributeExtension.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\BlockAlterationAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\CreateFriendlyAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\DetectAlterationAlignmentAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\DetectAlterationAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\IdentifyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\TeleportManualAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\UncurseAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Friendly\FriendlyAlteration.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\IFriendlyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\ITemporaryCharacterAlterationEffect.cs" />
@@ -279,6 +285,8 @@
     <Compile Include="Model\Scenario\Character\Friendly.cs" />
     <Compile Include="Model\Scenario\Character\NonPlayerCharacter.cs" />
     <Compile Include="Model\Scenario\Character\TemporaryCharacter.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\BlockAlterationAlterationCollector.cs" />
+    <Compile Include="Model\Scenario\ScenarioEncyclopedia.cs" />
     <Compile Include="Model\Static\AlterationSpecificationContainer.cs" />
     <Compile Include="Processing\Event\Backend\Enum\TargetRequestType.cs" />
     <Compile Include="Processing\Event\Backend\EventData\ProjectileAnimationEventData.cs" />
@@ -343,7 +351,6 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\DrainMeleeAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\OtherAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AuraAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\PassiveAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\PermanentAlterationEffectTemplate.cs" />
@@ -392,7 +399,6 @@
     <Compile Include="Model\Scenario\Alteration\Effect\ChangeLevelAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\CreateEnemyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\EquipmentDamageAlterationEffect.cs" />
-    <Compile Include="Model\Scenario\Alteration\Effect\OtherAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\PassiveAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\PermanentAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RemedyAlterationEffect.cs" />
@@ -436,7 +442,6 @@
     <Compile Include="Processing\Model\Generator\Interface\ISkillGenerator.cs" />
     <Compile Include="Processing\Model\Generator\SkillGenerator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
-    <Compile Include="Processing\IO\ScenarioFile.cs" />
     <Compile Include="Processing\Action\LevelProcessingAction.cs" />
     <Compile Include="Processing\Action\Enum\LevelProcessingActionType.cs" />
     <Compile Include="Processing\Event\Backend\Enum\ScenarioUpdateType.cs" />
@@ -588,7 +593,7 @@
     <Compile Include="Model\Scenario\Dynamic\Layout\Interface\ICharacterLayoutInformation.cs" />
     <Compile Include="Model\Scenario\RogueBase.cs" />
     <Compile Include="Model\Scenario\ScenarioContainer.cs" />
-    <Compile Include="Model\Scenario\ScenarioMetaData.cs" />
+    <Compile Include="Model\Scenario\Abstract\ScenarioMetaData.cs" />
     <Compile Include="Model\Scenario\ScenarioStatistics.cs" />
     <Compile Include="Model\Scenario\Statistic\DoodadStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\EnemyStatistic.cs" />

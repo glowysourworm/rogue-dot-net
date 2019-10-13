@@ -248,7 +248,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             var player = _modelService.Player;
             var consumable = player.Consumables[itemId];
-            var alteration = consumable.HasAlteration ? _alterationGenerator.GenerateAlteration(consumable.Alteration) : null;
+            var alteration = consumable.HasAlteration ? _alterationGenerator.GenerateAlteration(consumable.Alteration, _modelService.ScenarioEncyclopedia) : null;
             var displayName = _modelService.GetDisplayName(consumable);
 
             // TODO:ALTERATION - Have to validate that each consumable has an alteration. Also, REMOVE 
@@ -660,7 +660,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             var enemyTargeted = _targetingService.GetTargetedCharacter();
-            var skillAlteration = _alterationGenerator.GenerateAlteration(currentSkill);
+            var skillAlteration = _alterationGenerator.GenerateAlteration(currentSkill, _modelService.ScenarioEncyclopedia);
 
             // Requires Target Character
             if (skillAlteration.RequiresTarget() && enemyTargeted == null)
@@ -749,7 +749,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         else
                         {
                             // Generate Alteration
-                            var alteration = _alterationGenerator.GenerateAlteration(doodadMagic.InvokedAlteration);
+                            var alteration = _alterationGenerator.GenerateAlteration(doodadMagic.InvokedAlteration, _modelService.ScenarioEncyclopedia);
 
                             // Publish Message
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + doodad.RogueName);

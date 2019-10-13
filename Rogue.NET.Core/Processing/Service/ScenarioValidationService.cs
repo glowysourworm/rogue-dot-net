@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Converter.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
@@ -521,13 +522,20 @@ namespace Rogue.NET.Core.Processing.Service
                                                               .Union(skillAlterations)
                                                               .Union(behaviorAlterations);
 
-                    return allAlterations.Where(x => x.AlterationCategory == null || 
-                                                     !configuration.AlterationCategories.Contains(x.AlterationCategory))
-                                         .Select(x =>
+                    // TODO: Use Alteration Processing Container to split this one off
+                    var failedBlockAlterations = allAlterations.Where(x => x.Effect is BlockAlterationAlterationEffectTemplate)
+                                                                .Where(x => !configuration.AlterationCategories.Contains((x.Effect as BlockAlterationAlterationEffectTemplate).AlterationCategory))
+                                                                .Actualize();
+
+                    var failedAlterations = allAlterations.Where(x => x.AlterationCategory == null ||
+                                                                      !configuration.AlterationCategories.Contains(x.AlterationCategory))
+                                                          .Union(failedBlockAlterations);
+
+                    return failedAlterations.Select(x =>
                         new ScenarioValidationResult()
                         {
                             Passed = false,
-                            InnerMessage = x.Name + " has no valid Alteration Category"
+                            InnerMessage = x.Name + " has no valid Alteration Category (OR Block Alteration Category is not properly set)"
 
                         }).Actualize();
                 })),
@@ -869,9 +877,6 @@ namespace Rogue.NET.Core.Processing.Service
                         if (effect.Enemy == null)
                             result.Add("Create Enemy not set for enemy behavior:  " + template.Name);
                     }
-
-                    if (behavior.Alteration.Effect is OtherAlterationEffectTemplate)
-                        result.Add("Enemy OtherAlterationEffect is deprecated and has to be removed");
                 }
             }
 
@@ -900,6 +905,11 @@ namespace Rogue.NET.Core.Processing.Service
 
             else if (template is AuraAlterationEffectTemplate)
                 return null;
+
+            else if (template is BlockAlterationAlterationEffectTemplate)
+            {
+                return "TODO BLOCK ALTERATION";
+            }
 
             else if (template is ChangeLevelAlterationEffectTemplate)
             {
@@ -932,6 +942,12 @@ namespace Rogue.NET.Core.Processing.Service
                 if (effect.TemporaryCharacter == null)
                     return effect.Name + " has no Temporary Character set";
             }
+
+            else if (template is DetectAlterationAlterationEffectTemplate)
+                return "TODO DETECT ALTERATION ALTERATION";
+
+            else if (template is DetectAlterationAlignmentAlterationEffectTemplate)
+                return "TODO DETECT ALTERATION ALIGNMENT ALTERATION";
 
             else if (template is DrainMeleeAlterationEffectTemplate)
                 return null;
@@ -992,7 +1008,7 @@ namespace Rogue.NET.Core.Processing.Service
                 }
             }
 
-            else if (template is OtherAlterationEffectTemplate)
+            else if (template is IdentifyAlterationEffectTemplate)
                 return null;
 
             else if (template is PassiveAlterationEffectTemplate)
@@ -1055,6 +1071,9 @@ namespace Rogue.NET.Core.Processing.Service
                 if (effect.TransmuteItems.Any(x => x.Weighting <= 0))
                     return effect.Name + " has weighting <= 0 (for one item)";
             }
+
+            else if (template is UncurseAlterationEffectTemplate)
+                return null;
 
             else
                 throw new Exception("Unhandled Alteration Effect Type");

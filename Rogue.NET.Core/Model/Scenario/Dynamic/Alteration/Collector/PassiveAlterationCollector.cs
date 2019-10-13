@@ -1,29 +1,27 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
+using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
     [Serializable]
-    public class PassiveAlterationCollector 
-                    : IAlterationCollector,
-                      IAlterationEffectCollector
+    public class PassiveAlterationCollector : IAlterationCollector, IAlterationEffectCollector
     {
-        protected IDictionary<string, Scenario.Alteration.Common.AlterationContainer> Alterations { get; set; }
+        protected IDictionary<string, AlterationContainer> Alterations { get; set; }
 
         public PassiveAlterationCollector()
         {
-            this.Alterations = new Dictionary<string, Scenario.Alteration.Common.AlterationContainer>();
+            this.Alterations = new Dictionary<string, AlterationContainer>();
         }
-        public bool Apply(Scenario.Alteration.Common.AlterationContainer alteration)
+        public bool Apply(AlterationContainer alteration)
         {
             if (!this.Alterations.ContainsKey(alteration.RogueName))
                 this.Alterations.Add(alteration.RogueName, alteration);
@@ -34,7 +32,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
             return true;
         }
 
-        public IEnumerable<Scenario.Alteration.Common.AlterationContainer> Filter(string alterationName)
+        public IEnumerable<AlterationContainer> Filter(string alterationName)
         {
             return this.Alterations.Filter(x => x.Key == alterationName).Values.Actualize();
         }

@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IAlteredStateGenerator))]
     public class AlteredStateGenerator : IAlteredStateGenerator
     {

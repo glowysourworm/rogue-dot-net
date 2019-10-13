@@ -79,16 +79,6 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Character placed at random open location in numeric range of source character")]
         InRangeOfSourceCharacter = 1
     }
-    public enum AlterationOtherEffectType : int
-    {
-        [Display(Name = "Identify",
-                 Description = "Identifies a player item")]
-        Identify = 0,
-
-        [Display(Name = "Uncurse",
-                 Description = "Removes curse from player item")]
-        Uncurse = 1
-    }
     [Flags]
     public enum AlterationRevealType : int
     {

@@ -1,12 +1,9 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
 {

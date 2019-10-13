@@ -5,10 +5,12 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(ISymbolDetailsGenerator))]
     public class SymbolDetailsGenerator : ISymbolDetailsGenerator
     {
         public SymbolDetailsGenerator() { }
+
         public void MapSymbolDetails(SymbolDetailsTemplate source, ScenarioImage dest)
         {
             dest.CharacterColor = source.CharacterColor;

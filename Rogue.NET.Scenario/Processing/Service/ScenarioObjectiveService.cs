@@ -1,10 +1,11 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Model.Enums;
-using System;
-using System.ComponentModel.Composition;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Scenario.Processing.Service.Interface;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace Rogue.NET.Scenario.Processing.Service
 {
@@ -13,9 +14,7 @@ namespace Rogue.NET.Scenario.Processing.Service
     {
         public IDictionary<string, bool> GetScenarioObjectiveUpdates(ScenarioContainer scenarioContainer)
         {
-            return scenarioContainer.ScenarioEncyclopedia
-                                    .Values
-                                    .Where(x => x.IsObjective)
+            return scenarioContainer.Encyclopedia.SubSet(metaData => metaData.IsObjective)
                                     .ToDictionary(x => x.RogueName, x =>
                                     {
                                         return IsObjectiveAcheived(scenarioContainer, x);
@@ -26,9 +25,8 @@ namespace Rogue.NET.Scenario.Processing.Service
         public bool IsObjectiveAcheived(ScenarioContainer scenarioContainer)
         {
             return scenarioContainer
-                       .ScenarioEncyclopedia
-                       .Values
-                       .Where(x => x.IsObjective)
+                       .Encyclopedia
+                       .SubSet(x => x.IsObjective)
                        .All(metaData =>
                        {
                            return IsObjectiveAcheived(scenarioContainer, metaData);

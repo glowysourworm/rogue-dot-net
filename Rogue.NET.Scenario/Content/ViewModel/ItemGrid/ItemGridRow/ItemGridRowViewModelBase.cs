@@ -1,8 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows.Input;

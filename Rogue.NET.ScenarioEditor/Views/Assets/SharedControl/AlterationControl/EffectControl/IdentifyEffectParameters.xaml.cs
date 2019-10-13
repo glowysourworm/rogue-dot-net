@@ -5,9 +5,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
 {
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
-    public partial class OtherEffectParameters : UserControl
+    public partial class IdentifyEffectParameters : UserControl
     {
-        public OtherEffectParameters()
+        public IdentifyEffectParameters()
         {
             InitializeComponent();
         }

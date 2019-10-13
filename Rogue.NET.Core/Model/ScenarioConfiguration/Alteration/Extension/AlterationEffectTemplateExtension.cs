@@ -14,8 +14,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
         #region (public) Query Methods
         public static bool IsIdentify(this IAlterationEffectTemplate effect)
         {
-            return effect is OtherAlterationEffectTemplate &&
-                  (effect as OtherAlterationEffectTemplate).Type == AlterationOtherEffectType.Identify;
+            return effect is IdentifyAlterationEffectTemplate;
         }
 
         /// <summary>

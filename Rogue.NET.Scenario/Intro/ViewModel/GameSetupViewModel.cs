@@ -100,14 +100,14 @@ namespace Rogue.NET.Intro.ViewModel
             this.Scenarios.Clear();
             this.Configurations.Clear();
 
-            foreach (var header in _scenarioFileService.GetScenarioHeaders())
+            foreach (var scenarioContainer in _scenarioFileService.GetScenarios())
             {
                 this.Scenarios.Add(new SavedGameViewModel(_eventAggregator)
                 {
-                    Name = header.Key,
-                    SmileyExpression = header.Value.SmileyExpression,
-                    SmileyBodyColor = (Color)ColorConverter.ConvertFromString(header.Value.SmileyBodyColor),
-                    SmileyLineColor = (Color)ColorConverter.ConvertFromString(header.Value.SmileyLineColor)
+                    Name = scenarioContainer.Player.RogueName,
+                    SmileyExpression = scenarioContainer.Player.SmileyExpression,
+                    SmileyBodyColor = (Color)ColorConverter.ConvertFromString(scenarioContainer.Player.SmileyBodyColor),
+                    SmileyLineColor = (Color)ColorConverter.ConvertFromString(scenarioContainer.Player.SmileyLineColor)
                 });
             }
 
