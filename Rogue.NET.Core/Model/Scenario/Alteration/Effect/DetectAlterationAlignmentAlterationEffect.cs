@@ -11,6 +11,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
     {
         public AlterationAlignmentType AlignmentType { get; set; }
 
+        public bool IncludeCursedEquipment { get; set; }
+
         public DetectAlterationAlignmentAlterationEffect()
         {
 

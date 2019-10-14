@@ -236,27 +236,34 @@
         <ContentPresenter HorizontalAlignment="Center" 
                           VerticalAlignment="Center">
             <ContentPresenter.Content>
-                <MultiBinding Converter="{StaticResource SymbolImageConverter}">
-                    <MultiBinding.ConverterParameter>
-                        <system:Double>1.35</system:Double>
-                    </MultiBinding.ConverterParameter>
-                    <Binding Path="CharacterColor" />
-                    <Binding Path="CharacterSymbol" />
-                    <Binding Path="CharacterSymbolCategory" />
-                    <Binding Path="CharacterScale" />
-                    <Binding Path="Symbol" />
-                    <Binding Path="SymbolHue" />
-                    <Binding Path="SymbolSaturation" />
-                    <Binding Path="SymbolLightness" />
-                    <Binding Path="SymbolScale" />
-                    <Binding Path="SymbolUseColorMask" />
-                    <Binding Path="SmileyExpression" />
-                    <Binding Path="SmileyAuraColor" />
-                    <Binding Path="SmileyBodyColor" />
-                    <Binding Path="SmileyLineColor" />
-                    <Binding Path="GameSymbol" />
-                    <Binding Path="SymbolType" />
-                </MultiBinding>
+                <!-- Item Image -->
+                <Image Margin="1"
+                           Width="13.5"
+                           Height="20.25">
+                    <Image.Source>
+                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                            <MultiBinding.ConverterParameter>
+                                <system:Double>1.35</system:Double>
+                            </MultiBinding.ConverterParameter>
+                            <Binding Path="CharacterColor" />
+                            <Binding Path="CharacterSymbol" />
+                            <Binding Path="CharacterSymbolCategory" />
+                            <Binding Path="CharacterScale" />
+                            <Binding Path="Symbol" />
+                            <Binding Path="SymbolHue" />
+                            <Binding Path="SymbolSaturation" />
+                            <Binding Path="SymbolLightness" />
+                            <Binding Path="SymbolScale" />
+                            <Binding Path="SymbolUseColorMask" />
+                            <Binding Path="SmileyExpression" />
+                            <Binding Path="SmileyAuraColor" />
+                            <Binding Path="SmileyBodyColor" />
+                            <Binding Path="SmileyLineColor" />
+                            <Binding Path="GameSymbol" />
+                            <Binding Path="SymbolType" />
+                        </MultiBinding>
+                    </Image.Source>
+                </Image>
             </ContentPresenter.Content>
         </ContentPresenter>
     </DataTemplate>
@@ -366,6 +373,37 @@
                        FontSize="14"
                        Margin="6,0,0,0"
                        Visibility="{Binding IsEquipped, Converter={StaticResource BoolVisibilityCollapseConverter}, FallbackValue=Collapsed}"/>
+
+            <!-- Is Detected Image -->
+            <Image Margin="6,0,0,0"
+                   Width="13.5"
+                   Height="20.25"
+                   Visibility="{Binding IsDetected, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                        <MultiBinding.ConverterParameter>
+                            <system:Double>1.35</system:Double>
+                        </MultiBinding.ConverterParameter>
+                        <Binding Path="IsDetectedImage.CharacterColor" />
+                        <Binding Path="IsDetectedImage.CharacterSymbol" />
+                        <Binding Path="IsDetectedImage.CharacterSymbolCategory" />
+                        <Binding Path="IsDetectedImage.CharacterScale" />
+                        <Binding Path="IsDetectedImage.Symbol" />
+                        <Binding Path="IsDetectedImage.SymbolHue" />
+                        <Binding Path="IsDetectedImage.SymbolSaturation" />
+                        <Binding Path="IsDetectedImage.SymbolLightness" />
+                        <Binding Path="IsDetectedImage.SymbolScale" />
+                        <Binding Path="IsDetectedImage.SymbolUseColorMask" />
+                        <Binding Path="IsDetectedImage.SmileyExpression" />
+                        <Binding Path="IsDetectedImage.SmileyAuraColor" />
+                        <Binding Path="IsDetectedImage.SmileyBodyColor" />
+                        <Binding Path="IsDetectedImage.SmileyLineColor" />
+                        <Binding Path="IsDetectedImage.GameSymbol" />
+                        <Binding Path="IsDetectedImage.SymbolType" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
+
         </StackPanel>
     </DataTemplate>
 

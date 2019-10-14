@@ -1,34 +1,32 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
-using Rogue.NET.Core.Model.Scenario.Character;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
 using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
 using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
-using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Action;
-using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Action.Enum;
-using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
-using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Model.Scenario.Character.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Animation;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Content
 {
@@ -41,7 +39,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         readonly ITargetingService _targetingService;
         readonly ICharacterGenerator _characterGenerator;
         readonly IAlterationProcessor _alterationProcessor;
-        readonly IInteractionProcessor _interactionProcessor;        
+        readonly IInteractionProcessor _interactionProcessor;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IBackendEventDataFactory _backendEventDataFactory;
@@ -240,7 +238,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 ProcessCreateTemporaryCharacter(alteration.Effect as CreateTemporaryCharacterAlterationEffect, actor);
 
             else if (alteration.Effect is DetectAlterationAlignmentAlterationEffect)
-                ProcessDetectAlteration(alteration.Effect as DetectAlterationAlignmentAlterationEffect);
+                ProcessDetectAlterationAlignment(alteration.Effect as DetectAlterationAlignmentAlterationEffect);
 
             else if (alteration.Effect is DetectAlterationAlterationEffect)
                 ProcessDetectAlteration(alteration.Effect as DetectAlterationAlterationEffect);
@@ -255,7 +253,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 ProcessEquipmentEnhance(alteration.Effect as EquipmentEnhanceAlterationEffect, affectedCharacter);
 
             else if (alteration.Effect is IdentifyAlterationEffect)
-                OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Identify));
+                ProcessIdentify(alteration.Effect as IdentifyAlterationEffect);
 
             else if (alteration.Effect is PassiveAlterationEffect)
                 affectedCharacter.Alteration.Apply(alteration);
@@ -285,7 +283,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 OnDialogEvent(_backendEventDataFactory.DialogAlterationEffect(alteration.Effect));
 
             else if (alteration.Effect is UncurseAlterationEffect)
-                OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Uncurse));
+                ProcessUncurse(alteration.Effect as UncurseAlterationEffect);
 
             else
                 throw new Exception("Unhandled Alteration Effect Type IAlterationEngine.ApplyAlteration");
@@ -422,7 +420,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, itemStolen.Key));
                 }
                 _scenarioMessageService.Publish(
-                    ScenarioMessagePriority.Normal, 
+                    ScenarioMessagePriority.Normal,
                     (actor is Player) ? "{0} stole a(n) {1} from the {2}!" : "The {0} stole a(n) {1} from {2}!",
                     _modelService.GetDisplayName(actor),
                     _modelService.GetDisplayName(itemStolen.Value),
@@ -437,7 +435,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 _modelService.Level.RemoveContent(actor);
 
                 // Publish Message
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, 
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal,
                                                 "The {0} has run away!",
                                                 _modelService.GetDisplayName(actor));
 
@@ -568,11 +566,199 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessDetectAlteration(DetectAlterationAlterationEffect effect)
         {
+            // Consumables on the map
+            var consumables = _modelService.Level.Consumables
+                                           .Where(x => (x.HasAlteration &&
+                                                        x.Alteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+                                                       (x.HasProjectileAlteration &&
+                                                        x.ProjectileAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName))
+                                           .Actualize();
 
+            // Equipment on the map
+            var equipment = _modelService.Level.Equipment
+                                         .Where(x => (x.HasAttackAlteration &&
+                                                      x.AttackAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+                                                     (x.HasEquipAlteration &&
+                                                      x.EquipAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+                                                     (x.HasCurseAlteration &&
+                                                      x.CurseAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName))
+                                         .Actualize();
+
+            // Doodads on the map
+            var doodads = _modelService.Level.Doodads
+                                             .Where(x => (x.IsInvoked &&
+                                                          x.InvokedAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+                                                         (x.IsAutomatic &&
+                                                          x.AutomaticAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName))
+                                             .Actualize();
+
+            // Non-Player Characters (Enemies, Friendlies, and Temp. Characters)
+            var nonPlayerCharacters = _modelService.Level.NonPlayerCharacters
+                                       .Where(x => x.BehaviorDetails
+                                                    .Behaviors
+                                                    .Where(behavior => behavior.AttackType == CharacterAttackType.Alteration)
+                                                    .Any(behavior => behavior.Alteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+
+                                                   x.Consumables.Any(consumable => consumable.Value.HasAlteration &&
+                                                                                   consumable.Value.Alteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+
+                                                   x.Consumables.Any(consumable => consumable.Value.HasProjectileAlteration &&
+                                                                                   consumable.Value.ProjectileAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+
+                                                   x.Equipment.Any(item => item.Value.HasAttackAlteration &&
+                                                                           item.Value.AttackAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+
+                                                   x.Equipment.Any(item => item.Value.HasEquipAlteration &&
+                                                                           item.Value.EquipAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+
+                                                   x.Equipment.Any(item => item.Value.HasCurseAlteration &&
+                                                                           item.Value.CurseAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName))
+                                       .Actualize();
+
+            var playerConsumables = _modelService.Player
+                                           .Consumables
+                                           .Values
+                                           .Where(consumable =>
+                                           {
+                                               return (consumable.HasAlteration &&
+                                                       consumable.Alteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+
+                                                      (consumable.HasProjectileAlteration &&
+                                                       consumable.ProjectileAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName);
+                                           })
+                                           .Actualize();
+
+            var playerEquipment = _modelService.Player
+                                           .Equipment
+                                           .Values
+                                           .Where(item =>
+                                           {
+                                               return (item.HasAttackAlteration &&
+                                                       item.AttackAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+
+                                                       (item.HasEquipAlteration &&
+                                                        item.EquipAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
+
+                                                       (item.HasCurseAlteration &&
+                                                        item.CurseAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName);
+                                           })
+                                           .Actualize();
+
+            // Set flags for the front end
+            consumables.Cast<ScenarioObject>()
+                       .Union(equipment)
+                       .Union(doodads)
+                       .Union(nonPlayerCharacters)
+                       .Union(playerConsumables)
+                       .Union(playerEquipment)
+                       .ForEach(scenarioObject =>
+                       {
+                           scenarioObject.IsDetectedCategory = true;
+                           scenarioObject.DetectedAlignmentCategory = effect.AlterationCategory.DeepClone();
+                       });
+
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentReveal, ""));
         }
-        private void ProcessDetectAlteration(DetectAlterationAlignmentAlterationEffect effect)
+        private void ProcessDetectAlterationAlignment(DetectAlterationAlignmentAlterationEffect effect)
         {
+            // Consumables on the map
+            var consumables = _modelService.Level.Consumables
+                                           .Where(x => (x.HasAlteration &&
+                                                        x.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                                                       (x.HasProjectileAlteration &&
+                                                        x.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)))
+                                           .Actualize();
 
+            // Equipment on the map
+            var equipment = _modelService.Level.Equipment
+                                         .Where(x => (x.HasAttackAlteration &&
+                                                      x.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                                                     (x.HasEquipAlteration &&
+                                                      x.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                                                     (x.HasCurseAlteration &&
+                                                      x.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)))
+                                         .Actualize();
+
+            // INCLUDE CURSED
+            var equipmentCursed = effect.IncludeCursedEquipment ? _modelService.Level.Equipment.Where(x => x.IsCursed) : new Equipment[] { };
+
+            // Doodads on the map
+            var doodads = _modelService.Level.Doodads
+                                             .Where(x => (x.IsInvoked &&
+                                                          x.InvokedAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                                                         (x.IsAutomatic &&
+                                                          x.AutomaticAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)))
+                                             .Actualize();
+
+            // Non-Player Characters (Enemies, Friendlies, and Temp. Characters)
+            var nonPlayerCharacters = _modelService.Level.NonPlayerCharacters
+                                       .Where(x => x.BehaviorDetails
+                                                    .Behaviors
+                                                    .Where(behavior => behavior.AttackType == CharacterAttackType.Alteration)
+                                                    .Any(behavior => behavior.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+
+                                                   x.Consumables.Any(consumable => consumable.Value.HasAlteration &&
+                                                                                   consumable.Value.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+
+                                                   x.Consumables.Any(consumable => consumable.Value.HasProjectileAlteration &&
+                                                                                   consumable.Value.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+
+                                                   x.Equipment.Any(item => item.Value.HasAttackAlteration &&
+                                                                           item.Value.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+
+                                                   x.Equipment.Any(item => item.Value.HasEquipAlteration &&
+                                                                           item.Value.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+
+                                                   x.Equipment.Any(item => item.Value.HasCurseAlteration &&
+                                                                           item.Value.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)))
+                                       .Actualize();
+
+            var playerConsumables = _modelService.Player
+                                           .Consumables
+                                           .Values
+                                           .Where(consumable =>
+                                           {
+                                               return (consumable.HasAlteration &&
+                                                       consumable.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+
+                                                      (consumable.HasProjectileAlteration &&
+                                                       consumable.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
+                                           })
+                                           .Actualize();
+
+            var playerEquipment = _modelService.Player
+                                           .Equipment
+                                           .Values
+                                           .Where(item =>
+                                           {
+                                               return (item.HasAttackAlteration &&
+                                                       item.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+
+                                                       (item.HasEquipAlteration &&
+                                                        item.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+
+                                                       (item.HasCurseAlteration &&
+                                                        item.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
+                                           })
+                                           .Actualize();
+
+            // Set flags for the front end
+            consumables.Cast<ScenarioObject>()
+                       .Union(equipment)
+                       .Union(equipmentCursed)
+                       .Union(doodads)
+                       .Union(nonPlayerCharacters)
+                       .Union(playerConsumables)
+                       .Union(playerEquipment)
+                       .ForEach(scenarioObject =>
+                       {
+                           scenarioObject.IsDetectedAlignment = true;
+                           scenarioObject.DetectedAlignmentType = effect.AlignmentType;
+                       });
+
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentReveal, ""));
         }
         private void ProcessEquipmentEnhance(EquipmentEnhanceAlterationEffect effect, Character affectedCharacter)
         {
@@ -595,7 +781,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 var isWeapon = effect.Type == AlterationModifyEquipmentType.WeaponClass ||
                                effect.Type == AlterationModifyEquipmentType.WeaponImbue ||
                                effect.Type == AlterationModifyEquipmentType.WeaponQuality;
-                
+
                 var randomEquippedItem = isWeapon ? affectedCharacter.Equipment
                                                          .Values
                                                          .Where(x => x.IsEquipped &&
@@ -652,6 +838,58 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Equipped Item to Damage");
         }
+        private void ProcessIdentify(IdentifyAlterationEffect effect)
+        {
+            if (!effect.IdentifyAll)
+                OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Identify));
+
+            else
+            {
+                foreach (var equipment in _modelService.Player.Equipment.Values)
+                {
+                    equipment.IsIdentified = true;
+                    _modelService.ScenarioEncyclopedia[equipment.RogueName].IsIdentified = true;
+                    _modelService.ScenarioEncyclopedia[equipment.RogueName].IsCurseIdentified = true;
+
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentAddOrUpdate, equipment.Id));
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.EncyclopediaIdentify, equipment.Id));
+                }
+
+                foreach (var consumable in _modelService.Player.Consumables.Values)
+                {
+                    consumable.IsIdentified = true;
+                    _modelService.ScenarioEncyclopedia[consumable.RogueName].IsIdentified = true;
+                    _modelService.ScenarioEncyclopedia[consumable.RogueName].IsCurseIdentified = true;  // Not necessary
+
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableAddOrUpdate, consumable.Id));
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.EncyclopediaIdentify, consumable.Id));
+                }
+            }
+        }
+        private void ProcessUncurse(UncurseAlterationEffect effect)
+        {
+            if (!effect.UncurseAll)
+                OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Uncurse));
+
+            else
+            {
+                foreach (var equipment in _modelService.Player.Equipment.Values)
+                {
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(equipment) + " Uncursed");
+
+                    if (equipment.HasCurseAlteration)
+                        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your " + equipment.RogueName + " is now safe to use (with caution...)");
+
+                    if (equipment.IsEquipped)
+                        _modelService.Player.Alteration.Remove(equipment.CurseAlteration.Name);
+
+                    equipment.IsCursed = false;
+                    equipment.HasCurseAlteration = false;
+
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentAddOrUpdate, equipment.Id));
+                }
+            }
+        }
         public void ProcessTransmute(TransmuteAlterationEffect effect, IEnumerable<string> chosenItemIds)
         {
             // Transmute is for Player only
@@ -688,7 +926,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var productItem = _randomSequenceGenerator.GetWeightedRandom(possibleProductItems, x => x.Weighting);
 
             // Remove required items from the actor's inventory
-            foreach(var item in chosenItems)
+            foreach (var item in chosenItems)
             {
                 if (player.Consumables.ContainsKey(item.Id))
                     player.Consumables.Remove(item.Id);
@@ -704,7 +942,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (productItem.IsEquipmentProduct)
                 player.Equipment.Add(productItem.EquipmentProduct.Id, productItem.EquipmentProduct);
 
-            var itemBase = productItem.IsConsumableProduct ? (ItemBase)productItem.ConsumableProduct 
+            var itemBase = productItem.IsConsumableProduct ? (ItemBase)productItem.ConsumableProduct
                                                            : (ItemBase)productItem.EquipmentProduct;
 
             _scenarioMessageService.Publish(

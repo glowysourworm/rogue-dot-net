@@ -26,16 +26,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
     {
         AlterationCost GenerateAlterationCost(AlterationCostTemplate template);
 
-        AlterationContainer GenerateAlteration(AlterationTemplate template, ScenarioEncyclopedia encyclopedia);
-        ConsumableAlteration GenerateAlteration(ConsumableAlterationTemplate template, ScenarioEncyclopedia encyclopedia);
+        AlterationContainer GenerateAlteration(AlterationTemplate template);
+        ConsumableAlteration GenerateAlteration(ConsumableAlterationTemplate template);
         ConsumableProjectileAlteration GenerateAlteration(ConsumableProjectileAlterationTemplate template);
-        DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template, ScenarioEncyclopedia encyclopedia);
+        DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template);
         EnemyAlteration GenerateAlteration(EnemyAlterationTemplate template);
         FriendlyAlteration GenerateAlteration(FriendlyAlterationTemplate template);
         EquipmentAttackAlteration GenerateAlteration(EquipmentAttackAlterationTemplate template);
         EquipmentCurseAlteration GenerateAlteration(EquipmentCurseAlterationTemplate template);
-        EquipmentEquipAlteration GenerateAlteration(EquipmentEquipAlterationTemplate template, ScenarioEncyclopedia encyclopedia);
+        EquipmentEquipAlteration GenerateAlteration(EquipmentEquipAlterationTemplate template);
         TemporaryCharacterAlteration GenerateAlteration(TemporaryCharacterAlterationTemplate template);
-        SkillAlteration GenerateAlteration(SkillAlterationTemplate template, ScenarioEncyclopedia alterationCategories);
+        SkillAlteration GenerateAlteration(SkillAlterationTemplate template);
     }
 }

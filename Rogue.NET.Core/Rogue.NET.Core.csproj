@@ -607,6 +607,8 @@
     <Compile Include="Processing\Model\Validation\ScenarioValidationRule.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioImageSourceFactory.cs" />
     <Compile Include="Processing\Service\Cache\Interface\ISvgCache.cs" />
+    <Compile Include="Processing\Service\Cache\ScenarioConfigurationInfo.cs" />
+    <Compile Include="Processing\Service\Cache\ScenarioInfo.cs" />
     <Compile Include="Processing\Service\Interface\ITargetingService.cs" />
     <Compile Include="Processing\Service\Cache\ScenarioImageSourceFactory.cs" />
     <Compile Include="Processing\Service\Cache\SvgCache.cs" />

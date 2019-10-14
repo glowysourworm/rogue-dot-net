@@ -183,7 +183,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                         // Set any Alterations
                         if (equipment.HasEquipAlteration)
-                            character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.EquipAlteration, encyclopedia));
+                            character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
 
                         if (equipment.HasCurseAlteration)
                             character.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.CurseAlteration));

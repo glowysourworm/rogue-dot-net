@@ -17,17 +17,20 @@ namespace Rogue.NET.Core.Processing.Service.Interface
     public interface IScenarioResourceService
     {
         IEnumerable<ColorViewModel> GetColors();
-        ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName);
 
         // IScenarioCache
-        IEnumerable<ScenarioContainer> GetScenarios();
+        IEnumerable<string> GetScenarioNames();
+        IEnumerable<ScenarioInfo> GetScenarioInfos();
+        ScenarioContainer GetScenario(string scenarioName);
         void SaveScenario(ScenarioContainer scenario);
-        void DeleteScenario(ScenarioContainer scenario);
+        void DeleteScenario(string scenarioName);
 
         // IScenarioConfigurationCache
-        IEnumerable<ScenarioConfigurationContainer> EmbeddedConfigurations { get; }
-        IEnumerable<ScenarioConfigurationContainer> UserConfigurations { get; }
-        ScenarioImage GetRandomSmileyCharacter();
+        IEnumerable<string> EmbeddedConfigurations { get; }
+        IEnumerable<string> UserConfigurations { get; }
+        IEnumerable<ScenarioConfigurationInfo> GetScenarioConfigurationInfos();
+        ScenarioImage GetRandomSmileyCharacter(bool eliminateChoice);
+        ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName);
         void SaveConfiguration(ScenarioConfigurationContainer configuration);
         void EmbedConfiguration(ScenarioConfigurationContainer configuration);
 

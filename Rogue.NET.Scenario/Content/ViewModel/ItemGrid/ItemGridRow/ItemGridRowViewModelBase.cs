@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
@@ -10,7 +11,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
 {
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
-    public abstract class ItemGridRowViewModelBase<T> : ScenarioImageViewModel where T : ScenarioImage
+    public abstract class ItemGridRowViewModelBase<T> : ScenarioImageViewModel where T : ScenarioObject
     {
         /// <summary>
         /// Event that notifies container class about single item selection
@@ -28,6 +29,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
         bool _isEnabled;
         bool _isObjective;
         bool _isUnique;
+        bool _isDetected;
+
+        ScenarioImageViewModel _isDetectedImage;
 
         public abstract bool IsSelected { get; set; }
         public abstract IEnumerable<string> GetSelectedItemIds();
@@ -50,6 +54,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
         {
             get { return _isUnique; }
             set { this.RaiseAndSetIfChanged(ref _isUnique, value); }
+        }
+        public bool IsDetected
+        {
+            get { return _isDetected; }
+            set { this.RaiseAndSetIfChanged(ref _isDetected, value); }
+        }
+        public ScenarioImageViewModel IsDetectedImage
+        {
+            get { return _isDetectedImage; }
+            set { this.RaiseAndSetIfChanged(ref _isDetectedImage, value); }
         }
 
         /// <summary>
@@ -84,13 +98,40 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
         /// <summary>
         /// Specifies how to update the instance of ItemGridRowViewModel from its source object
         /// </summary>
-        public virtual void Update(T scenarioImage, ScenarioMetaData metaData, string displayName, bool isEnabled)
+        public virtual void Update(T item, ScenarioMetaData metaData, string displayName, bool isEnabled)
         {
             this.IsEnabled = isEnabled;
             this.DisplayName = displayName;
 
             this.IsUnique = metaData.IsUnique;
             this.IsObjective = metaData.IsObjective;
+            this.IsDetected = item.IsDetectedAlignment || item.IsDetectedCategory;
+
+            if (item.IsDetectedAlignment)
+            {
+                // TODO: WE HAVE TO SUPPORT MULTIPLE DETECTED TYPES AND CATEGORIES PER ITEM.
+                switch (item.DetectedAlignmentType)
+                {
+                    case AlterationAlignmentType.Neutral:
+                        this.IsDetectedImage = new ScenarioImageViewModel(ScenarioImage.CreateGameSymbol(item.RogueName, Common.Constant.GameSymbol.DetectMagicNeutral), item.RogueName);
+                        break;
+                    case AlterationAlignmentType.Good:
+                        this.IsDetectedImage = new ScenarioImageViewModel(ScenarioImage.CreateGameSymbol(item.RogueName, Common.Constant.GameSymbol.DetectMagicGood), item.RogueName);
+                        break;
+                    case AlterationAlignmentType.Bad:
+                        this.IsDetectedImage = new ScenarioImageViewModel(ScenarioImage.CreateGameSymbol(item.RogueName, Common.Constant.GameSymbol.DetectMagicBad), item.RogueName);
+                        break;
+                    default:
+                        throw new System.Exception("Unhandled Alteration Alignment Type ItemGridRowViewModelBase");
+                }
+            }
+            else if (item.IsDetectedCategory)
+            {
+                this.IsDetectedImage = new ScenarioImageViewModel(item.DetectedAlignmentCategory, item.DetectedAlignmentCategory.RogueName);
+            }
+            // Default Symbol = "?"
+            else
+                this.IsDetectedImage = new ScenarioImageViewModel(ScenarioImage.CreateGameSymbol(item.RogueName, Common.Constant.GameSymbol.Identify), item.RogueName);
         }
     }
 }

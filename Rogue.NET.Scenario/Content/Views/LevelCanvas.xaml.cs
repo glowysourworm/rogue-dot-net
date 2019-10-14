@@ -103,16 +103,16 @@ namespace Rogue.NET.Scenario.Content.Views
         {
             switch (type)
             {
-                case ShiftDisplayType.Left:
+                case ShiftDisplayType.Right:
                     _translateXform.X -= SHIFT_AMOUNT;
                     break;
-                case ShiftDisplayType.Right:
+                case ShiftDisplayType.Left:
                     _translateXform.X += SHIFT_AMOUNT;
                     break;
-                case ShiftDisplayType.Up:
+                case ShiftDisplayType.Down:
                     _translateXform.Y -= SHIFT_AMOUNT;
                     break;
-                case ShiftDisplayType.Down:
+                case ShiftDisplayType.Up:
                     _translateXform.Y += SHIFT_AMOUNT;
                     break;
                 case ShiftDisplayType.CenterOnPlayer:

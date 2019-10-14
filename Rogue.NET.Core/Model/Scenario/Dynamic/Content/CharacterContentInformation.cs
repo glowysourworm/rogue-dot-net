@@ -72,8 +72,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Content
                     scenarioObject.IsExplored = true;
 
                     // Set this based on whether the cell is physically visible. Once the cell is seen
-                    // the IsRevealed flag gets reset. 
+                    // the IsRevealed flag gets reset. Also, the IsDetected flag gets reset. 
                     scenarioObject.IsRevealed = false;
+                    scenarioObject.IsDetectedAlignment = false;
+                    scenarioObject.IsDetectedCategory = false;
                 }
 
                 _visibleContent[player].AddRange(level.GetManyAt<ScenarioObject>(location));

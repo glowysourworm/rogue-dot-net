@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
         <GroupBox x:Name="EnumGroupBox">
-            <ItemsControl x:Name="EnumItemsControl">
+            <ItemsControl x:Name="EnumItemsControl" Margin="10">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <CheckBox Checked="CheckBox_Checked" 
@@ -11,12 +11,13 @@
                                   Width="150"
                                   Margin="4"
                                   Content="{Binding Name}" 
-                                  IsChecked="{Binding IsChecked}" />
+                                  IsChecked="{Binding IsChecked}"
+                                  HorizontalAlignment="Left" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel IsItemsHost="True" HorizontalAlignment="Right" />
+                        <StackPanel IsItemsHost="True" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>

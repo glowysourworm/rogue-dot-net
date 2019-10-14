@@ -127,8 +127,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         }
         private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
         {
+            var generationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.DoodadGenerationRange);
+
             // Make a configured number of random draws from the doodad templates for this branch
-            for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.DoodadGenerationRange); i++)
+            for (int i = 0; i < generationNumber; i++)
             {
                 // Run generation method
                 var doodad = GenerateDoodad(branchTemplate);
@@ -139,8 +141,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         }
         private void GenerateEnemies(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia)
         {
+            var generationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.EnemyGenerationRange);
+
             // Make a configured number of random draws from the enemy templates for this branch
-            for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.EnemyGenerationRange); i++)
+            for (int i = 0; i < generationNumber; i++)
             {
                 // Run generation method
                 var enemy = GenerateEnemy(branchTemplate, encyclopedia);
@@ -151,8 +155,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         }
         private void GenerateItems(Level level, LevelBranchTemplate branchTemplate)
         {
+            var equipmentGenerationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.EquipmentGenerationRange);
+            var consumableGenerationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.ConsumableGenerationRange);
+
             // Make a configured number of random draws from the equipment templates for this branch
-            for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.EquipmentGenerationRange); i++)
+            for (int i = 0; i < equipmentGenerationNumber; i++)
             {
                 // Run generation method
                 var equipment = GenerateEquipment(branchTemplate);
@@ -162,7 +169,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             }
 
             // Make a configured number of random draws from the consumable templates for this branch
-            for (int i = 0; i < _randomSequenceGenerator.GetRandomValue(branchTemplate.ConsumableGenerationRange); i++)
+            for (int i = 0; i < consumableGenerationNumber; i++)
             {
                 // Run generation method
                 var consumable = GenerateConsumable(branchTemplate);

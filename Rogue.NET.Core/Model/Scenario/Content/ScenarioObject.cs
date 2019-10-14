@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Event;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 using System;
@@ -26,7 +27,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 if (_location != value)
                 {
                     var oldLocation = _location;
-                    
+
                     _location = value;
 
                     if (this.LocationChangedEvent != null)
@@ -43,6 +44,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public bool IsExplored { get; set; }
         public bool IsHidden { get; set; }
         public bool IsRevealed { get; set; }
+        public bool IsDetectedAlignment { get; set; }
+        public bool IsDetectedCategory { get; set; }
+        public AlterationAlignmentType DetectedAlignmentType { get; set; }
+        public AlterationCategory DetectedAlignmentCategory { get; set; }
 
         public ScenarioObject()
         {

@@ -15,7 +15,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
     /// </summary>
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
-    public abstract class ItemGridRowViewModel<T> : ItemGridRowViewModelBase<T> where T : ScenarioImage
+    public abstract class ItemGridRowViewModel<T> : ItemGridRowViewModelBase<T> where T : ScenarioObject
     {
         public override event SimpleEventHandler<ItemGridRowViewModelBase<T>> SelectionChangedEvent;
 

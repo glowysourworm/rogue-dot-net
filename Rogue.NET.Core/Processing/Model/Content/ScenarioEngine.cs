@@ -248,7 +248,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             var player = _modelService.Player;
             var consumable = player.Consumables[itemId];
-            var alteration = consumable.HasAlteration ? _alterationGenerator.GenerateAlteration(consumable.Alteration, _modelService.ScenarioEncyclopedia) : null;
+            var alteration = consumable.HasAlteration ? _alterationGenerator.GenerateAlteration(consumable.Alteration) : null;
             var displayName = _modelService.GetDisplayName(consumable);
 
             // TODO:ALTERATION - Have to validate that each consumable has an alteration. Also, REMOVE 
@@ -422,7 +422,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public void Uncurse(string itemId)
         {
             var equipment = _modelService.Player.Equipment[itemId];
-            equipment.IsCursed = false;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(equipment) + " Uncursed");
 
@@ -431,6 +430,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             if (equipment.IsEquipped)
                 _modelService.Player.Alteration.Remove(equipment.CurseAlteration.Name);
+
+            equipment.IsCursed = false;
+            equipment.HasCurseAlteration = false;
 
             // Queue an update
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentAddOrUpdate, itemId));
@@ -660,7 +662,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             var enemyTargeted = _targetingService.GetTargetedCharacter();
-            var skillAlteration = _alterationGenerator.GenerateAlteration(currentSkill, _modelService.ScenarioEncyclopedia);
+            var skillAlteration = _alterationGenerator.GenerateAlteration(currentSkill);
 
             // Requires Target Character
             if (skillAlteration.RequiresTarget() && enemyTargeted == null)
@@ -749,7 +751,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         else
                         {
                             // Generate Alteration
-                            var alteration = _alterationGenerator.GenerateAlteration(doodadMagic.InvokedAlteration, _modelService.ScenarioEncyclopedia);
+                            var alteration = _alterationGenerator.GenerateAlteration(doodadMagic.InvokedAlteration);
 
                             // Publish Message
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + doodad.RogueName);

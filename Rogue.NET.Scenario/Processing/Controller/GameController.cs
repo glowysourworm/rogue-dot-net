@@ -165,7 +165,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             }
 
             //Read dungeon file - TODO: No real need for "Open"; so need some small refactoring
-            _scenarioContainer = _scenarioResourceService.GetScenarios().FirstOrDefault(x => x.Player.RogueName == playerName);
+            _scenarioContainer = _scenarioResourceService.GetScenario(playerName);
 
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {

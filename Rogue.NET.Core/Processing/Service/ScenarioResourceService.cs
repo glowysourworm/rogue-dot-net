@@ -32,12 +32,12 @@ namespace Rogue.NET.Core.Processing.Service
         // Basic color cache
         IEnumerable<ColorViewModel> _colors;
 
-        public IEnumerable<ScenarioConfigurationContainer> EmbeddedConfigurations
+        public IEnumerable<string> EmbeddedConfigurations
         {
             get { return _scenarioConfigurationCache.EmbeddedConfigurations; }
         }
 
-        public IEnumerable<ScenarioConfigurationContainer> UserConfigurations
+        public IEnumerable<string> UserConfigurations
         {
             get { return _scenarioConfigurationCache.UserConfigurations; }
         }
@@ -65,9 +65,20 @@ namespace Rogue.NET.Core.Processing.Service
             return _scenarioImageSourceFactory.GetFrameworkElement(scenarioImage, scale);
         }
 
-        public IEnumerable<ScenarioContainer> GetScenarios()
+        public IEnumerable<string> GetScenarioNames()
         {
-            return _scenarioCache.GetScenarios();
+            return _scenarioCache.GetScenarioNames();
+        }
+
+        public IEnumerable<ScenarioInfo> GetScenarioInfos()
+        {
+            return _scenarioCache.GetScenarioInfos();
+        }
+
+        // NOTE*** THIS WILL RETURN A CLONE OF THE SCENARIO
+        public ScenarioContainer GetScenario(string scenarioName)
+        {
+            return _scenarioCache.GetScenario(scenarioName);
         }
 
         public void SaveScenario(ScenarioContainer scenario)
@@ -75,21 +86,25 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioCache.SaveScenario(scenario);
         }
 
-        public void DeleteScenario(ScenarioContainer scenario)
+        public void DeleteScenario(string scenarioName)
         {
-            _scenarioCache.DeleteScenario(scenario);
+            _scenarioCache.DeleteScenario(scenarioName);
         }
 
-        public ScenarioImage GetRandomSmileyCharacter()
+        public ScenarioImage GetRandomSmileyCharacter(bool eliminateChoice)
         {
-            return _scenarioConfigurationCache.GetRandomSmileyCharacter();
+            return _scenarioConfigurationCache.GetRandomSmileyCharacter(eliminateChoice);
         }
 
+        public IEnumerable<ScenarioConfigurationInfo> GetScenarioConfigurationInfos()
+        {
+            return _scenarioConfigurationCache.GetScenarioConfigurationInfos();
+        }
+
+        // NOTE*** THIS WILL RETURN A CLONE OF THE CONFIGURATION
         public ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName)
         {
-            return _scenarioConfigurationCache.EmbeddedConfigurations
-                                              .Union(_scenarioConfigurationCache.UserConfigurations)
-                                              .First(x => x.ScenarioDesign.Name == configurationName);
+            return _scenarioConfigurationCache.GetConfiguration(configurationName);
         }
 
         public void SaveConfiguration(ScenarioConfigurationContainer configuration)

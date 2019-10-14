@@ -9,6 +9,9 @@ namespace Rogue.NET.Common.Constant
     public static class GameSymbol
     {
         public const string Consume = "Consume";
+        public const string DetectMagicBad = "DetectMagicBad";
+        public const string DetectMagicGood = "DetectMagicGood";
+        public const string DetectMagicNeutral = "DetectMagicNeutral";
         public const string Drop = "Drop";
         public const string EnchantArmor = "EnchantArmor";
         public const string EnchantWeapon = "EnchantWeapon";

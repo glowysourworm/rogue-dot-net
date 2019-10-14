@@ -206,11 +206,8 @@ namespace Rogue.NET.Scenario
                 var result = MessageBox.Show("Are you sure you want to delete this scenario?", "Delete " + e.ScenarioName, MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes || result == MessageBoxResult.OK)
                 {
-                    // Get Scenario to delete (TODO: PASS IN THE SCENARIO)
-                    var scenario = _scenarioResourceService.GetScenarios().First(x => x.Player.RogueName == e.ScenarioName);
-
-                    // Delete the file
-                    _scenarioResourceService.DeleteScenario(scenario);
+                    // Delete the scenario
+                    _scenarioResourceService.DeleteScenario(e.ScenarioName);
 
                     // Notify listeners
                     _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish();
@@ -234,6 +231,10 @@ namespace Rogue.NET.Scenario
             //
             // Leaving these (below) views un-registered caused problems when loading scenario view models
             // because most of the event-aggregator events had already been called to initialize the view.
+            //
+            // So, I had to create a way to pre-register views to allow the constructor to be called before
+            // hand. This will only work for "singleton regions" (see RogueRegionManager)
+            //
 
             _regionManager.PreRegisterView(RegionName.MainRegion, typeof(GameView));
             _regionManager.PreRegisterView(RegionName.GameRegion, typeof(LevelView));

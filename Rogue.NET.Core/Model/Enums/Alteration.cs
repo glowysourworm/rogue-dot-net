@@ -55,19 +55,20 @@ namespace Rogue.NET.Core.Model.Enums
     /// <summary>
     /// Describes an alteration 
     /// </summary>
+    [Flags]
     public enum AlterationAlignmentType : int
     {
         [Display(Name = "Neutral",
                  Description = "Effect that is associated as something that is neither 'Good' nor 'Bad'")]
-        Neutral = 0,
+        Neutral = 1,
 
         [Display(Name = "Good",
                  Description = "Effect that is associated as positive for your character")]
-        Good = 1,
+        Good = 2,
 
         [Display(Name = "Bad",
                  Description = "Effect that is associated as negative for your character")]
-        Bad = 2
+        Bad = 4
     }
     public enum AlterationRandomPlacementType : int
     {

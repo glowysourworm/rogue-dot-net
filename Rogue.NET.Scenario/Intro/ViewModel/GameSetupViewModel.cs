@@ -91,31 +91,29 @@ namespace Rogue.NET.Intro.ViewModel
             this.Scenarios.Clear();
             this.Configurations.Clear();
 
-            foreach (var scenarioContainer in _scenarioResourceService.GetScenarios())
+            // Get all saved games
+            foreach (var scenarioInfo in _scenarioResourceService.GetScenarioInfos())
             {
                 this.Scenarios.Add(new SavedGameViewModel()
                 {
-                    Name = scenarioContainer.Player.RogueName,
-                    SmileyExpression = scenarioContainer.Player.SmileyExpression,
-                    SmileyBodyColor = (Color)ColorConverter.ConvertFromString(scenarioContainer.Player.SmileyBodyColor),
-                    SmileyLineColor = (Color)ColorConverter.ConvertFromString(scenarioContainer.Player.SmileyLineColor)
+                    Name = scenarioInfo.Name,
+                    SmileyExpression = scenarioInfo.SmileyExpression,
+                    SmileyBodyColor = scenarioInfo.SmileyBodyColor,
+                    SmileyLineColor = scenarioInfo.SmileyLineColor
                 });
             }
 
-            // Select Configurations with at least ONE PLAYER TEMPLATE (Character Class)
-            foreach (var config in _scenarioResourceService.EmbeddedConfigurations
-                                                           .Union(_scenarioResourceService.UserConfigurations)
-                                                           .Where(x => x.PlayerTemplates.Any()))
+            // Get all scenarios
+            foreach (var scenarioConfigurationInfo in _scenarioResourceService.GetScenarioConfigurationInfos())
             {
                 this.Configurations.Add(new ScenarioViewModel()
                 {
-                    Name = config.ScenarioDesign.Name,
-                    Description = config.ScenarioDesign.ObjectiveDescription,
-                    SmileyExpression = config.PlayerTemplates.First().SymbolDetails.SmileyExpression,
-                    SmileyBodyColor = ColorFilter.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
-                    SmileyLineColor = ColorFilter.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyLineColor),
-                    CharacterClasses = new ObservableCollection<CharacterClassSelectionViewModel>(config.PlayerTemplates
-                                                                                                        .Select(x =>
+                    Name = scenarioConfigurationInfo.Name,
+                    Description = scenarioConfigurationInfo.Description,
+                    SmileyExpression = scenarioConfigurationInfo.SmileyExpression,
+                    SmileyBodyColor = scenarioConfigurationInfo.SmileyBodyColor,
+                    SmileyLineColor = scenarioConfigurationInfo.SmileyLineColor,
+                    CharacterClasses = new ObservableCollection<CharacterClassSelectionViewModel>(scenarioConfigurationInfo.PlayerTemplates.Select(x =>
                     new CharacterClassSelectionViewModel(x.SymbolDetails)
                     {
                         Description = x.LongDescription,

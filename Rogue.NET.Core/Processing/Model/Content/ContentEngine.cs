@@ -433,7 +433,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     doodad.HasBeenUsed = true;
 
                     // Create Alteration
-                    var alteration = _alterationGenerator.GenerateAlteration(doodad.AutomaticAlteration, _modelService.ScenarioEncyclopedia);
+                    var alteration = _alterationGenerator.GenerateAlteration(doodad.AutomaticAlteration);
 
                     // Validate Alteration Cost -> Queue with animation
                     if (_alterationEngine.Validate(character, alteration))
@@ -547,7 +547,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Fire equip alteration -> This will activate any passive effects after animating
             if (equipment.HasEquipAlteration)
-                _alterationEngine.Queue(_modelService.Player, _alterationGenerator.GenerateAlteration(equipment.EquipAlteration, _modelService.ScenarioEncyclopedia));
+                _alterationEngine.Queue(_modelService.Player, _alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
 
             if (equipment.HasCurseAlteration && equipment.IsCursed)
                 _alterationEngine.Queue(_modelService.Player, _alterationGenerator.GenerateAlteration(equipment.CurseAlteration));
@@ -906,10 +906,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var isTargetAdjacent = adjacentLocations.Contains(targetCharacter.Location);
 
             // If Adjacent Opposing Character
-            if (isTargetAdjacent)
+            if (isTargetAdjacent && 
+                _interactionProcessor.CalculateInteraction(character, targetCharacter, PhysicalAttackType.Melee))
             {
-                var success = _interactionProcessor.CalculateInteraction(character, targetCharacter, PhysicalAttackType.Melee);
-
                 // If Successful, process Equipment Attack Alterations
                 foreach (var alteration in character.Equipment
                                                     .Values
@@ -950,24 +949,51 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessCharacterAlterationAttack(NonPlayerCharacter character, Character targetCharacter)
         {
-            AlterationContainer alteration;
-
             // Cast the appropriate behavior
             var template = character.BehaviorDetails.CurrentBehavior.Alteration;
 
             // Create the alteration
-            alteration = _alterationGenerator.GenerateAlteration(template, _modelService.ScenarioEncyclopedia);
+            var alteration = _alterationGenerator.GenerateAlteration(template);
 
-            // Post alteration message 
-            _scenarioMessageService.PublishAlterationCombatMessage(
-                character.AlignmentType,
-                _modelService.GetDisplayName(character),
-                _modelService.GetDisplayName(targetCharacter),
-                alteration.RogueName);
+            // Calculate Alteration Block
+            var blocked = _interactionProcessor.CalculateAlterationBlock(character, targetCharacter, alteration.BlockType);
 
-            // Validate the cost and process
-            if (_alterationEngine.Validate(character, alteration))
+            // Check for specific Alteation Category blocking
+            var categoryBlocked = targetCharacter.Alteration.IsAlterationBlocked(alteration.Category);
+
+            // Check Alteration Validation
+            var validated = _alterationEngine.Validate(character, alteration);
+
+            if (!validated)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal,
+                                                "{0} can't use their skill {1}",
+                                                _modelService.GetDisplayName(character));
+
+                return;
+            }
+
+            // TODO: ADD SPECIAL BLOCK MESSAGE FOR CATEGORY BLOCK
+
+            if (blocked || categoryBlocked)
+            {
+                // Post block message
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, 
+                                                "{0} has blocked the attack!", 
+                                                _modelService.GetDisplayName(targetCharacter));
+            }
+            else
+            {
+                // Post alteration message 
+                _scenarioMessageService.PublishAlterationCombatMessage(
+                    character.AlignmentType,
+                    _modelService.GetDisplayName(character),
+                    _modelService.GetDisplayName(targetCharacter),
+                    alteration.RogueName);
+
+                // Queue alteration
                 _alterationEngine.Queue(character, alteration);
+            }
         }
         #endregion
 

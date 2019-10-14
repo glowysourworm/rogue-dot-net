@@ -2890,4 +2890,13 @@ IMMEDIATE TODO'S:
 	- TODO: ALLOW NON-SMILEY PLAYER. (Going to require auras / light radii for any symbol we choose to support - i'm thinking Character and Smiley)
 
 	- TODO: When "Opening" Scenario Configuration - have to show what's available in memory. Since we're pre-loading all data.
+
+	- TODO: Blocked alterations need to show the animation.
+
+	- TODO: Memorized(?)  Would be interesting to add a passive "Memory" ability. (Keeps in mind for X number of steps)
+
+	- TODO: Have to support multiple Detect "Magic" categories / alignment types / etc... Also, may need to include attack attributes. So, might have
+			to do some more UI design to include those. 
+
+	- TODO: Enemy / Player knock-back
 			  

@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Common.Utility;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using System;
@@ -16,11 +18,13 @@ namespace Rogue.NET.Core.Processing.Service.Cache
     public class ScenarioCache : IScenarioCache
     {
         static readonly List<ScenarioContainer> _scenarios;
+        static readonly List<ScenarioInfo> _scenarioInfos;
 
 
         static ScenarioCache()
         {
             _scenarios = new List<ScenarioContainer>();
+            _scenarioInfos = new List<ScenarioInfo>();
         }
 
         public ScenarioCache()
@@ -28,26 +32,50 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         }
 
-        public IEnumerable<ScenarioContainer> GetScenarios()
+        
+        public IEnumerable<string> GetScenarioNames()
         {
-            return _scenarios;
+            return _scenarios.Select(x => x.Player.RogueName);
         }
 
+        public ScenarioContainer GetScenario(string name)
+        {
+            var scenario = _scenarios.FirstOrDefault(x => x.Player.RogueName == name);
+
+            // NOTE*** Creating clone of the scenario using binary copy
+            if (scenario != null)
+            {
+                var buffer = BinarySerializer.Serialize(scenario);
+
+                return (ScenarioContainer)BinarySerializer.Deserialize(buffer);
+            }
+
+            return null;
+        }
+        public IEnumerable<ScenarioInfo> GetScenarioInfos()
+        {
+            return _scenarioInfos;
+        }
         public void SaveScenario(ScenarioContainer scenario)
         {
-            if (!_scenarios.Contains(scenario))
-                _scenarios.Add(scenario);
+            if (!_scenarios.Any(x => x.Player.RogueName == scenario.Player.RogueName))
+                AddScenario(scenario);
+
+            // Otherwise, evict the cache
+            else
+            {
+                RemoveScenario(scenario.Player.RogueName);
+                AddScenario(scenario);
+            }
 
             BinarySerializer.SerializeToFile(ResourceConstants.SavedGameDirectory + "\\" + scenario.Player.RogueName + "." + ResourceConstants.ScenarioExtension, scenario);
         }
 
-        public void DeleteScenario(ScenarioContainer scenario)
+        public void DeleteScenario(string scenarioName)
         {
-            if(_scenarios.Contains(scenario))
-                _scenarios.Remove(scenario);
+            RemoveScenario(scenarioName);
 
-            var path = Path.Combine(ResourceConstants.SavedGameDirectory, 
-                                    scenario.Player.RogueName + "." + ResourceConstants.ScenarioExtension);
+            var path = Path.Combine(ResourceConstants.SavedGameDirectory, scenarioName + "." + ResourceConstants.ScenarioExtension);
 
             if (File.Exists(path))
                 File.Delete(path);
@@ -60,8 +88,26 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             foreach (var file in Directory.GetFiles(ResourceConstants.SavedGameDirectory)
                                           .Where(x => x.EndsWith("." + ResourceConstants.ScenarioExtension)))
             {
-                _scenarios.Add((ScenarioContainer)BinarySerializer.DeserializeFromFile(file));
+                AddScenario((ScenarioContainer)BinarySerializer.DeserializeFromFile(file));
             }
+        }
+
+        private static void AddScenario(ScenarioContainer scenario)
+        {
+            _scenarios.Add(scenario);
+            _scenarioInfos.Add(new ScenarioInfo()
+            {
+                Name = scenario.Player.RogueName,
+                SmileyExpression = scenario.Player.SmileyExpression,
+                SmileyBodyColor = ColorFilter.Convert(scenario.Player.SmileyBodyColor),
+                SmileyLineColor = ColorFilter.Convert(scenario.Player.SmileyLineColor)
+            });
+        }
+
+        private void RemoveScenario(string scenarioName)
+        {
+            _scenarios.Filter(x => x.Player.RogueName == scenarioName);
+            _scenarioInfos.Filter(x => x.Name == scenarioName);
         }
     }
 }

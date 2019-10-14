@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Media.Animation;
+﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Media.Animation;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
@@ -123,36 +124,87 @@ namespace Rogue.NET.Scenario.Processing.Service
 
         public void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject)
         {
-            var isEnemyInvisible = false;                           // FOR ENEMY INVISIBILITY ONLY
+            // Calculate visible-to-player
+            //
+            // Content object is within player's sight radius
+            var visibleToPlayer = _modelService.CharacterContentInformation
+                                               .GetVisibleContents(_modelService.Player)
+                                               .Contains(scenarioObject) ||
+
+                                  // Content object is Player
+                                  scenarioObject == _modelService.Player ||
+
+                                  // Detected or Revealed
+                                  scenarioObject.IsDetectedAlignment ||
+                                  scenarioObject.IsDetectedCategory ||
+                                  scenarioObject.IsRevealed;
+
+            // "Invisible" status
+            var isCharacterInVisibleToPlayer = false;
 
             // Calculate effective symbol
-            var effectiveSymbol = (ScenarioImage)scenarioObject;
+            var effectiveSymbol = (scenarioObject is Character) ? _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Character) :
+                                                                  scenarioObject;
 
+            // Non-Player Characters
             if (scenarioObject is NonPlayerCharacter)
             {
                 // Calculate invisibility
                 var character = (scenarioObject as NonPlayerCharacter);
 
-                isEnemyInvisible = character.AlignmentType == CharacterAlignmentType.EnemyAligned &&
-                                   character.Is(CharacterStateType.Invisible) &&
-                                   !_modelService.Player.Alteration.CanSeeInvisible();
-
-                effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(character);
+                // Invisible: (Conditions)
+                //
+                // 1) Character must be enemy aligned
+                // 2) Character is invisible
+                // 3) Character can NOT be revealed OR detected
+                // 4) Player can't "see invisible"
+                //
+                isCharacterInVisibleToPlayer = character.AlignmentType == CharacterAlignmentType.EnemyAligned &&
+                                               character.Is(CharacterStateType.Invisible) &&
+                                               !scenarioObject.IsRevealed &&
+                                               !scenarioObject.IsDetectedCategory &&
+                                               !scenarioObject.IsDetectedAlignment &&
+                                               !_modelService.Player.Alteration.CanSeeInvisible();
             }
 
-            else if (scenarioObject is Player)
-                effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
+            // Detected, Revealed, or Normal image source
+            if (scenarioObject.IsDetectedAlignment)
+            {
+                // TODO: The "RogueName" should probably be for the alteration category; but don't have that information for
+                //       Alignment detection
+                switch (scenarioObject.DetectedAlignmentType)
+                {
+                    case AlterationAlignmentType.Neutral:
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), 1.0);
+                        break;
+                    case AlterationAlignmentType.Good:
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), 1.0);
+                        break;
+                    case AlterationAlignmentType.Bad:
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), 1.0);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else if (scenarioObject.IsDetectedCategory)
+            {
+                content.Source = _scenarioResourceService.GetImageSource(scenarioObject.DetectedAlignmentCategory, 1.0);
+            }
+            else if (scenarioObject.IsRevealed)
+            {
+                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0);
+            }
+            else
+            {
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0);
+            }
 
-            content.Source = scenarioObject.IsRevealed ? _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0) :
-                                                         _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0);
-
+            // TODO: Design Content Tooltip
             content.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
 
-            content.Visibility = (_modelService.CharacterContentInformation
-                                               .GetVisibleContents(_modelService.Player)
-                                               .Contains(scenarioObject) ||
-                                scenarioObject == _modelService.Player ||
-                                scenarioObject.IsRevealed) && !isEnemyInvisible ? Visibility.Visible : Visibility.Hidden;
+            // Set visibility
+            content.Visibility = visibleToPlayer && !isCharacterInVisibleToPlayer ? Visibility.Visible : Visibility.Hidden;
 
             // Set Location (Canvas Location)
             content.Location = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);

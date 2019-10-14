@@ -944,10 +944,15 @@ namespace Rogue.NET.Core.Processing.Service
             }
 
             else if (template is DetectAlterationAlterationEffectTemplate)
-                return "TODO DETECT ALTERATION ALTERATION";
+            {
+                var effect = template as DetectAlterationAlterationEffectTemplate;
+
+                if (effect.AlterationCategory == null)
+                    return effect.Name + " has no Effect Category set";
+            }
 
             else if (template is DetectAlterationAlignmentAlterationEffectTemplate)
-                return "TODO DETECT ALTERATION ALIGNMENT ALTERATION";
+                return null;
 
             else if (template is DrainMeleeAlterationEffectTemplate)
                 return null;

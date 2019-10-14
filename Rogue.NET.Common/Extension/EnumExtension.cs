@@ -18,5 +18,13 @@ namespace Rogue.NET.Common.Extension
 
             return attributes.Any() ? (T)attributes.First() : default(T);
         }
+
+        public static bool Has<T>(this Enum value, T flag) where T : Enum
+        {
+            var enumValue = (int)Enum.ToObject(typeof(T), value);
+            var enumFlag = (int)Enum.ToObject(typeof(T), flag);
+
+            return (enumValue & enumFlag) != 0;
+        }
     }
 }

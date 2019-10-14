@@ -7,9 +7,11 @@ namespace Rogue.NET.Core.Processing.Service.Cache.Interface
 {
     public interface IScenarioConfigurationCache
     {
-        IEnumerable<ScenarioConfigurationContainer> EmbeddedConfigurations { get; }
-        IEnumerable<ScenarioConfigurationContainer> UserConfigurations { get; }
-        ScenarioImage GetRandomSmileyCharacter();
+        IEnumerable<string> EmbeddedConfigurations { get; }
+        IEnumerable<string> UserConfigurations { get; }
+        IEnumerable<ScenarioConfigurationInfo> GetScenarioConfigurationInfos();
+        ScenarioImage GetRandomSmileyCharacter(bool eliminateChoice);
+        ScenarioConfigurationContainer GetConfiguration(string configurationName);
         void SaveConfiguration(ScenarioConfigurationContainer configuration);
         void EmbedConfiguration(ScenarioConfigurationContainer configuration);
     }

@@ -11,11 +11,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                                                                                ISkillAlterationEffectTemplate
     {
         AlterationAlignmentType _alignmentType;
+        bool _includeCursedEquipment;
 
         public AlterationAlignmentType AlignmentType
         {
             get { return _alignmentType; }
             set { this.RaiseAndSetIfChanged(ref _alignmentType, value); }
+        }
+
+        public bool IncludeCursedEquipment
+        {
+            get { return _includeCursedEquipment; }
+            set { this.RaiseAndSetIfChanged(ref _includeCursedEquipment, value); }
         }
 
         public DetectAlterationAlignmentAlterationEffectTemplate()
