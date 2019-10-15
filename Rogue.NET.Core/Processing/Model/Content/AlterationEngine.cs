@@ -447,25 +447,25 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessReveal(RevealAlterationEffect effect)
         {
-            if (effect.Type.HasFlag(AlterationRevealType.Food))
+            if (effect.Type.Has(AlterationRevealType.Food))
                 RevealFood();
 
-            if (effect.Type.HasFlag(AlterationRevealType.Items))
+            if (effect.Type.Has(AlterationRevealType.Items))
                 RevealItems();
 
-            if (effect.Type.HasFlag(AlterationRevealType.Layout))
+            if (effect.Type.Has(AlterationRevealType.Layout))
                 RevealLayout();
 
-            if (effect.Type.HasFlag(AlterationRevealType.Monsters))
+            if (effect.Type.Has(AlterationRevealType.Monsters))
                 RevealMonsters();
 
-            if (effect.Type.HasFlag(AlterationRevealType.SavePoint))
+            if (effect.Type.Has(AlterationRevealType.SavePoint))
                 RevealSavePoint();
 
-            if (effect.Type.HasFlag(AlterationRevealType.ScenarioObjects))
+            if (effect.Type.Has(AlterationRevealType.ScenarioObjects))
                 RevealScenarioObjects();
 
-            if (effect.Type.HasFlag(AlterationRevealType.Stairs))
+            if (effect.Type.Has(AlterationRevealType.Stairs))
                 RevealStairs();
 
             // Update the UI (TODO:ALTERATION - figure out more systematic updating)
@@ -663,99 +663,194 @@ namespace Rogue.NET.Core.Processing.Model.Content
         private void ProcessDetectAlterationAlignment(DetectAlterationAlignmentAlterationEffect effect)
         {
             // Consumables on the map
-            var consumables = _modelService.Level.Consumables
-                                           .Where(x => (x.HasAlteration &&
-                                                        x.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
-                                                       (x.HasProjectileAlteration &&
-                                                        x.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)))
-                                           .Actualize();
+            _modelService.Level
+                         .Consumables
+                         .ForEach(x =>
+                         {
+                             if (x.HasAlteration &&
+                                 x.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType = x.Alteration.AlterationCategory.AlignmentType;
+                             }
+
+                             if (x.HasProjectileAlteration &&
+                                 x.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= x.ProjectileAlteration.AlterationCategory.AlignmentType;
+                             }
+                         });
 
             // Equipment on the map
-            var equipment = _modelService.Level.Equipment
-                                         .Where(x => (x.HasAttackAlteration &&
-                                                      x.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
-                                                     (x.HasEquipAlteration &&
-                                                      x.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
-                                                     (x.HasCurseAlteration &&
-                                                      x.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)))
-                                         .Actualize();
-
-            // INCLUDE CURSED
-            var equipmentCursed = effect.IncludeCursedEquipment ? _modelService.Level.Equipment.Where(x => x.IsCursed) : new Equipment[] { };
+            _modelService.Level
+                         .Equipment
+                         .ForEach(x =>
+                         {
+                             if (x.HasAttackAlteration &&
+                                 x.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType = x.AttackAlteration.AlterationCategory.AlignmentType;
+                             }
+                             if (x.HasEquipAlteration &&
+                                 x.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= x.EquipAlteration.AlterationCategory.AlignmentType;
+                             }
+                             if (x.HasCurseAlteration &&
+                                 x.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= x.CurseAlteration.AlterationCategory.AlignmentType;
+                             }
+                             if (x.IsCursed && effect.IncludeCursedEquipment)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= AlterationAlignmentType.Bad;
+                             }
+                         });
 
             // Doodads on the map
-            var doodads = _modelService.Level.Doodads
-                                             .Where(x => (x.IsInvoked &&
-                                                          x.InvokedAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
-                                                         (x.IsAutomatic &&
-                                                          x.AutomaticAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)))
-                                             .Actualize();
+            _modelService.Level
+                         .Doodads
+                         .ForEach(x =>
+                         {
+                             if (x.IsInvoked &&
+                                 x.InvokedAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType = x.InvokedAlteration.AlterationCategory.AlignmentType;
+                             }
+                             if(x.IsAutomatic &&
+                                 x.AutomaticAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= x.AutomaticAlteration.AlterationCategory.AlignmentType;
+                             }
+                         });
 
             // Non-Player Characters (Enemies, Friendlies, and Temp. Characters)
-            var nonPlayerCharacters = _modelService.Level.NonPlayerCharacters
-                                       .Where(x => x.BehaviorDetails
-                                                    .Behaviors
-                                                    .Where(behavior => behavior.AttackType == CharacterAttackType.Alteration)
-                                                    .Any(behavior => behavior.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+            _modelService.Level
+                         .NonPlayerCharacters
+                         .ForEach(x =>
+                         {
+                             var behavior = x.BehaviorDetails
+                                  .Behaviors
+                                  .Where(z => z.AttackType == CharacterAttackType.Alteration)
+                                  .FirstOrDefault(z => z.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
 
-                                                   x.Consumables.Any(consumable => consumable.Value.HasAlteration &&
-                                                                                   consumable.Value.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                             if (behavior != null)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType = behavior.Alteration.AlterationCategory.AlignmentType;
+                             }
 
-                                                   x.Consumables.Any(consumable => consumable.Value.HasProjectileAlteration &&
-                                                                                   consumable.Value.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                             var consumable = x.Consumables.FirstOrDefault(z => z.Value.HasAlteration &&
+                                                                                z.Value.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
+                             if (consumable.Value != null)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= consumable.Value.Alteration.AlterationCategory.AlignmentType;
+                             }
 
-                                                   x.Equipment.Any(item => item.Value.HasAttackAlteration &&
-                                                                           item.Value.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                             consumable = x.Consumables.FirstOrDefault(z => z.Value.HasProjectileAlteration &&
+                                                                            z.Value.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
 
-                                                   x.Equipment.Any(item => item.Value.HasEquipAlteration &&
-                                                                           item.Value.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                             if (consumable.Value != null)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= consumable.Value.ProjectileAlteration.AlterationCategory.AlignmentType;
+                             }
 
-                                                   x.Equipment.Any(item => item.Value.HasCurseAlteration &&
-                                                                           item.Value.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)))
-                                       .Actualize();
+                             var equipment = x.Equipment.FirstOrDefault(item => item.Value.HasAttackAlteration &&
+                                                                        item.Value.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
 
-            var playerConsumables = _modelService.Player
-                                           .Consumables
-                                           .Values
-                                           .Where(consumable =>
-                                           {
-                                               return (consumable.HasAlteration &&
-                                                       consumable.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                             if (equipment.Value != null)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= equipment.Value.AttackAlteration.AlterationCategory.AlignmentType;
+                             }
 
-                                                      (consumable.HasProjectileAlteration &&
-                                                       consumable.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
-                                           })
-                                           .Actualize();
+                             equipment = x.Equipment.FirstOrDefault(item => item.Value.HasEquipAlteration &&
+                                                                    item.Value.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
 
-            var playerEquipment = _modelService.Player
-                                           .Equipment
-                                           .Values
-                                           .Where(item =>
-                                           {
-                                               return (item.HasAttackAlteration &&
-                                                       item.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                             if (equipment.Value != null)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= equipment.Value.EquipAlteration.AlterationCategory.AlignmentType;
+                             }
 
-                                                       (item.HasEquipAlteration &&
-                                                        item.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType)) ||
+                             equipment = x.Equipment.FirstOrDefault(item => item.Value.HasCurseAlteration &&
+                                                                    item.Value.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
 
-                                                       (item.HasCurseAlteration &&
-                                                        item.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType));
-                                           })
-                                           .Actualize();
+                             if (equipment.Value != null)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= equipment.Value.CurseAlteration.AlterationCategory.AlignmentType;
+                             }
 
-            // Set flags for the front end
-            consumables.Cast<ScenarioObject>()
-                       .Union(equipment)
-                       .Union(equipmentCursed)
-                       .Union(doodads)
-                       .Union(nonPlayerCharacters)
-                       .Union(playerConsumables)
-                       .Union(playerEquipment)
-                       .ForEach(scenarioObject =>
-                       {
-                           scenarioObject.IsDetectedAlignment = true;
-                           scenarioObject.DetectedAlignmentType = effect.AlignmentType;
-                       });
+                             equipment = x.Equipment.FirstOrDefault(item => item.Value.IsCursed);
+
+                             if (equipment.Value != null &&
+                                 effect.IncludeCursedEquipment)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= AlterationAlignmentType.Bad;
+                             }
+                                                                    
+                         });
+
+            _modelService.Player
+                         .Consumables
+                         .Values
+                         .ForEach(x =>
+                         {
+                             if (x.HasAlteration &&
+                                 x.Alteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType = x.Alteration.AlterationCategory.AlignmentType;
+                             }
+ 
+                             if (x.HasProjectileAlteration &&
+                                 x.ProjectileAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= x.ProjectileAlteration.AlterationCategory.AlignmentType;
+                             }
+                         });
+
+            _modelService.Player
+                         .Equipment
+                         .Values
+                         .ForEach(x =>
+                         {
+                             if (x.HasAttackAlteration &&
+                                 x.AttackAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType = x.AttackAlteration.AlterationCategory.AlignmentType;
+                             }
+                             if (x.HasEquipAlteration &&
+                                 x.EquipAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= x.EquipAlteration.AlterationCategory.AlignmentType;
+                             }
+                             if (x.HasCurseAlteration &&
+                                x.CurseAlteration.AlterationCategory.AlignmentType.Has(effect.AlignmentType))
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= x.CurseAlteration.AlterationCategory.AlignmentType;
+                             }
+                             if (x.IsCursed && effect.IncludeCursedEquipment)
+                             {
+                                 x.IsDetectedAlignment = true;
+                                 x.DetectedAlignmentType |= AlterationAlignmentType.Bad;
+                             }
+                         });
 
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, ""));
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentReveal, ""));

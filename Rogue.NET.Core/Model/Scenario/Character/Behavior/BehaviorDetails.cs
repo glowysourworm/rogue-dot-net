@@ -51,24 +51,24 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
                 var exitConditionMet = false;
 
                 // Enemy must be able to use Skill
-                if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.AttackConditionsMet) &&
+                if (behavior.BehaviorCondition.Has(BehaviorCondition.AttackConditionsMet) &&
                    (behavior.AttackType == CharacterAttackType.Alteration) &&
                    !alterationProcessor.CalculateCharacterMeetsAlterationCost(character, behavior.Alteration.Cost))
                     entryConditionsFail = true;
 
                 // Enemy must have Low (<= 10%) HP for this behavior
-                if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.HpLow) &&
+                if (behavior.BehaviorCondition.Has(BehaviorCondition.HpLow) &&
                    ((character.Hp / character.HpMax) > ModelConstants.HpLowFraction))
                     entryConditionsFail = true;
 
                 // Behavior turn counter exit condition
-                if (behavior.BehaviorExitCondition.HasFlag(BehaviorExitCondition.BehaviorCounterExpired) &&
+                if (behavior.BehaviorExitCondition.Has(BehaviorExitCondition.BehaviorCounterExpired) &&
                     this.BehaviorTurnCounter >= behavior.BehaviorTurnCounter &&
                     behavior == _currentBehavior) // Counter can ONLY apply to current behavior
                     exitConditionMet = true;
 
                 // Enemy has Low (<= 10%) HP exit condition
-                if (behavior.BehaviorExitCondition.HasFlag(BehaviorExitCondition.HpLow) &&
+                if (behavior.BehaviorExitCondition.Has(BehaviorExitCondition.HpLow) &&
                     ((character.Hp / character.HpMax) <= ModelConstants.HpLowFraction))
                     exitConditionMet = true;
 
