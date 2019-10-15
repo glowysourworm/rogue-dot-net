@@ -112,13 +112,20 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
                 // TODO: WE HAVE TO SUPPORT MULTIPLE DETECTED TYPES AND CATEGORIES PER ITEM.
                 switch (item.DetectedAlignmentType)
                 {
+                    // Default Symbol = "?"
+                    case AlterationAlignmentType.None:
+                        this.IsDetectedImage = new ScenarioImageViewModel(ScenarioImage.CreateGameSymbol(item.RogueName, Common.Constant.GameSymbol.Identify), item.RogueName);
+                        break;
                     case AlterationAlignmentType.Neutral:
                         this.IsDetectedImage = new ScenarioImageViewModel(ScenarioImage.CreateGameSymbol(item.RogueName, Common.Constant.GameSymbol.DetectMagicNeutral), item.RogueName);
                         break;
                     case AlterationAlignmentType.Good:
+                    case AlterationAlignmentType.Good | AlterationAlignmentType.Neutral:
                         this.IsDetectedImage = new ScenarioImageViewModel(ScenarioImage.CreateGameSymbol(item.RogueName, Common.Constant.GameSymbol.DetectMagicGood), item.RogueName);
                         break;
                     case AlterationAlignmentType.Bad:
+                    case AlterationAlignmentType.Bad | AlterationAlignmentType.Good:
+                    case AlterationAlignmentType.Bad | AlterationAlignmentType.Good | AlterationAlignmentType.Neutral:
                         this.IsDetectedImage = new ScenarioImageViewModel(ScenarioImage.CreateGameSymbol(item.RogueName, Common.Constant.GameSymbol.DetectMagicBad), item.RogueName);
                         break;
                     default:

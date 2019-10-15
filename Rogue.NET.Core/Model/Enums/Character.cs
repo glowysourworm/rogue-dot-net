@@ -89,22 +89,22 @@ namespace Rogue.NET.Core.Model.Enums
     {
         [Display(Name = "Attack Condition Met",
                  Description = "Can attack using the prescribed behavior attack method (skill costs met)")]
-        AttackConditionsMet = 1,
+        AttackConditionsMet = 0,
 
         [Display(Name = "Hp Low",
                  Description = "Behavior ONLY available when Hp is below 10%")]
-        HpLow = 2
+        HpLow = 1
     }
     [Flags]
     public enum BehaviorExitCondition : int
     {
         [Display(Name = "Behavior Counter Expired",
                  Description = "Behavior has a sub-counter that acts to change selected behavior in the state machine (of behaviors)")]
-        BehaviorCounterExpired = 1,
+        BehaviorCounterExpired = 0,
 
         [Display(Name = "Hp Low",
                  Description = "Behavior will not be available when Hp is below 10%")]
-        HpLow = 2
+        HpLow = 1
     }
 
     public enum SmileyExpression

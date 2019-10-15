@@ -58,6 +58,10 @@ namespace Rogue.NET.Core.Model.Enums
     [Flags]
     public enum AlterationAlignmentType : int
     {
+        [Display(Name = "None",
+         Description = "Effect does not detect any other effects")]
+        None = 0,
+
         [Display(Name = "Neutral",
                  Description = "Effect that is associated as something that is neither 'Good' nor 'Bad'")]
         Neutral = 1,
@@ -83,6 +87,10 @@ namespace Rogue.NET.Core.Model.Enums
     [Flags]
     public enum AlterationRevealType : int
     {
+        [Display(Name = "None",
+                 Description = "No Revealed content")]
+        None = 0,
+
         [Display(Name = "Reveal Items",
                  Description = "Reveals all items in the level")]
         Items = 1,
