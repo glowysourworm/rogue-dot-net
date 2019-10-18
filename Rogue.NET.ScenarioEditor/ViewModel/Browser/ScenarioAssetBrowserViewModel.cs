@@ -43,6 +43,39 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
             this.ConsumableGroup = new ScenarioAssetGroupViewModel(typeof(ConsumableTemplateViewModel), eventAggregator);
             this.DoodadGroup = new ScenarioAssetGroupViewModel(typeof(DoodadTemplateViewModel), eventAggregator);
             this.SkillSetGroup = new ScenarioAssetGroupViewModel(typeof(SkillSetTemplateViewModel), eventAggregator);
+
+            // TreeViewItem Selection:  WPF TreeViewItem has an issue handling selection. I gave up working with the resources to try and figure it out.
+            eventAggregator.GetEvent<LoadAssetEvent>()
+                           .Subscribe(selectedAsset =>
+                           {
+                               // De-Select all assets
+                               foreach (var asset in this.PlayerGroup.Assets)
+                                   asset.IsSelectedAsset = false;
+
+                               foreach (var asset in this.LayoutGroup.Assets)
+                                   asset.IsSelectedAsset = false;
+
+                               foreach (var asset in this.EnemyGroup.Assets)
+                                   asset.IsSelectedAsset = false;
+
+                               foreach (var asset in this.FriendlyGroup.Assets)
+                                   asset.IsSelectedAsset = false;
+
+                               foreach (var asset in this.EquipmentGroup.Assets)
+                                   asset.IsSelectedAsset = false;
+
+                               foreach (var asset in this.ConsumableGroup.Assets)
+                                   asset.IsSelectedAsset = false;
+
+                               foreach (var asset in this.DoodadGroup.Assets)
+                                   asset.IsSelectedAsset = false;
+
+                               foreach (var asset in this.SkillSetGroup.Assets)
+                                   asset.IsSelectedAsset = false;
+
+                               // Explicitly setting here.
+                               selectedAsset.IsSelectedAsset = true;
+                           });
         }
     }
 }

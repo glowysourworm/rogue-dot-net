@@ -9,6 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser.Interface
     public interface IScenarioAssetReadonlyViewModel : INotifyPropertyChanged
     {
         string Name { get; set; }
+        bool IsSelectedAsset { get; set; }
+
         string Type { get; }
         string SubType { get; }
         Type AssetType { get; }

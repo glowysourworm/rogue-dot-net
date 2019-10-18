@@ -23,6 +23,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
         bool _isObjective;
         bool _isUnique;
         bool _isCursed;
+        bool _isSelectedAsset;
 
         public string Type
         {
@@ -61,6 +62,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
             get { return _isCursed; }
             private set { this.RaiseAndSetIfChanged(ref _isCursed, value); }
         }
+
+        public bool IsSelectedAsset
+        {
+            get { return _isSelectedAsset; }
+            set { this.RaiseAndSetIfChanged(ref _isSelectedAsset, value); }
+        }
+
         public SymbolDetailsTemplateViewModel SymbolDetails
         {
             get { return _symbolDetailsViewModel; }

@@ -134,13 +134,6 @@
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                         </Trigger>
-                        <Trigger Property="IsSelected" Value="true">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background">
                                 <Setter.Value>
@@ -162,8 +155,7 @@
         <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
         <Setter Property="Padding" Value="2"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
-        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Focusable" Value="True" />
         <Setter Property="FontSize" Value="18" />
         <Setter Property="Template">
             <Setter.Value>
@@ -219,7 +211,8 @@
                             </ContextMenu>
                         </Grid.ContextMenu>
 
-                        <Rectangle Grid.ColumnSpan="4" 
+                        <Rectangle x:Name="backgroundRectangle"
+                                   Grid.ColumnSpan="4" 
                                    Fill="{TemplateBinding Background}" 
                                    HorizontalAlignment="Stretch" 
                                    VerticalAlignment="Stretch" />
@@ -279,13 +272,13 @@
                         <Trigger Property="IsExpanded" Value="false">
                             <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
                         </Trigger>
-                        <Trigger Property="IsSelected" Value="true">
+                        <DataTrigger Binding="{Binding IsSelectedAsset}" Value="True">
                             <Setter Property="Background">
                                 <Setter.Value>
                                     <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
                                 </Setter.Value>
                             </Setter>
-                        </Trigger>
+                        </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background">
                                 <Setter.Value>
