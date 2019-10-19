@@ -71,6 +71,27 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         public RadioButtonEnumControl()
         {
             InitializeComponent();
+
+            this.Loaded += (sender, e) => Initialize();
+        }
+
+        private void Initialize()
+        {
+            if (this.EnumType != null)
+            {
+                this.EnumList
+                       .ItemsSource = this.EnumType.GetMembers()
+                                          .Where(x => x.GetCustomAttributes(typeof(DisplayAttribute), false).Any())
+                                          .Select(x => new EnumItem()
+                                          {
+                                              EnumName = x.Name,
+                                              Description = x.GetCustomAttribute<DisplayAttribute>().Description,
+                                              DisplayName = x.GetCustomAttribute<DisplayAttribute>().Name,
+                                              IsChecked = this.EnumValue != null ? Enum.GetName(this.EnumType, this.EnumValue) == x.Name
+                                                                                    : false
+                                          })
+                                          .Actualize();
+            }
         }
 
         private static void OnEnumTypeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -83,18 +104,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                 type != null &&
                 type.IsEnum)
             {
-                control.EnumList
-                       .ItemsSource = type.GetMembers()
-                                          .Where(x => x.GetCustomAttributes(typeof(DisplayAttribute), false).Any())
-                                          .Select(x => new EnumItem()
-                                          {
-                                              EnumName = x.Name,
-                                              Description = x.GetCustomAttribute<DisplayAttribute>().Description,
-                                              DisplayName = x.GetCustomAttribute<DisplayAttribute>().Name,
-                                              IsChecked = control.EnumValue != null ? Enum.GetName(control.EnumType, control.EnumValue) == x.Name
-                                                                                    : false
-                                          })
-                                          .Actualize();
+                control.Initialize();
             }
         }
 

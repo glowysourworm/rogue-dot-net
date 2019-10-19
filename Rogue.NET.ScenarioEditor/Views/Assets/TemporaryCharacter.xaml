@@ -26,16 +26,10 @@
             <TabItem Header="Other Parameters">
                 <StackPanel>
 
-                    <!-- Name (TODO: MOVE THIS) -->
-                    <Grid Margin="10">
-                        <TextBlock Foreground="White" Text="Character Lifetime" VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Name}" Width="200" HorizontalAlignment="Right"/>
-                    </Grid>                    
-                    
                     <!-- Lifetime -->
                     <Grid Margin="10">
-                        <TextBlock Foreground="White" Text="Character Lifetime" VerticalAlignment="Center" />
-                        <controls:Range DataContext="{Binding LifetimeCounter}" LowLimit="5" HighLimit="10000" Increment="1" StringFormat="N0" />
+                        <TextBlock Foreground="White" Text="Character Lifetime" VerticalAlignment="Center" FontSize="18" HorizontalAlignment="Left" />
+                        <controls:Range DataContext="{Binding LifetimeCounter}" LowLimit="5" HighLimit="10000" Increment="1" StringFormat="N0" HorizontalAlignment="Right" Width="400" />
                     </Grid>
                     
                     <!-- Alignment -->
