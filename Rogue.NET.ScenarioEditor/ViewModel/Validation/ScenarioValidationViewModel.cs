@@ -1,16 +1,13 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Processing.Model.Validation.Interface;
+using Rogue.NET.Core.Processing.Service.Validation.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.Validation.Interface;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Validation
 {
@@ -51,12 +48,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Validation
             get { return _validationInfoCount; }
             set { this.RaiseAndSetIfChanged(ref _validationInfoCount, value); }
         }
-        public ObservableCollection<IScenarioValidationMessage> ValidationMessages { get; private set; }
+        public ObservableCollection<IScenarioValidationResult> ValidationMessages { get; private set; }
 
         [ImportingConstructor]
         public ScenarioValidationViewModel(IRogueEventAggregator eventAggregator)
         {
-            this.ValidationMessages = new ObservableCollection<IScenarioValidationMessage>();
+            this.ValidationMessages = new ObservableCollection<IScenarioValidationResult>();
 
             // Set validation required flag when scenario is updated
             eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(scenarioCollectionProvider =>
@@ -65,16 +62,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Validation
             });
         }
 
-        public void Set(IEnumerable<IScenarioValidationMessage> validationMessages)
+        public void Set(IEnumerable<IScenarioValidationResult> validationMessages)
         {
             this.ValidationMessages.Clear();
             this.ValidationMessages.AddRange(validationMessages);
             this.ValidationRequired = false;
             this.ValidationPassed = !validationMessages.Any(x => !x.Passed &&
-                                                                 (x.Severity == ValidationMessageSeverity.Error));
-            this.ValidationErrorCount = validationMessages.Count(x => x.Severity == ValidationMessageSeverity.Error);
-            this.ValidationWarningCount = validationMessages.Count(x => x.Severity == ValidationMessageSeverity.Warning);
-            this.ValidationInfoCount = validationMessages.Count(x => x.Severity == ValidationMessageSeverity.Info);
+                                                                 (x.Severity == ValidationSeverity.Error));
+            this.ValidationErrorCount = validationMessages.Count(x => x.Severity == ValidationSeverity.Error);
+            this.ValidationWarningCount = validationMessages.Count(x => x.Severity == ValidationSeverity.Warning);
+            this.ValidationInfoCount = validationMessages.Count(x => x.Severity == ValidationSeverity.Info);
         }
 
         public void Clear()

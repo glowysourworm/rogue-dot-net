@@ -1,20 +1,27 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Processing.Model.Validation.Interface;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Processing.Service.Validation.Interface;
 
-namespace Rogue.NET.Core.Processing.Model.Validation
+namespace Rogue.NET.Core.Processing.Service.Validation
 {
-    public class ScenarioValidationMessage : NotifyViewModel, IScenarioValidationMessage
+    public class ScenarioValidationResult : NotifyViewModel, IScenarioValidationResult
     {
-        ValidationMessageSeverity _severity;
+        ValidationSeverity _severity;
+        Template _asset;
         string _message;
         string _innerMessage;
         bool _passed;
 
-        public ValidationMessageSeverity Severity
+        public ValidationSeverity Severity
         {
             get { return _severity; }
             set { this.RaiseAndSetIfChanged(ref _severity, value); }
+        }
+        public Template Asset
+        {
+            get { return _asset; }
+            set { this.RaiseAndSetIfChanged(ref _asset, value); }
         }
         public string Message
         {

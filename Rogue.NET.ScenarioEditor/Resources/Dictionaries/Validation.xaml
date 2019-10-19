@@ -6,11 +6,11 @@
         <Setter Property="Foreground" Value="White" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Severity}" 
-                         Value="{x:Static coreModelEnums:ValidationMessageSeverity.Error}">
+                         Value="{x:Static coreModelEnums:ValidationSeverity.Error}">
                 <Setter Property="Foreground" Value="Red" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Severity}" 
-                         Value="{x:Static coreModelEnums:ValidationMessageSeverity.Warning}">
+                         Value="{x:Static coreModelEnums:ValidationSeverity.Warning}">
                 <Setter Property="Foreground" Value="Yellow" />
             </DataTrigger>
         </Style.Triggers>
@@ -21,11 +21,11 @@
         <Setter Property="Padding" Value="2" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Severity}" 
-                                         Value="{x:Static coreModelEnums:ValidationMessageSeverity.Error}">
+                                         Value="{x:Static coreModelEnums:ValidationSeverity.Error}">
                 <Setter Property="Background" Value="#1FFF0000" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Severity}" 
-                                         Value="{x:Static coreModelEnums:ValidationMessageSeverity.Warning}">
+                                         Value="{x:Static coreModelEnums:ValidationSeverity.Warning}">
                 <Setter Property="Background" Value="#1FFFFF00" />
             </DataTrigger>
         </Style.Triggers>

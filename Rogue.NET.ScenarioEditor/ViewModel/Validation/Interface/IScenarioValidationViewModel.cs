@@ -1,10 +1,6 @@
-﻿using Rogue.NET.Core.Processing.Model.Validation.Interface;
-using System;
+﻿using Rogue.NET.Core.Processing.Service.Validation.Interface;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Validation.Interface
 {
@@ -15,8 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Validation.Interface
         int ValidationErrorCount { get; }
         int ValidationWarningCount { get; }
         int ValidationInfoCount { get; }
-        ObservableCollection<IScenarioValidationMessage> ValidationMessages { get; }
-        void Set(IEnumerable<IScenarioValidationMessage> validationMessages);
+        ObservableCollection<IScenarioValidationResult> ValidationMessages { get; }
+        void Set(IEnumerable<IScenarioValidationResult> validationMessages);
         void Clear();
     }
 }
