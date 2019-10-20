@@ -15,6 +15,11 @@ using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Common.Extension;
 using System;
 using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Model;
+using Rogue.NET.Scenario.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
+using System.Linq;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -22,20 +27,31 @@ namespace Rogue.NET.Scenario.Content.Views
     [Export]
     public partial class LevelCanvas : UserControl
     {
+        readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly ILevelCanvasViewModel _viewModel;
+        readonly IModelService _modelService;
+        readonly IPathFinder _pathFinder;
 
         TranslateTransform _translateXform = new TranslateTransform(0,0);
         ScaleTransform _scaleXform = new ScaleTransform(1,1);
 
         const int SHIFT_AMOUNT = 60;
 
+        // Grid Location for storing and tracking mouse cursor
+        GridLocation _cursorGridLocation = GridLocation.Empty;
+
         [ImportingConstructor]
         public LevelCanvas(
+            IScenarioUIGeometryService scenarioUIGeometryService,
             ILevelCanvasViewModel viewModel,
-            IModelService modelService,             // TODO: Find a way to remove the model service
+            IModelService modelService,  // TODO: Find a way to remove the model service
+            IPathFinder pathFinder, 
             IRogueEventAggregator eventAggregator)
         {
+            _scenarioUIGeometryService = scenarioUIGeometryService;
+            _modelService = modelService;
             _viewModel = viewModel;
+            _pathFinder = pathFinder;
 
             this.DataContext = viewModel;
 
@@ -54,6 +70,23 @@ namespace Rogue.NET.Scenario.Content.Views
             {
                 CenterOnLocation(_viewModel.Player.Location);
             };
+
+            //this.MouseCanvas.MouseMove += (sender, e) =>
+            //{
+            //    // Calculate location on the level grid
+            //    var gridLocation = _scenarioUIGeometryService.UI2Cell(e.GetPosition(this.MouseCanvas));
+
+            //    // Show Mouse Locator at calculated position
+            //    if (!gridLocation.Equals(_cursorGridLocation))
+            //        UpdateCursorLocation(gridLocation);
+            //};
+
+            //this.MouseCanvas.MouseLeave += (sender, e) =>
+            //{
+            //    // Hide Mouse Locator
+            //    this.MouseRectangle.Visibility = Visibility.Hidden;
+            //    this.MousePath.Visibility = Visibility.Hidden;
+            //};
 
             // subscribe to event to center screen when level loaded
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
@@ -80,6 +113,7 @@ namespace Rogue.NET.Scenario.Content.Views
                 Zoom(eventData.NewZoomFactor); 
             });
         }
+
         public void CenterOnLocation(Point location)
         {
             if (!this.IsLoaded)
@@ -129,6 +163,53 @@ namespace Rogue.NET.Scenario.Content.Views
             _scaleXform.ScaleY = zoomFactor.Clip(1.0, 3.0);
 
             CenterOnLocation(_viewModel.Player.Location);
+        }
+
+        private void UpdateCursorLocation(GridLocation gridLocation)
+        {
+            //// Cache the location to prevent over-loading the path finder
+            //_cursorGridLocation = gridLocation;
+
+            //var playerGridLocation = _scenarioUIGeometryService.UI2Cell(_viewModel.Player.Location);
+
+            //// Check to see if mouse is over a visible location
+            //if (_modelService.CharacterLayoutInformation
+            //                 .GetExploredLocations()
+            //                 .Contains(gridLocation))
+            //{
+            //    // Find path from player to mouse location
+            //    var pathLocations = _pathFinder.FindPath(playerGridLocation, gridLocation);
+
+            //    // Create rectangles for the path
+            //    var pathRects = pathLocations.Select(x => _scenarioUIGeometryService.Cell2UIRect(x, false));
+            //    var pathGeometry = new PathGeometry();
+
+            //    foreach (var rect in pathRects)
+            //    {
+            //        pathGeometry.Figures.Add(new PathFigure()
+            //        {
+            //            StartPoint = rect.Location,
+            //            Segments = new PathSegmentCollection()
+            //            {
+            //                new LineSegment(rect.TopRight, true),
+            //                new LineSegment(rect.BottomRight, true),
+            //                new LineSegment(rect.BottomLeft, true)
+            //            },
+            //            IsClosed = true
+            //        });
+            //    }
+
+            //    this.MousePath.Data = pathGeometry;
+            //}
+
+            //var location = _scenarioUIGeometryService.Cell2UI(gridLocation, false);
+
+            //Canvas.SetLeft(this.MouseRectangle, location.X);
+            //Canvas.SetTop(this.MouseRectangle, location.Y);
+
+            //// Show Mouse Locator
+            //this.MouseRectangle.Visibility = Visibility.Visible;
+            //this.MousePath.Visibility = Visibility.Visible;
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)

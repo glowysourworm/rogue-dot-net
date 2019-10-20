@@ -8,6 +8,8 @@ using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Processing.Model.Static;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Processing.Model.Algorithm
 {
@@ -20,6 +22,32 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         readonly IModelService _modelService;
         readonly ILayoutEngine _layoutEngine;
 
+        const int MAX_DEPTH = 50;
+
+        protected class SimplePathFinderNode
+        {
+            public SimplePathFinderNode ParentNode { get; private set; }
+            public GridLocation Location { get; private set; }
+            public List<SimplePathFinderNode> ChildNodes { get; set; }
+            public bool IsEndLocation { get; private set; }
+
+            /// <summary>
+            /// Use this constructor to generate a non-heuristic based node
+            /// </summary>
+            public SimplePathFinderNode(SimplePathFinderNode parentNode, GridLocation location, bool isEndLocation)
+            {
+                this.ParentNode = parentNode;
+                this.Location = location;
+                this.ChildNodes = new List<SimplePathFinderNode>();
+                this.IsEndLocation = isEndLocation;
+            }
+
+            public override string ToString()
+            {
+                return this.Location?.ToString() ?? "";
+            }
+        }
+
         [ImportingConstructor]
         public SimplePathFinder(IModelService modelService, ILayoutEngine layoutEngine)
         {
@@ -27,86 +55,179 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             _layoutEngine = layoutEngine;
         }
 
-        public GridLocation FindPath(GridLocation point1, GridLocation point2, double maxRadius, bool canOpenDoors, CharacterAlignmentType alignmentType)
+        public GridLocation FindCharacterNextPathLocation(GridLocation point1, GridLocation point2, bool canOpenDoors, CharacterAlignmentType alignmentType)
         {
-            // Initialize recurse A* algorithm with pathIdx = 1; and start point added to history
-            return FindPath(maxRadius, canOpenDoors, alignmentType, new Dictionary<GridLocation, int>() { { point1, 0 } }, point1, point2, 1);
+            if (point1.Equals(point2))
+                return point1;
+
+            // Create Start Node
+            var startNode = new SimplePathFinderNode(null, point1, false);
+
+            // Recursively find End Node
+            var endNode = FindPathRecurse(startNode, point2, canOpenDoors, alignmentType, 1);
+
+            // Create list of path locations
+            List<GridLocation> pathLocations;
+
+            // Back-Track to find next location along path
+            return BackTrack(startNode, endNode, false, out pathLocations);
         }
 
-        private GridLocation FindPath(double maxSeparation,
-                                   bool canOpenDoors,
-                                   CharacterAlignmentType alignmentType,
-                                   Dictionary<GridLocation, int> pathDictionary, 
-                                   GridLocation start, 
-                                   GridLocation end, 
-                                   int pathIdx)
+        public GridLocation FindNextPathLocation(GridLocation point1, GridLocation point2)
         {
-            if (pathIdx > maxSeparation)
+            if (point1.Equals(point2))
+                return point1;
+
+            // Create Start Node
+            var startNode = new SimplePathFinderNode(null, point1, false);
+
+            // Recursively find End Node
+            var endNode = FindPathRecurse(startNode, point2, true, CharacterAlignmentType.None, 1);
+
+            // Create list of path locations
+            List<GridLocation> pathLocations;
+
+            // Back-Track to find next location along path
+            return BackTrack(startNode, endNode, false, out pathLocations);
+        }
+
+        public IEnumerable<GridLocation> FindCharacterPath(GridLocation point1, GridLocation point2, bool canOpenDoors, CharacterAlignmentType alignmentType)
+        {
+            if (point1.Equals(point2))
+                return new GridLocation[] { point1 };
+
+            // Create Start Node
+            var startNode = new SimplePathFinderNode(null, point1, false);
+
+            // Recursively find End Node
+            var endNode = FindPathRecurse(startNode, point2, canOpenDoors, alignmentType, 1);
+
+            // Create list of path locations
+            List<GridLocation> pathLocations;
+
+            // Back-Track to find next location along path
+            BackTrack(startNode, endNode, true, out pathLocations);
+
+            return pathLocations;
+        }
+
+        public IEnumerable<GridLocation> FindPath(GridLocation point1, GridLocation point2)
+        {
+            if (point1.Equals(point2))
+                return new GridLocation[] { point1 };
+
+            // Create Start Node
+            var startNode = new SimplePathFinderNode(null, point1, false);
+
+            // Recursively find End Node
+            var endNode = FindPathRecurse(startNode, point2, true, CharacterAlignmentType.None, 1);
+
+            // Create list of path locations
+            List<GridLocation> pathLocations;
+
+            // Back-Track to find next location along path
+            BackTrack(startNode, endNode, true, out pathLocations);
+
+            return pathLocations;
+        }
+
+        /// <summary>
+        /// Returns the next step along path towards the node - this will be one of the start node's child nodes (actual location)
+        /// </summary>
+        private GridLocation BackTrack(SimplePathFinderNode startNode, SimplePathFinderNode node, bool buildPath, out List<GridLocation> pathLocations)
+        {
+            // Create output list of path locations
+            pathLocations = buildPath ? new List<GridLocation>() : null;
+
+            // If the end location is found - backtrack to find the next point
+            if (node != null &&
+                node.ParentNode != null)
+            {
+                // Loop backwards to find the beginning of the path
+                while (node.ParentNode != startNode)
+                {
+                    // Add node to path list
+                    if (buildPath)
+                        pathLocations.Add(node.Location);
+
+                    // Back-track
+                    node = node.ParentNode;
+                }
+
+                if (buildPath)
+                {
+                    // Add node (second node after start location)
+                    pathLocations.Add(node.Location);
+
+                    // Add start location to path
+                    pathLocations.Add(startNode.Location);
+
+                    // Reverse the direction to order them properly
+                    pathLocations.Reverse();
+                }
+
+                // This will be the next path location
+                return node.Location;
+            }
+            else
+                return GridLocation.Empty;
+        }
+
+        private SimplePathFinderNode FindPathRecurse(SimplePathFinderNode currentNode, GridLocation endLocation, bool canOpenDoors, CharacterAlignmentType alignmentType, int depthIndex)
+        {
+            // Check recursion depth limit
+            if (depthIndex >= MAX_DEPTH)
                 return null;
 
-            var grid = _modelService.Level.Grid;
+            // Check for character path
+            var isCharacter = alignmentType != CharacterAlignmentType.None;
 
-            // Iterate over all round possible paths - add to end of dictionary so it's safe for recursion
-            // Also cache the current dictionary count so that it doesn't change over recursion
-            for (int i = 0; i < pathDictionary.Count; i++)
+            // Gets a set of adjacent locations that aren't blocked
+            var orderedPathLocations = _modelService.Level
+                                                    .Grid
+                                                    .GetAdjacentLocations(currentNode.Location)
+                // Check Pathing
+                .Where(location => (isCharacter && // Character Path
+                                    canOpenDoors) ? !_layoutEngine.IsPathToCellThroughWall(currentNode.Location,
+                                                                                            location,
+                                                                                            isCharacter,
+                                                                                            alignmentType)
+
+                                                   // Character or Non-Character
+                                                  : !_layoutEngine.IsPathToAdjacentCellBlocked(currentNode.Location,
+                                                                                             location,
+                                                                                             isCharacter,
+                                                                                             alignmentType))
+                // Apply Heuristic
+                .OrderBy(x => Calculator.RoguianDistance(x, endLocation))
+                .Actualize();
+
+            // Recurse, Adding locations to the node tree
+            foreach (var nextLocation in orderedPathLocations)
             {
-                var pathElement = pathDictionary.ElementAt(i);
+                // Create new node
+                var nextNode = new SimplePathFinderNode(currentNode, nextLocation, nextLocation.Equals(endLocation));
 
-                // *** SHOULD BE ABLE TO SKIP ANYTHING WITH PREVIOUS PATH INDEX
-                //     OR CURRENT INDEX (WAS JUST ADDED)
-                if (pathElement.Value < pathIdx - 1 ||
-                    pathElement.Value == pathIdx)
-                    continue;
+                // Adding location to the current node's list
+                currentNode.ChildNodes.Add(nextNode);
 
-                // Gets a set of adjacent locations that aren't blocked
-                var adjacentPathLocations = grid.GetAdjacentLocations(pathElement.Key)
-                                                .Where(x => canOpenDoors ? !_layoutEngine.IsPathToCellThroughWall(pathElement.Key, x, true, alignmentType)
-                                                                         : !_layoutEngine.IsPathToAdjacentCellBlocked(pathElement.Key, x, true, alignmentType));
+                // FOUND THE END LOCATION - SO RETURN THE RESULT
+                if (nextNode.IsEndLocation)
+                    return nextNode;
 
-                // First, Add ALL cells not in the path history
-                foreach (var nextLocation in adjacentPathLocations)
+                // Recurse next location 
+                else
                 {
-                    // Found the target point - so start backtracking
-                    if (nextLocation == end)
-                    {
-                        var backtrackLocation = end;
-                        var backtrackPathIdx = pathIdx;
+                    // Try the path for this adjacent 
+                    var resultNode = FindPathRecurse(nextNode, endLocation, canOpenDoors, alignmentType, depthIndex + 1);
 
-                        while (backtrackLocation != start)
-                        {
-                            // Get adjacent cells for next backtracking point
-                            // NOTE** Check for blocking from enemies only if path index != 0. (otherwise, would be the start point)
-                            var nextBackTrackLocation = grid.GetAdjacentLocations(backtrackLocation)
-                                                            .Where(x => pathDictionary.ContainsKey(x) &&
-                                                                        pathDictionary[x] == backtrackPathIdx - 1 &&
-                                                                        (canOpenDoors ? !_layoutEngine.IsPathToCellThroughWall(backtrackLocation, x, backtrackPathIdx - 1 != 0, alignmentType)
-                                                                                      : !_layoutEngine.IsPathToAdjacentCellBlocked(backtrackLocation, x, backtrackPathIdx - 1 != 0, alignmentType)))
-                                                            .FirstOrDefault();
-
-                            // This catch should not happen; but have here as a safety clause
-                            if (nextBackTrackLocation == null)
-                                return null;
-
-                            // Decrement the path index to find the previous entries on the history of paths
-                            backtrackPathIdx--;
-
-                            // If you've found the start, then return the next cell in the path
-                            if (nextBackTrackLocation == start)
-                                return backtrackLocation;
-
-                            else
-                                backtrackLocation = nextBackTrackLocation;
-                        }
-                    }
-
-                    // Otherwise, add to the collection
-                    if (!pathDictionary.ContainsKey(nextLocation))
-                        pathDictionary.Add(nextLocation, pathIdx);
+                    if (resultNode != null)
+                        return resultNode;
                 }
             }
 
-            // Iterate to collect path information to backtrack with - incrementing path index
-            return FindPath(maxSeparation, canOpenDoors, alignmentType, pathDictionary, start, end, pathIdx + 1);
+            // NO VIABLE PATH FOUND
+            return null;
         }
     }
 }

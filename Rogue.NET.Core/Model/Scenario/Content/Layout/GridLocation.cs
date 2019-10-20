@@ -16,10 +16,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Row = copy.Row;
             this.Column = copy.Column;
         }
-        public GridLocation(int row, int col)
+        public GridLocation(int column, int row)
         {
             Row = row;
-            Column = col;
+            Column = column;
         }
         public override bool Equals(object obj)
         {

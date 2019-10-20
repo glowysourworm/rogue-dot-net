@@ -21,13 +21,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public CellRectangle(GridLocation location, int cellwidth, int cellheight)
         {
             // Copy the cell point to avoid data corruption (should make CellPoint value type)
-            this.Location = new GridLocation(location.Row, location.Column);
+            this.Location = new GridLocation(location.Column, location.Row);
             this.CellHeight = cellheight;
             this.CellWidth = cellwidth;
         }
         public CellRectangle(int left, int top, int right, int bottom)
         {
-            this.Location = new GridLocation(top, left);
+            this.Location = new GridLocation(left, top);
             
             // Don't forget that the index math is off of the total dimensions by one.
             this.CellHeight = bottom - top + 1;
@@ -40,9 +40,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public int Bottom { get { return (this.Location.Row + this.CellHeight) - 1; } }
 
         public GridLocation TopLeft { get { return this.Location; } }
-        public GridLocation TopRight { get { return new GridLocation(this.Top, this.Right); } }
-        public GridLocation BottomRight { get { return new GridLocation(this.Bottom, this.Right); } }
-        public GridLocation BottomLeft { get { return new GridLocation(this.Bottom, this.Left); } }
+        public GridLocation TopRight { get { return new GridLocation(this.Right, this.Top); } }
+        public GridLocation BottomRight { get { return new GridLocation(this.Right, this.Bottom); } }
+        public GridLocation BottomLeft { get { return new GridLocation(this.Left, this.Bottom); } }
 
         public GridLocation[] Corners { get { return new GridLocation[] { this.TopLeft,
                                                                     this.TopRight,
@@ -62,7 +62,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 if (this.CellWidth <= 1)
                     column = this.Left;
 
-                return new GridLocation(row, column);
+                return new GridLocation(column, row);
             }
         }
 

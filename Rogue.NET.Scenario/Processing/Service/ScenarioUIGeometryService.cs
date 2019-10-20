@@ -40,5 +40,17 @@ namespace Rogue.NET.Scenario.Processing.Service
             int h = (int)r.CellHeight * ModelConstants.CellHeight;
             return new Rect(p, new Size(w, h));
         }
+
+        public GridLocation UI2Cell(double roughX, double roughY)
+        {
+            return new GridLocation((int)(roughX / ModelConstants.CellWidth),
+                                    (int)(roughY / ModelConstants.CellHeight));
+        }
+
+        public GridLocation UI2Cell(Point roughLocation)
+        {
+            return new GridLocation((int)(roughLocation.X / ModelConstants.CellWidth),
+                                    (int)(roughLocation.Y / ModelConstants.CellHeight));
+        }
     }
 }

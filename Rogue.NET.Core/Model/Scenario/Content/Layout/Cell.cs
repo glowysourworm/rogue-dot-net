@@ -147,9 +147,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Walls = walls;
             this.IsExplored = false;
         }
-        public Cell(int col, int row, Compass walls)
+        public Cell(int column, int row, Compass walls)
         {
-            this.Location = new GridLocation(row, col);
+            this.Location = new GridLocation(column, row);
             this.Walls = walls;
             this.IsExplored = false;
         }

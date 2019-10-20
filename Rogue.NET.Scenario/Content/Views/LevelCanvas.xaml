@@ -2,7 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:coreModel="clr-namespace:Rogue.NET.Core.Model;assembly=Rogue.NET.Core"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              Background="LightCoral">
+    <UserControl.Resources>
+        <!-- TODO: Create Markup Extension For These -->
+        <system:Int32 x:Key="CellWidth">10</system:Int32>
+        <system:Int32 x:Key="CellHeight">15</system:Int32>
+    </UserControl.Resources>
 
     <Border BorderBrush="White"
             Background="{x:Static coreModel:ModelConstants+FrontEnd.LevelBackground}" 
@@ -155,14 +161,38 @@
 
                     <!-- Player -->
                     <Canvas   x:Name="PlayerCanvas"           
-                          ClipToBounds="False"
-                          Background="Transparent"
-                          Width="{Binding LevelWidth}"
-                          Height="{Binding LevelHeight}">
+                              ClipToBounds="False"
+                              Background="Transparent"
+                              Width="{Binding LevelWidth}"
+                              Height="{Binding LevelHeight}">
                         <ContentPresenter Canvas.Left="{Binding Player.Location.X}"
                                       Canvas.Top="{Binding Player.Location.Y}"
                                       Content="{Binding Player}" />
                     </Canvas>
+                    
+                    <!-- Mouse-Grid Interaction -->
+                    <!--Canvas x:Name="MouseCanvas"
+                            ClipToBounds="False"
+                            Background="Transparent"
+                            Width="{Binding LevelWidth}"
+                            Height="{Binding LevelHeight}">
+                        
+                        <Path x:Name="MousePath"
+                              Stroke="Yellow"
+                              StrokeThickness="1"
+                              Fill="Blue"
+                              Opacity="0.4" />
+                        
+                        <Rectangle x:Name="MouseRectangle"
+                                   Stroke="White"
+                                   StrokeThickness="0.75"
+                                   Fill="Magenta"
+                                   Opacity="0.4"
+                                   Width="10"
+                                   Height="15">
+                        </Rectangle>
+                        
+                    </-->
 
                     <!-- Animations -->
                     <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->

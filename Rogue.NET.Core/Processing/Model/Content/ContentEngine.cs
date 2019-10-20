@@ -684,22 +684,22 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             //Return random if confused
             if (character.Is(CharacterStateType.MovesRandomly))
-                return _layoutEngine.GetRandomAdjacentLocationForMovement(character.Location, CharacterAlignmentType.None) ?? GridLocation.Empty;
+                return _layoutEngine.GetRandomAdjacentLocationForMovement(character.Location, character.AlignmentType) ?? GridLocation.Empty;
 
             switch (character.BehaviorDetails.CurrentBehavior.MovementType)
             {
                 case CharacterMovementType.Random:
-                    return _layoutEngine.GetRandomAdjacentLocationForMovement(character.Location, CharacterAlignmentType.None);
+                    return _layoutEngine.GetRandomAdjacentLocationForMovement(character.Location, character.AlignmentType);
                 case CharacterMovementType.HeatSeeker:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, CharacterAlignmentType.None)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
                                         .MinBy(x => Calculator.RoguianDistance(x, desiredLocation)) ?? GridLocation.Empty;
                 case CharacterMovementType.StandOffIsh:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, CharacterAlignmentType.None)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .LastOrDefault() ?? GridLocation.Empty;
                 case CharacterMovementType.PathFinder:
-                    var nextLocation = _pathFinder.FindPath(character.Location, desiredLocation, character.GetLightRadius(), character.BehaviorDetails.CanOpenDoors, CharacterAlignmentType.None);
-                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, CharacterAlignmentType.None)
+                    var nextLocation = _pathFinder.FindCharacterNextPathLocation(character.Location, desiredLocation, character.BehaviorDetails.CanOpenDoors, character.AlignmentType);
+                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
                                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                                         .FirstOrDefault() ?? GridLocation.Empty;
                 default:

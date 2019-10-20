@@ -197,7 +197,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                               _randomSequenceGenerator.Get(template.RectangularGridPadding, 
                                                            gridDivisionHeight - (roomHeight + template.RectangularGridPadding) + 1);
 
-                    var roomBounds = new CellRectangle(new GridLocation(row, column), roomWidth, roomHeight);
+                    var roomBounds = new CellRectangle(new GridLocation(column, row), roomWidth, roomHeight);
                     var roomCells = new List<GridLocation>();
                     var edgeCells = new List<GridLocation>();
 
@@ -697,8 +697,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                              // However, for small or near-infinity slopes, off-by-one errors can add a point that
                                              // is outside the bounds of the grid. So, those must filtered off prior to entering 
                                              // the loop below.
-                                             var location = new GridLocation((int)Math.Floor(point.Y / ModelConstants.CellHeight),
-                                                                          (int)Math.Floor(point.X / ModelConstants.CellWidth));
+                                             var location = new GridLocation((int)Math.Floor(point.X / ModelConstants.CellWidth),
+                                                                             (int)Math.Floor(point.Y / ModelConstants.CellHeight));
 
                                              if (location.Column < 0 ||
                                                  location.Column >= grid.Bounds.CellWidth)
@@ -717,8 +717,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             foreach (var point in intersections)
             {
                 // cell location of intersection
-                var location = new GridLocation((int)Math.Floor(point.Y / ModelConstants.CellHeight), 
-                                             (int)Math.Floor(point.X / ModelConstants.CellWidth));
+                var location = new GridLocation((int)Math.Floor(point.X / ModelConstants.CellWidth),
+                                                (int)Math.Floor(point.Y / ModelConstants.CellHeight));
 
                 // intersection landed on one of the vertical lines
                 var horizontal = (point.X % ModelConstants.CellWidth) <= double.Epsilon;
@@ -732,11 +732,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 // result
                 if (horizontal)
                 {
-                    var location1 = directionX > 0 ? new GridLocation(location.Row, location.Column - 1) :
-                                                     new GridLocation(location.Row, location.Column);
+                    var location1 = directionX > 0 ? new GridLocation(location.Column - 1, location.Row) :
+                                                     new GridLocation(location.Column, location.Row);
 
-                    var location2 = directionX > 0 ? new GridLocation(location.Row, location.Column) :
-                                                     new GridLocation(location.Row, location.Column - 1);
+                    var location2 = directionX > 0 ? new GridLocation(location.Column, location.Row) :
+                                                     new GridLocation(location.Column - 1, location.Row);
 
                     gridCell1 = grid[location1.Column, location1.Row];
                     gridCell2 = grid[location2.Column, location2.Row];
@@ -751,11 +751,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }
                 else
                 {
-                    var location1 = directionY > 0 ? new GridLocation(location.Row - 1, location.Column) :
-                                                     new GridLocation(location.Row, location.Column);
+                    var location1 = directionY > 0 ? new GridLocation(location.Column, location.Row - 1) :
+                                                     new GridLocation(location.Column, location.Row);
 
-                    var location2 = directionY > 0 ? new GridLocation(location.Row , location.Column) :
-                                                     new GridLocation(location.Row - 1, location.Column);
+                    var location2 = directionY > 0 ? new GridLocation(location.Column, location.Row) :
+                                                     new GridLocation(location.Column, location.Row - 1);
 
                     gridCell1 = grid[location1.Column, location1.Row];
                     gridCell2 = grid[location2.Column, location2.Row];
