@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -121,9 +122,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
 
                     // Run query to see whether this cell can be used in the maze
                     //
-                    var viableCell = grid.GetCardinalAdjacentElements(nextCell.Location.Column, nextCell.Location.Row)
-                                         .Where(cell => cell != currentCell)
-                                         .All(cell => cell.IsWall);
+                    var viableCell = FiveAdjacentWallsDirectionalRule(currentCell, nextCell, grid.GetAdjacentElements(nextCell.Location.Column, nextCell.Location.Row));
 
                     // If any neighbor cells CAN be visited - then push the current one on the stack
                     if (viableCell)
@@ -150,6 +149,59 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             //    // Remove the wall setting
             //    grid[column, row].SetWall(false);
             //}
+        }
+
+        /// <summary>
+        /// Returns true if all 4-way adjacent cells are walls (Except the current cell)
+        /// </summary>
+        private static bool CardinalAdjacentWallsRule(Cell currentCell, Cell nextCell, Cell[] nextCell8WayNeighbors)
+        {
+            return nextCell8WayNeighbors.Where(cell => cell != currentCell)
+                                        .Where(cell => GridUtility.IsCardinalDirection(GridUtility.GetDirectionOfAdjacentLocation(nextCell.Location, cell.Location)))
+                                        .All(cell => cell.IsWall);
+        }
+
+        /// <summary>
+        /// Returns true if all 5 adjacent cells to the next cell are walls. This prevents neighboring off-diagonal walls that separate
+        /// passages - making the maze look much more complete. 
+        /// </summary>
+        private static bool FiveAdjacentWallsRule(Cell currentCell, Cell nextCell, Cell[] nextCell8WayNeighbors)
+        {
+            return nextCell8WayNeighbors.Where(cell => cell != currentCell)
+                                        .Count(cell => cell.IsWall) >= 5;
+        }
+
+        /// <summary>
+        /// Same as the FiveAdjacentWallsRule with the added condition that the 5 adjacent walls must be "in the direction of
+        /// travel". Example:  Movement Direction = E. Then, the set { N, NE, E, SE, S } must ALL be walls.
+        /// </summary>
+        private static bool FiveAdjacentWallsDirectionalRule(Cell currentCell, Cell nextCell, Cell[] nextCell8WayNeighbors)
+        {
+            var direction = GridUtility.GetDirectionOfAdjacentLocation(currentCell.Location, nextCell.Location);
+            var neighborWallDirections = nextCell8WayNeighbors.Where(cell => cell.IsWall)
+                                                              .Select(cell => GridUtility.GetDirectionOfAdjacentLocation(nextCell.Location, cell.Location))
+                                                              .Actualize();
+
+            // Check directional flag (OR'ed) to make sure ALL 5 cells are accounted for
+            //
+            switch (direction)
+            {
+                case Compass.N:
+                    return neighborWallDirections.Count(x => x.Has(Compass.W | Compass.NW | Compass.N | Compass.NE | Compass.E)) >= 5;
+                case Compass.S:
+                    return neighborWallDirections.Count(x => x.Has(Compass.W | Compass.SW | Compass.S | Compass.SE | Compass.E)) >= 5;
+                case Compass.E:
+                    return neighborWallDirections.Count(x => x.Has(Compass.N | Compass.NE | Compass.E | Compass.SE | Compass.S)) >= 5;
+                case Compass.W:
+                    return neighborWallDirections.Count(x => x.Has(Compass.N | Compass.NW | Compass.W | Compass.SW | Compass.S)) >= 5;
+                case Compass.NW:
+                case Compass.NE:
+                case Compass.SE:
+                case Compass.SW:
+                case Compass.Null:
+                default:
+                    throw new Exception("Invalid maze generation movement");
+            }
         }
     }
 }

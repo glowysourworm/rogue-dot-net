@@ -41,7 +41,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// <summary>
         /// Returns 4-way adjacent cells - nulls excluded
         /// </summary>
-        public static T[] GetCardinalAdjacentElements<T>(this T[,] grid, int column, int row)
+        public static T[] GetCardinalAdjacentElements<T>(this T[,] grid, int column, int row) where T : class
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -50,18 +50,18 @@ namespace Rogue.NET.Core.Processing.Model.Extension
 
             // Need this to be optimized for speed
             var count = 0;
-            if (!ReferenceEquals(n, default(T))) count++;
-            if (!ReferenceEquals(s, default(T))) count++;
-            if (!ReferenceEquals(e, default(T))) count++;
-            if (!ReferenceEquals(w, default(T))) count++;
+            if (n != null) count++;
+            if (s != null) count++;
+            if (e != null) count++;
+            if (w != null) count++;
 
             var result = new T[count];
             var index = 0;
 
-            if (!ReferenceEquals(n, default(T))) result[index++] = n;
-            if (!ReferenceEquals(s, default(T))) result[index++] = s;
-            if (!ReferenceEquals(e, default(T))) result[index++] = e;
-            if (!ReferenceEquals(w, default(T))) result[index++] = w;
+            if (n != null) result[index++] = n;
+            if (s != null) result[index++] = s;
+            if (e != null) result[index++] = e;
+            if (w != null) result[index++] = w;
 
             return result;
         }
@@ -69,7 +69,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// <summary>
         /// Returns 8-way adjacent cells - stripping out nulls
         /// </summary>
-        public static T[] GetAdjacentElements<T>(this T[,] grid, int column, int row)
+        public static T[] GetAdjacentElements<T>(this T[,] grid, int column, int row) where T : class
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -82,26 +82,26 @@ namespace Rogue.NET.Core.Processing.Model.Extension
 
             // Need this to be optimized for speed
             var count = 0;
-            if (!ReferenceEquals(n, default(T))) count++;
-            if (!ReferenceEquals(s, default(T))) count++;
-            if (!ReferenceEquals(e, default(T))) count++;
-            if (!ReferenceEquals(w, default(T))) count++;
-            if (!ReferenceEquals(ne, default(T))) count++;
-            if (!ReferenceEquals(nw, default(T))) count++;
-            if (!ReferenceEquals(se, default(T))) count++;
-            if (!ReferenceEquals(sw, default(T))) count++;
+            if (n != null) count++;
+            if (s != null) count++;
+            if (e != null) count++;
+            if (w != null) count++;
+            if (ne != null) count++;
+            if (nw != null) count++;
+            if (se != null) count++;
+            if (sw != null) count++;
 
             var result = new T[count];
             var index = 0;
 
-            if (!ReferenceEquals(n, default(T))) result[index++] = n;
-            if (!ReferenceEquals(s, default(T))) result[index++] = s;
-            if (!ReferenceEquals(e, default(T))) result[index++] = e;
-            if (!ReferenceEquals(w, default(T))) result[index++] = w;
-            if (!ReferenceEquals(ne, default(T))) result[index++] = n;
-            if (!ReferenceEquals(nw, default(T))) result[index++] = s;
-            if (!ReferenceEquals(se, default(T))) result[index++] = e;
-            if (!ReferenceEquals(sw, default(T))) result[index++] = w;
+            if (n != null) result[index++] = n;
+            if (s != null) result[index++] = s;
+            if (e != null) result[index++] = e;
+            if (w != null) result[index++] = w;
+            if (ne != null) result[index++] = ne;
+            if (nw != null) result[index++] = nw;
+            if (se != null) result[index++] = se;
+            if (sw != null) result[index++] = sw;
 
             return result;
         }
@@ -109,7 +109,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// <summary>
         /// Returns true if any adjacent cells are default(T)
         /// </summary>
-        public static bool IsEdgeCell<T>(this T[,] grid, int column, int row)
+        public static bool IsEdgeCell<T>(this T[,] grid, int column, int row) where T : class
         {
             var north = grid.Get(column, row - 1);
             var south = grid.Get(column, row + 1);
@@ -120,14 +120,14 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             var southEast = grid.Get(column + 1, row + 1);
             var southWest = grid.Get(column - 1, row + 1);
 
-            return ReferenceEquals(north, default(T)) ||
-                   ReferenceEquals(south, default(T)) ||
-                   ReferenceEquals(east, default(T)) ||
-                   ReferenceEquals(west, default(T)) ||
-                   ReferenceEquals(northEast, default(T)) ||
-                   ReferenceEquals(northWest, default(T)) ||
-                   ReferenceEquals(southEast, default(T)) ||
-                   ReferenceEquals(southWest, default(T));
+            return north == null ||
+                   south == null ||
+                   east == null ||
+                   west == null ||
+                   northEast == null ||
+                   northWest == null ||
+                   southEast == null ||
+                   southWest == null;
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// Calculates whether adjacent element is connected by accessible path - This will check for non-default elements
         /// at the off-diagonal locations
         /// </summary>
-        public static bool IsAdjacentElementConnected<T>(this T[,] grid, int column1, int row1, int column2, int row2)
+        public static bool IsAdjacentElementConnected<T>(this T[,] grid, int column1, int row1, int column2, int row2) where T : class
         {
             var direction = GridUtility.GetDirectionBetweenAdjacentPoints(column1, row1, column2, row2);
 
@@ -194,8 +194,8 @@ namespace Rogue.NET.Core.Processing.Model.Extension
                 case Compass.NE:
                 case Compass.SE:
                 case Compass.SW:
-                    return !ReferenceEquals(grid.GetOffDiagonalCell1(column1, row1, direction, out cardinalDirection), default(T)) ||
-                           !ReferenceEquals(grid.GetOffDiagonalCell2(column1, row1, direction, out cardinalDirection), default(T));
+                    return grid.GetOffDiagonalCell1(column1, row1, direction, out cardinalDirection) != null ||
+                           grid.GetOffDiagonalCell2(column1, row1, direction, out cardinalDirection) != null;
                 default:
                     return false;
             }

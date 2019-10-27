@@ -263,5 +263,25 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                     return Compass.Null;
             }
         }
+
+        public static bool IsCardinalDirection(Compass direction)
+        {
+            switch (direction)
+            {
+                case Compass.N:
+                case Compass.S:
+                case Compass.E:
+                case Compass.W:
+                    return true;
+
+                case Compass.Null:
+                case Compass.NW:
+                case Compass.NE:
+                case Compass.SE:
+                case Compass.SW:
+                default:
+                    return false;
+            }
+        }
     }
 }
