@@ -12,7 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Alteration
             result += player.Alteration.GetAttribute(CharacterAttribute.FoodUsagePerTurn);
 
-            return Math.Max(0, result);
+            return System.Math.Max(0, result);
         }
 
         public static void ApplyLimits(this Player player)

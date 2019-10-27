@@ -121,6 +121,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -210,6 +211,29 @@
     <Compile Include="Media\SymbolEffect\SymbolEffectBase.cs" />
     <Compile Include="Media\SymbolEffect\Utility\BrushFilter.cs" />
     <Compile Include="Media\SymbolEffect\Utility\ColorFilter.cs" />
+    <Compile Include="Math\Geometry\Edge.cs" />
+    <Compile Include="Math\Geometry\Mesh.cs" />
+    <Compile Include="Math\Geometry\Polygon.cs" />
+    <Compile Include="Math\Geometry\Ray.cs" />
+    <Compile Include="Math\Geometry\Vector.cs" />
+    <Compile Include="Math\Geometry\Rectangle.cs" />
+    <Compile Include="Math\Geometry\Triangle.cs" />
+    <Compile Include="Math\Geometry\Vertex.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Connector\CorridorLayoutRegionConnector.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Connector\CorridorLocationCalculator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Connector\TwoPointLayoutRegionConnector.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Creator\ContiguousRegionCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\LargePolygonRegionGeometryCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Creator\MazeRegionCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Creator\PerlinNoiseRegionCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Creator\PolygonRegionCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\ContiguousRegionGeometryCreator.cs" />
+    <Compile Include="Math\Algorithm\NoiseGenerator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Creator\CellularAutomataRegionCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\RandomRectangularRegionGeometryCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\RectangularGridRegionGeometryCreator.cs" />
+    <Compile Include="Math\Algorithm\GeometryUtility.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\GridUtility.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioCache.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioConfigurationCache.cs" />
     <Compile Include="Processing\Service\Cache\ScenarioCache.cs" />
@@ -296,7 +320,7 @@
     <Compile Include="Processing\Event\Backend\ProjectileAnimationStartEvent.cs" />
     <Compile Include="Processing\Event\ExitEvent.cs" />
     <Compile Include="Processing\Model\Content\Enum\TargetType.cs" />
-    <Compile Include="Processing\Model\Content\BackendEngine.cs" />
+    <Compile Include="Processing\Model\Content\BackendProcessor.cs" />
     <Compile Include="Processing\Command\Backend\PlayerMultiItemCommand.cs" />
     <Compile Include="Processing\Command\View\ViewCommand.cs" />
     <Compile Include="Processing\Command\Backend\CommandData\BackendCommandData.cs" />
@@ -330,8 +354,8 @@
     <Compile Include="Processing\Event\Level\LevelLoadedEvent.cs" />
     <Compile Include="Processing\Event\Backend\ScenarioMessageEvent.cs" />
     <Compile Include="CoreModule.cs" />
-    <Compile Include="Processing\Model\Content\AlterationEngine.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IAlterationEngine.cs" />
+    <Compile Include="Processing\Model\Content\AlterationProcessor.cs" />
+    <Compile Include="Processing\Model\Content\Interface\IAlterationProcessor.cs" />
     <Compile Include="Processing\Event\Backend\EventData\AnimationEventData.cs" />
     <Compile Include="Processing\Event\Backend\EventData\DialogAlterationEffectEventData.cs" />
     <Compile Include="Processing\Event\Backend\EventData\DialogNoteEventData.cs" />
@@ -422,23 +446,22 @@
     <Compile Include="Model\Scenario\Alteration\Interface\IEquipmentEquipAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\ISkillAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Skill\SkillAlteration.cs" />
-    <Compile Include="Model\Scenario\Content\Extension\ArrayExtension.cs" />
+    <Compile Include="Processing\Model\Extension\ArrayExtension.cs" />
     <Compile Include="Processing\Model\Content\Enum\InteractionType.cs" />
-    <Compile Include="Processing\Model\Content\DebugEngine.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IDebugEngine.cs" />
+    <Compile Include="Processing\Model\Content\DebugProcessor.cs" />
+    <Compile Include="Processing\Model\Content\Interface\IDebugProcessor.cs" />
     <Compile Include="Processing\Event\Backend\EventData\DialogEventData.cs" />
     <Compile Include="Processing\Event\Dialog\Enum\DialogEventType.cs" />
     <Compile Include="Processing\Event\Backend\EventData\Factory\Interface\IBackendEventDataFactory.cs" />
     <Compile Include="Processing\Event\Backend\EventData\Factory\BackendEventDataFactory.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ISymbolDetailsGenerator.cs" />
     <Compile Include="Processing\Model\Generator\SymbolDetailsGenerator.cs" />
-    <Compile Include="Processing\Model\Static\Calculator.cs" />
+    <Compile Include="Processing\Model\Static\RogueCalculator.cs" />
     <Compile Include="Processing\Model\Static\EquipmentCalculator.cs" />
     <Compile Include="Processing\Model\Static\MeleeCalculator.cs" />
-    <Compile Include="Processing\Model\Static\PlayerCalculator.cs" />
     <Compile Include="Model\Enums\Validation.cs" />
     <Compile Include="Processing\Model\Generator\AlteredStateGenerator.cs" />
-    <Compile Include="Processing\Model\Generator\Component\RoomEqualityComparer.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Component\RoomEqualityComparer.cs" />
     <Compile Include="Processing\Model\Generator\Interface\IAlteredStateGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ISkillGenerator.cs" />
     <Compile Include="Processing\Model\Generator\SkillGenerator.cs" />
@@ -457,17 +480,17 @@
     <Compile Include="Processing\Event\Dialog\Enum\SplashEventType.cs" />
     <Compile Include="Processing\Event\Backend\LevelEvent.cs" />
     <Compile Include="Processing\Event\Backend\Enum\LevelEventType.cs" />
-    <Compile Include="Processing\Model\Content\AlterationProcessor.cs" />
-    <Compile Include="Processing\Model\Content\NonPlayerCharacterProcessor.cs" />
-    <Compile Include="Processing\Model\Content\InteractionProcessor.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IAlterationProcessor.cs" />
-    <Compile Include="Processing\Model\Content\Interface\INonPlayerCharacterProcessor.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IInteractionProcessor.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IPlayerProcessor.cs" />
-    <Compile Include="Processing\Model\Content\PlayerProcessor.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\AlterationCalculator.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\NonPlayerCharacterCalculator.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\InteractionCalculator.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\Interface\IAlterationCalculator.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\Interface\INonPlayerCharacterCalculator.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\Interface\IInteractionCalculator.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\Interface\IPlayerCalculator.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\PlayerCalculator.cs" />
     <Compile Include="Processing\Model\Algorithm\Interface\IPathFinder.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IScenarioEngine.cs" />
-    <Compile Include="Processing\Model\Content\ScenarioEngine.cs" />
+    <Compile Include="Processing\Model\Content\Interface\IScenarioProcessor.cs" />
+    <Compile Include="Processing\Model\Content\ScenarioProcessor.cs" />
     <Compile Include="Processing\Command\Backend\LevelCommand.cs" />
     <Compile Include="Processing\Model\Generator\AttackAttributeGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\IAttackAttributeGenerator.cs" />
@@ -491,11 +514,9 @@
     <Compile Include="Processing\Model\Generator\Interface\ISkillSetGenerator.cs" />
     <Compile Include="Processing\Model\Generator\RandomSequenceGenerator.cs" />
     <Compile Include="Processing\Model\Algorithm\SimplePathFinder.cs" />
-    <Compile Include="Processing\Model\Content\ContentEngine.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IContentEngine.cs" />
-    <Compile Include="Processing\Model\Content\Interface\ILayoutEngine.cs" />
+    <Compile Include="Processing\Model\Content\ContentProcessor.cs" />
+    <Compile Include="Processing\Model\Content\Interface\IContentProcessor.cs" />
     <Compile Include="Processing\Model\Algorithm\Interface\IRayTracer.cs" />
-    <Compile Include="Processing\Model\Content\LayoutEngine.cs" />
     <Compile Include="Processing\Model\Algorithm\SimpleRayTracer.cs" />
     <Compile Include="Processing\Model\Generator\BehaviorGenerator.cs" />
     <Compile Include="Processing\Model\Generator\ContentGenerator.cs" />
@@ -550,10 +571,8 @@
     <Compile Include="Model\Scenario\Character\Character.cs" />
     <Compile Include="Model\Scenario\Character\Extension\CharacterExtension.cs" />
     <Compile Include="Model\Scenario\Character\Extension\PlayerExtension.cs" />
-    <Compile Include="Model\Scenario\Content\Extension\LevelExtension.cs" />
-    <Compile Include="Model\Scenario\Content\Extension\LevelGridExtension.cs" />
     <Compile Include="Model\Scenario\Content\Item\Extension\EquipmentExtension.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\Room.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\Region.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Extension\SkillExtension.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Skill.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\CharacterAlterationTypeValidator.cs" />
@@ -581,7 +600,7 @@
     <Compile Include="Model\Scenario\Content\Item\ItemBase.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Cell.cs" />
     <Compile Include="Model\Scenario\Content\Layout\GridLocation.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\CellRectangle.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\RegionBoundary.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LevelGrid.cs" />
     <Compile Include="Model\Scenario\Content\Level.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioImage.cs" />
@@ -599,6 +618,8 @@
     <Compile Include="Model\Scenario\Statistic\DoodadStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\EnemyStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\ItemStatistic.cs" />
+    <Compile Include="Processing\Service\Interface\IModelLayoutService.cs" />
+    <Compile Include="Processing\Service\ModelLayoutService.cs" />
     <Compile Include="Processing\Service\Validation\Interface\IScenarioValidationResult.cs" />
     <Compile Include="Processing\Service\Validation\Interface\IScenarioValidationRule.cs" />
     <Compile Include="Processing\Service\Validation\ScenarioValidationResult.cs" />
@@ -649,10 +670,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dependencies\Triangle.NET\Triangle\Triangle.csproj">
-      <Project>{f7907a0a-b75f-400b-9e78-bfad00db4d6b}</Project>
-      <Name>Triangle</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rogue.NET.Common\Rogue.NET.Common.csproj">
       <Project>{6353F2F1-D936-4F9C-9898-074DC4480D71}</Project>
       <Name>Rogue.NET.Common</Name>

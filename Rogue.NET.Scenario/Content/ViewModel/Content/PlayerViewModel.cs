@@ -1,28 +1,25 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content;
-
-using System.Linq;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Level;
+using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
+using Rogue.NET.Core.Processing.Model.Static;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Collections.Generic;
-using System;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Core.Model.Scenario.Character.Extension;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
-using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
-using Rogue.NET.Core.Processing.Event.Backend.EventData;
-using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
-using Rogue.NET.Core.Processing.Event.Backend;
-using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Processing.Model.Content.Interface;
-using Rogue.NET.Core.Processing.Event.Level;
-using Rogue.NET.Core.Processing.Model.Static;
-using Rogue.NET.Scenario.Processing.Service.Interface;
-using System.Windows;
+using System.Linq;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -31,9 +28,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
     public class PlayerViewModel : ScenarioImageViewModel
     {
         readonly IModelService _modelService;
-        readonly IAlterationProcessor _alterationProcessor;
+        readonly IAlterationCalculator _alterationCalculator;
         readonly IRogueEventAggregator _eventAggregator;
-        readonly IScenarioUIGeometryService _scenarioUIGeometryService;
 
         #region (private) Backing Fields
         int _level;
@@ -332,17 +328,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         [ImportingConstructor]
         public PlayerViewModel(
-            IRogueEventAggregator eventAggregator, 
+            IRogueEventAggregator eventAggregator,
             IModelService modelService,
-            IPlayerProcessor playerProcessor,
-            IAlterationProcessor alterationProcessor,
-            IScenarioResourceService scenarioResourceService,
-            IScenarioUIGeometryService scenarioUIGeometryService)
+            IAlterationCalculator alterationCalculator,
+            IScenarioResourceService scenarioResourceService)
         {
             _modelService = modelService;
-            _alterationProcessor = alterationProcessor;
+            _alterationCalculator = alterationCalculator;
             _eventAggregator = eventAggregator;
-            _scenarioUIGeometryService = scenarioUIGeometryService;
 
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
             this.SkillSetsLearned = new ObservableCollection<SkillSetViewModel>();
@@ -401,9 +394,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             // Base Collections
             SynchronizeCollection(
-                sortedSkillSets, 
-                this.SkillSets, 
-                x => new SkillSetViewModel(x, player,_eventAggregator),
+                sortedSkillSets,
+                this.SkillSets,
+                x => new SkillSetViewModel(x, player, _eventAggregator),
                 (source, dest) =>
                 {
                     // Update
@@ -419,7 +412,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                     dest.Skills.ForEach(skill =>
                     {
                         var skillSource = source.Skills.First(x => x.Id == skill.Id);
-                        
+
                         skill.IsLearned = skillSource.IsLearned;
                         skill.IsSelected = (source.SelectedSkill != null) && (source.SelectedSkill.Id == skill.Id);
                         skill.IsSkillPointRequirementMet = skillSource.IsLearned || player.SkillPoints >= skillSource.SkillPointRequirement;
@@ -439,8 +432,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.ActiveSkillSet = this.SkillSets.FirstOrDefault(x => x.IsActive);
 
             // Calculate experience
-            var experienceLast = player.Level == 0 ? 0 : PlayerCalculator.CalculateExperienceNext(player.Level - 1);
-            var experienceNext = PlayerCalculator.CalculateExperienceNext(player.Level);
+            var experienceLast = player.Level == 0 ? 0 : RogueCalculator.CalculateExperienceNext(player.Level - 1);
+            var experienceNext = RogueCalculator.CalculateExperienceNext(player.Level);
 
             var deltaExperience = player.Experience - experienceLast;
             var deltaExperienceNext = experienceNext - experienceLast;
@@ -498,7 +491,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Alterations.AddRange(alterations);
 
             // Update Effective Symbol
-            var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);
+            var symbol = _alterationCalculator.CalculateEffectiveSymbol(player);
 
             this.CharacterColor = symbol.CharacterColor;
             this.CharacterSymbol = symbol.CharacterSymbol;
@@ -543,14 +536,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.EquippedBoots = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Boots));
             this.EquippedGauntlets = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Gauntlets));
             this.EquippedHelmet = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Helmet));
-            this.EquippedLeftHandWeapon = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.OneHandedMeleeWeapon || 
+            this.EquippedLeftHandWeapon = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.OneHandedMeleeWeapon ||
                                                                                                                       x.Type == EquipmentType.TwoHandedMeleeWeapon ||
                                                                                                                       x.Type == EquipmentType.RangeWeapon));
             this.EquippedLeftRing = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Ring));
             this.EquippedOrb = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Orb));
 
             // Check for two handed weapons first
-            this.EquippedRightHandWeapon = constructor(equippedItems.FirstOrDefault(x =>  x.Type == EquipmentType.TwoHandedMeleeWeapon ||
+            this.EquippedRightHandWeapon = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.TwoHandedMeleeWeapon ||
                                                                                                                         x.Type == EquipmentType.RangeWeapon));
             // If none, then check for second one-handed weapon
             if (this.EquippedRightHandWeapon == null)
@@ -595,7 +588,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         }
 
         private void SynchronizeCollection<TSource, TDest>(
-                        IEnumerable<TSource> sourceCollection, 
+                        IEnumerable<TSource> sourceCollection,
                         IList<TDest> destCollection,
                         Func<TSource, TDest> constructor,
                         Action<TSource, TDest> update) where TSource : ScenarioImage

@@ -117,6 +117,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 case SymbolType.Symbol:
                 case SymbolType.OrientedSymbol:
                 case SymbolType.Game:
+                case SymbolType.Terrain:
                     {
                         // Fetch / Load the drawing from the cache
                         var drawing = _svgCache.GetDrawing(cacheImage);
@@ -149,6 +150,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 case SymbolType.Symbol:
                 case SymbolType.OrientedSymbol:
                 case SymbolType.Game:
+                case SymbolType.Terrain:
                     {
                         // Fetch / Load the drawing from the cache
                         var drawing = _svgCache.GetDrawing(cacheImage);
@@ -237,6 +239,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     break;
                 case SymbolType.Symbol:
                 case SymbolType.OrientedSymbol:
+                case SymbolType.Terrain:
                     {
                         // Apply base scale - requested by calling code
                         drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);

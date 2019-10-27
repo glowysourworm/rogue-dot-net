@@ -21,13 +21,12 @@ namespace Rogue.NET.Core.Processing.Service
     [Export(typeof(IScenarioService))]
     public class ScenarioService : IScenarioService
     {
-        readonly IScenarioEngine _scenarioEngine;
-        readonly IContentEngine _contentEngine;
-        readonly IAlterationEngine _alterationEngine;
-        readonly ILayoutEngine _layoutEngine;
-        readonly IDebugEngine _debugEngine;
+        readonly IScenarioProcessor _scenarioProcessor;
+        readonly IContentProcessor _contentProcessor;
+        readonly IAlterationProcessor _alterationProcessor;
+        readonly IDebugProcessor _debugProcessor;
 
-        readonly BackendEngine[] _rogueEngines;
+        readonly BackendProcessor[] _rogueProcessors;
 
         readonly IModelService _modelService;
 
@@ -37,7 +36,7 @@ namespace Rogue.NET.Core.Processing.Service
         // Example: 0) Player Moves (LevelCommand issued)
         //          1) Model is updated for player move
         //          2) UI update is queued
-        //          3) Enemy Reactions are queued (events bubble up from IContentEngine)
+        //          3) Enemy Reactions are queued (events bubble up from IContentProcessor)
         //          4) UI queue processed for Player Move
         //          5) Data queue processed for one Enemy
         //          6) Enemy uses magic spell
@@ -57,25 +56,22 @@ namespace Rogue.NET.Core.Processing.Service
         // NO EVENT AGGREGATOR! This service is meant to process by method calls ONLY.
         [ImportingConstructor]
         public ScenarioService(
-            IScenarioEngine scenarioEngine,
-            IContentEngine contentEngine, 
-            IAlterationEngine alterationEngine,
-            ILayoutEngine layoutEngine,
-            IDebugEngine debugEngine,
+            IScenarioProcessor scenarioProcessor,
+            IContentProcessor contentProcessor, 
+            IAlterationProcessor alterationProcessor,
+            IDebugProcessor debugProcessor,
             IModelService modelService)
         {
-            _scenarioEngine = scenarioEngine;
-            _contentEngine = contentEngine;
-            _alterationEngine = alterationEngine;
-            _layoutEngine = layoutEngine;
-            _debugEngine = debugEngine;
-            _modelService = modelService;            
+            _scenarioProcessor = scenarioProcessor;
+            _contentProcessor = contentProcessor;
+            _alterationProcessor = alterationProcessor;
+            _debugProcessor = debugProcessor;
+            _modelService = modelService;
 
-            _rogueEngines = new BackendEngine[] { _contentEngine as BackendEngine,
-                                                _layoutEngine as BackendEngine,
-                                                _scenarioEngine as BackendEngine,
-                                                _alterationEngine as BackendEngine,
-                                                _debugEngine as BackendEngine };
+            _rogueProcessors = new BackendProcessor[] { _contentProcessor as BackendProcessor,
+                                                        _scenarioProcessor as BackendProcessor,
+                                                        _alterationProcessor as BackendProcessor,
+                                                        _debugProcessor as BackendProcessor };
 
             _levelEventDataQueue = new Queue<LevelEventData>();
             _targetRequestEventDataQueue = new Queue<TargetRequestEventData>();
@@ -85,33 +81,33 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioEventDataQueue = new Queue<ScenarioEventData>();
             _backendQueue = new Queue<LevelProcessingAction>();
             
-            foreach (var engine in _rogueEngines)
+            foreach (var processor in _rogueProcessors)
             {
-                engine.AnimationEvent += (eventData) =>
+                processor.AnimationEvent += (eventData) =>
                 {
                     _animationEventDataQueue.Enqueue(eventData);
                 };
-                engine.ProjectileAnimationEvent += (eventData) =>
+                processor.ProjectileAnimationEvent += (eventData) =>
                 {
                     _projectileAnimationEventDataQueue.Enqueue(eventData);
                 };
-                engine.DialogEvent += (eventData) =>
+                processor.DialogEvent += (eventData) =>
                 {
                     _dialogEventDataQueue.Enqueue(eventData);
                 };
-                engine.LevelEvent += (eventData) =>
+                processor.LevelEvent += (eventData) =>
                 {
                     _levelEventDataQueue.Enqueue(eventData);
                 };
-                engine.TargetRequestEvent += (eventData) =>
+                processor.TargetRequestEvent += (eventData) =>
                 {
                     _targetRequestEventDataQueue.Enqueue(eventData);
                 };
-                engine.LevelProcessingActionEvent += (eventData) =>
+                processor.LevelProcessingActionEvent += (eventData) =>
                 {
                     _backendQueue.Enqueue(eventData);
                 };
-                engine.ScenarioEvent += (eventData) =>
+                processor.ScenarioEvent += (eventData) =>
                 {
                     _scenarioEventDataQueue.Enqueue(eventData);
                 };
@@ -121,7 +117,7 @@ namespace Rogue.NET.Core.Processing.Service
         public void IssueCommand(LevelCommandData commandData)
         {
             // Check for player altered states that cause automatic player actions
-            var nextAction = _scenarioEngine.ProcessAlteredPlayerState();
+            var nextAction = _scenarioProcessor.ProcessAlteredPlayerState();
             if (nextAction == LevelContinuationAction.ProcessTurn ||
                 nextAction == LevelContinuationAction.ProcessTurnNoRegeneration)
             {
@@ -138,66 +134,66 @@ namespace Rogue.NET.Core.Processing.Service
             {
                 case LevelCommandType.Attack:
                     {
-                        _scenarioEngine.Attack(commandData.Direction);
+                        _scenarioProcessor.Attack(commandData.Direction);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
                 case LevelCommandType.Throw:
                     {
-                        nextAction = _scenarioEngine.Throw(commandData.Id);
+                        nextAction = _scenarioProcessor.Throw(commandData.Id);
                     }
                     break;
                 case LevelCommandType.ToggleDoor:
                     {
-                        _layoutEngine.ToggleDoor(commandData.Direction, player.Location);
-                        nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
+                        //_scenarioProcessor.ToggleDoor(commandData.Direction, player.Location);
+                        //nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
                 case LevelCommandType.Move:
                     {
-                        var obj = _scenarioEngine.Move(commandData.Direction);
+                        var obj = _scenarioProcessor.Move(commandData.Direction);
                         if (obj is Consumable || obj is Equipment)
-                            _contentEngine.StepOnItem(player, (ItemBase)obj);
+                            _contentProcessor.StepOnItem(player, (ItemBase)obj);
                         else if (obj is DoodadBase)
-                            _contentEngine.StepOnDoodad(player, (DoodadBase)obj);
+                            _contentProcessor.StepOnDoodad(player, (DoodadBase)obj);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
                 case LevelCommandType.Search:
                     {
-                        _layoutEngine.Search(_modelService.Player.Location);
+                        _scenarioProcessor.Search();
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
                 case LevelCommandType.InvokeSkill:
                     {
-                        nextAction = _scenarioEngine.InvokePlayerSkill();
+                        nextAction = _scenarioProcessor.InvokePlayerSkill();
                     }
                     break;
                 case LevelCommandType.InvokeDoodad:
                     {
-                        nextAction = _scenarioEngine.InvokeDoodad();
+                        nextAction = _scenarioProcessor.InvokeDoodad();
                     }
                     break;
                 case LevelCommandType.Consume:
                     {
-                        nextAction = _scenarioEngine.Consume(commandData.Id);
+                        nextAction = _scenarioProcessor.Consume(commandData.Id);
                     }
                     break;
                 case LevelCommandType.Drop:
                     {
-                        _scenarioEngine.Drop(commandData.Id);
+                        _scenarioProcessor.Drop(commandData.Id);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
                 case LevelCommandType.Fire:
                     {
-                        nextAction = _scenarioEngine.Fire();
+                        nextAction = _scenarioProcessor.Fire();
                     }
                     break;
                 case LevelCommandType.Equip:
                     {
-                        if (_contentEngine.Equip(commandData.Id))
+                        if (_contentProcessor.Equip(commandData.Id))
                             nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
@@ -205,31 +201,31 @@ namespace Rogue.NET.Core.Processing.Service
 #if DEBUG
                 case LevelCommandType.DebugSimulateNext:
                     {
-                        _debugEngine.SimulateAdvanceToNextLevel();
+                        _debugProcessor.SimulateAdvanceToNextLevel();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelCommandType.DebugNext:
                     {
-                        _debugEngine.AdvanceToNextLevel();
+                        _debugProcessor.AdvanceToNextLevel();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelCommandType.DebugIdentifyAll:
                     {
-                        _debugEngine.IdentifyAll();
+                        _debugProcessor.IdentifyAll();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelCommandType.DebugExperience:
                     {
-                        _debugEngine.GivePlayerExperience();
+                        _debugProcessor.GivePlayerExperience();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelCommandType.DebugRevealAll:
                     {
-                        _debugEngine.RevealAll();
+                        _debugProcessor.RevealAll();
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
@@ -257,35 +253,35 @@ namespace Rogue.NET.Core.Processing.Service
                         var effectCommand = command as PlayerAlterationEffectCommandData;
 
                         if (effectCommand.Effect is EquipmentEnhanceAlterationEffect)
-                            _scenarioEngine.EnhanceEquipment(effectCommand.Effect as EquipmentEnhanceAlterationEffect, command.Id);
+                            _scenarioProcessor.EnhanceEquipment(effectCommand.Effect as EquipmentEnhanceAlterationEffect, command.Id);
 
                         else
                             throw new Exception("Unknonw IPlayerAlterationEffectCommandAction.Effect");
                     }
                     break;
                 case PlayerCommandType.Uncurse:
-                    _scenarioEngine.Uncurse(command.Id);
+                    _scenarioProcessor.Uncurse(command.Id);
                     break;
                 case PlayerCommandType.Identify:
-                    _scenarioEngine.Identify(command.Id);
+                    _scenarioProcessor.Identify(command.Id);
                     break;
                 case PlayerCommandType.ActivateSkillSet:
-                    _scenarioEngine.ToggleActiveSkillSet(command.Id, true);
+                    _scenarioProcessor.ToggleActiveSkillSet(command.Id, true);
                     break;
                 case PlayerCommandType.CycleSkillSet:
-                    _scenarioEngine.CycleActiveSkillSet();
+                    _scenarioProcessor.CycleActiveSkillSet();
                     break;
                 case PlayerCommandType.SelectSkill:
-                    _scenarioEngine.SelectSkill(command.Id);
+                    _scenarioProcessor.SelectSkill(command.Id);
                     break;
                 case PlayerCommandType.UnlockSkill:
-                    _scenarioEngine.UnlockSkill(command.Id);
+                    _scenarioProcessor.UnlockSkill(command.Id);
                     break;
                 case PlayerCommandType.PlayerAdvancement:
                     {
                         var advancementCommand = command as PlayerAdvancementCommandData;
 
-                        _scenarioEngine.PlayerAdvancement(advancementCommand.Hp,
+                        _scenarioProcessor.PlayerAdvancement(advancementCommand.Hp,
                                                           advancementCommand.Stamina,
                                                           advancementCommand.Strength, 
                                                           advancementCommand.Agility,
@@ -308,7 +304,7 @@ namespace Rogue.NET.Core.Processing.Service
                         var effectCommand = command as PlayerAlterationEffectMultiItemCommandData;
 
                         if (effectCommand.Effect is TransmuteAlterationEffect)
-                            _alterationEngine.ProcessTransmute(effectCommand.Effect as TransmuteAlterationEffect, command.ItemIds);
+                            _alterationProcessor.ProcessTransmute(effectCommand.Effect as TransmuteAlterationEffect, command.ItemIds);
 
                         else
                             throw new Exception("Unknonw IPlayerAlterationEffectCommandAction.Effect");
@@ -322,7 +318,7 @@ namespace Rogue.NET.Core.Processing.Service
         private void EndOfTurn(bool regenerate)
         {
             // Queue Enemy Reactions
-            _contentEngine.CalculateCharacterReactions();
+            _contentProcessor.CalculateCharacterReactions();
 
 
             _backendQueue.Enqueue(new LevelProcessingAction()
@@ -343,10 +339,10 @@ namespace Rogue.NET.Core.Processing.Service
             switch (workItem.Type)
             {
                 case LevelProcessingActionType.EndOfTurn:
-                    _rogueEngines.ForEach(engine => engine.ApplyEndOfTurn(true));
+                    _rogueProcessors.ForEach(processor => processor.ApplyEndOfTurn(true));
                     break;
                 case LevelProcessingActionType.EndOfTurnNoRegenerate:
-                    _rogueEngines.ForEach(engine => engine.ApplyEndOfTurn(false));
+                    _rogueProcessors.ForEach(processor => processor.ApplyEndOfTurn(false));
                     break;
                 case LevelProcessingActionType.Reaction:
                     // Enemy not available (Reasons)
@@ -360,10 +356,10 @@ namespace Rogue.NET.Core.Processing.Service
                     // So, must check for the enemy to be available. The way to avoid this is
                     // to either do pruning of the queues; or to do full multi-threaded decoupling (lots of work).
                     if (_modelService.Level.NonPlayerCharacters.Any(x => x.Id == workItem.Actor.Id))
-                        _contentEngine.ProcessCharacterReaction(_modelService.Level.NonPlayerCharacters.First(x => x.Id == workItem.Actor.Id));
+                        _contentProcessor.ProcessCharacterReaction(_modelService.Level.NonPlayerCharacters.First(x => x.Id == workItem.Actor.Id));
                     break;
                 case LevelProcessingActionType.CharacterAlteration:
-                    _alterationEngine.Process(workItem.Actor, workItem.AlterationAffectedCharacters, workItem.Alteration);
+                    _alterationProcessor.Process(workItem.Actor, workItem.AlterationAffectedCharacters, workItem.Alteration);
                     break;
             }
             return true;

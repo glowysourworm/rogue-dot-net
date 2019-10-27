@@ -205,6 +205,34 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
+        /// Returns elements that are distinct using the specified equality comparer. NOTE*** Relies on object.Equals() to compare
+        /// references (or values).
+        /// </summary>
+        public static IEnumerable<T> DistinctWith<T>(this IEnumerable<T> collection, Func<T, T, bool> equalityComparer)
+        {
+            var result = new List<T>();
+
+            foreach (var item1 in collection)
+            {
+                var found = false;
+
+                foreach (var item2 in result)
+                {
+                    if (equalityComparer(item1, item2))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    result.Add(item1);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Returns minimum of a collection by a given selector
         /// </summary>
         public static T MinBy<T, V>(this IEnumerable<T> collection, Func<T, V> selector) where V : IComparable

@@ -42,15 +42,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         int _levelWidth;
         int _levelHeight;
 
-        double _zoomFactor;
-
         // Targeting animation (singular)
         IAnimationPlayer _targetAnimationPlayer;
 
-        // Elements for the layout
-        Path _wallElement;
-        Path _doorElement;
-        Path _revealedElement;
+        // Layers
+        DrawingBrush _visibleLayer;
+        DrawingBrush _exploredLayer;
+        DrawingBrush _revealedLayer;
+        DrawingBrush _terrainLayer;
 
         // Opacity Masks
         DrawingBrush _exploredDrawingBrush;
@@ -67,18 +66,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             _scenarioUIGeometryService = scenarioUIGeometryService;
             _scenarioUIService = scenarioUIService;
 
-            this.WallLayout = new Path();
-            this.DoorLayout = new Path();
-            this.RevealedLayout = new Path();
-
-            this.WallLayout.HorizontalAlignment = HorizontalAlignment.Stretch;
-            this.DoorLayout.HorizontalAlignment = HorizontalAlignment.Stretch;
-            this.RevealedLayout.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-            this.WallLayout.VerticalAlignment = VerticalAlignment.Stretch;
-            this.DoorLayout.VerticalAlignment = VerticalAlignment.Stretch;
-            this.RevealedLayout.VerticalAlignment = VerticalAlignment.Stretch;
-
             this.Animations = new ObservableCollection<FrameworkElement>();
             this.Auras = new ObservableCollection<LevelCanvasShape>();
             this.Doodads = new ObservableCollection<LevelCanvasImage>();
@@ -86,17 +73,29 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.Characters = new ObservableCollection<LevelCanvasImage>();
             this.LightRadii = new ObservableCollection<LevelCanvasShape>();
 
+            this.VisibleLayer = new DrawingBrush();
+            this.ExploredLayer = new DrawingBrush();
+            this.RevealedLayer = new DrawingBrush();
+            this.TerrainLayer = new DrawingBrush();
             this.ExploredOpacityMask = new DrawingBrush();
             this.RevealedOpacityMask = new DrawingBrush();
             this.VisibleOpacityMask = new DrawingBrush();
 
+            this.VisibleLayer.ViewboxUnits = BrushMappingMode.Absolute;
+            this.ExploredLayer.ViewboxUnits = BrushMappingMode.Absolute;
+            this.RevealedLayer.ViewboxUnits = BrushMappingMode.Absolute;
+            this.TerrainLayer.ViewboxUnits = BrushMappingMode.Absolute;
             this.ExploredOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
-            this.VisibleOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
             this.RevealedOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
+            this.VisibleOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
 
+            this.VisibleLayer.ViewportUnits = BrushMappingMode.Absolute;
+            this.ExploredLayer.ViewportUnits = BrushMappingMode.Absolute;
+            this.RevealedLayer.ViewportUnits = BrushMappingMode.Absolute;
+            this.TerrainLayer.ViewportUnits = BrushMappingMode.Absolute;
             this.ExploredOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
-            this.VisibleOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
             this.RevealedOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
+            this.VisibleOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
 
             // Defaults for canvas size
             this.LevelHeight = 500;
@@ -104,20 +103,25 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         }
 
         #region (public) Properties
-        public Path WallLayout
+        public DrawingBrush VisibleLayer
         {
-            get { return _wallElement; }
-            set { this.RaiseAndSetIfChanged(ref _wallElement, value); }
+            get { return _visibleLayer; }
+            set { this.RaiseAndSetIfChanged(ref _visibleLayer, value); }
         }
-        public Path DoorLayout
+        public DrawingBrush ExploredLayer
         {
-            get { return _doorElement; }
-            set { this.RaiseAndSetIfChanged(ref _doorElement, value); }
+            get { return _exploredLayer; }
+            set { this.RaiseAndSetIfChanged(ref _exploredLayer, value); }
         }
-        public Path RevealedLayout
+        public DrawingBrush RevealedLayer
         {
-            get { return _revealedElement; }
-            set { this.RaiseAndSetIfChanged(ref _revealedElement, value); }
+            get { return _revealedLayer; }
+            set { this.RaiseAndSetIfChanged(ref _revealedLayer, value); }
+        }
+        public DrawingBrush TerrainLayer
+        {
+            get { return _terrainLayer; }
+            set { this.RaiseAndSetIfChanged(ref _terrainLayer, value); }
         }
         public DrawingBrush ExploredOpacityMask
         {
@@ -172,7 +176,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// <summary>
         /// Draws entire layout and applies visibility
         /// </summary>
-        public void UpdateLayout(CellRectangle levelBounds, Color wallColor, Color doorColor)
+        public void UpdateLayout(RegionBoundary levelBounds, Color wallColor, Color doorColor)
         {
             var bounds = _scenarioUIGeometryService.Cell2UIRect(levelBounds);
 
@@ -181,30 +185,43 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             Geometry revealedGeometry = null;
 
-            this.WallLayout.Data = _scenarioUIService.CreateWallLayout(out revealedGeometry);
-            this.WallLayout.Fill = Brushes.Black;
-            this.WallLayout.Stroke = new SolidColorBrush(wallColor);
-            this.WallLayout.StrokeEndLineCap = PenLineCap.Square;
-            this.WallLayout.StrokeStartLineCap = PenLineCap.Square;
-            this.WallLayout.StrokeLineJoin = PenLineJoin.Miter;
-            this.WallLayout.StrokeThickness = 2;
+            //this.WallLayout.Data = _scenarioUIService.CreateWallLayout(out revealedGeometry);
+            //this.WallLayout.Fill = Brushes.Black;
+            //this.WallLayout.Stroke = new SolidColorBrush(wallColor);
+            //this.WallLayout.StrokeEndLineCap = PenLineCap.Square;
+            //this.WallLayout.StrokeStartLineCap = PenLineCap.Square;
+            //this.WallLayout.StrokeLineJoin = PenLineJoin.Miter;
+            //this.WallLayout.StrokeThickness = 2;
 
-            this.DoorLayout.Data = _scenarioUIService.CreateDoorLayout();
-            this.DoorLayout.Fill = Brushes.Transparent;
-            this.DoorLayout.Stroke = new SolidColorBrush(doorColor);
-            this.DoorLayout.StrokeThickness = 3;
+            //this.DoorLayout.Data = _scenarioUIService.CreateDoorLayout();
+            //this.DoorLayout.Fill = Brushes.Transparent;
+            //this.DoorLayout.Stroke = new SolidColorBrush(doorColor);
+            //this.DoorLayout.StrokeThickness = 3;
 
-            this.RevealedLayout.Data = revealedGeometry;
-            this.RevealedLayout.Fill = Brushes.Transparent;
-            this.RevealedLayout.Stroke = Brushes.White;
-            this.RevealedLayout.StrokeEndLineCap = PenLineCap.Square;
-            this.RevealedLayout.StrokeStartLineCap = PenLineCap.Square;
-            this.RevealedLayout.StrokeLineJoin = PenLineJoin.Miter;
-            this.RevealedLayout.StrokeThickness = 2;
+            //this.RevealedLayout.Data = revealedGeometry;
+            //this.RevealedLayout.Fill = Brushes.Transparent;
+            //this.RevealedLayout.Stroke = Brushes.White;
+            //this.RevealedLayout.StrokeEndLineCap = PenLineCap.Square;
+            //this.RevealedLayout.StrokeStartLineCap = PenLineCap.Square;
+            //this.RevealedLayout.StrokeLineJoin = PenLineJoin.Miter;
+            //this.RevealedLayout.StrokeThickness = 2;
 
-            OnPropertyChanged(() => this.WallLayout);
-            OnPropertyChanged(() => this.DoorLayout);
-            OnPropertyChanged(() => this.RevealedLayout);
+            // Set DrawingBrush.Drawing = DrawingGroup. Each Drawing in DrawingGroup will be a terrain tile.
+            //
+            // Build Terrain Drawing
+            DrawingGroup terrainDrawing, visibleDrawing, exploredDrawing, revealedDrawing;
+
+            _scenarioUIService.CreateLayoutDrawings(out visibleDrawing, out exploredDrawing, out revealedDrawing, out terrainDrawing);
+
+            this.VisibleLayer.Drawing = visibleDrawing;
+            this.ExploredLayer.Drawing = exploredDrawing;
+            this.RevealedLayer.Drawing = revealedDrawing;
+            this.TerrainLayer.Drawing = terrainDrawing;
+            
+            OnPropertyChanged(() => this.VisibleLayer);
+            OnPropertyChanged(() => this.ExploredLayer);
+            OnPropertyChanged(() => this.RevealedLayer);
+            OnPropertyChanged(() => this.TerrainLayer);
         }
 
         public void UpdateContent(IEnumerable<ScenarioObject> contents, Player player)
@@ -327,19 +344,18 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var visibleGeometry = _scenarioUIService.CreateGeometry(visibleLocations);
             var revealedGeometry = _scenarioUIService.CreateGeometry(revealedLocations);
 
-
             // Top Layer = Visible Mask ^ Explored Mask ^ Revealed Mask
             this.VisibleOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
                                                                   new Pen(Brushes.Transparent, 0),
                                                                   visibleGeometry);
 
             // Middle Layer = Explored Geometry
-            this.ExploredOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground, 
+            this.ExploredOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
                                                                    new Pen(Brushes.Transparent, 0),
                                                                    exploredGeometry);
 
             // Bottom Layer = Revealed Mask
-            this.RevealedOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground, 
+            this.RevealedOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
                                                                    new Pen(Brushes.Transparent, 0),
                                                                    revealedGeometry);
 
@@ -388,13 +404,25 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
         protected void OnLevelDimensionChange()
         {
+            // Fix Drawing Brush Properties
+            //
+            this.VisibleLayer.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.ExploredLayer.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.RevealedLayer.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.TerrainLayer.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+
             this.ExploredOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.VisibleOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
             this.RevealedOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.VisibleOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+
+            this.VisibleLayer.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.ExploredLayer.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.RevealedLayer.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.TerrainLayer.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
 
             this.ExploredOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.VisibleOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
             this.RevealedOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.VisibleOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
         }
         #endregion
 

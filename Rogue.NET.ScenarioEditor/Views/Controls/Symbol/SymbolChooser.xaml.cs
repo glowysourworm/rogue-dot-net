@@ -77,7 +77,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         private void Initialize(SymbolDetailsTemplateViewModel viewModel)
         {
             if (viewModel.SymbolType != SymbolType.Symbol &&
-                viewModel.SymbolType != SymbolType.OrientedSymbol)
+                viewModel.SymbolType != SymbolType.OrientedSymbol &&
+                viewModel.SymbolType != SymbolType.Terrain)
                 return;
 
             _loading = true;
@@ -132,12 +133,19 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                     // Input color mask indicator only. The HSL parameters are based at zero because they're effects
                     return SvgSymbolViewModel.CreateSymbol(imageSource, symbol, 0, 0, 0, false);
                 }
-                else // Oriented Symbol
+                else if (type == SymbolType.OrientedSymbol)
                 {
                     var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateOrientedSymbol(symbol, symbol, 0, 0, 0, false), 2.0);
 
                     // Input color mask indicator only. The HSL parameters are based at zero because they're effects
                     return SvgSymbolViewModel.CreateOrientedSymbol(imageSource, symbol, 0, 0, 0, false);
+                }
+                else // Terrain Symbol
+                {
+                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateOrientedSymbol(symbol, symbol, 0, 0, 0, false), 2.0);
+
+                    // Input color mask indicator only. The HSL parameters are based at zero because they're effects
+                    return SvgSymbolViewModel.CreateTerrainSymbol(imageSource, symbol, 0, 0, 0, false);
                 }
             });
         }
@@ -183,6 +191,19 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
                             // Add to result
                             result.Add(SvgSymbolViewModel.CreateOrientedSymbol(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
+                        }
+                        break;
+                    case SymbolType.Terrain:
+                        {
+                            // Create symbol type image
+                            var scenarioImage = ScenarioImage.CreateTerrainSymbol(viewModel.Symbol, viewModel.Symbol, hue,
+                                                                                   viewModel.Saturation, viewModel.Lightness, useColorMask);
+
+                            // Fetch image source
+                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0);
+
+                            // Add to result
+                            result.Add(SvgSymbolViewModel.CreateTerrainSymbol(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
                         }
                         break;
                 }

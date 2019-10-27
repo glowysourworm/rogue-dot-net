@@ -15,8 +15,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         public DistanceLocation(GridLocation source, GridLocation location)
         {
             this.Location = location;
-            this.RoguianDistance = Calculator.RoguianDistance(source, location);
-            this.EuclideanDistance = Calculator.EuclideanDistance(source, location);
+            this.RoguianDistance = RogueCalculator.RoguianDistance(source, location);
+            this.EuclideanDistance = RogueCalculator.EuclideanDistance(source, location);
         }
     }
 }

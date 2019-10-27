@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Linq;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Processing.Model.Extension;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -11,11 +12,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     public class LevelGrid : ISerializable
     {
         private Cell[,] _grid;
-        private CellRectangle _bounds;
+        private RegionBoundary _bounds;
 
         private Cell[] _doorArray;
         private Cell[] _cellArray;
-        private Room[] _roomArray;
+        private Region[] _roomArray;
+        private Region[] _terrainArray;
 
         #region Properties / Indexers
         public Cell this[int column, int row]
@@ -41,27 +43,30 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 _doorArray = null;
             }
         }
-        public CellRectangle Bounds
+        public RegionBoundary Bounds
         {
             get { return _bounds; }
         }
-        public IEnumerable<Room> Rooms { get { return _roomArray; } }
+        public IEnumerable<Region> Rooms { get { return _roomArray; } }
+        public IEnumerable<Region> Terrain { get { return _terrainArray; } }
         #endregion
 
         /// <summary>
         /// Constructs LevelGrid from the provided 2D cell array and the room data array. The cells
         /// in the cell array are by reference; and are not re-created. The room data array contains
         /// cell points that are treated as a value type. These are recreated during serialization (not
-        /// unique) apart from the cell reference objects.
+        /// unique) apart from the cell reference objects. The terrain array follows the same pattern.
         /// 
         /// USAGE:  Create Cell[,] first with room cells already in it. Also, create Room[] first with
-        ///         all data prepared. Corridors may be created afterwards using the public indexer.
+        ///         all data prepared. Also, create the terrain array with all data prepared. Corridors 
+        ///         may be created afterwards using the public indexer.
         /// </summary>
-        public LevelGrid(Cell[,] grid, Room[] rooms)
+        public LevelGrid(Cell[,] grid, Region[] roomRegions, Region[] terrainRegions)
         {
             _grid = grid;
-            _bounds = new CellRectangle(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
-            _roomArray = rooms;
+            _bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
+            _roomArray = roomRegions;
+            _terrainArray = terrainRegions;
         }
 
         #region ISerializable
@@ -71,11 +76,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var height = info.GetInt32("Height");
             var count = info.GetInt32("Count");
             var roomCount = info.GetInt32("RoomCount");
+            var terrainCount = info.GetInt32("TerrainCount");
 
             _grid = new Cell[width, height];
-            _bounds = new CellRectangle(new GridLocation(0, 0), width, height);
+            _bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
 
-            var roomData = new List<Room>();
+            var roomData = new List<Region>();
+            var terrainData = new List<Region>();
 
             // Populate cell grid
             for (int i=0;i<count;i++)
@@ -88,12 +95,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             // Populate rooms
             for (int i = 0; i < roomCount; i++)
             {
-                var room = (Room)info.GetValue("Room" + i.ToString(), typeof(Room));
+                var room = (Region)info.GetValue("Room" + i.ToString(), typeof(Region));
 
                 roomData.Add(room);
             }
 
+            // Populate terrain
+            for (int i = 0; i < terrainCount; i++)
+            {
+                var terrain = (Region)info.GetValue("Terrain" + i.ToString(), typeof(Region));
+
+                terrainData.Add(terrain);
+            }
+
             _roomArray = roomData.ToArray();
+            _terrainArray = terrainData.ToArray();
 
             // Leave these invalid until iteration is necessary
             _doorArray = null;
@@ -109,12 +125,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("Height", _grid.GetLength(1));
             info.AddValue("Count", _cellArray.Length);
             info.AddValue("RoomCount", _roomArray.Length);
+            info.AddValue("TerrainCount", _terrainArray.Length);
 
             for (int i = 0; i < _cellArray.Length; i++)
                 info.AddValue("Cell" + i.ToString(), _cellArray[i]);
 
             for (int i = 0; i < _roomArray.Length; i++)
                 info.AddValue("Room" + i.ToString(), _roomArray[i]);
+
+            for (int i = 0; i < _terrainArray.Length; i++)
+                info.AddValue("Terrain" + i.ToString(), _terrainArray[i]);
         }
         #endregion
 
@@ -158,6 +178,33 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 RebuildArrays();
 
             return _cellArray;
+        }
+        #endregion
+
+        #region (public) Extension Method Hooks (These prevent exposing the Cell[,])
+        public IEnumerable<GridLocation> GetAdjacentLocations(GridLocation location)
+        {
+            return _grid.GetAdjacentElements(location.Column, location.Row).Select(cell => cell.Location);
+        }
+        public IEnumerable<GridLocation> GetCardinarlAdjacentLocations(GridLocation location)
+        {
+            return _grid.GetCardinalAdjacentElements(location.Column, location.Row).Select(cell => cell.Location);
+        }
+        public IEnumerable<Cell> GetAdjacentCells(Cell cell)
+        {
+            return _grid.GetAdjacentElements(cell.Location.Column, cell.Location.Row);
+        }
+        public IEnumerable<Cell> GetCardinarlAdjacentCells(Cell cell)
+        {
+            return _grid.GetCardinalAdjacentElements(cell.Location.Column, cell.Location.Row);
+        }
+        public Cell GetOffDiagonalCell1(GridLocation location, Compass direction, out Compass cardinalDirection1)
+        {
+            return _grid.GetOffDiagonalCell1(location.Column, location.Row, direction, out cardinalDirection1);
+        }
+        public Cell GetOffDiagonalCell2(GridLocation location, Compass direction, out Compass cardinalDirection2)
+        {
+            return _grid.GetOffDiagonalCell2(location.Column, location.Row, direction, out cardinalDirection2);
         }
         #endregion
     }

@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Common.Constant;
-using Rogue.NET.Core.Media.Animation;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
@@ -9,7 +8,7 @@ using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
-using Rogue.NET.Core.Processing.Model.Content.Interface;
+using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
 using Rogue.NET.Scenario.Processing.Service.Interface;
@@ -28,7 +27,7 @@ namespace Rogue.NET.Scenario.Processing.Service
     {
         readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly IScenarioResourceService _scenarioResourceService;
-        readonly IAlterationProcessor _alterationProcessor;
+        readonly IAlterationCalculator _alterationCalculator;
         readonly IAnimationSequenceCreator _animationSequenceCreator;
         readonly IModelService _modelService;
 
@@ -36,47 +35,91 @@ namespace Rogue.NET.Scenario.Processing.Service
         public ScenarioUIService(
                 IScenarioUIGeometryService scenarioUIGeometryService,
                 IScenarioResourceService scenarioResourceService,
-                IAlterationProcessor alterationProcessor,
+                IAlterationCalculator alterationCalculator,
                 IAnimationSequenceCreator animationSequenceCreator,
                 IModelService modelService)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
             _scenarioResourceService = scenarioResourceService;
-            _alterationProcessor = alterationProcessor;
+            _alterationCalculator = alterationCalculator;
             _animationSequenceCreator = animationSequenceCreator;
             _modelService = modelService;
         }
 
-        public Geometry CreateWallLayout(out Geometry revealedGeometry)
+        public void CreateLayoutDrawings(out DrawingGroup visibleDrawing,
+                                         out DrawingGroup exploredDrawing,
+                                         out DrawingGroup revealedDrawing,
+                                         out DrawingGroup terrainDrawing)
         {
-            var wallsGeometry = new StreamGeometry();
-            revealedGeometry = new StreamGeometry();
+            visibleDrawing = new DrawingGroup();
+            exploredDrawing = new DrawingGroup();
+            revealedDrawing = new DrawingGroup();
+            terrainDrawing = new DrawingGroup();
 
-            using (var stream = wallsGeometry.Open())
+            var visibleCellBrush = new SolidColorBrush(Color.FromArgb(0x4F, 0x00, 0x0F, 0xFF));
+            var exploredCellBrush = new SolidColorBrush(Color.FromArgb(0x2F, 0x00, 0x00, 0xFF));
+            var revealedCellBrush = new SolidColorBrush(Color.FromArgb(0x0F, 0xFF, 0xFF, 0xFF));
+
+            var visibleWallCellBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x3F, 0x3F, 0x3F));
+            var exploredWallCellBrush = new SolidColorBrush(Color.FromArgb(0xAF, 0x3F, 0x3F, 0x3F));
+            var revealedWallCellBrush = new SolidColorBrush(Color.FromArgb(0x6F, 0x3F, 0x3F, 0x3F));
+
+            var visibleDoorCellBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xAF, 0x8F, 0x3F));
+            var exploredDoorCellBrush = new SolidColorBrush(Color.FromArgb(0xAF, 0xAF, 0x8F, 0x3F));
+            var revealedDoorCellBrush = new SolidColorBrush(Color.FromArgb(0x6F, 0xAF, 0x8F, 0x3F));
+
+            foreach (var cell in _modelService.Level.Grid.GetCells())
             {
-                using (var revealedStream = ((StreamGeometry)revealedGeometry).Open())
+                var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
+                var geometry = new RectangleGeometry(rect);
+
+                // Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
+                if (_modelService.Level.Grid.Rooms.Any(x => x.Cells.Any(z => z == cell.Location)))
                 {
-                    foreach (var cell in _modelService.Level.Grid.GetCells())
-                    {
-                        var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
-                        var invisibleDoors = cell.InVisibleDoors;
-
-                        stream.BeginFigure(rect.TopLeft, false, false);
-                        stream.LineTo(rect.TopRight, (cell.Walls & Compass.N) != 0 || (invisibleDoors & Compass.N) != 0, true);
-                        stream.LineTo(rect.BottomRight, (cell.Walls & Compass.E) != 0 || (invisibleDoors & Compass.E) != 0, true);
-                        stream.LineTo(rect.BottomLeft, (cell.Walls & Compass.S) != 0 || (invisibleDoors & Compass.S) != 0, true);
-                        stream.LineTo(rect.TopLeft, (cell.Walls & Compass.W) != 0 || (invisibleDoors & Compass.W) != 0, true);
-
-                        revealedStream.BeginFigure(rect.TopLeft, false, false);
-                        revealedStream.LineTo(rect.TopRight, (cell.Walls & Compass.N) != 0 || (invisibleDoors & Compass.N) != 0, true);
-                        revealedStream.LineTo(rect.BottomRight, (cell.Walls & Compass.E) != 0 || (invisibleDoors & Compass.E) != 0, true);
-                        revealedStream.LineTo(rect.BottomLeft, (cell.Walls & Compass.S) != 0 || (invisibleDoors & Compass.S) != 0, true);
-                        revealedStream.LineTo(rect.TopLeft, (cell.Walls & Compass.W) != 0 || (invisibleDoors & Compass.W) != 0, true);
-                    }
+                    visibleDrawing.Children.Add(new GeometryDrawing(visibleCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    exploredDrawing.Children.Add(new GeometryDrawing(exploredCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    revealedDrawing.Children.Add(new GeometryDrawing(revealedCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
                 }
-            }
 
-            return wallsGeometry;
+                // Walls - Add default wall to layers { Visible, Explored, Revealed } for rendering
+                if (cell.IsWall)
+                {
+                    visibleDrawing.Children.Add(new GeometryDrawing(visibleWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    exploredDrawing.Children.Add(new GeometryDrawing(exploredWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    revealedDrawing.Children.Add(new GeometryDrawing(revealedWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                }
+
+                // Doors
+                if (cell.IsDoor)
+                {
+                    visibleDrawing.Children.Add(new GeometryDrawing(visibleDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    exploredDrawing.Children.Add(new GeometryDrawing(exploredDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    revealedDrawing.Children.Add(new GeometryDrawing(revealedDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                }
+
+                // Terrain
+                // if (cell.TerrainValue != 0)
+                // {
+
+                //terrainStream.BeginFigure(rect.TopLeft, true, true);
+                //terrainStream.LineTo(rect.TopRight, true, true);
+                //terrainStream.LineTo(rect.BottomRight, true, true);
+                //terrainStream.LineTo(rect.BottomLeft, true, true);
+
+                // var brush = new SolidColorBrush(cell.TerrainValue < 0 ? Colors.Blue : Colors.Red);
+                // brush.Opacity = cell.TerrainValue;
+
+                //terrainDrawing.Children.Add(new ImageDrawing(_scenarioResourceService.GetImageSource(new ScenarioImage()
+                //{
+                //    SymbolType = SymbolType.Terrain,
+                //    SymbolHue = cell.TerrainValue * Math.PI,
+                //    SymbolLightness = 0,
+                //    SymbolSaturation = 0,
+                //    Symbol = "Dot"
+
+                //}, 1.0), rect));
+                // }
+            }
         }
 
         public Geometry CreateDoorLayout()
@@ -88,14 +131,15 @@ namespace Rogue.NET.Scenario.Processing.Service
             {
                 foreach (var cell in _modelService.Level.Grid.GetDoors())
                 {
-                    var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
-                    var visibleDoors = cell.VisibleDoors;
+                    // TODO:TERRAIN
+                    //var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
+                    //var visibleDoors = cell.VisibleDoors;
 
-                    stream.BeginFigure(rect.TopLeft, false, false);
-                    stream.LineTo(rect.TopRight, (visibleDoors & Compass.N) != 0, true);
-                    stream.LineTo(rect.BottomRight, (visibleDoors & Compass.E) != 0, true);
-                    stream.LineTo(rect.BottomLeft, (visibleDoors & Compass.S) != 0, true);
-                    stream.LineTo(rect.TopLeft, (visibleDoors & Compass.W) != 0, true);
+                    //stream.BeginFigure(rect.TopLeft, false, false);
+                    //stream.LineTo(rect.TopRight, (visibleDoors & Compass.N) != 0, true);
+                    //stream.LineTo(rect.BottomRight, (visibleDoors & Compass.E) != 0, true);
+                    //stream.LineTo(rect.BottomLeft, (visibleDoors & Compass.S) != 0, true);
+                    //stream.LineTo(rect.TopLeft, (visibleDoors & Compass.W) != 0, true);
                 }
             }
 
@@ -122,6 +166,25 @@ namespace Rogue.NET.Scenario.Processing.Service
             return result;
         }
 
+        public DrawingGroup CreateTerrainDrawing()
+        {
+            var group = new DrawingGroup();
+
+            foreach (var cell in _modelService.Level.Grid.Terrain.SelectMany(x => x.Cells.Select(z => _modelService.Level.Grid[z.Column, z.Row])))
+            {
+                //var brush = new SolidColorBrush(ColorFilter.ShiftHSL(Colors.Red, Math.PI * cell.TerrainValue, 0, 0));
+                var brush = new SolidColorBrush(cell.TerrainValue < 0 ? Colors.Blue : Colors.Yellow);
+                brush.Opacity = Math.Abs(cell.TerrainValue);
+                //var brush = new SolidColorBrush(Colors.LightGray);
+                //brush.Opacity = cell.TerrainValue;
+                var geometry = new RectangleGeometry(_scenarioUIGeometryService.Cell2UIRect(cell.Location, false));
+
+                group.Children.Add(new GeometryDrawing(brush, new Pen(Brushes.Transparent, 0), geometry));
+            }
+
+            return group;
+        }
+
         public void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject)
         {
             // Calculate visible-to-player
@@ -143,7 +206,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             var isCharacterInVisibleToPlayer = false;
 
             // Calculate effective symbol
-            var effectiveSymbol = (scenarioObject is Character) ? _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Character) :
+            var effectiveSymbol = (scenarioObject is Character) ? _alterationCalculator.CalculateEffectiveSymbol(scenarioObject as Character) :
                                                                   scenarioObject;
 
             // Non-Player Characters
@@ -219,7 +282,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             var lightRadiusUI = character.GetLightRadius() * ModelConstants.CellHeight;
 
             // Effective Character Symbol
-            var effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(character);
+            var effectiveSymbol = _alterationCalculator.CalculateEffectiveSymbol(character);
 
             // Make the full size of the level - then apply the level opacity mask drawing
             (canvasShape.RenderedGeometry as RectangleGeometry).Rect = levelUIBounds;

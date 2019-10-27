@@ -106,6 +106,19 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
                 UseColorMask = useColorMask
             };
         }
+        public static SvgSymbolViewModel CreateTerrainSymbol(ImageSource imageSource, string symbol, double hue, double saturation, double lightness, bool useColorMask)
+        {
+            return new SvgSymbolViewModel()
+            {
+                SymbolType = SymbolType.Terrain,
+                ImageSource = imageSource,
+                Symbol = symbol,
+                Hue = hue,
+                Saturation = saturation,
+                Lightness = lightness,
+                UseColorMask = useColorMask
+            };
+        }
         public static SvgSymbolViewModel CreateGameSymbol(ImageSource imageSource, string symbol)
         {
             return new SvgSymbolViewModel()

@@ -152,8 +152,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                         b.GradientOrigin = new Point(this.GradientStartX, this.GradientStartY);
                         double x = this.GradientEndX - this.GradientStartX;
                         double y = this.GradientEndY - this.GradientStartY;
-                        b.RadiusX = Math.Abs(x);
-                        b.RadiusY = Math.Abs(y);
+                        b.RadiusX = System.Math.Abs(x);
+                        b.RadiusY = System.Math.Abs(y);
                         foreach (GradientStopTemplate t in this.GradientStops)
                             b.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(t.GradientColor), t.GradientOffset));
                         return b;

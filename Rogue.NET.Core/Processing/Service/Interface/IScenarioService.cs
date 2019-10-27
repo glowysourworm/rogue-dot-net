@@ -5,7 +5,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
 {
     /// <summary>
     /// Component has the responsibility of providing methods to interact with scenario model via 
-    /// the Engine components
+    /// the processor components
     /// </summary>
     public interface IScenarioService
     {

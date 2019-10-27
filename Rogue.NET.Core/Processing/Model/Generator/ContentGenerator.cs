@@ -76,8 +76,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             // Create lists to know what cells are free
             var rooms = level.Grid.Rooms.ToList();
-            var freeCells = level.Grid.GetCells().Select(x => x.Location).ToList();
-            var freeRoomCells = level.Grid.Rooms.ToDictionary(room => room, room => room.Cells.ToList());
+            var freeCells = level.Grid.GetCells().Where(cell => !cell.IsWall).Select(x => x.Location).ToList();
+            var freeRoomCells = level.Grid.Rooms.ToDictionary(room => room, room => room.Cells.Where(cell => !level.Grid[cell.Column, cell.Row].IsWall).ToList());
 
             // NOTE*** ADD MAPPED CONTENT FIRST - BUT MUST IGNORE DURING THE MAPPING PHASE. THIS INCLUDES
             //         ANY NORMAL DOODADS
@@ -178,7 +178,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     level.AddContent(consumable);
             }
         }
-        private void AddTeleporterLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void AddTeleporterLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Region, List<GridLocation>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
 
@@ -254,7 +254,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 level.AddContent(extraTeleport2);
             }
         }
-        private void AddTeleportRandomLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void AddTeleportRandomLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Region, List<GridLocation>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
 
@@ -272,7 +272,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 level.AddContent(doodad);
             }
         }
-        private void AddPartyRoomContent(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void AddPartyRoomContent(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia, IList<GridLocation> freeCells, Dictionary<Region, List<GridLocation>> freeRoomCells)
         {
             // *** Party Room Procedure (TODO: Parameterize this at some point)
             //
@@ -374,7 +374,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }
             }
         }
-        private void MapLevel(Level level, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void MapLevel(Level level, IList<GridLocation> freeCells, Dictionary<Region, List<GridLocation>> freeRoomCells)
         {
             var levelContents = level.GetContents();
 
@@ -396,7 +396,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     levelContents[i].Location = location;
             }
         }
-        private GridLocation GetRandomCell(bool inRoom, Room room, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private GridLocation GetRandomCell(bool inRoom, Region room, IList<GridLocation> freeCells, Dictionary<Region, List<GridLocation>> freeRoomCells)
         {
             // Check overall collection of cells for remaining locations
             if (freeCells.Count == 0)

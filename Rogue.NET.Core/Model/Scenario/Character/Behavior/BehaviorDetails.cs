@@ -1,9 +1,9 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Processing.Model.Content.Interface;
+using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
 {
@@ -38,7 +38,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
             this.RandomizerTurnCount = 1;
         }
 
-        public void IncrementBehavior(NonPlayerCharacter character, IAlterationProcessor alterationProcessor, bool actionTaken, double randomNumber)
+        public void IncrementBehavior(NonPlayerCharacter character, IAlterationCalculator alterationCalculator, bool actionTaken, double randomNumber)
         {
             // Increment Turn Counters
             this.BehaviorTurnCounter++;
@@ -53,7 +53,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
                 // Enemy must be able to use Skill
                 if (behavior.BehaviorCondition.Has(BehaviorCondition.AttackConditionsMet) &&
                    (behavior.AttackType == CharacterAttackType.Alteration) &&
-                   !alterationProcessor.CalculateCharacterMeetsAlterationCost(character, behavior.Alteration.Cost))
+                   !alterationCalculator.CalculateCharacterMeetsAlterationCost(character, behavior.Alteration.Cost))
                     entryConditionsFail = true;
 
                 // Enemy must have Low (<= 10%) HP for this behavior

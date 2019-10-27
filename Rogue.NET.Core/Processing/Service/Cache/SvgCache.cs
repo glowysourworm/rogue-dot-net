@@ -25,6 +25,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         readonly static IEnumerable<string> _gameResourceNames;
         readonly static IEnumerable<string> _symbolResourceNames;
         readonly static IEnumerable<string> _orientedSymbolResourceNames;
+        readonly static IEnumerable<string> _terrainSymbolResourceNames;
         readonly static IDictionary<string, List<string>> _characterResourceNames;
 
         // These are paths that are absolute prefixes to the sub-folders
@@ -35,6 +36,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         const string SVG_FOLDER_SCENARIO_CHARACTER = "Scenario.Character";
         const string SVG_FOLDER_SCENARIO_SYMBOL = "Scenario.Symbol";
         const string SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL = "Scenario.OrientedSymbol";
+        const string SVG_FOLDER_SCENARIO_TERRAIN = "Scenario.Terrain";
+
         static SvgCache()
         {
             // Create static SVG cache to feed other image caches
@@ -44,6 +47,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             _gameResourceNames = GetResourceNamesImpl(SymbolType.Game);
             _symbolResourceNames = GetResourceNamesImpl(SymbolType.Symbol);
             _orientedSymbolResourceNames = GetResourceNamesImpl(SymbolType.OrientedSymbol);
+            _terrainSymbolResourceNames = GetResourceNamesImpl(SymbolType.Terrain);
             _characterResourceNames = GetCharacterResourceNamesImpl();
 
             // Load default drawing
@@ -62,6 +66,14 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // Load symbols
             foreach (var symbol in _symbolResourceNames)
                 LoadSymbolSVG(symbol);
+
+            // Load oriented symbols
+            foreach (var orientedSymbol in _orientedSymbolResourceNames)
+                LoadOrientedSymbolSVG(orientedSymbol);
+
+            // Load terrain symbols
+            foreach (var terrainSymbol in _terrainSymbolResourceNames)
+                LoadTerrainSymbolSVG(terrainSymbol);
         }
         public DrawingGroup GetDrawing(ScenarioCacheImage cacheImage)
         {
@@ -91,6 +103,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     return _gameResourceNames;
                 case SymbolType.OrientedSymbol:
                     return _orientedSymbolResourceNames;
+                case SymbolType.Terrain:
+                    return _terrainSymbolResourceNames;
             }
         }
         public IEnumerable<string> GetCharacterCategories()
@@ -126,14 +140,19 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     return string.Join(".", SVG_PATH_PREFIX,
                                             SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL,
                                             cacheImage.Symbol);
+                case SymbolType.Terrain:
+                    return string.Join(".", SVG_PATH_PREFIX,
+                                            SVG_FOLDER_SCENARIO_TERRAIN,
+                                            cacheImage.Symbol);
             }
         }
         private static IEnumerable<string> GetResourceNamesImpl(SymbolType type)
         {
             if (type != SymbolType.Game &&
                 type != SymbolType.Symbol &&
-                type != SymbolType.OrientedSymbol)
-                throw new ArgumentException("Get Resource Names only returns Game / Symbol / Oriented Symbol type names");
+                type != SymbolType.OrientedSymbol &&
+                type != SymbolType.Terrain)
+                throw new ArgumentException("Get Resource Names only returns Game / Symbol / Oriented Symbol / Terrain type names");
 
             var assembly = typeof(ZipEncoder).Assembly;
 
@@ -200,6 +219,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     return LoadGameSVG(cacheImage.GameSymbol);
                 case SymbolType.OrientedSymbol:
                     return LoadOrientedSymbolSVG(cacheImage.Symbol);
+                case SymbolType.Terrain:
+                    return LoadTerrainSymbolSVG(cacheImage.Symbol);
             }
         }
         private static DrawingGroup LoadGameSVG(string gameSymbol)
@@ -213,6 +234,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         private static DrawingGroup LoadOrientedSymbolSVG(string symbol)
         {
             return LoadSVG(SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL, "", symbol);
+        }
+        private static DrawingGroup LoadTerrainSymbolSVG(string symbol)
+        {
+            return LoadSVG(SVG_FOLDER_SCENARIO_TERRAIN, "", symbol);
         }
         private static DrawingGroup LoadCharacterSVG(string character, string characterCategory)
         {
@@ -282,8 +307,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // HAVE TO MAINTAIN THE SYMBOL'S ASPECT RATIO WHILE FITTING IT TO OUR BOUNDING BOX
             //
 
-            var scaleFactor = Math.Min((ModelConstants.CellWidth / group.Bounds.Width),
-                                       (ModelConstants.CellHeight / group.Bounds.Height));
+            var scaleFactor = System.Math.Min((ModelConstants.CellWidth / group.Bounds.Width),
+                                              (ModelConstants.CellHeight / group.Bounds.Height));
 
             transform.Children.Add(new ScaleTransform(scaleFactor, scaleFactor));
             transform.Children.Add(new TranslateTransform(group.Bounds.X * -1, group.Bounds.Y * -1));

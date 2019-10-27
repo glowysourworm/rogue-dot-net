@@ -34,6 +34,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return _random.Next(inclusiveLowerBound, exclusiveUpperBound);
         }
 
+        public double GetDouble(double inclusiveLowerBound, double exclusiveUpperBound)
+        {
+            var slope = exclusiveUpperBound - inclusiveLowerBound;
+            var intercept = inclusiveLowerBound;
+
+            return (slope * _random.NextDouble()) + intercept;
+        }
+
         public int CalculateGenerationNumber(double generationNumber)
         {
             var truncatedNumber = (int)generationNumber;

@@ -59,6 +59,11 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         ICharacterContentInformation CharacterContentInformation { get; }
 
         /// <summary>
+        /// Exposes layout service for performing layout calculations based on the loaded level
+        /// </summary>
+        IModelLayoutService LayoutService { get; }
+
+        /// <summary>
         /// "Encyclopedia" Rogue-Tanica. Contains all the meta-data for the Scenario objects, alteration categories, and character classes
         /// </summary>
         ScenarioEncyclopedia ScenarioEncyclopedia { get; }

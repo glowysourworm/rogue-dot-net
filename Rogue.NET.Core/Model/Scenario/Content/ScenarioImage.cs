@@ -62,6 +62,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 SymbolScale = 1.0D
             };
         }
+        public static ScenarioImage CreateTerrainSymbol(string name, string symbol, double hue, double saturation, double lightness, bool useColorMask)
+        {
+            return new ScenarioImage()
+            {
+                RogueName = name,
+                SymbolType = SymbolType.Terrain,
+                Symbol = symbol,
+                SymbolHue = hue,
+                SymbolSaturation = saturation,
+                SymbolLightness = lightness,
+                SymbolUseColorMask = useColorMask,
+                SymbolScale = 1.0D
+            };
+        }
         public static ScenarioImage CreateGameSymbol(string name, string gameSymbol)
         {
             return new ScenarioImage()

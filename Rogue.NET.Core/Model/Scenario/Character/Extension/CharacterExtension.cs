@@ -49,7 +49,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Alteration
             result += character.Alteration.GetAttribute(CharacterAttribute.Strength);
 
-            return Math.Max(0.1, result);
+            return System.Math.Max(0.1, result);
         }
         public static double GetAgility(this Character character)
         {
@@ -58,7 +58,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Alteration
             result += character.Alteration.GetAttribute(CharacterAttribute.Agility);
 
-            return Math.Max(0.1, result);
+            return System.Math.Max(0.1, result);
         }
         public static double GetIntelligence(this Character character)
         {
@@ -67,7 +67,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Alteration
             result += character.Alteration.GetAttribute(CharacterAttribute.Intelligence);
 
-            return Math.Max(0.1, result);
+            return System.Math.Max(0.1, result);
         }
         public static double GetLightRadius(this Character character)
         {
@@ -76,7 +76,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Alteration
             result += character.Alteration.GetAttribute(CharacterAttribute.LightRadius);
 
-            return Math.Max(0.1, result);
+            return System.Math.Max(0.1, result);
         }
         public static double GetSpeed(this Character character)
         {
@@ -118,7 +118,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Add on alteration contributions
             var result = attack + character.Alteration.GetAttribute(CharacterAttribute.Attack);
 
-            return Math.Max(0, result);
+            return System.Math.Max(0, result);
         }
         public static double GetDefense(this Character character)
         {
@@ -151,7 +151,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Add on alteration contributions
             var result = defense + character.Alteration.GetAttribute(CharacterAttribute.Defense);
 
-            return Math.Max(0, result);
+            return System.Math.Max(0, result);
         }
         public static double GetThrowAttack(this Character character, Equipment equipment)
         {
@@ -229,7 +229,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 // Calculate the attack attribute hit
                 if (defensiveAttribute != null)
                 {
-                    result += Calculator.CalculateAttackAttributeMelee(
+                    result += RogueCalculator.CalculateAttackAttributeMelee(
                                     malignAttribute.Attack,
                                     defensiveAttribute.Resistance,
                                     defensiveAttribute.Weakness + malignAttribute.Weakness,
@@ -237,7 +237,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 }
                 else
                 {
-                    result += Calculator.CalculateAttackAttributeMelee(
+                    result += RogueCalculator.CalculateAttackAttributeMelee(
                                     malignAttribute.Attack,
                                     0.0,
                                     malignAttribute.Weakness,

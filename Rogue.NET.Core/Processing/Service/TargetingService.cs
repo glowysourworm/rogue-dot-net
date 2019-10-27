@@ -1,9 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Doodad;
-using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using Rogue.NET.Core.Processing.Service.Interface;
@@ -35,8 +32,8 @@ namespace Rogue.NET.Core.Processing.Service
         public void Clear()
         {
             _targetType = TargetType.None;
-            _targetLocation = null;
-            _targetTrackerLocation = null;
+            _targetLocation = GridLocation.Empty;
+            _targetTrackerLocation = GridLocation.Empty;
             _targetCharacter = null;
         }
 
@@ -54,9 +51,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         public bool MoveTarget(Compass direction)
         {
-            var location = _modelService.Level
-                .Grid
-                .GetPointInDirection(_targetTrackerLocation, direction);
+            var location = _modelService.LayoutService.GetPointInDirection(_targetTrackerLocation, direction);
 
             if (IsValidTarget(location))
             {
@@ -150,19 +145,19 @@ namespace Rogue.NET.Core.Processing.Service
             var gridCell = _modelService.Level.Grid[location.Column, location.Row];
 
             // Clear target tracker
-            _targetTrackerLocation = null;
+            _targetTrackerLocation = GridLocation.Empty;
 
             if (gridCell == null)
             {
                 _targetType = TargetType.None;
-                _targetLocation = null;
+                _targetLocation = GridLocation.Empty;
                 _targetCharacter = null;
             }
 
             else if (character != null)
             {
                 _targetType = TargetType.Character;
-                _targetLocation = null;
+                _targetLocation = GridLocation.Empty;
                 _targetCharacter = character;
             }
 
@@ -218,7 +213,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         public GridLocation GetTrackedTargetLocation()
         {
-            return _targetTrackerLocation ?? GridLocation.Empty;
+            return _targetTrackerLocation;
         }
     }
 }

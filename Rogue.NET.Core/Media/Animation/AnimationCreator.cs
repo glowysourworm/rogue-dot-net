@@ -227,11 +227,11 @@ namespace Rogue.NET.Core.Media.Animation
 
             for (int i = 0; i < animation.ChildCount; i++)
             {
-                double angle = _randomSequenceGenerator.Get() * Math.PI * 2;
+                double angle = _randomSequenceGenerator.Get() * System.Math.PI * 2;
                 double radius = _randomSequenceGenerator.Get() * animation.Radius;
 
-                var point = new Point(focus.X + (radius * Math.Cos(angle)), 
-                                      focus.Y + (radius * Math.Sin(angle)));
+                var point = new Point(focus.X + (radius * System.Math.Cos(angle)), 
+                                      focus.Y + (radius * System.Math.Sin(angle)));
 
                 var path = animation.Reverse ? CreatePathGeometry(new Point[] { focus, point }) :
                                                CreatePathGeometry(new Point[] { point, focus });
@@ -264,12 +264,12 @@ namespace Rogue.NET.Core.Media.Animation
                 // Calculate point to start the animation
                 var points = new List<Point>();
 
-                double startAngle = (2 * Math.PI * i) / animation.ChildCount;
+                double startAngle = (2 * System.Math.PI * i) / animation.ChildCount;
                 double angle = startAngle;
                 double angleIncrement = 0.1;
 
                 // Calculate points in the spiral to animate
-                while (angle < ((2 * Math.PI * rotations) + startAngle))
+                while (angle < ((2 * System.Math.PI * rotations) + startAngle))
                 {
                     // Calculate Spiral Rate Offset
                     var spiralRateOffset = (angle - startAngle) * spiralRate;
@@ -278,8 +278,8 @@ namespace Rogue.NET.Core.Media.Animation
                     var amplitude = animation.Radius + (spiralRateOffset);
 
                     // Calculate path point
-                    var point = new Point((amplitude * Math.Cos(animation.Clockwise ? angle : -1 * angle)) + focus.X, 
-                                          (amplitude * Math.Sin(animation.Clockwise ? angle : -1 * angle)) + focus.Y);
+                    var point = new Point((amplitude * System.Math.Cos(animation.Clockwise ? angle : -1 * angle)) + focus.X, 
+                                          (amplitude * System.Math.Sin(animation.Clockwise ? angle : -1 * angle)) + focus.Y);
 
                     points.Add(point);
 
@@ -324,19 +324,19 @@ namespace Rogue.NET.Core.Media.Animation
                 var roamPoints = new List<Point>();
 
                 //Get random point in radius from focus
-                var angle = _randomSequenceGenerator.Get() * Math.PI * 2;
+                var angle = _randomSequenceGenerator.Get() * System.Math.PI * 2;
                 var radius = _randomSequenceGenerator.Get() * animation.Radius;
-                roamPoints.Add(new Point(radius * Math.Cos(angle) + focus.X, radius * Math.Sin(angle) + focus.Y));
+                roamPoints.Add(new Point(radius * System.Math.Cos(angle) + focus.X, radius * System.Math.Sin(angle) + focus.Y));
 
                 // Calculate roam points
-                for (int j = 0; j < Math.Max(2, animation.Erradicity); j++)
+                for (int j = 0; j < System.Math.Max(2, animation.Erradicity); j++)
                 {
                     var lastRoamPoint = roamPoints.Last();
 
                     //Get random point in roam radius from that random point
-                    double roam_a = _randomSequenceGenerator.Get() * Math.PI * 2;
+                    double roam_a = _randomSequenceGenerator.Get() * System.Math.PI * 2;
                     double roam_r = _randomSequenceGenerator.Get() * animation.RoamRadius;
-                    var roamPoint = new Point(roam_r * Math.Cos(roam_a) + lastRoamPoint.X, roam_r * Math.Sin(roam_a) + lastRoamPoint.Y);
+                    var roamPoint = new Point(roam_r * System.Math.Cos(roam_a) + lastRoamPoint.X, roam_r * System.Math.Sin(roam_a) + lastRoamPoint.Y);
                     roamPoints.Add(roamPoint);
                 }
 
@@ -408,7 +408,7 @@ namespace Rogue.NET.Core.Media.Animation
                 var point2 = points[i + 1];
                 var pathLength = CalculateLength(point1, point2);
 
-                var angle = Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
+                var angle = System.Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
                 var lastPoint = new Point(point1.X, point1.Y);
                 var lastLightningPoint = new Point(point1.X, point1.Y);
 
@@ -432,15 +432,15 @@ namespace Rogue.NET.Core.Media.Animation
                     var incrementY = sign * _randomSequenceGenerator.Get() * incrementHeightLimit;
 
                     // Angle' = Angle + Increment Angle (which is random)
-                    var incrementAngle = Math.Atan2(incrementY, incrementX);
-                    var incrementHypotenuse = Math.Sqrt((incrementX * incrementX) + (incrementY * incrementY));
+                    var incrementAngle = System.Math.Atan2(incrementY, incrementX);
+                    var incrementHypotenuse = System.Math.Sqrt((incrementX * incrementX) + (incrementY * incrementY));
 
                     // Angle'
                     var totalAngle = angle + incrementAngle;
 
                     // Get point along new vector with the combined angle (from last point)
-                    var lightningPoint = new Point(incrementHypotenuse * Math.Cos(totalAngle) + lastPoint.X,
-                                                   incrementHypotenuse * Math.Sin(totalAngle) + lastPoint.Y);
+                    var lightningPoint = new Point(incrementHypotenuse * System.Math.Cos(totalAngle) + lastPoint.X,
+                                                   incrementHypotenuse * System.Math.Sin(totalAngle) + lastPoint.Y);
 
                     // Calculate time required for this section of the animation         
                     var segmentAnimationOffset = (int)(pathAnimationTime * (distance / pathLength));
@@ -457,8 +457,8 @@ namespace Rogue.NET.Core.Media.Animation
                     primitives.Add(primitive);
 
                     // Calculate point along vector as the "last point"
-                    lastPoint = new Point(lastPoint.X + (incrementX * Math.Cos(angle)),
-                                          lastPoint.Y + (incrementX * Math.Sin(angle)));
+                    lastPoint = new Point(lastPoint.X + (incrementX * System.Math.Cos(angle)),
+                                          lastPoint.Y + (incrementX * System.Math.Sin(angle)));
 
                     lastLightningPoint = lightningPoint;
 
@@ -701,7 +701,7 @@ namespace Rogue.NET.Core.Media.Animation
 
         private double CalculateLength(Point point1, Point point2)
         {
-            return Math.Abs(Point.Subtract(point1, point2).Length);
+            return System.Math.Abs(Point.Subtract(point1, point2).Length);
         }
 
         /// <summary>

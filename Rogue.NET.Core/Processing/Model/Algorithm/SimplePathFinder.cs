@@ -1,15 +1,13 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
-
-using System.Linq;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
+using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Core.Processing.Model.Static;
+using Rogue.NET.Core.Processing.Service.Interface;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using Rogue.NET.Core.Model.Scenario.Content.Extension;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
-using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Processing.Model.Content.Interface;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Processing.Model.Static;
-using Rogue.NET.Common.Extension;
+using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Algorithm
 {
@@ -20,7 +18,6 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
     public class SimplePathFinder : IPathFinder
     {
         readonly IModelService _modelService;
-        readonly ILayoutEngine _layoutEngine;
 
         const int MAX_DEPTH = 50;
 
@@ -44,18 +41,17 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
             public override string ToString()
             {
-                return this.Location?.ToString() ?? "";
+                return this.Location == GridLocation.Empty ? "" : this.Location.ToString();
             }
         }
 
         [ImportingConstructor]
-        public SimplePathFinder(IModelService modelService, ILayoutEngine layoutEngine)
+        public SimplePathFinder(IModelService modelService)
         {
             _modelService = modelService;
-            _layoutEngine = layoutEngine;
         }
 
-        public GridLocation FindCharacterNextPathLocation(GridLocation point1, GridLocation point2, bool canOpenDoors, CharacterAlignmentType alignmentType)
+        public GridLocation FindCharacterNextPathLocation(GridLocation point1, GridLocation point2, CharacterAlignmentType alignmentType)
         {
             if (point1.Equals(point2))
                 return point1;
@@ -64,7 +60,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             var startNode = new SimplePathFinderNode(null, point1, false);
 
             // Recursively find End Node
-            var endNode = FindPathRecurse(startNode, point2, canOpenDoors, alignmentType, 1);
+            var endNode = FindPathRecurse(startNode, point2, alignmentType, 1);
 
             // Create list of path locations
             List<GridLocation> pathLocations;
@@ -82,7 +78,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             var startNode = new SimplePathFinderNode(null, point1, false);
 
             // Recursively find End Node
-            var endNode = FindPathRecurse(startNode, point2, true, CharacterAlignmentType.None, 1);
+            var endNode = FindPathRecurse(startNode, point2, CharacterAlignmentType.None, 1);
 
             // Create list of path locations
             List<GridLocation> pathLocations;
@@ -91,7 +87,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             return BackTrack(startNode, endNode, false, out pathLocations);
         }
 
-        public IEnumerable<GridLocation> FindCharacterPath(GridLocation point1, GridLocation point2, bool canOpenDoors, CharacterAlignmentType alignmentType)
+        public IEnumerable<GridLocation> FindCharacterPath(GridLocation point1, GridLocation point2, CharacterAlignmentType alignmentType)
         {
             if (point1.Equals(point2))
                 return new GridLocation[] { point1 };
@@ -100,7 +96,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             var startNode = new SimplePathFinderNode(null, point1, false);
 
             // Recursively find End Node
-            var endNode = FindPathRecurse(startNode, point2, canOpenDoors, alignmentType, 1);
+            var endNode = FindPathRecurse(startNode, point2, alignmentType, 1);
 
             // Create list of path locations
             List<GridLocation> pathLocations;
@@ -113,23 +109,104 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
         public IEnumerable<GridLocation> FindPath(GridLocation point1, GridLocation point2)
         {
-            if (point1.Equals(point2))
-                return new GridLocation[] { point1 };
+            // Trying Brian Walker's (Brogue) "Dijkstra Map"
+            //
+            // 1) Set the "goal" as point2 - weighting of zero
+            //
+            // 2) Iterate using Breadth First Search (flood fill)
+            //
+            // 3) "Walk Downhill" towards the goal
+            //
 
-            // Create Start Node
-            var startNode = new SimplePathFinderNode(null, point1, false);
+            var grid = _modelService.Level.Grid;
+            var sourceCell = grid[point1.Column, point1.Row];
 
-            // Recursively find End Node
-            var endNode = FindPathRecurse(startNode, point2, true, CharacterAlignmentType.None, 1);
+            var frontier = new Queue<Cell>();
+            var dijkstraMap = new Cell[grid.Bounds.CellWidth, grid.Bounds.CellHeight];
 
-            // Create list of path locations
-            List<GridLocation> pathLocations;
+            // Initialize the frontier and Dijkstra Map
+            sourceCell.DijkstraWeight = 0;
+            frontier.Enqueue(sourceCell);
+            dijkstraMap[sourceCell.Location.Column, sourceCell.Location.Row] = sourceCell;
 
-            // Back-Track to find next location along path
-            BackTrack(startNode, endNode, true, out pathLocations);
+            while (frontier.Count > 0)
+            {
+                // Dequeue cell 
+                var testCell = frontier.Dequeue();
 
-            return pathLocations;
+                // Get adjacent cells to test cell
+                var adjacentGridCells = grid.GetAdjacentCells(testCell);
+
+                // Iterate adjacent cells
+                foreach (var cell in adjacentGridCells)
+                {
+                    // Check that cell isn't already in the Dijkstra Map
+                    var existingCell = dijkstraMap[cell.Location.Column, cell.Location.Row];
+
+                    // Skip cells that have been visited
+                    if (existingCell != null)
+                        continue;
+
+                    // Calculate adjacent cells already in the dijkstra map
+                    var adjacentDijkstraCells = dijkstraMap.GetAdjacentElements(cell.Location.Column, cell.Location.Row);
+
+                    // Calculate the next Dijkstra Weight 
+                    var dijkstraWeight = adjacentDijkstraCells.None() ? 1 : (adjacentDijkstraCells.Min(x => x.DijkstraWeight) + 1);
+
+                    // Set the cell's weighting
+                    cell.DijkstraWeight = dijkstraWeight;
+
+                    // Add cell to the Dijkstra Map
+                    dijkstraMap[cell.Location.Column, cell.Location.Row] = cell;
+
+                    // Enqueue cell with the frontier
+                    frontier.Enqueue(cell);
+                }
+            }
+
+            // "Walk Downhill" to create the pathoo;    ;oo;
+            var currentLocation = point2;
+            var path = new List<GridLocation>();
+
+            while (!currentLocation.Equals(point1))
+            {
+                // Add location to patharray 
+                path.Add(currentLocation);
+
+                // Get next "Downhill" location
+                currentLocation = grid.GetAdjacentLocations(currentLocation)
+                                      .MinBy(x => grid[x.Column, x.Row].DijkstraWeight);
+            }
+
+            // Add the first point
+            path.Add(point1);
+
+            // Reverse the path to put the cells in order of the path
+            path.Reverse();
+
+            return path;
         }
+
+        // SAVE
+        //public IEnumerable<GridLocation> FindPath(GridLocation point1, GridLocation point2)
+        //{
+        //    if (point1.Equals(point2))
+        //        return new GridLocation[] { point1 };
+
+        //    // Create Start Node
+        //    var startNode = new SimplePathFinderNode(null, point1, false);
+
+        //    // Recursively find End Node
+        //    var endNode = FindPathRecurse(startNode, point2, true, CharacterAlignmentType.None, 1);
+
+        //    // Create list of path locations
+        //    List<GridLocation> pathLocations;
+
+        //    // Back-Track to find next location along path
+        //    BackTrack(startNode, endNode, true, out pathLocations);
+
+        //    return pathLocations;
+        //}
 
         /// <summary>
         /// Returns the next step along path towards the node - this will be one of the start node's child nodes (actual location)
@@ -173,7 +250,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 return GridLocation.Empty;
         }
 
-        private SimplePathFinderNode FindPathRecurse(SimplePathFinderNode currentNode, GridLocation endLocation, bool canOpenDoors, CharacterAlignmentType alignmentType, int depthIndex)
+        private SimplePathFinderNode FindPathRecurse(SimplePathFinderNode currentNode, GridLocation endLocation, CharacterAlignmentType alignmentType, int depthIndex)
         {
             // Check recursion depth limit
             if (depthIndex >= MAX_DEPTH)
@@ -187,20 +264,15 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                                                     .Grid
                                                     .GetAdjacentLocations(currentNode.Location)
                 // Check Pathing
-                .Where(location => (isCharacter && // Character Path
-                                    canOpenDoors) ? !_layoutEngine.IsPathToCellThroughWall(currentNode.Location,
-                                                                                            location,
-                                                                                            isCharacter,
-                                                                                            alignmentType)
-
-                                                   // Character or Non-Character
-                                                  : !_layoutEngine.IsPathToAdjacentCellBlocked(currentNode.Location,
+                .Where(location => !_modelService.LayoutService.IsPathToAdjacentCellBlocked(currentNode.Location,
                                                                                              location,
                                                                                              isCharacter,
                                                                                              alignmentType))
                 // Apply Heuristic
-                .OrderBy(x => Calculator.RoguianDistance(x, endLocation))
+                .OrderBy(x => RogueCalculator.RoguianDistance(x, endLocation))
                 .Actualize();
+
+            // PROBLEM - NOT REMOVING VISITED CELLS FROM RECURSION
 
             // Recurse, Adding locations to the node tree
             foreach (var nextLocation in orderedPathLocations)
@@ -219,7 +291,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 else
                 {
                     // Try the path for this adjacent 
-                    var resultNode = FindPathRecurse(nextNode, endLocation, canOpenDoors, alignmentType, depthIndex + 1);
+                    var resultNode = FindPathRecurse(nextNode, endLocation, alignmentType, depthIndex + 1);
 
                     if (resultNode != null)
                         return resultNode;

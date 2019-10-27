@@ -25,6 +25,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
         int Get(int inclusiveLowerBound, int exclusiveUpperBound);
 
         /// <summary>
+        /// Generates U[low, high) random double
+        /// </summary>
+        double GetDouble(double inclusiveLowerBound, double exclusiveUpperBound);
+
+        /// <summary>
         /// Gets random value from a Range<T> object
         /// </summary>
         T GetRandomValue<T>(Range<T> range) where T : IComparable<T>;

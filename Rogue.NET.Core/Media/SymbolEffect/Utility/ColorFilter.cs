@@ -33,10 +33,10 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var color2 = Convert(colorString2);
 
             var result = new Color();
-            result.A = System.Convert.ToByte(Math.Min((color1.A + color2.A) / 2.0D, 255));
-            result.R = System.Convert.ToByte(Math.Min((color1.R + color2.R) / 2.0D, 255));
-            result.G = System.Convert.ToByte(Math.Min((color1.G + color2.G) / 2.0D, 255));
-            result.B = System.Convert.ToByte(Math.Min((color1.B + color2.B) / 2.0D, 255));
+            result.A = System.Convert.ToByte(System.Math.Min((color1.A + color2.A) / 2.0D, 255));
+            result.R = System.Convert.ToByte(System.Math.Min((color1.R + color2.R) / 2.0D, 255));
+            result.G = System.Convert.ToByte(System.Math.Min((color1.G + color2.G) / 2.0D, 255));
+            result.B = System.Convert.ToByte(System.Math.Min((color1.B + color2.B) / 2.0D, 255));
 
             return result.ToString();
         }
@@ -67,7 +67,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var lightnessPrime = CalculateLightness(color) + lightness;
 
             // Clip values
-            huePrime = huePrime % (Math.PI * 2);
+            huePrime = huePrime % (System.Math.PI * 2);
             saturationPrime = saturationPrime.Clip(0, 1);
             lightnessPrime = lightnessPrime.Clip(0, 1);
 
@@ -90,10 +90,10 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 
         private static byte FromHSLSub(double n, double hue, double saturation, double lightness)
         {
-            var k = (n + ((hue * 6.0) / Math.PI)) % 12.0;
-            var a = saturation * Math.Min(lightness, 1 - lightness);
+            var k = (n + ((hue * 6.0) / System.Math.PI)) % 12.0;
+            var a = saturation * System.Math.Min(lightness, 1 - lightness);
 
-            var result = lightness - (a * Math.Max(Math.Min(Math.Min(k - 3.0, 9.0 - k), 1.0), -1.0));
+            var result = lightness - (a * System.Math.Max(System.Math.Min(System.Math.Min(k - 3.0, 9.0 - k), 1.0), -1.0));
 
             // Go ahead and convert back to a byte [0, 1) -> [0, 256)
 
@@ -106,10 +106,10 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var g = System.Convert.ToInt32(color.G) / 255.0D;
             var b = System.Convert.ToInt32(color.B) / 255.0D;
 
-            var max = Math.Max(Math.Max(r, g), b);
-            var min = Math.Min(Math.Min(r, g), b);
+            var max = System.Math.Max(System.Math.Max(r, g), b);
+            var min = System.Math.Min(System.Math.Min(r, g), b);
 
-            return    (Math.PI / 3.0) * (max == min ? 0.0 :
+            return    (System.Math.PI / 3.0) * (max == min ? 0.0 :
                                          max == r ? (0.0 + ((g - b) / (max - min))) :
                                          max == g ? (2.0 + ((b - r) / (max - min))) :
                                          max == b ? (4.0 + ((r - g) / (max - min))) : 0.0);
@@ -120,8 +120,8 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var g = System.Convert.ToInt32(color.G) / 255.0D;
             var b = System.Convert.ToInt32(color.B) / 255.0D;
 
-            var max = Math.Max(Math.Max(r, g), b);
-            var min = Math.Min(Math.Min(r, g), b);
+            var max = System.Math.Max(System.Math.Max(r, g), b);
+            var min = System.Math.Min(System.Math.Min(r, g), b);
 
             return (max + min) / 2.0D;
         }
@@ -131,8 +131,8 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var g = System.Convert.ToInt32(color.G) / 255.0D;
             var b = System.Convert.ToInt32(color.B) / 255.0D;
 
-            var max = Math.Max(Math.Max(r, g), b);
-            var min = Math.Min(Math.Min(r, g), b);
+            var max = System.Math.Max(System.Math.Max(r, g), b);
+            var min = System.Math.Min(System.Math.Min(r, g), b);
 
             // var lightness = CalculateLightness(color);
 
@@ -140,7 +140,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 
             return max == 0 ? 0 :
                    min == 1 ? 0 :
-                 ((max - lightness) / (Math.Min(lightness, 1 - lightness)));
+                 ((max - lightness) / (System.Math.Min(lightness, 1 - lightness)));
         }
     }
 }

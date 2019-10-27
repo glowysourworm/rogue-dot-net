@@ -18,35 +18,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
     /// </summary>
     public interface ILevelCanvasViewModel : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Wall layer of the layout
-        /// </summary>
-        Path WallLayout { get; }
-
-        /// <summary>
-        /// Door layer of the layout
-        /// </summary>
-        Path DoorLayout { get; }
-
-        /// <summary>
-        /// Revealed layer of the layout
-        /// </summary>
-        Path RevealedLayout { get; }
-
-        /// <summary>
-        /// Opacity DrawingBrush for explored portion of the layout
-        /// </summary>
-        DrawingBrush ExploredOpacityMask { get; }
-
-        /// <summary>
-        /// Opacity DrawingBrush for revealed portion of the layout
-        /// </summary>
-        DrawingBrush RevealedOpacityMask { get; }
-
-        /// <summary>
-        /// Opacity DrawingBrush for visible portion of the layout
-        /// </summary>
-        DrawingBrush VisibleOpacityMask { get; }
+        DrawingBrush VisibleLayer { get; set; }
+        DrawingBrush ExploredLayer { get; set; }
+        DrawingBrush RevealedLayer { get; set; }
+        DrawingBrush TerrainLayer { get; set; }
+        DrawingBrush ExploredOpacityMask { get; set; }
+        DrawingBrush RevealedOpacityMask { get; set; }
+        DrawingBrush VisibleOpacityMask { get; set; }
 
         /// <summary>
         /// Layer of Visuals for the Light Radii
@@ -86,7 +64,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
         int LevelWidth { get; set; }
         int LevelHeight { get; set; }
 
-        void UpdateLayout(CellRectangle levelBounds, Color wallColor, Color doorColor);
+        void UpdateLayout(RegionBoundary levelBounds, Color wallColor, Color doorColor);
         void UpdateContent(IEnumerable<ScenarioObject> contents, Player player);
         void UpdateLayoutVisibility(IEnumerable<GridLocation> exploredLocations,
                                     IEnumerable<GridLocation> visibleLocations,

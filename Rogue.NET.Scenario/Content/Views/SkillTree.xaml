@@ -4,7 +4,6 @@
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
-             xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects"
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -249,13 +248,14 @@
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter TargetName="border" Property="BorderBrush" Value="#8F888888" />
                                 </Trigger>
-                                <Trigger Property="IsEnabled" Value="False">
+                                <!-- TODO: Re-create desaturation effect -->
+                                <!--Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Effect">
                                         <Setter.Value>
                                             <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="0" />
                                         </Setter.Value>
                                     </Setter>
-                                </Trigger>
+                                </-->
                                 <DataTrigger Binding="{Binding IsLearned}" Value="False">
                                     <Setter Property="IsEnabled" Value="False" />
                                 </DataTrigger>

@@ -2899,4 +2899,181 @@ IMMEDIATE TODO'S:
 			to do some more UI design to include those. 
 
 	- TODO: Enemy / Player knock-back
+	
+	CHARACTER FOLLOWING UP STAIRS:
+	
+		- Rule: Any Engaged character can follow up the stairs - but may have to have a delay counter to expose the character to the level. 
+		
+				Delay Counter: Run down to add character to level. Should the player return to the previous level, the character must be added
+							   back to the previous level's content. 
+							   
+	PATH FINDING:
+	
+		Was able to use Breadth First Search "Map" (Dijkstra Map) to calculate path to mouse hover cell on-the-fly! So, there's lots more 
+		we can do with this:
+		
+			- Dijkstra Weights:  Create mechanism to calculate weighted goals for non-player characters on-the-fly. This probably should
+								 be a layer on top of the LevelGrid - and in the Level (or) some new child object of the Level. 
+								 
+								 Weights for Dijkstra Map goals can be added to the new object - such that it only gets created on-the-fly. 
+								 
+			- Enemy Behaviors:   Start investingating different uses of the Dijkstra Map - and try calculating the "Fleeing Monster" map 
+							     described by Brian Walker.. And, any variants of that to help make non-player characters more interesting.
+								 
+	TERRAIN:
+	
+		Great article on working with noise to create natural looking terrain:
+		
+			https://www.redblobgames.com/maps/terrain-from-noise/
+			
+		Plan:
+		
+			- Create a low-frequency smooth noise map
+			
+			- Use elevation thresholds to identify appropriate regions for terrain:
+			
+				- [0, 0.4] - Water, Lava, Ice, Chasm, Bog, Swamp, etc...
+				
+				- [0.4, 0.6] - Folliage, Barriers, Mist, Grass, Special Tiles, Light (?), etc...
+				
+				- [0.6, 1.0] - Pooled Gasses, High / Impassible Barriers, etc...
+				
+		The point is NOT to create elevation; but to use pseudo-elevation to generate natural looking 
+		things. 
+		
+		Another thing to try would be to create subtle variation in the terrain using higher frequency 
+		noise. The variation in terrain would need some meaning in the game.. so, not quite there yet.
+		
+	ARTICLES:
+	
+		http://www.adammil.net/blog/v125_Roguelike_Vision_Algorithms.html
+		
+		http://www.roguebasin.com/index.php?title=Field_of_Vision
+		
+		https://www.redblobgames.com   (AMAZING)
+		
+		https://www.redblobgames.com/articles/probability/damage-rolls.html  (VARIATION IN RANDOM DRAWS)
+		
+		(Point in adding variation is to create more interesting game mechanics that come alive.. But doesn't require new config parameters)
+		
+		http://www-cs-students.stanford.edu/~amitp/gameprog.html#design  (GAME DESIGN ARTICLE!!)
+		
+	LAYOUT GENERATION CHANGES:
+	
+		- Get rid of Teleport Random connection type
+	
+		- For 2-point connections (Teleporters, Stairwells, Doodad-pair-that-invokes-moving-a-character) just create
+		  the points for generating the connecting doodads. These will be placed by an intermediate component for 
+		  mandatory layout-related doodads. (Stairs up, Stairs down, teleporters, Save Points, etc...)
+		  
+		- Create Points of Interest and also add those to the layout. These would probably be in rooms - so just
+		  add these while generating.
+		  
+		- Making walls a full cell - and placing them as the room edges.
+		
+		- Getting rid of rectilinear layout - and creating a new way to generate a "Jail" level.
+		
+		- Replace the Delaunay Triangulation code with our own or the library done by the guy at www.redblobgames.com
+		
+		- Create terrain using the above noise map idea - with Passable / Non-passable layer types. These will be used
+		  as masks for the room layer - with the non-passable type being "Opaque" while the passable type is "Non-Opaque", or
+		  will be part of the rooms it intersects. The non-passable terrain types will be over-imposed on the rooms - separating
+		  them to create an obstacle. This obstacle must be taken into account - by some region connection method.
+		  
+		- Since walls are going to be full cell - pre-calculate the outline geometry (NOT WPF CALCULATE) and store it
+		  with the level grid to boost performance of the layout rendering.
+		  
+		- The boost in rendering performance may open up the level size limit. Consider compressing in-memory storage.
+		
+		- Also, find some easy way to boost terrain drawing performance. Like, some kind of tile-brush.. thing..
+		
+		- CONSIDER SWITCHING FROM PATH (SHAPE) -> DRAWINGBRUSH FOR LAYOUT RENDERING
+		
+		- ANIMATE PERLIN NOISE TO GENERATE ANIMATIONS - PROBABLY JUST HAVE TO ANIMATE THE RANDOM VECTORS SMOOTHLY TO DO IT :) :) :)
+		
+		- Replace Cellular Automata with Perlin noise for layouts; but have to generate a convex hull Delaunay triangulation 
+		  for the convex hull - with noise to give a cave-like look. 
+		  
+		  
+		- IDEA:  MAKE MAZES / PERLIN NOISE / ETC... INTO SQUARE REGIONS - AND LOP THEM OFF WITH AN IRREGULAR EDGE.
+		
+				 This lets us do more interesting things with the layout:
+				 
+	LAYOUT TYPES:
+	
+		With the added variation - we have several tools at our disposal:
+		
+			- Perlin Noise
+			- [deprecated] Cellular Automata
+			- Rectangular Region
+			- Irregular Region (Using Noise + Convex Hull)
+			- Maze
+			
+		Probably have the following as parameters:
+		
+			- Region Generation Type { Open, Perlin Noise, Maze }
+			- Region Container Type { Rectangle, Random Polygon }
+			- Region Placement { Random, Grid }
+			- Region Connection Type { Cooridors, CooriorsWithDoors, Teleporters }
+			- Region Connection Ratio (Ratio of total Delaunay Triangulation - [0, 1] -> [MST, FULL DELAUNAY])
+			- Region Lighting Type { Full, White Noise, Perline Noise, Wall Lighting, None }
+			- Region Wall Lighting Frequency (Either in cells-along-the-wall or noise frequency)
+			- Region Size ( Width, Height )
+			- Region Padding ( Required for Irregular container type AND room "spread" )
+			- Region Count
+			
+		But also will have Terrain. Probably will have a collection of Terrain Layers specified in the "General" section 
+		of the Scenario (Scenario Design). Each layer will have something like:
+		
+			Terrain Layer:
+			
+				- Terrain Type { NonPassable, Passable }
+				- Terrain Connection Type ( Force Path, Teleporter, None (NOT ALLOWED WITH NON-PASSABLE TERRAIN) )
+				- Opacity Filter (Color to blend into the visible layer)
+				- Alerts Player (Upon entry - like.. "Do you wish to enter the Hot Lava"
+				- Symbol List Per Thershold []
+					- Symbol 1 (at Threshold 1)
+					- Symbol 2 (at Threshold 2)
+					- ...
+					
+				(ALSO WILL NEED SYMBOLS FOR TERRAIN ANIMATION)
+				
+		So, additional parameters are probably set inside the layout:
+		
+			- Terrain Generation Type { White Noise, Perlin Noise }
+			- Terrain Generation Clip Type { Masked, Unmasked }
+			- Terrain Perlin Noise Frequency
+			- Terrain Perlin Noise Threshold 1
+			- Terrain Perlin Noise Threshold 2
+			- Terrain Noise Fill Ratio
+			
+		(TODO: Can try cellular automata maze generation)
+		  
+	RENDERING CHANGES:
+	
+		- Had to render the visible, explored, and revealed layers using DrawingGroups - with ImageDrawing children. This would 
+		  have been very slow except they're only rendered once on level load. This means that BitmapCache can be used on the
+		  Canvases where they're rendered to cache the rendering result so that there's no performance hit.
+		  
+		- Since we still need the opacity masks for each layout and terrain layer - and have yet to tackle light sources - 
+		  a solution will be needed to deal with performance problems trying to render "too many little ImageDrawing instances".
+		  
+		- For opacity (per tile) each of the image drawings could be used; but will need to be stored (by reference) to update
+		  the layout layer (visible only for showing opacity per light source) each turn.
+		  
+	LIGHT SOURCES:
+	
+		Think this can be handled now since there's more control over rendering and performance issues are understood. The goals
+		is to remove "Light Radius" from each character; and have it only as a Alteration. 
+		
+		Light will now become a volatile cell property; and will be calculated - along with Alteration contributions - before rendering.
+		(May also have "lighted-rooms" to add more regularity .. but really, to make it like the original one...)
+		
+		The field-of-view calculation per-character will store "visible-or-not" data for each content object and layout feature. 
+		This data will be used by the front end to update the afore-mentioned ImageDrawing references with an opacity value. This
+		should produce the desired effect of showing opacity-per-tile. 
+		
+		Also, could vary the lighting gradually as turns pass to show a subtle change in the level
+		  
+		  
 			  

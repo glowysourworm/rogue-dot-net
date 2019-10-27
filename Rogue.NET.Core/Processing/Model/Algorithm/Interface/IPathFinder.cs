@@ -12,7 +12,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Interface
         /// <summary>
         /// Returns next point towards point2 taking into account character movement. If limits are reached algorithm returns GridLocation.Empty
         /// </summary>
-        GridLocation FindCharacterNextPathLocation(GridLocation point1, GridLocation point2, bool canOpenDoors, CharacterAlignmentType alignmentType);
+        GridLocation FindCharacterNextPathLocation(GridLocation point1, GridLocation point2, CharacterAlignmentType alignmentType);
 
         /// <summary>
         /// Returns next point towards point2. If limits are reached algorithm returns GridLocation.Empty
@@ -22,7 +22,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Interface
         /// <summary>
         /// Returns all locations along path from point1 to point2 taking into account character movement. Returns empty collection for failed attempt.
         /// </summary>
-        IEnumerable<GridLocation> FindCharacterPath(GridLocation point1, GridLocation point2, bool canOpenDoors, CharacterAlignmentType alignmentType);
+        IEnumerable<GridLocation> FindCharacterPath(GridLocation point1, GridLocation point2, CharacterAlignmentType alignmentType);
 
         /// <summary>
         /// Returns all locations along path from point1 to point2 taking into account character movement. Returns empty collection for failed attempt.

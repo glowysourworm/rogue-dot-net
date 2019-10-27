@@ -1,11 +1,9 @@
 ﻿using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Region;
 using Rogue.NET.Core.Processing.Model.Static;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -18,10 +16,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         [ImportingConstructor]
         public SimpleRayTracer() { }
 
-        public IEnumerable<DistanceLocation> 
-                CalculateVisibility(LevelGrid grid, 
-                                    GridLocation location, 
-                                    double lightRadius, 
+        public IEnumerable<DistanceLocation>
+                CalculateVisibility(LevelGrid grid,
+                                    GridLocation location,
+                                    double lightRadius,
                                     out IEnumerable<DistanceLocation> lineOfSightLocations)
         {
             var result = new Dictionary<int, DistanceLocation>();
@@ -30,7 +28,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
             result.Add(locationCell.GetHashCode(), new DistanceLocation(locationCell.Location, locationCell.Location));
 
-            var origin = LevelGridExtension.TransformToPhysicalLayout(location);
+            var origin = GridUtility.TransformToPhysicalLayout(location);
             origin.X += ModelConstants.CellWidth / 2.0F;
             origin.Y += ModelConstants.CellHeight / 2.0F;
 
@@ -40,12 +38,12 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             {
                 var hitWall = false;
                 var nextPoint = location;
-                var angleRadians = (Math.PI / 180.0D) * angle;
+                var angleRadians = (System.Math.PI / 180.0D) * angle;
 
                 // 0) Calculate y = mx + b for a line passing through the cell origin (center) with the new angle
 
-                var unitX = Math.Cos(angleRadians);
-                var unitY = Math.Sin(angleRadians);
+                var unitX = System.Math.Cos(angleRadians);
+                var unitY = System.Math.Sin(angleRadians);
 
                 var slope = unitY / unitX;
                 var intercept = origin.Y - (slope * origin.X);
@@ -73,19 +71,20 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     var nextHorizontalY = horizontalGridLines[yIndex] * ModelConstants.CellHeight;
                     var nextHorizontalX = (nextHorizontalY - intercept) / slope;
 
-                    var radiusHorizontal2 = Math.Pow(nextHorizontalX - origin.X, 2) + Math.Pow(nextHorizontalY - origin.Y, 2);
-                    var radiusVertical2 = Math.Pow(nextVerticalX - origin.X, 2) + Math.Pow(nextVerticalY - origin.Y, 2);
+                    var radiusHorizontal2 = System.Math.Pow(nextHorizontalX - origin.X, 2) + System.Math.Pow(nextHorizontalY - origin.Y, 2);
+                    var radiusVertical2 = System.Math.Pow(nextVerticalX - origin.X, 2) + System.Math.Pow(nextVerticalY - origin.Y, 2);
 
                     if (radiusHorizontal2 < radiusVertical2)
                     {
                         // Pick the 2 involved cells - cell 2 is the one "advanced to" or the destination
                         var cellY1 = (angle < 180) ? horizontalGridLines[yIndex] - 1 : horizontalGridLines[yIndex];
                         var cellY2 = (angle < 180) ? horizontalGridLines[yIndex] : horizontalGridLines[yIndex] - 1;
-                        var cellX = (int)Math.Floor(nextHorizontalX / ModelConstants.CellWidth); // truncate to get location
+                        var cellX = (int)System.Math.Floor(nextHorizontalX / ModelConstants.CellWidth); // truncate to get location
 
                         var cell1 = grid[cellX, cellY1];
                         var cell2 = grid[cellX, cellY2];
 
+                        // First it hits an empty cell
                         if (cell1 == null)
                             hitWall = true;
 
@@ -101,26 +100,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                             if (!result.ContainsKey(cell1.GetHashCode()))
                                 result.Add(cell1.GetHashCode(), new DistanceLocation(location, cell1.Location));
 
-                            if (angle < 180) // cell2 is further South
-                            {
-                                hitWall = (cell2.Walls & Compass.N) != 0 ||
-                                          (cell2.Doors & Compass.N) != 0 ||
-                                          (cell1.Walls & Compass.S) != 0 ||
-                                          (cell1.Doors & Compass.S) != 0;
-
-                                if (!hitWall && !result.ContainsKey(cell2.GetHashCode()))
-                                    result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
-                            }
-                            else
-                            {
-                                hitWall = (cell2.Walls & Compass.S) != 0 ||
-                                          (cell2.Doors & Compass.S) != 0 ||
-                                          (cell1.Walls & Compass.N) != 0 ||
-                                          (cell1.Doors & Compass.N) != 0;
-
-                                if (!hitWall && !result.ContainsKey(cell2.GetHashCode()))
-                                    result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
-                            }
+                            if (!result.ContainsKey(cell2.GetHashCode()))
+                                result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
                         }
 
                         yIndex++;
@@ -130,7 +111,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         // Pick the 2 involved cells
                         var cellX1 = (angle < 90 || angle > 270) ? verticalGridLines[xIndex] - 1 : verticalGridLines[xIndex];
                         var cellX2 = (angle < 90 || angle > 270) ? verticalGridLines[xIndex] : verticalGridLines[xIndex] - 1;
-                        var cellY = (int)Math.Floor(nextVerticalY / ModelConstants.CellHeight); // truncate to get location
+                        var cellY = (int)System.Math.Floor(nextVerticalY / ModelConstants.CellHeight); // truncate to get location
 
                         var cell1 = grid[cellX1, cellY];
                         var cell2 = grid[cellX2, cellY];
@@ -150,26 +131,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                             if (!result.ContainsKey(cell1.GetHashCode()))
                                 result.Add(cell1.GetHashCode(), new DistanceLocation(location, cell1.Location));
 
-                            if (angle < 90 || angle > 270) // cell2 is further East
-                            {
-                                hitWall = (cell2.Walls & Compass.W) != 0 ||
-                                          (cell2.Doors & Compass.W) != 0 ||
-                                          (cell1.Walls & Compass.E) != 0 ||
-                                          (cell1.Doors & Compass.E) != 0;
-
-                                if (!hitWall && !result.ContainsKey(cell2.GetHashCode()))
-                                    result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
-                            }
-                            else
-                            {
-                                hitWall = (cell2.Walls & Compass.E) != 0 ||
-                                          (cell2.Doors & Compass.E) != 0 ||
-                                          (cell1.Walls & Compass.W) != 0 ||
-                                          (cell1.Doors & Compass.W) != 0;
-
-                                if (!hitWall && !result.ContainsKey(cell2.GetHashCode()))
-                                    result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
-                            }
+                            if (!result.ContainsKey(cell2.GetHashCode()))
+                                result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
                         }
 
                         xIndex++;
@@ -184,7 +147,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
             return result.Values.Where(x =>
             {
-                return Calculator.EuclideanDistance(x.Location, location) <= lightRadius;
+                return RogueCalculator.EuclideanDistance(x.Location, location) <= lightRadius;
             })
             .Select(x => new DistanceLocation(location, x.Location))
             .ToList(); ;

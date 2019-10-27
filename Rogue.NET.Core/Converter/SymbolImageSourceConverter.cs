@@ -104,6 +104,7 @@ namespace Rogue.NET.Core.Converter
                     break;
                 case SymbolType.Symbol:
                 case SymbolType.OrientedSymbol:
+                case SymbolType.Terrain:
                     if (string.IsNullOrEmpty(scenarioImage.Symbol))
                         return null;
                     break;

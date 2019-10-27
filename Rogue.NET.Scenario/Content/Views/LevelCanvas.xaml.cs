@@ -71,22 +71,22 @@ namespace Rogue.NET.Scenario.Content.Views
                 CenterOnLocation(_viewModel.Player.Location);
             };
 
-            //this.MouseCanvas.MouseMove += (sender, e) =>
-            //{
-            //    // Calculate location on the level grid
-            //    var gridLocation = _scenarioUIGeometryService.UI2Cell(e.GetPosition(this.MouseCanvas));
+            this.MouseCanvas.MouseMove += (sender, e) =>
+            {
+                // Calculate location on the level grid
+                var gridLocation = _scenarioUIGeometryService.UI2Cell(e.GetPosition(this.MouseCanvas));
 
-            //    // Show Mouse Locator at calculated position
-            //    if (!gridLocation.Equals(_cursorGridLocation))
-            //        UpdateCursorLocation(gridLocation);
-            //};
+                // Show Mouse Locator at calculated position
+                if (!gridLocation.Equals(_cursorGridLocation))
+                    UpdateCursorLocation(gridLocation);
+            };
 
-            //this.MouseCanvas.MouseLeave += (sender, e) =>
-            //{
-            //    // Hide Mouse Locator
-            //    this.MouseRectangle.Visibility = Visibility.Hidden;
-            //    this.MousePath.Visibility = Visibility.Hidden;
-            //};
+            this.MouseCanvas.MouseLeave += (sender, e) =>
+            {
+                // Hide Mouse Locator
+                this.MouseRectangle.Visibility = Visibility.Hidden;
+                this.MousePath.Visibility = Visibility.Hidden;
+            };
 
             // subscribe to event to center screen when level loaded
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
@@ -173,9 +173,7 @@ namespace Rogue.NET.Scenario.Content.Views
             //var playerGridLocation = _scenarioUIGeometryService.UI2Cell(_viewModel.Player.Location);
 
             //// Check to see if mouse is over a visible location
-            //if (_modelService.CharacterLayoutInformation
-            //                 .GetExploredLocations()
-            //                 .Contains(gridLocation))
+            //if (_modelService.Level.Grid[gridLocation.Column, gridLocation.Row] != null)
             //{
             //    // Find path from player to mouse location
             //    var pathLocations = _pathFinder.FindPath(playerGridLocation, gridLocation);

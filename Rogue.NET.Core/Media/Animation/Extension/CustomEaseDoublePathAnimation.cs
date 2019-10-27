@@ -53,7 +53,7 @@ namespace Rogue.NET.Core.Media.Animation.Extension
                 case PathAnimationSource.Y:
                     return point.Y;
                 case PathAnimationSource.Angle:
-                    return (180.0 / Math.PI) * Math.Atan2(tangent.Y, tangent.X);
+                    return (180.0 / System.Math.PI) * System.Math.Atan2(tangent.Y, tangent.X);
                 default:
                     throw new Exception("Unhandled Path Animation Source");
             }

@@ -30,7 +30,7 @@ namespace Rogue.NET.Core.Media.Animation.Extension
                         //
 
                         var suppression = easingAmount * 10.0;
-                        var amplitude = Math.Max(0, suppression - 1.0);
+                        var amplitude = System.Math.Max(0, suppression - 1.0);
 
                         return EasingFunctions.BackEase(timeFraction, from, to, amplitude, suppression);
                     }
@@ -73,8 +73,8 @@ namespace Rogue.NET.Core.Media.Animation.Extension
             // of the full wave (flipped by multiplying by -1 so that we go "backwards" first), the amplitude gives 
             // us the relative height of the peak, and the exponent makes the effect start later by the "suppression" 
             // factor. 
-            var returnValue = Math.Pow((timeFraction), suppression)
-                              * amplitude * Math.Sin(2 * Math.PI * timeFraction * frequency) * -1 + timeFraction;
+            var returnValue = System.Math.Pow((timeFraction), suppression)
+                              * amplitude * System.Math.Sin(2 * System.Math.PI * timeFraction * frequency) * -1 + timeFraction;
             returnValue = (returnValue * delta);
             returnValue += from;
             return returnValue;
@@ -87,8 +87,8 @@ namespace Rogue.NET.Core.Media.Animation.Extension
             // math magic: The cosine gives us the right wave, the timeFraction is the frequency of the wave, 
             // the absolute value keeps every value positive (so it "bounces" off the midpoint of the cosine 
             // wave, and the amplitude (the exponent) makes the sine wave get smaller and smaller at the end.
-            var returnValue = Math.Abs(Math.Pow((1 - timeFraction), bounciness)
-                                       * Math.Cos(2 * Math.PI * timeFraction * bounces));
+            var returnValue = System.Math.Abs(System.Math.Pow((1 - timeFraction), bounciness)
+                                       * System.Math.Cos(2 * System.Math.PI * timeFraction * bounces));
             returnValue = delta - (returnValue * delta);
             returnValue += from;
             return returnValue;
@@ -99,7 +99,7 @@ namespace Rogue.NET.Core.Media.Animation.Extension
             var delta = to - from;
 
             // math magic: simple exponential decay
-            var returnValue = Math.Pow(timeFraction, exponent);
+            var returnValue = System.Math.Pow(timeFraction, exponent);
             returnValue *= delta;
             returnValue = returnValue + from;
             return returnValue;

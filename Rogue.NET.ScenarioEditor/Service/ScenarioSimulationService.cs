@@ -10,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -31,7 +29,7 @@ namespace Rogue.NET.ScenarioEditor.Service
         public IProjectionSetViewModel CalculateProjectedExperience(IEnumerable<LevelTemplateViewModel> levels)
         {
             // First calculate enemy experience
-            var projectionSet =  CalculateProjectionSet(
+            var projectionSet = CalculateProjectionSet(
                                         levels,
                                         new Func<TemplateViewModel, double>(enemyGenerationTemplate => (enemyGenerationTemplate as EnemyGenerationTemplateViewModel).GenerationWeight),
                                         new Func<LevelBranchTemplateViewModel, IEnumerable<TemplateViewModel>>(levelBranch => levelBranch.Enemies),
@@ -41,14 +39,14 @@ namespace Rogue.NET.ScenarioEditor.Service
                                         true);
 
             // Use results to calculate expected player level
-            for (int i = 0;i< projectionSet.Count;i++)
+            for (int i = 0; i < projectionSet.Count; i++)
             {
                 var projection = projectionSet.GetProjection(i);
 
                 for (int j = 0; j < projection.Value.Count(); j++)
                 {
                     var playerLevel = 0;
-                    while (PlayerCalculator.CalculateExperienceNext(playerLevel) < projection.Value.ElementAt(j).Mean)
+                    while (RogueCalculator.CalculateExperienceNext(playerLevel) < projection.Value.ElementAt(j).Mean)
                         playerLevel++;
 
                     // Setting the mean value to be the player level
@@ -249,7 +247,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                 {
                     // Should be using moving average
                     var cummulativeQuantity = 0.0;
-                    for (int i=0;i<projections.Count();i++)
+                    for (int i = 0; i < projections.Count(); i++)
                     {
                         cummulativeQuantity += projections.ElementAt(i).Mean;
 

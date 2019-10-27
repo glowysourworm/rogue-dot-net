@@ -1,25 +1,22 @@
-﻿using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Extension;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Content;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
-using System.Text;
-using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
+using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using System;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text;
 
 namespace Rogue.NET.Core.Processing.Service
 {
@@ -41,16 +38,20 @@ namespace Rogue.NET.Core.Processing.Service
         ICharacterLayoutInformation _characterLayoutInformation;
         ICharacterContentInformation _characterContentInformation;
 
+        // Stateful sub-component to provide layout calculations using the loaded level
+        IModelLayoutService _modelLayoutService;
+
         // Enemy to have slain the player
         string _killedBy;
 
         public ICharacterLayoutInformation CharacterLayoutInformation { get { return _characterLayoutInformation; } }
         public ICharacterContentInformation CharacterContentInformation { get { return _characterContentInformation; } }
+        public IModelLayoutService LayoutService { get { return _modelLayoutService; } }
 
         [ImportingConstructor]
         public ModelService(
-                IRayTracer rayTracer, 
-                IRandomSequenceGenerator randomSequenceGenerator, 
+                IRayTracer rayTracer,
+                IRandomSequenceGenerator randomSequenceGenerator,
                 ISymbolDetailsGenerator symbolDetailsGenerator)
         {
             _rayTracer = rayTracer;
@@ -59,9 +60,9 @@ namespace Rogue.NET.Core.Processing.Service
         }
 
         public void Load(
-            Player player, 
+            Player player,
             PlayerStartLocation startLocation,
-            Level level, 
+            Level level,
             double zoomFactor,
             IEnumerable<ScenarioObject> injectedContents,
             ScenarioEncyclopedia encyclopedia,
@@ -73,25 +74,6 @@ namespace Rogue.NET.Core.Processing.Service
             this.Player = player;
             this.ZoomFactor = zoomFactor;
             this.ScenarioEncyclopedia = encyclopedia;
-
-            switch (startLocation)
-            {
-                case PlayerStartLocation.SavePoint:
-                    if (level.HasSavePoint)
-                        player.Location = level.SavePoint.Location;
-                    else
-                        player.Location = level.StairsUp.Location;
-                    break;
-                case PlayerStartLocation.StairsUp:
-                    player.Location = level.StairsUp.Location;
-                    break;
-                case PlayerStartLocation.StairsDown:
-                    player.Location = level.StairsDown.Location;
-                    break;
-                case PlayerStartLocation.Random:
-                    player.Location = level.GetRandomLocation(true, _randomSequenceGenerator);
-                    break;
-            }
 
             // Have to provide locations for the injected contents
             foreach (var content in injectedContents)
@@ -115,6 +97,27 @@ namespace Rogue.NET.Core.Processing.Service
 
             _characterLayoutInformation = new CharacterLayoutInformation(this.Level.Grid, _rayTracer);
             _characterContentInformation = new CharacterContentInformation(_characterLayoutInformation);
+            _modelLayoutService = new ModelLayoutService(level, player, _randomSequenceGenerator);
+
+            // Calculate player start location
+            switch (startLocation)
+            {
+                case PlayerStartLocation.SavePoint:
+                    if (level.HasSavePoint)
+                        player.Location = level.SavePoint.Location;
+                    else
+                        player.Location = level.StairsUp.Location;
+                    break;
+                case PlayerStartLocation.StairsUp:
+                    player.Location = level.StairsUp.Location;
+                    break;
+                case PlayerStartLocation.StairsDown:
+                    player.Location = level.StairsDown.Location;
+                    break;
+                case PlayerStartLocation.Random:
+                    player.Location = _modelLayoutService.GetRandomLocation(true);
+                    break;
+            }
 
             UpdateVisibility();
         }
@@ -128,9 +131,10 @@ namespace Rogue.NET.Core.Processing.Service
 
             _characterContentInformation = null;
             _characterLayoutInformation = null;
+            _modelLayoutService = null;
 
             this.Level = null;
-            this.Player = null;            
+            this.Player = null;
             this.ScenarioEncyclopedia = null;
 
             return extractedContent;
@@ -156,8 +160,8 @@ namespace Rogue.NET.Core.Processing.Service
                                  .LevelBranch;
         }
 
-        public void GetPlayerAdvancementParameters(ref double hpPerPoint, ref double staminaPerPoint, 
-                                                   ref double strengthPerPoint, ref double agilityPerPoint, 
+        public void GetPlayerAdvancementParameters(ref double hpPerPoint, ref double staminaPerPoint,
+                                                   ref double strengthPerPoint, ref double agilityPerPoint,
                                                    ref double intelligencePerPoint, ref int skillPointsPerPoint)
         {
             hpPerPoint = _configuration.ScenarioDesign.HpPerCharacterPoint;
@@ -193,8 +197,8 @@ namespace Rogue.NET.Core.Processing.Service
 
             var identified = this.ScenarioEncyclopedia[scenarioObject.RogueName].IsIdentified;
 
-            return identified ? 
-                        noun : 
+            return identified ?
+                        noun :
                         ModelConstants.UnIdentifiedDisplayName;
         }
 

@@ -12115,6 +12115,12 @@
     <EmbeddedResource Include="Resource\Svg\Game\DetectMagicGood.svg" />
     <EmbeddedResource Include="Resource\Svg\Game\DetectMagicNeutral.svg" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Svg\Scenario\Terrain\Dot.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Svg\Scenario\Terrain\Wall.svg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

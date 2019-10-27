@@ -28,55 +28,63 @@
             <Border x:Name="LevelContainerBorder" ClipToBounds="False" Background="Transparent" Width="{Binding LevelWidth}" Height="{Binding LevelHeight}">
 
                 <Grid>
-
+                                      
                     <!-- Revealed Layer -->
                     <Canvas   x:Name="RevealedCanvas"
-                              Background="Transparent"
+                              Background="{Binding RevealedLayer}"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               OpacityMask="{Binding RevealedOpacityMask}"
                               Width="{Binding LevelWidth}"
                               Height="{Binding LevelHeight}">
-                        <ContentPresenter Content="{Binding RevealedLayout}" />
+                        <Canvas.CacheMode>
+                            <BitmapCache EnableClearType="False" SnapsToDevicePixels="False" RenderAtScale="3">
+                            </BitmapCache>
+                        </Canvas.CacheMode>
                     </Canvas>
 
-                    <!-- Revealed Opacity Mask -->
-                    <!--Canvas   x:Name="RevealedOpacityMaskCanvas" 
-                              Background="{Binding RevealedOpacityMask}"
+                    <!-- Explored Layer -->
+                    <Canvas   x:Name="ExploredCanvas"            
+                              Background="{Binding ExploredLayer}"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
-                              Width="{Binding LevelWidth}"
-                              Height="{Binding LevelHeight}">
-                    </-->
-
-                    <!-- Wall Layer -->
-                    <Canvas   x:Name="WallCanvas"            
-                              Background="Transparent"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
+                              
                               OpacityMask="{Binding ExploredOpacityMask}"                              
                               Width="{Binding LevelWidth}"
                               Height="{Binding LevelHeight}">
-                            <ContentPresenter Content="{Binding WallLayout}" />
+                        <Canvas.CacheMode>
+                            <BitmapCache EnableClearType="False" SnapsToDevicePixels="False" RenderAtScale="3">
+                            </BitmapCache>
+                        </Canvas.CacheMode>                        
                     </Canvas>
 
-                    <!-- Door Layer -->
-                    <Canvas   x:Name="DoorCanvas"
-                              Background="Transparent"
+                    <!-- Visible Layer -->
+                    <Canvas   x:Name="VisibleCanvas"            
+                              Background="{Binding VisibleLayer}"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
-                              OpacityMask="{Binding ExploredOpacityMask}"                              
+                              OpacityMask="{Binding VisibleOpacityMask}"                              
                               Width="{Binding LevelWidth}"
                               Height="{Binding LevelHeight}">
-                            <ContentPresenter Content="{Binding DoorLayout}" />
+                        <Canvas.CacheMode>
+                            <BitmapCache EnableClearType="False" SnapsToDevicePixels="False" RenderAtScale="3">
+                            </BitmapCache>
+                        </Canvas.CacheMode>                        
                     </Canvas>
 
-                    <!-- Explored Opacity Mask -->
-                    <!--Canvas   x:Name="ExploredOpacityMaskCanvas"
-                              Background="{Binding ExploredOpacityMask}"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch">
-                    </-->
+                    <!-- Terrain Layer -->
+                    <Canvas   x:Name="TerrainCanvas"           
+                              ClipToBounds="False"
+                              SnapsToDevicePixels="False"
+                              Background="{Binding TerrainLayer}"
+                              OpacityMask="{Binding ExploredOpacityMask}"  
+                              Width="{Binding LevelWidth}"
+                              Height="{Binding LevelHeight}">
+                        <Canvas.CacheMode>
+                            <BitmapCache EnableClearType="False" SnapsToDevicePixels="False" RenderAtScale="3">
+                            </BitmapCache>
+                        </Canvas.CacheMode>                        
+                    </Canvas>
 
                     <!-- Light Radii-->
                     <ItemsControl x:Name="LightRadiiItemsControl"
@@ -109,13 +117,6 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
-
-                    <!-- Visible Opacity Mask -->
-                    <!--Canvas   x:Name="VisibleOpacityMaskCanvas" 
-                          Background="{Binding VisibleOpacityMask}"
-                          Width="{Binding LevelWidth}"
-                          Height="{Binding LevelHeight}">
-                    </-->
 
                     <!-- Doodads -->
                     <ItemsControl x:Name="DoodadItemsControl"
@@ -171,18 +172,18 @@
                     </Canvas>
                     
                     <!-- Mouse-Grid Interaction -->
-                    <!--Canvas x:Name="MouseCanvas"
+                    <Canvas x:Name="MouseCanvas"
                             ClipToBounds="False"
                             Background="Transparent"
                             Width="{Binding LevelWidth}"
                             Height="{Binding LevelHeight}">
-                        
+
                         <Path x:Name="MousePath"
                               Stroke="Yellow"
                               StrokeThickness="1"
                               Fill="Blue"
                               Opacity="0.4" />
-                        
+
                         <Rectangle x:Name="MouseRectangle"
                                    Stroke="White"
                                    StrokeThickness="0.75"
@@ -191,8 +192,8 @@
                                    Width="10"
                                    Height="15">
                         </Rectangle>
-                        
-                    </-->
+
+                    </Canvas>
 
                     <!-- Animations -->
                     <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->
@@ -208,6 +209,7 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
+
 
                 </Grid>
             </Border>

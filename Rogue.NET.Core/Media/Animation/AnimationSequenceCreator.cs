@@ -66,7 +66,7 @@ namespace Rogue.NET.Core.Media.Animation
             var angularVelocity = 2.5;  // rotations / sec
 
             // Calculate animation time
-            var animationTime = (int)((Math.Abs(Point.Subtract(sourceLocation, targetLocation).Length) / velocity) * 1000.0);   // milliseconds
+            var animationTime = (int)((System.Math.Abs(Point.Subtract(sourceLocation, targetLocation).Length) / velocity) * 1000.0);   // milliseconds
             var rotationAngle = angularVelocity * (animationTime / 1000.0) * 360.0;
 
             // Create path geometry for the line
@@ -150,14 +150,14 @@ namespace Rogue.NET.Core.Media.Animation
                 throw new Exception("Improper use of scenario image projectile animation");
 
             // Calculate orientation of image
-            var angle = Math.Atan2(targetLocation.Y - sourceLocation.Y, targetLocation.X - sourceLocation.X);
-            var orientationAngle = (angle * (180 / Math.PI)) + 90;
+            var angle = System.Math.Atan2(targetLocation.Y - sourceLocation.Y, targetLocation.X - sourceLocation.X);
+            var orientationAngle = (angle * (180 / System.Math.PI)) + 90;
 
             // Set default velocity
             var velocity = 300;         // pixels / sec
 
             // Calculate animation time
-            var animationTime = (int)((Math.Abs(Point.Subtract(sourceLocation, targetLocation).Length) / velocity) * 1000.0);   // milliseconds
+            var animationTime = (int)((System.Math.Abs(Point.Subtract(sourceLocation, targetLocation).Length) / velocity) * 1000.0);   // milliseconds
 
             // Create path geometry for the line
             var pathGeometry = new PathGeometry(new PathFigure[]
