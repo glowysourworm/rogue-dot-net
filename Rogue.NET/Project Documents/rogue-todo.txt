@@ -3074,6 +3074,30 @@ IMMEDIATE TODO'S:
 		should produce the desired effect of showing opacity-per-tile. 
 		
 		Also, could vary the lighting gradually as turns pass to show a subtle change in the level
+		
+	LOADING SCREEN:
+	
+		Want to add something to show procedural generation. Need to figure out how to async / await the procedural generation using
+		the more recent dialog mechanism. 
+		
+		Would like some kind of animation on the loading screen with some of the details of whats being generated.
+		
+	SPECIAL THANKS!!!
+	
+		Make sure to go through your browser favorites for names - because there's at least 3-4 people whose ideas you've used directly.
+		
+		Make them the star!
+		
+	LAYOUT GENERATION:
+	
+		What makes these algorithms difficult? Corridor generation? I'm thinking.. Create sub-tools to make this all easier. One example
+		would be simple iterating algorithms. 
+		
+		"How can I iterate the whole grid focused about a point?" (by distance)
+		
+		"How can I recursively iterate the grid like a graph?"
+		
+		These could really help do certain things more cheaply - like find the closest neighboring cell to connect a room to a corridor.
 		  
 		  
 			  

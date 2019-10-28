@@ -200,11 +200,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         public Cell GetOffDiagonalCell1(GridLocation location, Compass direction, out Compass cardinalDirection1)
         {
-            return _grid.GetOffDiagonalCell1(location.Column, location.Row, direction, out cardinalDirection1);
+            return _grid.GetOffDiagonalElement1(location.Column, location.Row, direction, out cardinalDirection1);
         }
         public Cell GetOffDiagonalCell2(GridLocation location, Compass direction, out Compass cardinalDirection2)
         {
-            return _grid.GetOffDiagonalCell2(location.Column, location.Row, direction, out cardinalDirection2);
+            return _grid.GetOffDiagonalElement2(location.Column, location.Row, direction, out cardinalDirection2);
         }
         #endregion
     }

@@ -107,34 +107,64 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
-        /// Returns true if any adjacent cells are default(T)
+        /// Returns 8-way adjacent cells - leaving nulls; but checking boundaries to prevent exceptions. 
+        /// NOTE*** This will return null references for possible element positions ONLY.
         /// </summary>
-        public static bool IsEdgeCell<T>(this T[,] grid, int column, int row) where T : class
+        public static T[] GetAdjacentElementsUnsafe<T>(this T[,] grid, int column, int row) where T : class
         {
-            var north = grid.Get(column, row - 1);
-            var south = grid.Get(column, row + 1);
-            var east = grid.Get(column + 1, row);
-            var west = grid.Get(column - 1, row);
-            var northEast = grid.Get(column + 1, row - 1);
-            var northWest = grid.Get(column - 1, row - 1);
-            var southEast = grid.Get(column + 1, row + 1);
-            var southWest = grid.Get(column - 1, row + 1);
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+            var ne = grid.Get(column + 1, row - 1);
+            var nw = grid.Get(column - 1, row - 1);
+            var se = grid.Get(column + 1, row + 1);
+            var sw = grid.Get(column - 1, row + 1);
 
-            return north == null ||
-                   south == null ||
-                   east == null ||
-                   west == null ||
-                   northEast == null ||
-                   northWest == null ||
-                   southEast == null ||
-                   southWest == null;
+            // NW Corner
+            if (row - 1 < 0 && 
+                column - 1 < 0)
+                return new T[] { s, e, se };
+
+            // NE Corner
+            if (row - 1 < 0 &&
+                column + 1 >= grid.GetLength(0))
+                return new T[] { s, w, sw };
+
+            // SE Corner
+            if (row + 1 >= grid.GetLength(1) &&
+                column + 1 >= grid.GetLength(0))
+                return new T[] { n, w, nw };
+
+            // SW Corner
+            if (row + 1 >= grid.GetLength(1) &&
+                column - 1 < 0)
+                return new T[] { n, e, ne };
+
+            // N Boundary
+            if (row - 1 < 0)
+                return new T[] { s, e, w, se, sw };
+
+            // S Boundary
+            if (row + 1 >= grid.GetLength(1))
+                return new T[] { n, e, w, ne, nw };
+
+            // E Boundary
+            if (column + 1 >= grid.GetLength(0))
+                return new T[] { n, s, w, nw, sw };
+
+            // W Boundary
+            if (column - 1 < 0)
+                return new T[] { n, s, e, ne, se };
+
+            return new T[] { n, s, e, w, ne, nw, se, sw };
         }
 
         /// <summary>
         /// Returns 1st of 2 off diagonal elements in the specified non-cardinal direction (Example: NE -> N element)
         /// </summary>
         /// <param name="direction">NE, NW, SE, SW</param>
-        public static T GetOffDiagonalCell1<T>(this T[,] grid, int column, int row, Compass direction, out Compass cardinalDirection1)
+        public static T GetOffDiagonalElement1<T>(this T[,] grid, int column, int row, Compass direction, out Compass cardinalDirection1)
         {
             switch (direction)
             {
@@ -152,10 +182,10 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
-        /// Returns 2nd of 2 off diagonal cells in the specified non-cardinal direction (Example: NE -> E cell)
+        /// Returns 2nd of 2 off diagonal elements in the specified non-cardinal direction (Example: NE -> E element)
         /// </summary>
         /// <param name="direction">NE, NW, SE, SW</param>
-        public static T GetOffDiagonalCell2<T>(this T[,] grid, int column, int row, Compass direction, out Compass cardinalDirection2)
+        public static T GetOffDiagonalElement2<T>(this T[,] grid, int column, int row, Compass direction, out Compass cardinalDirection2)
         {
             switch (direction)
             {
@@ -169,35 +199,6 @@ namespace Rogue.NET.Core.Processing.Model.Extension
                     return grid.Get(column - 1, row);
                 default:
                     throw new Exception("Off-Diagonal directions don't include " + direction.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Calculates whether adjacent element is connected by accessible path - This will check for non-default elements
-        /// at the off-diagonal locations
-        /// </summary>
-        public static bool IsAdjacentElementConnected<T>(this T[,] grid, int column1, int row1, int column2, int row2) where T : class
-        {
-            var direction = GridUtility.GetDirectionBetweenAdjacentPoints(column1, row1, column2, row2);
-
-            Compass cardinalDirection = Compass.Null;
-
-            switch (direction)
-            {
-                case Compass.N:
-                case Compass.S:
-                case Compass.E:
-                case Compass.W:
-                    return true;
-
-                case Compass.NW:
-                case Compass.NE:
-                case Compass.SE:
-                case Compass.SW:
-                    return grid.GetOffDiagonalCell1(column1, row1, direction, out cardinalDirection) != null ||
-                           grid.GetOffDiagonalCell2(column1, row1, direction, out cardinalDirection) != null;
-                default:
-                    return false;
             }
         }
     }

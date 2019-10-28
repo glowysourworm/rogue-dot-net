@@ -10,6 +10,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry
     {
         static readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
+        // Region padding - must be applied to the level grid
+        const int PADDING = 1;
+
         static RandomRectangularRegionGeometryCreator()
         {
             _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
@@ -29,8 +32,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry
 
                 // Choose placement of region
                 //
-                var column = _randomSequenceGenerator.Get(0, bounds.CellWidth - regionWidth);
-                var row = _randomSequenceGenerator.Get(0, bounds.CellHeight - regionHeight);
+                var column = _randomSequenceGenerator.Get(PADDING, bounds.CellWidth - regionWidth - PADDING);
+                var row = _randomSequenceGenerator.Get(PADDING, bounds.CellHeight - regionHeight - PADDING);
 
                 regions.Add(new RegionBoundary(new GridLocation(column, row), regionWidth, regionHeight));
             }

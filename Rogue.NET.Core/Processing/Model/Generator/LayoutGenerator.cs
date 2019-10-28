@@ -12,6 +12,7 @@ using Rogue.NET.Core.Processing.Model.Generator.Layout.Region;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry;
+using Rogue.NET.Core.Processing.Model.Static;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -145,7 +146,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             // Create maze by "punching out walls"
             //
-            MazeRegionCreator.CreateMaze(grid, region.Bounds, template.NumberExtraWallRemovals);
+            MazeRegionCreator.CreateMaze(grid, template.NumberExtraWallRemovals);
 
             return new LevelGrid(grid, new RegionModel[] { region }, new RegionModel[] { });
         }
@@ -180,16 +181,63 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                 // Create the corridor cells
                 //
-                var connection = CorridorLayoutRegionConnector.Connect(grid, cell1, cell2, template);
-
-                // Add connection to the grid
-                //
-                foreach (var cell in connection)
-                    grid[cell.Location.Column, cell.Location.Row] = cell;
+                CorridorLayoutRegionConnector.Connect(grid, cell1, cell2, template);
             }
 
-            // Create walls
+            //Create walls
             CreateWalls(grid);
+
+            return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
+        }
+
+        private LevelGrid FinishLayoutWithMazeCorridors(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        {
+            // Fill in the empty cells with walls
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    // Create wall cell here
+                    if (grid[i, j] == null)
+                        grid[i, j] = new Cell(i, j, true);
+                }
+            }
+
+            // Create a recursive-backtrack corridor in cell that contains 8-way walls. Continue until entire map is
+            // considered.
+
+            // Find empty regions and fill them with recrusive-backtracked corridors
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    // Create a corridor here
+                    if (grid.GetAdjacentElementsUnsafe(i, j).Count(cell => cell.IsWall) == 8)
+                        MazeRegionCreator.CreateMaze(grid, i, j, 0);
+                }
+            }
+
+            // Finally, connect the regions
+
+            var finalRegions = grid.IdentifyRegions();
+
+            while (finalRegions.Count() > 1)
+            {
+                var region1 = finalRegions.ElementAt(0);
+                var region2 = finalRegions.ElementAt(1);
+
+                var distanceLocations = region1.EdgeCells.SelectMany(cell1 => region2.EdgeCells.Select(cell2 => new
+                {
+                    Distance = RogueCalculator.EuclideanSquareDistance(cell1, cell2),
+                    Cell1 = grid[cell1.Column, cell1.Row],
+                    Cell2 = grid[cell2.Column, cell2.Row]
+                }));
+
+                var distanceLocation = distanceLocations.MinBy(x => x.Distance);
+                CorridorLayoutRegionConnector.Connect(grid, distanceLocation.Cell1, distanceLocation.Cell2, template);
+
+                finalRegions = grid.IdentifyRegions();
+            }
 
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }

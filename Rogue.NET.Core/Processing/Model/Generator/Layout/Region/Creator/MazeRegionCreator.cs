@@ -20,28 +20,28 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
         }
 
         /// <summary>
-        /// Creates maze inside the specified region by removing walls from the 2D cell array.
+        /// Creates maze inside the specified grid by removing walls from the 2D cell array. Assumed that the entire
+        /// grid is filled with wall cells.
         /// </summary>
-        public static void CreateMaze(Cell[,] grid, RegionBoundary boundary, int numberWallRemovals)
+        public static void CreateMaze(Cell[,] grid, int numberWallRemovals)
         {
-            // TODO:TERRAIN - Create regions "based on the template" (just make some up, or the whole grid)
-            //              
-            //              - Fill each region with walls to initialize the grid
-            //
-            //              - Use the recursive back-tracker to "punch-out" walls and create the maze
-            //
+            // Choose random starting cell
+            var randomColumn = _randomSequenceGenerator.Get(0, grid.GetLength(0));
+            var randomRow = _randomSequenceGenerator.Get(0, grid.GetLength(1));
 
-            // Procedure
-            //
-            // 0) Initialize the grid (region grid) with wall cells
-            // 1) Perform Recursive Backtracking Algorithm on the grid (region grid)
-            // 2) Remove walls from the grid (region grid) to make it easier
-            //
-
-            RecursiveBacktracker(grid, boundary, numberWallRemovals);
+            RecursiveBacktracker(grid, grid[randomColumn, randomRow], numberWallRemovals);
         }
 
-        private static void RecursiveBacktracker(Cell[,] grid, RegionBoundary boundary, int numberWallRemovals)
+        /// <summary>
+        /// Creates maze inside the specified grid by removing walls from the 2D cell array. Assumed that the 
+        /// starting cell is a wall.
+        /// </summary>
+        public static void CreateMaze(Cell[,] grid, int startingColumn, int startingRow, int numberWallRemovals)
+        {
+            RecursiveBacktracker(grid, grid[startingColumn, startingRow], numberWallRemovals);
+        }
+
+        private static void RecursiveBacktracker(Cell[,] grid, Cell startingCell, int numberWallRemovals)
         {
             // Pre-Condition: All cells in the region must be filled with walls
             //
@@ -65,18 +65,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             // 4) Remove (at random) some of the walls to make it a little easier
             //
 
-            var regionColumn = boundary.Left;
-            var regionRow = boundary.Top;
-            var regionWidth = boundary.CellWidth;
-            var regionHeight = boundary.CellHeight;
-
             // Keep track of visited cells
             var visitedCells = new bool[grid.GetLength(0), grid.GetLength(1)];
 
-            // Choose random starting cell
-            var randomColumn = _randomSequenceGenerator.Get(regionColumn, regionColumn + regionWidth);
-            var randomRow = _randomSequenceGenerator.Get(regionRow, regionRow + regionHeight);
-            var currentCell = grid[randomColumn, randomRow];
+            // Track from the starting cell
+            var currentCell = startingCell;
 
             // Initialize the history
             var history = new Stack<Cell>();

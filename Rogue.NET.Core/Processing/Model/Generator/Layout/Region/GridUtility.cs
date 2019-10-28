@@ -87,9 +87,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                 for (int j = 0; j < grid.GetLength(1); j++)
                 {
                     if (grid[i, j] != null &&
-                       !regionGrids.Any(region => region[i, j] != null))
+                       !grid[i, j].IsWall &&
+                        regionGrids.All(region => region[i, j] == null))
                     {
-
                         // Use flood fill to locate all region cells
                         //
                         Cell[,] regionGrid = null;
@@ -133,7 +133,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
             regionGrid[testLocation.Column, testLocation.Row] = testCell;
 
             // Check for edge-of-region cells or edge of grid cells
-            if (grid.IsEdgeCell(testCell.Location.Column, testCell.Location.Row))
+            if (GridUtility.IsEdgeCell(grid, testCell.Location.Column, testCell.Location.Row))
                 edgeCells.Add(testCell.Location);
 
             while (resultStack.Count > 0)
@@ -144,7 +144,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                 foreach (var cell in grid.GetCardinalAdjacentElements(regionCell.Location.Column, regionCell.Location.Row))
                 {
                     // Find connected cells that are not yet part of the region
-                    if (grid.IsAdjacentElementConnected(regionCell.Location.Column, regionCell.Location.Row, cell.Location.Column, cell.Location.Row) &&
+                    if (GridUtility.IsAdjacentCellConnected(grid, regionCell.Location, cell.Location) &&
                         regionGrid[cell.Location.Column, cell.Location.Row] == null)
                     {
                         // Add cell to region immediately to prevent extra cells on stack
@@ -154,7 +154,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                         regionCells.Add(cell.Location);
 
                         // Determine whether cell is an edge cell
-                        if (grid.IsEdgeCell(cell.Location.Column, cell.Location.Row))
+                        if (GridUtility.IsEdgeCell(grid, cell.Location.Column, cell.Location.Row))
                             edgeCells.Add(cell.Location);
 
                         // Re-calculate boundary
@@ -262,6 +262,65 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                 default:
                     return Compass.Null;
             }
+        }
+
+        /// <summary>
+        /// Calculates whether adjacent element is connected by accessible path - This will check for non-default elements
+        /// at the off-diagonal locations
+        /// </summary>
+        public static bool IsAdjacentCellConnected(this Cell[,] grid, GridLocation location, GridLocation adjacentLocation)
+        {
+            var direction = GridUtility.GetDirectionOfAdjacentLocation(location, adjacentLocation);
+
+            Compass cardinalDirection = Compass.Null;
+
+            switch (direction)
+            {
+                case Compass.N:
+                case Compass.S:
+                case Compass.E:
+                case Compass.W:
+                    return grid[adjacentLocation.Column, adjacentLocation.Row] != null &&
+                          !grid[adjacentLocation.Column, adjacentLocation.Row].IsWall;
+
+                case Compass.NW:
+                case Compass.NE:
+                case Compass.SE:
+                case Compass.SW:
+                    {
+                        var diag1 = grid.GetOffDiagonalElement1(location.Column, location.Row, direction, out cardinalDirection);
+                        var diag2 = grid.GetOffDiagonalElement2(location.Column, location.Row, direction, out cardinalDirection);
+
+                        return (diag1 != null && !diag1.IsWall) || 
+                               (diag2 != null && !diag2.IsWall);
+                    }
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any adjacent cells are null or walls
+        /// </summary>
+        public static bool IsEdgeCell(Cell[,] grid, int column, int row)
+        {
+            var north = grid.Get(column, row - 1);
+            var south = grid.Get(column, row + 1);
+            var east = grid.Get(column + 1, row);
+            var west = grid.Get(column - 1, row);
+            var northEast = grid.Get(column + 1, row - 1);
+            var northWest = grid.Get(column - 1, row - 1);
+            var southEast = grid.Get(column + 1, row + 1);
+            var southWest = grid.Get(column - 1, row + 1);
+
+            return (north == null || north.IsWall) ||
+                   (south == null || south.IsWall) ||
+                   (east == null || east.IsWall) ||
+                   (west == null || west.IsWall) ||
+                   (northEast == null || northEast.IsWall) ||
+                   (northWest == null || northWest.IsWall) ||
+                   (southEast == null || southEast.IsWall) ||
+                   (southWest == null || southWest.IsWall);
         }
 
         public static bool IsCardinalDirection(Compass direction)

@@ -73,28 +73,28 @@ namespace Rogue.NET.Scenario.Processing.Service
                 var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
                 var geometry = new RectangleGeometry(rect);
 
-                // Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
-                if (_modelService.Level.Grid.Rooms.Any(x => x.Cells.Any(z => z == cell.Location)))
-                {
-                    visibleDrawing.Children.Add(new GeometryDrawing(visibleCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    exploredDrawing.Children.Add(new GeometryDrawing(exploredCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    revealedDrawing.Children.Add(new GeometryDrawing(revealedCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                }
-
-                // Walls - Add default wall to layers { Visible, Explored, Revealed } for rendering
-                if (cell.IsWall)
-                {
-                    visibleDrawing.Children.Add(new GeometryDrawing(visibleWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    exploredDrawing.Children.Add(new GeometryDrawing(exploredWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    revealedDrawing.Children.Add(new GeometryDrawing(revealedWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                }
-
                 // Doors
                 if (cell.IsDoor)
                 {
                     visibleDrawing.Children.Add(new GeometryDrawing(visibleDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
                     exploredDrawing.Children.Add(new GeometryDrawing(exploredDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
                     revealedDrawing.Children.Add(new GeometryDrawing(revealedDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                }
+
+                // Walls - Add default wall to layers { Visible, Explored, Revealed } for rendering
+                else if (cell.IsWall)
+                {
+                    visibleDrawing.Children.Add(new GeometryDrawing(visibleWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    exploredDrawing.Children.Add(new GeometryDrawing(exploredWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    revealedDrawing.Children.Add(new GeometryDrawing(revealedWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                }
+
+                // Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
+                else
+                {
+                    visibleDrawing.Children.Add(new GeometryDrawing(visibleCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    exploredDrawing.Children.Add(new GeometryDrawing(exploredCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    revealedDrawing.Children.Add(new GeometryDrawing(revealedCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
                 }
 
                 // Terrain

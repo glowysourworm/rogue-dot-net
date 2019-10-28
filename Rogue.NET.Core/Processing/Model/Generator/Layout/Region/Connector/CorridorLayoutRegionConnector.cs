@@ -21,13 +21,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
         }
 
-        public static IEnumerable<Cell> Connect(Cell[,] grid, Cell cell1, Cell cell2, LayoutTemplate template)
+        public static void Connect(Cell[,] grid, Cell cell1, Cell cell2, LayoutTemplate template)
         {
             // Check for neighboring (cardinal) or same-identity cell. For this case, just return an empty array
             if (cell1.Location.Equals(cell2.Location) ||
                 grid.GetCardinalAdjacentElements(cell1.Location.Column, cell1.Location.Row)
                     .Any(x => x.Equals(cell2.Location)))
-                return new Cell[] { };
+                return;
 
             var corridor = new List<Cell>();
             var createDoors = template.ConnectionType == LayoutConnectionType.CorridorWithDoors;
@@ -126,8 +126,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
 
                 return true;
             })
-                                         .OrderBy(point => point.EuclideanSquareDistance(physicalLocation1))
-                                         .ToList();
+            .OrderBy(point => point.EuclideanSquareDistance(physicalLocation1))
+            .ToList();
 
             // Trace along the ray and get the cells that are going to be part of the corridor
             foreach (var point in intersections)
@@ -226,12 +226,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                     }
                 }
 
+                // Punch out the walls
+                corridor1.SetWall(false);
+                corridor2.SetWall(false);
+
                 // Store the results
                 if (!corridor.Any(cell => cell == corridor1) && gridCell1 == null)
                     corridor.Add(corridor1);
 
                 if (!corridor.Any(cell => cell == corridor2) && gridCell2 == null)
                     corridor.Add(corridor2);
+
+                // Add to the grid if they're not yet there
+                grid[corridor1.Location.Column, corridor1.Location.Row] = corridor1;
+                grid[corridor2.Location.Column, corridor2.Location.Row] = corridor2;
             }
 
             // Validating the corridor
@@ -244,8 +252,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             if (grid[cell1.Location.Column, cell1.Location.Row] != cell1 ||
                 grid[cell2.Location.Column, cell2.Location.Row] != cell2)
                 throw new Exception("Invalid corridor created");
-
-            return corridor;
         }
 
         public static Vertex TransformToPhysicalLayout(GridLocation location)
