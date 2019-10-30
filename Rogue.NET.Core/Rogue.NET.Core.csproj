@@ -193,6 +193,9 @@
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
+    <Compile Include="Math\Geometry\RectangleInt.cs" />
+    <Compile Include="Math\Geometry\RectangularTiling.cs" />
+    <Compile Include="Math\Geometry\VertexInt.cs" />
     <Compile Include="Media\Animation\AnimationSequenceCreator.cs" />
     <Compile Include="Media\Animation\EventData\AnimationPlayerChangeEventData.cs" />
     <Compile Include="Media\Animation\EventData\AnimationPlayerStartEventData.cs" />
@@ -233,6 +236,7 @@
     <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\RandomRectangularRegionGeometryCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\RectangularGridRegionGeometryCreator.cs" />
     <Compile Include="Math\Algorithm\GeometryUtility.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\TiledMeshRegionGeometryCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\GridUtility.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioCache.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioConfigurationCache.cs" />

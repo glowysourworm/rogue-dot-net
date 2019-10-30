@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
@@ -13,6 +15,9 @@ namespace Rogue.NET.Core.Math.Geometry
         public double Top { get { return this.TopLeft.Y; } }
         public double Right { get { return this.TopRight.X; } }
         public double Bottom { get { return this.BottomLeft.Y; } }
+
+        public double Width { get { return this.Right - this.Left; } }
+        public double Height { get { return this.Bottom - this.Top; } }
 
         public Rectangle(Vertex topLeft, Vertex bottomRight)
         {
@@ -53,12 +58,66 @@ namespace Rogue.NET.Core.Math.Geometry
             this.BottomLeft = new Vertex(left, bottom);
         }
 
+        /// <summary>
+        /// Calculates intersection - excluding edges and vertices.
+        /// </summary>
+        public bool Intersects(Rectangle rectangle)
+        {
+            if (rectangle.Left > this.Right)
+                return false;
+
+            if (rectangle.Right < this.Left)
+                return false;
+
+            if (rectangle.Top > this.Bottom)
+                return false;
+
+            if (rectangle.Bottom < this.Top)
+                return false;
+
+            return true;
+        }
+
+        public bool Contains(Rectangle rectangle, bool allowEdgeOverlap)
+        {
+            if (!allowEdgeOverlap)
+            {
+                if (rectangle.Right >= this.Right)
+                    return false;
+
+                if (rectangle.Left <= this.Left)
+                    return false;
+
+                if (rectangle.Top <= this.Top)
+                    return false;
+
+                if (rectangle.Bottom >= this.Bottom)
+                    return false;
+            }
+            else
+            {
+                if (rectangle.Right > this.Right)
+                    return false;
+
+                if (rectangle.Left < this.Left)
+                    return false;
+
+                if (rectangle.Top < this.Top)
+                    return false;
+
+                if (rectangle.Bottom > this.Bottom)
+                    return false;
+            }
+
+            return true;
+        }
+
         public override string ToString()
         {
             return "x=" + this.Left.ToString("F3") + 
                    " y=" + this.Top.ToString("F3") +
-                   " width=" + ((this.Right - this.Left) + 1).ToString("F3") + 
-                   " height=" + ((this.Bottom - this.Top) + 1).ToString("F3");
+                   " width=" + this.Width.ToString("F3") + 
+                   " height=" + this.Height.ToString("F3");
         }
     }
 }

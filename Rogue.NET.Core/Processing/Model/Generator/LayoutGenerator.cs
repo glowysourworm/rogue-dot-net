@@ -187,9 +187,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //Create walls
             CreateWalls(grid);
 
+            //var tiledRegions = new List<RegionModel>();
+
+            //// REMOVE THIS:  Add Connecting Regions to see them laid out
+            //var connectingRegions = TiledMeshRegionGeometryCreator.CreateConnectingRegions(grid.GetLength(0), grid.GetLength(1), regions.Select(x => x.Bounds));
+
+            //// Add cells for each connecting region - but don't line with walls
+            //foreach (var region in connectingRegions)
+            //    tiledRegions.Add(GridUtility.CreateRectangularRegion(grid, region, true, false));
+
+            //return new LevelGrid(grid, regions.ToArray(), tiledRegions.ToArray());
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }
 
+        // Credit to this fellow for the idea for maze corridors!
+        //
+        // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
+        // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
+        //
         private LevelGrid FinishLayoutWithMazeCorridors(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
             // Fill in the empty cells with walls

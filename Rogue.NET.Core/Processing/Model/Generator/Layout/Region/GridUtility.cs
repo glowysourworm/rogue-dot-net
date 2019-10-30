@@ -15,16 +15,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
     /// </summary>
     public static class GridUtility
     {
-        public static RegionModel CreateRectangularRegion(Cell[,] grid, RegionBoundary boundary, bool addWalls, bool overwriteCells)
+        public static RegionModel CreateRectangularRegion(Cell[,] grid, RegionBoundary boundary, bool cellsAreWalls, bool overwriteCells)
         {
-            return CreateRectangularRegion(grid, boundary.Left, boundary.Top, boundary.CellWidth, boundary.CellHeight, addWalls, overwriteCells);
+            return CreateRectangularRegion(grid, boundary.Left, boundary.Top, boundary.CellWidth, boundary.CellHeight, cellsAreWalls, overwriteCells);
         }
 
         /// <summary>
         /// Creates rectangular region inside of the provided cell 2D array with the specified parameters. The cells INSIDE
         /// the region MUST BE UN-INITIALIZED (NULL).
         /// </summary>
-        public static RegionModel CreateRectangularRegion(Cell[,] grid, int column, int row, int width, int height, bool addWalls, bool overwriteCells)
+        public static RegionModel CreateRectangularRegion(Cell[,] grid, int column, int row, int width, int height, bool cellsAreWalls, bool overwriteCells)
         {
             var regionBounds = new RegionBoundary(new GridLocation(column, row), width, height);
             var regionCells = new List<GridLocation>();
@@ -46,7 +46,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                                   regionRow == row ||
                                   regionRow == ((row + height) - 1));
 
-                    cell = new Cell(regionCol, regionRow, false);
+                    cell = new Cell(regionCol, regionRow, cellsAreWalls);
 
                     // SET THE CELL IN THE GRID
                     grid[regionCol, regionRow] = cell;

@@ -3098,6 +3098,29 @@ IMMEDIATE TODO'S:
 		"How can I recursively iterate the grid like a graph?"
 		
 		These could really help do certain things more cheaply - like find the closest neighboring cell to connect a room to a corridor.
+		
+		Also, one more generation type needed to make things happen - may result in a way to fix our corridor generation for linear "jagged"
+		corridors:
+		
+		https://www.gamasutra.com/blogs/AAdonaac/20150903/252889/Procedural_Dungeon_Generation_Algorithm.php
+		
+		https://www.reddit.com/r/gamedev/comments/1dlwc4/procedural_dungeon_generation_algorithm_explained/
+		
+		May also be able to create thicker corridors becuase of his "rectangle spread" algorithm. 
+		
+		Also, Symmetric layouts.
 		  
+	MOVING OBSTACLES:
+	
+		LIKE THIS ONE! I want to try to create moving obstacles. Example: "spiked bludgeon that goes from wall to wall".. or "spinning fire thing..
+					   from a central post".
+					   
+					   Or.. "fire around the edges of a room" 
+					   
+					   Or.. "random flying blads that return to their 'doodad master'"
+					   
+					   Or.. "random dividing flames that shoot from a doodad and divide once - creating child flames that shoot out"
+					   
+					   Or.. "Rolling boulder that bounces off the sides of the room"
 		  
 			  
