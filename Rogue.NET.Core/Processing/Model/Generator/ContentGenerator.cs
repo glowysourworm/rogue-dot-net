@@ -191,10 +191,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var location1 = GetRandomCell(true, rooms.ElementAt(i), freeCells, freeRoomCells);
                 var location2 = GetRandomCell(true, rooms.ElementAt(i + 1), freeCells, freeRoomCells);
 
-                if (location1 == GridLocation.Empty)
+                if (location1 == null)
                     throw new Exception("Trying to place teleporter but ran out of room!");
 
-                if (location2 == GridLocation.Empty)
+                if (location2 == null)
                     throw new Exception("Trying to place teleporter but ran out of room!");
 
                 teleport1.Location = location1;
@@ -213,10 +213,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var lastRoomLocation = GetRandomCell(true, rooms.ElementAt(rooms.Count - 1), freeCells, freeRoomCells);
             var firstRoomLocation = GetRandomCell(true, rooms.ElementAt(0), freeCells, freeRoomCells);
 
-            if (lastRoomLocation == GridLocation.Empty)
+            if (lastRoomLocation == null)
                 throw new Exception("Trying to place teleporter but ran out of room!");
 
-            if (firstRoomLocation == GridLocation.Empty)
+            if (firstRoomLocation == null)
                 throw new Exception("Trying to place teleporter but ran out of room!");
 
             lastRoomTeleport.Location = lastRoomLocation;
@@ -236,8 +236,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var extraLocation2 = GetRandomCell(false, null, freeCells, freeRoomCells);
 
                 // If we ran out of room then just return since these are extra
-                if (extraLocation1 == GridLocation.Empty ||
-                    extraLocation2 == GridLocation.Empty)
+                if (extraLocation1 == null ||
+                    extraLocation2 == null)
                     return;
 
                 var extraTeleport1 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterARogueName, DoodadNormalType.Teleport1);
@@ -265,7 +265,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var doodad = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterRandomRogueName, DoodadNormalType.TeleportRandom);
                 var location = GetRandomCell(true, rooms[i], freeCells, freeRoomCells);
 
-                if (location == GridLocation.Empty)
+                if (location == null)
                     throw new Exception("Trying to place teleporter but ran out of room!");
 
                 doodad.Location = location;
@@ -312,7 +312,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     // Draw random cell from remaining locations
                     var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
 
-                    if (location != GridLocation.Empty)
+                    if (location != null)
                     {
                         // Map the enemy - add to level content
                         enemy.Location = location;
@@ -337,7 +337,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     // Draw random cell from remaining locations
                     var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
 
-                    if (location != GridLocation.Empty)
+                    if (location != null)
                     {
                         // Map the enemy - add to level content
                         consumable.Location = location;
@@ -362,7 +362,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     // Draw random cell from remaining locations
                     var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
 
-                    if (location != GridLocation.Empty)
+                    if (location != null)
                     {
                         // Map the enemy - add to level content
                         equipment.Location = location;
@@ -390,7 +390,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var location = GetRandomCell(false, null, freeCells, freeRoomCells);
 
                 // Entire grid is occupied
-                if (location == GridLocation.Empty)
+                if (location == null)
                     level.RemoveContent(levelContents[i]);
                 else
                     levelContents[i].Location = location;
@@ -400,14 +400,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             // Check overall collection of cells for remaining locations
             if (freeCells.Count == 0)
-                return GridLocation.Empty;
+                return null;
 
             if (inRoom)
             {
                 var roomCells = freeRoomCells[room];
 
                 if (roomCells.Count == 0)
-                    return GridLocation.Empty;
+                    return null;
 
                 var randomIndex = _randomSequenceGenerator.Get(0, roomCells.Count);
 

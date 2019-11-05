@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
@@ -147,7 +148,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
             return result.Values.Where(x =>
             {
-                return RogueCalculator.EuclideanDistance(x.Location, location) <= lightRadius;
+                return Metric.EuclideanDistance(x.Location, location) <= lightRadius;
             })
             .Select(x => new DistanceLocation(location, x.Location))
             .ToList(); ;

@@ -115,30 +115,6 @@ namespace Rogue.NET.Core.Math.Geometry
             }
         }
 
-        public static bool operator ==(Edge edge1, Edge edge2)
-        {
-            return edge1.Equals(edge2);
-        }
-
-        public static bool operator !=(Edge edge1, Edge edge2)
-        {
-            return !edge1.Equals(edge2);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is Edge)
-            {
-                var edge = (Edge)obj;
-
-                // Check both orientations
-                return (edge.Point1 == this.Point1 && edge.Point2 == this.Point2) ||
-                       (edge.Point2 == this.Point1 && edge.Point1 == this.Point2);
-            }
-
-            return false;
-        }
-
         public override int GetHashCode()
         {
             return base.GetHashCode();

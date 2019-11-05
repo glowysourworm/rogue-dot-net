@@ -470,13 +470,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessTeleport(TeleportRandomAlterationEffect effect, Character character)
         {
-            GridLocation openLocation = GridLocation.Empty;
+            GridLocation openLocation = null;
 
             // Calculate Teleport Location
             openLocation = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
 
             // TODO:  Centralize handling of "Find a random cell" and deal with "no open locations"
-            if (openLocation == GridLocation.Empty)
+            if (openLocation == null)
                 return;
 
             character.Location = openLocation;
@@ -532,7 +532,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var location = GetRandomLocation(randomPlacementType, actor.Location, range);
 
             // TODO:ALTERATION (Handle Exception ?)
-            if (location == GridLocation.Empty)
+            if (location == null)
                 return;
 
             character.Location = location;
@@ -1051,7 +1051,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var level = _modelService.Level;
             var player = _modelService.Player;
 
-            GridLocation openLocation = GridLocation.Empty;
+            GridLocation openLocation = null;
 
             switch (placementType)
             {
@@ -1063,7 +1063,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         var locationsInRange = _modelService.LayoutService.GetLocationsInRange(sourceLocation, sourceRange, false);
                         var unOccupiedLocations = locationsInRange.Where(x => !level.IsCellOccupied(x, player.Location));
 
-                        openLocation = unOccupiedLocations.Any() ? unOccupiedLocations.PickRandom() : GridLocation.Empty;
+                        openLocation = unOccupiedLocations.Any() ? unOccupiedLocations.PickRandom() : null;
                     }
                     break;
                 default:

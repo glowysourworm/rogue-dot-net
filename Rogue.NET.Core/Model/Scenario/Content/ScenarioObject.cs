@@ -24,6 +24,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             get { return _location; }
             set
             {
+                // NOTE*** THIS IS A REFERENCE CHECK ONLY
                 if (_location != value)
                 {
                     var oldLocation = _location;
@@ -52,8 +53,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public ScenarioObject()
         {
             this.RogueName = "Unnamed";
-
-            this.Location = GridLocation.Empty;
         }
 
         public override string ToString()

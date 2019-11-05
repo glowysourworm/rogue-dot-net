@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Processing.Model.Static;
+using System;
 
 namespace Rogue.NET.Core.Math.Geometry
 {

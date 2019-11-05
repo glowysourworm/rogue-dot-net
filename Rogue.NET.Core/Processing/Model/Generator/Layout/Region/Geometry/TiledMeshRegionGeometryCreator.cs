@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Algorithm;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
@@ -21,24 +22,85 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry
         /// <summary>
         /// Creates tiled mesh of connecting regions based on the input regions. This serves as a way to
         /// triangulate paths around the map. These are used to create corridors that don't overlaps the
-        /// specified regions. The grid width / height are the level grid dimensions.
+        /// specified regions.
         /// </summary>
-        public static IEnumerable<RegionBoundary> CreateConnectingRegions(int gridWidth, int gridHeight, IEnumerable<RegionBoundary> regions)
+        public static NavigationTiling CreateRegionTiling(int regionWidth, int regionHeight, IEnumerable<RegionBoundary> regions)
         {
-            var tiling = new RectangularTiling(new RectangleInt(new VertexInt(0, 0), new VertexInt(gridWidth - 1, gridHeight - 1)));
+            // Initialize the tiling
+            var tiling = new NavigationTiling(new NavigationTile(new VertexInt(0, 0), new VertexInt(regionWidth - 1, regionHeight - 1), false));
 
+            // Create the tiling by adding region tiles
             foreach (var boundary in regions)
             {
-                var regionRectangle = new RectangleInt(new VertexInt(boundary.Left, boundary.Top),
-                                                       new VertexInt(boundary.Right, boundary.Bottom));
+                var regionRectangle = new NavigationTile(new VertexInt(boundary.Left, boundary.Top),
+                                                         new VertexInt(boundary.Right, boundary.Bottom), true);
 
-                tiling.AddRegionRectangle(regionRectangle);
+                tiling.AddTile(regionRectangle);
             }
 
-            return tiling.ConnectingRectangles.Select(rectangle =>
+            // Decide how to create a route:  MST
+            var tileCenters = tiling.RegionTiles
+                                      .Union(tiling.ConnectingTiles)
+                                      .Select(tile => new ReferencedVertex<NavigationTile>(tile, new Vertex(tile.Center)))
+                                      .Actualize();
+
+            // Calculate connection points before trying to calculate routes
+            //
+            // NOTE*** THE CONNECTION POINTS ARE USED TO CALCULATE GRAPH WEIGHTS
+            //
+            tiling.CalculateConnections();
+
+            // Create MST using Prim's Algorithm
+            // var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(tileCenters, Metric.MetricType.Roguian);
+
+            var navigationGraph = tiling.CreateGraph();
+
+            // For each region pair - calculate a route using the MST
+            foreach (var region1 in tiling.RegionTiles)
             {
-                return new RegionBoundary(new GridLocation(rectangle.Left, rectangle.Top), rectangle.Width, rectangle.Height);
-            }).Actualize();
+                foreach (var region2 in tiling.RegionTiles)
+                {
+                    if (region1 == region2)
+                        continue;
+
+                    // TODO:TERRAIN - RETHINK HOW TO DEAL WITH OVERLAPPING REGIONS
+                    if (region1.Intersects(region2))
+                        continue;
+
+                    // TODO:TERRAIN - THINK ABOUT HOW TO DEAL WITH THIS CASE (probably all overlapping region tiles)
+                    if (region1.ConnectionPoints.Count() == 0 || region2.ConnectionPoints.Count() == 0)
+                        continue;
+
+                    // Use Breadth First Search through the graph to create a Dijkstra map from region1 -> region2
+                    var dijkstraMap = GeometryUtility.BreadthFirstSearch(navigationGraph, region1, region2, Metric.MetricType.Roguian);
+
+                    // Calculate the shortest path through the nagivation tiling
+                    var routeTiles = dijkstraMap.GetShortestPath();
+
+                    if (routeTiles.Count() < 2)
+                        throw new Exception("Improperly formed shortest path");
+
+                    // TODO:TERRAIN REMOVE THIS
+                    // Double-Check to make sure that they're bordering
+                    for (int i=0;i<routeTiles.Count() - 1;i++)
+                    {
+                        var tile1 = routeTiles.ElementAt(i);
+                        var tile2 = routeTiles.ElementAt(i + 1);
+
+                        if (!tile1.Borders(tile2) || tile1 == tile2)
+                            throw new Exception("Improperly formed shortest path");
+                    }
+
+                    // Mark each of these tiles for routing 
+                    foreach (var tile in routeTiles)
+                        tile.IsMarkedForRouting = true;
+                }
+            }
+
+            // Finally, route the tiles in the MST
+            tiling.RouteConnections();
+
+            return tiling;
         }
     }
 }

@@ -93,7 +93,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Content
                     _lineOfSightContent[character].AddRange(level.GetManyAt<ScenarioObject>(location));
 
                     // Add Player if applicable
-                    if (player.Location == location)
+                    if (player.Location.Equals(location))
                         _lineOfSightContent[character].Add(player);
                 }
                 foreach (var location in _characterLayoutInformation.GetVisibleLocations(character))
@@ -101,7 +101,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Content
                     _visibleContent[character].AddRange(level.GetManyAt<ScenarioObject>(location));
 
                     // Add Player if applicable
-                    if (player.Location == location)
+                    if (player.Location.Equals(location))
                         _visibleContent[character].Add(player);
                 }
 

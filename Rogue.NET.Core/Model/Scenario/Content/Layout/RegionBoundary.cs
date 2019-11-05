@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Processing.Model.Static;
+﻿using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Processing.Model.Static;
 using System;
 
 using System.Linq;
@@ -188,13 +189,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var bottom = boundary.Top > this.Bottom;
 
             if (left && top)
-                return RogueCalculator.RoguianDistance(this.Location, boundary.BottomRight);
+                return Metric.RoguianDistance(this.Location, boundary.BottomRight);
             else if (right && top)
-                return RogueCalculator.RoguianDistance(this.Location, boundary.BottomLeft);
+                return Metric.RoguianDistance(this.Location, boundary.BottomLeft);
             else if (right && bottom)
-                return RogueCalculator.RoguianDistance(this.Location, boundary.TopLeft);
+                return Metric.RoguianDistance(this.Location, boundary.TopLeft);
             else if (left && bottom)
-                return RogueCalculator.RoguianDistance(this.Location, boundary.TopRight);
+                return Metric.RoguianDistance(this.Location, boundary.TopRight);
             else if (left)
                 return this.Left - boundary.Right;
             else if (top)
@@ -214,7 +215,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             return this.Corners
                        .SelectMany(corner =>
                        {
-                           return cellRectangle.Corners.Select(otherCorner => RogueCalculator.RoguianDistance(corner, otherCorner));
+                           return cellRectangle.Corners.Select(otherCorner => Metric.RoguianDistance(corner, otherCorner));
                        })
                        .Max();
         }

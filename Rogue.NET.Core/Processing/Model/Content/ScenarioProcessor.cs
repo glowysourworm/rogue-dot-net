@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
@@ -109,7 +110,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var desiredLocation = _modelService.LayoutService.GetPointInDirection(_modelService.Player.Location, direction);
 
             // Invalid location
-            if (desiredLocation == GridLocation.Empty)
+            if (desiredLocation == null)
                 return null;
 
             //Look for road blocks - move player
@@ -202,7 +203,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var attackLocation = _modelService.LayoutService.GetPointInDirection(location, direction);
 
             // Invalid attack location
-            if (attackLocation == GridLocation.Empty)
+            if (attackLocation == null)
                 return;
 
             // Check to see whether path is clear to attack
@@ -459,7 +460,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return LevelContinuationAction.DoNothing;
             }
 
-            else if (RogueCalculator.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MinFiringDistance)
+            else if (Metric.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MinFiringDistance)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Too close to fire your weapon");
 
             else

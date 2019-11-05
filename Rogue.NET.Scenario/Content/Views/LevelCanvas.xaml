@@ -77,7 +77,6 @@
                               ClipToBounds="False"
                               SnapsToDevicePixels="False"
                               Background="{Binding TerrainLayer}"
-                              OpacityMask="{Binding ExploredOpacityMask}"  
                               Width="{Binding LevelWidth}"
                               Height="{Binding LevelHeight}">
                         <Canvas.CacheMode>

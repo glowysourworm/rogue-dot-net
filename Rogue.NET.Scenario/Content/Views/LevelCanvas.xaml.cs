@@ -38,7 +38,7 @@ namespace Rogue.NET.Scenario.Content.Views
         const int SHIFT_AMOUNT = 60;
 
         // Grid Location for storing and tracking mouse cursor
-        GridLocation _cursorGridLocation = GridLocation.Empty;
+        GridLocation _cursorGridLocation = null;
 
         [ImportingConstructor]
         public LevelCanvas(

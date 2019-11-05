@@ -32,8 +32,8 @@ namespace Rogue.NET.Core.Processing.Service
         public void Clear()
         {
             _targetType = TargetType.None;
-            _targetLocation = GridLocation.Empty;
-            _targetTrackerLocation = GridLocation.Empty;
+            _targetLocation = null;
+            _targetTrackerLocation = null;
             _targetCharacter = null;
         }
 
@@ -145,19 +145,19 @@ namespace Rogue.NET.Core.Processing.Service
             var gridCell = _modelService.Level.Grid[location.Column, location.Row];
 
             // Clear target tracker
-            _targetTrackerLocation = GridLocation.Empty;
+            _targetTrackerLocation = null;
 
             if (gridCell == null)
             {
                 _targetType = TargetType.None;
-                _targetLocation = GridLocation.Empty;
+                _targetLocation = null;
                 _targetCharacter = null;
             }
 
             else if (character != null)
             {
                 _targetType = TargetType.Character;
-                _targetLocation = GridLocation.Empty;
+                _targetLocation = null;
                 _targetCharacter = character;
             }
 
@@ -171,8 +171,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         private bool IsValidTarget(GridLocation location)
         {
-            if (location == null ||
-                location == GridLocation.Empty)
+            if (location == null)
                 return false;
 
             var gridCell = _modelService.Level.Grid[location.Column, location.Row];
@@ -192,8 +191,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         public TargetType GetTrackedTargetType()
         {
-            if (_targetTrackerLocation == null ||
-                _targetTrackerLocation == GridLocation.Empty)
+            if (_targetTrackerLocation == null)
                 return TargetType.None;
 
             var character = _modelService.Level.GetAt<Character>(_targetTrackerLocation);
@@ -205,7 +203,7 @@ namespace Rogue.NET.Core.Processing.Service
             else if (character != null)
                 return TargetType.Character;
 
-            else if (gridCell.Location != GridLocation.Empty)
+            else if (gridCell.Location != null)
                 return TargetType.Location;
 
             return TargetType.None;

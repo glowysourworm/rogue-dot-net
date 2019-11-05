@@ -159,20 +159,26 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <returns></returns>
         private LevelGrid FinishLayout(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
-            // Triangulate their positions (Delaunay Triangulation)
+            // Triangulate room positions (Delaunay Triangulation)
             //
-            var triangulation = GeometryUtility.PrimsMinimumSpanningTree(regions.Select(x => new Vertex(x.Bounds.Center.Column, x.Bounds.Center.Row))
-                                                                                .Actualize());
+            var graph = GeometryUtility.PrimsMinimumSpanningTree(regions.Select(x =>
+            {
+                var topLeft = new Vertex(x.Bounds.Left, x.Bounds.Top);
+                var bottomRight = new Vertex(x.Bounds.Right, x.Bounds.Bottom);
+
+                return new ReferencedVertex<Rectangle>(new Rectangle(topLeft, bottomRight), new Vertex(x.Bounds.Center.Column, x.Bounds.Center.Row));
+
+            }), Metric.MetricType.Roguian);
 
             // For each edge in the triangulation - create a corridor
             //
-            foreach (var edge in triangulation)
+            foreach (var edge in graph.Edges)
             {
-                var room1 = regions.First(x => x.Bounds.Center.Column == (int)edge.Point1.X &&
-                                               x.Bounds.Center.Row == (int)edge.Point1.Y);
+                var room1 = regions.First(x => x.Bounds.Center.Column == (int)edge.Point1.Vertex.X &&
+                                               x.Bounds.Center.Row == (int)edge.Point1.Vertex.Y);
 
-                var room2 = regions.First(x => x.Bounds.Center.Column == (int)edge.Point2.X &&
-                                               x.Bounds.Center.Row == (int)edge.Point2.Y);
+                var room2 = regions.First(x => x.Bounds.Center.Column == (int)edge.Point2.Vertex.X &&
+                                               x.Bounds.Center.Row == (int)edge.Point2.Vertex.Y);
 
                 // Calculate nearest neighbor cells
                 //
@@ -187,14 +193,25 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //Create walls
             CreateWalls(grid);
 
-            //var tiledRegions = new List<RegionModel>();
+            return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
+        }
 
-            //// REMOVE THIS:  Add Connecting Regions to see them laid out
-            //var connectingRegions = TiledMeshRegionGeometryCreator.CreateConnectingRegions(grid.GetLength(0), grid.GetLength(1), regions.Select(x => x.Bounds));
+        private LevelGrid FinishLayoutWithNavigationTiling(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        {
+            var tiledRegions = new List<RegionModel>();
 
-            //// Add cells for each connecting region - but don't line with walls
-            //foreach (var region in connectingRegions)
-            //    tiledRegions.Add(GridUtility.CreateRectangularRegion(grid, region, true, false));
+            // REMOVE THIS:  Add Connecting Regions to see them laid out
+            var tiling = TiledMeshRegionGeometryCreator.CreateRegionTiling(grid.GetLength(0), grid.GetLength(1), regions.Select(x => x.Bounds));
+
+            // Create region boundaries from the tiling
+            // var connectingRegions = tiling.ConnectingTiles.Select(rectangle => new RegionBoundary(new GridLocation(rectangle.TopLeft.X, rectangle.TopLeft.Y), rectangle.Width, rectangle.Height)).Actualize();
+
+            // Add cells for each connecting region - but don't line with walls
+            // foreach (var region in connectingRegions)
+            //     tiledRegions.Add(GridUtility.CreateRectangularRegion(grid, region, true, false));
+
+
+            TilingCorridorRegionConnector.ConnectRegionTiling(grid, tiling);
 
             //return new LevelGrid(grid, regions.ToArray(), tiledRegions.ToArray());
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
@@ -243,7 +260,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                 var distanceLocations = region1.EdgeCells.SelectMany(cell1 => region2.EdgeCells.Select(cell2 => new
                 {
-                    Distance = RogueCalculator.EuclideanSquareDistance(cell1, cell2),
+                    Distance = Metric.EuclideanSquareDistance(cell1, cell2),
                     Cell1 = grid[cell1.Column, cell1.Row],
                     Cell2 = grid[cell2.Column, cell2.Row]
                 }));

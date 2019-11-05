@@ -4,43 +4,43 @@ using System.Linq;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class Triangle
+    public class ReferencedTriangle<T> where T : class
     {
-        public Vertex Point1 { get; set; }
-        public Vertex Point2 { get; set; }
-        public Vertex Point3 { get; set; }
+        public ReferencedVertex<T> Point1 { get; set; }
+        public ReferencedVertex<T> Point2 { get; set; }
+        public ReferencedVertex<T> Point3 { get; set; }
 
-        public Edge Edge12()
+        public ReferencedEdge<T> Edge12()
         {
-            return new Edge(this.Point1, this.Point2);
+            return new ReferencedEdge<T>(this.Point1, this.Point2);
         }
-        public Edge Edge23()
+        public ReferencedEdge<T> Edge23()
         {
-            return new Edge(this.Point2, this.Point3);
+            return new ReferencedEdge<T>(this.Point2, this.Point3);
         }
-        public Edge Edge31()
+        public ReferencedEdge<T> Edge31()
         {
-            return new Edge(this.Point3, this.Point1);
-        }
-
-        public IEnumerable<Vertex> Vertices
-        {
-            get { return new Vertex[] { this.Point1, this.Point2, this.Point3 }; }
+            return new ReferencedEdge<T>(this.Point3, this.Point1);
         }
 
-        public IEnumerable<Edge> Edges
+        public IEnumerable<ReferencedVertex<T>> Vertices
         {
-            get { return new Edge[] { this.Edge12(), this.Edge23(), this.Edge31() }; }
+            get { return new ReferencedVertex<T>[] { this.Point1, this.Point2, this.Point3 }; }
         }
 
-        public Triangle(Vertex point1, Vertex point2, Vertex point3)
+        public IEnumerable<ReferencedEdge<T>> Edges
+        {
+            get { return new ReferencedEdge<T>[] { this.Edge12(), this.Edge23(), this.Edge31() }; }
+        }
+
+        public ReferencedTriangle(ReferencedVertex<T> point1, ReferencedVertex<T> point2, ReferencedVertex<T> point3)
         {
             this.Point1 = point1;
             this.Point2 = point2;
             this.Point3 = point3;
         }
 
-        public bool SharesEdgeWith(Triangle triangle)
+        public bool SharesEdgeWith(ReferencedTriangle<T> triangle)
         {
             return this.Edges.Intersect(triangle.Edges).Count() > 0;
         }
@@ -65,10 +65,10 @@ namespace Rogue.NET.Core.Math.Geometry
             // Double Check:  There are only 2 possible orderings of the points
 
             // 1 -> 2 -> 3 (Results from crossing the vectors 12 X 23 - where subtracting the points gives you the vector)
-            var d123 = Vertex.Orientation(this.Point1, this.Point2, this.Point3);
+            var d123 = Vertex.Orientation(this.Point1.Vertex, this.Point2.Vertex, this.Point3.Vertex);
 
             // 1 -> 3 -> 2
-            var d132 = Vertex.Orientation(this.Point1, this.Point3, this.Point2);
+            var d132 = Vertex.Orientation(this.Point1.Vertex, this.Point3.Vertex, this.Point2.Vertex);
 
             // NOTE*** Must handle collinear case. This may be the incorrect way to handle this.
             if (d123 == 0 || d132 == 0)
@@ -81,15 +81,15 @@ namespace Rogue.NET.Core.Math.Geometry
             //
             if (d123 > 0)
             {
-                point1 = this.Point1;
-                point2 = this.Point2;
-                point3 = this.Point3;
+                point1 = this.Point1.Vertex;
+                point2 = this.Point2.Vertex;
+                point3 = this.Point3.Vertex;
             }
             else if (d132 > 0)
             {
-                point1 = this.Point1;
-                point2 = this.Point3;
-                point3 = this.Point2;
+                point1 = this.Point1.Vertex;
+                point2 = this.Point3.Vertex;
+                point3 = this.Point2.Vertex;
             }
             else
                 throw new Exception("Improper use of circum-circle algorithm");

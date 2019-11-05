@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -391,7 +392,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, enemy.Id));
                         }
                         // Enemy is trying to teleport in where Player is
-                        else if (character is Enemy && character.Location == _modelService.Player.Location)
+                        else if (character is Enemy && character.Location.Equals(_modelService.Player.Location))
                         {
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Enemy is trying to use your teleporter!");
                             break;
@@ -651,13 +652,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     // Desired location is the ultimate destination for the character
                     var desiredLocation = CalculateDesiredLocationInRange(character);
 
-                    if (desiredLocation != GridLocation.Empty)
+                    if (desiredLocation != null)
                     {
                         // Move location is the next location for the character
                         var moveLocation = CalculateCharacterMoveLocation(character, desiredLocation);
                         if (moveLocation != null &&
-                            moveLocation != GridLocation.Empty &&
-                            moveLocation != _modelService.Player.Location) // TODO: MAKE THIS PART OF THE LAYOUT ENGINE METHODS
+                            moveLocation != null &&
+                           !moveLocation.Equals(_modelService.Player.Location)) // TODO: MAKE THIS PART OF THE LAYOUT ENGINE METHODS
                         {
                             ProcessCharacterMove(character, moveLocation);
                             actionTaken = true;
@@ -693,23 +694,23 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     {
                         return _modelService.LayoutService
                                             .GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
-                                            .MinBy(x => RogueCalculator.RoguianDistance(x, desiredLocation));
+                                            .MinBy(x => Metric.RoguianDistance(x, desiredLocation));
                     }
                 case CharacterMovementType.StandOffIsh:
                     {
                         return _modelService.LayoutService
                                             .GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
-                                            .OrderBy(x => RogueCalculator.RoguianDistance(x, desiredLocation))
+                                            .OrderBy(x => Metric.RoguianDistance(x, desiredLocation))
                                             .LastOrDefault();
                     }
                 case CharacterMovementType.PathFinder:
                     {
                         var nextLocation = _pathFinder.FindCharacterNextPathLocation(character.Location, desiredLocation, character.AlignmentType);
 
-                        if (nextLocation == GridLocation.Empty)
+                        if (nextLocation == null)
                             return _modelService.LayoutService
                                                 .GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
-                                                .OrderBy(x => RogueCalculator.RoguianDistance(x, desiredLocation))
+                                                .OrderBy(x => Metric.RoguianDistance(x, desiredLocation))
                                                 .FirstOrDefault();
                         else
                             return nextLocation;
@@ -731,7 +732,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Move into attack position
             if (opposingCharacters.Any())
             {
-                return opposingCharacters.MinBy(x => RogueCalculator.RoguianDistance(character.Location, x.Location))
+                return opposingCharacters.MinBy(x => Metric.RoguianDistance(character.Location, x.Location))
                                          .Location;
             }
 
@@ -750,7 +751,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return _modelService.Player.Location;
             }
             else
-                return GridLocation.Empty;
+                return null;
         }
         private void ProcessCharacterMove(NonPlayerCharacter character, GridLocation moveLocation)
         {
@@ -835,7 +836,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                                           (!character.IsAlerted && x.Is(CharacterStateType.Invisible))).Actualize();
 
             var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(character.Location);
-            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => RogueCalculator.RoguianDistance(x.Location, character.Location));
+            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Metric.RoguianDistance(x.Location, character.Location));
 
             // Set flag to notify any characters in sight range
             anyCharactersInVisibleRange = opposingCharactersInVisibleRange.Any();
@@ -901,7 +902,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (character.IsEquippedRangeCombat())
             {
                 // Check for line of sight and firing range
-                var range = RogueCalculator.RoguianDistance(character.Location, targetCharacter.Location);
+                var range = Metric.RoguianDistance(character.Location, targetCharacter.Location);
 
                 // These are guaranteed by the enemy check IsRangeMelee()
                 var rangeWeapon = character.Equipment.Values.First(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
@@ -1001,7 +1002,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                  .GetRandomLocation(true, _modelService.CharacterLayoutInformation
                                                                        .GetVisibleLocations(_modelService.Player));
 
-            if (availableLocation == GridLocation.Empty)
+            if (availableLocation == null)
                 return;
 
             // Create enemy from template

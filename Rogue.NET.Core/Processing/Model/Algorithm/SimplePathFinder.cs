@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
@@ -41,7 +42,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
             public override string ToString()
             {
-                return this.Location == GridLocation.Empty ? "" : this.Location.ToString();
+                return this.Location?.ToString() ?? "";
             }
         }
 
@@ -247,7 +248,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 return node.Location;
             }
             else
-                return GridLocation.Empty;
+                return null;
         }
 
         private SimplePathFinderNode FindPathRecurse(SimplePathFinderNode currentNode, GridLocation endLocation, CharacterAlignmentType alignmentType, int depthIndex)
@@ -269,7 +270,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                                                                                              isCharacter,
                                                                                              alignmentType))
                 // Apply Heuristic
-                .OrderBy(x => RogueCalculator.RoguianDistance(x, endLocation))
+                .OrderBy(x => Metric.RoguianDistance(x, endLocation))
                 .Actualize();
 
             // PROBLEM - NOT REMOVING VISITED CELLS FROM RECURSION

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Practices.ServiceLocation;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
@@ -198,7 +199,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                 {
                     foreach (var edgeLocation2 in region2.EdgeCells)
                     {
-                        var distance = RogueCalculator.RoguianDistance(edgeLocation1, edgeLocation2);
+                        var distance = Metric.RoguianDistance(edgeLocation1, edgeLocation2);
 
                         // Reset candidates
                         if (distance < minimumDistance)

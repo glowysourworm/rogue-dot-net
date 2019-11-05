@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -107,7 +108,7 @@ namespace Rogue.NET.Core.Processing.Service
                                        .ToList();
 
             if (locations.Count <= 0)
-                return GridLocation.Empty;
+                return null;
 
             // Slower operation
             if (excludeOccupiedLocations)
@@ -138,7 +139,7 @@ namespace Rogue.NET.Core.Processing.Service
                                     });
 
             return adjacentLocations.Any() ? adjacentLocations.ElementAt(_randomSequenceGenerator.Get(0, adjacentLocations.Count()))
-                                           : GridLocation.Empty;
+                                           : null;
 
         }
 
@@ -196,12 +197,12 @@ namespace Rogue.NET.Core.Processing.Service
                         continue;
 
                     // Check for source location
-                    if (_level.Grid[i, j].Location == location &&
+                    if (_level.Grid[i, j].Location.Equals(location) &&
                        !includeSourceLocation)
                         continue;
 
                     // Check the range
-                    if (RogueCalculator.RoguianDistance(_level.Grid[i, j].Location, location) <= cellRange)
+                    if (Metric.RoguianDistance(_level.Grid[i, j].Location, location) <= cellRange)
                         result.Add(_level.Grid[i, j].Location);
                 }
             }
@@ -243,14 +244,14 @@ namespace Rogue.NET.Core.Processing.Service
         {
             switch (direction)
             {
-                case Compass.N: return _level.Grid[location.Column, location.Row - 1]?.Location ?? GridLocation.Empty;
-                case Compass.S: return _level.Grid[location.Column, location.Row + 1]?.Location ?? GridLocation.Empty;
-                case Compass.E: return _level.Grid[location.Column + 1, location.Row]?.Location ?? GridLocation.Empty;
-                case Compass.W: return _level.Grid[location.Column - 1, location.Row]?.Location ?? GridLocation.Empty;
-                case Compass.NE: return _level.Grid[location.Column + 1, location.Row - 1]?.Location ?? GridLocation.Empty;
-                case Compass.NW: return _level.Grid[location.Column - 1, location.Row - 1]?.Location ?? GridLocation.Empty;
-                case Compass.SW: return _level.Grid[location.Column - 1, location.Row + 1]?.Location ?? GridLocation.Empty;
-                case Compass.SE: return _level.Grid[location.Column + 1, location.Row + 1]?.Location ?? GridLocation.Empty;
+                case Compass.N: return _level.Grid[location.Column, location.Row - 1]?.Location ?? null;
+                case Compass.S: return _level.Grid[location.Column, location.Row + 1]?.Location ?? null;
+                case Compass.E: return _level.Grid[location.Column + 1, location.Row]?.Location ?? null;
+                case Compass.W: return _level.Grid[location.Column - 1, location.Row]?.Location ?? null;
+                case Compass.NE: return _level.Grid[location.Column + 1, location.Row - 1]?.Location ?? null;
+                case Compass.NW: return _level.Grid[location.Column - 1, location.Row - 1]?.Location ?? null;
+                case Compass.SW: return _level.Grid[location.Column - 1, location.Row + 1]?.Location ?? null;
+                case Compass.SE: return _level.Grid[location.Column + 1, location.Row + 1]?.Location ?? null;
                 case Compass.Null:
                 default:
                     return location;

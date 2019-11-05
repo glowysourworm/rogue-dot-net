@@ -1,10 +1,10 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Math.Geometry.Interface;
+using System;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class Rectangle
+    public class Rectangle : IGraphWeightProvider<Rectangle>
     {
         public Vertex TopLeft { get; private set; }
         public Vertex TopRight { get; private set; }
@@ -18,6 +18,14 @@ namespace Rogue.NET.Core.Math.Geometry
 
         public double Width { get { return this.Right - this.Left; } }
         public double Height { get { return this.Bottom - this.Top; } }
+
+        public Vertex Center
+        {
+            get
+            {
+                return new Vertex((this.Left + this.Right) / 2.0, (this.Top + this.Bottom) / 2.0);
+            }
+        }
 
         public Rectangle(Vertex topLeft, Vertex bottomRight)
         {
@@ -112,11 +120,24 @@ namespace Rogue.NET.Core.Math.Geometry
             return true;
         }
 
+        public double CalculateWeight(Rectangle adjacentNode, Metric.MetricType metricType)
+        {
+            switch (metricType)
+            {
+                case Metric.MetricType.Roguian:
+                    return Metric.RoguianDistance(this.Center, adjacentNode.Center);
+                case Metric.MetricType.Euclidean:
+                    return Metric.EuclideanDistance(this.Center, adjacentNode.Center);
+                default:
+                    throw new Exception("Unhandled Metric Type Rogue.NET.Core.Math.Geometry.Rectangle");
+            }
+        }
+
         public override string ToString()
         {
-            return "x=" + this.Left.ToString("F3") + 
+            return "x=" + this.Left.ToString("F3") +
                    " y=" + this.Top.ToString("F3") +
-                   " width=" + this.Width.ToString("F3") + 
+                   " width=" + this.Width.ToString("F3") +
                    " height=" + this.Height.ToString("F3");
         }
     }

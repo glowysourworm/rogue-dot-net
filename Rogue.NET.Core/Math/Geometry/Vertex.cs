@@ -13,6 +13,12 @@ namespace Rogue.NET.Core.Math.Geometry
             this.Y = y;
         }
 
+        public Vertex(VertexInt vertex)
+        {
+            this.X = (int)vertex.X;
+            this.Y = (int)vertex.Y;
+        }
+
         public double EuclideanSquareDistance(Vertex vertex)
         {
             return (this.X * vertex.X) + (this.Y * vertex.Y);

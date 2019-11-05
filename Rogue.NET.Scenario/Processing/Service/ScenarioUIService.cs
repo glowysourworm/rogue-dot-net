@@ -102,27 +102,27 @@ namespace Rogue.NET.Scenario.Processing.Service
                     revealedDrawing.Children.Add(new GeometryDrawing(revealedCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
                 }
 
-                //var terrain = _modelService.Level.Grid.Terrain.FirstOrDefault(y => y.Cells.Any(x => x == cell.Location));
-                //if (terrain != null)
-                //{
-                //    var index = _modelService.Level.Grid.Terrain.ToList().IndexOf(terrain);
+                var terrain = _modelService.Level.Grid.Terrain.FirstOrDefault(y => y.Cells.Any(x => x.Equals(cell.Location)));
+                if (terrain != null)
+                {
+                    var index = _modelService.Level.Grid.Terrain.ToList().IndexOf(terrain);
 
-                //    Brush terrainBrush = Brushes.White;
+                    Brush terrainBrush = Brushes.White;
 
-                //    if (index % 4 == 0)
-                //        terrainBrush = terrainCellBrush1;
+                    if (index % 4 == 0)
+                        terrainBrush = terrainCellBrush1;
 
-                //    if (index % 4 == 1)
-                //        terrainBrush = terrainCellBrush2;
+                    if (index % 4 == 1)
+                        terrainBrush = terrainCellBrush2;
 
-                //    if (index % 4 == 2)
-                //        terrainBrush = terrainCellBrush3;
+                    if (index % 4 == 2)
+                        terrainBrush = terrainCellBrush3;
 
-                //    if (index % 4 == 3)
-                //        terrainBrush = terrainCellBrush4;
+                    if (index % 4 == 3)
+                        terrainBrush = terrainCellBrush4;
 
-                //    terrainDrawing.Children.Add(new GeometryDrawing(terrainBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                //}
+                    terrainDrawing.Children.Add(new GeometryDrawing(terrainBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                }
 
                 // Terrain
                 // if (cell.TerrainValue != 0)

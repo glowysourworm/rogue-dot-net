@@ -247,6 +247,20 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
+        /// Returns maximum of a collection by a given selector
+        /// </summary>
+        public static T MaxBy<T, V>(this IEnumerable<T> collection, Func<T, V> selector) where V : IComparable
+        {
+
+            return collection.Select(x => new { Item = x, Value = selector(x) })
+                             .OrderBy(x => x.Value)
+                             .Select(x => x.Item)
+                             .LastOrDefault();
+
+            //return MoreEnumerable.MinBy(collection, selector).Min();
+        }
+
+        /// <summary>
         /// Synchronizes a souce collection with a destination collection using the provided: equality comparer,
         /// constructor, and updater Func's. This will also apply a hard-constraint on ordering (using the source
         /// ordering as a guide)

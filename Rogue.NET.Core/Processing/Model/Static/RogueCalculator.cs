@@ -73,25 +73,5 @@ namespace Rogue.NET.Core.Processing.Model.Static
             // Clip result and return
             return relativeProbability.Clip(0, 1.0);
         }
-
-        public static double EuclideanDistance(GridLocation location1, GridLocation location2)
-        {
-            double x = location2.Column - location1.Column;
-            double y = location2.Row - location1.Row;
-            return System.Math.Sqrt((x * x) + (y * y));
-        }
-        public static double EuclideanSquareDistance(GridLocation location1, GridLocation location2)
-        {
-            double x = location2.Column - location1.Column;
-            double y = location2.Row - location1.Row;
-
-            return (x * x) + (y * y);
-        }
-        public static int RoguianDistance(GridLocation location1, GridLocation location2)
-        {
-            int x = System.Math.Abs(location2.Column - location1.Column);
-            int y = System.Math.Abs(location2.Row - location1.Row);
-            return System.Math.Max(x, y);
-        }
     }
 }

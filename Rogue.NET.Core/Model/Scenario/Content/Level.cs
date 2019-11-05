@@ -181,7 +181,7 @@ namespace Rogue.NET.Core.Model.Scenario
             _levelContent.Add(scenarioObject);
 
             // If object has an empty location it will be changed later on - which has an event hook below
-            if (scenarioObject.Location != GridLocation.Empty)
+            if (scenarioObject.Location != null)
                 _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Add(scenarioObject);
 
             scenarioObject.LocationChangedEvent += OnScenarioObjectLocationChanged;
@@ -217,7 +217,7 @@ namespace Rogue.NET.Core.Model.Scenario
 
             // If the CellPoint is empty then the object is being removed before it's mapped (by the Generators). So,
             // this is safe to do. The CellPoint should never be set to Empty by any of the in-game components (Logic)
-            if (scenarioObject.Location != GridLocation.Empty)
+            if (scenarioObject.Location != null)
                 _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Remove(scenarioObject);
 
             scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
@@ -280,11 +280,11 @@ namespace Rogue.NET.Core.Model.Scenario
         /// <param name="playerLocation">player location (not provided by Level)</param>
         public bool IsCellOccupied(GridLocation location, GridLocation playerLocation)
         {
-            return (_levelContentGrid[location.Column, location.Row].Count > 0) || (location == playerLocation);
+            return (_levelContentGrid[location.Column, location.Row].Count > 0) || (location.Equals(playerLocation));
         }
         public bool IsCellOccupiedByCharacter(GridLocation location, GridLocation playerLocation)
         {
-            return _levelContentGrid[location.Column, location.Row].Any(x => x is CharacterBase) || (location == playerLocation);
+            return _levelContentGrid[location.Column, location.Row].Any(x => x is CharacterBase) || (location.Equals(playerLocation));
         }        
 
         /// <summary>
@@ -315,10 +315,10 @@ namespace Rogue.NET.Core.Model.Scenario
         }
         private void OnScenarioObjectLocationChanged(object sender, LocationChangedEventArgs e)
         {
-            if (e.OldLocation != GridLocation.Empty)
+            if (e.OldLocation != null)
                 _levelContentGrid[e.OldLocation.Column, e.OldLocation.Row].Remove(e.ScenarioObject);
 
-            if (e.NewLocation != GridLocation.Empty)
+            if (e.NewLocation != null)
                 _levelContentGrid[e.NewLocation.Column, e.NewLocation.Row].Add(e.ScenarioObject);
         }
     }
