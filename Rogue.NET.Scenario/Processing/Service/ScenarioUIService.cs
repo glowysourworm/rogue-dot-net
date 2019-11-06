@@ -68,15 +68,18 @@ namespace Rogue.NET.Scenario.Processing.Service
             var exploredDoorCellBrush = new SolidColorBrush(Color.FromArgb(0xAF, 0xAF, 0x8F, 0x3F));
             var revealedDoorCellBrush = new SolidColorBrush(Color.FromArgb(0x6F, 0xAF, 0x8F, 0x3F));
 
-            var terrainCellBrush1 = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0x00));
-            var terrainCellBrush2 = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
-            var terrainCellBrush3 = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0xFF));
-            var terrainCellBrush4 = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF));
+            var terrainCellBrush1 = new SolidColorBrush(Color.FromArgb(0x8F, 0xFF, 0x00, 0x00));
+            var terrainCellBrush2 = new SolidColorBrush(Color.FromArgb(0x8F, 0x00, 0xFF, 0x00));
+            var terrainCellBrush3 = new SolidColorBrush(Color.FromArgb(0x8F, 0x00, 0x00, 0xFF));
+            var terrainCellBrush4 = new SolidColorBrush(Color.FromArgb(0x8F, 0xFF, 0x00, 0xFF));
 
             foreach (var cell in _modelService.Level.Grid.GetCells())
             {
                 var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
                 var geometry = new RectangleGeometry(rect);
+
+                //var brush = _modelService.Level.Grid.Rooms.Any(room => room.Cells.Any(x => x.Equals(cell.Location))) ? Brushes.RosyBrown : visibleCellBrush;
+                //var terrain = _modelService.Level.Grid.Terrain.FirstOrDefault(y => y.Cells.Any(x => x.Equals(cell.Location)));
 
                 // Doors
                 if (cell.IsDoor)
@@ -102,27 +105,27 @@ namespace Rogue.NET.Scenario.Processing.Service
                     revealedDrawing.Children.Add(new GeometryDrawing(revealedCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
                 }
 
-                var terrain = _modelService.Level.Grid.Terrain.FirstOrDefault(y => y.Cells.Any(x => x.Equals(cell.Location)));
-                if (terrain != null)
-                {
-                    var index = _modelService.Level.Grid.Terrain.ToList().IndexOf(terrain);
+                
+                //else if (terrain != null)
+                //{
+                //    var index = _modelService.Level.Grid.Terrain.ToList().IndexOf(terrain);
 
-                    Brush terrainBrush = Brushes.White;
+                //    Brush terrainBrush = Brushes.White;
 
-                    if (index % 4 == 0)
-                        terrainBrush = terrainCellBrush1;
+                //    if (index % 4 == 0)
+                //        terrainBrush = terrainCellBrush1;
 
-                    if (index % 4 == 1)
-                        terrainBrush = terrainCellBrush2;
+                //    if (index % 4 == 1)
+                //        terrainBrush = terrainCellBrush2;
 
-                    if (index % 4 == 2)
-                        terrainBrush = terrainCellBrush3;
+                //    if (index % 4 == 2)
+                //        terrainBrush = terrainCellBrush3;
 
-                    if (index % 4 == 3)
-                        terrainBrush = terrainCellBrush4;
+                //    if (index % 4 == 3)
+                //        terrainBrush = terrainCellBrush4;
 
-                    terrainDrawing.Children.Add(new GeometryDrawing(terrainBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                }
+                //    terrainDrawing.Children.Add(new GeometryDrawing(terrainBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                //}
 
                 // Terrain
                 // if (cell.TerrainValue != 0)

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class Rectangle : IGraphWeightProvider<Rectangle>
+    public class RectangleInt : IGraphWeightProvider<RectangleInt>
     {
-        public Vertex TopLeft { get; private set; }
-        public Vertex TopRight { get; private set; }
-        public Vertex BottomRight { get; private set; }
-        public Vertex BottomLeft { get; private set; }
+        public VertexInt TopLeft { get; private set; }
+        public VertexInt TopRight { get; private set; }
+        public VertexInt BottomRight { get; private set; }
+        public VertexInt BottomLeft { get; private set; }
 
         public double Left { get { return this.TopLeft.X; } }
         public double Top { get { return this.TopLeft.Y; } }
@@ -19,31 +19,31 @@ namespace Rogue.NET.Core.Math.Geometry
         public double Width { get { return this.Right - this.Left; } }
         public double Height { get { return this.Bottom - this.Top; } }
 
-        public Vertex Center
+        public VertexInt Center
         {
             get
             {
-                return new Vertex((this.Left + this.Right) / 2.0, (this.Top + this.Bottom) / 2.0);
+                return new VertexInt((int)((this.Left + this.Right) / 2.0), (int)((this.Top + this.Bottom) / 2.0));
             }
         }
 
-        public Rectangle(Vertex topLeft, Vertex bottomRight)
+        public RectangleInt(VertexInt topLeft, VertexInt bottomRight)
         {
             this.TopLeft = topLeft;
-            this.TopRight = new Vertex(bottomRight.X, topLeft.Y);
-            this.BottomLeft = new Vertex(topLeft.X, bottomRight.Y);
+            this.TopRight = new VertexInt(bottomRight.X, topLeft.Y);
+            this.BottomLeft = new VertexInt(topLeft.X, bottomRight.Y);
             this.BottomRight = bottomRight;
         }
 
         /// <summary>
         /// Constructs a super-rectangle from the point list. This rectangle will contain all the points in the list.
         /// </summary>
-        public Rectangle(IEnumerable<Vertex> points)
+        public RectangleInt(IEnumerable<VertexInt> points)
         {
-            var left = double.MaxValue;
-            var right = double.MinValue;
-            var top = double.MaxValue;
-            var bottom = double.MinValue;
+            var left = int.MaxValue;
+            var right = int.MinValue;
+            var top = int.MaxValue;
+            var bottom = int.MinValue;
 
             foreach (var point in points)
             {
@@ -60,16 +60,16 @@ namespace Rogue.NET.Core.Math.Geometry
                     bottom = point.Y;
             }
 
-            this.TopLeft = new Vertex(left, top);
-            this.TopRight = new Vertex(right, top);
-            this.BottomRight = new Vertex(right, bottom);
-            this.BottomLeft = new Vertex(left, bottom);
+            this.TopLeft = new VertexInt(left, top);
+            this.TopRight = new VertexInt(right, top);
+            this.BottomRight = new VertexInt(right, bottom);
+            this.BottomLeft = new VertexInt(left, bottom);
         }
 
         /// <summary>
         /// Calculates intersection - excluding edges and vertices.
         /// </summary>
-        public bool Intersects(Rectangle rectangle)
+        public bool Intersects(RectangleInt rectangle)
         {
             if (rectangle.Left > this.Right)
                 return false;
@@ -86,7 +86,7 @@ namespace Rogue.NET.Core.Math.Geometry
             return true;
         }
 
-        public bool Contains(Rectangle rectangle, bool allowEdgeOverlap)
+        public bool Contains(RectangleInt rectangle, bool allowEdgeOverlap)
         {
             if (!allowEdgeOverlap)
             {
@@ -120,7 +120,24 @@ namespace Rogue.NET.Core.Math.Geometry
             return true;
         }
 
-        public double CalculateWeight(Rectangle adjacentNode, Metric.MetricType metricType)
+        public bool Contains(VertexInt vertex)
+        {
+            if (vertex.X < this.Left)
+                return false;
+
+            if (vertex.X > this.Right)
+                return false;
+
+            if (vertex.Y < this.Top)
+                return false;
+
+            if (vertex.Y > this.Bottom)
+                return false;
+
+            return true;
+        }
+
+        public double CalculateWeight(RectangleInt adjacentNode, Metric.MetricType metricType)
         {
             switch (metricType)
             {

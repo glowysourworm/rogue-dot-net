@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using System;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
@@ -17,6 +18,12 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             this.X = (int)vertex.X;
             this.Y = (int)vertex.Y;
+        }
+
+        public Vertex(GridLocation location)
+        {
+            this.X = location.Column;
+            this.Y = location.Row;
         }
 
         public double EuclideanSquareDistance(Vertex vertex)

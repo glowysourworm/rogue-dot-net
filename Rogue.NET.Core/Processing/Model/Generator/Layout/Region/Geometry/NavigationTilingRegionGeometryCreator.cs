@@ -17,7 +17,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry
     /// that pass through the negative space and avoid overlaps with the room or other terrain
     /// regions we wish to avoid.
     /// </summary>
-    public static class TiledMeshRegionGeometryCreator
+    public static class NavigationTilingRegionGeometryCreator
     {
         /// <summary>
         /// Creates tiled mesh of connecting regions based on the input regions. This serves as a way to
@@ -27,13 +27,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry
         public static NavigationTiling CreateRegionTiling(int regionWidth, int regionHeight, IEnumerable<RegionBoundary> regions)
         {
             // Initialize the tiling
-            var tiling = new NavigationTiling(new NavigationTile(new VertexInt(0, 0), new VertexInt(regionWidth - 1, regionHeight - 1), false));
+            var tiling = new NavigationTiling(new NavigationTile(new VertexInt(0, 0), new VertexInt(regionWidth - 1, regionHeight - 1)));
 
             // Create the tiling by adding region tiles
             foreach (var boundary in regions)
             {
                 var regionRectangle = new NavigationTile(new VertexInt(boundary.Left, boundary.Top),
-                                                         new VertexInt(boundary.Right, boundary.Bottom), true);
+                                                         new VertexInt(boundary.Right, boundary.Bottom));
 
                 tiling.AddTile(regionRectangle);
             }
@@ -53,7 +53,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry
             // Create MST using Prim's Algorithm
             // var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(tileCenters, Metric.MetricType.Roguian);
 
-            var navigationGraph = tiling.CreateGraph();
+            var navigationGraph = tiling.CreateMinimumSpanningTree();
+
+            // var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(navigationGraph.Vertices, Metric.MetricType.Roguian);
+
+            // ROUTE:  Defined as a connection from one region tile to another. Create a unique route number for each route
+            //
+            var routeNumber = 0;
 
             // For each region pair - calculate a route using the MST
             foreach (var region1 in tiling.RegionTiles)
@@ -93,12 +99,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry
 
                     // Mark each of these tiles for routing 
                     foreach (var tile in routeTiles)
-                        tile.IsMarkedForRouting = true;
+                    {
+                        // Set route number for all involved connection points
+                        tile.ConnectionPoints.Where(point => routeTiles.Contains(point.AdjacentTile))
+                                             .ForEach(connectionPoint => connectionPoint.IncludeRouteNumber(routeNumber));
+                    }
+
+                    routeNumber++;
                 }
             }
 
             // Finally, route the tiles in the MST
-            tiling.RouteConnections();
+            tiling.RouteConnections(Enumerable.Range(0, routeNumber));
 
             return tiling;
         }

@@ -105,7 +105,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var regions = roomBoundaries.Select(boundary => GridUtility.CreateRectangularRegion(grid, boundary, false, true))
                                         .Actualize();
 
-            return FinishLayout(grid, regions, template);
+            return FinishLayoutWithNavigationTiling(grid, regions, template);
         }
 
         private LevelGrid CreateRandomRooms(LayoutTemplate template)
@@ -121,7 +121,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create cells in the contiguous rectangle groups
             var regions = ContiguousRegionCreator.CreateRegions(grid, contiguousBoundaries, true);
 
-            return FinishLayout(grid, regions, template);
+            return FinishLayoutWithNavigationTiling(grid, regions, template);
         }
 
         private LevelGrid CreateCellularAutomata(LayoutTemplate template)
@@ -163,10 +163,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //
             var graph = GeometryUtility.PrimsMinimumSpanningTree(regions.Select(x =>
             {
-                var topLeft = new Vertex(x.Bounds.Left, x.Bounds.Top);
-                var bottomRight = new Vertex(x.Bounds.Right, x.Bounds.Bottom);
+                var topLeft = new VertexInt(x.Bounds.Left, x.Bounds.Top);
+                var bottomRight = new VertexInt(x.Bounds.Right, x.Bounds.Bottom);
 
-                return new ReferencedVertex<Rectangle>(new Rectangle(topLeft, bottomRight), new Vertex(x.Bounds.Center.Column, x.Bounds.Center.Row));
+                return new ReferencedVertex<RectangleInt>(new RectangleInt(topLeft, bottomRight), new Vertex(x.Bounds.Center.Column, x.Bounds.Center.Row));
 
             }), Metric.MetricType.Roguian);
 
@@ -198,20 +198,75 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private LevelGrid FinishLayoutWithNavigationTiling(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
-            var tiledRegions = new List<RegionModel>();
+            // Calculate rectangles for use with Prim's algorithm to create MST
+            var rectangles = regions.Select(region => new RectangleInt(new VertexInt(region.Bounds.TopLeft), new VertexInt(region.Bounds.BottomRight)));
 
-            // REMOVE THIS:  Add Connecting Regions to see them laid out
-            var tiling = TiledMeshRegionGeometryCreator.CreateRegionTiling(grid.GetLength(0), grid.GetLength(1), regions.Select(x => x.Bounds));
+            // Create MST
+            var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(rectangles.Select(rectangle => new ReferencedVertex<RectangleInt>(rectangle, new Vertex(rectangle.Center))), 
+                                                                                                                  Metric.MetricType.Roguian);
 
-            // Create region boundaries from the tiling
-            // var connectingRegions = tiling.ConnectingTiles.Select(rectangle => new RegionBoundary(new GridLocation(rectangle.TopLeft.X, rectangle.TopLeft.Y), rectangle.Width, rectangle.Height)).Actualize();
+            // Create connections by drawing wide linear connector
+            foreach (var edge in minimumSpanningTree.Edges)
+            {
+                var includedPoints = new List<VertexInt>();
 
-            // Add cells for each connecting region - but don't line with walls
-            // foreach (var region in connectingRegions)
-            //     tiledRegions.Add(GridUtility.CreateRectangularRegion(grid, region, true, false));
+                var left = (int)System.Math.Min(edge.Point1.Vertex.X, edge.Point2.Vertex.X);
+                var right = (int)System.Math.Max(edge.Point1.Vertex.X, edge.Point2.Vertex.X);
+                var top = (int)System.Math.Min(edge.Point1.Vertex.Y, edge.Point2.Vertex.Y);
+                var bottom = (int)System.Math.Max(edge.Point1.Vertex.Y, edge.Point2.Vertex.Y);
+                var vertices = new VertexInt[]
+                {
+                    new VertexInt(left, top),
+                    new VertexInt(right, top),
+                    new VertexInt(right, bottom),
+                    new VertexInt(left, bottom)
+                };
 
+                // Add points that are part of one of the rooms
+                foreach (var vertex in vertices)
+                {
+                    if (edge.Point1.Reference.Contains(vertex) ||
+                        edge.Point2.Reference.Contains(vertex))
+                        includedPoints.Add(vertex);
+                }
 
-            TilingCorridorRegionConnector.ConnectRegionTiling(grid, tiling);
+                // Check to see if any of the vertices lies outside one of the rooms
+                var midPoint = _randomSequenceGenerator.Get() > 0.5 ? vertices.FirstOrDefault(vertex => !includedPoints.Contains(vertex)) :
+                                                                      vertices.LastOrDefault(vertex => !includedPoints.Contains(vertex));
+
+                // If there's an exterior point, then use it as the mid point for the corridor
+                //
+                // NOTE** This is a "null" check (for the struct)
+                if (vertices.Contains(midPoint))
+                {
+                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
+                                                                               new VertexInt(edge.Point1.Vertex), 
+                                                                               midPoint, 
+                                                                               edge.Point1.Vertex.Y != midPoint.Y);
+
+                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
+                                                                               midPoint, 
+                                                                               new VertexInt(edge.Point2.Vertex), 
+                                                                               edge.Point2.Vertex.Y != midPoint.Y);
+                }
+
+                // Otherwise, just draw a line from one region to the other
+                else
+                {
+                    // NOTE*** Since all vertices lie within both regions - just draw a straight line connecting
+                    //         one of the off-diagonal vertices to the opposing center
+                    var northSouthOriented = edge.Point1.Reference.Bottom < edge.Point2.Reference.Top ||
+                                             edge.Point1.Reference.Top > edge.Point2.Reference.Bottom;
+
+                    // Point1 -> Point 2 (off-diangonal or the actual center)
+                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
+                                                                               new VertexInt(edge.Point1.Vertex),
+                                                                               new VertexInt(edge.Point2.Vertex), 
+                                                                               northSouthOriented);
+                }
+            }
+
+            CreateWalls(grid);
 
             //return new LevelGrid(grid, regions.ToArray(), tiledRegions.ToArray());
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });

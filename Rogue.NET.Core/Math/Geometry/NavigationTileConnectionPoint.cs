@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
@@ -9,6 +10,8 @@ namespace Rogue.NET.Core.Math.Geometry
     /// </summary>
     public class NavigationTileConnectionPoint
     {
+        List<int> _routeNumbers;
+
         /// <summary>
         /// Adjacent tile for this connection point
         /// </summary>
@@ -23,6 +26,11 @@ namespace Rogue.NET.Core.Math.Geometry
         /// Direction to the adjacent tile
         /// </summary>
         public Compass Direction { get; private set; }
+
+        public IEnumerable<int> RouteNumbers
+        {
+            get { return _routeNumbers; }
+        }
 
         /// <summary>
         /// Creates a connection point to the specified adjacent tile using the connection point on
@@ -47,6 +55,18 @@ namespace Rogue.NET.Core.Math.Geometry
             this.AdjacentTile = adjacentTile;
             this.ConnectionPoint = connectionPoint;
             this.Direction = direction;
+
+            _routeNumbers = new List<int>();
+        }
+
+        /// <summary>
+        /// Adds a route number to this connection point
+        /// </summary>
+        /// <param name="number">A unqiue route number - this is to track which connection tile routes this tile is involved in.</param>
+        public void IncludeRouteNumber(int number)
+        {
+            if (!_routeNumbers.Contains(number))
+                _routeNumbers.Add(number);
         }
 
         public override string ToString()

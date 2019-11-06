@@ -48,7 +48,6 @@
                               Background="{Binding ExploredLayer}"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
-                              
                               OpacityMask="{Binding ExploredOpacityMask}"                              
                               Width="{Binding LevelWidth}"
                               Height="{Binding LevelHeight}">

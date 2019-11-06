@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,16 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             this.X = x;
             this.Y = y;
+        }
+        public VertexInt(GridLocation location)
+        {
+            this.X = location.Column;
+            this.Y = location.Row;
+        }
+        public VertexInt(Vertex vertex)
+        {
+            this.X = (int)vertex.X;
+            this.Y = (int)vertex.Y;
         }
 
         /// <summary>

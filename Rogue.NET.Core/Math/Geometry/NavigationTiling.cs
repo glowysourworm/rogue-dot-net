@@ -46,32 +46,85 @@ namespace Rogue.NET.Core.Math.Geometry
         }
 
         /// <summary>
-        /// Creates a connected graph using adjacent tiles to find edges. NOTE*** BE SURE TO CALL
-        /// CalculateConnections() FIRST.
+        /// Creates a connected MST Graph using Borůvka's algorithm. NOTE*** BE SURE TO CALL CalculateConnections() FIRST.
         /// </summary>
-        public Graph<NavigationTile> CreateGraph()
+        public Graph<NavigationTile> CreateMinimumSpanningTree()
         {
-            var allTiles = this.RegionTiles.Union(this.ConnectingTiles).Actualize();
-            
-            // Construct connections for all tiles based on pre-calculated connection points
-            var connections = allTiles.SelectMany(tile =>
+            // Track the number of disperate forests in the tree
+            var forests = this.RegionTiles
+                              .Union(this.ConnectingTiles)
+                              .Select(node => new List<NavigationTile>() { node })
+                              .ToList();
+
+            // Construct edges as we collapse the forests
+            var edges = new List<ReferencedEdge<NavigationTile>>();
+
+            // Iterate through the forests and connect them using least weight adjacent tiles
+            while (forests.Count > 1)
             {
-                return tile.ConnectionPoints.Select(connection =>
+                // First, add least weight adjacent tile to the forest
+                foreach (var forest in forests)
                 {
-                    return new ReferencedEdge<NavigationTile>(new ReferencedVertex<NavigationTile>(tile, new Vertex(tile.Center)),
-                                                              new ReferencedVertex<NavigationTile>(connection.AdjacentTile, new Vertex(connection.AdjacentTile.Center)));
-                });
-            });
+                    NavigationTile connectingTile = null;
+                    NavigationTile closestTile = null;
+                    double closestDistance = double.MaxValue;
 
-            // Create distinct connections using both edge orientations for equality check
-            var distinctConnections = connections.DistinctWith((edge1, edge2) =>
-            {
-                // Check both orientations for edge equality
-                return ((edge1.Point1.Reference == edge2.Point1.Reference) && (edge1.Point2.Reference == edge2.Point2.Reference)) ||
-                       ((edge1.Point1.Reference == edge2.Point2.Reference) && (edge1.Point2.Reference == edge2.Point1.Reference));
-            });
+                    // Iterate each tile in the forest
+                    foreach (var tile in forest)
+                    {
+                        // Check its adjacent tiles for the closest one
+                        foreach (var adjacentTile in tile.ConnectionPoints.Select(point => point.AdjacentTile))
+                        {
+                            // Skip tiles already in the forest
+                            if (forest.Contains(adjacentTile))
+                                continue;
 
-            return new Graph<NavigationTile>(distinctConnections);
+                            // Calculate the graph weight (distance) to the adjacent tile
+                            var distance = tile.CalculateWeight(adjacentTile, Metric.MetricType.Roguian);
+
+                            // Store the closest distance tile
+                            if (distance < closestDistance)
+                            {
+                                connectingTile = tile;
+                                closestTile = adjacentTile;
+                                closestDistance = distance;
+                            }
+                        }
+                    }
+
+                    // Add closest tile to the forest
+                    if (closestTile != null)
+                    {
+                        forest.Add(closestTile);
+
+                        // Store edges to construct the graph
+                        edges.Add(new ReferencedEdge<NavigationTile>(new ReferencedVertex<NavigationTile>(connectingTile, new Vertex(connectingTile.Center)), 
+                                                                     new ReferencedVertex<NavigationTile>(closestTile, new Vertex(closestTile.Center))));
+                    }
+                    else
+                        throw new Exception("Adjacent tile not found while creating graph from navigation tiling");
+                }
+
+                // Re-calculate the forest collection to collapse intersecting forests
+                var collapsedForests = new List<List<NavigationTile>>();
+
+                foreach (var forest in forests)
+                {
+                    // Combine tiles from each forest
+                    var combinedForest = forests.Where(x => x.Any(tile => forest.Contains(tile)))
+                                                .SelectMany(x => x)
+                                                .ToList();
+
+                    // If combined forest hasn't been calculated - then add it to the list
+                    if (!collapsedForests.Any(x => x.Intersect(combinedForest).Any()))
+                        collapsedForests.Add(combinedForest);
+                }
+
+                // Reset forests
+                forests = collapsedForests;
+            }
+
+            return new Graph<NavigationTile>(edges);
         }
 
         /// <summary>
@@ -208,18 +261,23 @@ namespace Rogue.NET.Core.Math.Geometry
         /// <summary>
         /// Routes all tiles that are marekd for routing
         /// </summary>
-        public void RouteConnections()
+        public void RouteConnections(IEnumerable<int> routeNumbers)
         {
             // Procedure Rules
             //
             // - Only want to route connecting tiles (Region tiles are assumed to be filled with cells)
-            // - Each connecting tile must be marked for routing
-            // - Each connecting tile MUST have 2 adjacent tiles that are ALSO marked for routing
+            // - Each connecting tile must be marked for routing for the specified route number
+            // - Each connecting tile MUST have 2 adjacent tiles that are ALSO marked for routing the specified route
             //
-            foreach (var tile in this.ConnectingTiles
-                                     .Where(x => x.IsMarkedForRouting)
-                                     .Where(x => x.ConnectionPoints.Count(point => point.AdjacentTile.IsMarkedForRouting) >= 2))
-                tile.Route();
+
+            foreach (var routeNumber in routeNumbers)
+            {
+                foreach (var tile in this.ConnectingTiles
+                                         .Where(x => x.ConnectionPoints
+                                                      .SelectMany(point => point.RouteNumbers)
+                                                      .Contains(routeNumber)))
+                    tile.Route(routeNumber);
+            }
         }
 
         /// <summary>
@@ -295,10 +353,10 @@ namespace Rogue.NET.Core.Math.Geometry
                 // NOTE*** Sub-Tile-1 shares the BOTTOM edge of Tile 2; but NOT the LEFT edge. This is the pattern
                 //         to use to prevent off-by-one errors. (THE BOTTOM EDGE OF Sub-Tile-1 IS THE "SHORT" EDGE)
                 //
-                var subTile1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile2.Bottom), false);
-                var subTile2 = new NavigationTile(new VertexInt(tile2.Left, tile1.Top), new VertexInt(tile1.Right, tile2.Top - 1), false);
-                var subTile3 = new NavigationTile(new VertexInt(tile2.Right + 1, tile2.Top), tile1.BottomRight, false);
-                var subTile4 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), new VertexInt(tile2.Right, tile1.Bottom), false);
+                var subTile1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile2.Bottom));
+                var subTile2 = new NavigationTile(new VertexInt(tile2.Left, tile1.Top), new VertexInt(tile1.Right, tile2.Top - 1));
+                var subTile3 = new NavigationTile(new VertexInt(tile2.Right + 1, tile2.Top), tile1.BottomRight);
+                var subTile4 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), new VertexInt(tile2.Right, tile1.Bottom));
 
                 return new NavigationTile[] { subTile1, subTile2, subTile3, subTile4 };
             }
@@ -308,9 +366,9 @@ namespace Rogue.NET.Core.Math.Geometry
                      overlap.Has(Compass.W) &&
                      overlap.Has(Compass.N))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile2.Bottom), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Left, tile1.Top), new VertexInt(tile1.Right, tile2.Top - 1), false);
-                var subRectangle3 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile2.Bottom));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Left, tile1.Top), new VertexInt(tile1.Right, tile2.Top - 1));
+                var subRectangle3 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1, subRectangle2, subRectangle3 };
             }
@@ -320,9 +378,9 @@ namespace Rogue.NET.Core.Math.Geometry
                      overlap.Has(Compass.N) &&
                      overlap.Has(Compass.E))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile1.Bottom), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Left, tile1.Top), new VertexInt(tile1.Right, tile2.Top - 1), false);
-                var subRectangle3 = new NavigationTile(new VertexInt(tile2.Right + 1, tile2.Top), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile1.Bottom));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Left, tile1.Top), new VertexInt(tile1.Right, tile2.Top - 1));
+                var subRectangle3 = new NavigationTile(new VertexInt(tile2.Right + 1, tile2.Top), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1, subRectangle2, subRectangle3 };
             }
@@ -332,9 +390,9 @@ namespace Rogue.NET.Core.Math.Geometry
                      overlap.Has(Compass.E) &&
                      overlap.Has(Compass.S))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile1.Right, tile2.Top - 1), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Right + 1, tile2.Top), tile1.BottomRight, false);
-                var subRectangle3 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), new VertexInt(tile2.Right, tile1.Bottom), false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile1.Right, tile2.Top - 1));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Right + 1, tile2.Top), tile1.BottomRight);
+                var subRectangle3 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), new VertexInt(tile2.Right, tile1.Bottom));
 
                 return new NavigationTile[] { subRectangle1, subRectangle2, subRectangle3 };
             }
@@ -344,9 +402,9 @@ namespace Rogue.NET.Core.Math.Geometry
                      overlap.Has(Compass.S) &&
                      overlap.Has(Compass.W))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile2.Bottom), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), new VertexInt(tile2.Right, tile1.Bottom), false);
-                var subRectangle3 = new NavigationTile(new VertexInt(tile2.Right + 1, tile1.Top), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile2.Bottom));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), new VertexInt(tile2.Right, tile1.Bottom));
+                var subRectangle3 = new NavigationTile(new VertexInt(tile2.Right + 1, tile1.Top), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1, subRectangle2, subRectangle3 };
             }
@@ -355,8 +413,8 @@ namespace Rogue.NET.Core.Math.Geometry
             else if (overlap.Has(Compass.N) &&
                      overlap.Has(Compass.W))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile1.Bottom), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Left, tile1.Top), new VertexInt(tile1.Right, tile2.Top - 1), false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile1.Bottom));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Left, tile1.Top), new VertexInt(tile1.Right, tile2.Top - 1));
 
                 return new NavigationTile[] { subRectangle1, subRectangle2 };
             }
@@ -365,8 +423,8 @@ namespace Rogue.NET.Core.Math.Geometry
             else if (overlap.Has(Compass.N) &&
                      overlap.Has(Compass.E))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile1.Right, tile2.Top - 1), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Right + 1, tile2.Top), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile1.Right, tile2.Top - 1));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Right + 1, tile2.Top), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1, subRectangle2 };
             }
@@ -375,8 +433,8 @@ namespace Rogue.NET.Core.Math.Geometry
             else if (overlap.Has(Compass.S) &&
                      overlap.Has(Compass.E))
             {
-                var subRectangle1 = new NavigationTile(new VertexInt(tile2.Right + 1, tile1.Top), tile1.BottomRight, false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), new VertexInt(tile2.Right, tile1.Bottom), false);
+                var subRectangle1 = new NavigationTile(new VertexInt(tile2.Right + 1, tile1.Top), tile1.BottomRight);
+                var subRectangle2 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), new VertexInt(tile2.Right, tile1.Bottom));
 
                 return new NavigationTile[] { subRectangle1, subRectangle2 };
             }
@@ -385,8 +443,8 @@ namespace Rogue.NET.Core.Math.Geometry
             else if (overlap.Has(Compass.S) &&
                      overlap.Has(Compass.W))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile2.Bottom), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile2.Bottom));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1, subRectangle2 };
             }
@@ -395,8 +453,8 @@ namespace Rogue.NET.Core.Math.Geometry
             else if (overlap.Has(Compass.N) &&
                      overlap.Has(Compass.S))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile1.Right, tile2.Top - 1), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile1.Right, tile2.Top - 1));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1, subRectangle2 };
             }
@@ -405,8 +463,8 @@ namespace Rogue.NET.Core.Math.Geometry
             else if (overlap.Has(Compass.W) &&
                      overlap.Has(Compass.E))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile1.Bottom), false);
-                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Right + 1, tile1.Top), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile1.Bottom));
+                var subRectangle2 = new NavigationTile(new VertexInt(tile2.Right + 1, tile1.Top), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1, subRectangle2 };
             }
@@ -414,7 +472,7 @@ namespace Rogue.NET.Core.Math.Geometry
             // N
             else if (overlap.Has(Compass.N))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile1.Right, tile2.Top - 1), false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile1.Right, tile2.Top - 1));
 
                 return new NavigationTile[] { subRectangle1 };
             }
@@ -422,7 +480,7 @@ namespace Rogue.NET.Core.Math.Geometry
             // S
             else if (overlap.Has(Compass.S))
             {
-                var subRectangle1 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(new VertexInt(tile1.Left, tile2.Bottom + 1), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1 };
             }
@@ -430,7 +488,7 @@ namespace Rogue.NET.Core.Math.Geometry
             // E
             else if (overlap.Has(Compass.E))
             {
-                var subRectangle1 = new NavigationTile(new VertexInt(tile2.Right + 1, tile1.Top), tile1.BottomRight, false);
+                var subRectangle1 = new NavigationTile(new VertexInt(tile2.Right + 1, tile1.Top), tile1.BottomRight);
 
                 return new NavigationTile[] { subRectangle1 };
             }
@@ -438,7 +496,7 @@ namespace Rogue.NET.Core.Math.Geometry
             // W
             else if (overlap.Has(Compass.W))
             {
-                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile1.Bottom), false);
+                var subRectangle1 = new NavigationTile(tile1.TopLeft, new VertexInt(tile2.Left - 1, tile1.Bottom));
 
                 return new NavigationTile[] { subRectangle1 };
             }

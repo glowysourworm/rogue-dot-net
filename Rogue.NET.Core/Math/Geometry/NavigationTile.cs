@@ -38,14 +38,7 @@ namespace Rogue.NET.Core.Math.Geometry
         public int Width { get { return this.Right - this.Left + 1; } }
         public int Height { get { return this.Bottom - this.Top + 1; } }
 
-        public bool IsRegion { get; private set; }
-
-        /// <summary>
-        /// Gets or sets a flag for whether or not this tile is to be used in routing for the level
-        /// </summary>
-        public bool IsMarkedForRouting { get; set; }
-
-        public NavigationTile(VertexInt topLeft, VertexInt bottomRight, bool isRegion)
+        public NavigationTile(VertexInt topLeft, VertexInt bottomRight)
         {
             _connectionPoints = new List<NavigationTileConnectionPoint>();
             _connectionRoute = new NavigationTileConnectionRoute(this);
@@ -55,8 +48,6 @@ namespace Rogue.NET.Core.Math.Geometry
             this.BottomLeft = new VertexInt(topLeft.X, bottomRight.Y);
             this.BottomRight = bottomRight;
             this.Center = new VertexInt((int)((topLeft.X + bottomRight.X) / 2.0), (int)((topLeft.Y + bottomRight.Y) / 2.0));
-
-            this.IsRegion = isRegion;
         }
 
         public void AddConnection(NavigationTileConnectionPoint connection)
@@ -65,16 +56,28 @@ namespace Rogue.NET.Core.Math.Geometry
         }
 
         /// <summary>
-        /// Creates route for all marked connections (IsRouted = true). The results are stored in the connection
+        /// Creates route for all connections with the specified route number. The results are stored in the connection
         /// routes until called for to create corridor cells.
         /// </summary>
-        public void Route()
+        public void Route(int routeNumber)
         {
-            if (!this.IsMarkedForRouting)
-                throw new Exception("Trying to route un-marked tile");
+            // Get involved connection points
+            var points = this.ConnectionPoints
+                             .Where(point => point.RouteNumbers.Contains(routeNumber))
+                             .Actualize();
 
-            if (this.ConnectionPoints.Count(point => point.AdjacentTile.IsMarkedForRouting) < 2)
+            if (points.Count() < 2)
                 throw new Exception("Trying to create a route for a tile with less than 2 connection points that are marked for routing");
+
+            // Check for existing route between points
+            if (points.All(point =>
+            {
+                // Points for routing are already routed - so can skip this route
+                return this.ConnectionRoute.ConnectionPathway.Contains(point.ConnectionPoint);
+            }))
+            {
+                return;
+            }
 
             // Procedure
             //
@@ -102,11 +105,6 @@ namespace Rogue.NET.Core.Math.Geometry
             //    rectangle will ensure that the routes are connected without un-intended overlaps.
             //
 
-            // Get involved connection points
-            var points = this.ConnectionPoints
-                             .Where(point => point.AdjacentTile.IsMarkedForRouting)
-                             .Actualize();
-
             // Calculate x-direction extrema
             var minX = points.Min(point => point.ConnectionPoint.X);
             var maxX = points.Max(point => point.ConnectionPoint.X);
@@ -131,12 +129,13 @@ namespace Rogue.NET.Core.Math.Geometry
             //
             // 1) Points are located on a single edge
             // 2) A single point on 2 edges
-            // 3) At least 2 points in ONE dimension; but only 1 point in the OTHER dimension
-            // 4) Enough data to construct an "inner rectangle"
+            // 3) All points lie on opposing sides (either N | S or E | W)
+            // 4) At least 2 points in ONE dimension; but only 1 point in the OTHER dimension
+            // 5) Enough data to construct an "inner rectangle"
             //
 
             // Case 1:  Points are all located on a single edge
-            if (points.All(point => point.ConnectionPoint.X == points.First().ConnectionPoint.X))
+            if (points.All(point => point.Direction == Compass.E) || points.All(point => point.Direction == Compass.W))
             {
                 // First, create the primary bus
                 CreateRectilinearRoutePoints(minYPoint.ConnectionPoint, this.Center, false);
@@ -152,7 +151,7 @@ namespace Rogue.NET.Core.Math.Geometry
                         CreateRectilinearRoutePoints(point.ConnectionPoint, this.Center, false);
                 }
             }
-            else if (points.All(point => point.ConnectionPoint.Y == points.First().ConnectionPoint.Y))
+            else if (points.All(point => point.Direction == Compass.N) || points.All(point => point.Direction == Compass.S))
             {
                 // First, create the primary bus
                 CreateRectilinearRoutePoints(minXPoint.ConnectionPoint, this.Center, true);
@@ -212,7 +211,37 @@ namespace Rogue.NET.Core.Math.Geometry
                 }
             }
 
-            // Case 3:  At least 2 points in ONE dimension; but only 1 point in the OTHER dimension
+            // Case 3: All points lie on opposing sides (N | S)
+            else if (points.All(point => point.Direction == Compass.N || point.Direction == Compass.S))
+            {
+                // First, find the midpoint-turn "S-Shape"
+                var point1 = new VertexInt(this.Center.X, minY);
+                var point2 = new VertexInt(this.Center.X, maxY);
+
+                // Then, draw the vertical part of the S-Shape
+                CreateRectilinearRoutePoints(point1, point2, true);
+
+                // Finally, connect all points to this line
+                foreach (var point in points)
+                    CreateRectilinearRoutePoints(point.ConnectionPoint, new VertexInt(this.Center.X, point.ConnectionPoint.Y), false);
+            }
+
+            // Case 3: All points lie on opposing sides (E | W)
+            else if (points.All(point => point.Direction == Compass.E || point.Direction == Compass.W))
+            {
+                // First, find the midpoint-turn "S-Shape"
+                var point1 = new VertexInt(minX, this.Center.Y);
+                var point2 = new VertexInt(maxX, this.Center.Y);
+
+                // Then, draw the vertical part of the S-Shape
+                CreateRectilinearRoutePoints(point1, point2, false);
+
+                // Finally, connect all points to this line
+                foreach (var point in points)
+                    CreateRectilinearRoutePoints(point.ConnectionPoint, new VertexInt(point.ConnectionPoint.X, this.Center.Y), true);
+            }
+
+            // Case 4:  At least 2 points in ONE dimension; but only 1 point in the OTHER dimension
             else if (minX == maxX &&
                      minY != maxY)
             {
@@ -233,6 +262,7 @@ namespace Rogue.NET.Core.Math.Geometry
                         CreateRectilinearRoutePoints(point.ConnectionPoint, new VertexInt(point.ConnectionPoint.X, minXPoint.ConnectionPoint.Y), false);
                 }
             }
+
             else if (minY == maxY &&
                      minX != maxX)
             {
@@ -254,7 +284,7 @@ namespace Rogue.NET.Core.Math.Geometry
                 }
             }
 
-            // Case 4: Enough data to construct an "inner rectangle" (at least two distinct points in each dimension)
+            // Case 5: Enough data to construct an "inner rectangle" (at least two distinct points in each dimension)
             else
             {
                 // X-Dimension of the bus lies on the north edge
