@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Math.Geometry.Interface;
-using Rogue.NET.Core.Processing.Model.Static;
+using Rogue.NET.Core.Processing.Model.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +14,6 @@ namespace Rogue.NET.Core.Math.Algorithm
     /// </summary>
     public static class GeometryUtility
     {
-        // TODO:TERRAIN Make this a global tolerance
-        readonly static double CELL_CONVERSION_TOLERANCE = 1e-10;
-
         public static Graph<T> PrimsMinimumSpanningTree<T>(IEnumerable<ReferencedVertex<T>> referencedPoints, MetricType metricType) where T : class, IGraphWeightProvider<T>
         {
             var pointsCount = referencedPoints.Count();   // O(n)
@@ -132,29 +129,105 @@ namespace Rogue.NET.Core.Math.Algorithm
             return new DijkstraMap<T>(firstNode, dijkstraNodes.First(node => node.Reference == endingNode));
         }
 
-        private static double CalculateDistance(Vertex vertex1, Vertex vertex2, MetricType metricType)
+        /// <summary>
+        /// Creates a Dijkstra map from location1 to location2 using the provided weight (input) map.
+        /// </summary>
+        /// <param name="inputMap">Weight map (of the same grid dimensions) - relative to [0, 1] (but not necessarily [0, 1]) - to multiply the graph edges by when calculating the Dijkstra weight.</param>
+        /// <returns>A weighted map of the path costs from location1 to location2</returns>
+        public static double[,] CreateDijkstraMap(this double[,] inputMap, VertexInt location1, VertexInt location2)
         {
-            if (System.Math.Abs(vertex1.X - (int)vertex1.X) > CELL_CONVERSION_TOLERANCE)
-                throw new Exception("Cell Conversion Tolerance Exceeded");
+            // Initialize the Dijkstra Map
+            var dijkstraMap = new double[inputMap.GetLength(0), inputMap.GetLength(1)];
 
-            if (System.Math.Abs(vertex1.Y - (int)vertex1.Y) > CELL_CONVERSION_TOLERANCE)
-                throw new Exception("Cell Conversion Tolerance Exceeded");
-
-            if (System.Math.Abs(vertex2.X - (int)vertex2.X) > CELL_CONVERSION_TOLERANCE)
-                throw new Exception("Cell Conversion Tolerance Exceeded");
-
-            if (System.Math.Abs(vertex2.Y - (int)vertex2.Y) > CELL_CONVERSION_TOLERANCE)
-                throw new Exception("Cell Conversion Tolerance Exceeded");
-
-            switch (metricType)
+            for (int i=0;i<dijkstraMap.GetLength(0);i++)
             {
-                case MetricType.Roguian:
-                    return Metric.RoguianDistance(vertex1, vertex2);
-                case MetricType.Euclidean:
-                    return vertex2.Subtract(vertex1).Magnitude;
-                default:
-                    throw new Exception("Unhandled metric type GeometryUtility.PrimsMinimumSpanningTree");
+                // Set to "infinity" except for the start location
+                for (int j = 0; j < dijkstraMap.GetLength(1); j++)
+                    dijkstraMap[i, j] = (i == location1.X && j == location1.Y) ? 0 : double.MaxValue;
             }
+
+            // Track visited elements
+            var visitedMap = new bool[inputMap.GetLength(0), inputMap.GetLength(1)];
+
+            // Use stack to know what elements have been verified. Starting with test element - continue 
+            // until all connected elements have been added to the resulting region.
+            var stack = new Stack<VertexInt>(inputMap.GetLength(0) * inputMap.GetLength(1));
+
+            // Process the first element
+            stack.Push(location1);
+
+            // NOTE*** Adding a variable weighting for a change in location (SHOULD BE SET TO 1.0)
+            var tileMovementCost = 1.0;
+
+            while (stack.Count > 0)
+            {
+                var currentLocation = stack.Pop();
+                var column = currentLocation.X;
+                var row = currentLocation.Y;
+                var currentWeight = dijkstraMap[column, row];
+
+                // Mark the element as visited
+                visitedMap[column, row] = true;
+
+                // Search cardinally adjacent elements (N,S,E,W)
+                var north = row - 1 >= 0;
+                var south = row + 1 < inputMap.GetLength(1);
+                var east = column + 1 < inputMap.GetLength(0);
+                var west = column - 1 >= 0;
+
+                // Dijkstra Weight = Current Value + ("Change in Location Cost" + "Gradient Cost") 
+                //                 = Current Value + (1 + Input Map Change)
+                if (north)
+                    dijkstraMap[column, row - 1] = System.Math.Min(dijkstraMap[column, row - 1], currentWeight + (inputMap[column, row - 1] - inputMap[column, row]) + tileMovementCost);
+
+                if (south)
+                    dijkstraMap[column, row + 1] = System.Math.Min(dijkstraMap[column, row + 1], currentWeight + (inputMap[column, row + 1] - inputMap[column, row]) + tileMovementCost);
+
+                if (east)
+                    dijkstraMap[column + 1, row] = System.Math.Min(dijkstraMap[column + 1, row], currentWeight + (inputMap[column + 1, row] - inputMap[column, row]) + tileMovementCost);
+
+                if (west)
+                    dijkstraMap[column - 1, row] = System.Math.Min(dijkstraMap[column - 1, row], currentWeight + (inputMap[column - 1, row] - inputMap[column, row]) + tileMovementCost);
+
+                if (north && east)
+                    dijkstraMap[column + 1, row - 1] = System.Math.Min(dijkstraMap[column + 1, row - 1], currentWeight + (inputMap[column + 1, row - 1] - inputMap[column, row]) + tileMovementCost);
+
+                if (north && west)
+                    dijkstraMap[column - 1, row - 1] = System.Math.Min(dijkstraMap[column - 1, row - 1], currentWeight + (inputMap[column - 1, row - 1] - inputMap[column, row]) + tileMovementCost);
+
+                if (south && east)
+                    dijkstraMap[column + 1, row + 1] = System.Math.Min(dijkstraMap[column + 1, row + 1], currentWeight + (inputMap[column + 1, row + 1] - inputMap[column, row]) + tileMovementCost);
+
+                if (south && west)
+                    dijkstraMap[column - 1, row + 1] = System.Math.Min(dijkstraMap[column - 1, row + 1], currentWeight + (inputMap[column - 1, row + 1] - inputMap[column, row]) + tileMovementCost);
+
+                // Push cells onto the stack to be iterated
+                if (north && !visitedMap[column, row - 1])
+                    stack.Push(new VertexInt(column, row - 1));
+
+                if (south && !visitedMap[column, row + 1])
+                    stack.Push(new VertexInt(column, row + 1));
+
+                if (east && !visitedMap[column + 1, row])
+                    stack.Push(new VertexInt(column + 1, row));
+
+                if (west && !visitedMap[column - 1, row])
+                    stack.Push(new VertexInt(column - 1, row));
+
+                if (north && east && !visitedMap[column + 1, row - 1])
+                    stack.Push(new VertexInt(column + 1, row - 1));
+
+                if (north && west && !visitedMap[column - 1, row - 1])
+                    stack.Push(new VertexInt(column - 1, row - 1));
+
+                if (south && east && !visitedMap[column + 1, row + 1])
+                    stack.Push(new VertexInt(column + 1, row + 1));
+
+                if (south && west && !visitedMap[column - 1, row + 1])
+                    stack.Push(new VertexInt(column - 1, row + 1));
+            }
+
+            return dijkstraMap;
         }
     }
 }

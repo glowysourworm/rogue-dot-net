@@ -3133,6 +3133,15 @@ IMMEDIATE TODO'S:
 			   routed through the center of the tile. 
 			   
 			   So, these would have to be calculated FIRST - before triangulating the routes between the regions.
+			   
+		IDEA:  To add an "organic" element to the rectangular layouts - try using the region boundaries as the "mesh" for 
+			   Perlin noise. 
+			   
+			   Using the Dijkstra maps to "walk down" in elevation adds a nice touch to noise generated maps; but this could
+			   be applied to normal ones. 
+			   
+			   Interested to see how that might look when connecting rectangular regions; but with Perlin Noise generated 
+			   with the same room mesh.
 		  
 	MOVING OBSTACLES:
 	

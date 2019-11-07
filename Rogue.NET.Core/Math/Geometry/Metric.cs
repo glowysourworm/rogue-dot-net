@@ -76,6 +76,12 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             return System.Math.Abs(x - y);
         }
+        public static int RoguianDistance(int x1, int y1, int x2, int y2)
+        {
+            var x = (int)System.Math.Abs(x2 - x1);
+            var y = (int)System.Math.Abs(y2 - y1);
+            return System.Math.Max(x, y);
+        }
         public static int RoguianDistance(Point point1, Point point2)
         {
             var x = (int)System.Math.Abs(point2.X - point1.X);

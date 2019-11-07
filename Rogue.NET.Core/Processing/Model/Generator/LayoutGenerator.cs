@@ -105,7 +105,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var regions = roomBoundaries.Select(boundary => GridUtility.CreateRectangularRegion(grid, boundary, false, true))
                                         .Actualize();
 
-            return FinishLayoutWithNavigationTiling(grid, regions, template);
+            return FinishLayoutRectilinear(grid, regions, template);
         }
 
         private LevelGrid CreateRandomRooms(LayoutTemplate template)
@@ -121,7 +121,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create cells in the contiguous rectangle groups
             var regions = ContiguousRegionCreator.CreateRegions(grid, contiguousBoundaries, true);
 
-            return FinishLayoutWithNavigationTiling(grid, regions, template);
+            return FinishLayoutRectilinear(grid, regions, template);
         }
 
         private LevelGrid CreateCellularAutomata(LayoutTemplate template)
@@ -149,6 +149,169 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             MazeRegionCreator.CreateMaze(grid, template.NumberExtraWallRemovals);
 
             return new LevelGrid(grid, new RegionModel[] { region }, new RegionModel[] { });
+        }
+
+        private LevelGrid CreateOpenWorldLayout(LayoutTemplate template)
+        {
+            var grid = new Cell[template.Width, template.Height];
+
+            // To avoid extra iteration - use the callback to set up the grid cells
+            var featureMap = NoiseGenerator.GeneratePerlinNoise(template.Width, template.Height, 0.7, new NoiseGenerator.PostProcessingFilterCallback((column, row, value) =>
+            {
+                // Use the loop to create the grid and save an iteration - mark valleys as "Walls" to be carved out later
+                grid[column, row] = new Cell(column, row, value < 0);
+
+                // Create "walls" for regions by weighting the result to prevent BFS from using these cells
+                // return value > 0 ? 10000 : value;
+
+                return value;
+            }));
+
+            var regions = grid.IdentifyRegions();
+
+            // Calculate rectangles for use with Prim's algorithm to create MST
+            var rectangleDict = regions.ToDictionary(region => new RectangleInt(new VertexInt(region.Bounds.TopLeft), new VertexInt(region.Bounds.BottomRight)), region => region);
+
+            // Create MST
+            var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(rectangleDict.Keys.Select(rectangle => new ReferencedVertex<RectangleInt>(rectangle, new Vertex(rectangle.Center))), Metric.MetricType.Roguian);
+
+            // Create connections by trying to "follow the valleys"
+            foreach (var edge in minimumSpanningTree.Edges)
+            {
+                var region1 = rectangleDict[edge.Point1.Reference];
+                var region2 = rectangleDict[edge.Point2.Reference];
+
+                //var location1 = _randomSequenceGenerator.GetRandomElement(region1.EdgeCells);
+                //var location2 = _randomSequenceGenerator.GetRandomElement(region2.EdgeCells);
+
+                Cell region1Cell, region2Cell;
+                CorridorLocationCalculator.CalculateNearestNeighborLocations(grid, template, region1, region2, out region1Cell, out region2Cell);
+
+                var location1 = region1Cell.Location;
+                var location2 = region2Cell.Location;
+
+                // Creates dijkstra
+                var dijkstraMap = featureMap.CreateDijkstraMap(new VertexInt(location1), new VertexInt(location2));
+
+                var currentLocation = new VertexInt(location2);
+                var goalLocation = new VertexInt(location1);
+
+                // Find the "easiest" route to the goal
+                while (!currentLocation.Equals(goalLocation))
+                {
+                    var column = currentLocation.X;
+                    var row = currentLocation.Y;
+
+                    var north = row - 1 >= 0;
+                    var south = row + 1 < grid.GetLength(1);
+                    var east = column + 1 < grid.GetLength(0);
+                    var west = column - 1 >= 0;
+
+                    double lowestWeight = double.MaxValue;
+                    VertexInt lowestWeightLocation = currentLocation;
+
+                    if (north && dijkstraMap[column, row - 1] < lowestWeight)
+                    {
+                        lowestWeightLocation = new VertexInt(column, row - 1);
+                        lowestWeight = dijkstraMap[column, row - 1];
+                    }
+
+                    if (south && dijkstraMap[column, row + 1] < lowestWeight)
+                    { 
+                        lowestWeightLocation = new VertexInt(column, row + 1);
+                        lowestWeight = dijkstraMap[column, row + 1];
+                    }
+
+                    if (east && dijkstraMap[column + 1, row] < lowestWeight)
+                    { 
+                        lowestWeightLocation = new VertexInt(column + 1, row);
+                        lowestWeight = dijkstraMap[column + 1, row];
+                    }
+
+                    if (west && dijkstraMap[column - 1, row] < lowestWeight)
+                    { 
+                        lowestWeightLocation = new VertexInt(column - 1, row);
+                        lowestWeight = dijkstraMap[column - 1, row];
+                    }
+
+                    if (north && east && dijkstraMap[column + 1, row - 1] < lowestWeight)
+                    {
+                        lowestWeightLocation = new VertexInt(column + 1, row - 1);
+                        lowestWeight = dijkstraMap[column + 1, row - 1];
+                    }
+
+                    if (north && west && dijkstraMap[column - 1, row - 1] < lowestWeight)
+                    {
+                        lowestWeightLocation = new VertexInt(column - 1, row - 1);
+                        lowestWeight = dijkstraMap[column - 1, row - 1];
+                    }
+
+                    if (south && east && dijkstraMap[column + 1, row + 1] < lowestWeight)
+                    {
+                        lowestWeightLocation = new VertexInt(column + 1, row + 1);
+                        lowestWeight = dijkstraMap[column + 1, row + 1];
+                    }
+
+                    if (south && west && dijkstraMap[column - 1, row + 1] < lowestWeight)
+                    {
+                        lowestWeightLocation = new VertexInt(column - 1, row + 1);
+                        lowestWeight = dijkstraMap[column - 1, row + 1];
+                    }
+
+                    if (lowestWeight == double.MaxValue)
+                        throw new Exception("Mishandled Dijkstra Map LayoutGenerator.CreateOrganic");
+
+                    currentLocation = lowestWeightLocation;
+
+                    // Remove Wall from this cell
+                    grid[column, row].SetWall(false);
+
+                    // For diagonal movements - must also set one of the corresponding cardinal cells to be part of the corridor
+
+                    // NE
+                    if ((lowestWeightLocation.X == column + 1) && (lowestWeightLocation.Y == row - 1))
+                    {
+                        // Select the N or E cell to also remove the wall
+                        if (dijkstraMap[column, row - 1] < dijkstraMap[column + 1, row])
+                            grid[column, row - 1].SetWall(false);
+
+                        else
+                            grid[column + 1, row].SetWall(false);
+                    }
+                    // NW
+                    else if ((lowestWeightLocation.X == column - 1) && (lowestWeightLocation.Y == row - 1))
+                    {
+                        // Select the N or W cell to also remove the wall
+                        if (dijkstraMap[column, row - 1] < dijkstraMap[column - 1, row])
+                            grid[column, row - 1].SetWall(false);
+
+                        else
+                            grid[column - 1, row].SetWall(false);
+                    }
+                    // SE
+                    else if ((lowestWeightLocation.X == column + 1) && (lowestWeightLocation.Y == row + 1))
+                    {
+                        // Select the S or E cell to also remove the wall
+                        if (dijkstraMap[column, row + 1] < dijkstraMap[column + 1, row])
+                            grid[column, row + 1].SetWall(false);
+
+                        else
+                            grid[column + 1, row].SetWall(false);
+                    }
+                    // SW
+                    else if ((lowestWeightLocation.X == column - 1) && (lowestWeightLocation.Y == row + 1))
+                    {
+                        // Select the S or W cell to also remove the wall
+                        if (dijkstraMap[column, row + 1] < dijkstraMap[column - 1, row])
+                            grid[column, row + 1].SetWall(false);
+
+                        else
+                            grid[column - 1, row].SetWall(false);
+                    }
+                }
+            }
+
+            return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }
 
         #region (private) Layout Finishing
@@ -196,7 +359,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }
 
-        private LevelGrid FinishLayoutWithNavigationTiling(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        private LevelGrid FinishLayoutRectilinear(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
             // Calculate rectangles for use with Prim's algorithm to create MST
             var rectangles = regions.Select(region => new RectangleInt(new VertexInt(region.Bounds.TopLeft), new VertexInt(region.Bounds.BottomRight)));

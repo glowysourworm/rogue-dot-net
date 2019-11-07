@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Region;
 using System;
 
 namespace Rogue.NET.Core.Processing.Model.Extension
@@ -122,7 +121,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             var sw = grid.Get(column - 1, row + 1);
 
             // NW Corner
-            if (row - 1 < 0 && 
+            if (row - 1 < 0 &&
                 column - 1 < 0)
                 return new T[] { s, e, se };
 
@@ -200,6 +199,84 @@ namespace Rogue.NET.Core.Processing.Model.Extension
                 default:
                     throw new Exception("Off-Diagonal directions don't include " + direction.ToString());
             }
+        }
+
+        /// <summary>
+        /// Returns 4-way adjacent cell values
+        /// </summary>
+        public static T[] GetCardinalAdjacentValues<T>(this T[,] grid, int column, int row) where T : struct
+        {
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+
+            // Need this to be optimized for speed
+            var count = 0;
+            var north = (row - 1 >= 0);
+            var south = (row + 1 < grid.GetLength(1));
+            var east = (column + 1 < grid.GetLength(0));
+            var west = (column - 1 >= 0);
+
+            if (north) count++;
+            if (south) count++;
+            if (east) count++;
+            if (west) count++;
+
+            var result = new T[count];
+            var index = 0;
+
+            if (north) result[index++] = n;
+            if (south) result[index++] = s;
+            if (east) result[index++] = e;
+            if (west) result[index++] = w;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns 8-way adjacent cell values
+        /// </summary>
+        public static T[] GetAdjacentValues<T>(this T[,] grid, int column, int row) where T : struct
+        {
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+            var ne = grid.Get(column + 1, row - 1);
+            var nw = grid.Get(column - 1, row - 1);
+            var se = grid.Get(column + 1, row + 1);
+            var sw = grid.Get(column - 1, row + 1);
+
+            var north = (row - 1 >= 0);
+            var south = (row + 1 < grid.GetLength(1));
+            var east = (column + 1 < grid.GetLength(0));
+            var west = (column - 1 >= 0);
+
+            // Need this to be optimized for speed
+            var count = 0;
+            if (north) count++;
+            if (south) count++;
+            if (east) count++;
+            if (west) count++;
+            if (north && east) count++;
+            if (north && west) count++;
+            if (south && east) count++;
+            if (south && west) count++;
+
+            var result = new T[count];
+            var index = 0;
+
+            if (north) result[index++] = n;
+            if (south) result[index++] = s;
+            if (east) result[index++] = e;
+            if (west) result[index++] = w;
+            if (north && east) result[index++] = ne;
+            if (north && west) result[index++] = nw;
+            if (south && east) result[index++] = se;
+            if (south && west) result[index++] = sw;
+
+            return result;
         }
     }
 }

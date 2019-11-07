@@ -27,6 +27,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
 
                     grid[column, row] = cell;
                 }
+
+                return value;
             });
 
             return grid.IdentifyRegions();

@@ -18,7 +18,7 @@ namespace Rogue.NET.Core.Math.Algorithm
         /// <param name="column">The corresponding column index (FROM 0) for the underlying grid</param>
         /// <param name="row">The corresponding row index (FROM 0) for the underlying grid</param>
         /// <param name="value">The unfiltered, normalized result for the noise function</param>
-        public delegate void PostProcessingFilterCallback(int column, int row, double value);
+        public delegate double PostProcessingFilterCallback(int column, int row, double value);
 
         static readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
@@ -50,7 +50,7 @@ namespace Rogue.NET.Core.Math.Algorithm
         /// </summary>
         /// <param name="frequency">A [0, 1] value used to specify the relative noise erradicity.</param>
         /// <returns>Returns a Perlin noise map which has the characteristic behavior of smoothness and feature size according to the mesh cell size.</returns>
-        public static void GeneratePerlinNoise(int width, int height, double frequency, PostProcessingFilterCallback postProcessingCallback)
+        public static double[,] GeneratePerlinNoise(int width, int height, double frequency, PostProcessingFilterCallback postProcessingCallback)
         {
             // Clip the frequency input
             var safeFrequency = frequency.Clip(0.001, 1);
@@ -84,7 +84,8 @@ namespace Rogue.NET.Core.Math.Algorithm
                     mesh[i, j] = Vector.Create(_randomSequenceGenerator.GetDouble(0, System.Math.PI * 2), 1.0);
             }
 
-            var maxAbsValue = double.MinValue;
+            var maxValue = double.MinValue;
+            var minValue = double.MaxValue;
 
             // Iterate the map - creating interpolated values
             //
@@ -142,12 +143,21 @@ namespace Rogue.NET.Core.Math.Algorithm
 
                     map[i, j] = weight;
 
-                    // Store the maximum absolute value to normalize the output map
+                    // Store the extreme points to normalize the output
                     //
-                    if (System.Math.Abs(weight) > maxAbsValue)
-                        maxAbsValue = System.Math.Abs(weight);
+                    if (weight > maxValue)
+                        maxValue = weight;
+
+                    if (weight < minValue)
+                        minValue = weight;
                 }
             }
+
+            // Create normalization constants:  The equation y(x) = (x - B)(2 / (B - A)) + 1  maps [A, B] -> [-1, 1]
+            //                                  So, given A := minValue and B  := maxValue, the output will be [-1, 1]
+            //
+            var slope = 2.0 / (maxValue - minValue);
+            var intercept = 1 - ((2.0 * maxValue) / (maxValue - minValue));
 
             // Normalize the output and apply post processing callback
             //
@@ -156,17 +166,19 @@ namespace Rogue.NET.Core.Math.Algorithm
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
                     // Normalize the map value
-                    map[i, j] = map[i, j] / maxAbsValue;
+                    map[i, j] = (slope * map[i, j]) + intercept;
 
                     // Apply post processing callback
                     //
                     if (postProcessingCallback != null)
-                        postProcessingCallback(i, j, map[i, j]);
+                        map[i, j] = postProcessingCallback(i, j, map[i, j]);
                 }
             }
+
+            return map;
         }
 
-        private static double PerlinEase(double unitValue)
+        public static double PerlinEase(double unitValue)
         {
             if (unitValue > 1.0 ||
                 unitValue < 0.0)
@@ -175,7 +187,7 @@ namespace Rogue.NET.Core.Math.Algorithm
             return (3.0 * System.Math.Pow(unitValue, 2)) - (2 * System.Math.Pow(unitValue, 3));
         }
 
-        private static double PerlinFade(double unitValue)
+        public static double PerlinFade(double unitValue)
         {
             if (unitValue > 1.0 ||
                 unitValue < 0.0)
