@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Rogue.NET.Core.Math.Geometry
     /// Represents a node in the Dijkstra Map. The class T is used as a reference to the attached object
     /// that the node represents.
     /// </summary>
-    public class DijkstraMapNode<T> where T : class
+    public class DijkstraMapNode<T> where T : Region
     {
         /// <summary>
         /// Connected nodes in the graph

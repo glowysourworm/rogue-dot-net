@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class ReferencedVertex<T> where T : class
+    public class GraphVertex<T> where T : Region
     {
         /// <summary>
         /// The reference object for the vertex
@@ -16,9 +12,9 @@ namespace Rogue.NET.Core.Math.Geometry
         /// <summary>
         /// The vertex associated with the reference
         /// </summary>
-        public Vertex Vertex { get; private set; }
+        public GridLocation Vertex { get; private set; }
 
-        public ReferencedVertex(T reference, Vertex vertex)
+        public GraphVertex(T reference, GridLocation vertex)
         {
             this.Reference = reference;
             this.Vertex = vertex;

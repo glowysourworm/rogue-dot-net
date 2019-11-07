@@ -1,18 +1,14 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using System;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class ReferencedEdge<T> where T : class
+    public class GraphEdge<T> where T : Region
     {
-        public ReferencedVertex<T> Point1 { get; set; }
-        public ReferencedVertex<T> Point2 { get; set; }
+        public GraphVertex<T> Point1 { get; set; }
+        public GraphVertex<T> Point2 { get; set; }
 
-        public double Length
-        {
-            get { return this.Point2.Vertex.Subtract(this.Point1.Vertex).Magnitude; }
-        }
-
-        public ReferencedEdge(ReferencedVertex<T> point1, ReferencedVertex<T> point2)
+        public GraphEdge(GraphVertex<T> point1, GraphVertex<T> point2)
         {
             this.Point1 = point1;
             this.Point2 = point2;

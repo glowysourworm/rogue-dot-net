@@ -59,16 +59,6 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             return System.Math.Pow((vertex2.X - vertex1.X), 2) + System.Math.Pow((vertex2.Y - vertex1.Y), 2);
         }
-
-        public static double EuclideanDistance(VertexInt vertex1, VertexInt vertex2)
-        {
-            return System.Math.Sqrt(System.Math.Pow((vertex2.X - vertex1.X), 2) + System.Math.Pow((vertex2.Y - vertex1.Y), 2));
-        }
-
-        public static double EuclideanSquareDistance(VertexInt vertex1, VertexInt vertex2)
-        {
-            return System.Math.Pow((vertex2.X - vertex1.X), 2) + System.Math.Pow((vertex2.Y - vertex1.Y), 2);
-        }
         #endregion
 
         #region Roguian Distance
@@ -98,12 +88,6 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             var x = (int)System.Math.Abs(vertex2.X - vertex1.X);
             var y = (int)System.Math.Abs(vertex2.Y - vertex1.Y);
-            return System.Math.Max(x, y);
-        }
-        public static int RoguianDistance(VertexInt vertex1, VertexInt vertex2)
-        {
-            var x = System.Math.Abs(vertex2.X - vertex1.X);
-            var y = System.Math.Abs(vertex2.Y - vertex1.Y);
             return System.Math.Max(x, y);
         }
 

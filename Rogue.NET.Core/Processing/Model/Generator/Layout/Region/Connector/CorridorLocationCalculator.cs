@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
         }
 
-        public static void CalculateNearestNeighborLocations(Cell[,] grid, LayoutTemplate template, RegionModel region1, RegionModel region2, out Cell region1Location, out Cell region2Location)
+        public static void CalculateNearestNeighborLocations(Cell[,] grid, RegionModel region1, RegionModel region2, out Cell region1Location, out Cell region2Location)
         {
             // Procedure
             //
@@ -45,9 +45,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             //    scenario generations - leaving a poor experience for those cases. (So, a TODO)
 
             // Have to force O(n^2) search for amorphous room shapes
-            var bruteForceSearch = template.Type == LayoutType.ConnectedCellularAutomata ||
-                                   (template.Type == LayoutType.ConnectedRectangularRooms &&
-                                    template.RoomPlacementType == LayoutRoomPlacementType.Random);
+            var bruteForceSearch = !region1.IsRectangular || !region2.IsRectangular;
 
             var room1Bounds = region1.Bounds;
             var room2Bounds = region2.Bounds;

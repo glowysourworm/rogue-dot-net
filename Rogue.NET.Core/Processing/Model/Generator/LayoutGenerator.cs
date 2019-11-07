@@ -169,38 +169,29 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             var regions = grid.IdentifyRegions();
 
-            // Calculate rectangles for use with Prim's algorithm to create MST
-            var rectangleDict = regions.ToDictionary(region => new RectangleInt(new VertexInt(region.Bounds.TopLeft), new VertexInt(region.Bounds.BottomRight)), region => region);
-
             // Create MST
-            var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(rectangleDict.Keys.Select(rectangle => new ReferencedVertex<RectangleInt>(rectangle, new Vertex(rectangle.Center))), Metric.MetricType.Roguian);
+            var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
 
             // Create connections by trying to "follow the valleys"
             foreach (var edge in minimumSpanningTree.Edges)
             {
-                var region1 = rectangleDict[edge.Point1.Reference];
-                var region2 = rectangleDict[edge.Point2.Reference];
+                var region1 = edge.Point1.Reference;
+                var region2 = edge.Point2.Reference;
 
-                //var location1 = _randomSequenceGenerator.GetRandomElement(region1.EdgeCells);
-                //var location2 = _randomSequenceGenerator.GetRandomElement(region2.EdgeCells);
-
-                Cell region1Cell, region2Cell;
-                CorridorLocationCalculator.CalculateNearestNeighborLocations(grid, template, region1, region2, out region1Cell, out region2Cell);
-
-                var location1 = region1Cell.Location;
-                var location2 = region2Cell.Location;
+                var location1 = region1.GetConnectionPoint(region2, Metric.MetricType.Roguian);
+                var location2 = region1.GetAdjacentConnectionPoint(region2, Metric.MetricType.Roguian);
 
                 // Creates dijkstra
-                var dijkstraMap = featureMap.CreateDijkstraMap(new VertexInt(location1), new VertexInt(location2));
+                var dijkstraMap = featureMap.CreateDijkstraMap(location1);
 
-                var currentLocation = new VertexInt(location2);
-                var goalLocation = new VertexInt(location1);
+                var currentLocation = location2;
+                var goalLocation = location1;
 
                 // Find the "easiest" route to the goal
                 while (!currentLocation.Equals(goalLocation))
                 {
-                    var column = currentLocation.X;
-                    var row = currentLocation.Y;
+                    var column = currentLocation.Column;
+                    var row = currentLocation.Row;
 
                     var north = row - 1 >= 0;
                     var south = row + 1 < grid.GetLength(1);
@@ -208,53 +199,53 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     var west = column - 1 >= 0;
 
                     double lowestWeight = double.MaxValue;
-                    VertexInt lowestWeightLocation = currentLocation;
+                    GridLocation lowestWeightLocation = currentLocation;
 
                     if (north && dijkstraMap[column, row - 1] < lowestWeight)
                     {
-                        lowestWeightLocation = new VertexInt(column, row - 1);
+                        lowestWeightLocation = new GridLocation(column, row - 1);
                         lowestWeight = dijkstraMap[column, row - 1];
                     }
 
                     if (south && dijkstraMap[column, row + 1] < lowestWeight)
                     { 
-                        lowestWeightLocation = new VertexInt(column, row + 1);
+                        lowestWeightLocation = new GridLocation(column, row + 1);
                         lowestWeight = dijkstraMap[column, row + 1];
                     }
 
                     if (east && dijkstraMap[column + 1, row] < lowestWeight)
                     { 
-                        lowestWeightLocation = new VertexInt(column + 1, row);
+                        lowestWeightLocation = new GridLocation(column + 1, row);
                         lowestWeight = dijkstraMap[column + 1, row];
                     }
 
                     if (west && dijkstraMap[column - 1, row] < lowestWeight)
                     { 
-                        lowestWeightLocation = new VertexInt(column - 1, row);
+                        lowestWeightLocation = new GridLocation(column - 1, row);
                         lowestWeight = dijkstraMap[column - 1, row];
                     }
 
                     if (north && east && dijkstraMap[column + 1, row - 1] < lowestWeight)
                     {
-                        lowestWeightLocation = new VertexInt(column + 1, row - 1);
+                        lowestWeightLocation = new GridLocation(column + 1, row - 1);
                         lowestWeight = dijkstraMap[column + 1, row - 1];
                     }
 
                     if (north && west && dijkstraMap[column - 1, row - 1] < lowestWeight)
                     {
-                        lowestWeightLocation = new VertexInt(column - 1, row - 1);
+                        lowestWeightLocation = new GridLocation(column - 1, row - 1);
                         lowestWeight = dijkstraMap[column - 1, row - 1];
                     }
 
                     if (south && east && dijkstraMap[column + 1, row + 1] < lowestWeight)
                     {
-                        lowestWeightLocation = new VertexInt(column + 1, row + 1);
+                        lowestWeightLocation = new GridLocation(column + 1, row + 1);
                         lowestWeight = dijkstraMap[column + 1, row + 1];
                     }
 
                     if (south && west && dijkstraMap[column - 1, row + 1] < lowestWeight)
                     {
-                        lowestWeightLocation = new VertexInt(column - 1, row + 1);
+                        lowestWeightLocation = new GridLocation(column - 1, row + 1);
                         lowestWeight = dijkstraMap[column - 1, row + 1];
                     }
 
@@ -269,7 +260,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     // For diagonal movements - must also set one of the corresponding cardinal cells to be part of the corridor
 
                     // NE
-                    if ((lowestWeightLocation.X == column + 1) && (lowestWeightLocation.Y == row - 1))
+                    if ((lowestWeightLocation.Column == column + 1) && (lowestWeightLocation.Row == row - 1))
                     {
                         // Select the N or E cell to also remove the wall
                         if (dijkstraMap[column, row - 1] < dijkstraMap[column + 1, row])
@@ -279,7 +270,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                             grid[column + 1, row].SetWall(false);
                     }
                     // NW
-                    else if ((lowestWeightLocation.X == column - 1) && (lowestWeightLocation.Y == row - 1))
+                    else if ((lowestWeightLocation.Column == column - 1) && (lowestWeightLocation.Row == row - 1))
                     {
                         // Select the N or W cell to also remove the wall
                         if (dijkstraMap[column, row - 1] < dijkstraMap[column - 1, row])
@@ -289,7 +280,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                             grid[column - 1, row].SetWall(false);
                     }
                     // SE
-                    else if ((lowestWeightLocation.X == column + 1) && (lowestWeightLocation.Y == row + 1))
+                    else if ((lowestWeightLocation.Column == column + 1) && (lowestWeightLocation.Row == row + 1))
                     {
                         // Select the S or E cell to also remove the wall
                         if (dijkstraMap[column, row + 1] < dijkstraMap[column + 1, row])
@@ -299,7 +290,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                             grid[column + 1, row].SetWall(false);
                     }
                     // SW
-                    else if ((lowestWeightLocation.X == column - 1) && (lowestWeightLocation.Y == row + 1))
+                    else if ((lowestWeightLocation.Column == column - 1) && (lowestWeightLocation.Row == row + 1))
                     {
                         // Select the S or W cell to also remove the wall
                         if (dijkstraMap[column, row + 1] < dijkstraMap[column - 1, row])
@@ -322,31 +313,19 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <returns></returns>
         private LevelGrid FinishLayout(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
-            // Triangulate room positions (Delaunay Triangulation)
+            // Triangulate room positions
             //
-            var graph = GeometryUtility.PrimsMinimumSpanningTree(regions.Select(x =>
-            {
-                var topLeft = new VertexInt(x.Bounds.Left, x.Bounds.Top);
-                var bottomRight = new VertexInt(x.Bounds.Right, x.Bounds.Bottom);
-
-                return new ReferencedVertex<RectangleInt>(new RectangleInt(topLeft, bottomRight), new Vertex(x.Bounds.Center.Column, x.Bounds.Center.Row));
-
-            }), Metric.MetricType.Roguian);
+            var graph = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
 
             // For each edge in the triangulation - create a corridor
             //
             foreach (var edge in graph.Edges)
             {
-                var room1 = regions.First(x => x.Bounds.Center.Column == (int)edge.Point1.Vertex.X &&
-                                               x.Bounds.Center.Row == (int)edge.Point1.Vertex.Y);
+                var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
+                var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
 
-                var room2 = regions.First(x => x.Bounds.Center.Column == (int)edge.Point2.Vertex.X &&
-                                               x.Bounds.Center.Row == (int)edge.Point2.Vertex.Y);
-
-                // Calculate nearest neighbor cells
-                //
-                Cell cell1, cell2;
-                CorridorLocationCalculator.CalculateNearestNeighborLocations(grid, template, room1, room2, out cell1, out cell2);
+                var cell1 = grid.Get(location1.Column, location1.Row);
+                var cell2 = grid.Get(location2.Column, location2.Row);
 
                 // Create the corridor cells
                 //
@@ -361,35 +340,31 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private LevelGrid FinishLayoutRectilinear(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
-            // Calculate rectangles for use with Prim's algorithm to create MST
-            var rectangles = regions.Select(region => new RectangleInt(new VertexInt(region.Bounds.TopLeft), new VertexInt(region.Bounds.BottomRight)));
-
             // Create MST
-            var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(rectangles.Select(rectangle => new ReferencedVertex<RectangleInt>(rectangle, new Vertex(rectangle.Center))), 
-                                                                                                                  Metric.MetricType.Roguian);
+            var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
 
             // Create connections by drawing wide linear connector
             foreach (var edge in minimumSpanningTree.Edges)
             {
-                var includedPoints = new List<VertexInt>();
+                var includedPoints = new List<GridLocation>();
 
-                var left = (int)System.Math.Min(edge.Point1.Vertex.X, edge.Point2.Vertex.X);
-                var right = (int)System.Math.Max(edge.Point1.Vertex.X, edge.Point2.Vertex.X);
-                var top = (int)System.Math.Min(edge.Point1.Vertex.Y, edge.Point2.Vertex.Y);
-                var bottom = (int)System.Math.Max(edge.Point1.Vertex.Y, edge.Point2.Vertex.Y);
-                var vertices = new VertexInt[]
+                var left = (int)System.Math.Min(edge.Point1.Vertex.Column, edge.Point2.Vertex.Column);
+                var right = (int)System.Math.Max(edge.Point1.Vertex.Column, edge.Point2.Vertex.Column);
+                var top = (int)System.Math.Min(edge.Point1.Vertex.Row, edge.Point2.Vertex.Row);
+                var bottom = (int)System.Math.Max(edge.Point1.Vertex.Row, edge.Point2.Vertex.Row);
+                var vertices = new GridLocation[]
                 {
-                    new VertexInt(left, top),
-                    new VertexInt(right, top),
-                    new VertexInt(right, bottom),
-                    new VertexInt(left, bottom)
+                    new GridLocation(left, top),
+                    new GridLocation(right, top),
+                    new GridLocation(right, bottom),
+                    new GridLocation(left, bottom)
                 };
 
                 // Add points that are part of one of the rooms
                 foreach (var vertex in vertices)
                 {
-                    if (edge.Point1.Reference.Contains(vertex) ||
-                        edge.Point2.Reference.Contains(vertex))
+                    if (edge.Point1.Reference.Bounds.Contains(vertex) ||
+                        edge.Point2.Reference.Bounds.Contains(vertex))
                         includedPoints.Add(vertex);
                 }
 
@@ -403,14 +378,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 if (vertices.Contains(midPoint))
                 {
                     TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
-                                                                               new VertexInt(edge.Point1.Vertex), 
+                                                                               edge.Point1.Vertex, 
                                                                                midPoint, 
-                                                                               edge.Point1.Vertex.Y != midPoint.Y);
+                                                                               edge.Point1.Vertex.Row != midPoint.Row);
 
                     TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
                                                                                midPoint, 
-                                                                               new VertexInt(edge.Point2.Vertex), 
-                                                                               edge.Point2.Vertex.Y != midPoint.Y);
+                                                                               edge.Point2.Vertex, 
+                                                                               edge.Point2.Vertex.Row != midPoint.Row);
                 }
 
                 // Otherwise, just draw a line from one region to the other
@@ -418,13 +393,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 {
                     // NOTE*** Since all vertices lie within both regions - just draw a straight line connecting
                     //         one of the off-diagonal vertices to the opposing center
-                    var northSouthOriented = edge.Point1.Reference.Bottom < edge.Point2.Reference.Top ||
-                                             edge.Point1.Reference.Top > edge.Point2.Reference.Bottom;
+                    var northSouthOriented = edge.Point1.Reference.Bounds.Bottom < edge.Point2.Reference.Bounds.Top ||
+                                             edge.Point1.Reference.Bounds.Top > edge.Point2.Reference.Bounds.Bottom;
 
                     // Point1 -> Point 2 (off-diangonal or the actual center)
                     TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
-                                                                               new VertexInt(edge.Point1.Vertex),
-                                                                               new VertexInt(edge.Point2.Vertex), 
+                                                                               edge.Point1.Vertex,
+                                                                               edge.Point2.Vertex, 
                                                                                northSouthOriented);
                 }
             }

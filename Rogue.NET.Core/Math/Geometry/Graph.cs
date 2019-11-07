@@ -1,17 +1,18 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class Graph<T> where T : class
+    public class Graph<T> where T : Region
     {
-        List<ReferencedEdge<T>> _edges;
+        List<GraphEdge<T>> _edges;
 
         /// <summary>
         /// Returns edges in the graph
         /// </summary>
-        public IEnumerable<ReferencedEdge<T>> Edges
+        public IEnumerable<GraphEdge<T>> Edges
         {
             get { return _edges; }
         }
@@ -19,11 +20,11 @@ namespace Rogue.NET.Core.Math.Geometry
         /// <summary>
         /// Returns distinct set of vertices in the graph
         /// </summary>
-        public IEnumerable<ReferencedVertex<T>> Vertices
+        public IEnumerable<GraphVertex<T>> Vertices
         {
             get
             {
-                return _edges.SelectMany(edge => new ReferencedVertex<T>[] { edge.Point1, edge.Point2 })
+                return _edges.SelectMany(edge => new GraphVertex<T>[] { edge.Point1, edge.Point2 })
                              .DistinctBy(vertex => vertex.Reference)
                              .Actualize();
             }
@@ -31,26 +32,21 @@ namespace Rogue.NET.Core.Math.Geometry
 
         public Graph()
         {
-            _edges = new List<ReferencedEdge<T>>();
+            _edges = new List<GraphEdge<T>>();
         }
 
-        public Graph(Triangulation<T> triangulation)
+        public Graph(IEnumerable<GraphEdge<T>> edges)
         {
-            _edges = new List<ReferencedEdge<T>>(triangulation.GetEdges());
-        }
-
-        public Graph(IEnumerable<ReferencedEdge<T>> edges)
-        {
-            _edges = new List<ReferencedEdge<T>>(edges);
+            _edges = new List<GraphEdge<T>>(edges);
         }
 
         /// <summary>
         /// Returns a set of edges PER VERTEX - WHICH WILL DUPLICATE EDGES WHEN ITERATED. The point of this is to
         /// be able to select edges from the point of view of each vertex to work with the triangulation.
         /// </summary>
-        public Dictionary<ReferencedVertex<T>, IEnumerable<ReferencedVertex<T>>> GetConnections()
+        public Dictionary<GraphVertex<T>, IEnumerable<GraphVertex<T>>> GetConnections()
         {
-            var result = new Dictionary<ReferencedVertex<T>, IEnumerable<ReferencedVertex<T>>>();
+            var result = new Dictionary<GraphVertex<T>, IEnumerable<GraphVertex<T>>>();
 
             // Foreach distinct vertex
             foreach (var vertex in this.Vertices)

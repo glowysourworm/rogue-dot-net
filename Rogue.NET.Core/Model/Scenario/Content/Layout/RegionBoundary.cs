@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Math.Geometry.Interface;
 using Rogue.NET.Core.Processing.Model.Static;
 using System;
 

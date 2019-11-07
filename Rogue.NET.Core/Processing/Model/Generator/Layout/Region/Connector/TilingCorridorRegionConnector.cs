@@ -11,27 +11,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
 {
     public static class TilingCorridorRegionConnector
     {
-        /// <summary>
-        /// Connects regions specified by the tiling - which contains pre-computed routes for cells
-        /// </summary>
-        public static void ConnectRegionTiling(Cell[,] grid, NavigationTiling tiling)
-        {
-            // Search through marked tiles - which have pre-computed routes
-            foreach (var tile in tiling.ConnectingTiles.Where(x => x.ConnectionPoints
-                                                                    .SelectMany(point => point.RouteNumbers)
-                                                                    .Any()))
-            {
-                foreach (var vertex in tile.ConnectionRoute.ConnectionPathway)
-                {
-                    //if (grid[vertex.X, vertex.Y] != null)
-                    //    throw new Exception("Trying to create corridor in existing cell TilingCorridorRegionConnector");
-
-                    grid[vertex.X, vertex.Y] = new Cell(vertex.X, vertex.Y, true);
-                }
-            }
-        }
-
-        public static void CreateRectilinearRoutePoints(Cell[,] grid, VertexInt startPoint, VertexInt endPoint, bool yDirection)
+        public static void CreateRectilinearRoutePoints(Cell[,] grid, GridLocation startPoint, GridLocation endPoint, bool yDirection)
         {
             //if ((startPoint.X == endPoint.X) && !yDirection)
             //    throw new Exception("Improper corridor specification NavigationTile.CreateRectilinearRoutePoints");
@@ -40,32 +20,32 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             //    throw new Exception("Improper corridor specification NavigationTile.CreateRectilinearRoutePoints");
 
             // Create follower for the loop
-            var pointValue = yDirection ? startPoint.Y : startPoint.X;
+            var pointValue = yDirection ? startPoint.Row : startPoint.Column;
 
             // Get the total count for iteration
-            var count = System.Math.Abs(yDirection ? (endPoint.Y - startPoint.Y) : (endPoint.X - startPoint.X)) + 1;
+            var count = System.Math.Abs(yDirection ? (endPoint.Row - startPoint.Row) : (endPoint.Column - startPoint.Column)) + 1;
 
             // Get the incrementing the value during iteration
-            var increment = (yDirection ? (endPoint.Y - startPoint.Y) : (endPoint.X - startPoint.X)) > 0 ? 1 : -1;
+            var increment = (yDirection ? (endPoint.Row - startPoint.Row) : (endPoint.Column - startPoint.Column)) > 0 ? 1 : -1;
 
             for (int i = 0; i < count; i++)
             {
-                VertexInt vertex;
+                GridLocation vertex;
 
                 if (yDirection)
-                    vertex = new VertexInt(startPoint.X, pointValue);
+                    vertex = new GridLocation(startPoint.Column, pointValue);
 
                 else
-                    vertex = new VertexInt(pointValue, startPoint.Y);
+                    vertex = new GridLocation(pointValue, startPoint.Row);
 
-                if (vertex.X >= grid.GetLength(0) || vertex.X < 0)
+                if (vertex.Column >= grid.GetLength(0) || vertex.Column < 0)
                     throw new Exception("Trying to create point outside the bounds of the navigation tile");
 
-                if (vertex.Y > grid.GetLength(1) || vertex.Y < 0)
+                if (vertex.Row > grid.GetLength(1) || vertex.Row < 0)
                     throw new Exception("Trying to create point outside the bounds of the navigation tile");
 
                 // Create grid cell
-                grid[vertex.X, vertex.Y] = new Cell(vertex.X, vertex.Y, false);
+                grid[vertex.Column, vertex.Row] = new Cell(vertex.Column, vertex.Row, false);
 
                 pointValue += increment;
             }
