@@ -78,10 +78,10 @@ namespace Rogue.NET.Scenario.Processing.Service
             {
                 var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
                 var geometry = new RectangleGeometry(rect);
-                var terrain = _modelService.Level.Grid.Terrain.FirstOrDefault(y => y.Cells.Any(x => x.Equals(cell.Location)));
-                var room = _modelService.Level.Grid.Rooms.FirstOrDefault(x => x.Cells.Any(z => z.Equals(cell.Location)));
+                var isTerrain = _modelService.Level.Grid.TerrainMap[cell.Location.Column, cell.Location.Row].Any();
+                var isRoom = _modelService.Level.Grid.RoomMap[cell.Location.Column, cell.Location.Row].Any();
 
-                if (terrain != null)
+                if (isTerrain)
                     terrainDrawing.Children.Add(new GeometryDrawing(terrainCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
 
                 // Doors
@@ -101,7 +101,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                 }
 
                 // Room Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
-                else if (room != null)
+                else if (isRoom)
                 {
                     visibleDrawing.Children.Add(new GeometryDrawing(visibleCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
                     exploredDrawing.Children.Add(new GeometryDrawing(exploredCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
@@ -109,7 +109,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                 }
                 
                 // Corridor Cells
-                else
+                else if (cell.IsCorridor)
                 {
                     visibleDrawing.Children.Add(new GeometryDrawing(visibleCorridorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
                     exploredDrawing.Children.Add(new GeometryDrawing(exploredCorridorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
@@ -185,25 +185,6 @@ namespace Rogue.NET.Scenario.Processing.Service
             }
 
             return result;
-        }
-
-        public DrawingGroup CreateTerrainDrawing()
-        {
-            var group = new DrawingGroup();
-
-            foreach (var cell in _modelService.Level.Grid.Terrain.SelectMany(x => x.Cells.Select(z => _modelService.Level.Grid[z.Column, z.Row])))
-            {
-                //var brush = new SolidColorBrush(ColorFilter.ShiftHSL(Colors.Red, Math.PI * cell.TerrainValue, 0, 0));
-                var brush = new SolidColorBrush(cell.TerrainValue < 0 ? Colors.Blue : Colors.Yellow);
-                brush.Opacity = Math.Abs(cell.TerrainValue);
-                //var brush = new SolidColorBrush(Colors.LightGray);
-                //brush.Opacity = cell.TerrainValue;
-                var geometry = new RectangleGeometry(_scenarioUIGeometryService.Cell2UIRect(cell.Location, false));
-
-                group.Children.Add(new GeometryDrawing(brush, new Pen(Brushes.Transparent, 0), geometry));
-            }
-
-            return group;
         }
 
         public void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject)

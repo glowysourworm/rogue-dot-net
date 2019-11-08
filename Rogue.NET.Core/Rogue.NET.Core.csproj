@@ -220,13 +220,14 @@
     <Compile Include="Math\Geometry\GraphEdge.cs" />
     <Compile Include="Math\Geometry\Vector.cs" />
     <Compile Include="Math\Geometry\Vertex.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\GridCellInfo.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\RegionMap.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Connector\CorridorLayoutRegionConnector.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Connector\CorridorLocationCalculator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Connector\TilingCorridorRegionConnector.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Connector\TwoPointLayoutRegionConnector.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Creator\ContiguousRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Creator\MazeRegionCreator.cs" />
-    <Compile Include="Processing\Model\Generator\Layout\Region\Creator\PerlinNoiseRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\ContiguousRegionGeometryCreator.cs" />
     <Compile Include="Math\Algorithm\NoiseGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Creator\CellularAutomataRegionCreator.cs" />
@@ -598,7 +599,7 @@
     <Compile Include="Model\Scenario\Content\Item\Consumable.cs" />
     <Compile Include="Model\Scenario\Content\Item\Equipment.cs" />
     <Compile Include="Model\Scenario\Content\Item\ItemBase.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\Cell.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\GridCell.cs" />
     <Compile Include="Model\Scenario\Content\Layout\GridLocation.cs" />
     <Compile Include="Model\Scenario\Content\Layout\RegionBoundary.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LevelGrid.cs" />

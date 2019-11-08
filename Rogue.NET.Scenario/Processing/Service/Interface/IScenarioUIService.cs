@@ -30,8 +30,6 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
         Geometry CreateDoorLayout();
         Geometry CreateGeometry(IEnumerable<GridLocation> locations);
 
-        DrawingGroup CreateTerrainDrawing();
-
         void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject);
         void UpdateLightRadius(LevelCanvasShape canvasShape, Character character, Rect levelUIBounds);
         void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, Character character, Rect levelUIBounds);

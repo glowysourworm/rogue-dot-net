@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
         /// Creates maze inside the specified grid by removing walls from the 2D cell array. Assumed that the entire
         /// grid is filled with wall cells.
         /// </summary>
-        public static void CreateMaze(Cell[,] grid, int numberWallRemovals)
+        public static void CreateMaze(GridCellInfo[,] grid, int numberWallRemovals)
         {
             // Choose random starting cell
             var randomColumn = _randomSequenceGenerator.Get(0, grid.GetLength(0));
@@ -36,12 +36,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
         /// Creates maze inside the specified grid by removing walls from the 2D cell array. Assumed that the 
         /// starting cell is a wall.
         /// </summary>
-        public static void CreateMaze(Cell[,] grid, int startingColumn, int startingRow, int numberWallRemovals)
+        public static void CreateMaze(GridCellInfo[,] grid, int startingColumn, int startingRow, int numberWallRemovals)
         {
             RecursiveBacktracker(grid, grid[startingColumn, startingRow], numberWallRemovals);
         }
 
-        private static void RecursiveBacktracker(Cell[,] grid, Cell startingCell, int numberWallRemovals)
+        private static void RecursiveBacktracker(GridCellInfo[,] grid, GridCellInfo startingCell, int numberWallRemovals)
         {
             // Pre-Condition: All cells in the region must be filled with walls
             //
@@ -72,11 +72,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             var currentCell = startingCell;
 
             // Initialize the history
-            var history = new Stack<Cell>();
+            var history = new Stack<GridCellInfo>();
             history.Push(currentCell);
 
             // Set the first cell
-            currentCell.SetWall(false);
+            currentCell.IsWall = false;
             visitedCells[currentCell.Location.Column, currentCell.Location.Row] = true;
 
             //Main loop - create the maze!
@@ -121,7 +121,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
                     if (viableCell)
                     {
                         // Remove the wall
-                        nextCell.SetWall(false);
+                        nextCell.IsWall = false;
 
                         // Push on the stack
                         history.Push(nextCell);
@@ -147,7 +147,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
         /// <summary>
         /// Returns true if all 4-way adjacent cells are walls (Except the current cell)
         /// </summary>
-        private static bool CardinalAdjacentWallsRule(Cell currentCell, Cell nextCell, Cell[] nextCell8WayNeighbors)
+        private static bool CardinalAdjacentWallsRule(GridCellInfo currentCell, GridCellInfo nextCell, GridCellInfo[] nextCell8WayNeighbors)
         {
             return nextCell8WayNeighbors.Where(cell => cell != currentCell)
                                         .Where(cell => GridUtility.IsCardinalDirection(GridUtility.GetDirectionOfAdjacentLocation(nextCell.Location, cell.Location)))
@@ -158,7 +158,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
         /// Returns true if all 5 adjacent cells to the next cell are walls. This prevents neighboring off-diagonal walls that separate
         /// passages - making the maze look much more complete. 
         /// </summary>
-        private static bool FiveAdjacentWallsRule(Cell currentCell, Cell nextCell, Cell[] nextCell8WayNeighbors)
+        private static bool FiveAdjacentWallsRule(GridCellInfo currentCell, GridCellInfo nextCell, GridCellInfo[] nextCell8WayNeighbors)
         {
             return nextCell8WayNeighbors.Where(cell => cell != currentCell)
                                         .Count(cell => cell.IsWall) >= 5;
@@ -168,7 +168,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
         /// Same as the FiveAdjacentWallsRule with the added condition that the 5 adjacent walls must be "in the direction of
         /// travel". Example:  Movement Direction = E. Then, the set { N, NE, E, SE, S } must ALL be walls.
         /// </summary>
-        private static bool FiveAdjacentWallsDirectionalRule(Cell currentCell, Cell nextCell, Cell[] nextCell8WayNeighbors)
+        private static bool FiveAdjacentWallsDirectionalRule(GridCellInfo currentCell, GridCellInfo nextCell, GridCellInfo[] nextCell8WayNeighbors)
         {
             var direction = GridUtility.GetDirectionOfAdjacentLocation(currentCell.Location, nextCell.Location);
             var neighborWallDirections = nextCell8WayNeighbors.Where(cell => cell.IsWall)

@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
         /// <summary>
         /// Creates a set of regions over the specified grid
         /// </summary>
-        public static IEnumerable<RegionModel> CreateRegions(Cell[,] grid, bool filled, double fillRatio)
+        public static IEnumerable<RegionModel> CreateRegions(GridCellInfo[,] grid, bool filled, double fillRatio)
         {
             // Procedure
             //
@@ -39,7 +39,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             // Create function to get count of adjacent empty cells
             //
             // NOTE*** CELLULAR_AUTOMATA_PADDING prevents out of bounds errors
-            var emptyCellCountFunc = new Func<Cell[,], int, int, int, int, int>((gridArray, column, row, aggregator, distance) =>
+            var emptyCellCountFunc = new Func<GridCellInfo[,], int, int, int, int, int>((gridArray, column, row, aggregator, distance) =>
             {
                 // Use aggregator to add results from other distances
                 var result = aggregator;
@@ -103,7 +103,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             return grid.IdentifyRegions();
         }
 
-        private static void IterateCellularAutomata(Cell[,] grid, int numberOfIterations, Func<Cell[,], int, int, bool> cellularAutomataRule)
+        private static void IterateCellularAutomata(GridCellInfo[,] grid, int numberOfIterations, Func<GridCellInfo[,], int, int, bool> cellularAutomataRule)
         {
             for (int k = 0; k < numberOfIterations; k++)
             {
@@ -115,7 +115,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
                             grid[i, j] = null;
 
                         else
-                            grid[i, j] = new Cell(i, j, false);
+                            grid[i, j] = new GridCellInfo(i, j);
                     }
                 }
             }

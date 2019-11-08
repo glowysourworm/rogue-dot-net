@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
 {
     public static class TilingCorridorRegionConnector
     {
-        public static void CreateRectilinearRoutePoints(Cell[,] grid, GridLocation startPoint, GridLocation endPoint, bool yDirection)
+        public static void CreateRectilinearRoutePoints(GridCellInfo[,] grid, GridLocation startPoint, GridLocation endPoint, bool yDirection)
         {
             //if ((startPoint.X == endPoint.X) && !yDirection)
             //    throw new Exception("Improper corridor specification NavigationTile.CreateRectilinearRoutePoints");
@@ -45,7 +45,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                     throw new Exception("Trying to create point outside the bounds of the navigation tile");
 
                 // Create grid cell
-                grid[vertex.Column, vertex.Row] = new Cell(vertex.Column, vertex.Row, false);
+                grid[vertex.Column, vertex.Row] = new GridCellInfo(vertex.Column, vertex.Row) { IsWall = false };
 
                 pointValue += increment;
             }

@@ -15,16 +15,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
     /// </summary>
     public static class GridUtility
     {
-        public static RegionModel CreateRectangularRegion(Cell[,] grid, RegionBoundary boundary, bool cellsAreWalls, bool overwriteCells)
+        public static RegionModel CreateRectangularRegion(string regionName, GridCellInfo[,] grid, RegionBoundary boundary, bool overwriteCells)
         {
-            return CreateRectangularRegion(grid, boundary.Left, boundary.Top, boundary.CellWidth, boundary.CellHeight, cellsAreWalls, overwriteCells);
+            return CreateRectangularRegion(regionName, grid, boundary.Left, boundary.Top, boundary.CellWidth, boundary.CellHeight, overwriteCells);
         }
 
         /// <summary>
         /// Creates rectangular region inside of the provided cell 2D array with the specified parameters. The cells INSIDE
         /// the region MUST BE UN-INITIALIZED (NULL).
         /// </summary>
-        public static RegionModel CreateRectangularRegion(Cell[,] grid, int column, int row, int width, int height, bool cellsAreWalls, bool overwriteCells)
+        public static RegionModel CreateRectangularRegion(string regionName, GridCellInfo[,] grid, int column, int row, int width, int height, bool overwriteCells)
         {
             var regionBounds = new RegionBoundary(new GridLocation(column, row), width, height);
             var regionCells = new List<GridLocation>();
@@ -46,7 +46,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                                   regionRow == row ||
                                   regionRow == ((row + height) - 1));
 
-                    cell = new Cell(regionCol, regionRow, cellsAreWalls);
+                    cell = new GridCellInfo(regionCol, regionRow);
 
                     // SET THE CELL IN THE GRID
                     grid[regionCol, regionRow] = cell;
@@ -60,13 +60,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                 }
             }
 
-            return new RegionModel(regionCells.ToArray(), edgeCells.ToArray(), regionBounds);
+            return new RegionModel(regionName, regionCells.ToArray(), edgeCells.ToArray(), regionBounds);
         }
 
         /// <summary>
         /// Identifies regions using Breadth First Search (Flood Fill) algorithm
         /// </summary>
-        public static IEnumerable<RegionModel> IdentifyRegions(this Cell[,] grid)
+        public static IEnumerable<RegionModel> IdentifyRegions(this GridCellInfo[,] grid)
         {
             // Locate regions and assign them inside the LevelGrid
             //
@@ -80,7 +80,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
 
             // Collect cell data on new regions to know what locations have been found
             // to be in one of the regions (during iteration)
-            var regionGrids = new List<Cell[,]>();
+            var regionGrids = new List<GridCellInfo[,]>();
 
             for (int i = 0; i < grid.GetLength(0); i++)
             {
@@ -92,7 +92,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                     {
                         // Use flood fill to locate all region cells
                         //
-                        Cell[,] regionGrid = null;
+                        GridCellInfo[,] regionGrid = null;
                         RegionModel region = null;
 
                         // Success -> Save the region data
@@ -112,19 +112,19 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
         /// Applied Breadth First Search to try and identify a region at the given test location. Returns true if any region
         /// cells were found.
         /// </summary>
-        public static bool FloodFill(this Cell[,] grid, GridLocation testLocation, out RegionModel region, out Cell[,] regionGrid)
+        public static bool FloodFill(this GridCellInfo[,] grid, GridLocation testLocation, out RegionModel region, out GridCellInfo[,] regionGrid)
         {
             var bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
 
             // Region Data
-            regionGrid = new Cell[grid.GetLength(0), grid.GetLength(1)];
+            regionGrid = new GridCellInfo[grid.GetLength(0), grid.GetLength(1)];
             var regionCells = new List<GridLocation>();
             var edgeCells = new List<GridLocation>();
             var regionBounds = new RegionBoundary(testLocation, 1, 1);
 
             // Use queue to know what cells have been verified. Starting with test cell - continue 
             // until all connected cells have been added to the resulting region.
-            var resultQueue = new Queue<Cell>(bounds.CellWidth * bounds.CellHeight);
+            var resultQueue = new Queue<GridCellInfo>(bounds.CellWidth * bounds.CellHeight);
 
             // Process the first cell
             var testCell = grid[testLocation.Column, testLocation.Row];
@@ -166,8 +166,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                 }
             }
 
-            // Assign region data to new region
-            region = new RegionModel(regionCells.ToArray(), edgeCells.ToArray(), regionBounds);
+            // Assign region data to new region  (TODO:TERRAIN - Provide Region Name)
+            region = new RegionModel("Region " + Guid.NewGuid().ToString(), regionCells.ToArray(), edgeCells.ToArray(), regionBounds);
 
             return true;
         }
@@ -268,7 +268,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
         /// Calculates whether adjacent element is connected by accessible path - This will check for non-default elements
         /// at the off-diagonal locations
         /// </summary>
-        public static bool IsAdjacentCellConnected(this Cell[,] grid, GridLocation location, GridLocation adjacentLocation)
+        public static bool IsAdjacentCellConnected(this GridCellInfo[,] grid, GridLocation location, GridLocation adjacentLocation)
         {
             var direction = GridUtility.GetDirectionOfAdjacentLocation(location, adjacentLocation);
 
@@ -302,7 +302,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
         /// <summary>
         /// Returns true if any adjacent cells are null or walls
         /// </summary>
-        public static bool IsEdgeCell(Cell[,] grid, int column, int row)
+        public static bool IsEdgeCell(GridCellInfo[,] grid, int column, int row)
         {
             var north = grid.Get(column, row - 1);
             var south = grid.Get(column, row + 1);

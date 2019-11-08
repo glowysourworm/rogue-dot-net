@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
         }
 
-        public static void CalculateNearestNeighborLocations(Cell[,] grid, RegionModel region1, RegionModel region2, out Cell region1Location, out Cell region2Location)
+        public static void CalculateNearestNeighborLocations(GridCell[,] grid, RegionModel region1, RegionModel region2, out GridCell region1Location, out GridCell region2Location)
         {
             // Procedure
             //
@@ -55,8 +55,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             var left = room2Bounds.Right < room1Bounds.Left;
             var right = room2Bounds.Left > room1Bounds.Right;
 
-            var room1Candidates = new List<Cell>();
-            var room2Candidates = new List<Cell>();
+            var room1Candidates = new List<GridCell>();
+            var room2Candidates = new List<GridCell>();
 
             // Case 1: Corner-Located
             if (((top && left) ||

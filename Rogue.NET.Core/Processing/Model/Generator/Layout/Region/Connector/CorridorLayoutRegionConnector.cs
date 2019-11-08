@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
         }
 
-        public static void Connect(Cell[,] grid, Cell cell1, Cell cell2, LayoutTemplate template)
+        public static void Connect(GridCellInfo[,] grid, GridCellInfo cell1, GridCellInfo cell2, LayoutTemplate template)
         {
             // Check for neighboring (cardinal) or same-identity cell. For this case, just return an empty array
             if (cell1.Location.Equals(cell2.Location) ||
@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                     .Any(x => x.Equals(cell2.Location)))
                 return;
 
-            var corridor = new List<Cell>();
+            var corridor = new List<GridCellInfo>();
             var createDoors = template.ConnectionType == LayoutConnectionType.CorridorWithDoors;
 
             // Procedure
@@ -139,10 +139,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                 // intersection landed on one of the vertical lines
                 var horizontal = (point.X % ModelConstants.CellWidth) <= double.Epsilon;
 
-                Cell gridCell1 = null;
-                Cell gridCell2 = null;
-                Cell corridor1 = null;
-                Cell corridor2 = null;
+                GridCellInfo gridCell1 = null;
+                GridCellInfo gridCell2 = null;
+                GridCellInfo corridor1 = null;
+                GridCellInfo corridor2 = null;
 
                 // Using the ray direction and the intersection - calculate the next two points to include in the
                 // result
@@ -159,11 +159,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
 
                     corridor1 = gridCell1 ??
                                 corridor.FirstOrDefault(cell => cell.Location.Equals(location1)) ??
-                                new Cell(location1, false);
+                                new GridCellInfo(location1) { IsWall = false };
 
                     corridor2 = gridCell2 ??
                                 corridor.FirstOrDefault(cell => cell.Location.Equals(location2)) ??
-                                new Cell(location2, false);
+                                new GridCellInfo(location2) { IsWall = false };
                 }
                 else
                 {
@@ -178,11 +178,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
 
                     corridor1 = gridCell1 ??
                                 corridor.FirstOrDefault(cell => cell.Location.Equals(location1)) ??
-                                new Cell(location1, false);
+                                new GridCellInfo(location1) { IsWall = false };
 
                     corridor2 = gridCell2 ??
                                 corridor.FirstOrDefault(cell => cell.Location.Equals(location2)) ??
-                                new Cell(location2, false);
+                                new GridCellInfo(location2) { IsWall = false };
                 }
 
                 // Create a door (if the location is on the edge of a room)
@@ -205,7 +205,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                             var counter = hiddenDoor ? _randomSequenceGenerator.Get(1, 20) : 0;
 
                             // Set door on the corridor and the adjacent room cell
-                            corridor1.SetDoor(counter);
+                            corridor1.IsDoor = true;
+                            corridor1.IsWall = false;
+                            corridor1.DoorSearchCounter = counter;
                         }
                     }
                     if (gridCell2 == null)
@@ -221,14 +223,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                             var counter = hiddenDoor ? _randomSequenceGenerator.Get(1, 20) : 0;
 
                             // Set door on the corridor and the adjacent room cell
-                            corridor2.SetDoor(counter);
+                            corridor2.IsDoor = true;
+                            corridor2.IsWall = false;
+                            corridor2.DoorSearchCounter = counter;
                         }
                     }
                 }
 
                 // Punch out the walls
-                corridor1.SetWall(false);
-                corridor2.SetWall(false);
+                corridor1.IsWall = false;
+                corridor2.IsWall = false;
 
                 // Store the results
                 if (!corridor.Any(cell => cell == corridor1) && gridCell1 == null)

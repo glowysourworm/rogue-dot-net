@@ -75,9 +75,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         private void GenerateLevelContent(Level level, LevelBranchTemplate branchTemplate, LayoutGenerationTemplate layoutTemplate, ScenarioEncyclopedia encyclopedia, bool lastLevel, bool survivorMode)
         {
             // Create lists to know what cells are free
-            var rooms = level.Grid.Rooms.ToList();
+            var rooms = level.Grid.RoomMap.GetRegions().ToList();
             var freeCells = level.Grid.GetCells().Where(cell => !cell.IsWall).Select(x => x.Location).ToList();
-            var freeRoomCells = level.Grid.Rooms.ToDictionary(room => room, room => room.Cells.Where(cell => !level.Grid[cell.Column, cell.Row].IsWall).ToList());
+            var freeRoomCells = rooms.ToDictionary(room => room, room => room.Cells.Where(cell => !level.Grid[cell.Column, cell.Row].IsWall).ToList());
 
             // NOTE*** ADD MAPPED CONTENT FIRST - BUT MUST IGNORE DURING THE MAPPING PHASE. THIS INCLUDES
             //         ANY NORMAL DOODADS
@@ -180,7 +180,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         }
         private void AddTeleporterLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Region, List<GridLocation>> freeRoomCells)
         {
-            var rooms = level.Grid.Rooms.ToList();
+            var rooms = level.Grid.RoomMap.GetRegions().ToList();
 
             // Connect rooms with teleporters sequentially to make sure can reach all rooms
             for (int i = 0; i < rooms.Count - 1; i++)
@@ -256,7 +256,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         }
         private void AddTeleportRandomLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Region, List<GridLocation>> freeRoomCells)
         {
-            var rooms = level.Grid.Rooms.ToList();
+            var rooms = level.Grid.RoomMap.GetRegions().ToList();
 
             // Random teleporters send character to random point in the level. Add
             // one per room
@@ -285,7 +285,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //       OR B) Run out of room
             //
 
-            var partyRoom = _randomSequenceGenerator.GetRandomElement(level.Grid.Rooms);
+            var partyRoom = _randomSequenceGenerator.GetRandomElement(level.Grid.RoomMap.GetRegions());
 
             var totalAssetNumber = _randomSequenceGenerator.Get(15, 30);
             var enemyNumber = _randomSequenceGenerator.Get(1, 5);

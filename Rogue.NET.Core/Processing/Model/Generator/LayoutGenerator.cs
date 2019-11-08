@@ -36,8 +36,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         //        MUST BE GREATER THAN OR EQUAL TO 2.
         private const int CELLULAR_AUTOMATA_PADDING = 2;
         private const int CELLULAR_AUTOMATA_ITERATIONS = 5;
-
-
+        
         [ImportingConstructor]
         public LayoutGenerator(IRandomSequenceGenerator randomSequenceGenerator)
         {
@@ -96,13 +95,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private LevelGrid CreateRectangularGridRooms(LayoutTemplate template)
         {
-            var grid = new Cell[template.Width, template.Height];
+            var grid = new GridCellInfo[template.Width, template.Height];
 
             // Create the room rectangles
             var roomBoundaries = RectangularGridRegionGeometryCreator.CreateRegionGeometry(template);
 
-            // Create cells in the contiguous rectangle groups
-            var regions = roomBoundaries.Select(boundary => GridUtility.CreateRectangularRegion(grid, boundary, false, true))
+            // Create cells in the contiguous rectangle groups (TODO:TERRAIN - PROVIDE REGION NAME)
+            var regions = roomBoundaries.Select(boundary => GridUtility.CreateRectangularRegion("Room " + Guid.NewGuid().ToString(), grid, boundary, true))
                                         .Actualize();
 
             return FinishLayoutRectilinear(grid, regions, template);
@@ -110,7 +109,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private LevelGrid CreateRandomRooms(LayoutTemplate template)
         {
-            var grid = new Cell[template.Width, template.Height];
+            var grid = new GridCellInfo[template.Width, template.Height];
 
             // Create the room rectangles
             var roomBoundaries = RandomRectangularRegionGeometryCreator.CreateRegionGeometry(template);
@@ -126,7 +125,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private LevelGrid CreateCellularAutomata(LayoutTemplate template)
         {
-            var grid = new Cell[template.Width, template.Height];
+            var grid = new GridCellInfo[template.Width, template.Height];
 
             // Create cells in the contiguous rectangle groups
             var regions = CellularAutomataRegionCreator.CreateRegions(grid, template.CellularAutomataType == LayoutCellularAutomataType.Filled, template.CellularAutomataFillRatio.Clip(0.4, 0.4));
@@ -136,13 +135,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private LevelGrid CreateMaze(LayoutTemplate template)
         {
-            var grid = new Cell[template.Width, template.Height];
+            var grid = new GridCellInfo[template.Width, template.Height];
 
-            var region = GridUtility.CreateRectangularRegion(grid, 0, 0, template.Width, template.Height, false, true);
+            // TODO:TERRAIN - PROVIDE UNIQUE REGION NAME
+            var region = GridUtility.CreateRectangularRegion("Region " + Guid.NewGuid().ToString(), grid, 0, 0, template.Width, template.Height, true);
 
             // Set region cells to be walls
             foreach (var cell in region.Cells)
-                grid[cell.Column, cell.Row].SetWall(true);
+                grid[cell.Column, cell.Row].IsWall = true;
 
             // Create maze by "punching out walls"
             //
@@ -156,13 +156,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             template.Width = 80;
             template.Height = 50;
 
-            var grid = new Cell[template.Width, template.Height];
+            var grid = new GridCellInfo[template.Width, template.Height];
 
             // To avoid extra iteration - use the callback to set up the grid cells
             var featureMap = NoiseGenerator.GeneratePerlinNoise(template.Width, template.Height, 0.06, new NoiseGenerator.PostProcessingFilterCallback((column, row, value) =>
             {
                 // Use the loop to create the grid and save an iteration - mark valleys as "Walls" to be carved out later
-                grid[column, row] = new Cell(column, row, value >= 0);
+                grid[column, row] = new GridCellInfo(column, row)
+                {
+                    IsWall = value >= 0
+                };
 
                 // Create "walls" for regions by weighting the result to prevent BFS from using these cells
                 // return value > 0 ? 10000 : value;
@@ -192,7 +195,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                 // Add path to the grid
                 foreach (var location in path)
-                    grid[location.Column, location.Row].SetWall(false);
+                    grid[location.Column, location.Row].IsWall = false;
 
             }
 
@@ -205,7 +208,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// Triangulate rooms, locate and remove small rooms, create corridors, add walls
         /// </summary>
         /// <returns></returns>
-        private LevelGrid FinishLayout(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        private LevelGrid FinishLayout(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
             // Triangulate room positions
             //
@@ -232,7 +235,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }
 
-        private LevelGrid FinishLayoutRectilinear(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        private LevelGrid FinishLayoutRectilinear(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
             // Create MST
             var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
@@ -309,7 +312,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        private LevelGrid FinishLayoutWithMazeCorridors(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        private LevelGrid FinishLayoutWithMazeCorridors(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
             // Fill in the empty cells with walls
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -318,7 +321,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 {
                     // Create wall cell here
                     if (grid[i, j] == null)
-                        grid[i, j] = new Cell(i, j, true);
+                        grid[i, j] = new GridCellInfo(i, j)
+                        {
+                            IsWall = true
+                        };
                 }
             }
 
@@ -361,10 +367,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }
 
-        private LevelGrid FinishLayoutWithTerrain(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        private LevelGrid FinishLayoutWithTerrain(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
             // Create terrain grid to use to identify regions
-            var terrainGrid = new Cell[grid.GetLength(0), grid.GetLength(1)];
+            var terrainGrid = new GridCellInfo[grid.GetLength(0), grid.GetLength(1)];
 
             // Create terrain map to use in Dijkstra's algorithm for path routing
             var terrainMap = NoiseGenerator.GeneratePerlinNoise(grid.GetLength(0), grid.GetLength(1), 0.07, (column, row, value) =>
@@ -378,7 +384,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 if (value < 0 && grid[column, row] != null)
                 {
                     // Replace grid cell for terrain cell
-                    terrainGrid[column, row] = new Cell(column, row, false);
+                    terrainGrid[column, row] = new GridCellInfo(column, row) { IsWall = false };
                     grid[column, row] = null;
 
                     return 1000;
@@ -414,7 +420,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                 // Add path to the grid
                 foreach (var location in path)
-                    grid[location.Column, location.Row] = new Cell(location, false);
+                    grid[location.Column, location.Row] = new GridCellInfo(location) { IsWall = false };
             }
 
             //Create walls
@@ -426,7 +432,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <summary>
         /// Creates walls on the boundary of the regions and connectors by checking for null cells
         /// </summary>
-        private void CreateWalls(Cell[,] grid)
+        private void CreateWalls(GridCellInfo[,] grid)
         {
             var bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
 
@@ -445,35 +451,35 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                     // North wall
                     if (grid.Get(i, j - 1) == null)
-                        grid[i, j - 1] = new Cell(new GridLocation(i, j - 1), true);
+                        grid[i, j - 1] = new GridCellInfo(new GridLocation(i, j - 1)) { IsWall = true };
 
                     // South wall
                     if (grid.Get(i, j + 1) == null)
-                        grid[i, j + 1] = new Cell(new GridLocation(i, j + 1), true);
+                        grid[i, j + 1] = new GridCellInfo(new GridLocation(i, j + 1)) { IsWall = true };
 
                     // West wall
                     if (grid.Get(i - 1, j) == null)
-                        grid[i - 1, j] = new Cell(new GridLocation(i - 1, j), true);
+                        grid[i - 1, j] = new GridCellInfo(new GridLocation(i - 1, j)) { IsWall = true };
 
                     // East wall
                     if (grid.Get(i + 1, j) == null)
-                        grid[i + 1, j] = new Cell(new GridLocation(i + 1, j), true);
+                        grid[i + 1, j] = new GridCellInfo(new GridLocation(i + 1, j)) { IsWall = true };
 
                     // North-East wall
                     if (grid.Get(i + 1, j - 1) == null)
-                        grid[i + 1, j - 1] = new Cell(new GridLocation(i + 1, j - 1), true);
+                        grid[i + 1, j - 1] = new GridCellInfo(new GridLocation(i + 1, j - 1)) { IsWall = true };
 
                     // South-East wall
                     if (grid.Get(i + 1, j + 1) == null)
-                        grid[i + 1, j + 1] = new Cell(new GridLocation(i + 1, j + 1), true);
+                        grid[i + 1, j + 1] = new GridCellInfo(new GridLocation(i + 1, j + 1)) { IsWall = true };
 
                     // North-West wall
                     if (grid.Get(i - 1, j - 1) == null)
-                        grid[i - 1, j - 1] = new Cell(new GridLocation(i - 1, j - 1), true);
+                        grid[i - 1, j - 1] = new GridCellInfo(new GridLocation(i - 1, j - 1)) { IsWall = true };
 
                     // South-West wall
                     if (grid.Get(i - 1, j + 1) == null)
-                        grid[i - 1, j + 1] = new Cell(new GridLocation(i - 1, j + 1), true);
+                        grid[i - 1, j + 1] = new GridCellInfo(new GridLocation(i - 1, j + 1)) { IsWall = true };
                 }
             }
         }

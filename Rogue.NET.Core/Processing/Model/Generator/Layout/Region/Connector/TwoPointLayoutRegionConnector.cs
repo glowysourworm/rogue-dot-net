@@ -7,7 +7,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
 {
     public static class TwoPointLayoutRegionConnector
     {
-        public static void Connect(Cell[,] grid, IEnumerable<RegionModel> regions)
+        public static void Connect(GridCell[,] grid, IEnumerable<RegionModel> regions)
         {
             throw new NotImplementedException();
         }

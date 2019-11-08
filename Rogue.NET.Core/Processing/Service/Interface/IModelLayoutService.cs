@@ -54,13 +54,13 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// Returns 1st of 2 off diagonal cells in the specified non-cardinal direction (Example: NE -> N cell)
         /// </summary>
         /// <param name="direction">NE, NW, SE, SW</param>
-        Cell GetOffDiagonalCell1(GridLocation location, Compass direction, out Compass cardinalDirection1);
+        GridCell GetOffDiagonalCell1(GridLocation location, Compass direction, out Compass cardinalDirection1);
 
         /// <summary>
         /// Returns 2nd of 2 off diagonal cells in the specified non-cardinal direction (Example: NE -> E cell)
         /// </summary>
         /// <param name="direction">NE, NW, SE, SW</param>
-        Cell GetOffDiagonalCell2(GridLocation location, Compass direction, out Compass cardinalDirection2);
+        GridCell GetOffDiagonalCell2(GridLocation location, Compass direction, out Compass cardinalDirection2);
 
         /// <summary>
         /// Returns 8-way adjacent locations in the level that are cells
@@ -75,7 +75,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// <summary>
         /// Returns 8-way adjacent cells in the level (with null checks)
         /// </summary>
-        IEnumerable<Cell> GetAdjacentCells(Cell cell);
+        IEnumerable<GridCell> GetAdjacentCells(GridCell cell);
 
         /// <summary>
         /// Returns direction of the adjacent location

@@ -551,15 +551,15 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var location = _modelService.Player.Location;
             var grid = _modelService.Level.Grid;
 
-            Cell c = grid[location.Column, location.Row];
-            Cell n = grid[location.Column, location.Row - 1];
-            Cell s = grid[location.Column, location.Row + 1];
-            Cell e = grid[location.Column + 1, location.Row];
-            Cell w = grid[location.Column - 1, location.Row];
-            Cell ne = grid[location.Column + 1, location.Row - 1];
-            Cell nw = grid[location.Column - 1, location.Row - 1];
-            Cell se = grid[location.Column + 1, location.Row + 1];
-            Cell sw = grid[location.Column - 1, location.Row + 1];
+            GridCell c = grid[location.Column, location.Row];
+            GridCell n = grid[location.Column, location.Row - 1];
+            GridCell s = grid[location.Column, location.Row + 1];
+            GridCell e = grid[location.Column + 1, location.Row];
+            GridCell w = grid[location.Column - 1, location.Row];
+            GridCell ne = grid[location.Column + 1, location.Row - 1];
+            GridCell nw = grid[location.Column - 1, location.Row - 1];
+            GridCell se = grid[location.Column + 1, location.Row + 1];
+            GridCell sw = grid[location.Column - 1, location.Row + 1];
 
             // TODO:TERRAIN
 

@@ -210,12 +210,12 @@ namespace Rogue.NET.Core.Processing.Service
             return result;
         }
 
-        public Cell GetOffDiagonalCell1(GridLocation location, Compass direction, out Compass cardinalDirection1)
+        public GridCell GetOffDiagonalCell1(GridLocation location, Compass direction, out Compass cardinalDirection1)
         {
             return _level.Grid.GetOffDiagonalCell1(location, direction, out cardinalDirection1);
         }
 
-        public Cell GetOffDiagonalCell2(GridLocation location, Compass direction, out Compass cardinalDirection2)
+        public GridCell GetOffDiagonalCell2(GridLocation location, Compass direction, out Compass cardinalDirection2)
         {
             return _level.Grid.GetOffDiagonalCell2(location, direction, out cardinalDirection2);
         }
@@ -230,7 +230,7 @@ namespace Rogue.NET.Core.Processing.Service
             return _level.Grid.GetCardinarlAdjacentLocations(location);
         }
 
-        public IEnumerable<Cell> GetAdjacentCells(Cell cell)
+        public IEnumerable<GridCell> GetAdjacentCells(GridCell cell)
         {
             return _level.Grid.GetAdjacentCells(cell);
         }

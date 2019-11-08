@@ -122,8 +122,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             var grid = _modelService.Level.Grid;
             var sourceCell = grid[point1.Column, point1.Row];
 
-            var frontier = new Queue<Cell>();
-            var dijkstraMap = new Cell[grid.Bounds.CellWidth, grid.Bounds.CellHeight];
+            var frontier = new Queue<GridCell>();
+            var dijkstraMap = new GridCell[grid.Bounds.CellWidth, grid.Bounds.CellHeight];
 
             // Initialize the frontier and Dijkstra Map
             sourceCell.DijkstraWeight = 0;
