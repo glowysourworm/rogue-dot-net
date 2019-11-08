@@ -32,6 +32,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private Range<int> _levelRange;
         private string _wallColor;
         private string _doorColor;
+        private SymbolDetailsTemplate _wallSymbol;
+        private SymbolDetailsTemplate _doorSymbol;
+
 
         public int Width
         {
@@ -321,6 +324,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        public SymbolDetailsTemplate WallSymbol
+        {
+            get { return _wallSymbol; }
+            set
+            {
+                if (_wallSymbol != value)
+                {
+                    _wallSymbol = value;
+                    OnPropertyChanged("WallSymbol");
+                }
+            }
+        }
+        public SymbolDetailsTemplate DoorSymbol
+        {
+            get { return _doorSymbol; }
+            set
+            {
+                if (_doorSymbol != value)
+                {
+                    _doorSymbol = value;
+                    OnPropertyChanged("DoorSymbol");
+                }
+            }
+        }
 
         public LayoutTemplate() : base()
         {
@@ -338,6 +365,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 
             this.WallColor = Colors.Blue.ToString();
             this.DoorColor = Colors.Fuchsia.ToString();
+
+            this.WallSymbol = new SymbolDetailsTemplate();
+            this.DoorSymbol = new SymbolDetailsTemplate();
         }
 
         /// <summary>

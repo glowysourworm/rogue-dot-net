@@ -38,6 +38,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private RangeViewModel<int> _levelRange;
         private string _wallColor;
         private string _doorColor;
+        private SymbolDetailsTemplateViewModel _wallSymbol;
+        private SymbolDetailsTemplateViewModel _doorSymbol;
 
         public int Width
         {
@@ -159,6 +161,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _doorColor; }
             set { this.RaiseAndSetIfChanged(ref _doorColor, value); }
         }
+        public SymbolDetailsTemplateViewModel WallSymbol
+        {
+            get { return _wallSymbol; }
+            set { this.RaiseAndSetIfChanged(ref _wallSymbol, value); }
+        }
+        public SymbolDetailsTemplateViewModel DoorSymbol
+        {
+            get { return _doorSymbol; }
+            set { this.RaiseAndSetIfChanged(ref _doorSymbol, value); }
+        }
 
         public LayoutTemplateViewModel() : base()
         {
@@ -176,6 +188,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.NumberExtraWallRemovals = 200;
             this.HiddenDoorProbability = 0.2;
             this.GenerationRate = 0.5;
+
+            this.WallSymbol = new SymbolDetailsTemplateViewModel();
+            this.DoorSymbol = new SymbolDetailsTemplateViewModel();
         }
     }
 }

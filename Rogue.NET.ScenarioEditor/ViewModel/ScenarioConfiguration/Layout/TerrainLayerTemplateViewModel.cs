@@ -12,7 +12,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         TerrainLayoutType _layoutType;
         bool _isPassable;
         bool _isWalkable;
-        SymbolDetailsTemplate _symbolDetails;
+        SymbolDetailsTemplateViewModel _symbolDetails;
 
         public bool IsPassable
         {
@@ -34,7 +34,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _layoutType; }
             set { this.RaiseAndSetIfChanged(ref _layoutType, value); }
         }
-        public SymbolDetailsTemplate SymbolDetails
+        public SymbolDetailsTemplateViewModel SymbolDetails
         {
             get { return _symbolDetails; }
             set { this.RaiseAndSetIfChanged(ref _symbolDetails, value); }
@@ -42,7 +42,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 
         public TerrainLayerTemplateViewModel()
         {
-            this.SymbolDetails = new SymbolDetailsTemplate();
+            this.SymbolDetails = new SymbolDetailsTemplateViewModel();
         }
     }
 }
