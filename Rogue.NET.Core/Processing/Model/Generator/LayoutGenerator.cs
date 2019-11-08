@@ -153,13 +153,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private LevelGrid CreateOpenWorldLayout(LayoutTemplate template)
         {
+            template.Width = 80;
+            template.Height = 50;
+
             var grid = new Cell[template.Width, template.Height];
 
             // To avoid extra iteration - use the callback to set up the grid cells
-            var featureMap = NoiseGenerator.GeneratePerlinNoise(template.Width, template.Height, 0.7, new NoiseGenerator.PostProcessingFilterCallback((column, row, value) =>
+            var featureMap = NoiseGenerator.GeneratePerlinNoise(template.Width, template.Height, 0.06, new NoiseGenerator.PostProcessingFilterCallback((column, row, value) =>
             {
                 // Use the loop to create the grid and save an iteration - mark valleys as "Walls" to be carved out later
-                grid[column, row] = new Cell(column, row, value < 0);
+                grid[column, row] = new Cell(column, row, value >= 0);
 
                 // Create "walls" for regions by weighting the result to prevent BFS from using these cells
                 // return value > 0 ? 10000 : value;
@@ -167,7 +170,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 return value;
             }));
 
-            var regions = grid.IdentifyRegions();
+            var regions = grid.IdentifyRegions().Where(x => x.Cells.Length >= 4);
 
             // Create MST
             var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
@@ -182,124 +185,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var location2 = region1.GetAdjacentConnectionPoint(region2, Metric.MetricType.Roguian);
 
                 // Creates dijkstra
-                var dijkstraMap = featureMap.CreateDijkstraMap(location1);
+                var dijkstraMap = featureMap.CreateDijkstraMap(location1, location2);
 
-                var currentLocation = location2;
-                var goalLocation = location1;
+                // Generate Path locations
+                var path = dijkstraMap.GeneratePath(location1, location2, true);
 
-                // Find the "easiest" route to the goal
-                while (!currentLocation.Equals(goalLocation))
-                {
-                    var column = currentLocation.Column;
-                    var row = currentLocation.Row;
+                // Add path to the grid
+                foreach (var location in path)
+                    grid[location.Column, location.Row].SetWall(false);
 
-                    var north = row - 1 >= 0;
-                    var south = row + 1 < grid.GetLength(1);
-                    var east = column + 1 < grid.GetLength(0);
-                    var west = column - 1 >= 0;
-
-                    double lowestWeight = double.MaxValue;
-                    GridLocation lowestWeightLocation = currentLocation;
-
-                    if (north && dijkstraMap[column, row - 1] < lowestWeight)
-                    {
-                        lowestWeightLocation = new GridLocation(column, row - 1);
-                        lowestWeight = dijkstraMap[column, row - 1];
-                    }
-
-                    if (south && dijkstraMap[column, row + 1] < lowestWeight)
-                    { 
-                        lowestWeightLocation = new GridLocation(column, row + 1);
-                        lowestWeight = dijkstraMap[column, row + 1];
-                    }
-
-                    if (east && dijkstraMap[column + 1, row] < lowestWeight)
-                    { 
-                        lowestWeightLocation = new GridLocation(column + 1, row);
-                        lowestWeight = dijkstraMap[column + 1, row];
-                    }
-
-                    if (west && dijkstraMap[column - 1, row] < lowestWeight)
-                    { 
-                        lowestWeightLocation = new GridLocation(column - 1, row);
-                        lowestWeight = dijkstraMap[column - 1, row];
-                    }
-
-                    if (north && east && dijkstraMap[column + 1, row - 1] < lowestWeight)
-                    {
-                        lowestWeightLocation = new GridLocation(column + 1, row - 1);
-                        lowestWeight = dijkstraMap[column + 1, row - 1];
-                    }
-
-                    if (north && west && dijkstraMap[column - 1, row - 1] < lowestWeight)
-                    {
-                        lowestWeightLocation = new GridLocation(column - 1, row - 1);
-                        lowestWeight = dijkstraMap[column - 1, row - 1];
-                    }
-
-                    if (south && east && dijkstraMap[column + 1, row + 1] < lowestWeight)
-                    {
-                        lowestWeightLocation = new GridLocation(column + 1, row + 1);
-                        lowestWeight = dijkstraMap[column + 1, row + 1];
-                    }
-
-                    if (south && west && dijkstraMap[column - 1, row + 1] < lowestWeight)
-                    {
-                        lowestWeightLocation = new GridLocation(column - 1, row + 1);
-                        lowestWeight = dijkstraMap[column - 1, row + 1];
-                    }
-
-                    if (lowestWeight == double.MaxValue)
-                        throw new Exception("Mishandled Dijkstra Map LayoutGenerator.CreateOrganic");
-
-                    currentLocation = lowestWeightLocation;
-
-                    // Remove Wall from this cell
-                    grid[column, row].SetWall(false);
-
-                    // For diagonal movements - must also set one of the corresponding cardinal cells to be part of the corridor
-
-                    // NE
-                    if ((lowestWeightLocation.Column == column + 1) && (lowestWeightLocation.Row == row - 1))
-                    {
-                        // Select the N or E cell to also remove the wall
-                        if (dijkstraMap[column, row - 1] < dijkstraMap[column + 1, row])
-                            grid[column, row - 1].SetWall(false);
-
-                        else
-                            grid[column + 1, row].SetWall(false);
-                    }
-                    // NW
-                    else if ((lowestWeightLocation.Column == column - 1) && (lowestWeightLocation.Row == row - 1))
-                    {
-                        // Select the N or W cell to also remove the wall
-                        if (dijkstraMap[column, row - 1] < dijkstraMap[column - 1, row])
-                            grid[column, row - 1].SetWall(false);
-
-                        else
-                            grid[column - 1, row].SetWall(false);
-                    }
-                    // SE
-                    else if ((lowestWeightLocation.Column == column + 1) && (lowestWeightLocation.Row == row + 1))
-                    {
-                        // Select the S or E cell to also remove the wall
-                        if (dijkstraMap[column, row + 1] < dijkstraMap[column + 1, row])
-                            grid[column, row + 1].SetWall(false);
-
-                        else
-                            grid[column + 1, row].SetWall(false);
-                    }
-                    // SW
-                    else if ((lowestWeightLocation.Column == column - 1) && (lowestWeightLocation.Row == row + 1))
-                    {
-                        // Select the S or W cell to also remove the wall
-                        if (dijkstraMap[column, row + 1] < dijkstraMap[column - 1, row])
-                            grid[column, row + 1].SetWall(false);
-
-                        else
-                            grid[column - 1, row].SetWall(false);
-                    }
-                }
             }
 
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
@@ -465,6 +359,68 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             }
 
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
+        }
+
+        private LevelGrid FinishLayoutWithTerrain(Cell[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        {
+            // Create terrain grid to use to identify regions
+            var terrainGrid = new Cell[grid.GetLength(0), grid.GetLength(1)];
+
+            // Create terrain map to use in Dijkstra's algorithm for path routing
+            var terrainMap = NoiseGenerator.GeneratePerlinNoise(grid.GetLength(0), grid.GetLength(1), 0.07, (column, row, value) =>
+            {
+                // Procedure
+                //
+                // 1) Create terrain cells using a threshold (value < 0) (INSIDE ROOMS)
+                // 2) Set the noise value very high for terrain and region cells
+                // 3) Set the grid for terrain cells to null
+
+                if (value < 0 && grid[column, row] != null)
+                {
+                    // Replace grid cell for terrain cell
+                    terrainGrid[column, row] = new Cell(column, row, false);
+                    grid[column, row] = null;
+
+                    return 1000;
+                }
+
+                return 0;
+            });
+
+            // Create terrain regions
+            var terrainRegions = terrainGrid.IdentifyRegions();
+
+            // Re-calculate grid regions
+            var rooms = grid.IdentifyRegions();
+
+            // Triangulate room positions
+            var graph = GeometryUtility.PrimsMinimumSpanningTree(rooms, Metric.MetricType.Roguian);
+
+            // For each edge in the triangulation - create a corridor
+            foreach (var edge in graph.Edges)
+            {
+                var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
+                var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
+
+                // Creates dijkstra
+                var dijkstraMap = terrainMap.CreateDijkstraMap(location1, location2);
+
+                //terrainMap.OutputCSV("c:\\test\\terrainMap.csv");
+                //dijkstraMap.OutputCSV("c:\\test\\dijkstraMap.csv");
+
+
+                // Generate Path locations
+                var path = dijkstraMap.GeneratePath(location1, location2, true);
+
+                // Add path to the grid
+                foreach (var location in path)
+                    grid[location.Column, location.Row] = new Cell(location, false);
+            }
+
+            //Create walls
+            CreateWalls(grid);
+
+            return new LevelGrid(grid, rooms.ToArray(), terrainRegions.ToArray());
         }
 
         /// <summary>

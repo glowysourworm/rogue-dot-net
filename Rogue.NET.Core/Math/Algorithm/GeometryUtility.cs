@@ -5,7 +5,9 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using static Rogue.NET.Core.Math.Geometry.Metric;
 
 namespace Rogue.NET.Core.Math.Algorithm
@@ -217,7 +219,7 @@ namespace Rogue.NET.Core.Math.Algorithm
         /// </summary>
         /// <param name="inputMap">Weight map (of the same grid dimensions) - relative to [0, 1] (but not necessarily [0, 1]) - to multiply the graph edges by when calculating the Dijkstra weight.</param>
         /// <returns>A weighted map of the path costs from location1 to location2</returns>
-        public static double[,] CreateDijkstraMap(this double[,] inputMap, GridLocation sourceLocation)
+        public static double[,] CreateDijkstraMap(this double[,] inputMap, GridLocation sourceLocation, GridLocation endLocation)
         {
             // Initialize the Dijkstra Map
             var dijkstraMap = new double[inputMap.GetLength(0), inputMap.GetLength(1)];
@@ -226,25 +228,31 @@ namespace Rogue.NET.Core.Math.Algorithm
             {
                 // Set to "infinity" except for the start location
                 for (int j = 0; j < dijkstraMap.GetLength(1); j++)
-                    dijkstraMap[i, j] = (i == sourceLocation.Column && j == sourceLocation.Row) ? 0 : double.MaxValue;
+                    dijkstraMap[i, j] = ((i == sourceLocation.Column) && (j == sourceLocation.Row)) ? 0 : double.MaxValue;
             }
 
-            // Track visited elements
+            // Track visited elements AND queued elements (prevents a LOT of extra looking up on the queue)
             var visitedMap = new bool[inputMap.GetLength(0), inputMap.GetLength(1)];
+            var queueMap = new bool[inputMap.GetLength(0), inputMap.GetLength(1)];
 
             // Use stack to know what elements have been verified. Starting with test element - continue 
             // until all connected elements have been added to the resulting region.
-            var stack = new Stack<GridLocation>(inputMap.GetLength(0) * inputMap.GetLength(1));
+            var queue = new List<GridLocation>(inputMap.GetLength(0) * inputMap.GetLength(1));
 
             // Process the first element
-            stack.Push(sourceLocation);
+            queue.Add(sourceLocation);
+            queueMap[sourceLocation.Column, sourceLocation.Row] = true;
 
             // NOTE*** Adding a variable weighting for a change in location (SHOULD BE SET TO 1.0)
             var tileMovementCost = 1.0;
 
-            while (stack.Count > 0)
+            while (queue.Count > 0)
             {
-                var currentLocation = stack.Pop();
+                // Dequeue next node (These have been queued in order)
+                var currentLocation = queue.First();
+
+                queue.RemoveAt(0);
+
                 var column = currentLocation.Column;
                 var row = currentLocation.Row;
                 var currentWeight = dijkstraMap[column, row];
@@ -260,57 +268,295 @@ namespace Rogue.NET.Core.Math.Algorithm
 
                 // Dijkstra Weight = Current Value + ("Change in Location Cost" + "Gradient Cost") 
                 //                 = Current Value + (1 + Input Map Change)
-                if (north)
-                    dijkstraMap[column, row - 1] = System.Math.Min(dijkstraMap[column, row - 1], currentWeight + (inputMap[column, row - 1] - inputMap[column, row]) + tileMovementCost);
-
-                if (south)
-                    dijkstraMap[column, row + 1] = System.Math.Min(dijkstraMap[column, row + 1], currentWeight + (inputMap[column, row + 1] - inputMap[column, row]) + tileMovementCost);
-
-                if (east)
-                    dijkstraMap[column + 1, row] = System.Math.Min(dijkstraMap[column + 1, row], currentWeight + (inputMap[column + 1, row] - inputMap[column, row]) + tileMovementCost);
-
-                if (west)
-                    dijkstraMap[column - 1, row] = System.Math.Min(dijkstraMap[column - 1, row], currentWeight + (inputMap[column - 1, row] - inputMap[column, row]) + tileMovementCost);
-
-                if (north && east)
-                    dijkstraMap[column + 1, row - 1] = System.Math.Min(dijkstraMap[column + 1, row - 1], currentWeight + (inputMap[column + 1, row - 1] - inputMap[column, row]) + tileMovementCost);
-
-                if (north && west)
-                    dijkstraMap[column - 1, row - 1] = System.Math.Min(dijkstraMap[column - 1, row - 1], currentWeight + (inputMap[column - 1, row - 1] - inputMap[column, row]) + tileMovementCost);
-
-                if (south && east)
-                    dijkstraMap[column + 1, row + 1] = System.Math.Min(dijkstraMap[column + 1, row + 1], currentWeight + (inputMap[column + 1, row + 1] - inputMap[column, row]) + tileMovementCost);
-
-                if (south && west)
-                    dijkstraMap[column - 1, row + 1] = System.Math.Min(dijkstraMap[column - 1, row + 1], currentWeight + (inputMap[column - 1, row + 1] - inputMap[column, row]) + tileMovementCost);
-
-                // Push cells onto the stack to be iterated
+                //
+                // UPDATE:         Negative gradient "costs" cause problems because they interrupt the
+                //                 accumulated weight. Example: Walk-up-and-then-down a mountain. The
+                //                 other side of the mountain will subtract off the accumulated cost of
+                //                 climbing it.
+                //
+                // SOLUTION:       Hard-limit the low end of the gradient to always ADD to the total value.
+                //
                 if (north && !visitedMap[column, row - 1])
-                    stack.Push(new GridLocation(column, row - 1));
+                    dijkstraMap[column, row - 1] = System.Math.Min(dijkstraMap[column, row - 1], currentWeight + (inputMap[column, row - 1] - inputMap[column, row]).LowLimit(0) + tileMovementCost);
 
                 if (south && !visitedMap[column, row + 1])
-                    stack.Push(new GridLocation(column, row + 1));
+                    dijkstraMap[column, row + 1] = System.Math.Min(dijkstraMap[column, row + 1], currentWeight + (inputMap[column, row + 1] - inputMap[column, row]).LowLimit(0) + tileMovementCost);
 
                 if (east && !visitedMap[column + 1, row])
-                    stack.Push(new GridLocation(column + 1, row));
+                    dijkstraMap[column + 1, row] = System.Math.Min(dijkstraMap[column + 1, row], currentWeight + (inputMap[column + 1, row] - inputMap[column, row]).LowLimit(0) + tileMovementCost);
 
                 if (west && !visitedMap[column - 1, row])
-                    stack.Push(new GridLocation(column - 1, row));
+                    dijkstraMap[column - 1, row] = System.Math.Min(dijkstraMap[column - 1, row], currentWeight + (inputMap[column - 1, row] - inputMap[column, row]).LowLimit(0) + tileMovementCost);
 
                 if (north && east && !visitedMap[column + 1, row - 1])
-                    stack.Push(new GridLocation(column + 1, row - 1));
+                    dijkstraMap[column + 1, row - 1] = System.Math.Min(dijkstraMap[column + 1, row - 1], currentWeight + (inputMap[column + 1, row - 1] - inputMap[column, row]).LowLimit(0) + tileMovementCost);
 
                 if (north && west && !visitedMap[column - 1, row - 1])
-                    stack.Push(new GridLocation(column - 1, row - 1));
+                    dijkstraMap[column - 1, row - 1] = System.Math.Min(dijkstraMap[column - 1, row - 1], currentWeight + (inputMap[column - 1, row - 1] - inputMap[column, row]).LowLimit(0) + tileMovementCost);
 
                 if (south && east && !visitedMap[column + 1, row + 1])
-                    stack.Push(new GridLocation(column + 1, row + 1));
+                    dijkstraMap[column + 1, row + 1] = System.Math.Min(dijkstraMap[column + 1, row + 1], currentWeight + (inputMap[column + 1, row + 1] - inputMap[column, row]).LowLimit(0) + tileMovementCost);
 
                 if (south && west && !visitedMap[column - 1, row + 1])
-                    stack.Push(new GridLocation(column - 1, row + 1));
+                    dijkstraMap[column - 1, row + 1] = System.Math.Min(dijkstraMap[column - 1, row + 1], currentWeight + (inputMap[column - 1, row + 1] - inputMap[column, row]).LowLimit(0) + tileMovementCost);
+
+                var nextLocations = new List<GridLocation>();
+
+                // Gather locations to be queued
+                if (north && !visitedMap[column, row - 1] && !queueMap[column, row - 1])
+                {
+                    nextLocations.Add(new GridLocation(column, row - 1));
+                    queueMap[column, row - 1] = true;
+                }
+
+                if (south && !visitedMap[column, row + 1] && !queueMap[column, row + 1])
+                {
+                    nextLocations.Add(new GridLocation(column, row + 1));
+                    queueMap[column, row + 1] = true;
+                }
+
+                if (east && !visitedMap[column + 1, row] && !queueMap[column + 1, row])
+                {
+                    nextLocations.Add(new GridLocation(column + 1, row));
+                    queueMap[column + 1, row] = true;
+                }
+
+                if (west && !visitedMap[column - 1, row] && !queueMap[column - 1, row])
+                {
+                    nextLocations.Add(new GridLocation(column - 1, row));
+                    queueMap[column - 1, row] = true;
+                }
+
+                if (north && east && !visitedMap[column + 1, row - 1] && !queueMap[column + 1, row - 1])
+                {
+                    nextLocations.Add(new GridLocation(column + 1, row - 1));
+                    queueMap[column + 1, row - 1] = true;
+                }
+
+                if (north && west && !visitedMap[column - 1, row - 1] && !queueMap[column - 1, row - 1])
+                {
+                    nextLocations.Add(new GridLocation(column - 1, row - 1));
+                    queueMap[column - 1, row - 1] = true;
+                }
+
+                if (south && east && !visitedMap[column + 1, row + 1] && !queueMap[column + 1, row + 1])
+                {
+                    nextLocations.Add(new GridLocation(column + 1, row + 1));
+                    queueMap[column + 1, row + 1] = true;
+                }
+
+                if (south && west && !visitedMap[column - 1, row + 1] && !queueMap[column - 1, row + 1])
+                {
+                    nextLocations.Add(new GridLocation(column - 1, row + 1));
+                    queueMap[column - 1, row + 1] = true;
+                }
+
+                if (nextLocations.Count == 0)
+                    continue;
+
+                // (REQUIRED) QUEUE THEM IN ORDER OF LOWEST COST
+                var orderedLocations = nextLocations.OrderBy(x => dijkstraMap[x.Column, x.Row]).ToList();
+
+                var queueIndex = 0;
+                var nextLocationsIndex = 0;
+
+                // **Both the queue and nextLocations are ordered. So, just insert in order
+                //   during iteration.
+                while (nextLocationsIndex < orderedLocations.Count)
+                {
+                    var location = orderedLocations[nextLocationsIndex];
+                    var found = false;
+
+                    for (int k = queueIndex; k < queue.Count && !found; k++)
+                    {
+                        if (dijkstraMap[queue[k].Column, queue[k].Row] > dijkstraMap[location.Column, location.Row])
+                        {
+                            found = true;
+                            queue.Insert(k, location);
+
+                            // Increment the queue index to save time on iteration
+                            queueIndex = k;
+                        }
+                    }
+
+                    // If no insert point found - then just add it to the end
+                    if (!found)
+                        queue.Add(location);
+
+                    nextLocationsIndex++;
+                }
+
+                // NOTE*** TERMINATE LOOP IF DESTINATION IS REACHED
+                //
+                //         This will leave the path well formed - with infinities outside
+                //         of the visited nodes
+                //
+                // UPDATE: TERMINTING THIS EARLY MAY CAUSE MIS-CALCULATION BECAUSE
+                //         MULTIPLE PATHS WILL HAVE DIFFERENT COSTS - SO THE FIRST
+                //         PATH MAY NOT BE THE CHEAPEST.
+                //
+                //if (currentLocation.Equals(endLocation))
+                //    return dijkstraMap;
             }
 
             return dijkstraMap;
+        }
+
+        /// <summary>
+        /// Generates the lowest cost path from start -> end
+        /// </summary>
+        /// <param name="dijkstraMap">2D weight array generated using Dijkstra's Algorithm</param>
+        /// <param name="obeyCardinalMovement">Optional flag for creating corridors - forces use of cardinal movements only</param>
+        /// <returns>Collection of GridLocations that defines a connected path</returns>
+        public static IEnumerable<GridLocation> GeneratePath(this double[,] dijkstraMap, GridLocation startLocation, GridLocation endLocation, bool obeyCardinalMovement)
+        {
+            var result = new List<GridLocation>();
+
+            var currentLocation = endLocation;
+            var goalLocation = startLocation;
+
+            // Find the "easiest" route to the goal
+            while (!currentLocation.Equals(goalLocation))
+            {
+                var column = currentLocation.Column;
+                var row = currentLocation.Row;
+
+                var north = row - 1 >= 0;
+                var south = row + 1 < dijkstraMap.GetLength(1);
+                var east = column + 1 < dijkstraMap.GetLength(0);
+                var west = column - 1 >= 0;
+
+                double lowestWeight = double.MaxValue;
+                GridLocation lowestWeightLocation = currentLocation;
+
+                if (north && (dijkstraMap[column, row - 1] < lowestWeight))
+                {
+                    lowestWeightLocation = new GridLocation(column, row - 1);
+                    lowestWeight = dijkstraMap[column, row - 1];
+                }
+
+                if (south && (dijkstraMap[column, row + 1] < lowestWeight))
+                {
+                    lowestWeightLocation = new GridLocation(column, row + 1);
+                    lowestWeight = dijkstraMap[column, row + 1];
+                }
+
+                if (east && (dijkstraMap[column + 1, row] < lowestWeight))
+                {
+                    lowestWeightLocation = new GridLocation(column + 1, row);
+                    lowestWeight = dijkstraMap[column + 1, row];
+                }
+
+                if (west && (dijkstraMap[column - 1, row] < lowestWeight))
+                {
+                    lowestWeightLocation = new GridLocation(column - 1, row);
+                    lowestWeight = dijkstraMap[column - 1, row];
+                }
+
+                if (north && east && !obeyCardinalMovement && (dijkstraMap[column + 1, row - 1] < lowestWeight))
+                {
+                    lowestWeightLocation = new GridLocation(column + 1, row - 1);
+                    lowestWeight = dijkstraMap[column + 1, row - 1];
+                }
+
+                if (north && west && !obeyCardinalMovement && (dijkstraMap[column - 1, row - 1] < lowestWeight))
+                {
+                    lowestWeightLocation = new GridLocation(column - 1, row - 1);
+                    lowestWeight = dijkstraMap[column - 1, row - 1];
+                }
+
+                if (south && east && !obeyCardinalMovement && (dijkstraMap[column + 1, row + 1] < lowestWeight))
+                {
+                    lowestWeightLocation = new GridLocation(column + 1, row + 1);
+                    lowestWeight = dijkstraMap[column + 1, row + 1];
+                }
+
+                if (south && west && !obeyCardinalMovement && (dijkstraMap[column - 1, row + 1] < lowestWeight))
+                {
+                    lowestWeightLocation = new GridLocation(column - 1, row + 1);
+                    lowestWeight = dijkstraMap[column - 1, row + 1];
+                }
+
+                if (lowestWeight == double.MaxValue)
+                    throw new Exception("Mishandled Dijkstra Map LayoutGenerator.CreateOrganic");
+
+                currentLocation = lowestWeightLocation;
+
+                // Remove Wall from this cell (TODO:TERRAIN REMOVE THIS)
+                if (!result.Any(location => location.Equals(lowestWeightLocation)))
+                    result.Add(lowestWeightLocation);
+
+                else
+                    throw new Exception("Loop in Dijkstra Map path finding");
+                    // return result;
+
+                // For diagonal movements - must also set one of the corresponding cardinal cells to be part of the corridor
+                if (obeyCardinalMovement)
+                    continue;
+
+                // NE
+                if ((lowestWeightLocation.Column == column + 1) && (lowestWeightLocation.Row == row - 1))
+                {
+                    // Select the N or E cell to also add to the path
+                    if (dijkstraMap[column, row - 1] < dijkstraMap[column + 1, row])
+                        result.Add(new GridLocation(column, row - 1));
+
+                    else
+                        result.Add(new GridLocation(column + 1, row));
+                }
+                // NW
+                else if ((lowestWeightLocation.Column == column - 1) && (lowestWeightLocation.Row == row - 1))
+                {
+                    // Select the N or W cell to also add to the path
+                    if (dijkstraMap[column, row - 1] < dijkstraMap[column - 1, row])
+                        result.Add(new GridLocation(column, row - 1));
+
+                    else
+                        result.Add(new GridLocation(column - 1, row));
+                }
+                // SE
+                else if ((lowestWeightLocation.Column == column + 1) && (lowestWeightLocation.Row == row + 1))
+                {
+                    // Select the S or E cell to also add to the path
+                    if (dijkstraMap[column, row + 1] < dijkstraMap[column + 1, row])
+                        result.Add(new GridLocation(column, row + 1));
+
+                    else
+                        result.Add(new GridLocation(column + 1, row));
+                }
+                // SW
+                else if ((lowestWeightLocation.Column == column - 1) && (lowestWeightLocation.Row == row + 1))
+                {
+                    // Select the S or W cell to also add to the path
+                    if (dijkstraMap[column, row + 1] < dijkstraMap[column - 1, row])
+                        result.Add(new GridLocation(column, row + 1));
+
+                    else
+                        result.Add(new GridLocation(column - 1, row));
+                }
+            }
+
+            return result;
+        }
+
+        public static void OutputCSV(this double[,] matrix, string fileName)
+        {
+            var builder = new StringBuilder();
+
+            // Output by row CSV
+            for (int j=0;j<matrix.GetLength(1);j++)
+            {
+                for (int i = 0; i < matrix.GetLength(0); i++)
+                    builder.Append(matrix[i, j] + ", ");
+
+                // Remove trailing comma
+                builder.Remove(builder.Length - 1, 1);
+
+                // Append return carriage
+                builder.Append("\r\n");
+            }
+
+            File.WriteAllText(fileName, builder.ToString());
         }
     }
 }

@@ -122,13 +122,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
             var edgeCells = new List<GridLocation>();
             var regionBounds = new RegionBoundary(testLocation, 1, 1);
 
-            // Use stack to know what cells have been verified. Starting with test cell - continue 
+            // Use queue to know what cells have been verified. Starting with test cell - continue 
             // until all connected cells have been added to the resulting region.
-            var resultStack = new Stack<Cell>(bounds.CellWidth * bounds.CellHeight);
+            var resultQueue = new Queue<Cell>(bounds.CellWidth * bounds.CellHeight);
 
             // Process the first cell
             var testCell = grid[testLocation.Column, testLocation.Row];
-            resultStack.Push(testCell);
+            resultQueue.Enqueue(testCell);
             regionCells.Add(testCell.Location);
             regionGrid[testLocation.Column, testLocation.Row] = testCell;
 
@@ -136,9 +136,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
             if (GridUtility.IsEdgeCell(grid, testCell.Location.Column, testCell.Location.Row))
                 edgeCells.Add(testCell.Location);
 
-            while (resultStack.Count > 0)
+            while (resultQueue.Count > 0)
             {
-                var regionCell = resultStack.Pop();
+                var regionCell = resultQueue.Dequeue();
 
                 // Search cardinally adjacent cells (N,S,E,W)
                 foreach (var cell in grid.GetCardinalAdjacentElements(regionCell.Location.Column, regionCell.Location.Row))
@@ -147,7 +147,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                     if (GridUtility.IsAdjacentCellConnected(grid, regionCell.Location, cell.Location) &&
                         regionGrid[cell.Location.Column, cell.Location.Row] == null)
                     {
-                        // Add cell to region immediately to prevent extra cells on stack
+                        // Add cell to region immediately to prevent extra cells on queue
                         regionGrid[cell.Location.Column, cell.Location.Row] = cell;
 
                         // Add cell also to region data
@@ -160,8 +160,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                         // Re-calculate boundary
                         regionBounds.Expand(cell.Location);
 
-                        // Push cell onto the stack to be iterated
-                        resultStack.Push(cell);
+                        // Push cell onto the queue to be iterated
+                        resultQueue.Enqueue(cell);
                     }
                 }
             }

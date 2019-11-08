@@ -3142,6 +3142,9 @@ IMMEDIATE TODO'S:
 			   
 			   Interested to see how that might look when connecting rectangular regions; but with Perlin Noise generated 
 			   with the same room mesh.
+			   
+		UPDATE: Liked the "battered old dungeon" look of the rectangular layout with "bites" taken out of it - like holes in the
+				floor; but created by some noisy terrain.
 		  
 	MOVING OBSTACLES:
 	
