@@ -32,6 +32,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         ObservableCollection<AlteredCharacterStateTemplateViewModel> _alteredCharacterStates;
         ObservableCollection<SymbolPoolItemTemplateViewModel> _symbolPool;
         ObservableCollection<AlterationCategoryTemplateViewModel> _alterationCategories;
+        ObservableCollection<TerrainLayerTemplateViewModel> _terrainLayers;
 
         public ScenarioDesignTemplateViewModel ScenarioDesign
         {
@@ -100,6 +101,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             get { return _alterationCategories; }
             set { this.RaiseAndSetIfChanged(ref _alterationCategories, value); }
         }
+        public ObservableCollection<TerrainLayerTemplateViewModel> TerrainLayers
+        {
+            get { return _terrainLayers; }
+            set { this.RaiseAndSetIfChanged(ref _terrainLayers, value); }
+        }
 
         public ScenarioConfigurationContainerViewModel()
         {
@@ -118,6 +124,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             this.AlteredCharacterStates = new ObservableCollection<AlteredCharacterStateTemplateViewModel>();
             this.SymbolPool = new ObservableCollection<SymbolPoolItemTemplateViewModel>();
             this.AlterationCategories = new ObservableCollection<AlterationCategoryTemplateViewModel>();
+            this.TerrainLayers = new ObservableCollection<TerrainLayerTemplateViewModel>();
         }
 
         public event PropertyChangingEventHandler PropertyChanging;

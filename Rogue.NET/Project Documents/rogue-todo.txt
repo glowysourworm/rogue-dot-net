@@ -3017,6 +3017,7 @@ IMMEDIATE TODO'S:
 			- Region Connection Type { Cooridors, CooriorsWithDoors, Teleporters }
 			- Region Connection Ratio (Ratio of total Delaunay Triangulation - [0, 1] -> [MST, FULL DELAUNAY])
 			- Region Lighting Type { Full, White Noise, Perline Noise, Wall Lighting, None }
+			- Region Lighting Color (OPTIONAL) - Functions to color any symbol using a color filter
 			- Region Wall Lighting Frequency (Either in cells-along-the-wall or noise frequency)
 			- Region Size ( Width, Height )
 			- Region Padding ( Required for Irregular container type AND room "spread" )
@@ -3037,6 +3038,12 @@ IMMEDIATE TODO'S:
 					- ...
 					
 				(ALSO WILL NEED SYMBOLS FOR TERRAIN ANIMATION)
+				
+			IDEA:
+				
+				- Emits Light
+				- Emitted Light Intensity (number of cells)
+				- Emitted Light Color
 				
 		So, additional parameters are probably set inside the layout:
 		

@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Linq;
 using System;
 using Rogue.NET.Common.Extension;
+using System.ComponentModel;
 
 namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 {
@@ -39,6 +40,20 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             result.B = System.Convert.ToByte(System.Math.Min((color1.B + color2.B) / 2.0D, 255));
 
             return result.ToString();
+        }
+        
+        public static Color AddUsingAlphaChannels(Color front, Color back)
+        {
+            // https://stackoverflow.com/questions/726549/algorithm-for-additive-color-mixing-for-rgb-values
+            // http://blog.johnnovak.net/2016/09/21/what-every-coder-should-know-about-gamma/#fn:osgamma
+
+            //same as Markus Jarderot's answer
+            var alpha = (0xFF - (0xFF - back.A) * (0xFF - front.A));
+            var red = ((front.R * front.A) + ((back.R * back.A) * (0xFF - front.A))) / (double)alpha;
+            var green = ((front.G * front.A) + ((back.G * back.A) * (0xFF - front.A))) / (double)alpha;
+            var blue = ((front.B * front.A) + ((back.B * back.A) * (0xFF - front.A))) / (double)alpha;
+
+            return Color.FromArgb((byte)alpha, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
         }
         public static IEnumerable<ColorViewModel> CreateColors()
         {

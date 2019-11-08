@@ -220,6 +220,8 @@
     <Compile Include="Math\Geometry\GraphEdge.cs" />
     <Compile Include="Math\Geometry\Vector.cs" />
     <Compile Include="Math\Geometry\Vertex.cs" />
+    <Compile Include="Model\Enums\Layout.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerTemplate.cs" />
     <Compile Include="Model\Scenario\Content\Layout\GridCellInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\RegionMap.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Connector\CorridorLayoutRegionConnector.cs" />

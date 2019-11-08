@@ -27,6 +27,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<AlteredCharacterStateTemplate> AlteredCharacterStates { get; set; }
         public List<SymbolPoolItemTemplate> SymbolPool { get; set; }
         public List<AlterationCategoryTemplate> AlterationCategories { get; set; }
+        public List<TerrainLayerTemplate> TerrainLayers { get; set; }
 
         public ScenarioConfigurationContainer()
         {
@@ -45,6 +46,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.AlteredCharacterStates = new List<AlteredCharacterStateTemplate>();
             this.SymbolPool = new List<SymbolPoolItemTemplate>();
             this.AlterationCategories = new List<AlterationCategoryTemplate>();
+            this.TerrainLayers = new List<TerrainLayerTemplate>();
         }
     }
 }
