@@ -1,5 +1,7 @@
 ﻿using Rogue.NET.Core.Converter.Model.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
+using Rogue.NET.ScenarioEditor.Views.Controls.Symbol;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -72,6 +74,28 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
                 _viewModel.RandomRoomSpread,
                 (int)e.NewValue
             }, null, null, null);
+        }
+
+        private void EditWallSymbolButton_Click(object sender, RoutedEventArgs e)
+        {
+            var view = new SymbolEditor();
+            view.DataContext = (this.DataContext as LayoutTemplateViewModel).WallSymbol;
+            view.WindowMode = true;
+            view.AllowSymbolRandomization = false;
+            view.Width = 600;
+
+            DialogWindowFactory.Show(view, "Rogue Symbol Editor");
+        }
+
+        private void EditDoorSymbolButton_Click(object sender, RoutedEventArgs e)
+        {
+            var view = new SymbolEditor();
+            view.DataContext = (this.DataContext as LayoutTemplateViewModel).DoorSymbol;
+            view.WindowMode = true;
+            view.AllowSymbolRandomization = false;
+            view.Width = 600;
+
+            DialogWindowFactory.Show(view, "Rogue Symbol Editor");
         }
     }
 }

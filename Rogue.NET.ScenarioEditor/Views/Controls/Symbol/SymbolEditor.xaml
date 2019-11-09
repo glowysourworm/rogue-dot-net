@@ -97,6 +97,7 @@
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                         <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.Symbol}" />
                         <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.OrientedSymbol}" />
+                        <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.Terrain}" />
                     </MultiBinding>
                 </GroupBox.Visibility>
                 <Grid Margin="10">

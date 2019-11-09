@@ -159,7 +159,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // Parse the names like the folder structure
             //
             var folder = type == SymbolType.Symbol ? SVG_FOLDER_SCENARIO_SYMBOL :
-                         type == SymbolType.OrientedSymbol ? SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL : SVG_FOLDER_GAME;
+                         type == SymbolType.OrientedSymbol ? SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL :
+                         type == SymbolType.Terrain ? SVG_FOLDER_SCENARIO_TERRAIN : SVG_FOLDER_GAME;
 
             var path = string.Join(".", SVG_PATH_PREFIX, folder);
 

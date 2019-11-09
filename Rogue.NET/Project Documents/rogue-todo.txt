@@ -3221,5 +3221,6 @@ IMMEDIATE TODO'S:
 		want to know how difficult the template is: Difficulty { Easy, Medium, Hard, Brutal }
 		
 		Also, want to have asset templates too - most things would have an Easy, Medium, Hard, Brutal template.
+		
 				
 			  

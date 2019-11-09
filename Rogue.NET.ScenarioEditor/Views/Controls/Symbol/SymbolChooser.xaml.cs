@@ -142,7 +142,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 }
                 else // Terrain Symbol
                 {
-                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateOrientedSymbol(symbol, symbol, 0, 0, 0, false), 2.0);
+                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateTerrainSymbol(symbol, symbol, 0, 0, 0, false), 2.0);
 
                     // Input color mask indicator only. The HSL parameters are based at zero because they're effects
                     return SvgSymbolViewModel.CreateTerrainSymbol(imageSource, symbol, 0, 0, 0, false);
@@ -243,6 +243,19 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
                         result.Add(SvgSymbolViewModel.CreateOrientedSymbol(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
                         result.Add(SvgSymbolViewModel.CreateOrientedSymbol(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));
+                    }
+                    break;
+                case SymbolType.Terrain:
+                    {
+                        // Light / Dark
+                        var lightImage = ScenarioImage.CreateTerrainSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask);
+                        var darkImage = ScenarioImage.CreateTerrainSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, -1, 0.0, useColorMask);
+
+                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0);
+                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0);
+
+                        result.Add(SvgSymbolViewModel.CreateTerrainSymbol(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
+                        result.Add(SvgSymbolViewModel.CreateTerrainSymbol(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));
                     }
                     break;
             }

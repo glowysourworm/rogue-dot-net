@@ -20,6 +20,8 @@ namespace Rogue.NET.Core.Model.Scenario
     [Serializable]
     public class Level
     {
+        // TODO:TERRAIN - FIND A WAY TO PREVENT SERIALIZING THESE PROPERTIES
+
         /// <summary>
         /// Level branch that was used to generate this level - TODO:TERRAIN REDESIGN
         /// </summary>

@@ -95,9 +95,9 @@ namespace Rogue.NET.Scenario.Processing.Service
                 // Walls - Add default wall to layers { Visible, Explored, Revealed } for rendering
                 else if (cell.IsWall)
                 {
-                    visibleDrawing.Children.Add(new GeometryDrawing(visibleWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    exploredDrawing.Children.Add(new GeometryDrawing(exploredWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    revealedDrawing.Children.Add(new GeometryDrawing(revealedWallCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    visibleDrawing.Children.Add(new ImageDrawing(_scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0), rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(_scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0), rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(_scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0), rect));
                 }
 
                 // Room Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering

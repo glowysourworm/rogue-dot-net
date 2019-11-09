@@ -7,6 +7,7 @@
              xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              mc:Ignorable="d" Background="Black"             
              FontSize="14"  d:DesignWidth="550">
     <UserControl.Resources>
@@ -191,11 +192,11 @@
                                                 Width="150" HorizontalAlignment="Right"  />
                     </Grid>
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Wall Color" />
-                        <controls:ColorComboBox SelectedValue="{Binding WallColor}"
-                                                SelectedValuePath="ColorString"
-                                                HorizontalAlignment="Right"
-                                                Width="200" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Wall Symbol" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <symbol:SymbolPreviewControl DataContext="{Binding WallSymbol}" />
+                            <Button x:Name="EditWallSymbolButton" Click="EditWallSymbolButton_Click" Content="Edit Symbol" Padding="6" FontSize="18" Margin="8,0,0,0" />
+                        </StackPanel>
                     </Grid>                    
                 </StackPanel>
             </GroupBox>
@@ -218,11 +219,11 @@
                                                 Width="150" HorizontalAlignment="Right"  />
                     </Grid>
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Door Color" />
-                        <controls:ColorComboBox SelectedValue="{Binding DoorColor}"
-                                                SelectedValuePath="ColorString"
-                                                HorizontalAlignment="Right"
-                                                Width="200" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Door Symbol" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <symbol:SymbolPreviewControl DataContext="{Binding DoorSymbol}" />
+                            <Button x:Name="EditDoorSymbolButton" Click="EditDoorSymbolButton_Click" Content="Edit Symbol" Padding="6" FontSize="18" Margin="8,0,0,0" />
+                        </StackPanel>
                     </Grid>                    
                 </StackPanel>
             </GroupBox>
