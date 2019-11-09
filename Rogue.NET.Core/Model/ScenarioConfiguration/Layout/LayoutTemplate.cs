@@ -30,8 +30,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private LayoutConnectionGeometryType _connectionGeometryType;
         private LayoutCorridorGeometryType _corridorGeometryType;
         private Range<int> _levelRange;
-        private string _wallColor;
-        private string _doorColor;
         private SymbolDetailsTemplate _wallSymbol;
         private SymbolDetailsTemplate _doorSymbol;
 
@@ -300,30 +298,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public string WallColor
-        {
-            get { return _wallColor; }
-            set
-            {
-                if (_wallColor != value)
-                {
-                    _wallColor = value;
-                    OnPropertyChanged("WallColor");
-                }
-            }
-        }
-        public string DoorColor
-        {
-            get { return _doorColor; }
-            set
-            {
-                if (_doorColor != value)
-                {
-                    _doorColor = value;
-                    OnPropertyChanged("DoorColor");
-                }
-            }
-        }
         public SymbolDetailsTemplate WallSymbol
         {
             get { return _wallSymbol; }
@@ -362,9 +336,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.NumberExtraWallRemovals = 200;
             this.HiddenDoorProbability = 0.2;
             this.GenerationRate = 0.5;
-
-            this.WallColor = Colors.Blue.ToString();
-            this.DoorColor = Colors.Fuchsia.ToString();
 
             this.WallSymbol = new SymbolDetailsTemplate();
             this.DoorSymbol = new SymbolDetailsTemplate();

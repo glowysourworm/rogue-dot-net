@@ -88,11 +88,6 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         string GetScenarioDescription();
 
         /// <summary>
-        /// Returns template used to create the level (branch) - contains asset template references
-        /// </summary>
-        LevelBranchTemplate GetLevelBranch();
-
-        /// <summary>
         /// Returns number of levels in the scenario
         /// </summary>
         int GetNumberOfLevels();

@@ -85,12 +85,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                              .Select(x => x.LevelBranch)
                                              .Actualize();
 
-            // Select layouts for each branch
-            var levelLayouts = levelBranches.Select(x => _randomSequenceGenerator.GetWeightedRandom(x.Layouts, z => z.GenerationWeight))
-                                            .Actualize();
+            // *** Generate Layouts:  Select layouts for each branch -> Create Level instances
+            var levels = levelBranches.Select((branch, index) =>
+            {
+                // Get weighted random layout template 
+                var layoutTemplate = _randomSequenceGenerator.GetWeightedRandom(branch.Layouts, template => template.GenerationWeight);
 
-            // *** Generate Layouts
-            var levels = _layoutGenerator.CreateLayouts(levelBranches.Select(x => x.Name), levelLayouts);
+                // Generate the level grid
+                var levelGrid = _layoutGenerator.CreateLayout(layoutTemplate.Asset);
+
+                // Return a new level object
+                return new Level(branch, layoutTemplate, levelGrid, index + 1);
+            }).Actualize();
+
+            var levelLayouts = levels.Select(level => level.Layout);
 
             // Create dictionary of Level -> LayoutTemplate
             var layoutDictionary = levels.Zip(levelLayouts, (level, layout) => new { Level = level, Layout = layout })

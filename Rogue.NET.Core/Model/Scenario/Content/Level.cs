@@ -12,6 +12,8 @@ using System.Collections.Generic;
 
 using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.Character;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 
 namespace Rogue.NET.Core.Model.Scenario
 {
@@ -19,12 +21,19 @@ namespace Rogue.NET.Core.Model.Scenario
     public class Level
     {
         /// <summary>
-        /// Name of the level branch that was used to generate this level
+        /// Level branch that was used to generate this level - TODO:TERRAIN REDESIGN
         /// </summary>
-        public string LevelBranchName { get; protected set; }
+        public LevelBranchTemplate LevelBranch { get; protected set; }
+
+        /// <summary>
+        /// Layout template that was used to generate this level - TODO:TERRAIN REDESIGN
+        /// </summary>
+        public LayoutGenerationTemplate Layout { get; protected set; }
+
+        /// <summary>
+        /// Primary layout container
+        /// </summary>
         public LevelGrid Grid { get; protected set; }
-        public LayoutType Type { get; protected set; }
-        public LayoutConnectionType ConnectionType { get; protected set; }
 
         public int Number { get; protected set; }
         public bool HasStairsUp { get { return this.StairsUp != null; } }
@@ -34,9 +43,6 @@ namespace Rogue.NET.Core.Model.Scenario
         public DoodadNormal StairsUp { get; protected set; }
         public DoodadNormal StairsDown { get; protected set; }
         public DoodadNormal SavePoint { get; protected set; }
-
-        public string WallColor { get; protected set; }
-        public string DoorColor { get; protected set; }
 
         IList<NonPlayerCharacter> _nonPlayerCharacters;
         IList<Equipment> _equipment;
@@ -83,40 +89,28 @@ namespace Rogue.NET.Core.Model.Scenario
             protected set { _doodadNormals = new List<DoodadNormal>(value); }
         }
 
-        public Level(string levelBranchName,
+        public Level(LevelBranchTemplate levelBranch,
+                     LayoutGenerationTemplate layout,
                      LevelGrid grid,
-                     LayoutType layoutType,
-                     LayoutConnectionType layoutConnectionType,
-                     int number,
-                     string wallColor,
-                     string doorColor)
+                     int number)
         {
-            Initialize(levelBranchName, 
+            Initialize(levelBranch, 
+                       layout,
                        grid, 
-                       layoutType, 
-                       layoutConnectionType, 
-                       number, 
-                       wallColor, 
-                       doorColor);
+                       number);
         }
 
         private void Initialize(
-                     string levelBranchName,
+                     LevelBranchTemplate levelBranch,
+                     LayoutGenerationTemplate layout,
                      LevelGrid grid,
-                     LayoutType layoutType,
-                     LayoutConnectionType layoutConnectionType,
-                     int number,
-                     string wallColor,
-                     string doorColor)
+                     int number)
         {
-            this.LevelBranchName = levelBranchName;
+            this.LevelBranch = levelBranch;
+            this.Layout = layout;
 
-            this.Type = layoutType;
-            this.ConnectionType = layoutConnectionType;
             this.Grid = grid;
             this.Number = number;
-            this.WallColor = wallColor;
-            this.DoorColor = doorColor;
 
             this.StairsDown = null;
             this.StairsUp = null;

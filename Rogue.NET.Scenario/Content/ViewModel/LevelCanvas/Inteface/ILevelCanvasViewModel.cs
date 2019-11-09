@@ -64,7 +64,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
         int LevelWidth { get; set; }
         int LevelHeight { get; set; }
 
-        void UpdateLayout(RegionBoundary levelBounds, Color wallColor, Color doorColor);
+        void UpdateLayout(RegionBoundary boundary);
         void UpdateContent(IEnumerable<ScenarioObject> contents, Player player);
         void UpdateLayoutVisibility(IEnumerable<GridLocation> exploredLocations,
                                     IEnumerable<GridLocation> visibleLocations,

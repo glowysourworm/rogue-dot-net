@@ -150,16 +150,6 @@ namespace Rogue.NET.Core.Processing.Service
 
         public ScenarioEncyclopedia ScenarioEncyclopedia { get; private set; }
 
-        public LevelBranchTemplate GetLevelBranch()
-        {
-            // TODO: Change this to use Guid to identify branch
-            return _configuration.ScenarioDesign
-                                 .LevelDesigns
-                                 .SelectMany(x => x.LevelBranches)
-                                 .First(x => x.LevelBranch.Name == this.Level.LevelBranchName)
-                                 .LevelBranch;
-        }
-
         public void GetPlayerAdvancementParameters(ref double hpPerPoint, ref double staminaPerPoint,
                                                    ref double strengthPerPoint, ref double agilityPerPoint,
                                                    ref double intelligencePerPoint, ref int skillPointsPerPoint)

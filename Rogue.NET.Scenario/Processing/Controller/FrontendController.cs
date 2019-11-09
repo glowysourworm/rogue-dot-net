@@ -217,9 +217,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
         }
         private void OnUpdateLayout()
         {
-            _levelCanvasViewModel.UpdateLayout(_modelService.Level.Grid.Bounds,
-                                   ColorFilter.Convert(_modelService.Level.WallColor),
-                                   ColorFilter.Convert(_modelService.Level.DoorColor));
+            _levelCanvasViewModel.UpdateLayout(_modelService.Level.Grid.Bounds);
         }
         private void OnUpdateLayoutVisibility()
         {

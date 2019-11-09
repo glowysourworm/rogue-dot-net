@@ -176,35 +176,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// <summary>
         /// Draws entire layout and applies visibility
         /// </summary>
-        public void UpdateLayout(RegionBoundary levelBounds, Color wallColor, Color doorColor)
+        public void UpdateLayout(RegionBoundary boundary)
         {
-            var bounds = _scenarioUIGeometryService.Cell2UIRect(levelBounds);
+            var bounds = _scenarioUIGeometryService.Cell2UIRect(boundary);
 
             this.LevelWidth = (int)bounds.Width;
             this.LevelHeight = (int)bounds.Height;
-
-            Geometry revealedGeometry = null;
-
-            //this.WallLayout.Data = _scenarioUIService.CreateWallLayout(out revealedGeometry);
-            //this.WallLayout.Fill = Brushes.Black;
-            //this.WallLayout.Stroke = new SolidColorBrush(wallColor);
-            //this.WallLayout.StrokeEndLineCap = PenLineCap.Square;
-            //this.WallLayout.StrokeStartLineCap = PenLineCap.Square;
-            //this.WallLayout.StrokeLineJoin = PenLineJoin.Miter;
-            //this.WallLayout.StrokeThickness = 2;
-
-            //this.DoorLayout.Data = _scenarioUIService.CreateDoorLayout();
-            //this.DoorLayout.Fill = Brushes.Transparent;
-            //this.DoorLayout.Stroke = new SolidColorBrush(doorColor);
-            //this.DoorLayout.StrokeThickness = 3;
-
-            //this.RevealedLayout.Data = revealedGeometry;
-            //this.RevealedLayout.Fill = Brushes.Transparent;
-            //this.RevealedLayout.Stroke = Brushes.White;
-            //this.RevealedLayout.StrokeEndLineCap = PenLineCap.Square;
-            //this.RevealedLayout.StrokeStartLineCap = PenLineCap.Square;
-            //this.RevealedLayout.StrokeLineJoin = PenLineJoin.Miter;
-            //this.RevealedLayout.StrokeThickness = 2;
 
             // Set DrawingBrush.Drawing = DrawingGroup. Each Drawing in DrawingGroup will be a terrain tile.
             //

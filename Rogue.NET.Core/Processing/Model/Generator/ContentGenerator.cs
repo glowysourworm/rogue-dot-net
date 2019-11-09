@@ -96,14 +96,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             level.AddStairsUp(stairsUp);
 
             // Add teleporter level content - (MAPPED)
-            if ((level.Type == LayoutType.ConnectedRectangularRooms ||
-                 level.Type == LayoutType.ConnectedCellularAutomata) &&
-                level.ConnectionType == LayoutConnectionType.Teleporter)
+            if ((level.Layout.Asset.Type == LayoutType.ConnectedRectangularRooms ||
+                 level.Layout.Asset.Type == LayoutType.ConnectedCellularAutomata) &&
+                level.Layout.Asset.ConnectionType == LayoutConnectionType.Teleporter)
                 AddTeleporterLevelContent(level, freeCells, freeRoomCells);
 
-            if ((level.Type == LayoutType.ConnectedRectangularRooms ||
-                 level.Type == LayoutType.ConnectedCellularAutomata) &&
-                level.ConnectionType == LayoutConnectionType.TeleporterRandom)
+            if ((level.Layout.Asset.Type == LayoutType.ConnectedRectangularRooms ||
+                 level.Layout.Asset.Type == LayoutType.ConnectedCellularAutomata) &&
+                level.Layout.Asset.ConnectionType == LayoutConnectionType.TeleporterRandom)
                 AddTeleportRandomLevelContent(level, freeCells, freeRoomCells);
 
             // Every level has a save point if not in survivor mode - (MAPPED)

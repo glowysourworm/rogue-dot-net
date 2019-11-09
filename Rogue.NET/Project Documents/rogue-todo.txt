@@ -3198,4 +3198,28 @@ IMMEDIATE TODO'S:
 		
 		Example: Edge of Lava "Would you like to enter the lava" (Y/N)
 		
+	NAME IDEA:  "Rogue Creations"
+	
+	******EDITOR IDEA:  
+	
+		HAVE A SCENARIO TEMPLATE "TYPE" LIKE { Basic, "Normal" (With a different word), Everything (maybe a different word) }
+		
+			- Basic: Would be really simple functions exposed to the user. 
+			
+				- Single Branch Only
+				- Maybe just a single character template - all done with presets
+				- Preset Enemy assets - maybe with collapsed range parameters, default behaviors, something like that
+				- Preset layouts - most parameters hidden, etc...
+				
+				(Hides most parameters)
+				
+			- Normal:  Adds more options, opens up more parameter settings
+			
+			- Everything:  All features, level branches, etc...
+			
+		So, probably add a scenario "Type" that functions to turn this on / off. Definitely want a starter template for each kind.. Maybe
+		want to know how difficult the template is: Difficulty { Easy, Medium, Hard, Brutal }
+		
+		Also, want to have asset templates too - most things would have an Easy, Medium, Hard, Brutal template.
+				
 			  
