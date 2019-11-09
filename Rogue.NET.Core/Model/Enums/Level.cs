@@ -89,56 +89,6 @@ namespace Rogue.NET.Core.Model.Enums
         /// </summary>
         ProcessTurn,
     }
-    public enum LayoutType : int
-    {
-        // (DON'T RENUMBER) Numbers prevent loss of data - so enums can be refactored
-        Maze = 1,
-        ConnectedRectangularRooms = 7,
-        ConnectedCellularAutomata = 8      
-    }
-    public enum LayoutCellularAutomataType : int
-    {
-        Open = 0,
-        Filled = 1
-    }
-    public enum LayoutConnectionType : int
-    {
-        Corridor = 0,
-        CorridorWithDoors = 1,
-        Teleporter = 2,
-        TeleporterRandom = 3
-    }
-    public enum LayoutConnectionGeometryType : int
-    {
-        /// <summary>
-        /// Available for RectangularGrid room placement type
-        /// </summary>
-        Rectilinear = 0,
-
-        /// <summary>
-        /// Uses Minimum Spanning Tree algorithm to generate room connections
-        /// </summary>
-        MinimumSpanningTree = 1
-    }
-    public enum LayoutCorridorGeometryType : int
-    {
-        /// <summary>
-        /// Straight line connecting cells from two rooms
-        /// </summary>
-        Linear = 0,
-    }
-    public enum LayoutRoomPlacementType : int
-    {
-        /// <summary>
-        /// Rectangular grid of rooms
-        /// </summary>
-        RectangularGrid = 0,
-
-        /// <summary>
-        /// Random placement of rectangular rooms
-        /// </summary>
-        Random = 1
-    }
     public enum DoodadType
     {
         Normal,

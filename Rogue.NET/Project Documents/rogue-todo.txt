@@ -3223,4 +3223,7 @@ IMMEDIATE TODO'S:
 		Also, want to have asset templates too - most things would have an Easy, Medium, Hard, Brutal template.
 		
 				
-			  
+	TERRAIN / OBJECT RENDERING:
+	
+		Need to create an accompanying symbol for the cell symbol AND any terrain symbol. This is for enemies and objects rendered on top
+		of these tiles. Otherwise, the background is transparent.

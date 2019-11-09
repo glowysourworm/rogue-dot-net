@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-
+using System.Windows.Media;
 using LayoutViewType = Rogue.NET.ScenarioEditor.Views.Assets.Layout;
 
 
@@ -39,6 +39,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private SymbolDetailsTemplateViewModel _wallSymbol;
         private SymbolDetailsTemplateViewModel _doorSymbol;
         private SymbolDetailsTemplateViewModel _cellSymbol;
+        private TerrainLightingType _lightingType;
+        private double _lightingRatio;
+        private double _lightingIntensity;
+        private string _lightingColor;
 
         public int Width
         {
@@ -165,6 +169,26 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _cellSymbol; }
             set { this.RaiseAndSetIfChanged(ref _cellSymbol, value); }
         }
+        public TerrainLightingType LightingType
+        {
+            get { return _lightingType; }
+            set { this.RaiseAndSetIfChanged(ref _lightingType, value); }
+        }
+        public double LightingRatio
+        {
+            get { return _lightingRatio; }
+            set { this.RaiseAndSetIfChanged(ref _lightingRatio, value); }
+        }
+        public double LightingIntensity
+        {
+            get { return _lightingIntensity; }
+            set { this.RaiseAndSetIfChanged(ref _lightingIntensity, value); }
+        }
+        public string LightingColor
+        {
+            get { return _lightingColor; }
+            set { this.RaiseAndSetIfChanged(ref _lightingColor, value); }
+        }
 
         public LayoutTemplateViewModel() : base()
         {
@@ -186,6 +210,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.WallSymbol = new SymbolDetailsTemplateViewModel();
             this.DoorSymbol = new SymbolDetailsTemplateViewModel();
             this.CellSymbol = new SymbolDetailsTemplateViewModel();
+
+            this.LightingType = TerrainLightingType.LightedRooms | TerrainLightingType.PerlinNoise;
+            this.LightingRatio = 0.5;
+            this.LightingColor = Colors.White.ToString();
+            this.LightingIntensity = 1;
         }
     }
 }

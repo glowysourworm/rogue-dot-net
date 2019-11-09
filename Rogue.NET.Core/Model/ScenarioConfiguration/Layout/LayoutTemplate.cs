@@ -33,7 +33,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private SymbolDetailsTemplate _wallSymbol;
         private SymbolDetailsTemplate _doorSymbol;
         private SymbolDetailsTemplate _cellSymbol;
-
+        private TerrainLightingType _lightingType;
+        private double _lightingRatio;
+        private double _lightingIntensity;
+        private string _lightingColor;
 
         public int Width
         {
@@ -335,6 +338,55 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        public TerrainLightingType LightingType
+        {
+            get { return _lightingType; }
+            set
+            {
+                if (_lightingType != value)
+                {
+                    _lightingType = value;
+                    OnPropertyChanged("LightingType");
+                }
+            }
+        }
+        public double LightingRatio
+        {
+            get { return _lightingRatio; }
+            set
+            {
+                if (_lightingRatio != value)
+                {
+                    _lightingRatio = value;
+                    OnPropertyChanged("LightingRatio");
+                }
+            }
+        }
+        public double LightingIntensity
+        {
+            get { return _lightingIntensity; }
+            set
+            {
+                if (_lightingIntensity != value)
+                {
+                    _lightingIntensity = value;
+                    OnPropertyChanged("LightingIntensity");
+                }
+            }
+        }
+        public string LightingColor
+        {
+            get { return _lightingColor; }
+            set
+            {
+                if (_lightingColor != value)
+                {
+                    _lightingColor = value;
+                    OnPropertyChanged("LightingColor");
+                }
+            }
+        }
+
 
         public LayoutTemplate() : base()
         {
@@ -353,28 +405,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.WallSymbol = new SymbolDetailsTemplate();
             this.DoorSymbol = new SymbolDetailsTemplate();
             this.CellSymbol = new SymbolDetailsTemplate();
-        }
 
-        /// <summary>
-        /// Calculates a simulated number of steps that the player will use to traverse the layout
-        /// </summary>
-        public int GetPathLength()
-        {
-            switch (this.Type)
-            {
-                default:
-                    throw new Exception("Unknown Layout Type - LayoutTemplate.GetPathLength");
-
-                case LayoutType.Maze:
-                case LayoutType.ConnectedCellularAutomata:
-                    // Measure = Made up :) 
-                    return 4 * this.Width * this.Height;
-
-                case LayoutType.ConnectedRectangularRooms:
-                    // Measure  = # of traversals * length of traversal for
-                    //            a single pass only * 1;
-                    return this.Width * this.Height * 1;
-            }
+            this.LightingType = TerrainLightingType.LightedRooms | TerrainLightingType.PerlinNoise;
+            this.LightingRatio = 0.5;
+            this.LightingColor = Colors.White.ToString();
+            this.LightingIntensity = 1;
         }
     }
 }

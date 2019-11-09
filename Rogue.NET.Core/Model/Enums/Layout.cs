@@ -7,6 +7,56 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Enums
 {
+    public enum LayoutType : int
+    {
+        // (DON'T RENUMBER) Numbers prevent loss of data - so enums can be refactored
+        Maze = 1,
+        ConnectedRectangularRooms = 7,
+        ConnectedCellularAutomata = 8
+    }
+    public enum LayoutCellularAutomataType : int
+    {
+        Open = 0,
+        Filled = 1
+    }
+    public enum LayoutConnectionType : int
+    {
+        Corridor = 0,
+        CorridorWithDoors = 1,
+        Teleporter = 2,
+        TeleporterRandom = 3
+    }
+    public enum LayoutConnectionGeometryType : int
+    {
+        /// <summary>
+        /// Available for RectangularGrid room placement type
+        /// </summary>
+        Rectilinear = 0,
+
+        /// <summary>
+        /// Uses Minimum Spanning Tree algorithm to generate room connections
+        /// </summary>
+        MinimumSpanningTree = 1
+    }
+    public enum LayoutCorridorGeometryType : int
+    {
+        /// <summary>
+        /// Straight line connecting cells from two rooms
+        /// </summary>
+        Linear = 0,
+    }
+    public enum LayoutRoomPlacementType : int
+    {
+        /// <summary>
+        /// Rectangular grid of rooms
+        /// </summary>
+        RectangularGrid = 0,
+
+        /// <summary>
+        /// Random placement of rectangular rooms
+        /// </summary>
+        Random = 1
+    }
     public enum TerrainType
     {
         [Display(Name = "Aesthetic",
@@ -26,5 +76,28 @@ namespace Rogue.NET.Core.Model.Enums
         [Display(Name = "Combined",
                  Description = "Terrain layer can be placed on top of - or underneath - other terrain layers")]
         Combined = 1
+    }
+    [Flags]
+    public enum TerrainLightingType
+    {
+        [Display(Name = "No Lighting",
+                 Description = "No lighting generated for this layout")]
+        None = 0,
+
+        [Display(Name = "Lighted Rooms",
+                 Description = "Generates fully lit rooms with the specified parameters")]
+        LightedRooms = 1,
+
+        [Display(Name = "Large Natural Lighting",
+                 Description = "Natural lighting generated using random features similar to your layout")]
+        PerlinNoise = 2,
+
+        [Display(Name = "Speckeled Natural Lighting",
+                 Description = "Natural lighting generated using white noise")]
+        WhiteNoise = 4,
+
+        [Display(Name = "Torch Lighting",
+                 Description = "Point source lights emanating from random wall tiles")]
+        Torch = 8
     }
 }
