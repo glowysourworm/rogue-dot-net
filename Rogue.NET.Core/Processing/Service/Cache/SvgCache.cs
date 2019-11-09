@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Rogue.NET.Core.Processing.Service.Cache
@@ -400,6 +401,20 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 var line = segment as LineSegment;
 
                 line.Point = transform.Transform(line.Point);
+            }
+            else if (segment is ArcSegment)
+            {
+                var arc = segment as ArcSegment;
+
+                arc.Point = transform.Transform(arc.Point);
+
+                var size = transform.Transform(new Point()
+                {
+                    X = arc.Size.Width,
+                    Y = arc.Size.Height
+                });
+
+                arc.Size = new Size(size.X, size.Y);
             }
             else
                 throw new Exception("Unhandled PathSegment Type ISvgCache");

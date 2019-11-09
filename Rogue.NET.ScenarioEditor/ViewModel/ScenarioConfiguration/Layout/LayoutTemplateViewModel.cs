@@ -38,6 +38,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private RangeViewModel<int> _levelRange;
         private SymbolDetailsTemplateViewModel _wallSymbol;
         private SymbolDetailsTemplateViewModel _doorSymbol;
+        private SymbolDetailsTemplateViewModel _cellSymbol;
 
         public int Width
         {
@@ -159,6 +160,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _doorSymbol; }
             set { this.RaiseAndSetIfChanged(ref _doorSymbol, value); }
         }
+        public SymbolDetailsTemplateViewModel CellSymbol
+        {
+            get { return _cellSymbol; }
+            set { this.RaiseAndSetIfChanged(ref _cellSymbol, value); }
+        }
 
         public LayoutTemplateViewModel() : base()
         {
@@ -179,6 +185,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 
             this.WallSymbol = new SymbolDetailsTemplateViewModel();
             this.DoorSymbol = new SymbolDetailsTemplateViewModel();
+            this.CellSymbol = new SymbolDetailsTemplateViewModel();
         }
     }
 }

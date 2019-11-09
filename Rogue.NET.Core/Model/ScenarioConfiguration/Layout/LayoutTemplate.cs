@@ -32,6 +32,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private Range<int> _levelRange;
         private SymbolDetailsTemplate _wallSymbol;
         private SymbolDetailsTemplate _doorSymbol;
+        private SymbolDetailsTemplate _cellSymbol;
 
 
         public int Width
@@ -322,6 +323,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        public SymbolDetailsTemplate CellSymbol
+        {
+            get { return _cellSymbol; }
+            set
+            {
+                if (_cellSymbol != value)
+                {
+                    _cellSymbol = value;
+                    OnPropertyChanged("CellSymbol");
+                }
+            }
+        }
 
         public LayoutTemplate() : base()
         {
@@ -339,6 +352,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 
             this.WallSymbol = new SymbolDetailsTemplate();
             this.DoorSymbol = new SymbolDetailsTemplate();
+            this.CellSymbol = new SymbolDetailsTemplate();
         }
 
         /// <summary>

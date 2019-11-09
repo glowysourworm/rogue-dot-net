@@ -97,5 +97,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
 
             DialogWindowFactory.Show(view, "Rogue Symbol Editor");
         }
+
+        private void EditCellSymbolButton_Click(object sender, RoutedEventArgs e)
+        {
+            var view = new SymbolEditor();
+            view.DataContext = (this.DataContext as LayoutTemplateViewModel).CellSymbol;
+            view.WindowMode = true;
+            view.AllowSymbolRandomization = false;
+            view.Width = 600;
+
+            DialogWindowFactory.Show(view, "Rogue Symbol Editor");
+        }
     }
 }

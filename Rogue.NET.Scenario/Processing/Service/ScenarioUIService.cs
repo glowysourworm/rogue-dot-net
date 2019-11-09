@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
@@ -56,90 +57,46 @@ namespace Rogue.NET.Scenario.Processing.Service
             revealedDrawing = new DrawingGroup();
             terrainDrawing = new DrawingGroup();
 
-            var visibleCellBrush = new SolidColorBrush(Color.FromArgb(0x4F, 0x00, 0x0F, 0xFF));
-            var exploredCellBrush = new SolidColorBrush(Color.FromArgb(0x2F, 0x00, 0x00, 0xFF));
-            var revealedCellBrush = new SolidColorBrush(Color.FromArgb(0x0F, 0xFF, 0xFF, 0xFF));
+            // var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(), 1.0);
 
-            var visibleCorridorCellBrush = new SolidColorBrush(Color.FromArgb(0x4F, 0x00, 0xFF, 0xFF));
-            var exploredCorridorCellBrush = new SolidColorBrush(Color.FromArgb(0x2F, 0x00, 0xFF, 0xFF));
-            var revealedCorridorCellBrush = new SolidColorBrush(Color.FromArgb(0x0F, 0xFF, 0xFF, 0xFF));
+            var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0);
+            var cellSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.CellSymbol), 1.0);
+            var doorSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0);
 
-            var visibleWallCellBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x3F, 0x3F, 0x3F));
-            var exploredWallCellBrush = new SolidColorBrush(Color.FromArgb(0xAF, 0x3F, 0x3F, 0x3F));
-            var revealedWallCellBrush = new SolidColorBrush(Color.FromArgb(0x6F, 0x3F, 0x3F, 0x3F));
-
-            var visibleDoorCellBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xAF, 0x8F, 0x3F));
-            var exploredDoorCellBrush = new SolidColorBrush(Color.FromArgb(0xAF, 0xAF, 0x8F, 0x3F));
-            var revealedDoorCellBrush = new SolidColorBrush(Color.FromArgb(0x6F, 0xAF, 0x8F, 0x3F));
-
-            var terrainCellBrush = new SolidColorBrush(Color.FromArgb(0x3F, 0xFF, 0x00, 0x00));
 
             foreach (var cell in _modelService.Level.Grid.GetCells())
             {
                 var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
-                var geometry = new RectangleGeometry(rect);
-                var isTerrain = _modelService.Level.Grid.TerrainMap[cell.Location.Column, cell.Location.Row].Any();
-                var isRoom = _modelService.Level.Grid.RoomMap[cell.Location.Column, cell.Location.Row].Any();
+                //var geometry = new RectangleGeometry(rect);
+                //var isTerrain = _modelService.Level.Grid.TerrainMap[cell.Location.Column, cell.Location.Row].Any();
+                //var isRoom = _modelService.Level.Grid.RoomMap[cell.Location.Column, cell.Location.Row].Any();
 
-                if (isTerrain)
-                    terrainDrawing.Children.Add(new GeometryDrawing(terrainCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                // if (isTerrain)
+                //    terrainDrawing.Children.Add(new GeometryDrawing(terrainCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
 
                 // Doors
-                else if (cell.IsDoor)
+                if (cell.IsDoor)
                 {
-                    visibleDrawing.Children.Add(new GeometryDrawing(visibleDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    exploredDrawing.Children.Add(new GeometryDrawing(exploredDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    revealedDrawing.Children.Add(new GeometryDrawing(revealedDoorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    visibleDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
                 }
 
                 // Walls - Add default wall to layers { Visible, Explored, Revealed } for rendering
                 else if (cell.IsWall)
                 {
-                    visibleDrawing.Children.Add(new ImageDrawing(_scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0), rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(_scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0), rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(_scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0), rect));
+                    visibleDrawing.Children.Add(new ImageDrawing(wallSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(wallSymbol, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(wallSymbol, rect));
                 }
 
                 // Room Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
-                else if (isRoom)
+                else //if (isRoom || cell.IsCorridor)
                 {
-                    visibleDrawing.Children.Add(new GeometryDrawing(visibleCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    exploredDrawing.Children.Add(new GeometryDrawing(exploredCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    revealedDrawing.Children.Add(new GeometryDrawing(revealedCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+                    visibleDrawing.Children.Add(new ImageDrawing(cellSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(cellSymbol, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(cellSymbol, rect));
                 }
-                
-                // Corridor Cells
-                else if (cell.IsCorridor)
-                {
-                    visibleDrawing.Children.Add(new GeometryDrawing(visibleCorridorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    exploredDrawing.Children.Add(new GeometryDrawing(exploredCorridorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                    revealedDrawing.Children.Add(new GeometryDrawing(revealedCorridorCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
-                }
-
-
-
-                // Terrain
-                // if (cell.TerrainValue != 0)
-                // {
-
-                //terrainStream.BeginFigure(rect.TopLeft, true, true);
-                //terrainStream.LineTo(rect.TopRight, true, true);
-                //terrainStream.LineTo(rect.BottomRight, true, true);
-                //terrainStream.LineTo(rect.BottomLeft, true, true);
-
-                // var brush = new SolidColorBrush(cell.TerrainValue < 0 ? Colors.Blue : Colors.Red);
-                // brush.Opacity = cell.TerrainValue;
-
-                //terrainDrawing.Children.Add(new ImageDrawing(_scenarioResourceService.GetImageSource(new ScenarioImage()
-                //{
-                //    SymbolType = SymbolType.Terrain,
-                //    SymbolHue = cell.TerrainValue * Math.PI,
-                //    SymbolLightness = 0,
-                //    SymbolSaturation = 0,
-                //    Symbol = "Dot"
-
-                //}, 1.0), rect));
-                // }
             }
         }
 
