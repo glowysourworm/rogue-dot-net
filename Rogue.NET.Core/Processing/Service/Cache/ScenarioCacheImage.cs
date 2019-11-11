@@ -1,6 +1,8 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Processing.Service.Cache
 {
@@ -27,10 +29,13 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         public bool SymbolUseColorMask { get; set; }
         public string GameSymbol { get; set; }
 
+        // Lighting
+        public string Lighting { get; set; }
+
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
 
-        public ScenarioCacheImage(ScenarioImage scenarioImage, bool isGrayScale, double scale)
+        public ScenarioCacheImage(ScenarioImage scenarioImage, bool isGrayScale, double scale, Color lighting)
         {
             this.Scale = scale;
 
@@ -51,13 +56,15 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SymbolUseColorMask = scenarioImage.SymbolUseColorMask;
             this.GameSymbol = scenarioImage.GameSymbol;
 
+            this.Lighting = ColorFilter.ConvertBack(lighting);
+
             this.IsGrayScale = isGrayScale;
         }
 
         /// <summary>
         /// Constructor that supports image sources only - no option for black background
         /// </summary>
-        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale, double scale)
+        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale, double scale, Color lighting)
         {
             this.Scale = scale;
 
@@ -77,6 +84,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SymbolScale = symbolDetails.SymbolScale;
             this.SymbolUseColorMask = symbolDetails.SymbolUseColorMask;
             this.GameSymbol = symbolDetails.GameSymbol;
+
+            this.Lighting = ColorFilter.ConvertBack(lighting);
 
             this.IsGrayScale = grayScale;
         }

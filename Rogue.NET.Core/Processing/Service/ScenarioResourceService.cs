@@ -60,11 +60,6 @@ namespace Rogue.NET.Core.Processing.Service
             return _colors;
         }
 
-        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale)
-        {
-            return _scenarioImageSourceFactory.GetFrameworkElement(scenarioImage, scale);
-        }
-
         public IEnumerable<string> GetScenarioNames()
         {
             return _scenarioCache.GetScenarioNames();
@@ -117,19 +112,24 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioConfigurationCache.EmbedConfiguration(configuration);
         }
 
-        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale)
+        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Color lighting)
         {
-            return _scenarioImageSourceFactory.GetImageSource(symbolDetails, scale);
+            return _scenarioImageSourceFactory.GetImageSource(symbolDetails, scale, lighting);
         }
 
-        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale)
+        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Color lighting)
         {
-            return _scenarioImageSourceFactory.GetImageSource(scenarioImage, scale);
+            return _scenarioImageSourceFactory.GetImageSource(scenarioImage, scale, lighting);
         }
 
-        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale)
+        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Color lighting)
         {
-            return _scenarioImageSourceFactory.GetDesaturatedImageSource(scenarioImage, scale);
+            return _scenarioImageSourceFactory.GetDesaturatedImageSource(scenarioImage, scale, lighting);
+        }
+
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Color lighting)
+        {
+            return _scenarioImageSourceFactory.GetFrameworkElement(scenarioImage, scale, lighting);
         }
 
         public DrawingGroup GetDrawing(ScenarioCacheImage scenarioCacheImage)

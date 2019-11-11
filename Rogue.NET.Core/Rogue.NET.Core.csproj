@@ -211,6 +211,7 @@
     <Compile Include="Media\Animation\Interface\IAnimationPlayer.cs" />
     <Compile Include="Media\Animation\Interface\IAnimationPrimitive.cs" />
     <Compile Include="Media\Animation\Interface\IAnimationSequenceCreator.cs" />
+    <Compile Include="Media\SymbolEffect\AlphaBlendEffect.cs" />
     <Compile Include="Media\SymbolEffect\ClampEffect.cs" />
     <Compile Include="Media\SymbolEffect\HSLEffect.cs" />
     <Compile Include="Media\SymbolEffect\Utility\DrawingFilter.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Processing\Model\Generator\Layout\Region\Geometry\RectangularGridRegionGeometryCreator.cs" />
     <Compile Include="Math\Algorithm\GeometryUtility.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\GridUtility.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Region\Lighting\RegionLightingGenerator.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioCache.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioConfigurationCache.cs" />
     <Compile Include="Processing\Service\Cache\ScenarioCache.cs" />

@@ -1,34 +1,23 @@
-﻿using Rogue.NET.Common.ViewModel;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.Media.Animation.EventData;
+using Rogue.NET.Core.Media.Animation.Interface;
+using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Processing.Event.Backend.EventData;
-using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
-using Rogue.NET.Scenario.Processing.Service.Interface;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Media;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
-
-using System.Linq;
-using System.ComponentModel.Composition;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using System.Collections.ObjectModel;
-using Rogue.NET.Core.View;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Media.Animation;
-using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.Core.Media.Animation.Interface;
-using Rogue.NET.Core.Media.Animation.EventData;
-using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
+using Rogue.NET.Scenario.Processing.Service.Interface;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -60,7 +49,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         LevelCanvasImage _player;
 
         [ImportingConstructor]
-        public LevelCanvasViewModel(IScenarioUIGeometryService scenarioUIGeometryService, 
+        public LevelCanvasViewModel(IScenarioUIGeometryService scenarioUIGeometryService,
                                     IScenarioUIService scenarioUIService)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
@@ -194,7 +183,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.ExploredLayer.Drawing = exploredDrawing;
             this.RevealedLayer.Drawing = revealedDrawing;
             this.TerrainLayer.Drawing = terrainDrawing;
-            
+
             OnPropertyChanged(() => this.VisibleLayer);
             OnPropertyChanged(() => this.ExploredLayer);
             OnPropertyChanged(() => this.RevealedLayer);
@@ -313,7 +302,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// <summary>
         /// Draws visibility visual used as an opacity mask for the level
         /// </summary>
-        public void UpdateLayoutVisibility(IEnumerable<GridLocation> exploredLocations, 
+        public void UpdateLayoutVisibility(IEnumerable<GridLocation> exploredLocations,
                                            IEnumerable<GridLocation> visibleLocations,
                                            IEnumerable<GridLocation> revealedLocations)
         {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Converter
 {
@@ -29,7 +30,7 @@ namespace Rogue.NET.Core.Converter
             // Read scale from the converter parameter
             var scale = parameter == null ? 1.0D : (double)parameter;
 
-            return _scenarioResourceService.GetImageSource(scenarioImage, scale);
+            return _scenarioResourceService.GetImageSource(scenarioImage, scale, Colors.White);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

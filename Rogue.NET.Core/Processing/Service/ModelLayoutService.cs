@@ -1,4 +1,6 @@
 ﻿using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -29,6 +31,15 @@ namespace Rogue.NET.Core.Processing.Service
             _level = level;
             _player = player;
             _randomSequenceGenerator = randomSequenceGenerator;
+        }
+
+        public void CalculateEffectiveLighting()
+        {
+            // For now, this calculation just copies the cell's lighting value to the effective value. This will
+            // soon be using all light sources in the calculation.
+            //
+            foreach (var cell in _level.Grid.GetCells())
+                cell.EffectiveLighting = ColorFilter.Discretize(cell.Lighting, ModelConstants.ColorChannelDiscretization);
         }
 
         public bool IsPathToAdjacentCellBlocked(GridLocation location1,

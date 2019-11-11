@@ -15,6 +15,12 @@ namespace Rogue.NET.Core.Processing.Service.Interface
     public interface IModelLayoutService
     {
         /// <summary>
+        /// Calculates effective lighting value by combining light sources from the level. This should be run 
+        /// every turn.
+        /// </summary>
+        void CalculateEffectiveLighting();
+
+        /// <summary>
         /// Checks to see if path to adjacent cell is blocked for character movement. Can optionally specify character alignemnt type
         /// </summary>
         bool IsPathToAdjacentCellBlocked(GridLocation location1,

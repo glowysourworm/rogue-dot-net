@@ -100,7 +100,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                                                                                                             characterName,
                                                                                                             category,
                                                                                                             Colors.White.ToString(),
-                                                                                                            1.0), 1.0);
+                                                                                                            1.0), 1.0, Colors.White);
 
                 return SvgSymbolViewModel.CreateCharacterSymbol(imageSource, category, characterName, 1.0);
             });

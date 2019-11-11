@@ -3227,3 +3227,15 @@ IMMEDIATE TODO'S:
 	
 		Need to create an accompanying symbol for the cell symbol AND any terrain symbol. This is for enemies and objects rendered on top
 		of these tiles. Otherwise, the background is transparent.
+		
+	LIGHTING:
+	
+		Replace light radius (maybe) with something like "vision" for non-player characters (or maybe also player). Vision could just be a 
+		[0,1] value that picks up on the player's effective light value (for the cell) and can see it if it's bright enough.
+		
+		The way to avoid a vision "radius" is to have your characters pick up on the alpha channel threshold using the [0,1] vision value. So,
+		your player would (typically) be given vision=1 to start. Any impairment would prevent you from seeing cells OR any CONTENT on those
+		cells - until you remove the impariment.
+		
+		Working with the digitization of the alpha channel for doing lighting provides a way to make this "turn on or off" like a switch (kind of)..
+		But I think it would be a really neat effect to replace the light radius.

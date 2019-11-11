@@ -9,45 +9,22 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
     {
         public static void ApplyEffect(DrawingGroup drawing, SymbolEffectBase effect)
         {
-            if (effect is HSLEffect)
-            {
-                RecursiveHSL(drawing, effect as HSLEffect);
-            }
-            else if (effect is ClampEffect)
-            {
-                RecursiveClamp(drawing, effect as ClampEffect);
-            }
-            else
-                throw new Exception("Unhandled Symbol Effect Type");
+            RecursiveApply(drawing, effect);
         }
-        private static void RecursiveHSL(DrawingGroup group, HSLEffect effect)
+        private static void RecursiveApply(DrawingGroup group, SymbolEffectBase effect)
         {
             foreach (var child in group.Children)
             {
                 if (child is DrawingGroup)
-                    RecursiveHSL(child as DrawingGroup, effect);
+                    RecursiveApply(child as DrawingGroup, effect);
 
                 else if (child is Drawing)
                 {
-                    (child as GeometryDrawing).Brush = BrushFilter.ShiftHSL((child as GeometryDrawing).Brush, effect.Hue, effect.Saturation, effect.Lightness, effect.UseColorMask);
+                    (child as GeometryDrawing).Brush = BrushFilter.ApplyFilter((child as GeometryDrawing).Brush, effect);
                 }
 
                 else
-                    throw new Exception("Unknown Drawing Type DrawingIterator.RecursiveHueShift");
-            }
-        }
-        private static void RecursiveClamp(DrawingGroup group, ClampEffect effect)
-        {
-            foreach (var child in group.Children)
-            {
-                if (child is DrawingGroup)
-                    RecursiveClamp(child as DrawingGroup, effect);
-
-                else if (child is Drawing)
-                    (child as GeometryDrawing).Brush = BrushFilter.Clamp((child as GeometryDrawing).Brush, effect.Color);
-
-                else
-                    throw new Exception("Unknown Drawing Type DrawingIterator.RecursiveHueShift");
+                    throw new Exception("Unknown Drawing Type DrawingFilter.RecursiveApply");
             }
         }
     }

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using LiveCharts.Defaults;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using System;
+using Rogue.NET.Core.Media.SymbolEffect;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
 {
@@ -71,7 +72,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
                 var projection = projectionSet.GetProjection(i).Value;
                 var points = projection.Select(x => new ObservablePoint(x.Level, x.Mean));
 
-                lineSeries.Stroke = BrushFilter.ShiftHSL(Brushes.Red, i * (hueLimit / projectionSet.Count), 0, 0, false);
+                lineSeries.Stroke = BrushFilter.ApplyFilter(Brushes.Red, new HSLEffect(i * (hueLimit / projectionSet.Count), 0, 0, false));
                 lineSeries.Values = new ChartValues<ObservablePoint>(points);
 
                 this.Series.Add(lineSeries);

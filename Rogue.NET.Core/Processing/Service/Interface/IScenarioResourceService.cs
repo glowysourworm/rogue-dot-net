@@ -35,10 +35,10 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         void EmbedConfiguration(ScenarioConfigurationContainer configuration);
 
         // IScenarioImageSourceFactory
-        DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale);
-        DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale);
-        DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale);
-        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale);
+        DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Color lighting);
+        DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Color lighting);
+        DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Color lighting);
+        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Color lighting);
         
         // ISvgCache
         DrawingGroup GetDrawing(ScenarioCacheImage scenarioCacheImage);

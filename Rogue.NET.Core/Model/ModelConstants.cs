@@ -23,6 +23,11 @@ namespace Rogue.NET.Core.Model
         public const string DoodadTeleporterBRogueName = "Teleporter B";
         public const string DoodadTeleporterRandomRogueName = "Random Teleporter";
 
+        /// <summary>
+        /// Number of "buckets" allowed per color / alpha channel when calculating symbol effects
+        /// </summary>
+        public const int ColorChannelDiscretization = 16;
+
         public static class Scenario
         {
             public const double MonsterGenerationPerStepDefault = 0.01;

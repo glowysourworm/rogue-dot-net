@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using Rogue.NET.Common.Extension;
 using System.ComponentModel;
+using Rogue.NET.Core.Model;
 
 namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 {
@@ -42,18 +43,34 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             return result.ToString();
         }
         
-        public static Color AddUsingAlphaChannels(Color front, Color back)
+        /// <summary>
+        /// Uses a tinting effect to apply lighting to a base color
+        /// </summary>
+        public static Color AddLightingEffect(Color baseColor, Color light, bool discretize = true)
         {
-            // https://stackoverflow.com/questions/726549/algorithm-for-additive-color-mixing-for-rgb-values
-            // http://blog.johnnovak.net/2016/09/21/what-every-coder-should-know-about-gamma/#fn:osgamma
+            // Alpha Blending:  https://en.wikipedia.org/wiki/Alpha_compositing#Alpha_blending
+            // Blend Modes:     https://en.wikipedia.org/wiki/Blend_modes
+            // Tinting:         https://softwarebydefault.com/2013/04/12/bitmap-color-tint/
 
-            //same as Markus Jarderot's answer
-            var alpha = (0xFF - (0xFF - back.A) * (0xFF - front.A));
-            var red = ((front.R * front.A) + ((back.R * back.A) * (0xFF - front.A))) / (double)alpha;
-            var green = ((front.G * front.A) + ((back.G * back.A) * (0xFF - front.A))) / (double)alpha;
-            var blue = ((front.B * front.A) + ((back.B * back.A) * (0xFF - front.A))) / (double)alpha;
+            //// Tinting:  
+            //var red = baseColor.R + (((0xFF - baseColor.R) * light.R) / 255.0);
+            //var green = baseColor.G + (((0xFF - baseColor.G) * light.G) / 255.0);
+            //var blue = baseColor.B + (((0xFF - baseColor.B) * light.B) / 255.0);
 
-            return Color.FromArgb((byte)alpha, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
+            //// Invent a "darkness" value that subtracts light to simulate darkening
+            //var darkness = (1 - (light.A / 255.0)).Clip(0, 0.4);
+
+            //// Create the color from the tinted value
+            //var lightedColor = Color.FromArgb(baseColor.A, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
+
+            //// Create a darkened color from the tinted color
+            //var darkenedColor = ShiftHSL(lightedColor, 0, 0, -1 * darkness);
+
+            //// Discretize the output to save cache space
+            //return Discretize(darkenedColor, ModelConstants.ColorChannelDiscretization);
+
+            // TODO:TERRAIN - BYPASSING FILTER
+            return baseColor;
         }
         public static IEnumerable<ColorViewModel> CreateColors()
         {
@@ -156,6 +173,28 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             return max == 0 ? 0 :
                    min == 1 ? 0 :
                  ((max - lightness) / (System.Math.Min(lightness, 1 - lightness)));
+        }
+
+        /// <summary>
+        /// Creates a step-function discretization of the alpha channel to create opacity "levels"
+        /// </summary>
+        /// <param name="color">Input color</param>
+        /// <param name="numberOfLevels">Number of levels in the digitization</param>
+        /// <returns>A filtered color with an alpha channel that has been set to a particular discrete value</returns>
+        public static Color Discretize(Color color, int numberOfLevels)
+        {
+            if (numberOfLevels < 2)
+                throw new ArgumentException("ColorFilter.Digitize must have a number of levels greater than or equal to two");
+
+            // Divide the alpha channel (byte) into a discrete set of levels - each with the scaled size
+            var channelSize = 256.0 / numberOfLevels;
+
+            var alpha = ((int)(color.A / channelSize)) * channelSize;
+            var red   = ((int)(color.R / channelSize)) * channelSize;
+            var green = ((int)(color.G / channelSize)) * channelSize;
+            var blue  = ((int)(color.B / channelSize)) * channelSize;
+
+            return Color.FromArgb((byte)(int)alpha, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
         }
     }
 }

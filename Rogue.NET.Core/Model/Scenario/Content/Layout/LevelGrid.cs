@@ -80,7 +80,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 for (int j = 0; j < grid.GetLength(1); j++)
                 {
                     if (grid[i, j] != null)
-                        _grid[i, j] = new GridCell(i, j, grid[i, j].IsWall, grid[i, j].IsDoor, grid[i, j].DoorSearchCounter, grid[i, j].IsCorridor);
+                        _grid[i, j] = new GridCell(i, j, grid[i, j].IsWall, grid[i, j].IsDoor, grid[i, j].DoorSearchCounter, grid[i, j].IsCorridor, grid[i, j].Lighting);
                 }
             }
         }

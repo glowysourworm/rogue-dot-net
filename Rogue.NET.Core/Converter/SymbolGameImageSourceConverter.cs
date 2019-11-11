@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Converter
 {
@@ -34,7 +35,7 @@ namespace Rogue.NET.Core.Converter
                 SymbolType = SymbolType.Game,
                 GameSymbol = gameSymbol
 
-            }, scale);
+            }, scale, Colors.Transparent);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

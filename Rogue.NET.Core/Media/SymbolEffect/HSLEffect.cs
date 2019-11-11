@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Media.SymbolEffect
 {
     public class HSLEffect : SymbolEffectBase
     {
+        private static Color ColorMask = Colors.Red;
+
         /// <summary>
         /// Represents hue shift (-2*PI, 2*PI)
         /// </summary>
@@ -34,6 +33,21 @@ namespace Rogue.NET.Core.Media.SymbolEffect
             this.Saturation = saturation;
             this.Lightness = lightness;
             this.UseColorMask = useColorMask;
+        }
+
+        public override Color ApplyFilter(Color inputColor)
+        {
+            if (!this.UseColorMask)
+                return ColorFilter.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
+
+            else
+            {
+                if (inputColor == ColorMask)
+                    return ColorFilter.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
+
+                else
+                    return inputColor;
+            }
         }
     }
 }

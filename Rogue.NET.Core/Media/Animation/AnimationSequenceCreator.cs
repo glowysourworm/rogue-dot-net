@@ -56,7 +56,7 @@ namespace Rogue.NET.Core.Media.Animation
             // Ammo:               Create a non-rotating image directing the symbol "North" at the target
             //
 
-            var drawingImage = _scenarioResourceService.GetImageSource(scenarioImage, 1.0) as DrawingImage;
+            var drawingImage = _scenarioResourceService.GetImageSource(scenarioImage, 1.0, Colors.White) as DrawingImage;
 
             if (drawingImage == null)
                 throw new Exception("Improper use of scenario image projectile animation");
@@ -144,7 +144,7 @@ namespace Rogue.NET.Core.Media.Animation
             // Ammo:               Create a non-rotating image directing the symbol "North" at the target
             //
 
-            var drawingImage = _scenarioResourceService.GetImageSource(scenarioImage, 1.0) as DrawingImage;
+            var drawingImage = _scenarioResourceService.GetImageSource(scenarioImage, 1.0, Colors.White) as DrawingImage;
 
             if (drawingImage == null)
                 throw new Exception("Improper use of scenario image projectile animation");

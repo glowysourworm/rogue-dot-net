@@ -17,11 +17,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         [ImportingConstructor]
         public SimpleRayTracer() { }
 
-        public IEnumerable<DistanceLocation>
-                CalculateVisibility(LevelGrid grid,
-                                    GridLocation location,
-                                    double lightRadius,
-                                    out IEnumerable<DistanceLocation> lineOfSightLocations)
+        public IEnumerable<DistanceLocation> CalculateVisibility(LevelGrid grid, GridLocation location)
         {
             var result = new Dictionary<int, DistanceLocation>();
             var locationCell = grid[location.Column, location.Row];
@@ -143,15 +139,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 angle += 5;
             }
 
-            // Calculate Line-Of-Sight / Visibility Radius
-            lineOfSightLocations = result.Values.ToList();
-
-            return result.Values.Where(x =>
-            {
-                return Metric.EuclideanDistance(x.Location, location) <= lightRadius;
-            })
-            .Select(x => new DistanceLocation(location, x.Location))
-            .ToList(); ;
+            return result.Values.ToList();
         }
     }
 }

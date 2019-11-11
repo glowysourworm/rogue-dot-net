@@ -59,9 +59,7 @@ namespace Rogue.NET.Scenario.Processing.Service
 
             // var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(), 1.0);
 
-            var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0);
-            var cellSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.CellSymbol), 1.0);
-            var doorSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0);
+
 
 
             foreach (var cell in _modelService.Level.Grid.GetCells())
@@ -73,6 +71,10 @@ namespace Rogue.NET.Scenario.Processing.Service
 
                 // if (isTerrain)
                 //    terrainDrawing.Children.Add(new GeometryDrawing(terrainCellBrush, new Pen(Brushes.Transparent, 0.0), geometry));
+
+                var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0, cell.EffectiveLighting);
+                var cellSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.CellSymbol), 1.0, cell.EffectiveLighting);
+                var doorSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0, cell.EffectiveLighting);
 
                 // Doors
                 if (cell.IsDoor)
@@ -161,6 +163,9 @@ namespace Rogue.NET.Scenario.Processing.Service
                                   scenarioObject.IsDetectedCategory ||
                                   scenarioObject.IsRevealed;
 
+            // Effective Lighting
+            var lighting = _modelService.Level.Grid[scenarioObject.Location.Column, scenarioObject.Location.Row].EffectiveLighting;
+
             // "Invisible" status
             var isCharacterInVisibleToPlayer = false;
 
@@ -197,13 +202,13 @@ namespace Rogue.NET.Scenario.Processing.Service
                 switch (scenarioObject.DetectedAlignmentType)
                 {
                     case AlterationAlignmentType.Neutral:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), 1.0);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), 1.0, lighting);
                         break;
                     case AlterationAlignmentType.Good:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), 1.0);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), 1.0, lighting);
                         break;
                     case AlterationAlignmentType.Bad:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), 1.0);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), 1.0, lighting);
                         break;
                     default:
                         break;
@@ -211,15 +216,15 @@ namespace Rogue.NET.Scenario.Processing.Service
             }
             else if (scenarioObject.IsDetectedCategory)
             {
-                content.Source = _scenarioResourceService.GetImageSource(scenarioObject.DetectedAlignmentCategory, 1.0);
+                content.Source = _scenarioResourceService.GetImageSource(scenarioObject.DetectedAlignmentCategory, 1.0, lighting);
             }
             else if (scenarioObject.IsRevealed)
             {
-                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0);
+                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, lighting);
             }
             else
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0);
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, lighting);
             }
 
             // TODO: Design Content Tooltip

@@ -62,15 +62,14 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             {
                 IEnumerable<DistanceLocation> lineOfSightLocations = null;
 
-                var visibleLocations = _rayTracer
-                        .CalculateVisibility(_grid,
-                                             character.Location,
-                                             character.Is(CharacterStateType.Blind) ? 1 : 
-                                             character.GetLightRadius(),
-                                             out lineOfSightLocations);
+                var visibleLocations = _rayTracer.CalculateVisibility(_grid, character.Location);
 
+                // TODO:TERRAIN - RE-CALCULATE VISIBLE / LINE-OF-SIGHT WITH NEW VISION PARAMETER
                 _visibleDict.Add(character, visibleLocations);
-                _lineOfSightDict.Add(character, lineOfSightLocations);
+
+                // TODO:TERRAIN - RE-CALCULATE VISIBLE / LINE-OF-SIGHT WITH NEW VISION PARAMETER
+                //_lineOfSightDict.Add(character, lineOfSightLocations);
+                _lineOfSightDict.Add(character, visibleLocations);
 
                 // Player - Calculate Revealed / Explored locations
                 //

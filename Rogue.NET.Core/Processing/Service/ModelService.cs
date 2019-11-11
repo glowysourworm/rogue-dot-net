@@ -221,6 +221,9 @@ namespace Rogue.NET.Core.Processing.Service
 
         public void UpdateVisibility()
         {
+            // Calculate effective lighting for each cell
+            _modelLayoutService.CalculateEffectiveLighting();
+
             // Apply blanket update for layout visibiltiy
             _characterLayoutInformation
                 .ApplyUpdate(this.Level

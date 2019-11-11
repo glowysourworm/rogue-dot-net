@@ -35,9 +35,9 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
             _imageSourceCache = new Dictionary<string, DrawingImage>();
         }
-        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale)
+        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Color lighting)
         {
-            var cacheImage = CreateCacheImage(symbolDetails, false, scale);
+            var cacheImage = CreateCacheImage(symbolDetails, false, scale, lighting);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
@@ -54,9 +54,9 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 return result;
             }
         }
-        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale)
+        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Color lighting)
         {
-            var cacheImage = CreateCacheImage(scenarioImage, false, scale);
+            var cacheImage = CreateCacheImage(scenarioImage, false, scale, lighting);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
@@ -73,9 +73,9 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 return result;
             }
         }
-        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale)
+        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Color lighting)
         {
-            var cacheImage = CreateCacheImage(scenarioImage, true, scale);
+            var cacheImage = CreateCacheImage(scenarioImage, true, scale, lighting);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
@@ -97,9 +97,9 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             else
                 throw new Exception("Unhandled ImageSource type");
         }
-        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale)
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Color lighting)
         {
-            var cacheImage = CreateCacheImage(scenarioImage, false, scale);
+            var cacheImage = CreateCacheImage(scenarioImage, false, scale, lighting);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached FrameworkElement
@@ -158,10 +158,14 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         // Apply Effects - Scale, ColorMap, HSL
                         ApplyEffects(drawing, cacheImage);
 
+                        // Apply Lighting
+                        ApplyLighting(drawing, ColorFilter.Convert(cacheImage.Lighting));
+
                         // Create the image source
                         return new DrawingImage(drawing);
                     }
                 case SymbolType.Smiley:
+                    // GetSmileyElement() -> ApplyLighting()
                     return GetSmileyImage(cacheImage);
                 default:
                     throw new Exception("Unknown symbol type");
@@ -183,8 +187,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             var ctrl = new Smiley();
             ctrl.Width = ModelConstants.CellWidth * cacheImage.Scale;
             ctrl.Height = ModelConstants.CellHeight * cacheImage.Scale;
-            ctrl.SmileyColor = (Color)ColorConverter.ConvertFromString(cacheImage.SmileyBodyColor);
-            ctrl.SmileyLineColor = (Color)ColorConverter.ConvertFromString(cacheImage.SmileyLineColor);
+            ctrl.SmileyColor = ColorFilter.AddLightingEffect((Color)ColorConverter.ConvertFromString(cacheImage.SmileyBodyColor), ColorFilter.Convert(cacheImage.Lighting));
+            ctrl.SmileyLineColor = ColorFilter.AddLightingEffect((Color)ColorConverter.ConvertFromString(cacheImage.SmileyLineColor), ColorFilter.Convert(cacheImage.Lighting));
             ctrl.SmileyExpression = cacheImage.SmileyExpression;
 
             // TODO: fix the initialization problem
@@ -250,6 +254,11 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     break;
             }
         }
+        private void ApplyLighting(DrawingGroup drawing, Color lighting)
+        {
+            // Apply alpha-blend lighting based on the provided color - for the whole drawing
+            DrawingFilter.ApplyEffect(drawing, new AlphaBlendEffect(lighting));
+        }
         private Image CreateScaledImage(ImageSource source, double scale)
         {
             // Return scaled image
@@ -260,21 +269,21 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
             return image;
         }
-        private ScenarioCacheImage CreateCacheImage(SymbolDetailsTemplate template, bool grayScale, double scale)
+        private ScenarioCacheImage CreateCacheImage(SymbolDetailsTemplate template, bool grayScale, double scale, Color lighting)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
 
             // Create cache image to retrieve cached ImageSource or to store it
-            return new ScenarioCacheImage(template, grayScale, safeScale);
+            return new ScenarioCacheImage(template, grayScale, safeScale, lighting);
         }
-        private ScenarioCacheImage CreateCacheImage(ScenarioImage scenarioImage, bool grayScale, double scale)
+        private ScenarioCacheImage CreateCacheImage(ScenarioImage scenarioImage, bool grayScale, double scale, Color lighting)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
 
             // Create cache image to retrieve cached ImageSource or to store it
-            return new ScenarioCacheImage(scenarioImage, grayScale, safeScale);
+            return new ScenarioCacheImage(scenarioImage, grayScale, safeScale, lighting);
         }
         #endregion
     }

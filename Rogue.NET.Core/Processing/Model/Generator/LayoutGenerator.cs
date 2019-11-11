@@ -12,11 +12,13 @@ using Rogue.NET.Core.Processing.Model.Generator.Layout.Region;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting;
 using Rogue.NET.Core.Processing.Model.Static;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Windows.Media;
 using RegionModel = Rogue.NET.Core.Model.Scenario.Content.Layout.Region;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
@@ -185,7 +187,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <summary>
         /// Triangulate rooms, locate and remove small rooms, create corridors, add walls
         /// </summary>
-        /// <returns></returns>
         private LevelGrid FinishLayout(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
             // Triangulate room positions
@@ -209,6 +210,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             //Create walls
             CreateWalls(grid);
+
+            // Create Lighting
+            CreateLighting(grid, regions, template);
 
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }
@@ -281,6 +285,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             CreateWalls(grid);
 
+            // Create Lighting
+            CreateLighting(grid, regions, template);
+
             //return new LevelGrid(grid, regions.ToArray(), tiledRegions.ToArray());
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }
@@ -341,6 +348,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                 finalRegions = grid.IdentifyRegions();
             }
+
+            // Create Lighting
+            CreateLighting(grid, finalRegions, template);
 
             return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
         }
@@ -404,6 +414,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //Create walls
             CreateWalls(grid);
 
+            // Create Lighting
+            CreateLighting(grid, regions, template);
+
             return new LevelGrid(grid, rooms.ToArray(), terrainRegions.ToArray());
         }
 
@@ -460,6 +473,33 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         grid[i - 1, j + 1] = new GridCellInfo(new GridLocation(i - 1, j + 1)) { IsWall = true };
                 }
             }
+        }
+
+        private void CreateLighting(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        {
+            // Procedure
+            //
+            // - Create lighting for each type by using alpha blending
+            // - Store the results in the cell's Lighting color (contains intensity information)
+            //
+
+            template.LightingColor = Colors.Red.ToString();
+            template.LightingRatio = 1.0;
+
+            //if (template.LightingType.Has(TerrainLightingType.LightedRooms))
+            //{
+            //    foreach (var region in regions)
+            //    {
+            //        if (_randomSequenceGenerator.Get() < template.LightingRatio)
+            //            RegionLightingGenerator.CreateLightedRoom(grid, region, template);
+            //    }
+            //}
+
+            //if (template.LightingType.Has(TerrainLightingType.WhiteNoise))
+            //    RegionLightingGenerator.CreateWhiteNoiseLighting(grid, template);
+
+            if (template.LightingType.Has(TerrainLightingType.PerlinNoise))
+                RegionLightingGenerator.CreatePerlinNoiseLighting(grid, template);
         }
         #endregion
     }

@@ -15,5 +15,10 @@ namespace Rogue.NET.Core.Media.SymbolEffect
         {
             this.Color = ColorFilter.Convert(color);
         }
+
+        public override Color ApplyFilter(Color inputColor)
+        {
+            return this.Color;
+        }
     }
 }

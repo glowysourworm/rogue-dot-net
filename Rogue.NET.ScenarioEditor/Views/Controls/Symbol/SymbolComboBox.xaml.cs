@@ -6,6 +6,7 @@ using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
@@ -41,7 +42,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         {
             this.TheCB.ItemsSource = _scenarioResourceService.GetResourceNames(SymbolType.Game).Select(symbol =>
             {
-                var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0);
+                var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0, Colors.White);
                 return SvgSymbolViewModel.CreateGameSymbol(source, symbol);
             });
         }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Windows.Media;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -14,6 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public bool IsWall { get; set; }
         public bool IsCorridor { get; set; }
         public int DoorSearchCounter { get; set; }
+        public Color Lighting { get; set; }
 
         public GridCellInfo(GridLocation location)
         {

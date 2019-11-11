@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Media;
 using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.Abstract.ScenarioMetaData;
 
 
@@ -122,10 +123,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.ObjectType = metaData.ObjectType;
 
             if (metaData.IsIdentified)
-                this.Source = scenarioResourceService.GetImageSource(metaData, 1.0);
+                this.Source = scenarioResourceService.GetImageSource(metaData, 1.0, Colors.White);
 
             else
-                this.Source = scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol("Unknown", GameSymbol.Identify), 1.0);
+                this.Source = scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol("Unknown", GameSymbol.Identify), 1.0, Colors.White);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
