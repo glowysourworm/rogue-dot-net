@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -77,27 +77,35 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Terrain layer can be placed on top of - or underneath - other terrain layers")]
         Combined = 1
     }
-    [Flags]
-    public enum TerrainLightingType
+
+    public enum TerrainAmbientLightingType
     {
-        [Display(Name = "No Lighting",
-                 Description = "No lighting generated for this layout")]
+        [Display(Name = "None",
+                 Description = "No lighting generated")]
         None = 0,
+
+        [Display(Name = "Flat Natural Lighting",
+                 Description = "Generates fully lit rooms with the specified parameters")]
+        Flat = 1,
 
         [Display(Name = "Lighted Rooms",
                  Description = "Generates fully lit rooms with the specified parameters")]
-        LightedRooms = 1,
+        LightedRooms = 2,
 
         [Display(Name = "Large Natural Lighting",
                  Description = "Natural lighting generated using random features similar to your layout")]
-        PerlinNoise = 2,
+        PerlinNoiseLarge = 3,
+
+        [Display(Name = "Small Natural Lighting",
+                 Description = "Natural lighting generated using random features that are smaller compared to your layout features")]
+        PerlinNoiseSmall = 4,
 
         [Display(Name = "Speckeled Natural Lighting",
                  Description = "Natural lighting generated using white noise")]
-        WhiteNoise = 4,
+        WhiteNoise = 5,
 
-        [Display(Name = "Torch Lighting",
+        [Display(Name = "Wall Lighting",
                  Description = "Point source lights emanating from random wall tiles")]
-        Torch = 8
+        WallLighting = 6
     }
 }

@@ -33,10 +33,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private SymbolDetailsTemplate _wallSymbol;
         private SymbolDetailsTemplate _doorSymbol;
         private SymbolDetailsTemplate _cellSymbol;
-        private TerrainLightingType _lightingType;
-        private double _lightingRatio;
-        private double _lightingIntensity;
-        private string _lightingColor;
+        private LightAmbientTemplate _lightingAmbient1;
+        private LightAmbientTemplate _lightingAmbient2;
+        private LightAmbientTemplate _lightingAmbient3;
 
         public int Width
         {
@@ -338,55 +337,42 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public TerrainLightingType LightingType
+        public LightAmbientTemplate LightingAmbient1
         {
-            get { return _lightingType; }
+            get { return _lightingAmbient1; }
             set
             {
-                if (_lightingType != value)
+                if (_lightingAmbient1 != value)
                 {
-                    _lightingType = value;
-                    OnPropertyChanged("LightingType");
+                    _lightingAmbient1 = value;
+                    OnPropertyChanged("LightingAmbient1");
                 }
             }
         }
-        public double LightingRatio
+        public LightAmbientTemplate LightingAmbient2
         {
-            get { return _lightingRatio; }
+            get { return _lightingAmbient2; }
             set
             {
-                if (_lightingRatio != value)
+                if (_lightingAmbient2 != value)
                 {
-                    _lightingRatio = value;
-                    OnPropertyChanged("LightingRatio");
+                    _lightingAmbient2 = value;
+                    OnPropertyChanged("LightingAmbient2");
                 }
             }
         }
-        public double LightingIntensity
+        public LightAmbientTemplate LightingAmbient3
         {
-            get { return _lightingIntensity; }
+            get { return _lightingAmbient3; }
             set
             {
-                if (_lightingIntensity != value)
+                if (_lightingAmbient3 != value)
                 {
-                    _lightingIntensity = value;
-                    OnPropertyChanged("LightingIntensity");
+                    _lightingAmbient3 = value;
+                    OnPropertyChanged("LightingAmbient3");
                 }
             }
         }
-        public string LightingColor
-        {
-            get { return _lightingColor; }
-            set
-            {
-                if (_lightingColor != value)
-                {
-                    _lightingColor = value;
-                    OnPropertyChanged("LightingColor");
-                }
-            }
-        }
-
 
         public LayoutTemplate() : base()
         {
@@ -406,10 +392,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.DoorSymbol = new SymbolDetailsTemplate();
             this.CellSymbol = new SymbolDetailsTemplate();
 
-            this.LightingType = TerrainLightingType.LightedRooms | TerrainLightingType.PerlinNoise;
-            this.LightingRatio = 0.5;
-            this.LightingColor = Colors.White.ToString();
-            this.LightingIntensity = 1;
+            this.LightingAmbient1 = new LightAmbientTemplate();
+            this.LightingAmbient2 = new LightAmbientTemplate();
+            this.LightingAmbient3 = new LightAmbientTemplate();
         }
     }
 }

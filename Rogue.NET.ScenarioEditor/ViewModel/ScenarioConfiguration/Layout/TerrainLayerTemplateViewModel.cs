@@ -1,8 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using System;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 {

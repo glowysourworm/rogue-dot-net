@@ -483,8 +483,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // - Store the results in the cell's Lighting color (contains intensity information)
             //
 
-            template.LightingColor = Colors.Red.ToString();
-            template.LightingRatio = 1.0;
+            //template.LightingColor = Colors.Red.ToString();
+            //template.LightingRatio = 1.0;
 
             //if (template.LightingType.Has(TerrainLightingType.LightedRooms))
             //{
@@ -498,8 +498,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //if (template.LightingType.Has(TerrainLightingType.WhiteNoise))
             //    RegionLightingGenerator.CreateWhiteNoiseLighting(grid, template);
 
-            if (template.LightingType.Has(TerrainLightingType.PerlinNoise))
-                RegionLightingGenerator.CreatePerlinNoiseLighting(grid, template);
+            //if (template.LightingType.Has(TerrainLightingType.PerlinNoise))
+            //    RegionLightingGenerator.CreatePerlinNoiseLighting(grid, template);
         }
         #endregion
     }
