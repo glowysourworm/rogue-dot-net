@@ -39,7 +39,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private SymbolDetailsTemplateViewModel _cellSymbol;
         private LightAmbientTemplateViewModel _lightingAmbient1;
         private LightAmbientTemplateViewModel _lightingAmbient2;
-        private LightAmbientTemplateViewModel _lightingAmbient3;
+        private double _lightingThreshold;
 
         public int Width
         {
@@ -176,10 +176,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _lightingAmbient2; }
             set { this.RaiseAndSetIfChanged(ref _lightingAmbient2, value); }
         }
-        public LightAmbientTemplateViewModel LightingAmbient3
+        public double LightingThreshold
         {
-            get { return _lightingAmbient3; }
-            set { this.RaiseAndSetIfChanged(ref _lightingAmbient3, value); }
+            get { return _lightingThreshold; }
+            set { this.RaiseAndSetIfChanged(ref _lightingThreshold, value); }
         }
 
         public LayoutTemplateViewModel() : base()
@@ -205,7 +205,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 
             this.LightingAmbient1 = new LightAmbientTemplateViewModel();
             this.LightingAmbient2 = new LightAmbientTemplateViewModel();
-            this.LightingAmbient3 = new LightAmbientTemplateViewModel();
+            this.LightingThreshold = 1.0;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private SymbolDetailsTemplate _cellSymbol;
         private LightAmbientTemplate _lightingAmbient1;
         private LightAmbientTemplate _lightingAmbient2;
-        private LightAmbientTemplate _lightingAmbient3;
+        private double _lightingThreshold;
 
         public int Width
         {
@@ -361,15 +361,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public LightAmbientTemplate LightingAmbient3
+        public double LightingThreshold
         {
-            get { return _lightingAmbient3; }
+            get { return _lightingThreshold; }
             set
             {
-                if (_lightingAmbient3 != value)
+                if (_lightingThreshold != value)
                 {
-                    _lightingAmbient3 = value;
-                    OnPropertyChanged("LightingAmbient3");
+                    _lightingThreshold = value;
+                    OnPropertyChanged("LightingThreshold");
                 }
             }
         }
@@ -394,7 +394,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 
             this.LightingAmbient1 = new LightAmbientTemplate();
             this.LightingAmbient2 = new LightAmbientTemplate();
-            this.LightingAmbient3 = new LightAmbientTemplate();
+            this.LightingThreshold = 1.0;
         }
     }
 }
