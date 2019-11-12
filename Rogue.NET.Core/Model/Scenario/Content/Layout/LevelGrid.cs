@@ -16,6 +16,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         private GridCell[] _doorArray;
         private GridCell[] _cellArray;
+        private GridCell[] _wallLightArray;
         private RegionMap _roomMap;
         private RegionMap _terrainMap;
 
@@ -80,7 +81,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 for (int j = 0; j < grid.GetLength(1); j++)
                 {
                     if (grid[i, j] != null)
-                        _grid[i, j] = new GridCell(i, j, grid[i, j].IsWall, grid[i, j].IsDoor, grid[i, j].DoorSearchCounter, grid[i, j].IsCorridor, grid[i, j].Lighting);
+                        _grid[i, j] = new GridCell(i, j, grid[i, j].IsWall, grid[i, j].IsWallLight,
+                                                         grid[i, j].IsDoor, grid[i, j].DoorSearchCounter,
+                                                         grid[i, j].IsCorridor, grid[i, j].BaseLight,
+                                                         grid[i, j].WallLight);
                 }
             }
         }
@@ -130,6 +134,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             // Leave these invalid until iteration is necessary
             _doorArray = null;
             _cellArray = null;
+            _wallLightArray = null;
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -166,6 +171,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             var cells = new List<GridCell>();
             var doorCells = new List<GridCell>();
+            var wallLightCells = new List<GridCell>();
 
             for (int i=0;i<_grid.GetLength(0);i++)
             {
@@ -178,11 +184,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
                     if (_grid[i, j].IsDoor)
                         doorCells.Add(_grid[i, j]);
+
+                    if (_grid[i, j].IsWallLight)
+                        wallLightCells.Add(_grid[i, j]);
                 }
             }
 
             _cellArray = cells.ToArray();
             _doorArray = doorCells.ToArray();
+            _wallLightArray = wallLightCells.ToArray();
         }
         public GridCell[] GetDoors()
         {
@@ -197,6 +207,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 RebuildArrays();
 
             return _cellArray;
+        }
+        public GridCell[] GetWallLightCells()
+        {
+            if (_wallLightArray == null)
+                RebuildArrays();
+
+            return _wallLightArray;
         }
         #endregion
 

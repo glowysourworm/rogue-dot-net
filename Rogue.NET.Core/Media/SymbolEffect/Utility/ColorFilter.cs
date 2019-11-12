@@ -6,6 +6,7 @@ using System;
 using Rogue.NET.Common.Extension;
 using System.ComponentModel;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 {
@@ -42,35 +43,52 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 
             return result.ToString();
         }
-        
+        public static Light AddLight(Light light1, Light light2)
+        {
+            return new Light()
+            {
+                Red = (byte)(int)((light1.Red * light1.Intensity) + (light2.Red * light2.Intensity)).Clip(0, 255),
+                Green = (byte)(int)((light1.Green * light1.Intensity) + (light2.Green * light2.Intensity)).Clip(0, 255),
+                Blue = (byte)(int)((light1.Blue * light1.Intensity) + (light2.Blue * light2.Intensity)).Clip(0, 255),
+                Intensity = (light1.Intensity + light2.Intensity).Clip(0, 1)
+            };
+            //return new Light()
+            //{
+            //    Red = (byte)(int)((light1.Red  + light2.Red) / 2.0),
+            //    Green = (byte)(int)((light1.Green + light2.Green) / 2.0),
+            //    Blue = (byte)(int)((light1.Blue + light2.Blue) / 2.0),
+            //    Intensity = (light1.Intensity + light2.Intensity).Clip(0,1)
+            //};
+        }
+
         /// <summary>
-        /// Uses a tinting effect to apply lighting to a base color
+        /// Uses a tinting effect to apply lighting to a base color. NOTE*** THIS WILL ERASE ANY PREVIOUS LIGHTING EFFECTS 
+        /// BY WASHING OUT THE COLOR CHANNELS.
         /// </summary>
-        public static Color AddLightingEffect(Color baseColor, Color light, bool discretize = true)
+        public static Color AddLightingEffect(Color baseColor, Light light)
         {
             // Alpha Blending:  https://en.wikipedia.org/wiki/Alpha_compositing#Alpha_blending
             // Blend Modes:     https://en.wikipedia.org/wiki/Blend_modes
             // Tinting:         https://softwarebydefault.com/2013/04/12/bitmap-color-tint/
 
-            //// Tinting:  
-            //var red = baseColor.R + (((0xFF - baseColor.R) * light.R) / 255.0);
-            //var green = baseColor.G + (((0xFF - baseColor.G) * light.G) / 255.0);
-            //var blue = baseColor.B + (((0xFF - baseColor.B) * light.B) / 255.0);
+            // Tinting:  
+            //var red = baseColor.R + (((0xFF - baseColor.R) * (light.Red * light.Intensity)) / 255.0);
+            //var green = baseColor.G + (((0xFF - baseColor.G) * (light.Green * light.Intensity)) / 255.0);
+            //var blue = baseColor.B + (((0xFF - baseColor.B) * (light.Blue * light.Intensity)) / 255.0);
 
-            //// Invent a "darkness" value that subtracts light to simulate darkening
-            //var darkness = (1 - (light.A / 255.0)).Clip(0, 0.4);
+            // Multiply (Shade)
+            var red = (baseColor.R * light.Red) / 255.0;
+            var green = (baseColor.G * light.Green) / 255.0;
+            var blue = (baseColor.B * light.Blue) / 255.0;
 
-            //// Create the color from the tinted value
-            //var lightedColor = Color.FromArgb(baseColor.A, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
+            // Invent a "darkness" value that subtracts light to simulate darkening (NOTE*** Darkness scale is [-0.5, 0.5])
+            var darkness = (1 - light.Intensity) / 2.0;
 
-            //// Create a darkened color from the tinted color
-            //var darkenedColor = ShiftHSL(lightedColor, 0, 0, -1 * darkness);
+            // Create the color from the tinted value
+            var color = Color.FromArgb(baseColor.A, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
 
-            //// Discretize the output to save cache space
-            //return Discretize(darkenedColor, ModelConstants.ColorChannelDiscretization);
-
-            // TODO:TERRAIN - BYPASSING FILTER
-            return baseColor;
+            // Create a darkened color from the tinted color
+            return ShiftHSL(color, 0, 0, -1 * darkness);
         }
         public static IEnumerable<ColorViewModel> CreateColors()
         {
@@ -176,25 +194,20 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
         }
 
         /// <summary>
-        /// Creates a step-function discretization of the alpha channel to create opacity "levels"
+        /// Creates a step-function discretization of the intensity to prevent over-loading the cache.
         /// </summary>
-        /// <param name="color">Input color</param>
-        /// <param name="numberOfLevels">Number of levels in the digitization</param>
-        /// <returns>A filtered color with an alpha channel that has been set to a particular discrete value</returns>
-        public static Color Discretize(Color color, int numberOfLevels)
+        /// <param name="numberOfSteps">Number of steps in the digitization</param>
+        /// <returns>A new light with an intensity that has been set to a particular discrete value</returns>
+        public static Light Discretize(Light light, int numberOfSteps)
         {
-            if (numberOfLevels < 2)
+            if (numberOfSteps < 2)
                 throw new ArgumentException("ColorFilter.Digitize must have a number of levels greater than or equal to two");
 
-            // Divide the alpha channel (byte) into a discrete set of levels - each with the scaled size
-            var channelSize = 256.0 / numberOfLevels;
+            // Calculate the discrete intensity value 
+            var stepSize = 1.0 / (double)numberOfSteps;
+            var stepNumber = (int)(light.Intensity / stepSize);
 
-            var alpha = ((int)(color.A / channelSize)) * channelSize;
-            var red   = ((int)(color.R / channelSize)) * channelSize;
-            var green = ((int)(color.G / channelSize)) * channelSize;
-            var blue  = ((int)(color.B / channelSize)) * channelSize;
-
-            return Color.FromArgb((byte)(int)alpha, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
+            return new Light(light.Red, light.Green, light.Green, stepSize * stepNumber);
         }
     }
 }

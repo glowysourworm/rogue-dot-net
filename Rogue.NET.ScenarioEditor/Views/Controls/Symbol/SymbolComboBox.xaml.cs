@@ -1,6 +1,7 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         {
             this.TheCB.ItemsSource = _scenarioResourceService.GetResourceNames(SymbolType.Game).Select(symbol =>
             {
-                var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0, Colors.White);
+                var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0, Light.White);
                 return SvgSymbolViewModel.CreateGameSymbol(source, symbol);
             });
         }

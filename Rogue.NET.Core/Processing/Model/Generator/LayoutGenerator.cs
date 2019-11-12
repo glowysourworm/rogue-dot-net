@@ -479,27 +479,55 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             // Procedure
             //
-            // - Create lighting for each type by using alpha blending
+            // - Create white light threshold for the level using the scenario configuration setting
+            // - Create layers 1 and 2 if they're set (using RGB averages to add light color channels)
             // - Store the results in the cell's Lighting color (contains intensity information)
             //
 
-            //template.LightingColor = Colors.Red.ToString();
-            //template.LightingRatio = 1.0;
+            // Create the white light threshold
+            RegionLightingGenerator.CreateLightThreshold(grid, template);
 
-            //if (template.LightingType.Has(TerrainLightingType.LightedRooms))
-            //{
-            //    foreach (var region in regions)
-            //    {
-            //        if (_randomSequenceGenerator.Get() < template.LightingRatio)
-            //            RegionLightingGenerator.CreateLightedRoom(grid, region, template);
-            //    }
-            //}
+            switch (template.LightingAmbient1.Type)
+            {
+                case TerrainAmbientLightingType.None:
+                    break;
+                case TerrainAmbientLightingType.LightedRooms:
+                    RegionLightingGenerator.CreateLightedRooms(grid, regions, template.LightingAmbient1);
+                    break;
+                case TerrainAmbientLightingType.PerlinNoiseLarge:
+                case TerrainAmbientLightingType.PerlinNoiseSmall:
+                    RegionLightingGenerator.CreatePerlinNoiseLighting(grid, template.LightingAmbient1);
+                    break;
+                case TerrainAmbientLightingType.WhiteNoise:
+                    RegionLightingGenerator.CreateWhiteNoiseLighting(grid, template.LightingAmbient1);
+                    break;
+                case TerrainAmbientLightingType.WallLighting:
+                    RegionLightingGenerator.CreateWallLighting(grid, template.LightingAmbient1);
+                    break;
+                default:
+                    throw new Exception("Unhandled Terrain Ambient Lighting Type");
+            }
 
-            //if (template.LightingType.Has(TerrainLightingType.WhiteNoise))
-            //    RegionLightingGenerator.CreateWhiteNoiseLighting(grid, template);
-
-            //if (template.LightingType.Has(TerrainLightingType.PerlinNoise))
-            //    RegionLightingGenerator.CreatePerlinNoiseLighting(grid, template);
+            switch (template.LightingAmbient2.Type)
+            {
+                case TerrainAmbientLightingType.None:
+                    break;
+                case TerrainAmbientLightingType.LightedRooms:
+                    RegionLightingGenerator.CreateLightedRooms(grid, regions, template.LightingAmbient2);
+                    break;
+                case TerrainAmbientLightingType.PerlinNoiseLarge:
+                case TerrainAmbientLightingType.PerlinNoiseSmall:
+                    RegionLightingGenerator.CreatePerlinNoiseLighting(grid, template.LightingAmbient2);
+                    break;
+                case TerrainAmbientLightingType.WhiteNoise:
+                    RegionLightingGenerator.CreateWhiteNoiseLighting(grid, template.LightingAmbient2);
+                    break;
+                case TerrainAmbientLightingType.WallLighting:
+                    RegionLightingGenerator.CreateWallLighting(grid, template.LightingAmbient2);
+                    break;
+                default:
+                    throw new Exception("Unhandled Terrain Ambient Lighting Type");
+            }
         }
         #endregion
     }

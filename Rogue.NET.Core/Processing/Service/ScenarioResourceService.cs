@@ -5,6 +5,7 @@ using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Processing.Service.Cache;
@@ -112,22 +113,22 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioConfigurationCache.EmbedConfiguration(configuration);
         }
 
-        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Color lighting)
+        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Light lighting)
         {
             return _scenarioImageSourceFactory.GetImageSource(symbolDetails, scale, lighting);
         }
 
-        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Color lighting)
+        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Light lighting)
         {
             return _scenarioImageSourceFactory.GetImageSource(scenarioImage, scale, lighting);
         }
 
-        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Color lighting)
+        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Light lighting)
         {
             return _scenarioImageSourceFactory.GetDesaturatedImageSource(scenarioImage, scale, lighting);
         }
 
-        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Color lighting)
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Light lighting)
         {
             return _scenarioImageSourceFactory.GetFrameworkElement(scenarioImage, scale, lighting);
         }

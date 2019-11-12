@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,11 @@ using System.Windows.Media;
 
 namespace Rogue.NET.Core.Media.SymbolEffect
 {
-    public class AlphaBlendEffect : SymbolEffectBase
+    public class LightingEffect : SymbolEffectBase
     {
-        public Color Lighting { get; private set; }
+        public Light Lighting { get; private set; }
 
-        public AlphaBlendEffect(Color lighting)
+        public LightingEffect(Light lighting)
         {
             this.Lighting = lighting;
         }

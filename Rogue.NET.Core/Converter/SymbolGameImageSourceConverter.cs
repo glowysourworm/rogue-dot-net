@@ -1,6 +1,7 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace Rogue.NET.Core.Converter
                 SymbolType = SymbolType.Game,
                 GameSymbol = gameSymbol
 
-            }, scale, Colors.Transparent);
+            }, scale, Light.White);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

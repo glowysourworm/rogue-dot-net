@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Processing.Service.Cache.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
@@ -129,21 +128,21 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             {
                 if (type == SymbolType.Symbol)
                 {
-                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateSymbol(symbol, symbol, 0, 0, 0, false), 2.0, Colors.White);
+                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateSymbol(symbol, symbol, 0, 0, 0, false), 2.0, Light.White);
 
                     // Input color mask indicator only. The HSL parameters are based at zero because they're effects
                     return SvgSymbolViewModel.CreateSymbol(imageSource, symbol, 0, 0, 0, false);
                 }
                 else if (type == SymbolType.OrientedSymbol)
                 {
-                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateOrientedSymbol(symbol, symbol, 0, 0, 0, false), 2.0, Colors.White);
+                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateOrientedSymbol(symbol, symbol, 0, 0, 0, false), 2.0, Light.White);
 
                     // Input color mask indicator only. The HSL parameters are based at zero because they're effects
                     return SvgSymbolViewModel.CreateOrientedSymbol(imageSource, symbol, 0, 0, 0, false);
                 }
                 else // Terrain Symbol
                 {
-                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateTerrainSymbol(symbol, symbol, 0, 0, 0, false), 2.0, Colors.White);
+                    var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateTerrainSymbol(symbol, symbol, 0, 0, 0, false), 2.0, Light.White);
 
                     // Input color mask indicator only. The HSL parameters are based at zero because they're effects
                     return SvgSymbolViewModel.CreateTerrainSymbol(imageSource, symbol, 0, 0, 0, false);
@@ -175,7 +174,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                                                                            viewModel.Saturation, viewModel.Lightness, useColorMask);
 
                             // Fetch image source
-                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0, Colors.White);
+                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0, Light.White);
 
                             // Add to result
                             result.Add(SvgSymbolViewModel.CreateSymbol(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
@@ -188,7 +187,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                                                                                    viewModel.Saturation, viewModel.Lightness, useColorMask);
 
                             // Fetch image source
-                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0, Colors.White);
+                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0, Light.White);
 
                             // Add to result
                             result.Add(SvgSymbolViewModel.CreateOrientedSymbol(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
@@ -201,7 +200,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                                                                                    viewModel.Saturation, viewModel.Lightness, useColorMask);
 
                             // Fetch image source
-                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0, Colors.White);
+                            var imageSource = _scenarioResourceService.GetImageSource(scenarioImage, 2.0, Light.White);
 
                             // Add to result
                             result.Add(SvgSymbolViewModel.CreateTerrainSymbol(imageSource, viewModel.Symbol, hue, viewModel.Saturation, viewModel.Lightness, viewModel.UseColorMask));
@@ -226,8 +225,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                         var lightImage = ScenarioImage.CreateSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask);
                         var darkImage = ScenarioImage.CreateSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, -1, 0.0, useColorMask);
 
-                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0, Colors.White);
-                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0, Colors.White);
+                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0, Light.White);
+                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0, Light.White);
 
                         result.Add(SvgSymbolViewModel.CreateSymbol(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
                         result.Add(SvgSymbolViewModel.CreateSymbol(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));
@@ -239,8 +238,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                         var lightImage = ScenarioImage.CreateOrientedSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask);
                         var darkImage = ScenarioImage.CreateOrientedSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, -1, 0.0, useColorMask);
 
-                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0, Colors.White);
-                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0, Colors.White);
+                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0, Light.White);
+                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0, Light.White);
 
                         result.Add(SvgSymbolViewModel.CreateOrientedSymbol(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
                         result.Add(SvgSymbolViewModel.CreateOrientedSymbol(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));
@@ -252,8 +251,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                         var lightImage = ScenarioImage.CreateTerrainSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask);
                         var darkImage = ScenarioImage.CreateTerrainSymbol(viewModel.Symbol, viewModel.Symbol, 0.0, -1, 0.0, useColorMask);
 
-                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0, Colors.White);
-                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0, Colors.White);
+                        var lightImageSource = _scenarioResourceService.GetImageSource(lightImage, 2.0, Light.White);
+                        var darkImageSource = _scenarioResourceService.GetImageSource(darkImage, 2.0, Light.White);
 
                         result.Add(SvgSymbolViewModel.CreateTerrainSymbol(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0, useColorMask));
                         result.Add(SvgSymbolViewModel.CreateTerrainSymbol(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0, useColorMask));

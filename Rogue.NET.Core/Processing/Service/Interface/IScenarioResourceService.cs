@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Processing.Service.Cache;
@@ -35,10 +36,10 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         void EmbedConfiguration(ScenarioConfigurationContainer configuration);
 
         // IScenarioImageSourceFactory
-        DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Color lighting);
-        DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Color lighting);
-        DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Color lighting);
-        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Color lighting);
+        DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Light lighting);
+        DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Light lighting);
+        DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Light lighting);
+        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Light lighting);
         
         // ISvgCache
         DrawingGroup GetDrawing(ScenarioCacheImage scenarioCacheImage);

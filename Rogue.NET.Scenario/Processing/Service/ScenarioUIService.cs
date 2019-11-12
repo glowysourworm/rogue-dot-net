@@ -57,9 +57,6 @@ namespace Rogue.NET.Scenario.Processing.Service
             revealedDrawing = new DrawingGroup();
             terrainDrawing = new DrawingGroup();
 
-            // var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(), 1.0);
-
-
 
 
             foreach (var cell in _modelService.Level.Grid.GetCells())
@@ -75,6 +72,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                 var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0, cell.EffectiveLighting);
                 var cellSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.CellSymbol), 1.0, cell.EffectiveLighting);
                 var doorSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0, cell.EffectiveLighting);
+                var wallLightSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0, cell.EffectiveLighting);
 
                 // Doors
                 if (cell.IsDoor)
@@ -82,6 +80,13 @@ namespace Rogue.NET.Scenario.Processing.Service
                     visibleDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
                     exploredDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
                     revealedDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
+                }
+
+                else if (cell.IsWallLight)
+                {
+                    visibleDrawing.Children.Add(new ImageDrawing(wallLightSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(wallLightSymbol, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(wallLightSymbol, rect));
                 }
 
                 // Walls - Add default wall to layers { Visible, Explored, Revealed } for rendering

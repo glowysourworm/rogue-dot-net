@@ -7,6 +7,7 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
@@ -56,7 +57,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.Items = new PagedObservableCollection<ScenarioMetaDataViewModel>(PAGE_SIZE);
 
             // Initialize the category as not known
-            this.Source = scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol("Unknown", GameSymbol.Identify), 1.0, Colors.White);
+            this.Source = scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol("Unknown", GameSymbol.Identify), 1.0, Light.White);
         }
 
         /// <summary>

@@ -12,6 +12,9 @@ namespace Rogue.NET.Core.Math.Algorithm
     /// </summary>
     public static class NoiseGenerator
     {
+        private const double PERLIN_NOISE_LOW_FREQUENCY = 0.06;
+        private const double PERLIN_NOISE_HIGH_FREQUENCY = 0.5;
+
         /// <summary>
         /// Delegate for a method that is used for processing a grid based on the 2D noise array.
         /// </summary>
@@ -44,7 +47,7 @@ namespace Rogue.NET.Core.Math.Algorithm
         }
 
         /// <summary>
-        /// Returns Perlin noise map using the specified [0,1] frequency. A frequency of 0 uses a single mesh
+        /// Returns Perlin noise map using the specified [0,1] frequency. A frequency of 0 uses a (nearly) single mesh
         /// square to compute the noise map. A frequency value of 1 uses a minimum of 2x2 mesh size to compute the
         /// noise values.
         /// </summary>
@@ -52,8 +55,8 @@ namespace Rogue.NET.Core.Math.Algorithm
         /// <returns>Returns a Perlin noise map which has the characteristic behavior of smoothness and feature size according to the mesh cell size.</returns>
         public static double[,] GeneratePerlinNoise(int width, int height, double frequency, PostProcessingFilterCallback postProcessingCallback)
         {
-            // Clip the frequency input
-            var safeFrequency = frequency.Clip(0.001, 1);
+            // Scale the frequency input
+            var scaledFrequency = (frequency * (PERLIN_NOISE_HIGH_FREQUENCY - PERLIN_NOISE_LOW_FREQUENCY)) + PERLIN_NOISE_LOW_FREQUENCY;
 
             // Initialize the output map
             var map = new double[width, height];
@@ -63,10 +66,10 @@ namespace Rogue.NET.Core.Math.Algorithm
             //
 
             // Mesh Cell Width:  Creates a mesh cell width between 2.0 and the width of the grid
-            var meshCellWidth = (int)(1 / safeFrequency).Clip(2, width);
+            var meshCellWidth = (int)(1 / scaledFrequency).Clip(2, width);
 
             // Mesh Cell Height:  [2.0, height]
-            var meshCellHeight = (int)(1 / safeFrequency).Clip(2, height);
+            var meshCellHeight = (int)(1 / scaledFrequency).Clip(2, height);
 
             // Generate mesh that hangs over the edges of the grid (AT LEAST BY ONE MESH CELL)
             //

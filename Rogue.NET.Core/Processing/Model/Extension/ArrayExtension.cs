@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Model.Extension
 {
@@ -157,7 +158,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
                 return new T[] { n, s, e, ne, se };
 
             return new T[] { n, s, e, w, ne, nw, se, sw };
-        }
+        }     
 
         /// <summary>
         /// Returns 1st of 2 off diagonal elements in the specified non-cardinal direction (Example: NE -> N element)
@@ -275,6 +276,25 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             if (north && west) result[index++] = nw;
             if (south && east) result[index++] = se;
             if (south && west) result[index++] = sw;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns elements from the grid that match the given predicate. NOTE*** DOES NOT SCREEN FOR NULL VALUES
+        /// </summary>
+        public static IEnumerable<T> Where<T>(this T[,] grid, Func<T, bool> predicate)
+        {
+            var result = new List<T>();
+
+            for (int i=0;i<grid.GetLength(0);i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (predicate(grid[i, j]))
+                        result.Add(grid[i, j]);
+                }
+            }
 
             return result;
         }

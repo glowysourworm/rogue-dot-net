@@ -1,5 +1,6 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
@@ -100,7 +101,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                                                                                                             characterName,
                                                                                                             category,
                                                                                                             Colors.White.ToString(),
-                                                                                                            1.0), 1.0, Colors.White);
+                                                                                                            1.0), 1.0, Light.White);
 
                 return SvgSymbolViewModel.CreateCharacterSymbol(imageSource, category, characterName, 1.0);
             });

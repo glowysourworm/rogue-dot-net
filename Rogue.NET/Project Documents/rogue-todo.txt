@@ -3239,3 +3239,5 @@ IMMEDIATE TODO'S:
 		
 		Working with the digitization of the alpha channel for doing lighting provides a way to make this "turn on or off" like a switch (kind of)..
 		But I think it would be a really neat effect to replace the light radius.
+		
+		IDEA: Consider replacing the light radius effect with the new light source effect used for terrain

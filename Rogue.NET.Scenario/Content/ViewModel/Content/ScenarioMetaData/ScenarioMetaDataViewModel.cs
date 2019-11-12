@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -123,10 +124,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.ObjectType = metaData.ObjectType;
 
             if (metaData.IsIdentified)
-                this.Source = scenarioResourceService.GetImageSource(metaData, 1.0, Colors.White);
+                this.Source = scenarioResourceService.GetImageSource(metaData, 1.0, Light.White);
 
             else
-                this.Source = scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol("Unknown", GameSymbol.Identify), 1.0, Colors.White);
+                this.Source = scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol("Unknown", GameSymbol.Identify), 1.0, Light.White);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
