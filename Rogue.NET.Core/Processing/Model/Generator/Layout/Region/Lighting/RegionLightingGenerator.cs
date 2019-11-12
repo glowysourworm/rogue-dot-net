@@ -19,6 +19,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
         readonly static IRandomSequenceGenerator _randomSequenceGenerator;
         readonly static ILightGenerator _lightGenerator;
 
+        // Constants for creating space between wall lights
+        const int WALL_LIGHT_SPACE_PARAMETER = 20;
+        const int WALL_LIGHT_SPACE_MINIMUM = 5;
+
         static RegionLightingGenerator()
         {
             _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
@@ -127,7 +131,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
 
-            // TODO:TERRAIN - FIND A WAY TO PUT THESE EVERY "X" CELLS AROUND THE EDGE (WHERE "X" IS CALCULATED BASED ON THE FILL RATIO)
+            var installedWallLights = new List<GridLocation>();
+
+            // Create a minimum radius that is a function of the fill ratio
+            var minimumRadius = ((1 - template.FillRatio) * WALL_LIGHT_SPACE_PARAMETER) + WALL_LIGHT_SPACE_MINIMUM;
 
             // Combine color with existing lighting for the cell
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -140,8 +147,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
                     if (!grid[i, j].IsWall)
                         continue;
 
-                    if (_randomSequenceGenerator.Get() < template.FillRatio)
+                    // Create the first wall light
+                    if (!installedWallLights.Any(location => Metric.EuclideanDistance(grid[i, j].Location, location) <= minimumRadius))
                     {
+                        installedWallLights.Add(grid[i, j].Location);
+
                         // Go ahead and adjust light intensity here since the light instance is only local
                         var wallLightIntensity = _randomSequenceGenerator.GetRandomValue(template.IntensityRange);
 
@@ -149,6 +159,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
                         grid[i, j].WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
                         grid[i, j].IsWallLight = true;
                     }
+
+                    //if (_randomSequenceGenerator.Get() < 0.5)
+                    //{
+                    //    // Go ahead and adjust light intensity here since the light instance is only local
+                    //    var wallLightIntensity = _randomSequenceGenerator.GetRandomValue(template.IntensityRange);
+
+                    //    // Blend in the resulting light 
+                    //    grid[i, j].WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
+                    //    grid[i, j].IsWallLight = true;
+                    //}
                 }
             }
         }
