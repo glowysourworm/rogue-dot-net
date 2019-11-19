@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using System.Collections.ObjectModel;
 using System.Windows.Media;
 using LayoutViewType = Rogue.NET.ScenarioEditor.Views.Assets.Layout;
 
@@ -39,7 +40,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private SymbolDetailsTemplateViewModel _cellSymbol;
         private LightAmbientTemplateViewModel _lightingAmbient1;
         private LightAmbientTemplateViewModel _lightingAmbient2;
-        private double _lightingThreshold;
+        private double _lightingThreshold;        
 
         public int Width
         {
@@ -182,6 +183,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             set { this.RaiseAndSetIfChanged(ref _lightingThreshold, value); }
         }
 
+        public ObservableCollection<TerrainLayerTemplateViewModel> TerrainLayers { get; set; }
+
         public LayoutTemplateViewModel() : base()
         {
             this.Width = 80;
@@ -206,6 +209,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.LightingAmbient1 = new LightAmbientTemplateViewModel();
             this.LightingAmbient2 = new LightAmbientTemplateViewModel();
             this.LightingThreshold = 1.0;
+
+            this.TerrainLayers = new ObservableCollection<TerrainLayerTemplateViewModel>();
         }
     }
 }

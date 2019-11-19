@@ -11,7 +11,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         TerrainLayoutType _layoutType;
         bool _isPassable;
         bool _isWalkable;
+        bool _emitsLight;
         SymbolDetailsTemplate _symbolDetails;
+        LightTemplate _emittedLight;
 
         public bool IsPassable
         {
@@ -22,6 +24,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         {
             get { return _isWalkable; }
             set { this.RaiseAndSetIfChanged(ref _isWalkable, value); }
+        }
+        public bool EmitsLight
+        {
+            get { return _emitsLight; }
+            set { this.RaiseAndSetIfChanged(ref _emitsLight, value); }
         }
         public TerrainType Type
         {
@@ -38,10 +45,16 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             get { return _symbolDetails; }
             set { this.RaiseAndSetIfChanged(ref _symbolDetails, value); }
         }
+        public LightTemplate EmittedLight
+        {
+            get { return _emittedLight; }
+            set { this.RaiseAndSetIfChanged(ref _emittedLight, value); }
+        }
 
         public TerrainLayerTemplate()
         {
             this.SymbolDetails = new SymbolDetailsTemplate();
+            this.EmittedLight = new LightTemplate();
         }
     }
 }

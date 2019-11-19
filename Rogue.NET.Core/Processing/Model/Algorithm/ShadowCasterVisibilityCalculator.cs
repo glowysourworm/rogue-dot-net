@@ -246,7 +246,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     radius++;
 
                     // Re-evaluate loop condition
-                    iterate = !finalIteration || radius <= MAX_RADIUS;
+                    iterate = !finalIteration && radius <= MAX_RADIUS;
                 }
             }
 

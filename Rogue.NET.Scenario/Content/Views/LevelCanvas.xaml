@@ -85,7 +85,7 @@
                     </Canvas>
 
                     <!-- Light Radii-->
-                    <ItemsControl x:Name="LightRadiiItemsControl"
+                    <!--ItemsControl x:Name="LightRadiiItemsControl"
                               ItemsSource="{Binding LightRadii}" 
                               DisplayMemberPath="Symbol"
                               BorderBrush="Transparent" 
@@ -98,7 +98,7 @@
                                 <Canvas ClipToBounds="False"  />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                    </-->
 
                     <!-- Auras -->
                     <ItemsControl x:Name="AuraItemsControl"

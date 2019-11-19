@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
@@ -374,6 +375,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             }
         }
 
+        public List<TerrainLayerTemplate> TerrainLayers { get; set; }
+
         public LayoutTemplate() : base()
         {
             this.Width = 600;
@@ -395,6 +398,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.LightingAmbient1 = new LightAmbientTemplate();
             this.LightingAmbient2 = new LightAmbientTemplate();
             this.LightingThreshold = 1.0;
+
+            this.TerrainLayers = new List<TerrainLayerTemplate>();
         }
     }
 }
