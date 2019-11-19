@@ -77,6 +77,16 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Terrain layer can be placed on top of - or underneath - other terrain layers")]
         Combined = 1
     }
+    public enum TerrainGenerationType
+    {
+        [Display(Name = "Smooth Features",
+                 Description = "Creates a terrain layer that has smoothly changing features")]
+        PerlinNoise = 0,
+
+        [Display(Name = "Random",
+                 Description = "Creates a terrain layer that has randomly chosen cells")]
+        WhiteNoise = 1
+    }
 
     public enum TerrainAmbientLightingType
     {

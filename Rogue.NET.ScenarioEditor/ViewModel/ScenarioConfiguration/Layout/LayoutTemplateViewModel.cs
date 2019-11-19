@@ -183,7 +183,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             set { this.RaiseAndSetIfChanged(ref _lightingThreshold, value); }
         }
 
-        public ObservableCollection<TerrainLayerTemplateViewModel> TerrainLayers { get; set; }
+        public ObservableCollection<TerrainLayerGenerationTemplateViewModel> TerrainLayers { get; set; }
 
         public LayoutTemplateViewModel() : base()
         {
@@ -210,7 +210,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.LightingAmbient2 = new LightAmbientTemplateViewModel();
             this.LightingThreshold = 1.0;
 
-            this.TerrainLayers = new ObservableCollection<TerrainLayerTemplateViewModel>();
+            this.TerrainLayers = new ObservableCollection<TerrainLayerGenerationTemplateViewModel>();
         }
     }
 }

@@ -375,7 +375,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             }
         }
 
-        public List<TerrainLayerTemplate> TerrainLayers { get; set; }
+        public List<TerrainLayerGenerationTemplate> TerrainLayers { get; set; }
 
         public LayoutTemplate() : base()
         {
@@ -399,7 +399,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.LightingAmbient2 = new LightAmbientTemplate();
             this.LightingThreshold = 1.0;
 
-            this.TerrainLayers = new List<TerrainLayerTemplate>();
+            this.TerrainLayers = new List<TerrainLayerGenerationTemplate>();
         }
     }
 }

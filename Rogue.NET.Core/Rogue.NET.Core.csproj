@@ -224,6 +224,7 @@
     <Compile Include="Model\Enums\Layout.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\LightAmbientTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\LightTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerGenerationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerTemplate.cs" />
     <Compile Include="Model\Scenario\Content\Layout\GridCellInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Light.cs" />

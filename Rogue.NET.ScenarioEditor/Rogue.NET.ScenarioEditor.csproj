@@ -481,6 +481,7 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LightAmbientTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LightTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Layout\TerrainLayerGenerationTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\TerrainLayerTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\RangeViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationContainerViewModel.cs">
