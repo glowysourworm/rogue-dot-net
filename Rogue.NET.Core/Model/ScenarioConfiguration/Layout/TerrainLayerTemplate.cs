@@ -12,6 +12,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         bool _isPassable;
         bool _isWalkable;
         bool _emitsLight;
+        int _zOrder;
         SymbolDetailsTemplate _symbolDetails;
         LightTemplate _emittedLight;
 
@@ -29,6 +30,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         {
             get { return _emitsLight; }
             set { this.RaiseAndSetIfChanged(ref _emitsLight, value); }
+        }
+        public int ZOrder
+        {
+            get { return _zOrder; }
+            set { this.RaiseAndSetIfChanged(ref _zOrder, value); }
         }
         public TerrainType Type
         {
