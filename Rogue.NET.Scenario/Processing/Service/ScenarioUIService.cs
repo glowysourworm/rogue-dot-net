@@ -57,7 +57,18 @@ namespace Rogue.NET.Scenario.Processing.Service
             revealedDrawing = new DrawingGroup();
             terrainDrawing = new DrawingGroup();
 
+            var exploredLight = new Light(0xFF, 0xFF, 0xFF, 0.1);
+            var revealedLight = new Light(0xFF, 0x00, 0xFF, 1);
 
+            var wallSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0, exploredLight);
+            var cellSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.CellSymbol), 1.0, exploredLight);
+            var doorSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0, exploredLight);
+            var wallLightSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0, exploredLight);
+
+            var wallSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.WallSymbol), 1.0, revealedLight);
+            var cellSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.CellSymbol), 1.0, revealedLight);
+            var doorSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0, revealedLight);
+            var wallLightSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(_modelService.Level.Layout.Asset.DoorSymbol), 1.0, revealedLight);
 
             foreach (var cell in _modelService.Level.Grid.GetCells())
             {
@@ -78,31 +89,31 @@ namespace Rogue.NET.Scenario.Processing.Service
                 if (cell.IsDoor)
                 {
                     visibleDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(doorSymbolExplored, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(doorSymbolRevealed, rect));
                 }
 
                 else if (cell.IsWallLight)
                 {
                     visibleDrawing.Children.Add(new ImageDrawing(wallLightSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(wallLightSymbol, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(wallLightSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(wallLightSymbolExplored, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(wallLightSymbolRevealed, rect));
                 }
 
                 // Walls - Add default wall to layers { Visible, Explored, Revealed } for rendering
                 else if (cell.IsWall)
                 {
                     visibleDrawing.Children.Add(new ImageDrawing(wallSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(wallSymbol, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(wallSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(wallSymbolExplored, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(wallSymbolRevealed, rect));
                 }
 
                 // Room Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
                 else //if (isRoom || cell.IsCorridor)
                 {
                     visibleDrawing.Children.Add(new ImageDrawing(cellSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(cellSymbol, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(cellSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(cellSymbolExplored, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(cellSymbolRevealed, rect));
                 }
             }
         }

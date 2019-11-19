@@ -27,17 +27,17 @@ namespace Rogue.NET.Core.Processing.Service
 
         readonly Level _level;
         readonly Player _player;
-        readonly IRayTracer _rayTracer;
+        readonly IVisibilityCalculator _visibilityCalculator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         /// <summary>
         /// Non-importing constructor - should be loaded once per level
         /// </summary>
-        public ModelLayoutService(Level level, Player player, IRayTracer rayTracer, IRandomSequenceGenerator randomSequenceGenerator)
+        public ModelLayoutService(Level level, Player player, IVisibilityCalculator visibilityCalculator, IRandomSequenceGenerator randomSequenceGenerator)
         {
             _level = level;
             _player = player;
-            _rayTracer = rayTracer;
+            _visibilityCalculator = visibilityCalculator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
@@ -53,7 +53,7 @@ namespace Rogue.NET.Core.Processing.Service
             var wallLightFOV = new Dictionary<GridCell, IEnumerable<DistanceLocation>>();
 
             foreach (var cell in _level.Grid.GetWallLightCells())
-                wallLightFOV.Add(cell, _rayTracer.CalculateVisibility(_level.Grid, cell.Location));
+                wallLightFOV.Add(cell, _visibilityCalculator.CalculateVisibility(_level.Grid, cell.Location));
 
             // Have to add up contributions from the wall lights
             foreach (var entry in wallLightFOV)

@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace Rogue.NET.Core.Processing.Model.Algorithm.Interface
 {
-    public interface IRayTracer
+    public interface IVisibilityCalculator
     {
         /// <summary>
         /// Calculates visibility from the vantage point of the input location. The return value is the set of locations that are lit up from the 

@@ -21,28 +21,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         private RegionMap _terrainMap;
 
         #region Properties / Indexers
-        public GridCell this[int column, int row]
+        public virtual GridCell this[int column, int row]
         {
-            //NOTE*** Returns null as a convention
-            get
-            {
-                if (column >= 0 &&
-                    row >= 0 &&
-                    column < _grid.GetLength(0) &&
-                    row < _grid.GetLength(1))
-                    return _grid[column, row];
-
-                return null;
-            }
-            //set
-            //{
-            //    // Allow out-of-bounds exceptions
-            //    _grid[column, row] = value;
-
-            //    // Invalidate cell arrays
-            //    _cellArray = null;
-            //    _doorArray = null;
-            //}
+            //NOTE*** Returns null as a default
+            get { return _grid.Get(column, row); }
         }
         public RegionBoundary Bounds
         {

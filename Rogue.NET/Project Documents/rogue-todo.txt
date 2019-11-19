@@ -3241,3 +3241,11 @@ IMMEDIATE TODO'S:
 		But I think it would be a really neat effect to replace the light radius.
 		
 		IDEA: Consider replacing the light radius effect with the new light source effect used for terrain
+		
+	LIGHTING / LAYOUTS / RENDERING / OPTIMIZATION:
+	
+		Would help greatly to pre-calculate polygons for .. pretty much everything to have for lighting calculation, and rendering. 
+		
+		IDEA:  Use flood-fill inside the walls to compute the polygons! :) :) :) THAT WORKS! On the todo's
+		
+		IDEA:  Create cells for ALL tiles - try not to allocate memory during any of the large iterations.

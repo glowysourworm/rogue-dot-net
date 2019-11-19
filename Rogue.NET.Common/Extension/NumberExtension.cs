@@ -8,9 +8,9 @@ namespace Rogue.NET.Common.Extension
 {
     public static class NumberExtension
     {
-        public static string Sign(this double number)
+        public static int Sign(this double number)
         {
-            return number >= 0 ? "+" : "-";
+            return number >= 0 ? 1 : -1;
         }
 
         public static double Abs(this double number)
@@ -20,11 +20,17 @@ namespace Rogue.NET.Common.Extension
 
         public static int Clip(this int number, int lowLimit = 0, int highLimit = 1)
         {
+            if (lowLimit > highLimit)
+                throw new ArgumentException("Invalid limits int.Clip()");
+
             return Math.Min(Math.Max(lowLimit, number), highLimit);
         }
 
         public static double Clip(this double number, double lowLimit = 0, double highLimit = 1)
         {
+            if (lowLimit > highLimit)
+                throw new ArgumentException("Invalid limits double.Clip()");
+
             return Math.Min(Math.Max(lowLimit, number), highLimit);
         }
 
@@ -46,6 +52,15 @@ namespace Rogue.NET.Common.Extension
         public static int HighLimit(this int number, int highLimit = 1)
         {
             return Math.Min(number, highLimit);
+        }
+
+        public static bool Between(this double number, double low, double high, bool orEqual = false)
+        {
+            if (orEqual)
+                return number >= low && number <= high;
+
+            else
+                return number > low && number < high;
         }
 
         public static double RoundOrderMagnitudeUp(this double number)

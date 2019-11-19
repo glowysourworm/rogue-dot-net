@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
     public class CharacterLayoutInformation : ICharacterLayoutInformation
     {
         readonly LevelGrid _grid;
-        readonly IRayTracer _rayTracer;
+        readonly IVisibilityCalculator _visibilityCalculator;
 
         Dictionary<CharacterBase, IEnumerable<DistanceLocation>> _visibleDict;
         Dictionary<CharacterBase, IEnumerable<DistanceLocation>> _lineOfSightDict;
@@ -35,10 +35,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         /// Constructor for the CharacterLayoutInformation should be called once per
         /// level and updated on each turn.
         /// </summary>
-        public CharacterLayoutInformation(LevelGrid grid, IRayTracer rayTracer)
+        public CharacterLayoutInformation(LevelGrid grid, IVisibilityCalculator visibilityCalculator)
         {
             _grid = grid;
-            _rayTracer = rayTracer;
+            _visibilityCalculator = visibilityCalculator;
 
             _visibleDict = new Dictionary<CharacterBase, IEnumerable<DistanceLocation>>();
             _lineOfSightDict = new Dictionary<CharacterBase, IEnumerable<DistanceLocation>>();
@@ -62,7 +62,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             {
                 IEnumerable<DistanceLocation> lineOfSightLocations = null;
 
-                var visibleLocations = _rayTracer.CalculateVisibility(_grid, character.Location);
+                var visibleLocations = _visibilityCalculator.CalculateVisibility(_grid, character.Location);
 
                 // TODO:TERRAIN - RE-CALCULATE VISIBLE / LINE-OF-SIGHT WITH NEW VISION PARAMETER
                 _visibleDict.Add(character, visibleLocations);

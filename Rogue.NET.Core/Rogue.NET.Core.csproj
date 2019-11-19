@@ -526,8 +526,8 @@
     <Compile Include="Processing\Model\Algorithm\SimplePathFinder.cs" />
     <Compile Include="Processing\Model\Content\ContentProcessor.cs" />
     <Compile Include="Processing\Model\Content\Interface\IContentProcessor.cs" />
-    <Compile Include="Processing\Model\Algorithm\Interface\IRayTracer.cs" />
-    <Compile Include="Processing\Model\Algorithm\SimpleRayTracer.cs" />
+    <Compile Include="Processing\Model\Algorithm\Interface\IVisibilityCalculator.cs" />
+    <Compile Include="Processing\Model\Algorithm\ShadowCasterVisibilityCalculator.cs" />
     <Compile Include="Processing\Model\Generator\BehaviorGenerator.cs" />
     <Compile Include="Processing\Model\Generator\ContentGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\IBehaviorGenerator.cs" />

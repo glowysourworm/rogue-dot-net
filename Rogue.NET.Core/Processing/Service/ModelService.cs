@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Processing.Service
     {
         static readonly string INFINITY = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E });
 
-        readonly IRayTracer _rayTracer;
+        readonly IVisibilityCalculator _visibilityCalculator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
 
@@ -50,11 +50,11 @@ namespace Rogue.NET.Core.Processing.Service
 
         [ImportingConstructor]
         public ModelService(
-                IRayTracer rayTracer,
+                IVisibilityCalculator visibilityCalculator,
                 IRandomSequenceGenerator randomSequenceGenerator,
                 ISymbolDetailsGenerator symbolDetailsGenerator)
         {
-            _rayTracer = rayTracer;
+            _visibilityCalculator = visibilityCalculator;
             _randomSequenceGenerator = randomSequenceGenerator;
             _symbolDetailsGenerator = symbolDetailsGenerator;
         }
@@ -95,9 +95,9 @@ namespace Rogue.NET.Core.Processing.Service
                     throw new Exception("Unhandled injected content type");
             }
 
-            _characterLayoutInformation = new CharacterLayoutInformation(this.Level.Grid, _rayTracer);
+            _characterLayoutInformation = new CharacterLayoutInformation(this.Level.Grid, _visibilityCalculator);
             _characterContentInformation = new CharacterContentInformation(_characterLayoutInformation);
-            _modelLayoutService = new ModelLayoutService(level, player, _rayTracer, _randomSequenceGenerator);
+            _modelLayoutService = new ModelLayoutService(level, player, _visibilityCalculator, _randomSequenceGenerator);
 
             // Calculate player start location
             switch (startLocation)
