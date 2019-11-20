@@ -61,7 +61,11 @@
             <TextBlock Grid.Column="2" Text="will be generated between levels" FontSize="16"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
             <controls:Range DataContext="{Binding Level}" Grid.Column="3" FontSize="16" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
             <TextBlock Grid.Column="4" Text="with generation rate" FontSize="16"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
-            <common:Slider SliderValue="{Binding GenerationRate, Delay=300, Mode=TwoWay}" FontSize="16" SliderMax="1" SliderMin="0" SliderSmallChange="0.01" SliderLargeChange="1" Grid.Column="5" />
+            <StackPanel Orientation="Horizontal" Grid.Column="5">
+                <TextBlock Text="{Binding GenerationRate, StringFormat=F2}" FontSize="16" Foreground="White" Margin="0, 0, 10, 0" />
+                <Slider Value="{Binding GenerationRate, Delay=300, Mode=TwoWay}" FontSize="16" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="1" />
+            </StackPanel>
+            
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

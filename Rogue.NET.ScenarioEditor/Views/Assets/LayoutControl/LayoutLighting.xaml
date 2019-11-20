@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.LayoutControl.LayoutLighting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"   
+             xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <StackPanel>
+        
+        <!-- Lighting Parameters -->
+        <GroupBox Margin="10" Header="Lighting Parameters">
+            <StackPanel>
+                
+                <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" 
+                           Text="Three layers - one base flat layer and two adjustable layers - of ambient lighting are provided to illuminate the layout and contents." />
+                
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Lighting Threshold (Minimum White Light Base)" />
+                    <toolkit:DoubleUpDown Value="{Binding LightingThreshold}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Ambient Light Layer 1" />
+                    <views:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainAmbientLightingType}" EnumValue="{Binding LightingAmbient1.Type, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Ambient Light Layer 2" />
+                    <views:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainAmbientLightingType}" EnumValue="{Binding LightingAmbient2.Type, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Lighting Ambient 1 -->
+        <GroupBox Margin="10" Header="Ambient Light Layer 1"
+                      Visibility="{Binding LightingAmbient1.Type, Converter={StaticResource ParameterVisibilityCollapsedInverseConverter}, ConverterParameter={x:Static coreModelEnums:TerrainAmbientLightingType.None}}">
+            <StackPanel>
+                <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Three layers of ambient lighting are provided to illuminate the layout and contents." />
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Light Color" />
+                    <controls:ColorComboBox SelectedValue="{Binding LightingAmbient1.Light, Converter={StaticResource LightColorStringConverter}}" Width="300" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Fill Ratio" />
+                    <toolkit:DoubleUpDown Value="{Binding LightingAmbient1.FillRatio}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Intensity Range" />
+                    <controls:Range LowLimit="0" HighLimit="1" Increment="0.05" StringFormat="F2" DataContext="{Binding LightingAmbient1.IntensityRange}" Width="300" HorizontalAlignment="Right" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Lighting Ambient 2 -->
+        <GroupBox Margin="10" Header="Ambient Light Layer 2"
+                      Visibility="{Binding LightingAmbient2.Type, Converter={StaticResource ParameterVisibilityCollapsedInverseConverter}, ConverterParameter={x:Static coreModelEnums:TerrainAmbientLightingType.None}}">
+            <StackPanel>
+                <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Three layers of ambient lighting are provided to illuminate the layout and contents." />
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Light Color" />
+                    <controls:ColorComboBox SelectedValue="{Binding LightingAmbient2.Light, Converter={StaticResource LightColorStringConverter}}" Width="300" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Fill Ratio" />
+                    <toolkit:DoubleUpDown Value="{Binding LightingAmbient2.FillRatio}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Intensity Range" />
+                    <controls:Range LowLimit="0" HighLimit="1" Increment="0.05" StringFormat="F2" DataContext="{Binding LightingAmbient2.IntensityRange}" Width="300" HorizontalAlignment="Right" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+        
+    </StackPanel>
+</UserControl>

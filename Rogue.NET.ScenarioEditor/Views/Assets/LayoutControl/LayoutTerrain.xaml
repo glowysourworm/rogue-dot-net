@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.LayoutControl.LayoutTerrain"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel>
+
+        <!-- Terrain Layer Selection -->
+        <Grid Margin="5">
+            <TextBlock Text="Terrain Layer" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- Terrain Layer Selection -->
+        <Grid Margin="5">
+            <controls:ListBuilder x:Name="TerrainLayerLB" Height="250" DestinationItemsSource="{Binding}" AddEvent="TerrainLayerLB_AddEvent" RemoveEvent="TerrainLayerLB_RemoveEvent" />
+        </Grid>
+
+        <!-- Terrain Generation Parameters -->
+        <GroupBox Header="Terrain Layer Generation Parameters" DataContext="{Binding ElementName=TerrainLayerLB, Path=DestinationSelectedItem}" Margin="5">
+            <StackPanel>
+
+                <!-- Terrain Layer -->
+                <Grid Margin="5">
+                    <TextBlock Text="Terrain Layer" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding Name}" Width="250" IsReadOnly="True" FontSize="18" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+
+                <!-- Terrain Generation Type -->
+                <Grid Margin="5">
+                    <TextBlock Text="Generation Type" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <commonView:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainGenerationType}" EnumValue="{Binding GenerationType, Mode=TwoWay}" Width="250" HorizontalAlignment="Right" />
+                </Grid>
+
+                <!-- Generation Weight -->
+                <Grid Margin="5">
+                    <TextBlock Text="Generation Weight" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Width="250">
+                        <TextBlock Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" Margin="10, 0" />
+                        <Slider Value="{Binding GenerationWeight, Delay=300}" Width="200"  Minimum="0" Maximum="1" SmallChange="0.01" LargeChange="0.1" TickFrequency="0.1" TickPlacement="TopLeft" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Fill Ratio -->
+                <Grid Margin="5">
+                    <TextBlock Text="Fill Ratio" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Width="250">
+                        <TextBlock Text="{Binding FillRatio, StringFormat=F2}" FontSize="18" Foreground="White" Margin="10, 0" />
+                        <Slider Value="{Binding FillRatio, Delay=300}" Width="200" Minimum="0" Maximum="1" SmallChange="0.01" LargeChange="0.1" TickFrequency="0.1" TickPlacement="TopLeft" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Frequency -->
+                <Grid Margin="5">
+                    <TextBlock Text="Frequency" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Width="250">
+                        <TextBlock Text="{Binding Frequency, StringFormat=F2}" FontSize="18" Foreground="White" Margin="10, 0" />
+                        <Slider Value="{Binding Frequency, Delay=300}" Width="200" Minimum="0" Maximum="1" SmallChange="0.01" LargeChange="0.1" TickFrequency="0.1" TickPlacement="TopLeft" />
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+        </GroupBox>
+        
+        
+    </StackPanel>
+    
+</UserControl>

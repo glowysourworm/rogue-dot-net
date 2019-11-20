@@ -31,6 +31,7 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; }
         ObservableCollection<SymbolPoolItemTemplateViewModel> SymbolPool { get; }
         ObservableCollection<AlterationCategoryTemplateViewModel> AlterationCategories { get; }
+        ObservableCollection<TerrainLayerTemplateViewModel> TerrainLayers { get; }
 
         // Shared Calculated Assets
         ObservableCollection<BrushTemplateViewModel> Brushes { get; }

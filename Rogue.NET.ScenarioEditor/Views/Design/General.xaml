@@ -9,6 +9,10 @@
         <TabItem Header="General">
             <generalDesign:ScenarioDesign DataContext="{Binding ScenarioDesign}" />
         </TabItem>
+        <TabItem Header="Terrain">
+            <region:RogueRegion DataContext="{Binding TerrainLayers}"
+                                region:RogueRegionManager.DefaultViewType="{x:Type generalDesign:TerrainLayers}" />
+        </TabItem>
         <TabItem Header="Symbol Randomization">
             <generalDesign:SymbolRandomization />
         </TabItem>

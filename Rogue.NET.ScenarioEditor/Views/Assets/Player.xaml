@@ -10,7 +10,7 @@
 
         <!-- Player Symbol -->
         <TabItem Header="Player Symbol">
-            <symbol:SymbolEditor  DataContext="{Binding SymbolDetails}"  />
+            <symbol:SymbolEditor  DataContext="{Binding SymbolDetails}" />
         </TabItem>
 
         <!-- Player Class Description -->

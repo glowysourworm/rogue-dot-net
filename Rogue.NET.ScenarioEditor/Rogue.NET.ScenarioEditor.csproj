@@ -494,6 +494,15 @@
     <Compile Include="ViewModel\Browser\ScenarioLevelViewModel.cs" />
     <Compile Include="ViewModel\Validation\Interface\IScenarioValidationViewModel.cs" />
     <Compile Include="ViewModel\Validation\ScenarioValidationViewModel.cs" />
+    <Compile Include="Views\Assets\LayoutControl\LayoutLighting.xaml.cs">
+      <DependentUpon>LayoutLighting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\LayoutControl\LayoutParameters.xaml.cs">
+      <DependentUpon>LayoutParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\LayoutControl\LayoutTerrain.xaml.cs">
+      <DependentUpon>LayoutTerrain.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationGeneral.xaml.cs">
       <DependentUpon>AlterationGeneral.xaml</DependentUpon>
     </Compile>
@@ -742,6 +751,9 @@
     <Compile Include="Views\Design\GeneralDesign\SymbolRandomization.xaml.cs">
       <DependentUpon>SymbolRandomization.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Design\GeneralDesign\TerrainLayers.xaml.cs">
+      <DependentUpon>TerrainLayers.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Design\LevelBranchDesign\ConsumableDesign.xaml.cs">
       <DependentUpon>ConsumableDesign.xaml</DependentUpon>
     </Compile>
@@ -874,6 +886,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Dictionaries\Validation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\LayoutControl\LayoutLighting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\LayoutControl\LayoutParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\LayoutControl\LayoutTerrain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1202,6 +1226,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Design\GeneralDesign\SymbolRandomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Design\GeneralDesign\TerrainLayers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -69,13 +69,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign
                 var viewModel = button.DataContext as AttackAttributeTemplateViewModel;
                 if (viewModel != null)
                 {
-                    var view = new SymbolEditor();
-                    view.DataContext = viewModel.SymbolDetails;
-
-                    view.Width = 800;
-                    view.Height = 600;
-
-                    DialogWindowFactory.Show(view, "Rogue Symbol Editor");
+                    DialogWindowFactory.ShowSymbolEditor(viewModel.SymbolDetails);
                 }
             }
         }

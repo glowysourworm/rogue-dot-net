@@ -256,9 +256,6 @@
       <DependentUpon>ProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\SpinPanel.cs" />
-    <Compile Include="View\Slider.xaml.cs">
-      <DependentUpon>Slider.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ValueBar.xaml.cs">
       <DependentUpon>ValueBar.xaml</DependentUpon>
     </Compile>
@@ -339,12 +336,6 @@
     <Page Include="View\ValueBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="View\Slider.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

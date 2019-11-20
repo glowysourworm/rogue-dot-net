@@ -22,7 +22,7 @@
             <!-- Symbol Preview -->
             <Grid Margin="10">
                 <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Preview" />
-                <symbol:SymbolPreviewControl HorizontalAlignment="Right" />
+                <symbol:SymbolPreviewControl HorizontalAlignment="Right" Height="60" Width="60" Border="White" />
             </Grid>      
             
             <!-- Symbol Type -->

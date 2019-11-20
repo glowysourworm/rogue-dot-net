@@ -1,9 +1,7 @@
-﻿using Rogue.NET.ScenarioEditor.Views.Controls;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.Views.Controls;
+using Rogue.NET.ScenarioEditor.Views.Controls.Symbol;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -16,6 +14,9 @@ namespace Rogue.NET.ScenarioEditor.Utility
     /// </summary>
     public static class DialogWindowFactory
     {
+        const int MIN_WINDOW_HEIGHT = 250;
+        const int MIN_WINDOW_WIDTH = 400;
+
         public static bool Show(UserControl view, string title)
         {
             var window = new Window();
@@ -35,6 +36,25 @@ namespace Rogue.NET.ScenarioEditor.Utility
             window.Content = dialogView;
 
             return (bool)window.ShowDialog();
+        }
+
+        public static bool ShowSymbolEditor(SymbolDetailsTemplateViewModel symbolDetails)
+        {
+            var view = new SymbolEditor();
+            var size = CalculateWindowSize();
+            view.DataContext = symbolDetails;
+            view.WindowMode = true;
+            view.AllowSymbolRandomization = false;
+            view.Width = size.Width;
+            view.Height = size.Height;
+
+            return Show(view, "Rogue Symbol Editor");
+        }
+
+        private static Size CalculateWindowSize()
+        {
+            return new Size(Math.Max(Application.Current.MainWindow.Width * 0.667, MIN_WINDOW_WIDTH),
+                            Math.Max(Application.Current.MainWindow.Height * 0.667, MIN_WINDOW_HEIGHT));
         }
     }
 }

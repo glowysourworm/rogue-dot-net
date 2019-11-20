@@ -282,6 +282,15 @@ namespace Rogue.NET.ScenarioEditor
                     _scenarioAssetReferenceService.UpdateAlteredCharacterStates();
                 }
 
+                else if (e is TerrainLayerTemplateViewModel)
+                {
+                    // Add Terrain Layer
+                    _scenarioEditorController.CurrentConfig.TerrainLayers.Add(e as TerrainLayerTemplateViewModel);
+
+                    // Update Layout references
+                    _scenarioAssetReferenceService.UpdateLayouts();
+                }
+
                 else
                     throw new Exception("Unhandled General Asset Type");
 
@@ -325,6 +334,16 @@ namespace Rogue.NET.ScenarioEditor
                     // Update Scenario object references
                     _scenarioAssetReferenceService.UpdateAlteredCharacterStates();
                 }
+
+                else if (e is TerrainLayerTemplateViewModel)
+                {
+                    // Add Terrain Layer
+                    _scenarioEditorController.CurrentConfig.TerrainLayers.Remove(e as TerrainLayerTemplateViewModel);
+
+                    // Update Layout references
+                    _scenarioAssetReferenceService.UpdateLayouts();
+                }
+
 
                 else
                     throw new Exception("Unhandled General Asset Type");

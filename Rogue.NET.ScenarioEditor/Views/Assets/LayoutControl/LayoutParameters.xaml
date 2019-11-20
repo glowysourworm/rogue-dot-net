@@ -1,0 +1,360 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.LayoutControl.LayoutParameters"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"   
+             xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>    
+    <Grid>
+        <StackPanel>
+
+            <!-- Type -->
+            <Grid Margin="10">
+                <TextBlock Text="Type" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <views:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutType}" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Room Placement Type -->
+            <Grid Margin="10"
+                  Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}}">
+                <TextBlock Text="Room Placement" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <views:EnumComboBox EnumValue="{Binding RoomPlacementType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutRoomPlacementType}" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Cellular Automata Type -->
+            <Grid Margin="10"
+                  Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.ConnectedCellularAutomata}}">
+                <TextBlock Text="Cellular Automata Type" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <views:EnumComboBox EnumValue="{Binding CellularAutomataType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutCellularAutomataType}" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Room Connection Type -->
+            <Grid Margin="10">
+                <Grid.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ConnectedCellularAutomata}" />
+                    </MultiBinding>
+                </Grid.Visibility>
+                <TextBlock Text="Room Connection" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <views:EnumComboBox EnumValue="{Binding ConnectionType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutConnectionType}" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Room Connection Geometry Type -->
+            <Grid Margin="10">
+                <Grid.Visibility>
+                    <MultiBinding Converter="{StaticResource LayoutConnectionGeometryVisibilityConverter}">
+                        <Binding Path="Type"  />
+                        <Binding Path="ConnectionType" />
+                    </MultiBinding>
+                </Grid.Visibility>
+                <TextBlock Text="Room Connection Geometry" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <views:EnumComboBox EnumValue="{Binding ConnectionGeometryType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutConnectionGeometryType}" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Room Corridor Geometry Type -->
+            <Grid Margin="10">
+                <Grid.Visibility>
+                    <MultiBinding Converter="{StaticResource LayoutConnectionGeometryVisibilityConverter}">
+                        <Binding Path="Type"  />
+                        <Binding Path="ConnectionType" />
+                    </MultiBinding>
+                </Grid.Visibility>
+                <TextBlock Text="Room Corridor Geometry" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <views:EnumComboBox EnumValue="{Binding CorridorGeometryType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutCorridorGeometryType}" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- General Parameters -->
+            <GroupBox Margin="10" Header="General Parameters">
+                <StackPanel>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Width" />
+                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
+                                                Minimum="20"
+                                                Maximum="1000"
+                                                Foreground="White"
+                                                ValueChanged="LayoutWidth_ValueChanged"
+                                                HorizontalContentAlignment="Left"
+                                                Width="150" HorizontalAlignment="Right">
+                            <toolkit:IntegerUpDown.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
+                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.Maze}" />
+                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ConnectedCellularAutomata}" />
+                                </MultiBinding>
+                            </toolkit:IntegerUpDown.IsEnabled>
+                            <toolkit:IntegerUpDown.Value>
+                                <MultiBinding Converter="{StaticResource LayoutWidthConverter}">
+                                    <Binding Path="Type" />
+                                    <Binding Path="RoomPlacementType" />
+                                    <Binding Path="RoomWidthLimit" />
+                                    <Binding Path="RectangularGridPadding" />
+                                    <Binding Path="NumberRoomCols" />
+                                    <Binding Path="RandomRoomCount" />
+                                    <Binding Path="RandomRoomSpread" />
+                                    <Binding Path="Width" />
+                                </MultiBinding>
+                            </toolkit:IntegerUpDown.Value>
+                        </toolkit:IntegerUpDown>
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Height" />
+                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
+                                                Minimum="20"
+                                                Maximum="1000" 
+                                                Foreground="White"
+                                                ValueChanged="LayoutHeight_ValueChanged"
+                                                HorizontalContentAlignment="Left"
+                                                Width="150" HorizontalAlignment="Right">
+                            <toolkit:IntegerUpDown.IsEnabled>
+                                <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
+                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.Maze}" />
+                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ConnectedCellularAutomata}" />
+                                </MultiBinding>
+                            </toolkit:IntegerUpDown.IsEnabled>
+                            <toolkit:IntegerUpDown.Value>
+                                <MultiBinding Converter="{StaticResource LayoutHeightConverter}">
+                                    <Binding Path="Type" />
+                                    <Binding Path="RoomPlacementType" />
+                                    <Binding Path="RoomHeightLimit" />
+                                    <Binding Path="RectangularGridPadding" />
+                                    <Binding Path="NumberRoomRows" />
+                                    <Binding Path="RandomRoomCount" />
+                                    <Binding Path="RandomRoomSpread" />
+                                    <Binding Path="Height" />
+                                </MultiBinding>
+                            </toolkit:IntegerUpDown.Value>
+                        </toolkit:IntegerUpDown>
+                    </Grid>
+                    <Grid Margin="10,5,10,5" 
+                          Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}}">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Height Upper Limit" />
+                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
+                                                Minimum="{Binding RoomHeightMin}" 
+                                                Maximum="50" 
+                                                Increment="1" 
+                                                FormatString="N0" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding RoomHeightLimit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                    <Grid Margin="10,5,10,5"
+                          Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}}">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Height Lower Limit"/>
+                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
+                                                Minimum="2" 
+                                                Maximum="{Binding RoomHeightLimit}" 
+                                                Increment="1" 
+                                                FormatString="N0" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding RoomHeightMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                    <Grid Margin="10,5,10,5"
+                          Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}}">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Width Upper Limit" />
+                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
+                                                Minimum="{Binding RoomWidthMin}" 
+                                                Maximum="50" 
+                                                Increment="1" 
+                                                FormatString="N0" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding RoomWidthLimit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                    <Grid Margin="10,5,10,5"
+                          Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}}">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Width Lower Limit" />
+                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
+                                                Minimum="2" 
+                                                Maximum="{Binding RoomWidthLimit}" 
+                                                Increment="1" 
+                                                FormatString="N0" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding RoomWidthMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Cell Symbol" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <symbol:SymbolPreviewControl DataContext="{Binding CellSymbol}" />
+                            <Button x:Name="EditCellSymbolButton" Click="EditCellSymbolButton_Click" Content="Edit Symbol" Padding="6" FontSize="18" Margin="8,0,0,0" VerticalAlignment="Center" Cursor="Hand" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Wall Symbol" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <symbol:SymbolPreviewControl DataContext="{Binding WallSymbol}" />
+                            <Button x:Name="EditWallSymbolButton" Click="EditWallSymbolButton_Click" Content="Edit Symbol" Padding="6" FontSize="18" Margin="8,0,0,0" VerticalAlignment="Center" Cursor="Hand" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Door Parameters -->
+            <GroupBox Margin="10" Header="Door Parameters"
+                      Visibility="{Binding ConnectionType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutConnectionType.CorridorWithDoors}}">
+                <StackPanel>
+                    <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Hidden doors are found by searching in an adjacent cell. The counter is set at random uniformly between 3-20 search tries." />
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Hidden Door Probability" />
+                        <toolkit:DoubleUpDown Watermark="Enter a Value" 
+                                                Minimum="0" 
+                                                Maximum="1" 
+                                                Increment="0.01" 
+                                                FormatString="F2" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding HiddenDoorProbability, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Door Symbol" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <symbol:SymbolPreviewControl DataContext="{Binding DoorSymbol}" />
+                            <Button x:Name="EditDoorSymbolButton" Click="EditDoorSymbolButton_Click" Content="Edit Symbol" Padding="6" FontSize="18" Margin="8,0,0,0" Cursor="Hand" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Rectangular Placement Parameters -->
+            <GroupBox Margin="10"  Header="Rectangular Placement Parameters">
+                <GroupBox.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}" />
+                        <Binding Path="RoomPlacementType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutRoomPlacementType.RectangularGrid}" />
+                    </MultiBinding>
+                </GroupBox.Visibility>
+
+                <StackPanel>
+                    <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Each layout type is built on a grid of rooms. You must specify the size of the grid by setting the number of rows and columns as well as each cell's size." />
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Grid Columns" />
+                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
+                                                Minimum="2" 
+                                                Increment="1" 
+                                                FormatString="N0" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding NumberRoomCols, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right">
+                        </toolkit:IntegerUpDown>
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Grid Rows" />
+                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
+                                                Minimum="2" 
+                                                Increment="1" 
+                                                FormatString="N0" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding NumberRoomRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right">
+                        </toolkit:IntegerUpDown>
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Grid Padding" />
+                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
+                                                Minimum="1" 
+                                                Maximum="10" 
+                                                Increment="1" 
+                                                FormatString="N0" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding RectangularGridPadding, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Random Placement Parameters -->
+            <GroupBox Margin="10" Header="Random Placement Parameters">
+                <GroupBox.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}" />
+                        <Binding Path="RoomPlacementType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutRoomPlacementType.Random}" />
+                    </MultiBinding>
+                </GroupBox.Visibility>
+                <StackPanel>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Count" />
+                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
+                                                Minimum="1" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding RandomRoomCount, Mode=TwoWay}" 
+                                                Width="150" HorizontalAlignment="Right">
+                        </toolkit:IntegerUpDown>
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Room Spread" />
+                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
+                                                Minimum="1" 
+                                                Maximum="100"
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding RandomRoomSpread, Mode=TwoWay}" 
+                                                Width="150" HorizontalAlignment="Right">
+                        </toolkit:IntegerUpDown>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Cellular Automata Parameters -->
+            <GroupBox Margin="10" Header="Cellular Automata Parameters">
+                <GroupBox.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ConnectedCellularAutomata}" />
+                    </MultiBinding>
+                </GroupBox.Visibility>
+                <StackPanel>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Fill Ratio (Empty Cell)" />
+                        <toolkit:DoubleUpDown   Watermark="Enter a Value" 
+                                                Minimum="0.4" 
+                                                Maximum="0.5" 
+                                                FormatString="F2" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding CellularAutomataFillRatio, Mode=TwoWay}" 
+                                                Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Maze Parameters -->
+            <GroupBox Margin="10" Header="Maze Parameters"
+                      Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.Maze}}">
+                <StackPanel>
+                    <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Width="500" Text="Mazes are built using a recursive backtracking algorithm which has a chance to leave very few paths to the end. To make the maze easier you can remove walls at random. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario." />
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Extra Wall Removals" />
+                        <toolkit:IntegerUpDown 
+                                    Watermark="Enter a Value" 
+                                    Minimum="0" 
+                                    Maximum="10000" 
+                                    Increment="10" 
+                                    Foreground="White"
+                                    HorizontalContentAlignment="Left"
+                                    Value="{Binding NumberExtraWallRemovals, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                    Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

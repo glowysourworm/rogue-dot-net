@@ -185,6 +185,16 @@ namespace Rogue.NET.ScenarioEditor.Service
                         branch.Layouts.RemoveAt(i);
                 }
             }
+
+            // Update terrain layers
+            foreach (var layout in _scenarioCollectionProvider.Layouts)
+            {
+                for (int i=layout.TerrainLayers.Count - 1;i >=0;i--)
+                {
+                    if (!_scenarioCollectionProvider.TerrainLayers.Contains(layout.TerrainLayers[i].TerrainLayer))
+                        layout.TerrainLayers.RemoveAt(i);
+                }
+            }
         }
         public void UpdateDoodads()
         {

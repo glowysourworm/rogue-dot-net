@@ -106,13 +106,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign
 
         private void EditSymbol(SymbolDetailsTemplateViewModel selectedSymbol)
         {
-            var view = new SymbolEditor();
-            view.DataContext = selectedSymbol;
-
-            view.Width = 800;
-            view.Height = 600;
-
-            DialogWindowFactory.Show(view, "Rogue Symbol Editor");
+            DialogWindowFactory.ShowSymbolEditor(selectedSymbol);
         }
     }
 }

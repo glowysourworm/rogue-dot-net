@@ -5,21 +5,11 @@ using Rogue.NET.ScenarioEditor.Events.Browser;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.Views.Controls.Symbol;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign
 {
@@ -70,13 +60,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign
                 var viewModel = button.DataContext as AlteredCharacterStateTemplateViewModel;
                 if (viewModel != null)
                 {
-                    var view = new SymbolEditor();
-                    view.DataContext = viewModel.SymbolDetails;
-
-                    view.Width = 800;
-                    view.Height = 600;
-
-                    DialogWindowFactory.Show(view, "Rogue Symbol Editor");
+                    DialogWindowFactory.ShowSymbolEditor(viewModel.SymbolDetails);
                 }
             }
         }
