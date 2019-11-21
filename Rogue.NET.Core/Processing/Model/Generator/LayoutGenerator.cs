@@ -2,9 +2,7 @@
 using Rogue.NET.Core.Math.Algorithm;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
@@ -13,12 +11,10 @@ using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Geometry;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting;
-using Rogue.NET.Core.Processing.Model.Static;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows.Media;
 using RegionModel = Rogue.NET.Core.Model.Scenario.Content.Layout.Region;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
@@ -32,13 +28,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         // Size is great enough for an upstairs, downstairs, and 2 teleport pods (in and out of the room)
         private const int ROOM_SIZE_MIN = 4;
 
-        // NOTE** Not used for all layout types. It was not required for certain types
-        //        that had other padding involved (Rectangular Grid); or no padding (Maze).
-        //
-        //        MUST BE GREATER THAN OR EQUAL TO 2.
-        private const int CELLULAR_AUTOMATA_PADDING = 2;
-        private const int CELLULAR_AUTOMATA_ITERATIONS = 5;
-        
+        // Default name used to initialize empty layer
+        private const string DEFAULT_LAYER_NAME = "Default Layer";
+
         [ImportingConstructor]
         public LayoutGenerator(IRandomSequenceGenerator randomSequenceGenerator)
         {
@@ -81,10 +73,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var roomBoundaries = RectangularGridRegionGeometryCreator.CreateRegionGeometry(template);
 
             // Create cells in the contiguous rectangle groups (TODO:TERRAIN - PROVIDE REGION NAME)
-            var regions = roomBoundaries.Select(boundary => GridUtility.CreateRectangularRegion("Room " + Guid.NewGuid().ToString(), grid, boundary, true))
-                                        .Actualize();
+            foreach (var boundary in roomBoundaries)
+                GridUtility.GenerateCells(grid, boundary, true);
 
-            return FinishLayoutRectilinear(grid, regions, template);
+            return FinishLayoutRectilinear(grid, template);
         }
 
         private LevelGrid CreateRandomRooms(LayoutTemplate template)
@@ -98,37 +90,41 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var contiguousBoundaries = ContiguousRegionGeometryCreator.CreateContiguousRegionGeometry(roomBoundaries);
 
             // Create cells in the contiguous rectangle groups
-            var regions = ContiguousRegionCreator.CreateRegions(grid, contiguousBoundaries, true);
+            ContiguousRegionCreator.CreateRegions(grid, contiguousBoundaries, true);
 
-            return FinishLayoutRectilinear(grid, regions, template);
+            return FinishLayoutRectilinear(grid, template);
         }
 
         private LevelGrid CreateCellularAutomata(LayoutTemplate template)
         {
             var grid = new GridCellInfo[template.Width, template.Height];
 
-            // Create cells in the contiguous rectangle groups
-            var regions = CellularAutomataRegionCreator.CreateRegions(grid, template.CellularAutomataType == LayoutCellularAutomataType.Filled, template.CellularAutomataFillRatio.Clip(0.4, 0.4));
+            // Create cells in the contiguous rectangle groups -> Remove regions that are too small
+            CellularAutomataRegionCreator.GenerateCells(grid, template.CellularAutomataType == LayoutCellularAutomataType.Filled, template.CellularAutomataFillRatio.Clip(0.4, 0.4));
 
-            return FinishLayout(grid, regions, template);
+            return FinishLayout(grid, template);
         }
 
         private LevelGrid CreateMaze(LayoutTemplate template)
         {
             var grid = new GridCellInfo[template.Width, template.Height];
 
-            // TODO:TERRAIN - PROVIDE UNIQUE REGION NAME
-            var region = GridUtility.CreateRectangularRegion("Region " + Guid.NewGuid().ToString(), grid, 0, 0, template.Width, template.Height, true);
+            // Generate cells for the whole grid
+            GridUtility.GenerateCells(grid, 0, 0, template.Width, template.Height, true);
 
-            // Set region cells to be walls
-            foreach (var cell in region.Cells)
-                grid[cell.Column, cell.Row].IsWall = true;
+            // Set cells to be walls
+            for (int i = 0; i < template.Width; i++)
+            {
+                for (int j = 0; j < template.Height; j++)
+                    grid[i, j].IsWall = true;
+            }
+
 
             // Create maze by "punching out walls"
             //
             MazeRegionCreator.CreateMaze(grid, template.NumberExtraWallRemovals);
 
-            return new LevelGrid(grid, new RegionModel[] { region }, new RegionModel[] { });
+            return new LevelGrid(grid, new LayerInfo(DEFAULT_LAYER_NAME), new LayerInfo[] { new LayerInfo(DEFAULT_LAYER_NAME) });
         }
 
         private LevelGrid CreateOpenWorldLayout(LayoutTemplate template)
@@ -153,7 +149,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 return value;
             }));
 
-            var regions = grid.IdentifyRegions().Where(x => x.Cells.Length >= 4);
+            var regions = grid.IdentifyRegions().ToList();
+
+            // Remove regions / region cells where the room size is too small
+            for (int i = regions.Count - 1; i >= 0; i--)
+            {
+                if (regions[i].Cells.Length < ROOM_SIZE_MIN)
+                {
+                    // Remove cells from the grid
+                    foreach (var cell in regions[i].Cells)
+                        grid[cell.Column, cell.Row] = null;
+
+                    // Remove region
+                    regions.RemoveAt(i);
+                }
+            }
+
+            if (!regions.Any())
+                return CreateDefaultLayout();
 
             // Create MST
             var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
@@ -179,7 +192,23 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             }
 
-            return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
+            return new LevelGrid(grid, new LayerInfo("Room Layer", regions.ToArray()), new LayerInfo[] { new LayerInfo(DEFAULT_LAYER_NAME) });
+        }
+
+        /// <summary>
+        /// Provides default layout for layouts that didn't contain any regions of viable size
+        /// </summary>
+        private LevelGrid CreateDefaultLayout()
+        {
+            var grid = new GridCellInfo[20, 10];
+
+            GridUtility.GenerateCells(grid, new RegionBoundary(new GridLocation(1, 1), 18, 8), false);
+
+            var regions = grid.IdentifyRegions();
+
+            CreateWalls(grid);
+
+            return new LevelGrid(grid, new LayerInfo("Room Layer", regions.ToArray()), new LayerInfo[] { });
         }
 
         #region (private) Layout Finishing
@@ -187,11 +216,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <summary>
         /// Triangulate rooms, locate and remove small rooms, create corridors, add walls
         /// </summary>
-        private LevelGrid FinishLayout(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        private LevelGrid FinishLayout(GridCellInfo[,] grid, LayoutTemplate template)
         {
+            // Create base regions
+            var baseRegions = grid.IdentifyRegions();
+
             // Triangulate room positions
             //
-            var graph = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
+            var graph = GeometryUtility.PrimsMinimumSpanningTree(baseRegions, Metric.MetricType.Roguian);
 
             // For each edge in the triangulation - create a corridor
             //
@@ -208,17 +240,22 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 CorridorLayoutRegionConnector.Connect(grid, cell1, cell2, template);
             }
 
+            // Create Terrain - WILL OBSTRUCT PATHS
+            var terrainLayers = CreateTerrain(grid, template);
+
             //Create walls
             CreateWalls(grid);
 
             // Create Lighting
-            CreateLighting(grid, regions, template);
+            CreateLighting(grid, baseRegions, template);
 
-            return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
+            return new LevelGrid(grid, new LayerInfo("Room Layer", baseRegions.ToArray()), terrainLayers);
         }
 
-        private LevelGrid FinishLayoutRectilinear(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        private LevelGrid FinishLayoutRectilinear(GridCellInfo[,] grid, LayoutTemplate template)
         {
+            var regions = grid.IdentifyRegions();
+
             // Create MST
             var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
 
@@ -256,14 +293,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 // NOTE** This is a "null" check (for the struct)
                 if (vertices.Contains(midPoint))
                 {
-                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
-                                                                               edge.Point1.Vertex, 
-                                                                               midPoint, 
+                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid,
+                                                                               edge.Point1.Vertex,
+                                                                               midPoint,
                                                                                edge.Point1.Vertex.Row != midPoint.Row);
 
-                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
-                                                                               midPoint, 
-                                                                               edge.Point2.Vertex, 
+                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid,
+                                                                               midPoint,
+                                                                               edge.Point2.Vertex,
                                                                                edge.Point2.Vertex.Row != midPoint.Row);
                 }
 
@@ -276,20 +313,22 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                              edge.Point1.Reference.Bounds.Top > edge.Point2.Reference.Bounds.Bottom;
 
                     // Point1 -> Point 2 (off-diangonal or the actual center)
-                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid, 
+                    TilingCorridorRegionConnector.CreateRectilinearRoutePoints(grid,
                                                                                edge.Point1.Vertex,
-                                                                               edge.Point2.Vertex, 
+                                                                               edge.Point2.Vertex,
                                                                                northSouthOriented);
                 }
             }
+
+            // Create Terrain - WILL OBSTRUCT PATHS
+            var terrainLayers = CreateTerrain(grid, template);
 
             CreateWalls(grid);
 
             // Create Lighting
             CreateLighting(grid, regions, template);
 
-            //return new LevelGrid(grid, regions.ToArray(), tiledRegions.ToArray());
-            return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
+            return new LevelGrid(grid, new LayerInfo("Room Layer", regions.ToArray()), terrainLayers);
         }
 
         // Credit to this fellow for the idea for maze corridors!
@@ -297,7 +336,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        private LevelGrid FinishLayoutWithMazeCorridors(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
+        private LevelGrid FinishLayoutWithMazeCorridors(GridCellInfo[,] grid, LayoutTemplate template)
         {
             // Fill in the empty cells with walls
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -352,9 +391,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create Lighting
             CreateLighting(grid, finalRegions, template);
 
-            return new LevelGrid(grid, regions.ToArray(), new RegionModel[] { });
+            return new LevelGrid(grid, new LayerInfo("Room Layer", finalRegions), new LayerInfo[] { new LayerInfo(DEFAULT_LAYER_NAME) });
         }
 
+        /*
         private LevelGrid FinishLayoutWithTerrain(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
         {
             // Create terrain grid to use to identify regions
@@ -419,6 +459,90 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             return new LevelGrid(grid, rooms.ToArray(), terrainRegions.ToArray());
         }
+        */
+
+        /// <summary>
+        /// Creates all terrain layers for this layout - WILL OBSTRUCT PATHS.
+        /// </summary>
+        private IEnumerable<LayerInfo> CreateTerrain(GridCellInfo[,] grid, LayoutTemplate template)
+        {
+            // Procedure
+            //
+            // 1) Generate all layers in order for this layout as separate 2D arrays
+            // 2) Identify terrain regions and set up cell infos
+            //
+
+            var terrainDict = new Dictionary<GridCellInfo[,], TerrainLayerTemplate>();
+
+            // Use the ZOrder parameter to order the layers
+            foreach (var terrain in template.TerrainLayers.OrderBy(layer => layer.TerrainLayer.Layer))
+            {
+                // Generate terrain layer randomly based on the weighting
+                if (_randomSequenceGenerator.Get() > terrain.GenerationWeight)
+                    continue;
+
+                // Create a new grid for each terrain layer
+                var terrainLayerGrid = new GridCellInfo[grid.GetLength(0), grid.GetLength(1)];
+
+                // Store the grid with the associated terrain layer
+                terrainDict.Add(terrainLayerGrid, terrain.TerrainLayer);
+
+                switch (terrain.GenerationType)
+                {
+                    case TerrainGenerationType.PerlinNoise:
+                        {
+                            NoiseGenerator.GeneratePerlinNoise(grid.GetLength(0),
+                                                               grid.GetLength(1),
+                                                               terrain.Frequency,
+                                                               new NoiseGenerator.PostProcessingFilterCallback(
+                            (column, row, value) =>
+                            {
+                                // Translate from [-1, 1] -> [0, 1] to check fill ratio
+                                if (System.Math.Abs(value) / 2.0 > terrain.FillRatio &&
+                                    grid[column, row] != null)
+                                {
+                                    // Check the terrain dictionary for other entries
+                                    if (!terrainDict.Any(element =>
+                                    {
+                                        // None of the grids have terrain at this location
+                                        return element.Key[column, row] != null &&
+
+                                               // Other terrain layers at this location don't exclude this layer at the same location
+                                               (element.Value.LayoutType == TerrainLayoutType.CompletelyExclusive ||
+
+                                               // Other terrain layers at this location DO exclude other terrain; but not at this layer
+                                               (element.Value.LayoutType == TerrainLayoutType.LayerExclusive &&
+                                                element.Value.Layer == terrain.TerrainLayer.Layer));
+
+                                    }))
+                                    {
+                                        // Add to the region
+                                        terrainLayerGrid[column, row] = grid[column, row];
+                                    }
+                                }
+
+                                return value;
+                            }));
+                        }
+                        break;
+                    default:
+                        throw new Exception("Unhandled terrain layer generation type");
+                }
+            }
+
+            var terrainLayers = new List<LayerInfo>();
+
+            // Identify Terrain Regions
+            foreach (var element in terrainDict)
+            {
+                // Sets up a set of terrain regions for the specified layer; and adds their names to the
+                // cell info.
+
+                terrainLayers.Add(new LayerInfo(element.Value.Name, element.Key.IdentifyRegions()));
+            }
+
+            return terrainLayers;
+        }
 
         /// <summary>
         /// Creates walls on the boundary of the regions and connectors by checking for null cells
@@ -481,7 +605,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //
             // - Create white light threshold for the level using the scenario configuration setting
             // - Create layers 1 and 2 if they're set (using RGB averages to add light color channels)
-            // - Store the results in the cell's Lighting color (contains intensity information)
+            // - Store the results as the cell's base lighting
             //
 
             // Create the white light threshold
@@ -528,6 +652,90 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 default:
                     throw new Exception("Unhandled Terrain Ambient Lighting Type");
             }
+        }
+
+        /// <summary>
+        /// Validates the level - returns false if there is an issue so that a default layout can be generated. NOTE*** THROWS EXCEPTIONS
+        /// DURING DEBUG INSTEAD.
+        /// </summary>
+        private bool Validate(GridCellInfo[,] grid, IEnumerable<RegionModel> roomRegions, IEnumerable<RegionModel> terrainRegions)
+        {
+            var savePoint = false;
+            var stairsUp = false;
+            var stairsDown = false;
+
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (grid[i, j] != null &&
+                        grid[i, j].IsMandatory)
+                    {
+                        savePoint |= grid[i, j].MandatoryType == LayoutMandatoryLocationType.SavePoint;
+                        stairsUp |= grid[i, j].MandatoryType == LayoutMandatoryLocationType.StairsUp;
+                        stairsDown |= grid[i, j].MandatoryType == LayoutMandatoryLocationType.StairsDown;
+                    }
+                }
+            }
+
+#if DEBUG
+            if (!savePoint)
+                throw new Exception("Layout must have a mandatory cell for the save point");
+
+            if (!stairsUp)
+                throw new Exception("Layout must have a mandatory cell for the stairs up");
+
+            if (!stairsDown)
+                throw new Exception("Layout must have a mandatory cell for the stairs down");
+#else
+            if (!savePoint)
+                return false;
+
+            if (!stairsUp)
+                return false;
+
+            if (!stairsDown)
+                return false;
+#endif
+
+            foreach (var region in roomRegions)
+            {
+                var roomConnector1 = false;
+                var roomConnector2 = false;
+
+                foreach (var cell in region.Cells)
+                {
+                    if (grid[cell.Column, cell.Row].IsMandatory &&
+                        grid[cell.Column, cell.Row].MandatoryType == LayoutMandatoryLocationType.RoomConnector1)
+                        roomConnector1 = true;
+
+                    if (grid[cell.Column, cell.Row].IsMandatory &&
+                        grid[cell.Column, cell.Row].MandatoryType == LayoutMandatoryLocationType.RoomConnector2)
+                        roomConnector2 = true;
+                }
+
+#if DEBUG
+                if (region.Cells.Length < ROOM_SIZE_MIN)
+                    throw new Exception("Room Regions must have a minimum size of " + ROOM_SIZE_MIN.ToString());
+
+                if (!roomConnector1)
+                    throw new Exception("Room doesn't have a mandatory cell for connector 1");
+
+                if (!roomConnector2)
+                    throw new Exception("Room doesn't have a mandatory cell for connector 2");
+#else
+                if (region.Cells.Length < ROOM_SIZE_MIN)
+                    return false;
+
+                if (!roomConnector1)
+                    return false;
+
+                if (!roomConnector2)
+                    return false;
+#endif
+            }
+
+            return true;
         }
         #endregion
     }

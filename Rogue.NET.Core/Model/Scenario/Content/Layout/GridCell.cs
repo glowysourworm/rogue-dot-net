@@ -1,7 +1,5 @@
-﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
-using System.Windows.Media;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -63,7 +61,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             if (doorSearchCounter > 0 && !isDoor)
                 throw new ArgumentException("Trying to initialize door with improper parameters");
 
-            this.Location = new GridLocation(location);
+            this.Location = location;
             this.IsWall = isWall;
             this.IsWallLight = isWallLight;
             this.IsDoor = isDoor;
@@ -78,7 +76,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.EffectiveLighting = baseLight;
         }
 
-        public GridCell(int column, int row, bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter, bool isCorridor, Light baseLight, Light wallLight) 
+        public GridCell(int column, int row, bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter, bool isCorridor, Light baseLight, Light wallLight)
                 : this(new GridLocation(column, row), isWall, isWallLight, isDoor, doorSearchCounter, isCorridor, baseLight, wallLight)
         {
         }
@@ -100,6 +98,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Location = (GridLocation)info.GetValue("Location", typeof(GridLocation));
             this.DoorSearchCounter = info.GetInt32("DoorSearchCounter");
             this.BaseLight = (Light)info.GetValue("BaseLight", typeof(Light));
+            this.WallLight = (Light)info.GetValue("WallLight", typeof(Light));
             this.EffectiveLighting = (Light)info.GetValue("EffectiveLighting", typeof(Light));
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -113,6 +112,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("Location", this.Location);
             info.AddValue("DoorSearchCounter", this.DoorSearchCounter);
             info.AddValue("BaseLight", this.BaseLight);
+            info.AddValue("WallLight", this.WallLight);
             info.AddValue("EffectiveLighting", this.EffectiveLighting);
         }
         #endregion

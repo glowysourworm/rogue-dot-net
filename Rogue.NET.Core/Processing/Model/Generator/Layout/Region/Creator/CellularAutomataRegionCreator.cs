@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
         /// <summary>
         /// Creates a set of regions over the specified grid
         /// </summary>
-        public static IEnumerable<RegionModel> CreateRegions(GridCellInfo[,] grid, bool filled, double fillRatio)
+        public static void GenerateCells(GridCellInfo[,] grid, bool filled, double fillRatio)
         {
             // Procedure
             //
@@ -98,9 +98,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             {
                 return (emptyCellCountFunc(gridArray, column, row, 0, 0) + emptyCellCountFunc(gridArray, column, row, 0, 1)) >= 5;
             });
-
-
-            return grid.IdentifyRegions();
         }
 
         private static void IterateCellularAutomata(GridCellInfo[,] grid, int numberOfIterations, Func<GridCellInfo[,], int, int, bool> cellularAutomataRule)

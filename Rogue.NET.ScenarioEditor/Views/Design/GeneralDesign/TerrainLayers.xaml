@@ -75,11 +75,15 @@
             <Grid Grid.Column="1" DataContext="{Binding ElementName=TerrainLayerLB, Path=SelectedItem}">
                 <StackPanel>
                     <Grid Margin="5">
-                        <TextBlock Text="Type" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <TextBlock Text="Terrain Type" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <commonView:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainType}" EnumValue="{Binding Type, Mode=TwoWay}" Width="250" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="5">
-                        <TextBlock Text="Layout Type" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <TextBlock Text="Terrain Layer" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <commonView:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainLayer}" EnumValue="{Binding Layer, Mode=TwoWay}" Width="250" HorizontalAlignment="Right" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <TextBlock Text="Terrain Layout Type" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <commonView:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainLayoutType}" EnumValue="{Binding LayoutType, Mode=TwoWay}" Width="250" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="5">

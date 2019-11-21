@@ -57,6 +57,43 @@ namespace Rogue.NET.Core.Model.Enums
         /// </summary>
         Random = 1
     }
+    public enum LayoutMandatoryLocationType
+    {
+        /// <summary>
+        /// Mandatory location for the stairs up
+        /// </summary>
+        StairsUp,
+
+        /// <summary>
+        /// Mandatory location for the stairs down
+        /// </summary>
+        StairsDown,
+
+        /// <summary>
+        /// Mandatory location for the save point
+        /// </summary>
+        SavePoint,
+
+        /// <summary>
+        /// Mandatory location for a room connecting doodad pair (1)
+        /// </summary>
+        RoomConnector1,
+
+        /// <summary>
+        /// Mandatory location for a room connecting doodad pair (2)
+        /// </summary>
+        RoomConnector2,
+
+        /// <summary>
+        /// Mandatory location for a doodad pair (1) that was created when dividing another region with terrain
+        /// </summary>
+        TerrainConnector1,
+
+        /// <summary>
+        /// Mandatory location for a doodad pair (2) that was created when dividing another region with terrain
+        /// </summary>
+        TerrainConnector2
+    }
     public enum TerrainType
     {
         [Display(Name = "Aesthetic",
@@ -67,25 +104,39 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Creates a terrain layer with a special effect")]
         Alteration = 1
     }
+    public enum TerrainLayer
+    {
+        [Display(Name = "Below Ground",
+                 Description = "Terrain layer that is placed underneath above layers")]
+        BelowGround = 0,
+
+        [Display(Name = "Ground",
+                 Description = "Terrain layer that is placed at ground level")]
+        Ground = 1,
+
+        [Display(Name = "Above Ground",
+                 Description = "Terrain layer that is placed above ground level")]
+        AboveGround = 2
+    }
     public enum TerrainLayoutType
     {
-        [Display(Name = "Mutually Exclusive",
-                 Description = "Terrain layer cannot be placed on top of - or underneath - any other terrain layer")]
-        MutuallyExclusive = 0,
+        [Display(Name = "Layer Exclusive",
+                 Description = "Terrain layer cannot be placed with any other terrain layer at the specified level")]
+        LayerExclusive = 0,
+
+        [Display(Name = "Completely Exclusive",
+                 Description = "Terrain layer cannot be placed with any other terrain layers")]
+        CompletelyExclusive = 1,
 
         [Display(Name = "Combined",
-                 Description = "Terrain layer can be placed on top of - or underneath - other terrain layers")]
-        Combined = 1
+                 Description = "Terrain layer can be placed with other terrain layers - not marked exclusive at the specified level")]
+        Combined = 2
     }
     public enum TerrainGenerationType
     {
         [Display(Name = "Smooth Features",
                  Description = "Creates a terrain layer that has smoothly changing features")]
-        PerlinNoise = 0,
-
-        [Display(Name = "Random",
-                 Description = "Creates a terrain layer that has randomly chosen cells")]
-        WhiteNoise = 1
+        PerlinNoise = 0
     }
 
     public enum TerrainAmbientLightingType

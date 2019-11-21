@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Linq;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -12,13 +13,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     public class LevelGrid : ISerializable
     {
         private GridCell[,] _grid;
-        private RegionBoundary _bounds;
-
         private GridCell[] _doorArray;
         private GridCell[] _cellArray;
         private GridCell[] _wallLightArray;
-        private RegionMap _roomMap;
-        private RegionMap _terrainMap;
 
         #region Properties / Indexers
         public virtual GridCell this[int column, int row]
@@ -26,18 +23,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             //NOTE*** Returns null as a default
             get { return _grid.Get(column, row); }
         }
-        public RegionBoundary Bounds
-        {
-            get { return _bounds; }
-        }
-        public RegionMap RoomMap
-        {
-            get { return _roomMap; }
-        }
-        public RegionMap TerrainMap
-        {
-            get { return _terrainMap; }
-        }
+        public Dictionary<GridLocation, LayoutMandatoryLocationType> MandatoryLocations { get; private set; }
+        public RegionBoundary Bounds { get; private set; }
+        public LayerMap RoomMap { get; private set; }
+        public IEnumerable<LayerMap> TerrainMaps { get; private set; }
         #endregion
 
         /// <summary>
@@ -50,12 +39,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         ///         all data prepared. Also, create the terrain array with all data prepared. Corridors 
         ///         may be created afterwards using the public indexer.
         /// </summary>
-        public LevelGrid(GridCellInfo[,] grid, Region[] roomRegions, Region[] terrainRegions)
+        public LevelGrid(GridCellInfo[,] grid, LayerInfo roomLayer, IEnumerable<LayerInfo> terrainLayers)
         {
             _grid = new GridCell[grid.GetLength(0), grid.GetLength(1)];
-            _bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
-            _roomMap = new RegionMap(roomRegions, _bounds.CellWidth, _bounds.CellHeight);
-            _terrainMap = new RegionMap(terrainRegions, _bounds.CellWidth, _bounds.CellHeight);
+            this.Bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
+            this.RoomMap = new LayerMap(roomLayer.LayerName, roomLayer.Regions, this.Bounds.CellWidth, this.Bounds.CellHeight);
+            this.TerrainMaps = terrainLayers.Select(layer => new LayerMap(layer.LayerName, layer.Regions, this.Bounds.CellWidth, this.Bounds.CellHeight)).Actualize();
+            this.MandatoryLocations = new Dictionary<GridLocation, LayoutMandatoryLocationType>();
 
             // Initialize the grid
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -63,10 +53,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 for (int j = 0; j < grid.GetLength(1); j++)
                 {
                     if (grid[i, j] != null)
-                        _grid[i, j] = new GridCell(i, j, grid[i, j].IsWall, grid[i, j].IsWallLight,
-                                                         grid[i, j].IsDoor, grid[i, j].DoorSearchCounter,
-                                                         grid[i, j].IsCorridor, grid[i, j].BaseLight,
-                                                         grid[i, j].WallLight);
+                    {
+                        // Create the grid cell
+                        _grid[i, j] = new GridCell(grid[i,j].Location, grid[i, j].IsWall, grid[i, j].IsWallLight,
+                                                   grid[i, j].IsDoor, grid[i, j].DoorSearchCounter,
+                                                   grid[i, j].IsCorridor, grid[i, j].BaseLight,
+                                                   grid[i, j].WallLight);
+
+                        // Check for mandatory locations
+                        if (grid[i,j].IsMandatory)
+                            this.MandatoryLocations.Add(grid[i, j].Location, grid[i, j].MandatoryType);
+                    }
                 }
             }
         }
@@ -77,14 +74,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var width = info.GetInt32("Width");
             var height = info.GetInt32("Height");
             var count = info.GetInt32("Count");
-            var roomCount = info.GetInt32("RoomCount");
-            var terrainCount = info.GetInt32("TerrainCount");
+            var terrainCount = info.GetInt32("TerrainMapCount");
+            var mandatoryCount = info.GetInt32("MandatoryLocationsCount");
+            var roomMap = (LayerMap)info.GetValue("RoomMap", typeof(LayerMap));
 
             _grid = new GridCell[width, height];
-            _bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
+            this.Bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
 
-            var roomData = new List<Region>();
-            var terrainData = new List<Region>();
+            var terrainData = new List<LayerMap>();
+            var mandatoryData = new Dictionary<GridLocation, LayoutMandatoryLocationType>();
 
             // Populate cell grid
             for (int i=0;i<count;i++)
@@ -94,24 +92,26 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 _grid[cell.Location.Column, cell.Location.Row] = cell;
             }
 
-            // Populate rooms
-            for (int i = 0; i < roomCount; i++)
-            {
-                var room = (Region)info.GetValue("Room" + i.ToString(), typeof(Region));
-
-                roomData.Add(room);
-            }
-
             // Populate terrain
             for (int i = 0; i < terrainCount; i++)
             {
-                var terrain = (Region)info.GetValue("Terrain" + i.ToString(), typeof(Region));
+                var terrain = (LayerMap)info.GetValue("TerrainMap" + i.ToString(), typeof(LayerMap));
 
                 terrainData.Add(terrain);
             }
 
-            _roomMap = new RegionMap(roomData, width, height);
-            _terrainMap = new RegionMap(terrainData, width, height);
+            // Populate Mandatory Locations
+            for (int i = 0; i < mandatoryCount; i++)
+            {
+                var location = (GridLocation)info.GetValue("MandatoryLocation" + i.ToString(), typeof(GridLocation));
+                var type = (LayoutMandatoryLocationType)info.GetValue("MandatoryLocationType" + i.ToString(), typeof(LayoutMandatoryLocationType));
+
+                mandatoryData.Add(location, type);
+            }
+
+            this.RoomMap = roomMap;
+            this.TerrainMaps = terrainData;
+            this.MandatoryLocations = mandatoryData;
 
             // Leave these invalid until iteration is necessary
             _doorArray = null;
@@ -124,23 +124,26 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             if (_cellArray == null)
                 RebuildArrays();
 
-            var rooms = _roomMap.GetRegions().ToArray();
-            var terrain = _terrainMap.GetRegions().ToArray();
-
             info.AddValue("Width", _grid.GetLength(0));
             info.AddValue("Height", _grid.GetLength(1));
             info.AddValue("Count", _cellArray.Length);
-            info.AddValue("RoomCount", rooms.Length);
-            info.AddValue("TerrainCount", terrain.Length);
+            info.AddValue("TerrainMapCount", this.TerrainMaps.Count());
+            info.AddValue("MandatoryLocationsCount", this.MandatoryLocations.Count);
+            info.AddValue("RoomMap", this.RoomMap);
 
             for (int i = 0; i < _cellArray.Length; i++)
                 info.AddValue("Cell" + i.ToString(), _cellArray[i]);
 
-            for (int i = 0; i < rooms.Length; i++)
-                info.AddValue("Room" + i.ToString(), rooms[i]);
+            for (int i = 0; i < this.TerrainMaps.Count(); i++)
+                info.AddValue("TerrainMap" + i.ToString(), this.TerrainMaps.ElementAt(i));
 
-            for (int i = 0; i < terrain.Length; i++)
-                info.AddValue("Terrain" + i.ToString(), terrain[i]);
+            for (int i = 0; i < this.MandatoryLocations.Count; i++)
+            {
+                var element = this.MandatoryLocations.ElementAt(i);
+
+                info.AddValue("MandatoryLocation" + i.ToString(), element.Key);
+                info.AddValue("MandatoryLocationType" + i.ToString(), element.Value);
+            }
         }
         #endregion
 

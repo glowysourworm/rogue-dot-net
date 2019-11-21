@@ -227,8 +227,9 @@
     <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerGenerationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerTemplate.cs" />
     <Compile Include="Model\Scenario\Content\Layout\GridCellInfo.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\LayerInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Light.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\RegionMap.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\LayerMap.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ILightGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Connector\CorridorLayoutRegionConnector.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Region\Connector\CorridorLocationCalculator.cs" />
