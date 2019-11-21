@@ -124,7 +124,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //
             MazeRegionCreator.CreateMaze(grid, template.NumberExtraWallRemovals);
 
-            return new LevelGrid(grid, new LayerInfo(DEFAULT_LAYER_NAME), new LayerInfo[] { new LayerInfo(DEFAULT_LAYER_NAME) });
+            var regions = grid.IdentifyRegions();
+
+            CreateLighting(grid, regions, template);
+
+            return new LevelGrid(grid, new LayerInfo("Room Layer", regions), new LayerInfo[] { new LayerInfo(DEFAULT_LAYER_NAME) });
         }
 
         private LevelGrid CreateOpenWorldLayout(LayoutTemplate template)
@@ -240,8 +244,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 CorridorLayoutRegionConnector.Connect(grid, cell1, cell2, template);
             }
 
-            // Create Terrain - WILL OBSTRUCT PATHS
-            var terrainLayers = CreateTerrain(grid, template);
+            // Create Terrain - Check for reconstructed room layer
+            LayerInfo reconstructedRoomLayer;
+
+            var terrainLayers = CreateTerrain(grid, template, out reconstructedRoomLayer);
 
             //Create walls
             CreateWalls(grid);
@@ -249,7 +255,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create Lighting
             CreateLighting(grid, baseRegions, template);
 
-            return new LevelGrid(grid, new LayerInfo("Room Layer", baseRegions.ToArray()), terrainLayers);
+            return new LevelGrid(grid, reconstructedRoomLayer ?? new LayerInfo("Room Layer", baseRegions.ToArray()), terrainLayers);
         }
 
         private LevelGrid FinishLayoutRectilinear(GridCellInfo[,] grid, LayoutTemplate template)
@@ -320,15 +326,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }
             }
 
-            // Create Terrain - WILL OBSTRUCT PATHS
-            var terrainLayers = CreateTerrain(grid, template);
+            // Create Terrain - Check for new room layer
+            LayerInfo reconstructedRoomLayer;
+
+            var terrainLayers = CreateTerrain(grid, template, out reconstructedRoomLayer);
 
             CreateWalls(grid);
 
             // Create Lighting
             CreateLighting(grid, regions, template);
 
-            return new LevelGrid(grid, new LayerInfo("Room Layer", regions.ToArray()), terrainLayers);
+            return new LevelGrid(grid, reconstructedRoomLayer ?? new LayerInfo("Room Layer", regions.ToArray()), terrainLayers);
         }
 
         // Credit to this fellow for the idea for maze corridors!
@@ -394,77 +402,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new LevelGrid(grid, new LayerInfo("Room Layer", finalRegions), new LayerInfo[] { new LayerInfo(DEFAULT_LAYER_NAME) });
         }
 
-        /*
-        private LevelGrid FinishLayoutWithTerrain(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LayoutTemplate template)
-        {
-            // Create terrain grid to use to identify regions
-            var terrainGrid = new GridCellInfo[grid.GetLength(0), grid.GetLength(1)];
-
-            // Create terrain map to use in Dijkstra's algorithm for path routing
-            var terrainMap = NoiseGenerator.GeneratePerlinNoise(grid.GetLength(0), grid.GetLength(1), 0.07, (column, row, value) =>
-            {
-                // Procedure
-                //
-                // 1) Create terrain cells using a threshold (value < 0) (INSIDE ROOMS)
-                // 2) Set the noise value very high for terrain and region cells
-                // 3) Set the grid for terrain cells to null
-
-                if (value < 0 && grid[column, row] != null)
-                {
-                    // Replace grid cell for terrain cell
-                    terrainGrid[column, row] = new GridCellInfo(column, row) { IsWall = false };
-                    grid[column, row] = null;
-
-                    return 1000;
-                }
-
-                return 0;
-            });
-
-            // Create terrain regions
-            var terrainRegions = terrainGrid.IdentifyRegions();
-
-            // Re-calculate grid regions
-            var rooms = grid.IdentifyRegions();
-
-            // Triangulate room positions
-            var graph = GeometryUtility.PrimsMinimumSpanningTree(rooms, Metric.MetricType.Roguian);
-
-            // For each edge in the triangulation - create a corridor
-            foreach (var edge in graph.Edges)
-            {
-                var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
-                var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
-
-                // Creates dijkstra
-                var dijkstraMap = terrainMap.CreateDijkstraMap(location1, location2);
-
-                //terrainMap.OutputCSV("c:\\test\\terrainMap.csv");
-                //dijkstraMap.OutputCSV("c:\\test\\dijkstraMap.csv");
-
-
-                // Generate Path locations
-                var path = dijkstraMap.GeneratePath(location1, location2, true);
-
-                // Add path to the grid
-                foreach (var location in path)
-                    grid[location.Column, location.Row] = new GridCellInfo(location) { IsWall = false };
-            }
-
-            //Create walls
-            CreateWalls(grid);
-
-            // Create Lighting
-            CreateLighting(grid, regions, template);
-
-            return new LevelGrid(grid, rooms.ToArray(), terrainRegions.ToArray());
-        }
-        */
-
         /// <summary>
-        /// Creates all terrain layers for this layout - WILL OBSTRUCT PATHS.
+        /// Creates all terrain layers for this layout - WILL OBSTRUCT PATHS. Generates new room layer with new paths.
         /// </summary>
-        private IEnumerable<LayerInfo> CreateTerrain(GridCellInfo[,] grid, LayoutTemplate template)
+        private IEnumerable<LayerInfo> CreateTerrain(GridCellInfo[,] grid, LayoutTemplate template, out LayerInfo roomLayer)
         {
             // Procedure
             //
@@ -498,7 +439,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                             (column, row, value) =>
                             {
                                 // Translate from [-1, 1] -> [0, 1] to check fill ratio
-                                if (System.Math.Abs(value) / 2.0 > terrain.FillRatio &&
+                                if ((System.Math.Abs(value) / 2.0) < terrain.FillRatio &&
                                     grid[column, row] != null)
                                 {
                                     // Check the terrain dictionary for other entries
@@ -530,14 +471,79 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }
             }
 
+            // Detect new room regions
+            var terrainBlockedGrid = new GridCellInfo[grid.GetLength(0), grid.GetLength(1)];
+            var terrainBlockedInputMap = new double[grid.GetLength(0), grid.GetLength(1)];
+            var foundBlockedCell = false;
+
+            // Create new grid with removed cells for blocked terrain
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    // Found a grid cell - check for blocking terrain
+                    if (grid[i,j] != null)
+                    {
+                        // Check for any impassable terrain that has been generated
+                        if (!terrainDict.Any(element => !element.Value.IsPassable && element.Key[i, j] != null))
+                        {
+                            // Copy cell reference
+                            terrainBlockedGrid[i, j] = grid[i, j];
+                        }
+
+                        // DON'T copy cell reference -> flag the blocked cell -> set Dijkstra weight to large number
+                        else
+                        {
+                            // FLAG BLOCKED CELL TO PREVENT EXTRA WORK IF NOT NEEDED
+                            foundBlockedCell = true;
+
+                            // Block off the tile on the Dijkstra input map
+                            terrainBlockedInputMap[i, j] = 10000;
+                        }
+                    }
+                }
+            }
+
+            if (foundBlockedCell)
+            {
+                // Generate the new room regions
+                var roomRegions = terrainBlockedGrid.IdentifyRegions();
+
+                // Set up the new room layer
+                roomLayer = new LayerInfo("Room Layer", roomRegions);
+
+                // Create MST for the rooms
+                var roomGraph = GeometryUtility.PrimsMinimumSpanningTree(roomRegions, Metric.MetricType.Roguian);
+
+                // For each edge in the triangulation - create a corridor
+                foreach (var edge in roomGraph.Edges)
+                {
+                    var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
+                    var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
+
+                    // Creates Dijkstra map from the input map to find paths along the edges
+                    var dijkstraMap = terrainBlockedInputMap.CreateDijkstraMap(location1, location2);
+
+                    //terrainMap.OutputCSV("c:\\test\\terrainMap.csv");
+                    //dijkstraMap.OutputCSV("c:\\test\\dijkstraMap.csv");
+
+                    // Generate Path locations
+                    var path = dijkstraMap.GeneratePath(location1, location2, true);
+
+                    // Add path to the grid
+                    foreach (var location in path)
+                        grid[location.Column, location.Row] = new GridCellInfo(location) { IsWall = false };
+                }
+            }
+            else
+                roomLayer = null;
+
             var terrainLayers = new List<LayerInfo>();
 
             // Identify Terrain Regions
             foreach (var element in terrainDict)
             {
-                // Sets up a set of terrain regions for the specified layer; and adds their names to the
-                // cell info.
-
+                // Sets up a set of terrain regions for the specified layer
                 terrainLayers.Add(new LayerInfo(element.Value.Name, element.Key.IdentifyRegions()));
             }
 

@@ -11,20 +11,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     [Serializable]
     public class LayerMap : ISerializable
     {
+        public string Name { get; private set; }
+
+        // Keep a grid of region references per cell in the region
+        Region[,] _regionMap;
+
+        // Also, keep a collection of the regions for this layer
         IEnumerable<Region> _regions;
 
-        // Keep a grid of region data per cell in the region
-        List<Region>[,] _regionMap;
-
         /// <summary>
-        /// Gets an enumerable collection of regions for this cell location
+        /// Gets the region for the specified location
         /// </summary>
-        public IEnumerable<Region> this[int column, int row]
+        public Region this[int column, int row]
         {
             get { return _regionMap[column, row]; }
         }
-
-        public string Name { get; private set; }
 
         public LayerMap(string layerName, IEnumerable<Region> regions, int width, int height)
         {
@@ -66,24 +67,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Name = layerName;
 
             _regions = regions;
-            _regionMap = new List<Region>[width, height];
-
-            // Initialize the region map array
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j++)
-                    _regionMap[i, j] = new List<Region>();
-            }
+            _regionMap = new Region[width, height];
 
             // Iterate regions and initialize the map
             foreach (var region in regions)
             {
                 foreach (var cell in region.Cells)
                 {
-                    if (_regionMap[cell.Column, cell.Row].Contains(region))
+                    if (_regionMap[cell.Column, cell.Row] != null)
                         throw new Exception("Invalid Region construction - duplicate cell locations");
 
-                    _regionMap[cell.Column, cell.Row].Add(region);
+                    _regionMap[cell.Column, cell.Row] = region;
                 }
             }
         }

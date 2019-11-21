@@ -122,7 +122,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             MapLevel(level, freeCells, freeRoomCells);
 
             // Create party room if there's a room to use and the rate is greater than U[0,1] - (MAPPED)
-            if ((layoutTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()))
+            if ((layoutTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()) && freeRoomCells.Any())
                 AddPartyRoomContent(level, branchTemplate, encyclopedia, freeCells, freeRoomCells);
         }
         private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
