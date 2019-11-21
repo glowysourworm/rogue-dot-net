@@ -18,8 +18,7 @@ using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Region;
-using Rogue.NET.Core.Processing.Model.Static;
+using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -146,7 +145,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Get direction for random move -> Move()
             var direction = GridUtility.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location.Column,
-                                                                          _modelService.Player.Location.Row, 
+                                                                          _modelService.Player.Location.Row,
                                                                           desiredLocation.Column,
                                                                           desiredLocation.Row);
 

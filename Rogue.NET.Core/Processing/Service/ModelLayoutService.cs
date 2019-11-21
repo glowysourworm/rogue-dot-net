@@ -8,14 +8,10 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Region;
-using Rogue.NET.Core.Processing.Model.Static;
+using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Processing.Service
 {
@@ -62,7 +58,7 @@ namespace Rogue.NET.Core.Processing.Service
                 {
                     // Calculate 1 / r^2 intensity
                     var light = entry.Key.WallLight;
-                    var intensity = cell.EuclideanDistance > LIGHT_FALLOFF_RADIUS ? (light.Intensity / System.Math.Pow(cell.EuclideanDistance - LIGHT_FALLOFF_RADIUS, LIGHT_POWER_LAW)) 
+                    var intensity = cell.EuclideanDistance > LIGHT_FALLOFF_RADIUS ? (light.Intensity / System.Math.Pow(cell.EuclideanDistance - LIGHT_FALLOFF_RADIUS, LIGHT_POWER_LAW))
                                                                                   : light.Intensity;
 
                     // Add contribution to the effective lighting
@@ -175,8 +171,8 @@ namespace Rogue.NET.Core.Processing.Service
                                     {
                                         var character = _level.GetAt<NonPlayerCharacter>(x);
 
-                                            // No Character (OR) Alignment Type Matches
-                                            return character == null ? true : character.AlignmentType == swappableAlignmentType;
+                                        // No Character (OR) Alignment Type Matches
+                                        return character == null ? true : character.AlignmentType == swappableAlignmentType;
                                     });
 
             return adjacentLocations.Any() ? adjacentLocations.ElementAt(_randomSequenceGenerator.Get(0, adjacentLocations.Count()))

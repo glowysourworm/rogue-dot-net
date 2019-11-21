@@ -4,7 +4,6 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Region;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -37,9 +36,12 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
             public double Magnitude
             {
-                get { return this.DeltaX == 0 ? (this.DeltaY > 0 ? double.PositiveInfinity :
-                                                 this.DeltaY < 0 ? double.NegativeInfinity :
-                                                 double.NaN) : this.DeltaY / this.DeltaX; }
+                get
+                {
+                    return this.DeltaX == 0 ? (this.DeltaY > 0 ? double.PositiveInfinity :
+                                               this.DeltaY < 0 ? double.NegativeInfinity :
+                                               double.NaN) : this.DeltaY / this.DeltaX;
+                }
             }
 
             public OctantSlope(Point point, Point center)
@@ -263,7 +265,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         location1Column = center.Column - radius;
                         location1Row = center.Row - radius;
                         location2Column = center.Column;
-                        location2Row = center.Row - radius;      
+                        location2Row = center.Row - radius;
                         yDirection = false;
                     }
                     break;

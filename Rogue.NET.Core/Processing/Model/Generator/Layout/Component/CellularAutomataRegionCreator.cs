@@ -1,32 +1,33 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
-using System.Collections.Generic;
-using RegionModel = Rogue.NET.Core.Model.Scenario.Content.Layout.Region;
+using System.ComponentModel.Composition;
 
-namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
+namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 {
-    public static class CellularAutomataRegionCreator
+    [PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(ICellularAutomataRegionCreator))]
+    public class CellularAutomataRegionCreator : ICellularAutomataRegionCreator
     {
-        static readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
-        // NOTE** Not used for all layout types. It was not required for certain types
-        //        that had other padding involved (Rectangular Grid); or no padding (Maze).
-        //
-        //        MUST BE GREATER THAN OR EQUAL TO 2.
+        // NOTE**  MUST BE GREATER THAN OR EQUAL TO 2.
         private const int CELLULAR_AUTOMATA_PADDING = 2;
         private const int CELLULAR_AUTOMATA_ITERATIONS = 5;
 
-        static CellularAutomataRegionCreator()
+        // Scales [0, 1] fill ratio to a safe scale
+        private const double CELLULAR_AUTOMATA_FILL_LOW = 0.4;
+        private const double CELLULAR_AUTOMATA_FILL_HIGH = 0.5;
+
+        [ImportingConstructor]
+        public CellularAutomataRegionCreator(IRandomSequenceGenerator randomSequenceGenerator)
         {
-            _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
+            _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        /// <summary>
-        /// Creates a set of regions over the specified grid
-        /// </summary>
-        public static void GenerateCells(GridCellInfo[,] grid, bool filled, double fillRatio)
+        public void GenerateCells(GridCellInfo[,] grid, RegionBoundary boundary, LayoutCellularAutomataType type, double fillRatio, bool overwrite)
         {
             // Procedure
             //
@@ -34,7 +35,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             // 1) Iterate grid several times using smoothing rules
             // 2) Locate rooms and store them in an array
 
-            var bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
+            // Maps the fill ratio to a safe scale [0, 1] -> [0.4, 0.5]
+            var scaledFillRatio = ((CELLULAR_AUTOMATA_FILL_HIGH - CELLULAR_AUTOMATA_FILL_LOW) * fillRatio) + CELLULAR_AUTOMATA_FILL_LOW;
+            var filled = type == LayoutCellularAutomataType.Filled;
 
             // Create function to get count of adjacent empty cells
             //
@@ -68,16 +71,19 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             // 
             // Optimize:  Could cut down on the amount of iterations by using the fill ratio
             //            to give you a number of cells (to be chosen randomly)
-            IterateCellularAutomata(grid, 1, (gridArray, currentCell, index) =>
+            IterateCellularAutomata(grid, boundary, 1, (gridArray, column, row) =>
             {
+                if (grid[column, row] != null && !overwrite)
+                    throw new Exception("Trying to overwrite existing grid cell CellularAutomataRegionCreator");
+
                 // Fill Ratio => Empty Cell
-                return _randomSequenceGenerator.Get() < fillRatio;
+                return _randomSequenceGenerator.Get() < scaledFillRatio;
             });
 
             // Iterate grid to apply Filled Rule - Apply this for several iterations before smoothing
             if (filled)
             {
-                IterateCellularAutomata(grid, CELLULAR_AUTOMATA_ITERATIONS, (gridArray, column, row) =>
+                IterateCellularAutomata(grid, boundary, CELLULAR_AUTOMATA_ITERATIONS, (gridArray, column, row) =>
                 {
                     var empty0Count = emptyCellCountFunc(gridArray, column, row, 0, 0);
                     var empty1Count = emptyCellCountFunc(gridArray, column, row, empty0Count, 1);
@@ -94,19 +100,21 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Creator
             // Iterate grid to apply Open Rule - This will smooth out the noise in the grid. Also,
             // it is used in conjunction with the Filled rule to fill out large open spaces after
             // the Filled rule is applied
-            IterateCellularAutomata(grid, filled ? 1 : CELLULAR_AUTOMATA_ITERATIONS, (gridArray, column, row) =>
+            IterateCellularAutomata(grid, boundary, filled ? 1 : CELLULAR_AUTOMATA_ITERATIONS, (gridArray, column, row) =>
             {
                 return (emptyCellCountFunc(gridArray, column, row, 0, 0) + emptyCellCountFunc(gridArray, column, row, 0, 1)) >= 5;
             });
         }
 
-        private static void IterateCellularAutomata(GridCellInfo[,] grid, int numberOfIterations, Func<GridCellInfo[,], int, int, bool> cellularAutomataRule)
+
+
+        private void IterateCellularAutomata(GridCellInfo[,] grid, RegionBoundary boundary, int numberOfIterations, Func<GridCellInfo[,], int, int, bool> cellularAutomataRule)
         {
             for (int k = 0; k < numberOfIterations; k++)
             {
-                for (int i = CELLULAR_AUTOMATA_PADDING; i < grid.GetLength(0) - CELLULAR_AUTOMATA_PADDING; i++)
+                for (int i = boundary.Left + CELLULAR_AUTOMATA_PADDING; i <= boundary.Right - CELLULAR_AUTOMATA_PADDING; i++)
                 {
-                    for (int j = CELLULAR_AUTOMATA_PADDING; j < grid.GetLength(1) - CELLULAR_AUTOMATA_PADDING; j++)
+                    for (int j = boundary.Top + CELLULAR_AUTOMATA_PADDING; j <= boundary.Bottom - CELLULAR_AUTOMATA_PADDING; j++)
                     {
                         if (cellularAutomataRule(grid, i, j))
                             grid[i, j] = null;

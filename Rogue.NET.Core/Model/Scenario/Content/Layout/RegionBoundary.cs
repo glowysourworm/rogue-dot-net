@@ -100,19 +100,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// </summary>
         public bool Contains(GridLocation cellPoint)
         {
-            if (cellPoint.Column < this.Left)
-                return false;
-
-            if (cellPoint.Column > this.Right)
-                return false;
-
-            if (cellPoint.Row < this.Top)
-                return false;
-
-            if (cellPoint.Row > this.Bottom)
-                return false;
-
-            return true;
+            return Contains(cellPoint.Column, cellPoint.Row);
         }
         /// <summary>
         /// Includes Boundary
@@ -177,48 +165,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var biggerBoundary = new RegionBoundary(topLeft, this.CellWidth + 2, this.CellHeight + 2);
 
             return biggerBoundary.Overlaps(boundary);
-        }
-        /// <summary>
-        /// Calculates minimum distance between two rectangles - with overlapping rectangles defined as 0 
-        /// distance
-        /// </summary>
-        public int RoguianDistance(RegionBoundary boundary)
-        {
-            var left = boundary.Right < this.Left;
-            var right = boundary.Left > this.Right;
-            var top = boundary.Bottom < this.Top;
-            var bottom = boundary.Top > this.Bottom;
-
-            if (left && top)
-                return Metric.RoguianDistance(this.Location, boundary.BottomRight);
-            else if (right && top)
-                return Metric.RoguianDistance(this.Location, boundary.BottomLeft);
-            else if (right && bottom)
-                return Metric.RoguianDistance(this.Location, boundary.TopLeft);
-            else if (left && bottom)
-                return Metric.RoguianDistance(this.Location, boundary.TopRight);
-            else if (left)
-                return this.Left - boundary.Right;
-            else if (top)
-                return this.Top - boundary.Bottom;
-            else if (right)
-                return boundary.Left - this.Right;
-            else if (bottom)
-                return boundary.Top - this.Bottom;
-            else
-                return 0; // Overlapping
-        }
-        /// <summary>
-        /// Calculates maximum possible distance between two cells within the rectangles.
-        /// </summary>
-        public int MaximumRoguianDistance(RegionBoundary cellRectangle)
-        {
-            return this.Corners
-                       .SelectMany(corner =>
-                       {
-                           return cellRectangle.Corners.Select(otherCorner => Metric.RoguianDistance(corner, otherCorner));
-                       })
-                       .Max();
         }
     }
 }

@@ -1,49 +1,56 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
-
+using System.ComponentModel.Composition;
+using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
 
 namespace Rogue.NET.Core.Math.Algorithm
 {
-    /// <summary>
-    /// Set of static methods for generating 2D noise arrays
-    /// </summary>
-    public static class NoiseGenerator
+    [PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(INoiseGenerator))]
+    public class NoiseGenerator : INoiseGenerator
     {
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
+
         private const double PERLIN_NOISE_LOW_FREQUENCY = 0.06;
         private const double PERLIN_NOISE_HIGH_FREQUENCY = 0.5;
 
-        /// <summary>
-        /// Delegate for a method that is used for processing a grid based on the 2D noise array.
-        /// </summary>
-        /// <param name="column">The corresponding column index (FROM 0) for the underlying grid</param>
-        /// <param name="row">The corresponding row index (FROM 0) for the underlying grid</param>
-        /// <param name="value">The unfiltered, normalized result for the noise function</param>
-        public delegate double PostProcessingFilterCallback(int column, int row, double value);
-
-        static readonly IRandomSequenceGenerator _randomSequenceGenerator;
-
-        static NoiseGenerator()
+        [ImportingConstructor]
+        public NoiseGenerator(IRandomSequenceGenerator randomSequenceGenerator)
         {
-            _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
+            _randomSequenceGenerator = randomSequenceGenerator;
+        }
+
+        public void Run(NoiseType type, int width, int height, double frequency, PostProcessingCallback callback)
+        {
+            switch (type)
+            {
+                case NoiseType.WhiteNoise:
+                    GenerateWhiteNoise(width, height, frequency, callback);
+                    break;
+                case NoiseType.PerlinNoise:
+                    GeneratePerlinNoise(width, height, frequency, callback);
+                    break;
+                default:
+                    throw new Exception("Unhandled Noise Type:  NoiseGenerator");
+            }
         }
 
         /// <summary>
         /// Returns white noise 2D array with [0, 1] values
         /// </summary>
-        public static double[,] GenerateWhiteNoise(int width, int height)
+        private void GenerateWhiteNoise(int width, int height, double frequency, PostProcessingCallback callback)
         {
-            var grid = new double[width, height];
-
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
-                    grid[i, j] = _randomSequenceGenerator.Get();
+                {
+                    if (_randomSequenceGenerator.Get() < frequency)
+                        callback(i, j, _randomSequenceGenerator.Get());
+                }
             }
-
-            return grid;
         }
 
         /// <summary>
@@ -53,7 +60,7 @@ namespace Rogue.NET.Core.Math.Algorithm
         /// </summary>
         /// <param name="frequency">A [0, 1] value used to specify the relative noise erradicity.</param>
         /// <returns>Returns a Perlin noise map which has the characteristic behavior of smoothness and feature size according to the mesh cell size.</returns>
-        public static double[,] GeneratePerlinNoise(int width, int height, double frequency, PostProcessingFilterCallback postProcessingCallback)
+        public void GeneratePerlinNoise(int width, int height, double frequency, PostProcessingCallback callback)
         {
             // Scale the frequency input
             var scaledFrequency = (frequency * (PERLIN_NOISE_HIGH_FREQUENCY - PERLIN_NOISE_LOW_FREQUENCY)) + PERLIN_NOISE_LOW_FREQUENCY;
@@ -173,15 +180,12 @@ namespace Rogue.NET.Core.Math.Algorithm
 
                     // Apply post processing callback
                     //
-                    if (postProcessingCallback != null)
-                        map[i, j] = postProcessingCallback(i, j, map[i, j]);
+                    callback(i, j, map[i, j]);
                 }
             }
-
-            return map;
         }
 
-        public static double PerlinEase(double unitValue)
+        private double PerlinEase(double unitValue)
         {
             if (unitValue > 1.0 ||
                 unitValue < 0.0)
@@ -190,7 +194,7 @@ namespace Rogue.NET.Core.Math.Algorithm
             return (3.0 * System.Math.Pow(unitValue, 2)) - (2 * System.Math.Pow(unitValue, 3));
         }
 
-        public static double PerlinFade(double unitValue)
+        private double PerlinFade(double unitValue)
         {
             if (unitValue > 1.0 ||
                 unitValue < 0.0)
@@ -201,7 +205,7 @@ namespace Rogue.NET.Core.Math.Algorithm
             return (6 * System.Math.Pow(unitValue, 5)) - (15 * System.Math.Pow(unitValue, 4)) + (10 * System.Math.Pow(unitValue, 3));
         }
 
-        private static double Interpolate(double value1, double value2, double weight)
+        private double Interpolate(double value1, double value2, double weight)
         {
             if (weight < 0 || weight > 1)
                 throw new Exception("Improper interpolation weight NoiseGenerator");

@@ -1,27 +1,26 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.Core.Math.Geometry;
+﻿using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
-using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
+namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 {
-    public static class CorridorLayoutRegionConnector
+    [PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(ICorridorCreator))]
+    public class CorridorCreator : ICorridorCreator
     {
-        static readonly IRandomSequenceGenerator _randomSequenceGenerator;
-
-        static CorridorLayoutRegionConnector()
+        [ImportingConstructor]
+        public CorridorCreator()
         {
-            _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
+
         }
 
-        public static void Connect(GridCellInfo[,] grid, GridCellInfo cell1, GridCellInfo cell2, LayoutTemplate template)
+        public void CreateCorridor(GridCellInfo[,] grid, GridCellInfo cell1, GridCellInfo cell2, bool createDoors, bool overwrite)
         {
             // Check for neighboring (cardinal) or same-identity cell. For this case, just return an empty array
             if (cell1.Location.Equals(cell2.Location) ||
@@ -30,7 +29,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                 return;
 
             var corridor = new List<GridCellInfo>();
-            var createDoors = template.ConnectionType == LayoutConnectionType.CorridorWithDoors;
 
             // Procedure
             //
@@ -38,8 +36,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
             // 1) Create integer "grid lines" to locate intersections
             // 2) Add intersecting cells to the result
 
-            var physicalLocation1 = TransformToPhysicalLayout(cell1.Location);
-            var physicalLocation2 = TransformToPhysicalLayout(cell2.Location);
+            var physicalLocation1 = GridUtility.TransformToPhysicalLayout(cell1.Location);
+            var physicalLocation2 = GridUtility.TransformToPhysicalLayout(cell2.Location);
 
             var minX = (int)System.Math.Min(physicalLocation1.X, physicalLocation2.X);
             var minY = (int)System.Math.Min(physicalLocation1.Y, physicalLocation2.Y);
@@ -200,14 +198,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                             var direction = GridUtility.GetDirectionOfAdjacentLocation(corridor1.Location, adjacentRoomCell.Location);
                             var oppositeDirection = GridUtility.GetOppositeDirection(direction);
 
+                            // TODO:TERRAIN
                             // Set up hidden door parameters for both "sides" of the door.
-                            var hiddenDoor = _randomSequenceGenerator.Get() < template.HiddenDoorProbability;
-                            var counter = hiddenDoor ? _randomSequenceGenerator.Get(1, 20) : 0;
+                            //var hiddenDoor = _randomSequenceGenerator.Get() < template.HiddenDoorProbability;
+                            //var counter = hiddenDoor ? _randomSequenceGenerator.Get(1, 20) : 0;
 
                             // Set door on the corridor and the adjacent room cell
                             corridor1.IsDoor = true;
                             corridor1.IsWall = false;
-                            corridor1.DoorSearchCounter = counter;
+
+                            // TODO:TERRAIN
+                            //corridor1.DoorSearchCounter = counter;
                         }
                     }
                     if (gridCell2 == null)
@@ -218,14 +219,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                             var direction = GridUtility.GetDirectionOfAdjacentLocation(corridor2.Location, adjacentRoomCell.Location);
                             var oppositeDirection = GridUtility.GetOppositeDirection(direction);
 
+                            // TODO:TERRAIN
                             // Set up hidden door parameters for both "sides" of the door.
-                            var hiddenDoor = _randomSequenceGenerator.Get() < template.HiddenDoorProbability;
-                            var counter = hiddenDoor ? _randomSequenceGenerator.Get(1, 20) : 0;
+                            //var hiddenDoor = _randomSequenceGenerator.Get() < template.HiddenDoorProbability;
+                            //var counter = hiddenDoor ? _randomSequenceGenerator.Get(1, 20) : 0;
 
                             // Set door on the corridor and the adjacent room cell
                             corridor2.IsDoor = true;
                             corridor2.IsWall = false;
-                            corridor2.DoorSearchCounter = counter;
+
+                            // TODO:TERRAIN
+                            //corridor2.DoorSearchCounter = counter;
                         }
                     }
                 }
@@ -258,11 +262,36 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Connector
                 throw new Exception("Invalid corridor created");
         }
 
-        public static Vertex TransformToPhysicalLayout(GridLocation location)
+        public void CreateLinearCorridorSection(GridCellInfo[,] grid, GridLocation location1, GridLocation location2, bool yDirection, bool overwrite)
         {
-            float x = (float)(ModelConstants.CellWidth * location.Column);
-            float y = (float)(ModelConstants.CellHeight * location.Row);
-            return new Vertex(x, y);
+            // Create follower for the loop
+            var pointValue = yDirection ? location1.Row : location1.Column;
+
+            // Get the total count for iteration
+            var count = System.Math.Abs(yDirection ? (location2.Row - location1.Row) : (location2.Column - location1.Column)) + 1;
+
+            // Get the incrementing the value during iteration
+            var increment = (yDirection ? (location2.Row - location1.Row) : (location2.Column - location1.Column)) > 0 ? 1 : -1;
+
+            for (int i = 0; i < count; i++)
+            {
+                var column = yDirection ? location1.Column : pointValue;
+                var row = yDirection ? pointValue : location1.Row;
+
+                if (column >= grid.GetLength(0) || column < 0)
+                    throw new Exception("Trying to create point outside the bounds of the navigation tile");
+
+                if (row > grid.GetLength(1) || row < 0)
+                    throw new Exception("Trying to create point outside the bounds of the navigation tile");
+
+                if (grid[column, row] != null && !overwrite)
+                    throw new Exception("Trying to overwrite an existing grid cell CorridorCreator.CreateLinearCorridorSection");
+
+                // Create grid cell
+                grid[column, row] = new GridCellInfo(column, row);
+
+                pointValue += increment;
+            }
         }
     }
 }

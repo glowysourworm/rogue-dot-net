@@ -1,14 +1,13 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using RegionModel = Rogue.NET.Core.Model.Scenario.Content.Layout.Region;
 
-namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
+namespace Rogue.NET.Core.Processing.Model.Generator.Layout
 {
     /// <summary>
     /// Provides methods for iterating regions of the grid and filling out region boundaries
@@ -16,43 +15,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
     public static class GridUtility
     {
         /// <summary>
-        /// Creates rectangular region of cells inside of the provided cell 2D array with the specified parameters. The cells INSIDE
-        /// the region MUST BE UN-INITIALIZED (NULL).
-        /// </summary>
-        public static void GenerateCells(GridCellInfo[,] grid, RegionBoundary boundary, bool overwriteCells)
-        {
-            GenerateCells(grid, boundary.Left, boundary.Top, boundary.CellWidth, boundary.CellHeight, overwriteCells);
-        }
-
-        /// <summary>
-        /// Creates rectangular region of cells inside of the provided cell 2D array with the specified parameters. The cells INSIDE
-        /// the region MUST BE UN-INITIALIZED (NULL).
-        /// </summary>
-        public static void GenerateCells(GridCellInfo[,] grid, int column, int row, int width, int height, bool overwriteCells)
-        {
-            // Create cells to fill the region
-            for (int regionCol = column; regionCol < column + width; regionCol++)
-            {
-                for (int regionRow = row; regionRow < row + height; regionRow++)
-                {
-                    var cell = grid[regionCol, regionRow];
-
-                    if (cell != null && !overwriteCells)
-                        throw new Exception("Trying to over-write region cell");
-
-                    cell = new GridCellInfo(regionCol, regionRow);
-
-                    // SET THE CELL IN THE GRID
-                    grid[regionCol, regionRow] = cell;
-                }
-            }
-        }
-
-        /// <summary>
         /// Identifies regions using Breadth First Search (Flood Fill) algorithm. Sets up region names inside cell infos. THIS SUPPOSES THAT THE
         /// GRID REPRESENTS A LAYOUT LAYER WITH THE SPECIFIED REGION NAME. Example:  "Room" Layer (or) "Lava" Layer.
         /// </summary>
-        public static IEnumerable<RegionModel> IdentifyRegions(this GridCellInfo[,] layerGrid)
+        public static IEnumerable<Region> IdentifyRegions(this GridCellInfo[,] layerGrid)
         {
             // Locate regions and assign them inside the LevelGrid
             //
@@ -63,7 +29,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
 
             // Collect region data to pass to level grid constructor
             var regionGrids = new List<GridCellInfo[,]>();
-            var regions = new List<RegionModel>();
+            var regions = new List<Region>();
 
             for (int i = 0; i < layerGrid.GetLength(0); i++)
             {
@@ -93,7 +59,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
         /// <summary>
         /// Applied Breadth First Search to try and identify a region at the given test location. Returns instantiated region with the results.
         /// </summary>
-        public static RegionModel FloodFill(this GridCellInfo[,] grid, GridLocation testLocation, out GridCellInfo[,] regionGrid)
+        public static Region FloodFill(this GridCellInfo[,] grid, GridLocation testLocation, out GridCellInfo[,] regionGrid)
         {
             var bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
 
@@ -149,7 +115,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
             }
 
             // Assign region data to new region
-            return new RegionModel(regionCells.ToArray(), edgeCells.ToArray(), regionBounds);
+            return new Region(regionCells.ToArray(), edgeCells.ToArray(), regionBounds);
         }
 
         public static Compass GetDirectionOfAdjacentLocation(GridLocation location, GridLocation adjacentLocation)
@@ -169,13 +135,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
             else if (west) return Compass.W;
             else
                 throw new Exception("Invalid adjacent cell GetDirectionOfAdjacentLocation");
-        }
-
-        public static PointF TransformToPhysicalLayout(GridLocation p)
-        {
-            float x = (float)(ModelConstants.CellWidth * p.Column);
-            float y = (float)(ModelConstants.CellHeight * p.Row);
-            return new PointF(x, y);
         }
 
         /// <summary>
@@ -286,6 +245,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region
                 default:
                     return false;
             }
+        }
+
+        public static Vertex TransformToPhysicalLayout(GridLocation location)
+        {
+            float x = (float)(ModelConstants.CellWidth * location.Column);
+            float y = (float)(ModelConstants.CellHeight * location.Row);
+            return new Vertex(x, y);
         }
     }
 }

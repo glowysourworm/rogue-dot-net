@@ -1,35 +1,39 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.Core.Math.Algorithm;
+﻿using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
-using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
-using RegionModel = Rogue.NET.Core.Model.Scenario.Content.Layout.Region;
+using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
 
-namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
+namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 {
-    public static class RegionLightingGenerator
+    [PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(ILightingGenerator))]
+    public class LightingGenerator : ILightingGenerator
     {
-        readonly static IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly static ILightGenerator _lightGenerator;
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly ILightGenerator _lightGenerator;
+        readonly INoiseGenerator _noiseGenerator;
 
         // Constants for creating space between wall lights
         const int WALL_LIGHT_SPACE_PARAMETER = 20;
         const int WALL_LIGHT_SPACE_MINIMUM = 5;
 
-        static RegionLightingGenerator()
+        [ImportingConstructor]
+        public LightingGenerator(ILightGenerator lightGenerator, INoiseGenerator noiseGenerator, IRandomSequenceGenerator randomSequenceGenerator)
         {
-            _randomSequenceGenerator = ServiceLocator.Current.GetInstance<IRandomSequenceGenerator>();
-            _lightGenerator = ServiceLocator.Current.GetInstance<ILightGenerator>();
+            _lightGenerator = lightGenerator;
+            _noiseGenerator = noiseGenerator;
+            _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public static void CreateLightThreshold(GridCellInfo[,] grid, LayoutTemplate template)
+        public void CreateLightThreshold(GridCellInfo[,] grid, LayoutTemplate template)
         {
             if (template.LightingThreshold <= 0)
                 return;
@@ -47,7 +51,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
             }
         }
 
-        public static void CreateLightedRooms(GridCellInfo[,] grid, IEnumerable<RegionModel> regions, LightAmbientTemplate template)
+        public void CreateLightedRooms(GridCellInfo[,] grid, IEnumerable<Region> regions, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
@@ -66,7 +70,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
             }
         }
 
-        public static void CreateWhiteNoiseLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
+        public void CreateWhiteNoiseLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
@@ -90,7 +94,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
             }
         }
 
-        public static void CreatePerlinNoiseLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
+        public void CreatePerlinNoiseLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
@@ -98,7 +102,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
             // Create a frequency for the perlin noise
             var frequency = template.Type == TerrainAmbientLightingType.PerlinNoiseSmall ? 0.5 : 0.08;
 
-            NoiseGenerator.GeneratePerlinNoise(grid.GetLength(0), grid.GetLength(1), frequency, (column, row, value) =>
+            _noiseGenerator.Run(NoiseType.PerlinNoise, grid.GetLength(0), grid.GetLength(1), frequency, (column, row, value) =>
             {
                 if (grid[column, row] != null)
                 {
@@ -121,12 +125,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Region.Lighting
                         grid[column, row].BaseLight = ColorFilter.AddLight(grid[column, row].BaseLight, light);
                     }
                 }
-
-                return value;
             });
         }
 
-        public static void CreateWallLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
+        public void CreateWallLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);

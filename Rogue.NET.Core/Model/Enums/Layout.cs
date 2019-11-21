@@ -7,16 +7,41 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Enums
 {
+    // (DON'T RENUMBER) Numbers prevent loss of data - so enums can be refactored
     public enum LayoutType : int
     {
-        // (DON'T RENUMBER) Numbers prevent loss of data - so enums can be refactored
+        [Display(Name = "Normal",
+                 Description = "Generates connected rectangular regions - overlapping or non-overlapping")]
+        Region = 0,
+
+        [Display(Name = "Maze",
+                 Description = "Generates a single maze inside the level")]
         Maze = 1,
+
+        [Display(Name = "Connected Rectangular Rooms [deprecated]",
+                 Description = "[deprecated]")]
         ConnectedRectangularRooms = 7,
-        ConnectedCellularAutomata = 8
+
+        [Display(Name = "Connected Cellular Automata [deprecated]",
+                 Description = "[deprecated]")]
+        ConnectedCellularAutomata = 8,
+
+        [Display(Name = "Open World",
+                 Description = "Generates an open layout (no defining borders) using a smooth elevation map")]
+        ElevationMap = 10,
+
+        [Display(Name = "Cave",
+                 Description = "Generates a cave-like layout with some mild to moderate obstructions")]
+        CellularAutomata = 11
     }
     public enum LayoutCellularAutomataType : int
     {
+        [Display(Name = "Open",
+                 Description = "Generates more mild obstructions")]
         Open = 0,
+
+        [Display(Name = "Filled",
+                 Description = "Generates more morderate obstructions")]
         Filled = 1
     }
     public enum LayoutConnectionType : int
