@@ -11,26 +11,24 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
     {
         private int _width;
         private int _height;
-        private int _roomHeightLimit;
-        private int _roomWidthLimit;
-        private int _roomHeightMin;
-        private int _roomWidthMin;
+        private Range<int> _regionWidthRange;
+        private Range<int> _regionHeightRange;
         private int _numberRoomRows;
         private int _numberRoomCols;
         private int _rectangularGridPadding;
         private int _randomRoomCount;
         private int _randomRoomSpread;
-        private int _numberExtraWallRemovals;
+        private double _mazeHorizontalVerticalBias;
+        private double _mazeWallRemovalRatio;
+        private double _openWorldElevationFrequency;
+        private Range<double> _openWorldElevationRegionRange;
         private double _hiddenDoorProbability;
-        private double _generationRatio;
         private double _cellularAutomataFillRatio;
+        private bool _makeSymmetric;
         private LayoutType _type;
         private LayoutCellularAutomataType _cellularAutomataType;
-        private LayoutRoomPlacementType _roomPlacementType;
         private LayoutConnectionType _connectionType;
-        private LayoutConnectionGeometryType _connectionGeometryType;
-        private LayoutCorridorGeometryType _corridorGeometryType;
-        private Range<int> _levelRange;
+        private LayoutSymmetryType _symmetryType;
         private SymbolDetailsTemplate _wallSymbol;
         private SymbolDetailsTemplate _doorSymbol;
         private SymbolDetailsTemplate _cellSymbol;
@@ -62,51 +60,27 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public int RoomWidthLimit
+        public Range<int> RegionWidthRange
         {
-            get { return _roomWidthLimit; }
+            get { return _regionWidthRange; }
             set
             {
-                if (_roomWidthLimit != value)
+                if (_regionWidthRange != value)
                 {
-                    _roomWidthLimit = value;
-                    OnPropertyChanged("RoomWidthLimit");
+                    _regionWidthRange = value;
+                    OnPropertyChanged("RegionWidthRange");
                 }
             }
         }
-        public int RoomHeightLimit
+        public Range<int> RegionHeightRange
         {
-            get { return _roomHeightLimit; }
+            get { return _regionHeightRange; }
             set
             {
-                if (_roomHeightLimit != value)
+                if (_regionHeightRange != value)
                 {
-                    _roomHeightLimit = value;
-                    OnPropertyChanged("RoomHeightLimit");
-                }
-            }
-        }
-        public int RoomWidthMin
-        {
-            get { return _roomWidthMin; }
-            set
-            {
-                if (_roomWidthMin != value)
-                {
-                    _roomWidthMin = value;
-                    OnPropertyChanged("RoomWidthMin");
-                }
-            }
-        }
-        public int RoomHeightMin
-        {
-            get { return _roomHeightMin; }
-            set
-            {
-                if (_roomHeightMin != value)
-                {
-                    _roomHeightMin = value;
-                    OnPropertyChanged("RoomHeightMin");
+                    _regionHeightRange = value;
+                    OnPropertyChanged("RegionHeightRange");
                 }
             }
         }
@@ -170,15 +144,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public int NumberExtraWallRemovals
+        public bool MakeSymmetric
         {
-            get { return _numberExtraWallRemovals; }
+            get { return _makeSymmetric; }
             set
             {
-                if (_numberExtraWallRemovals != value)
+                if (_makeSymmetric != value)
                 {
-                    _numberExtraWallRemovals = value;
-                    OnPropertyChanged("NumberExtraWallRemovals");
+                    _makeSymmetric = value;
+                    OnPropertyChanged("MakeSymmetric");
                 }
             }
         }
@@ -194,18 +168,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public double GenerationRate
-        {
-            get { return _generationRatio; }
-            set
-            {
-                if (_generationRatio != value)
-                {
-                    _generationRatio = value;
-                    OnPropertyChanged("GenerationRate");
-                }
-            }
-        }
         public double CellularAutomataFillRatio
         {
             get { return _cellularAutomataFillRatio; }
@@ -215,6 +177,54 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 {
                     _cellularAutomataFillRatio = value;
                     OnPropertyChanged("CellularAutomataFillRatio");
+                }
+            }
+        }
+        public double MazeHorizontalVerticalBias
+        {
+            get { return _mazeHorizontalVerticalBias; }
+            set
+            {
+                if (_mazeHorizontalVerticalBias != value)
+                {
+                    _mazeHorizontalVerticalBias = value;
+                    OnPropertyChanged("MazeHorizontalVerticalBias");
+                }
+            }
+        }
+        public double MazeWallRemovalRatio
+        {
+            get { return _mazeWallRemovalRatio; }
+            set
+            {
+                if (_mazeWallRemovalRatio != value)
+                {
+                    _mazeWallRemovalRatio = value;
+                    OnPropertyChanged("MazeWallRemovalRatio");
+                }
+            }
+        }
+        public double OpenWorldElevationFrequency
+        {
+            get { return _openWorldElevationFrequency; }
+            set
+            {
+                if (_openWorldElevationFrequency != value)
+                {
+                    _openWorldElevationFrequency = value;
+                    OnPropertyChanged("OpenWorldElevationFrequency");
+                }
+            }
+        }
+        public Range<double> OpenWorldElevationRegionRange
+        {
+            get { return _openWorldElevationRegionRange; }
+            set
+            {
+                if (_openWorldElevationRegionRange != value)
+                {
+                    _openWorldElevationRegionRange = value;
+                    OnPropertyChanged("OpenWorldElevationRegionRange");
                 }
             }
         }
@@ -242,18 +252,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public LayoutRoomPlacementType RoomPlacementType
-        {
-            get { return _roomPlacementType; }
-            set
-            {
-                if (_roomPlacementType != value)
-                {
-                    _roomPlacementType = value;
-                    OnPropertyChanged("RoomPlacementType");
-                }
-            }
-        }
         public LayoutConnectionType ConnectionType
         {
             get { return _connectionType; }
@@ -266,39 +264,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public LayoutConnectionGeometryType ConnectionGeometryType
+        public LayoutSymmetryType SymmetryType
         {
-            get { return _connectionGeometryType; }
+            get { return _symmetryType; }
             set
             {
-                if (_connectionGeometryType != value)
+                if (_symmetryType != value)
                 {
-                    _connectionGeometryType = value;
-                    OnPropertyChanged("ConnectionGeometryType");
-                }
-            }
-        }
-        public LayoutCorridorGeometryType CorridorGeometryType
-        {
-            get { return _corridorGeometryType; }
-            set
-            {
-                if (_corridorGeometryType != value)
-                {
-                    _corridorGeometryType = value;
-                    OnPropertyChanged("CorridorGeometryType");
-                }
-            }
-        }
-        public Range<int> Level
-        {
-            get { return _levelRange; }
-            set
-            {
-                if (_levelRange != value)
-                {
-                    _levelRange = value;
-                    OnPropertyChanged("Level");
+                    _symmetryType = value;
+                    OnPropertyChanged("SymmetryType");
                 }
             }
         }
@@ -381,15 +355,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         {
             this.Width = 600;
             this.Height = 400;
-            this.Type = LayoutType.ConnectedRectangularRooms;
-            this.RoomPlacementType = LayoutRoomPlacementType.RectangularGrid;
-            this.ConnectionType = LayoutConnectionType.CorridorWithDoors;
-            this.Level = new Range<int>(1, 100);
+            this.RegionHeightRange = new Range<int>();
+            this.RegionWidthRange = new Range<int>();
+            this.Type = LayoutType.RectangularRegion;
+            this.ConnectionType = LayoutConnectionType.Corridor;
             this.NumberRoomRows = 3;
             this.NumberRoomCols = 3;
-            this.NumberExtraWallRemovals = 200;
             this.HiddenDoorProbability = 0.2;
-            this.GenerationRate = 0.5;
+
+            this.MazeHorizontalVerticalBias = 0.5;
+            this.MazeWallRemovalRatio = 0.5;
+            this.OpenWorldElevationFrequency = 0.1;
+            this.OpenWorldElevationRegionRange = new Range<double>(0.5, 1);
 
             this.WallSymbol = new SymbolDetailsTemplate();
             this.DoorSymbol = new SymbolDetailsTemplate();

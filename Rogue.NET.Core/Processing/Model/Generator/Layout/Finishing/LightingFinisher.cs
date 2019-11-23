@@ -6,6 +6,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -14,8 +15,8 @@ using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
-    [Export(typeof(ILightingGenerator))]
-    public class LightingGenerator : ILightingGenerator
+    [Export(typeof(ILightingFinisher))]
+    public class LightingFinisher : ILightingFinisher
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly ILightGenerator _lightGenerator;
@@ -26,14 +27,69 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         const int WALL_LIGHT_SPACE_MINIMUM = 5;
 
         [ImportingConstructor]
-        public LightingGenerator(ILightGenerator lightGenerator, INoiseGenerator noiseGenerator, IRandomSequenceGenerator randomSequenceGenerator)
+        public LightingFinisher(ILightGenerator lightGenerator, INoiseGenerator noiseGenerator, IRandomSequenceGenerator randomSequenceGenerator)
         {
             _lightGenerator = lightGenerator;
             _noiseGenerator = noiseGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public void CreateLightThreshold(GridCellInfo[,] grid, LayoutTemplate template)
+        public void CreateLighting(GridCellInfo[,] grid, LayerInfo roomLayer, LayoutTemplate template)
+        {
+            // Procedure
+            //
+            // - Create white light threshold for the level using the scenario configuration setting
+            // - Create layers 1 and 2 if they're set (using RGB averages to add light color channels)
+            // - Store the results as the cell's base lighting
+            //
+
+            // Create the white light threshold
+            CreateLightThreshold(grid, template);
+
+            switch (template.LightingAmbient1.Type)
+            {
+                case TerrainAmbientLightingType.None:
+                    break;
+                case TerrainAmbientLightingType.LightedRooms:
+                    CreateLightedRooms(grid, roomLayer.Regions, template.LightingAmbient1);
+                    break;
+                case TerrainAmbientLightingType.PerlinNoiseLarge:
+                case TerrainAmbientLightingType.PerlinNoiseSmall:
+                    CreatePerlinNoiseLighting(grid, template.LightingAmbient1);
+                    break;
+                case TerrainAmbientLightingType.WhiteNoise:
+                    CreateWhiteNoiseLighting(grid, template.LightingAmbient1);
+                    break;
+                case TerrainAmbientLightingType.WallLighting:
+                    CreateWallLighting(grid, template.LightingAmbient1);
+                    break;
+                default:
+                    throw new Exception("Unhandled Terrain Ambient Lighting Type");
+            }
+
+            switch (template.LightingAmbient2.Type)
+            {
+                case TerrainAmbientLightingType.None:
+                    break;
+                case TerrainAmbientLightingType.LightedRooms:
+                    CreateLightedRooms(grid, roomLayer.Regions, template.LightingAmbient2);
+                    break;
+                case TerrainAmbientLightingType.PerlinNoiseLarge:
+                case TerrainAmbientLightingType.PerlinNoiseSmall:
+                    CreatePerlinNoiseLighting(grid, template.LightingAmbient2);
+                    break;
+                case TerrainAmbientLightingType.WhiteNoise:
+                    CreateWhiteNoiseLighting(grid, template.LightingAmbient2);
+                    break;
+                case TerrainAmbientLightingType.WallLighting:
+                    CreateWallLighting(grid, template.LightingAmbient2);
+                    break;
+                default:
+                    throw new Exception("Unhandled Terrain Ambient Lighting Type");
+            }
+        }
+
+        private void CreateLightThreshold(GridCellInfo[,] grid, LayoutTemplate template)
         {
             if (template.LightingThreshold <= 0)
                 return;
@@ -51,7 +107,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             }
         }
 
-        public void CreateLightedRooms(GridCellInfo[,] grid, IEnumerable<Region> regions, LightAmbientTemplate template)
+        private void CreateLightedRooms(GridCellInfo[,] grid, IEnumerable<Region> regions, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
@@ -70,7 +126,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             }
         }
 
-        public void CreateWhiteNoiseLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
+        private void CreateWhiteNoiseLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
@@ -94,7 +150,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             }
         }
 
-        public void CreatePerlinNoiseLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
+        private void CreatePerlinNoiseLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
@@ -125,10 +181,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         grid[column, row].BaseLight = ColorFilter.AddLight(grid[column, row].BaseLight, light);
                     }
                 }
+
+                return value;
             });
         }
 
-        public void CreateWallLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
+        private void CreateWallLighting(GridCellInfo[,] grid, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);

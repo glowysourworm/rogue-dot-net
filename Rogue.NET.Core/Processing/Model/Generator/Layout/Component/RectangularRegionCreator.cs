@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
 using System.Collections.Generic;

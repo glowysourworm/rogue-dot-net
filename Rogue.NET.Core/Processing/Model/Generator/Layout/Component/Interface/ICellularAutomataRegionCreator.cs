@@ -7,7 +7,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
     public interface ICellularAutomataRegionCreator
     {
         /// <summary>
-        /// Generates cellular automata within the specified region
+        /// Generates cellular automata within the specified region. 
         /// </summary>
         /// <param name="grid">Input 2D array of cells</param>
         /// <param name="boundary">Region to build the maze inside of</param>

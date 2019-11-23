@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
@@ -16,7 +17,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         // Region padding - must be applied to the level grid
-        const int PADDING = 1;
+        const int PADDING = 2;
 
         [ImportingConstructor]
         public RegionGeometryCreator(IRandomSequenceGenerator randomSequenceGenerator)
@@ -24,9 +25,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public IEnumerable<RegionBoundary> CreateGridRectangularRegions(int width, int height, int numberRegionColumns, int numberRegionRows, int regionPadding, Range<int> regionWidthRange, Range<int> regionHeightRange)
+        public IEnumerable<RegionBoundary> CreateGridRectangularRegions(int numberRegionColumns, int numberRegionRows, int regionPadding, Range<int> regionWidthRange, Range<int> regionHeightRange)
         {
-            var bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
             var gridDivisionWidth = regionWidthRange.High + (2 * regionPadding);
             var gridDivisionHeight = regionHeightRange.High + (2 * regionPadding);
 
@@ -65,12 +65,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             return regions;
         }
 
-        public IEnumerable<RegionBoundary> CreateRandomRectangularRegions(int width, int height, int numberOfRegions, Range<int> regionWidthRange, Range<int> regionHeightRange, int regionSpread)
+        public IEnumerable<RegionBoundary> CreateRandomRectangularRegions(RegionBoundary placementBoundary, int numberOfRegions, Range<int> regionWidthRange, Range<int> regionHeightRange, int regionSpread)
         {
-            var bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
             var regions = new List<RegionBoundary>();
 
-            // Create region cells
+            // Create region boundaries
             for (int i = 0; i < numberOfRegions; i++)
             {
                 // First, generate the region height and width
@@ -79,8 +78,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                 // Choose placement of region
                 //
-                var column = _randomSequenceGenerator.Get(PADDING, bounds.CellWidth - regionWidth - PADDING);
-                var row = _randomSequenceGenerator.Get(PADDING, bounds.CellHeight - regionHeight - PADDING);
+                var column = _randomSequenceGenerator.Get(PADDING + placementBoundary.Left, placementBoundary.Right - (regionWidth + PADDING) + 1);
+                var row = _randomSequenceGenerator.Get(PADDING + placementBoundary.Top, placementBoundary.Bottom - (regionHeight + PADDING) + 1);
 
                 regions.Add(new RegionBoundary(new GridLocation(column, row), regionWidth, regionHeight));
             }
@@ -88,45 +87,31 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             return regions;
         }
 
-        public IEnumerable<IEnumerable<RegionBoundary>> GroupOverlappingBoundaries(IEnumerable<RegionBoundary> boundaries)
+        public IEnumerable<RegionBoundary> CreateGaussianRectangularRegions(RegionBoundary placementBoundary, int numberOfRegions, Range<int> regionWidth, Range<int> regionHeight, int regionSpread)
         {
-            var result = new List<List<RegionBoundary>>();
+            // Calculate Gaussian parameters
+            var standardDeviation = regionSpread;
+            var meanColumn = placementBoundary.CellWidth / 2.0;
+            var meanRow = placementBoundary.CellHeight / 2.0;
 
-            foreach (var boundary in boundaries)
+            var regions = new List<RegionBoundary>();
+
+            // Create regions
+            for (int i = 0; i < numberOfRegions; i++)
             {
-                // Any contiguous region boundaries will have already been
-                // identified and added to one of the result lists
-                if (result.Any(list => list.Contains(boundary)))
-                    continue;
+                // First, generate the region height and width
+                var width = _randomSequenceGenerator.Get(regionWidth.Low, regionWidth.High + 1);
+                var height = _randomSequenceGenerator.Get(regionHeight.Low, regionHeight.High + 1);
 
-                // First, get the regions that overlap this region.
-                var overlappingBoundaries = boundaries.Where(x => x != boundary && x.Touches(boundary))
-                                                      .ToList();
+                // Choose placement of region
+                //
+                var column = (int)_randomSequenceGenerator.GetGaussian(meanColumn, standardDeviation).Clip(placementBoundary.Left + PADDING, placementBoundary.Right - (width + PADDING));
+                var row = (int)_randomSequenceGenerator.GetGaussian(meanRow, standardDeviation).Clip(placementBoundary.Top + PADDING, placementBoundary.Bottom - (height + PADDING));
 
-                // Add the boundary in question to this list to start
-                overlappingBoundaries.Add(boundary);
-
-                IEnumerable<RegionBoundary> nextOverlappingBoundaries = null;
-
-                do
-                {
-                    // While there are other boundaries to overlap with this subset - continue iterating
-                    nextOverlappingBoundaries = boundaries.Where(x => overlappingBoundaries.Any(y => y.Touches(x) &&
-                                                                     !overlappingBoundaries.Contains(x)));
-
-                    if (nextOverlappingBoundaries.Any())
-                        overlappingBoundaries.AddRange(nextOverlappingBoundaries);
-
-                } while (nextOverlappingBoundaries.Any());
-
-                // Add overlapping boundaries to the result
-                result.Add(overlappingBoundaries);
+                regions.Add(new RegionBoundary(new GridLocation(column, row), width, height));
             }
 
-            if (result.Sum(x => x.Count) != boundaries.Count())
-                throw new Exception("Improperly calculated contiguous region");
-
-            return result;
+            return regions;
         }
     }
 }

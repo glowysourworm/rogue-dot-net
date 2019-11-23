@@ -17,24 +17,22 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private int _height;
         private int _numberRoomRows;
         private int _numberRoomCols;
-        private int _roomHeightLimit;
-        private int _roomWidthLimit;
-        private int _roomHeightMin;
-        private int _roomWidthMin;
+        private RangeViewModel<int> _regionWidthRange;
+        private RangeViewModel<int> _regionHeightRange;
         private int _rectangularGridPadding;
         private int _randomRoomCount;
         private int _randomRoomSpread;
-        private int _numberExtraWallRemovals;
+        private bool _makeSymmetric;
+        private double _mazeHorizontalVerticalBias;
+        private double _mazeWallRemovalRatio;
+        private double _openWorldElevationFrequency;
+        private RangeViewModel<double> _openWorldElevationRegionRange;
         private double _hiddenDoorProbability;
-        private double _generationRatio;
         private double _cellularAutomataFillRatio;
         private LayoutType _type;
         private LayoutCellularAutomataType _cellularAutomataType;
-        private LayoutRoomPlacementType _roomPlacementType;
         private LayoutConnectionType _connectionType;
-        private LayoutConnectionGeometryType _connectionGeometryType;
-        private LayoutCorridorGeometryType _corridorGeometryType;
-        private RangeViewModel<int> _levelRange;
+        private LayoutSymmetryType _symmetryType;
         private SymbolDetailsTemplateViewModel _wallSymbol;
         private SymbolDetailsTemplateViewModel _doorSymbol;
         private SymbolDetailsTemplateViewModel _cellSymbol;
@@ -52,25 +50,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _height; }
             set { this.RaiseAndSetIfChanged(ref _height, value); }
         }
-        public int RoomWidthLimit
+        public RangeViewModel<int> RegionWidthRange
         {
-            get { return _roomWidthLimit; }
-            set { this.RaiseAndSetIfChanged(ref _roomWidthLimit, value); }
+            get { return _regionWidthRange; }
+            set { this.RaiseAndSetIfChanged(ref _regionWidthRange, value); }
         }
-        public int RoomHeightLimit
+        public RangeViewModel<int> RegionHeightRange
         {
-            get { return _roomHeightLimit; }
-            set { this.RaiseAndSetIfChanged(ref _roomHeightLimit, value); }
-        }
-        public int RoomWidthMin
-        {
-            get { return _roomWidthMin; }
-            set { this.RaiseAndSetIfChanged(ref _roomWidthMin, value); }
-        }
-        public int RoomHeightMin
-        {
-            get { return _roomHeightMin; }
-            set { this.RaiseAndSetIfChanged(ref _roomHeightMin, value); }
+            get { return _regionHeightRange; }
+            set { this.RaiseAndSetIfChanged(ref _regionHeightRange, value); }
         }
         public int NumberRoomRows
         {
@@ -97,25 +85,40 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _randomRoomSpread; }
             set { this.RaiseAndSetIfChanged(ref _randomRoomSpread, value); }
         }
-        public int NumberExtraWallRemovals
+        public bool MakeSymmetric
         {
-            get { return _numberExtraWallRemovals; }
-            set { this.RaiseAndSetIfChanged(ref _numberExtraWallRemovals, value); }
+            get { return _makeSymmetric; }
+            set { this.RaiseAndSetIfChanged(ref _makeSymmetric, value); }
         }
         public double HiddenDoorProbability
         {
             get { return _hiddenDoorProbability; }
             set { this.RaiseAndSetIfChanged(ref _hiddenDoorProbability, value); }
         }
-        public double GenerationRate
-        {
-            get { return _generationRatio; }
-            set { this.RaiseAndSetIfChanged(ref _generationRatio, value); }
-        }
         public double CellularAutomataFillRatio
         {
             get { return _cellularAutomataFillRatio; }
             set { this.RaiseAndSetIfChanged(ref _cellularAutomataFillRatio, value); }
+        }
+        public double MazeHorizontalVerticalBias
+        {
+            get { return _mazeHorizontalVerticalBias; }
+            set { this.RaiseAndSetIfChanged(ref _mazeHorizontalVerticalBias, value); }
+        }
+        public double MazeWallRemovalRatio
+        {
+            get { return _mazeWallRemovalRatio; }
+            set { this.RaiseAndSetIfChanged(ref _mazeWallRemovalRatio, value); }
+        }
+        public double OpenWorldElevationFrequency
+        {
+            get { return _openWorldElevationFrequency; }
+            set { this.RaiseAndSetIfChanged(ref _openWorldElevationFrequency, value); }
+        }
+        public RangeViewModel<double> OpenWorldElevationRegionRange
+        {
+            get { return _openWorldElevationRegionRange; }
+            set { this.RaiseAndSetIfChanged(ref _openWorldElevationRegionRange, value); }
         }
         public LayoutType Type
         {
@@ -127,30 +130,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _cellularAutomataType; }
             set { this.RaiseAndSetIfChanged(ref _cellularAutomataType, value); }
         }
-        public LayoutRoomPlacementType RoomPlacementType
-        {
-            get { return _roomPlacementType; }
-            set { this.RaiseAndSetIfChanged(ref _roomPlacementType, value); }
-        }
         public LayoutConnectionType ConnectionType
         {
             get { return _connectionType; }
             set { this.RaiseAndSetIfChanged(ref _connectionType, value); }
         }
-        public LayoutConnectionGeometryType ConnectionGeometryType
+        public LayoutSymmetryType SymmetryType
         {
-            get { return _connectionGeometryType; }
-            set { this.RaiseAndSetIfChanged(ref _connectionGeometryType, value); }
-        }
-        public LayoutCorridorGeometryType CorridorGeometryType
-        {
-            get { return _corridorGeometryType; }
-            set { this.RaiseAndSetIfChanged(ref _corridorGeometryType, value); }
-        }
-        public RangeViewModel<int> Level
-        {
-            get { return _levelRange; }
-            set { this.RaiseAndSetIfChanged(ref _levelRange, value); }
+            get { return _symmetryType; }
+            set { this.RaiseAndSetIfChanged(ref _symmetryType, value); }
         }
         public SymbolDetailsTemplateViewModel WallSymbol
         {
@@ -189,18 +177,19 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         {
             this.Width = 80;
             this.Height = 50;
-            this.Type = LayoutType.ConnectedRectangularRooms;
+            this.RegionHeightRange = new RangeViewModel<int>();
+            this.RegionWidthRange = new RangeViewModel<int>();
+            this.Type = LayoutType.RectangularRegion;
             this.CellularAutomataType = LayoutCellularAutomataType.Open;
-            this.RoomPlacementType = LayoutRoomPlacementType.RectangularGrid;
-            this.ConnectionType = LayoutConnectionType.CorridorWithDoors;
-            this.ConnectionGeometryType = LayoutConnectionGeometryType.Rectilinear;
-            this.CorridorGeometryType = LayoutCorridorGeometryType.Linear;
-            this.Level = new RangeViewModel<int>(1, 100);
+            this.ConnectionType = LayoutConnectionType.Corridor;
             this.NumberRoomRows = 3;
             this.NumberRoomCols = 3;
-            this.NumberExtraWallRemovals = 200;
             this.HiddenDoorProbability = 0.2;
-            this.GenerationRate = 0.5;
+
+            this.MazeHorizontalVerticalBias = 0.5;
+            this.MazeWallRemovalRatio = 0.5;
+            this.OpenWorldElevationFrequency = 0.1;
+            this.OpenWorldElevationRegionRange = new RangeViewModel<double>(0.5, 1);
 
             this.WallSymbol = new SymbolDetailsTemplateViewModel();
             this.DoorSymbol = new SymbolDetailsTemplateViewModel();

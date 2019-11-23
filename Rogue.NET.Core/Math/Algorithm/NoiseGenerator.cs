@@ -23,16 +23,14 @@ namespace Rogue.NET.Core.Math.Algorithm
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public void Run(NoiseType type, int width, int height, double frequency, PostProcessingCallback callback)
+        public double[,] Run(NoiseType type, int width, int height, double frequency, PostProcessingCallback callback)
         {
             switch (type)
             {
                 case NoiseType.WhiteNoise:
-                    GenerateWhiteNoise(width, height, frequency, callback);
-                    break;
+                    return GenerateWhiteNoise(width, height, frequency, callback);
                 case NoiseType.PerlinNoise:
-                    GeneratePerlinNoise(width, height, frequency, callback);
-                    break;
+                    return GeneratePerlinNoise(width, height, frequency, callback);
                 default:
                     throw new Exception("Unhandled Noise Type:  NoiseGenerator");
             }
@@ -41,16 +39,20 @@ namespace Rogue.NET.Core.Math.Algorithm
         /// <summary>
         /// Returns white noise 2D array with [0, 1] values
         /// </summary>
-        private void GenerateWhiteNoise(int width, int height, double frequency, PostProcessingCallback callback)
+        private double[,] GenerateWhiteNoise(int width, int height, double frequency, PostProcessingCallback callback)
         {
+            var noiseMap = new double[width, height];
+
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
                     if (_randomSequenceGenerator.Get() < frequency)
-                        callback(i, j, _randomSequenceGenerator.Get());
+                        noiseMap[i, j] = callback(i, j, _randomSequenceGenerator.Get());
                 }
             }
+
+            return noiseMap;
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace Rogue.NET.Core.Math.Algorithm
         /// </summary>
         /// <param name="frequency">A [0, 1] value used to specify the relative noise erradicity.</param>
         /// <returns>Returns a Perlin noise map which has the characteristic behavior of smoothness and feature size according to the mesh cell size.</returns>
-        public void GeneratePerlinNoise(int width, int height, double frequency, PostProcessingCallback callback)
+        public double[,] GeneratePerlinNoise(int width, int height, double frequency, PostProcessingCallback callback)
         {
             // Scale the frequency input
             var scaledFrequency = (frequency * (PERLIN_NOISE_HIGH_FREQUENCY - PERLIN_NOISE_LOW_FREQUENCY)) + PERLIN_NOISE_LOW_FREQUENCY;
@@ -180,9 +182,11 @@ namespace Rogue.NET.Core.Math.Algorithm
 
                     // Apply post processing callback
                     //
-                    callback(i, j, map[i, j]);
+                    map[i, j] = callback(i, j, map[i, j]);
                 }
             }
+
+            return map;
         }
 
         private double PerlinEase(double unitValue)

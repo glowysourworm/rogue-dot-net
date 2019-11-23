@@ -16,6 +16,12 @@ namespace Rogue.NET.Core.Math.Geometry
     // *** TODO:TERRAIN  INTEGRATE THIS WITH THE LEVEL GRID TO PREVENT ALLOCATING MEMORY FOR THE GRID LOCATIONS
     public class DijkstraMap
     {
+        /// <summary>
+        /// Constant that indictaes a region of the grid - typically used for a mask to prevent iterating
+        /// back onto the regions.
+        /// </summary>
+        public readonly static double RegionFeatureConstant = 10000;
+
         // Map used to generate a gradient weighting for the algorithm
         double[,] _inputMap;
 

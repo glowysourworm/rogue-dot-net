@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
     public interface IRectangularRegionCreator
     {
         /// <summary>
-        /// Creates cells within the given boundary - with option to overwrite existing cells
+        /// Creates cells within the given boundary - with option to overwrite existing cells. 
         /// </summary>
         /// <exception cref="Exception">Trying to overwrite existing cell involuntarily</exception>
         void CreateCells(GridCellInfo[,] grid, RegionBoundary boundary, bool overwrite);

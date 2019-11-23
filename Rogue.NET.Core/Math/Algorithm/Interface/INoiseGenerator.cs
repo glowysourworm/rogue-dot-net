@@ -20,12 +20,13 @@
         }
 
         /// <summary>
-        /// Delegate for a method that is used for processing a grid based on the 2D noise array.
+        /// Delegate for a method that is used for processing a grid based on the 2D noise array. Allows for filtering
+        /// of the values.
         /// </summary>
         /// <param name="column">The corresponding column index (FROM 0) for the underlying grid</param>
         /// <param name="row">The corresponding row index (FROM 0) for the underlying grid</param>
         /// <param name="value">The unfiltered, normalized result for the noise function</param>
-        delegate void PostProcessingCallback(int column, int row, double value);
+        delegate double PostProcessingCallback(int column, int row, double value);
 
         /// <summary>
         /// Generates a noise map given the input parameters (See Initialize(...)). The callback is used to consume
@@ -34,6 +35,6 @@
         /// <param name="width">Width of the noise grid</param>
         /// <param name="height">Height of the noise grid</param>
         /// <param name="frequency">Frequency parameter for the noise</param>
-        void Run(NoiseType type, int width, int height, double frequency, PostProcessingCallback callback);
+        double[,] Run(NoiseType type, int width, int height, double frequency, PostProcessingCallback callback);
     }
 }

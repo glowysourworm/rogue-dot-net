@@ -30,6 +30,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
         double GetDouble(double inclusiveLowerBound, double exclusiveUpperBound);
 
         /// <summary>
+        /// Generates Gaussian distributed random number with the provided mean and std. deviation 
+        /// using the Marsaglia polar method. Clips anything outside 3.5 std deviations.
+        /// </summary>
+        double GetGaussian(double mean, double standardDeviation);
+
+        /// <summary>
         /// Gets random value from a Range<T> object
         /// </summary>
         T GetRandomValue<T>(Range<T> range) where T : IComparable<T>;

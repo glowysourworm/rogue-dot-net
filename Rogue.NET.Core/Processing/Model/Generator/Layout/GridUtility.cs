@@ -15,8 +15,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout
     public static class GridUtility
     {
         /// <summary>
-        /// Identifies regions using Breadth First Search (Flood Fill) algorithm. Sets up region names inside cell infos. THIS SUPPOSES THAT THE
-        /// GRID REPRESENTS A LAYOUT LAYER WITH THE SPECIFIED REGION NAME. Example:  "Room" Layer (or) "Lava" Layer.
+        /// Identifies regions using Breadth First Search (Flood Fill) algorithm. 
         /// </summary>
         public static IEnumerable<Region> IdentifyRegions(this GridCellInfo[,] layerGrid)
         {
@@ -35,7 +34,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout
             {
                 for (int j = 0; j < layerGrid.GetLength(1); j++)
                 {
-                    if (layerGrid[i, j] != null)
+                    if (layerGrid[i, j] != null &&
+                       !layerGrid[i, j].IsWall)
                     {
                         // First, identify cell (room) regions
                         if (regionGrids.All(regionGrid => regionGrid[i, j] == null))
@@ -91,8 +91,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout
                 foreach (var cell in grid.GetCardinalAdjacentElements(regionCell.Location.Column, regionCell.Location.Row))
                 {
                     // Find connected cells that are not yet part of the region - THESE ARE CONNECTED AS LONG AS THERE IS
-                    // A CELL CARDINALLY ADJACENT
+                    // A NON-WALL CELL CARDINALLY ADJACENT
                     if (grid[cell.Location.Column, cell.Location.Row] != null &&
+                       !grid[cell.Location.Column, cell.Location.Row].IsWall &&
                         regionGrid[cell.Location.Column, cell.Location.Row] == null)
                     {
                         // Add cell to region immediately to prevent extra cells on queue
@@ -115,7 +116,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout
             }
 
             // Assign region data to new region
-            return new Region(regionCells.ToArray(), edgeCells.ToArray(), regionBounds);
+            return new Region(regionCells.ToArray(), edgeCells.ToArray(), regionBounds, bounds);
         }
 
         public static Compass GetDirectionOfAdjacentLocation(GridLocation location, GridLocation adjacentLocation)

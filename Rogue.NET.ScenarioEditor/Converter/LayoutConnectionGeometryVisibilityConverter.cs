@@ -11,16 +11,19 @@ namespace Rogue.NET.ScenarioEditor.Converter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values == null || values.Length != 2 || values.Any(x => x == DependencyProperty.UnsetValue))
-                return Binding.DoNothing;
+            // TODO:TERRAIN
+            //if (values == null || values.Length != 2 || values.Any(x => x == DependencyProperty.UnsetValue))
+            //    return Binding.DoNothing;
 
-            var type = (LayoutType)values[0];
-            var roomConnectionType = (LayoutConnectionType)values[1];
+            //var type = (LayoutType)values[0];
+            //var roomConnectionType = (LayoutConnectionType)values[1];
 
-            return ((type == LayoutType.ConnectedRectangularRooms ||
-                     type == LayoutType.ConnectedCellularAutomata) &&
-                   (roomConnectionType == LayoutConnectionType.Corridor) ||
-                   (roomConnectionType == LayoutConnectionType.CorridorWithDoors)) ? Visibility.Visible : Visibility.Collapsed;
+            //return ((type == LayoutType.ConnectedRectangularRooms ||
+            //         type == LayoutType.ConnectedCellularAutomata) &&
+            //       (roomConnectionType == LayoutConnectionType.Corridor) ||
+            //       (roomConnectionType == LayoutConnectionType.CorridorWithDoors)) ? Visibility.Visible : Visibility.Collapsed;
+
+            return Visibility.Visible;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

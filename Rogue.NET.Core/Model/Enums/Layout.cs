@@ -1,38 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Rogue.NET.Core.Model.Enums
 {
-    // (DON'T RENUMBER) Numbers prevent loss of data - so enums can be refactored
     public enum LayoutType : int
     {
-        [Display(Name = "Normal",
-                 Description = "Generates connected rectangular regions - overlapping or non-overlapping")]
-        Region = 0,
+        [Display(Name = "Normal Rooms",
+                 Description = "Generates connected rooms - non-overlapping")]
+        RectangularRegion = 0,
 
-        [Display(Name = "Maze",
-                 Description = "Generates a single maze inside the level")]
-        Maze = 1,
+        [Display(Name = "Random Rooms",
+                 Description = "Generates connected rooms - overlapping or non-overlapping")]
+        RandomRectangularRegion = 1,
 
-        [Display(Name = "Connected Rectangular Rooms [deprecated]",
-                 Description = "[deprecated]")]
-        ConnectedRectangularRooms = 7,
+        [Display(Name = "Maze Map",
+                 Description = "Generates a single maze for the whole level!")]
+        MazeMap = 2,
 
-        [Display(Name = "Connected Cellular Automata [deprecated]",
-                 Description = "[deprecated]")]
-        ConnectedCellularAutomata = 8,
-
-        [Display(Name = "Open World",
+        [Display(Name = "Open World Map",
                  Description = "Generates an open layout (no defining borders) using a smooth elevation map")]
-        ElevationMap = 10,
+        ElevationMap = 3,
 
-        [Display(Name = "Cave",
+        [Display(Name = "Cave Map",
                  Description = "Generates a cave-like layout with some mild to moderate obstructions")]
-        CellularAutomata = 11
+        CellularAutomataMap = 4
     }
     public enum LayoutCellularAutomataType : int
     {
@@ -46,41 +36,27 @@ namespace Rogue.NET.Core.Model.Enums
     }
     public enum LayoutConnectionType : int
     {
+        [Display(Name = "Corridor",
+                 Description = "Generates a corridor between rooms")]
         Corridor = 0,
-        CorridorWithDoors = 1,
-        Teleporter = 2,
-        TeleporterRandom = 3
-    }
-    public enum LayoutConnectionGeometryType : int
-    {
-        /// <summary>
-        /// Available for RectangularGrid room placement type
-        /// </summary>
-        Rectilinear = 0,
 
-        /// <summary>
-        /// Uses Minimum Spanning Tree algorithm to generate room connections
-        /// </summary>
-        MinimumSpanningTree = 1
-    }
-    public enum LayoutCorridorGeometryType : int
-    {
-        /// <summary>
-        /// Straight line connecting cells from two rooms
-        /// </summary>
-        Linear = 0,
-    }
-    public enum LayoutRoomPlacementType : int
-    {
-        /// <summary>
-        /// Rectangular grid of rooms
-        /// </summary>
-        RectangularGrid = 0,
+        [Display(Name = "Teleporter",
+                 Description = "Generates a teleporter pair between rooms")]
+        Teleporter = 1,
 
-        /// <summary>
-        /// Random placement of rectangular rooms
-        /// </summary>
-        Random = 1
+        [Display(Name = "Maze",
+                 Description = "Generates a maze in the empty space between rooms")]
+        Maze = 2
+    }
+    public enum LayoutSymmetryType : int
+    {
+        [Display(Name = "2 - Way",
+                 Description = "Generates a symmetric map using a left / right fold")]
+        LeftRight = 0,
+
+        [Display(Name = "4 - Way",
+                 Description = "Generates a symmetric map using a 4-way fold")]
+        Quadrant = 1
     }
     public enum LayoutMandatoryLocationType
     {

@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
@@ -50,8 +51,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
         public void CreateCellsStartingAt(GridCellInfo[,] grid, GridLocation startingLocation)
         {
-            if (grid[startingLocation.Column, startingLocation.Row] == null ||
-               !grid[startingLocation.Column, startingLocation.Row].IsWall)
+            if (grid[startingLocation.Column, startingLocation.Row] == null)
                 throw new ArgumentException("Invalid starting location MazeRegionCreator.CreateCellsStartingAt");
 
             RecursiveBacktracker(grid, startingLocation, 0);

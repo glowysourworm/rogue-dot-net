@@ -95,16 +95,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             stairsUp.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
             level.AddStairsUp(stairsUp);
 
-            // Add teleporter level content - (MAPPED)
-            if ((level.Layout.Asset.Type == LayoutType.ConnectedRectangularRooms ||
-                 level.Layout.Asset.Type == LayoutType.ConnectedCellularAutomata) &&
-                level.Layout.Asset.ConnectionType == LayoutConnectionType.Teleporter)
-                AddTeleporterLevelContent(level, freeCells, freeRoomCells);
+            // TODO:TERRAIN
 
-            if ((level.Layout.Asset.Type == LayoutType.ConnectedRectangularRooms ||
-                 level.Layout.Asset.Type == LayoutType.ConnectedCellularAutomata) &&
-                level.Layout.Asset.ConnectionType == LayoutConnectionType.TeleporterRandom)
-                AddTeleportRandomLevelContent(level, freeCells, freeRoomCells);
+            //// Add teleporter level content - (MAPPED)
+            //if ((level.Layout.Asset.Type == LayoutType.ConnectedRectangularRooms ||
+            //     level.Layout.Asset.Type == LayoutType.ConnectedCellularAutomata) &&
+            //    level.Layout.Asset.ConnectionType == LayoutConnectionType.Teleporter)
+            //    AddTeleporterLevelContent(level, freeCells, freeRoomCells);
+
+            //if ((level.Layout.Asset.Type == LayoutType.ConnectedRectangularRooms ||
+            //     level.Layout.Asset.Type == LayoutType.ConnectedCellularAutomata) &&
+            //    level.Layout.Asset.ConnectionType == LayoutConnectionType.TeleporterRandom)
+            //    AddTeleportRandomLevelContent(level, freeCells, freeRoomCells);
 
             // Every level has a save point if not in survivor mode - (MAPPED)
             if (!survivorMode)

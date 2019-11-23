@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -42,16 +43,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return (slope * _random.NextDouble()) + intercept;
         }
 
-        public int CalculateGenerationNumber(double generationNumber)
+        public double GetGaussian(double mean, double standardDeviation)
         {
-            var truncatedNumber = (int)generationNumber;
-
-            var truncatedRemainder = generationNumber - truncatedNumber;
-
-            if (truncatedRemainder > 0 && truncatedRemainder > _random.NextDouble())
-                truncatedNumber++;
-
-            return truncatedNumber;
+            return (mean + (GetNormal() * standardDeviation)).Clip(0, 3.5 * standardDeviation);
         }
 
         public T GetRandomValue<T>(Range<T> range) where T : IComparable<T>
@@ -102,6 +96,27 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             }
 
             throw new Exception("PickRandom<T> has an issue searching using CDF method");
+        }
+
+        // https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
+        private double GetNormal()
+        {
+            double v1, v2, R;
+
+            do
+            {
+                // Generate U[-1, 1] Variables
+                v1 = (2.0 * _random.NextDouble()) - 1.0;
+                v2 = (2.0 * _random.NextDouble()) - 1.0;
+
+                // Calculate R^2
+                R = v1 * v1 + v2 * v2;
+
+            // Reject points outside the unit circle (RARE)
+            } while (R >= 1.0f || R == 0f);
+
+            // Use inverse CDF methods to calculate the gaussian
+            return v1 * System.Math.Sqrt((-2.0 * System.Math.Log(R)) / R);
         }
     }
 }

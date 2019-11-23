@@ -25,6 +25,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         // Used during layout generation to store calculated nearest neighbors
         Dictionary<Region, GraphConnection> _graphConnections;
 
+        // 2D Arrays for region cells and edges
+        GridLocation[,] _gridLocations;
+        bool[,] _edgeLocations;
+
+        // Indexers for grid locations and edges
+        public GridLocation this[int column, int row]
+        {
+            get { return _gridLocations[column, row]; }
+        }
+        public bool IsEdge(int column, int row)
+        {
+            return _edgeLocations[column, row];
+        }
+
         protected struct GraphConnection
         {
             public GridLocation Location { get; set; }
@@ -34,7 +48,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             public double Distance { get; set; }
         }
 
-        public Region(GridLocation[] cells, GridLocation[] edgeCells, RegionBoundary bounds)
+        public Region(GridLocation[] cells, GridLocation[] edgeCells, RegionBoundary bounds, RegionBoundary parentBoundary)
         {
             this.Cells = cells;
             this.EdgeCells = edgeCells;
@@ -42,6 +56,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsRectangular = cells.Length == (bounds.CellWidth * bounds.CellHeight);
 
             _graphConnections = new Dictionary<Region, GraphConnection>();
+            _gridLocations = new GridLocation[parentBoundary.CellWidth, parentBoundary.CellHeight];
+            _edgeLocations = new bool[parentBoundary.CellWidth, parentBoundary.CellHeight];
+
+            // Setup grid locations
+            foreach (var cell in cells)
+                _gridLocations[cell.Column, cell.Row] = cell;
+
+            // Setup edge locations
+            foreach (var cell in edgeCells)
+                _edgeLocations[cell.Column, cell.Row] = true;
         }
         public Region(SerializationInfo info, StreamingContext context)
         {
@@ -52,11 +76,32 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Bounds = (RegionBoundary)info.GetValue("Bounds", typeof(RegionBoundary));
             this.IsRectangular = info.GetBoolean("IsRectangular");
 
+            var parentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
+
+            _gridLocations = new GridLocation[parentBoundary.CellWidth, parentBoundary.CellHeight];
+            _edgeLocations = new bool[parentBoundary.CellWidth, parentBoundary.CellHeight];
+
             for (int i = 0; i < this.Cells.Length; i++)
-                this.Cells[i] = (GridLocation)info.GetValue("Cell" + i.ToString(), typeof(GridLocation));
+            {
+                var cell = (GridLocation)info.GetValue("Cell" + i.ToString(), typeof(GridLocation));
+
+                // Add to cell array
+                this.Cells[i] = cell;
+
+                // Add to 2D array
+                _gridLocations[cell.Column, cell.Row] = cell;
+            }
 
             for (int i = 0; i < this.EdgeCells.Length; i++)
-                this.EdgeCells[i] = (GridLocation)info.GetValue("EdgeCell" + i.ToString(), typeof(GridLocation));
+            {
+                var edgeCell = (GridLocation)info.GetValue("EdgeCell" + i.ToString(), typeof(GridLocation));
+
+                // Add to edge cell array
+                this.EdgeCells[i] = edgeCell;
+
+                // Add to 2D edge array
+                _edgeLocations[edgeCell.Column, edgeCell.Row] = true;
+            }
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -64,6 +109,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("EdgeCellsLength", this.EdgeCells.Length);
             info.AddValue("Bounds", this.Bounds);
             info.AddValue("IsRectangular", this.IsRectangular);
+            info.AddValue("ParentBoundary", new RegionBoundary(new GridLocation(0,0), _gridLocations.GetLength(0), _gridLocations.GetLength(1)));
 
             var counter = 0;
 

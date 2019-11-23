@@ -3249,3 +3249,5 @@ IMMEDIATE TODO'S:
 		IDEA:  Use flood-fill inside the walls to compute the polygons! :) :) :) THAT WORKS! On the todo's
 		
 		IDEA:  Create cells for ALL tiles - try not to allocate memory during any of the large iterations.
+	
+	TODO: When renaming an asset - the generation asset names have to be updated.

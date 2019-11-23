@@ -13,26 +13,29 @@ namespace Rogue.NET.Core.Processing.Service.Validation.ValidationRule.Layout
 
         public IEnumerable<IScenarioValidationResult> Validate(ScenarioConfigurationContainer configuration)
         {
-            var layouts = configuration.LayoutTemplates
-                                        .Where(template =>
-                                        {
-                                            return template.ConnectionGeometryType == LayoutConnectionGeometryType.Rectilinear &&
-                                                   (template.RoomPlacementType != LayoutRoomPlacementType.RectangularGrid ||
-                                                    template.Type == LayoutType.ConnectedCellularAutomata);
-                                        })
-                                        .Select(template => template.Name)
-                                        .Actualize();
+            // TODO:TERRAIN
+            return new IScenarioValidationResult[] { };
 
-            return layouts.Select(layoutName =>
-            {
-                return new ScenarioValidationResult()
-                {
-                    Passed = false,
-                    Severity = ValidationSeverity.Error,
-                    Message = "Layout Connection Geometry Type of Rectilinear should only be paired with a Room Placement Type of RectangularGrid",
-                    InnerMessage = "Layout Template " + layoutName
-                };
-            });
+            //var layouts = configuration.LayoutTemplates
+            //                            .Where(template =>
+            //                            {
+            //                                return template.ConnectionGeometryType == LayoutConnectionGeometryType.Rectilinear &&
+            //                                       (template.RoomPlacementType != LayoutRoomPlacementType.RectangularGrid ||
+            //                                        template.Type == LayoutType.ConnectedCellularAutomata);
+            //                            })
+            //                            .Select(template => template.Name)
+            //                            .Actualize();
+
+            //return layouts.Select(layoutName =>
+            //{
+            //    return new ScenarioValidationResult()
+            //    {
+            //        Passed = false,
+            //        Severity = ValidationSeverity.Error,
+            //        Message = "Layout Connection Geometry Type of Rectilinear should only be paired with a Room Placement Type of RectangularGrid",
+            //        InnerMessage = "Layout Template " + layoutName
+            //    };
+            //});
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
     public interface IMazeRegionCreator
     {
         /// <summary>
-        /// Generates a maze within the given region BY FIRST GENERATING WALLS. 
+        /// Generates a maze within the given region BY FIRST GENERATING WALLS.
         /// </summary>
         /// <param name="grid">Input 2D array of cells</param>
         /// <param name="boundary">Region to build the maze inside of</param>
@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
 
         /// <summary>
         /// Generates a maze starting at the provided location - MUST BE A WALL. This will explore all connected wall cells to generate
-        /// a maze. (Can be used to fill in negative space with a maze)
+        /// a maze. (Can be used to fill in negative space with a maze). 
         /// </summary>
         /// <param name="grid">Input 2D array of cells</param>
         /// <param name="startingLocation">Starting WALL location</param>
