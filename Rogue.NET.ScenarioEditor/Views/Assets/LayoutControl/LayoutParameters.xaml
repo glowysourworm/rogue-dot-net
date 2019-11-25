@@ -32,6 +32,8 @@
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMap}" />
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMap}" />
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
                     </MultiBinding>
                 </Grid.Visibility>
                 <TextBlock Text="Connection Type" FontSize="18" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
@@ -76,9 +78,11 @@
                                                 Width="150" HorizontalAlignment="Right">
                             <toolkit:IntegerUpDown.IsEnabled>
                                 <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
+                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
                                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.MazeMap}" />
                                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMap}" />
                                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMap}" />
+                                    <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
                                 </MultiBinding>
                             </toolkit:IntegerUpDown.IsEnabled>
                             <toolkit:IntegerUpDown.Value>
@@ -113,9 +117,11 @@
                                                 Width="150" HorizontalAlignment="Right">
                             <toolkit:IntegerUpDown.IsEnabled>
                                 <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
+                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
                                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.MazeMap}" />
                                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMap}" />
                                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMap}" />
+                                    <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
                                 </MultiBinding>
                             </toolkit:IntegerUpDown.IsEnabled>
                             <toolkit:IntegerUpDown.Value>
@@ -143,6 +149,8 @@
                             <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                 <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RectangularRegion}" />
                                 <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
+                                <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
+                                <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
                             </MultiBinding>
                         </Grid.Visibility>
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Width Range" />
@@ -153,6 +161,8 @@
                             <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                 <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RectangularRegion}" />
                                 <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
+                                <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
+                                <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
                             </MultiBinding>
                         </Grid.Visibility>
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Height Range"/>
@@ -247,6 +257,8 @@
                 <GroupBox.Visibility>
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                         <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
                     </MultiBinding>
                 </GroupBox.Visibility>
                 <StackPanel>

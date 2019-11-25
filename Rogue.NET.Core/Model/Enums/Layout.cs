@@ -12,17 +12,25 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Generates connected rooms - overlapping or non-overlapping")]
         RandomRectangularRegion = 1,
 
-        [Display(Name = "Maze Map",
+        [Display(Name = "Maze",
                  Description = "Generates a single maze for the whole level!")]
         MazeMap = 2,
 
-        [Display(Name = "Open World Map",
+        [Display(Name = "Open Cave",
                  Description = "Generates an open layout (no defining borders) using a smooth elevation map")]
         ElevationMap = 3,
 
-        [Display(Name = "Cave Map",
+        [Display(Name = "Cave",
                  Description = "Generates a cave-like layout with some mild to moderate obstructions")]
-        CellularAutomataMap = 4
+        CellularAutomataMap = 4,
+
+        [Display(Name = "Anchored Rooms",
+                 Description = "Generates a set of rooms anchored by one main room")]
+        AnchoredRectangularRegions = 5,
+
+        [Display(Name = "Centered Rooms",
+                 Description = "Generates a set of rooms anchored by one main room")]
+        CenteredRectangularRegions = 6
     }
     public enum LayoutCellularAutomataType : int
     {
@@ -30,9 +38,13 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Generates more mild obstructions")]
         Open = 0,
 
-        [Display(Name = "Filled",
+        [Display(Name = "Filled (Less)",
                  Description = "Generates more morderate obstructions")]
-        Filled = 1
+        FilledLess = 1,
+
+        [Display(Name = "Filled (More)",
+                 Description = "Generates more obstructions")]
+        FilledMore = 2
     }
     public enum LayoutConnectionType : int
     {

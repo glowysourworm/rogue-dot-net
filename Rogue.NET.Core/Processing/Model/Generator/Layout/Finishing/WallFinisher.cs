@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
         }
 
-        public void CreateWalls(GridCellInfo[,] grid)
+        public void CreateWalls(GridCellInfo[,] grid, bool createBorder)
         {
             var bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
             var walls = new List<GridCellInfo>();
@@ -70,6 +70,22 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             // Add wall cells to the grid
             foreach (var cell in walls)
                 grid[cell.Location.Column, cell.Location.Row] = cell;
+
+            // Optionally, create border
+            if (createBorder)
+            {
+                for (int i=0;i<grid.GetLength(0);i++)
+                {
+                    grid[i, 0] = new GridCellInfo(i, 0) { IsWall = true };
+                    grid[i, grid.GetLength(1) - 1] = new GridCellInfo(i, grid.GetLength(1) - 1) { IsWall = true };
+                }
+
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    grid[0, j] = new GridCellInfo(0, j) { IsWall = true };
+                    grid[grid.GetLength(0) - 1, j] = new GridCellInfo(grid.GetLength(0) - 1, j) { IsWall = true };
+                }
+            }
         }
     }
 }

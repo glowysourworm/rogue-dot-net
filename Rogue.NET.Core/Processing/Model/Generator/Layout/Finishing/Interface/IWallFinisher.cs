@@ -13,6 +13,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface
         /// Creates wall outline for each region in the grid (using null cells) by checking 8-way adjacency.
         /// </summary>
         /// <param name="grid">The layout grid</param>
-        void CreateWalls(GridCellInfo[,] grid);
+        void CreateWalls(GridCellInfo[,] grid, bool createBorder);
     }
 }

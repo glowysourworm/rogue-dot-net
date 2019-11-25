@@ -107,6 +107,48 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
+        /// Returns all elements within the specified distance from the given location (using the Roguian metric). Method does
+        /// not strip out null elements; but checks boundaries to prevent exceptions.
+        /// </summary>
+        public static T[] GetElementsNearUnsafe<T>(this T[,] grid, int column, int row, int distance) where T : class
+        {
+            // Calculate the array result length
+            var sumSequence = 0;
+            for (int i = 1; i <= distance; i++)
+                sumSequence += i;
+
+            // Circumference of a "circle" of "radius = distance" is 8 * distance. So, Area = Sum of Circumferences from 1 -> distance
+            //
+            var result = new T[8 * sumSequence];
+            var index = 0;
+
+            for (int k = 1; k <= distance; k++)
+            {
+                // Iterate top and bottom
+                for (int i = column - k; i <= column + k; i++)
+                {
+                    // Top
+                    result[index++] = grid.Get(i, row - k);
+
+                    // Bottom
+                    result[index++] = grid.Get(i, row + k);
+                }
+
+                // Iterate left and right (minus the corners)
+                for (int j = row - k + 1; j <= row + k - 1; j++)
+                {
+                    // Left 
+                    result[index++] = grid.Get(column - k, j);
+
+                    // Right
+                    result[index++] = grid.Get(column + k, j);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Returns 8-way adjacent cells - leaving nulls; but checking boundaries to prevent exceptions. 
         /// NOTE*** This will return null references for possible element positions ONLY.
         /// </summary>

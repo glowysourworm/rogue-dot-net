@@ -130,67 +130,68 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             if (_graphConnections.ContainsKey(adjacentNode))
                 return _graphConnections[adjacentNode].Distance;
 
-            // Use the centers to calculate the weight
-            if (this.IsRectangular && adjacentNode.IsRectangular)
+            //// Use the centers to calculate the weight
+            //if (this.IsRectangular && adjacentNode.IsRectangular)
+            //{
+            //    var distance = double.MaxValue;
+
+            //    switch (metricType)
+            //    {
+            //        case Metric.MetricType.Roguian:
+            //            distance = Metric.RoguianDistance(this.Bounds.Center, adjacentNode.Bounds.Center);
+            //            break;
+            //        case Metric.MetricType.Euclidean:
+            //            distance = Metric.EuclideanDistance(this.Bounds.Center, adjacentNode.Bounds.Center);
+            //            break;
+            //        default:
+            //            throw new Exception("Unhandled metric type Region.CalculateWeight");
+            //    }
+
+            //    _graphConnections.Add(adjacentNode, new GraphConnection()
+            //    {
+            //        AdjacentLocation = adjacentNode.Bounds.Center,
+            //        AdjacentRegion = adjacentNode,
+            //        Distance = distance,
+            //        Metric = metricType,
+            //        Location = this.Bounds.Center
+            //    });
+            //}
+            //// Use a brute force O(n x m) search
+            //else
+            //{
+            GridLocation location = null;
+            GridLocation adjacentLocation = null;
+            double distance = double.MaxValue;
+
+            foreach (var edgeLocation1 in this.EdgeCells)
             {
-                var distance = double.MaxValue;
-
-                switch (metricType)
+                foreach (var edgeLocation2 in adjacentNode.EdgeCells)
                 {
-                    case Metric.MetricType.Roguian:
-                        distance = Metric.RoguianDistance(this.Bounds.Center, adjacentNode.Bounds.Center);
-                        break;
-                    case Metric.MetricType.Euclidean:
-                        distance = Metric.EuclideanDistance(this.Bounds.Center, adjacentNode.Bounds.Center);
-                        break;
-                    default:
-                        throw new Exception("Unhandled metric type Region.CalculateWeight");
-                }
+                    var nextDistance = metricType == MetricType.Roguian ? Metric.RoguianDistance(edgeLocation1, edgeLocation2)
+                                                                        : Metric.EuclideanDistance(edgeLocation1, edgeLocation2);
 
-                _graphConnections.Add(adjacentNode, new GraphConnection()
-                {
-                    AdjacentLocation = adjacentNode.Bounds.Center,
-                    AdjacentRegion = adjacentNode,
-                    Distance = distance,
-                    Metric = metricType,
-                    Location = this.Bounds.Center
-                });
-            }
-            // Use a brute force O(n x m) search
-            else
-            {
-                GridLocation location = null;
-                GridLocation adjacentLocation = null;
-                double distance = double.MaxValue;
-
-                foreach (var edgeLocation1 in this.EdgeCells)
-                {
-                    foreach (var edgeLocation2 in adjacentNode.EdgeCells)
+                    // Reset candidates
+                    if (nextDistance < distance)
                     {
-                        var nextDistance = Metric.RoguianDistance(edgeLocation1, edgeLocation2);
-
-                        // Reset candidates
-                        if (nextDistance < distance)
-                        {
-                            distance = nextDistance;
-                            location = edgeLocation1;
-                            adjacentLocation = edgeLocation2;
-                        }
+                        distance = nextDistance;
+                        location = edgeLocation1;
+                        adjacentLocation = edgeLocation2;
                     }
                 }
-
-                if (distance == double.MaxValue)
-                    throw new Exception("No adjacent node connection found Region.CalculateWeight");
-
-                _graphConnections.Add(adjacentNode, new GraphConnection()
-                {
-                    AdjacentLocation = adjacentLocation,
-                    AdjacentRegion = adjacentNode,
-                    Distance = distance,
-                    Metric = metricType,
-                    Location = location
-                });
             }
+
+            if (distance == double.MaxValue)
+                throw new Exception("No adjacent node connection found Region.CalculateWeight");
+
+            _graphConnections.Add(adjacentNode, new GraphConnection()
+            {
+                AdjacentLocation = adjacentLocation,
+                AdjacentRegion = adjacentNode,
+                Distance = distance,
+                Metric = metricType,
+                Location = location
+            });
+            //}
 
             return _graphConnections[adjacentNode].Distance;
         }

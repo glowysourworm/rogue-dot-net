@@ -6,6 +6,7 @@ using Rogue.NET.Core.Processing.Model.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout
 {
@@ -253,6 +254,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout
             float x = (float)(ModelConstants.CellWidth * location.Column);
             float y = (float)(ModelConstants.CellHeight * location.Row);
             return new Vertex(x, y);
+        }
+
+        public static Rect TransformToPhysicalLayout(RegionBoundary boundary)
+        {
+            float x = (float)(ModelConstants.CellWidth * boundary.Left);
+            float y = (float)(ModelConstants.CellHeight * boundary.Top);
+            return new Rect(x, y, boundary.CellWidth * ModelConstants.CellWidth, boundary.CellHeight * ModelConstants.CellHeight);
+        }
+
+        public static GridLocation TransformFromPhysicalLayout(double x, double y)
+        {
+            var column = (int)(x / ModelConstants.CellWidth);
+            var row =    (int)(y / ModelConstants.CellHeight);
+            return new GridLocation(column, row);
         }
     }
 }

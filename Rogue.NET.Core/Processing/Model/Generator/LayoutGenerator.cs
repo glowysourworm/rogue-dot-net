@@ -60,6 +60,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Identify Regions and create connectors
             var regions = CreateCorridors(grid, template);
 
+            if (regions.Count() <= 0)
+                return CreateDefaultLayout();
+
             // Make Symmetric!
             if (template.MakeSymmetric)
             {
@@ -79,7 +82,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // var terrainLayers = _terrainBuilder.BuildTerrain(grid, template, out roomLayer);
 
             // Build Walls around cells
-            _wallFinisher.CreateWalls(grid);
+            _wallFinisher.CreateWalls(grid, false);
 
             // Create Lighting
             _lightingFinisher.CreateLighting(grid, roomLayer, template);
@@ -106,6 +109,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 default:
                     throw new Exception("Unhandled Connection Type");
             }
+        }
+
+        private LevelGrid CreateDefaultLayout()
+        {
+            var grid = _regionBuilder.BuildDefaultRegion();
+
+            var regions = grid.IdentifyRegions();
+
+            return new LevelGrid(grid, new LayerInfo("Room Layer", regions), new LayerInfo[] { });
         }
 
         private void MakeSymmetric(GridCellInfo[,] grid, LayoutSymmetryType symmetryType)

@@ -6,6 +6,7 @@ using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
 using System.ComponentModel.Composition;
+using System.Linq;
 using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
@@ -48,10 +49,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                     return CreateElevationMap(template);
                 case LayoutType.CellularAutomataMap:
                     return CreateCellularAutomataMap(template);
+                case LayoutType.AnchoredRectangularRegions:
+                    return CreateAnchoredRectangularRegions(template);
+                case LayoutType.CenteredRectangularRegions:
+                    return CreateCenteredRectangularRegions(template);
                 default:
                     throw new Exception("Unhandled Layout Type RegionBuilder");
             }
         }
+
         public GridCellInfo[,] BuildDefaultRegion()
         {
             var grid = new GridCellInfo[20, 15];
@@ -92,7 +98,51 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
             // Create contiguous regions - OVERWRITE EXISTING CELLS BECAUSE OF RANDOM LAYOUT
             foreach (var boundary in roomBoundaries)
-                _rectangularRegionCreator.CreateCells(grid, boundary, true);
+                _rectangularRegionCreator.CreateCellsXOR(grid, boundary, 0, 1);
+
+            // Run one smoothing / roughness iteration to make rough edges
+            //foreach (var boundary in roomBoundaries)
+            //    _cellularAutomataRegionCreator.RunSmoothingIteration(grid, boundary, 1);
+
+            return grid;
+        }
+
+        private GridCellInfo[,] CreateAnchoredRectangularRegions(LayoutTemplate template)
+        {
+            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
+            var grid = new GridCellInfo[template.Width, template.Height];
+
+            // Create the room rectangles - IF THERE'S TOO MUCH CLUTTER WITH SYMMETRY THEN WE CAN LIMIT THE BOUNDARY TO THE FIRST QUADRANT
+            var regionBoundaries = _regionGeometryCreator.CreateAnchoredRandomRectangularRegions(template.Width, template.Height, template.RandomRoomCount, 
+                                                                                                 template.RegionWidthRange, template.RegionHeightRange, 1);
+
+            // Create contiguous regions - OVERWRITE EXISTING CELLS BECAUSE OF RANDOM LAYOUT
+            foreach (var boundary in regionBoundaries)
+                _rectangularRegionCreator.CreateCellsXOR(grid, boundary, 0, 0.5);
+
+            // Run one smoothing / roughness iteration to make rough edges
+            //foreach (var boundary in regionBoundaries)
+            //    _cellularAutomataRegionCreator.RunSmoothingIteration(grid, boundary, 1);
+
+            return grid;
+        }
+
+        private GridCellInfo[,] CreateCenteredRectangularRegions(LayoutTemplate template)
+        {
+            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
+            var grid = new GridCellInfo[template.Width, template.Height];
+
+            // Create the room rectangles - IF THERE'S TOO MUCH CLUTTER WITH SYMMETRY THEN WE CAN LIMIT THE BOUNDARY TO THE FIRST QUADRANT
+            var regionBoundaries = _regionGeometryCreator.CreateCenteredRandomRectangularRegions(template.Width, template.Height, template.RandomRoomCount,
+                                                                                                 template.RegionWidthRange, template.RegionHeightRange, 1);
+
+            // Create contiguous regions - OVERWRITE EXISTING CELLS BECAUSE OF RANDOM LAYOUT
+            foreach (var boundary in regionBoundaries)
+                _rectangularRegionCreator.CreateCellsXOR(grid, boundary, 0, 0.5);
+
+            // Run one smoothing / roughness iteration to make rough edges
+            //foreach (var boundary in regionBoundaries)
+            //    _cellularAutomataRegionCreator.RunSmoothingIteration(grid, boundary, 1);
 
             return grid;
         }

@@ -60,6 +60,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
         }
 
+        public int Area
+        {
+            get { return this.CellWidth * this.CellHeight; }
+        }
+
         public override string ToString()
         {
             return "X=" + Location.Column + " Y=" + Location.Row + " Width=" + CellWidth + " Height=" + CellHeight;

@@ -48,6 +48,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return (mean + (GetNormal() * standardDeviation)).Clip(0, 3.5 * standardDeviation);
         }
 
+        public double GetExponential(double rate)
+        {
+            if (rate <= 0)
+                throw new ArgumentException("Trying to generate exponential with rate <= 0 RandomSequenceGenerator");
+
+            return -1 * System.Math.Log(_random.NextDouble()) / rate;
+        }
+
         public T GetRandomValue<T>(Range<T> range) where T : IComparable<T>
         {
             var low = Convert.ToDouble(range.Low);
@@ -117,6 +125,26 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             // Use inverse CDF methods to calculate the gaussian
             return v1 * System.Math.Sqrt((-2.0 * System.Math.Log(R)) / R);
+        }
+
+        // https://stats.stackexchange.com/questions/403201/wigner-semi-circle-distribution-random-numbers-generation
+        public double GetWigner(double radius)
+        {
+            return System.Math.Abs(radius * System.Math.Sqrt(_random.NextDouble()) * System.Math.Cos(System.Math.PI * _random.NextDouble()));
+        }
+
+        // https://en.wikipedia.org/wiki/Triangular_distribution
+        public double GetTriangle(double start, double peak, double end)
+        {
+            var cutoff = (peak - start) / (end - start);
+
+            var uniform = _random.NextDouble();
+
+            if (uniform < cutoff)
+                return start + System.Math.Sqrt(uniform * (end - start) * (peak - start));
+
+            else
+                return end - System.Math.Sqrt((1 - uniform) * (end - start) * (end - peak));
         }
     }
 }

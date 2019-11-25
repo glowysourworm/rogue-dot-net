@@ -137,7 +137,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             if (foundBlockedCell)
             {
                 // Create MST for the rooms
-                var roomGraph = GeometryUtility.PrimsMinimumSpanningTree(roomRegions, Metric.MetricType.Roguian);
+                var roomGraph = GeometryUtility.PrimsMinimumSpanningTree(roomRegions, Metric.MetricType.Euclidean);
 
                 // For each edge in the triangulation - create a corridor
                 foreach (var edge in roomGraph.Edges)

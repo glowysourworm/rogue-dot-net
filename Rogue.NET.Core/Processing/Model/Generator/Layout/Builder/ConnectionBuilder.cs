@@ -38,7 +38,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var regions = grid.IdentifyRegions();
 
             // Create MST
-            var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
+            var minimumSpanningTree = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Euclidean);
 
             // Create connections by drawing wide linear connector
             foreach (var edge in minimumSpanningTree.Edges)
@@ -199,14 +199,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
             // Triangulate room positions
             //
-            var graph = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Roguian);
+            var graph = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Euclidean);
 
             // For each edge in the triangulation - create a corridor
             //
             foreach (var edge in graph.Edges)
             {
-                var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
-                var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
+                var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
+                var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
 
                 var cell1 = grid.Get(location1.Column, location1.Row);
                 var cell2 = grid.Get(location2.Column, location2.Row);
