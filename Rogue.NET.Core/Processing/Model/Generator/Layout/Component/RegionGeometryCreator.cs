@@ -17,8 +17,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
-        // Region padding - must be applied to the level grid
-        const int PADDING = 2;
+        const int ROOM_SIZE_MIN = 2;
+        const double RANDOM_ROOM_FILL_RATIO_MAX = 0.2;
+        const double RANDOM_ROOM_FILL_RATIO_MULTIPLIER = 2.0;
 
         [ImportingConstructor]
         public RegionGeometryCreator(IRandomSequenceGenerator randomSequenceGenerator)
@@ -26,10 +27,80 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public IEnumerable<RegionBoundary> CreateGridRectangularRegions(int numberRegionColumns, int numberRegionRows, int regionPadding, Range<int> regionWidthRange, Range<int> regionHeightRange)
+        public IEnumerable<RegionBoundary> CreateRandomRectangularRegions(int width, int height, double regionFillRatio, double regionSize, double regionSizeErradicity)
         {
-            var gridDivisionWidth = regionWidthRange.High + (2 * regionPadding);
-            var gridDivisionHeight = regionHeightRange.High + (2 * regionPadding);
+            var padding = 1;
+
+            // Calculate room size based on parameters
+            var roomWidthLimit = width * RANDOM_ROOM_FILL_RATIO_MAX;
+            var roomHeightLimit = height * RANDOM_ROOM_FILL_RATIO_MAX;
+
+            var roomMaxWidth = (int)((regionSize * (roomWidthLimit - ROOM_SIZE_MIN)) + ROOM_SIZE_MIN);
+            var roomMaxHeight = (int)((regionSize * (roomHeightLimit - ROOM_SIZE_MIN)) + ROOM_SIZE_MIN);
+
+            var roomWidthMin = (int)(roomMaxWidth - (regionSizeErradicity * (roomMaxWidth - ROOM_SIZE_MIN)));
+            var roomHeightMin = (int)(roomMaxHeight - (regionSizeErradicity * (roomMaxHeight - ROOM_SIZE_MIN)));
+
+            // Add a correction to the number of regions calculation for erradicity [0,1] -> [0.5, 1]
+            var erradicityCorrection = (0.5 * regionSizeErradicity) + 0.5;
+
+            // Calculate number of regions based on "number of regions it would take to tile the area X times"
+            var numberOfRegions = (int)(((width * height) / (roomMaxWidth * roomMaxHeight * erradicityCorrection)) * regionFillRatio * RANDOM_ROOM_FILL_RATIO_MULTIPLIER).LowLimit(2);
+
+            if (roomWidthLimit < 2 ||
+                roomHeightLimit < 2 ||
+                roomMaxWidth < 2 ||
+                roomMaxHeight < 2 ||
+                roomWidthMin < 2 ||
+                roomHeightMin < 2 ||
+                numberOfRegions < 1)
+                throw new Exception("Improper parameter set for random rectangular regions");
+
+            var regions = new List<RegionBoundary>();
+
+            // Create region boundaries
+            for (int i = 0; i < numberOfRegions; i++)
+            {
+                // First, generate the region height and width
+                var regionWidth = _randomSequenceGenerator.Get(roomWidthMin, roomMaxWidth + 1);
+                var regionHeight = _randomSequenceGenerator.Get(roomHeightMin, roomMaxHeight + 1);
+
+                // Choose placement of region
+                //
+                var column = _randomSequenceGenerator.Get(padding, width - (regionWidth + padding));
+                var row = _randomSequenceGenerator.Get(padding, height - (regionHeight + padding));
+
+                regions.Add(new RegionBoundary(new GridLocation(column, row), regionWidth, regionHeight));
+            }
+
+            return regions;
+        }
+
+        public IEnumerable<RegionBoundary> CreateGridRectangularRegions(int width, int height, int numberRegionColumns, int numberRegionRows, 
+                                                                        double regionSize, double regionFillRatio, double regionSizeErradicity)
+        {
+            var roomPadding = 1;
+
+            var gridDivisionWidth = width / numberRegionColumns;
+            var gridDivisionHeight = height / numberRegionRows;
+
+            // Calculate room size based on parameters
+            var roomWidthLimit = gridDivisionWidth - (2 * roomPadding);
+            var roomHeightLimit = gridDivisionHeight - (2 * roomPadding);
+
+            var roomWidthMax = (int)((regionSize * (roomWidthLimit - ROOM_SIZE_MIN)) + ROOM_SIZE_MIN);
+            var roomWidthMin = (int)(roomWidthMax - (regionSizeErradicity * (roomWidthMax - ROOM_SIZE_MIN)));
+
+            var roomHeightMax = (int)((regionSize * (roomHeightLimit - ROOM_SIZE_MIN)) + ROOM_SIZE_MIN);
+            var roomHeightMin = (int)(roomHeightMax - (regionSizeErradicity * (roomHeightMax - ROOM_SIZE_MIN)));
+
+            if (roomWidthLimit < 2 ||
+                roomHeightLimit < 2 ||
+                roomWidthMax < 2 ||
+                roomHeightMax < 2 ||
+                roomWidthMin < 2 ||
+                roomHeightMin < 2)
+                throw new Exception("Improper parameter set for random rectangular regions");
 
             var regions = new List<RegionBoundary>();
 
@@ -43,17 +114,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                     var divisionRow = j * gridDivisionHeight;
 
                     // Draw a random region size
-                    var regionWidth = _randomSequenceGenerator.Get(regionWidthRange.Low, regionWidthRange.High + 1);
-                    var regionHeight = _randomSequenceGenerator.Get(regionHeightRange.Low, regionHeightRange.High + 1);
+                    var regionWidth = _randomSequenceGenerator.Get(roomWidthMin, roomWidthMax + 1);
+                    var regionHeight = _randomSequenceGenerator.Get(roomHeightMin, roomHeightMax + 1);
 
                     // Generate the upper left-hand corner for the region
-                    var column = divisionColumn +
-                                 _randomSequenceGenerator.Get(regionPadding,
-                                                              gridDivisionWidth - (regionWidth + regionPadding) + 1);
+                    var column = divisionColumn + _randomSequenceGenerator.Get(roomPadding, gridDivisionWidth - (regionWidth + roomPadding) + 1);
 
-                    var row = divisionRow +
-                              _randomSequenceGenerator.Get(regionPadding,
-                                                           gridDivisionHeight - (regionHeight + regionPadding) + 1);
+                    var row = divisionRow + _randomSequenceGenerator.Get(roomPadding, gridDivisionHeight - (regionHeight + roomPadding) + 1);
 
                     // Call method to iterate grid to create region
                     //
@@ -64,158 +131,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             }
 
             return regions;
-        }
-
-        public IEnumerable<RegionBoundary> CreateRandomRectangularRegions(RegionBoundary placementBoundary, int numberOfRegions, Range<int> regionWidthRange, Range<int> regionHeightRange, int regionSpread)
-        {
-            var regions = new List<RegionBoundary>();
-
-            // Create region boundaries
-            for (int i = 0; i < numberOfRegions; i++)
-            {
-                // First, generate the region height and width
-                var regionWidth = _randomSequenceGenerator.Get(regionWidthRange.Low, regionWidthRange.High + 1);
-                var regionHeight = _randomSequenceGenerator.Get(regionHeightRange.Low, regionHeightRange.High + 1);
-
-                // Choose placement of region
-                //
-                var column = _randomSequenceGenerator.Get(PADDING + placementBoundary.Left, placementBoundary.Right - (regionWidth + PADDING) + 1);
-                var row = _randomSequenceGenerator.Get(PADDING + placementBoundary.Top, placementBoundary.Bottom - (regionHeight + PADDING) + 1);
-
-                regions.Add(new RegionBoundary(new GridLocation(column, row), regionWidth, regionHeight));
-            }
-
-            return regions;
-        }
-
-        public IEnumerable<RegionBoundary> CreateCenteredRandomRectangularRegions(int width, int height, int numberOfRegions, Range<int> regionWidth, Range<int> regionHeight, int regionSpread)
-        {
-            var regions = new List<RegionBoundary>();
-
-            var northWest = new RegionBoundary(new GridLocation(0, 0), width / 2, height / 2);
-            var northEast = new RegionBoundary(new GridLocation(northWest.Right + 1, 0), (width / 2) - 1, height / 2);
-            var southWest = new RegionBoundary(new GridLocation(0, northWest.Bottom + 1), width / 2, (height / 2) - 1);
-            var southEast = new RegionBoundary(new GridLocation(northWest.Right + 1, northWest.Bottom + 1), (width / 2) - 1, (height / 2) - 1);
-
-            regions.AddRange(CreatePackedRandomBoundary(northWest, Compass.SE, numberOfRegions / 4, 1, regionWidth, regionHeight));
-            regions.AddRange(CreatePackedRandomBoundary(northEast, Compass.SW, numberOfRegions / 4, 1, regionWidth, regionHeight));
-            regions.AddRange(CreatePackedRandomBoundary(southWest, Compass.NE, numberOfRegions / 4, 1, regionWidth, regionHeight));
-            regions.AddRange(CreatePackedRandomBoundary(southEast, Compass.NW, numberOfRegions / 4, 1, regionWidth, regionHeight));
-
-            return regions;
-        }
-        public IEnumerable<RegionBoundary> CreateAnchoredRandomRectangularRegions(int width, int height, int numberOfRegions, Range<int> regionWidth, Range<int> regionHeight, int regionSpread)
-        {
-            // Create a sub-division using euclidean geometry 
-            //
-
-            var placementBoundary = new RegionBoundary(new GridLocation(0, 0), width, height);
-            var aspectRatio = ModelConstants.CellHeight / ModelConstants.CellWidth;
-
-            var placementRatioY = 0.55;
-            var placementRatioX = 0.30;
-
-            var anchorLocationX = placementBoundary.CellWidth * placementRatioX;
-            var anchorLocationY = placementBoundary.CellHeight * placementRatioY / aspectRatio;
-
-            var anchorWidth = placementBoundary.CellWidth * (1 - (2 * placementRatioX));
-            var anchorHeight = placementBoundary.CellHeight * (1 - placementRatioY) * aspectRatio;
-
-            var westLocationX = 0;
-            var eastLocationX = (int)(placementBoundary.CellWidth * (1 - placementRatioX)) + 1;
-
-            // Transform back into grid coordinates
-            var anchorLocation = new GridLocation((int)anchorLocationX, (int)anchorLocationY);
-            var northWestLocation = new GridLocation(0, 0);
-            var northEastLocation = new GridLocation(placementBoundary.Center.Column + 1, 0);
-            var westLocation = new GridLocation(westLocationX, (int)anchorLocationY);
-            var eastLocation = new GridLocation((int)eastLocationX, (int)anchorLocationY);
-
-            var anchorRegion = new RegionBoundary(anchorLocation, (int)anchorWidth, (int)anchorHeight);
-            var northWestRegion = new RegionBoundary(northWestLocation, (placementBoundary.CellWidth / 2) - 1, placementBoundary.CellHeight - anchorRegion.CellHeight - 2);
-            var northEastRegion = new RegionBoundary(northEastLocation, (placementBoundary.CellWidth / 2) - 1, placementBoundary.CellHeight - anchorRegion.CellHeight - 2);
-            var westRegion = new RegionBoundary(westLocation, ((placementBoundary.CellWidth - (int)anchorWidth) / 2) - 1, anchorRegion.CellHeight);
-            var eastRegion = new RegionBoundary(eastLocation, ((placementBoundary.CellWidth - (int)anchorWidth) / 2) - 1, anchorRegion.CellHeight);
-
-            var result = new List<RegionBoundary>();
-
-            result.Add(anchorRegion);
-            result.AddRange(CreatePackedRandomBoundary(northWestRegion, Compass.SE, (int)(numberOfRegions / 4.0), 1, regionWidth, regionHeight));
-            result.AddRange(CreatePackedRandomBoundary(northEastRegion, Compass.SW, (int)(numberOfRegions / 4.0), 1, regionWidth, regionHeight));
-            result.AddRange(CreatePackedRandomBoundary(westRegion, Compass.E, (int)(numberOfRegions / 4.0), 1, regionWidth, regionHeight));
-            result.AddRange(CreatePackedRandomBoundary(eastRegion, Compass.W, (int)(numberOfRegions / 4.0), 1, regionWidth, regionHeight));
-
-            return result;
-        }
-
-        private IEnumerable<RegionBoundary> CreatePackedRandomBoundary(RegionBoundary parentBoundary, Compass packingDirection, int numberOfRegions, int regionPadding, Range<int> regionWidthRange, Range<int> regionHeightRange)
-        {
-            var result = new List<RegionBoundary>();
-
-            // Procedure
-            //
-            // - Pick one point at random favoring the side (or corner) of the region
-            //      - Has no restrictions except to leave room for the region (height / width)
-            //
-            // - This point and the size form a rectangle - so just create a region which should be
-            //   constrained to both the size requirements and the parent boundary
-            //
-
-            var packingSpread = 1;
-            var northCutoff = (parentBoundary.Top + (parentBoundary.CellHeight * packingSpread)).Clip(parentBoundary.Top, parentBoundary.Bottom - regionHeightRange.High);
-            var southCutoff = (parentBoundary.Top + (parentBoundary.CellHeight * (1 - packingSpread))).Clip(parentBoundary.Top, parentBoundary.Bottom - regionHeightRange.High);
-            var eastCutoff = (parentBoundary.Left + (parentBoundary.CellWidth * (1 - packingSpread))).Clip(parentBoundary.Left, parentBoundary.Right - regionWidthRange.High);
-            var westCutoff = (parentBoundary.Left + (parentBoundary.CellWidth * packingSpread)).Clip(parentBoundary.Left, parentBoundary.Right - regionWidthRange.High);
-
-            for (int i = 0; i < numberOfRegions; i++)
-            {
-                GridLocation point = null;
-
-                var height = _randomSequenceGenerator.GetRandomValue(regionHeightRange);
-                var width = _randomSequenceGenerator.GetRandomValue(regionWidthRange);
-                
-                switch (packingDirection)
-                {
-                    case Compass.N:
-                        point = new GridLocation(_randomSequenceGenerator.Get(parentBoundary.Left, parentBoundary.Right - width + 1),
-                                            (int)_randomSequenceGenerator.GetTriangle(parentBoundary.Top, parentBoundary.Top, northCutoff));
-                        break;
-                    case Compass.S:
-                        point = new GridLocation(_randomSequenceGenerator.Get(parentBoundary.Left, parentBoundary.Right - width + 1),
-                                            (int)_randomSequenceGenerator.GetTriangle(southCutoff, parentBoundary.Bottom - height, parentBoundary.Bottom - height));
-                        break;
-                    case Compass.E:
-                        point = new GridLocation((int)_randomSequenceGenerator.GetTriangle(eastCutoff, parentBoundary.Right - width, parentBoundary.Right - width),
-                                                      _randomSequenceGenerator.Get(parentBoundary.Top, parentBoundary.Bottom - height + 1));
-                        break;
-                    case Compass.W:
-                        point = new GridLocation((int)_randomSequenceGenerator.GetTriangle(parentBoundary.Left, parentBoundary.Left, westCutoff),
-                                                      _randomSequenceGenerator.Get(parentBoundary.Top, parentBoundary.Bottom - height + 1));
-                        break;
-                    case Compass.NW:
-                        point = new GridLocation((int)_randomSequenceGenerator.GetTriangle(parentBoundary.Left, parentBoundary.Left, westCutoff),
-                                                 (int)_randomSequenceGenerator.GetTriangle(parentBoundary.Top, parentBoundary.Top, northCutoff));
-                        break;
-                    case Compass.NE:
-                        point = new GridLocation((int)_randomSequenceGenerator.GetTriangle(eastCutoff, parentBoundary.Right - width, parentBoundary.Right - width),
-                                                 (int)_randomSequenceGenerator.GetTriangle(parentBoundary.Top, parentBoundary.Top, northCutoff));
-                        break;
-                    case Compass.SE:
-                        point = new GridLocation((int)_randomSequenceGenerator.GetTriangle(eastCutoff, parentBoundary.Right - width, parentBoundary.Right - width),
-                                                 (int)_randomSequenceGenerator.GetTriangle(southCutoff, parentBoundary.Bottom - height, parentBoundary.Bottom - height));
-                        break;
-                    case Compass.SW:
-                        point = new GridLocation((int)_randomSequenceGenerator.GetTriangle(parentBoundary.Left, parentBoundary.Left, westCutoff),
-                                                 (int)_randomSequenceGenerator.GetTriangle(southCutoff, parentBoundary.Bottom - height, parentBoundary.Bottom - height));
-                        break;
-                    default:
-                        throw new Exception("Unhandled packing direction RegionGeometryCreator");
-                }
-
-                result.Add(new RegionBoundary(point, width, height));
-            }
-
-            return result;
         }
     }
 }

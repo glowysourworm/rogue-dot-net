@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
+using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -105,7 +106,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 case LayoutConnectionType.Teleporter:
                     return _corridorBuilder.BuildConnectionPoints(grid);
                 case LayoutConnectionType.Maze:
-                    return _corridorBuilder.BuildMazeCorridors(grid);
+                    {
+                        // Use "Filled" rule for rectangular regions only. "Open" maze rule works better with non-rectangular regions.
+                        switch (template.Type)
+                        {
+                            case LayoutType.RectangularRegion:
+                            case LayoutType.RandomRectangularRegion:
+                            case LayoutType.CellularAutomataMap:
+                            case LayoutType.ElevationMap:
+                            case LayoutType.RandomSmoothedRegion:
+                                return _corridorBuilder.BuildMazeCorridors(grid, MazeType.Filled, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
+                            case LayoutType.MazeMap:
+                            case LayoutType.CellularAutomataMazeMap:
+                            case LayoutType.ElevationMazeMap:
+                                return _corridorBuilder.BuildMazeCorridors(grid, MazeType.Open, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
+                            default:
+                                throw new Exception("Unhandled Layout Type");
+                        }                        
+                    }
                 default:
                     throw new Exception("Unhandled Connection Type");
             }

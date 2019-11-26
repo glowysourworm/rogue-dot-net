@@ -19,9 +19,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
 
 
         /// <summary>
-        /// Runs cellular automata "open" rule in the specified region. Also, adds "roughness" which will remove cells randomly.
+        /// Runs cellular automata rule in the specified region for a single iteration.
         /// </summary>
-        /// <param name="roughnessRatio">A [0,1] parameter to remove cells</param>
-        void RunSmoothingIteration(GridCellInfo[,] grid, RegionBoundary boundary, double roughnessRatio);
+        void RunSmoothingIteration(GridCellInfo[,] grid, RegionBoundary boundary, LayoutCellularAutomataType type);
     }
 }

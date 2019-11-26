@@ -79,42 +79,45 @@ namespace Rogue.NET.Core.Converter.Model.ScenarioConfiguration
 
         public int Convert(LayoutTemplate template)
         {
-            return (int)Convert(new object[]
-            {
-                template.Height,
-                template.Width,
-                template.Type,
-                template.SymmetryType,
-                template.RegionWidthRange.Low,
-                template.RegionWidthRange.High,
-                template.RegionHeightRange.Low,
-                template.RegionHeightRange.High,
-                template.NumberRoomCols,
-                template.NumberRoomRows,
-                template.RectangularGridPadding,
-                template.RandomRoomCount,
-                template.RandomRoomSpread,
-                template.MakeSymmetric
-            }, null, null, null);
+        //    return (int)Convert(new object[]
+        //    {
+        //        template.Height,
+        //        template.Width,
+        //        template.Type,
+        //        template.SymmetryType,
+        //        template.RegionWidthRange.Low,
+        //        template.RegionWidthRange.High,
+        //        template.RegionHeightRange.Low,
+        //        template.RegionHeightRange.High,
+        //        template.NumberRoomCols,
+        //        template.NumberRoomRows,
+        //        template.RectangularGridPadding,
+        //        template.RandomRoomCount,
+        //        template.RandomRoomSpread,
+        //        template.MakeSymmetric
+        //    }, null, null, null);
+
+        return 0;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            // Change the width only when updating the control's value
-            return new object[] {value,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing,
-                                 Binding.DoNothing};
+            //// Change the width only when updating the control's value
+            //return new object[] {value,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing,
+            //                     Binding.DoNothing};
+            return null;
         }
     }
 }

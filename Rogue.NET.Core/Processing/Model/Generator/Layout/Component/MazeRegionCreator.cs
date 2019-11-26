@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 {
@@ -19,8 +19,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         // Scales [0, 1] fill ratio to a safe scale
-        private const double MAZE_WALL_REMOVAL_LOW = 0.25;
-        private const double MAZE_WALL_REMOVAL_HIGH = 0.75;
+        private const double MAZE_WALL_REMOVAL_LOW = 0.0;
+        private const double MAZE_WALL_REMOVAL_HIGH = 0.5;
 
         [ImportingConstructor]
         public MazeRegionCreator(IRandomSequenceGenerator randomSequenceGenerator)
@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public void CreateCells(GridCellInfo[,] grid, RegionBoundary boundary, double wallRemovalRatio, bool overwrite)
+        public void CreateCells(GridCellInfo[,] grid, RegionBoundary boundary, MazeType mazeType, double wallRemovalRatio, double horizontalVerticalBias, bool overwrite)
         {
             // Pre-Condition:  Fill cells with walls
             for (int i = boundary.Left; i <= boundary.Right; i++)
@@ -46,18 +46,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             var startingColumn = _randomSequenceGenerator.Get(boundary.Left, boundary.Right + 1);
             var startingRow = _randomSequenceGenerator.Get(boundary.Top, boundary.Bottom + 1);
 
-            RecursiveBacktracker(grid, grid[startingColumn, startingRow].Location, wallRemovalRatio, boundary);
+            RecursiveBacktracker(grid, new Region[] { }, grid[startingColumn, startingRow].Location, wallRemovalRatio, horizontalVerticalBias, mazeType);
         }
 
-        public void CreateCellsStartingAt(GridCellInfo[,] grid, GridLocation startingLocation)
+        public void CreateCellsStartingAt(GridCellInfo[,] grid, IEnumerable<Region> avoidRegions, GridLocation startingLocation, MazeType mazeType, double wallRemovalRatio, double horizontalVerticalBias)
         {
             if (grid[startingLocation.Column, startingLocation.Row] == null)
                 throw new ArgumentException("Invalid starting location MazeRegionCreator.CreateCellsStartingAt");
 
-            RecursiveBacktracker(grid, startingLocation, 0);
+            RecursiveBacktracker(grid, avoidRegions, startingLocation, wallRemovalRatio, horizontalVerticalBias, mazeType);
         }
 
-        private void RecursiveBacktracker(GridCellInfo[,] grid, GridLocation startingLocation, double wallRemovalRatio, RegionBoundary mazeBoundary = null)
+        private void RecursiveBacktracker(GridCellInfo[,] grid, IEnumerable<Region> avoidRegions, GridLocation startingLocation, double wallRemovalRatio, double horizontalVerticalBias, MazeType mazeType)
         {
             // Pre-Condition: All cells in the region must be filled with walls
             //
@@ -87,9 +87,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // Track from the starting cell
             var currentCell = grid[startingLocation.Column, startingLocation.Row];
 
-            // Track total number of walls
-            var numberOfWalls = 0;
-
             // Initialize the history
             var history = new Stack<GridCellInfo>();
             history.Push(currentCell);
@@ -101,10 +98,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             //Main loop - create the maze!
             while (history.Count > 0)
             {
-                // Get all unvisited neighbor cells - whose neighbor cells haven't been visited yet
+                // Get all unvisited neighbor cells - whose neighbor cells haven't been visited yet - and whose cells
+                // DON'T lie inside any of the avoid regions.
                 //
                 var adjacentCells = grid.GetCardinalAdjacentElements(currentCell.Location.Column, currentCell.Location.Row)
-                                        .Where(cell => mazeBoundary == null ? true : mazeBoundary.Contains(cell.Location))
+                                        .Where(cell => avoidRegions.All(region => region[cell.Location.Column, cell.Location.Row] == null))
                                         .Where(cell => cell.IsWall)
                                         .Where(cell => !visitedCells[cell.Location.Column, cell.Location.Row])
                                         .Actualize();
@@ -127,7 +125,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                     // NOTE*** Be sure to use the method from the random sequence generator since
                     //         we're building the scenario
                     //
-                    var nextCell = _randomSequenceGenerator.GetRandomElement(adjacentCells);
+                    var nextCell = GetCardinalAdjacentCellWithBias(adjacentCells, currentCell, horizontalVerticalBias);
 
                     // Track that the cell has been visited
                     //
@@ -135,16 +133,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                     // Run query to see whether this cell can be used in the maze
                     //
-                    var viableCell = FiveAdjacentWallsDirectionalRule(currentCell, nextCell, grid.GetAdjacentElements(nextCell.Location.Column, nextCell.Location.Row));
+                    var viableCell = mazeType == MazeType.Filled ? FiveAdjacentWallsDirectionalRule(currentCell, nextCell, grid.GetAdjacentElements(nextCell.Location.Column, nextCell.Location.Row))
+                                                                 : CardinalAdjacentWallsRule(currentCell, nextCell, grid.GetCardinalAdjacentElements(nextCell.Location.Column, nextCell.Location.Row));
 
                     // If any neighbor cells CAN be visited - then push the current one on the stack
                     if (viableCell)
                     {
                         // Remove the wall
                         nextCell.IsWall = false;
-
-                        // Decrement wall counter
-                        numberOfWalls--;
 
                         // Push on the stack
                         history.Push(nextCell);
@@ -156,21 +152,81 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             }
 
             // For Rectangular Region Mazes - can support wall removal
-            if (mazeBoundary != null)
-            {
-                // Scale [0, 1] wall removal ratio
-                var safeRemovalRatio = ((MAZE_WALL_REMOVAL_HIGH - MAZE_WALL_REMOVAL_LOW) * wallRemovalRatio) + MAZE_WALL_REMOVAL_LOW;
+            //if (mazeBoundary != null)
+            //{
 
-                // Process wall removals (NOTE*** THE SELECTION PROCESS IS RANDOM - NOT ALWAYS GOING TO LAND ON A WALL)
-                for (int i = 0; i < (int)(numberOfWalls * safeRemovalRatio); i++)
+            // Scale [0, 1] wall removal ratio
+            var safeRemovalRatio = ((MAZE_WALL_REMOVAL_HIGH - MAZE_WALL_REMOVAL_LOW) * wallRemovalRatio) + MAZE_WALL_REMOVAL_LOW;
+
+            // Process wall removals 
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
                 {
-                    // Choose random cell in the region
-                    var column = _randomSequenceGenerator.Get(mazeBoundary.Left, mazeBoundary.Right + 1);
-                    var row = _randomSequenceGenerator.Get(mazeBoundary.Top, mazeBoundary.Bottom + 1);
+                    if (grid[i, j] == null)
+                        continue;
+
+                    // Wall was already removed
+                    else if (!grid[i, j].IsWall)
+                        continue;
+
+                    // Check avoid regions
+                    else if (avoidRegions.Any(region => region[i, j] != null))
+                        continue;
+
+                    // Check random wall removal ratio before proceeding
+                    else if (_randomSequenceGenerator.Get() > safeRemovalRatio)
+                        continue;
 
                     // Remove the wall setting
-                    grid[column, row].IsWall = false;
+                    grid[i, j].IsWall = false;
                 }
+            }
+        }
+
+        private GridCellInfo GetCardinalAdjacentCellWithBias(IEnumerable<GridCellInfo> cardinalAdjacentCells, GridCellInfo currentCell, double horizontalVerticalBias)
+        {
+            var randomDraw = _randomSequenceGenerator.Get();
+
+            // Used to limit bias
+            var biasDivisor = 0.8;
+
+            // Horizontal
+            if (horizontalVerticalBias < 0.5)
+            {
+                var horizontalCells = cardinalAdjacentCells.Where(cell =>
+                {
+                    var direction = GridUtility.GetDirectionOfAdjacentLocation(currentCell.Location, cell.Location);
+
+                    return direction == Compass.E || direction == Compass.W;
+                });
+
+                // Return biased cell
+                if (_randomSequenceGenerator.Get() < ((0.5 - horizontalVerticalBias) / biasDivisor) &&
+                    horizontalCells.Any())
+                    return _randomSequenceGenerator.GetRandomElement(horizontalCells);
+
+                // Return default
+                else
+                    return _randomSequenceGenerator.GetRandomElement(cardinalAdjacentCells);
+            }
+            else
+            {
+                var verticalCells = cardinalAdjacentCells.Where(cell =>
+                {
+                    var direction = GridUtility.GetDirectionOfAdjacentLocation(currentCell.Location, cell.Location);
+
+                    return direction == Compass.N || direction == Compass.S;
+                });
+
+                // Return biased cell
+                if (_randomSequenceGenerator.Get() < ((horizontalVerticalBias - 0.5) / biasDivisor) &&
+                    verticalCells.Any())
+                    return _randomSequenceGenerator.GetRandomElement(verticalCells);
+
+                // Return default
+                else
+                    return _randomSequenceGenerator.GetRandomElement(cardinalAdjacentCells);
             }
         }
 
@@ -180,7 +236,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         private static bool CardinalAdjacentWallsRule(GridCellInfo currentCell, GridCellInfo nextCell, GridCellInfo[] nextCell8WayNeighbors)
         {
             return nextCell8WayNeighbors.Where(cell => cell != currentCell)
-                                        .Where(cell => GridUtility.IsCardinalDirection(GridUtility.GetDirectionOfAdjacentLocation(nextCell.Location, cell.Location)))
                                         .All(cell => cell.IsWall);
         }
 

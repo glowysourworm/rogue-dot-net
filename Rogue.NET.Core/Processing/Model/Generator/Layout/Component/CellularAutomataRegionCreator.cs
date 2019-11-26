@@ -81,22 +81,26 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                     break;
                 default:
                     throw new Exception("Unhandled cellular automata type");
-            }           
+            }
         }
 
-        public void RunSmoothingIteration(GridCellInfo[,] grid, RegionBoundary boundary, double roughnessRatio)
+        public void RunSmoothingIteration(GridCellInfo[,] grid, RegionBoundary boundary, LayoutCellularAutomataType type)
         {
-            //// Apply roughness
-            //if (roughnessRatio > 0)
-            //{
-            //    Iterate(grid, boundary, 1, 0, (grid, boundary, column, row) =>
-            //    {
-            //        // Fill Ratio => Empty Cell
-            //        return _randomSequenceGenerator.Get() < roughnessRatio;
-            //    });
-            //}
-
-            Iterate(grid, boundary, 1, CELLULAR_AUTOMATA_OPEN_PADDING, CellularAutomataFilledLessRule);
+            // Iterate grid to apply Filled Rule - Apply this for several iterations before smoothing
+            switch (type)
+            {
+                case LayoutCellularAutomataType.Open:
+                    Iterate(grid, boundary, 1, CELLULAR_AUTOMATA_FILLED_PADDING, CellularAutomataOpenRule);
+                    break;
+                case LayoutCellularAutomataType.FilledLess:
+                    Iterate(grid, boundary, 1, CELLULAR_AUTOMATA_FILLED_PADDING, CellularAutomataFilledLessRule);
+                    break;
+                case LayoutCellularAutomataType.FilledMore:
+                    Iterate(grid, boundary, 1, CELLULAR_AUTOMATA_FILLED_PADDING, CellularAutomataFilledMoreRule);
+                    break;
+                default:
+                    throw new Exception("Unhandled cellular automata type");
+            }
         }
 
         private bool CellularAutomataOpenRule(GridCellInfo[,] grid, RegionBoundary boundary, int column, int row)

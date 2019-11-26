@@ -26,16 +26,6 @@
 
             <!-- Layout Connection Type -->
             <Grid Margin="10">
-                <Grid.Visibility>
-                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RectangularRegion}" />
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMap}" />
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMap}" />
-                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
-                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
-                    </MultiBinding>
-                </Grid.Visibility>
                 <TextBlock Text="Connection Type" FontSize="18" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
                 <views:EnumComboBox EnumValue="{Binding ConnectionType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutConnectionType}" FontSize="18" Width="250" HorizontalAlignment="Right" />
             </Grid>
@@ -44,7 +34,11 @@
             <Grid Margin="10">
                 <Grid.Visibility>
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomSmoothedRegion}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMap}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMazeMap}" />
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMap}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMazeMap}" />
                     </MultiBinding>
                 </Grid.Visibility>                
                 <TextBlock Text="Cave Type" FontSize="18" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
@@ -68,105 +62,25 @@
                 <StackPanel>
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Width" />
-                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
+                        <toolkit:IntegerUpDown  Value="{Binding Width}"
                                                 Minimum="20"
                                                 Maximum="1000"
                                                 Increment="2"
                                                 Foreground="White"
-                                                ValueChanged="LayoutWidth_ValueChanged"
                                                 HorizontalContentAlignment="Left"
                                                 Width="150" HorizontalAlignment="Right">
-                            <toolkit:IntegerUpDown.IsEnabled>
-                                <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
-                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
-                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.MazeMap}" />
-                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMap}" />
-                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMap}" />
-                                    <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
-                                </MultiBinding>
-                            </toolkit:IntegerUpDown.IsEnabled>
-                            <toolkit:IntegerUpDown.Value>
-                                <MultiBinding Converter="{StaticResource LayoutWidthConverter}">
-                                    <Binding Path="Height" />
-                                    <Binding Path="Width" />
-                                    <Binding Path="Type" />
-                                    <Binding Path="SymmetryType" />
-                                    <Binding Path="RegionWidthRange.Low" />
-                                    <Binding Path="RegionWidthRange.High" />
-                                    <Binding Path="RegionHeightRange.Low" />
-                                    <Binding Path="RegionHeightRange.High" />
-                                    <Binding Path="NumberRoomCols" />
-                                    <Binding Path="NumberRoomRows" />
-                                    <Binding Path="RectangularGridPadding" />
-                                    <Binding Path="RandomRoomCount" />
-                                    <Binding Path="RandomRoomSpread" />
-                                    <Binding Path="MakeSymmetric" />
-                                </MultiBinding>
-                            </toolkit:IntegerUpDown.Value>
                         </toolkit:IntegerUpDown>
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Height" />
-                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
+                        <toolkit:IntegerUpDown  Value="{Binding Height}"
                                                 Minimum="20"
                                                 Maximum="1000" 
                                                 Increment="2"
                                                 Foreground="White"
-                                                ValueChanged="LayoutHeight_ValueChanged"
                                                 HorizontalContentAlignment="Left"
                                                 Width="150" HorizontalAlignment="Right">
-                            <toolkit:IntegerUpDown.IsEnabled>
-                                <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
-                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
-                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.MazeMap}" />
-                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMap}" />
-                                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMap}" />
-                                    <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
-                                </MultiBinding>
-                            </toolkit:IntegerUpDown.IsEnabled>
-                            <toolkit:IntegerUpDown.Value>
-                                <MultiBinding Converter="{StaticResource LayoutHeightConverter}">
-                                    <Binding Path="Height" />
-                                    <Binding Path="Width" />
-                                    <Binding Path="Type" />
-                                    <Binding Path="SymmetryType" />
-                                    <Binding Path="RegionWidthRange.Low" />
-                                    <Binding Path="RegionWidthRange.High" />
-                                    <Binding Path="RegionHeightRange.Low" />
-                                    <Binding Path="RegionHeightRange.High" />
-                                    <Binding Path="NumberRoomCols" />
-                                    <Binding Path="NumberRoomRows" />
-                                    <Binding Path="RectangularGridPadding" />
-                                    <Binding Path="RandomRoomCount" />
-                                    <Binding Path="RandomRoomSpread" />
-                                    <Binding Path="MakeSymmetric" />
-                                </MultiBinding>
-                            </toolkit:IntegerUpDown.Value>
                         </toolkit:IntegerUpDown>
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <Grid.Visibility>
-                            <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RectangularRegion}" />
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
-                                <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
-                                <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
-                            </MultiBinding>
-                        </Grid.Visibility>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Width Range" />
-                        <control:Range DataContext="{Binding RegionWidthRange}" LowLimit="2" HighLimit="20" Increment="1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <Grid.Visibility>
-                            <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RectangularRegion}" />
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
-                                <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
-                                <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
-                            </MultiBinding>
-                        </Grid.Visibility>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Height Range"/>
-                        <control:Range DataContext="{Binding RegionHeightRange}" LowLimit="2" HighLimit="20" Increment="1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Cell Symbol" />
@@ -183,6 +97,12 @@
                         </StackPanel>
                     </Grid>
                     <Grid Margin="10,5,10,5">
+                        <Grid.Visibility>
+                            <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                <Binding Path="ConnectionType"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutConnectionType.Corridor}" />
+                                <Binding Path="ConnectionType"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutConnectionType.Maze}" />
+                            </MultiBinding>
+                        </Grid.Visibility>
                         <TextBlock HorizontalAlignment="Left" FontSize="18" VerticalAlignment="Center" Foreground="White" Text="Door Symbol" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <symbol:SymbolPreviewControl DataContext="{Binding DoorSymbol}" />
@@ -190,22 +110,24 @@
                         </StackPanel>
                     </Grid>
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" FontSize="18" VerticalAlignment="Center" Foreground="White" Text="Hidden Door Probability" />
-                        <toolkit:DoubleUpDown Watermark="Enter a Value" 
-                                                Minimum="0" 
-                                                Maximum="1" 
-                                                Increment="0.01" 
-                                                FormatString="F2" 
-                                                Foreground="White"
-                                                HorizontalContentAlignment="Left"
-                                                Value="{Binding HiddenDoorProbability, Mode=TwoWay}" 
-                                                Width="150" HorizontalAlignment="Right"  />
+                        <Grid.Visibility>
+                            <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                <Binding Path="ConnectionType"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutConnectionType.Corridor}" />
+                                <Binding Path="ConnectionType"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutConnectionType.Maze}" />
+                            </MultiBinding>
+                        </Grid.Visibility>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Hidden Door Percentage" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding HiddenDoorProbability, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding HiddenDoorProbability, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
                     </Grid>
                 </StackPanel>
             </GroupBox>
 
             <!-- Rectangular Placement Parameters -->
             <GroupBox Margin="10"  Header="Rectangular Placement Parameters" FontSize="18">
+                
                 <GroupBox.Visibility>
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                         <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RectangularRegion}" />
@@ -216,7 +138,7 @@
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Grid Columns" />
                         <toolkit:IntegerUpDown Watermark="Enter a Value" 
-                                                Minimum="2" 
+                                                Minimum="1" 
                                                 Increment="1" 
                                                 FormatString="N0" 
                                                 Foreground="White"
@@ -228,7 +150,7 @@
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Grid Rows" />
                         <toolkit:IntegerUpDown Watermark="Enter a Value" 
-                                                Minimum="2" 
+                                                Minimum="1" 
                                                 Increment="1" 
                                                 FormatString="N0" 
                                                 Foreground="White"
@@ -236,19 +158,63 @@
                                                 Value="{Binding NumberRoomRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                 Width="150" HorizontalAlignment="Right">
                         </toolkit:IntegerUpDown>
+                    </Grid>                    
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Room Parameters -->
+            <GroupBox Margin="10"  Header="Room Layout Parameters" FontSize="18">
+
+                <GroupBox.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RectangularRegion}" />
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomSmoothedRegion}" />
+                    </MultiBinding>
+                </GroupBox.Visibility>
+
+                <StackPanel>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Room Size (Percentage of Max Size)" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding RoomSize, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding RoomSize, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
                     </Grid>
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Grid Padding" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Room Size Erradicity (How Different are the Rooms)" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding RoomSizeErradicity, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding RoomSizeErradicity, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Room Fill Percentage (How much of the layout is filled)" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding FillRatioRooms, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />                            
+                            <TextBlock Text="{Binding FillRatioRooms, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Extra Corridors" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding FillRatioCorridors, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding FillRatioCorridors, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Corridor Connection Threshold" />
                         <toolkit:IntegerUpDown Watermark="Enter a Value" 
                                                 Minimum="1" 
-                                                Maximum="10" 
+                                                Maximum="5"
                                                 Increment="1" 
                                                 FormatString="N0" 
                                                 Foreground="White"
                                                 HorizontalContentAlignment="Left"
-                                                Value="{Binding RectangularGridPadding, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                Width="150" HorizontalAlignment="Right"  />
-                    </Grid>
+                                                Value="{Binding CorridorDistanceThreshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="150" HorizontalAlignment="Right">
+                        </toolkit:IntegerUpDown>
+                    </Grid>                    
                 </StackPanel>
             </GroupBox>
 
@@ -257,32 +223,27 @@
                 <GroupBox.Visibility>
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                         <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomRectangularRegion}" />
-                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.AnchoredRectangularRegions}" />
-                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CenteredRectangularRegions}" />
+                        <Binding Path="Type"  Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.RandomSmoothedRegion}" />
                     </MultiBinding>
                 </GroupBox.Visibility>
                 <StackPanel>
+                    
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Count" />
-                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
-                                                Minimum="1" 
-                                                Foreground="White"
-                                                HorizontalContentAlignment="Left"
-                                                Value="{Binding RandomRoomCount, Mode=TwoWay}" 
-                                                Width="150" HorizontalAlignment="Right">
-                        </toolkit:IntegerUpDown>
-                    </Grid>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Room Separation / Overlap (Separation %)" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding RandomRoomSeparationRatio, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding RandomRoomSeparationRatio, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
+                    </Grid>             
+                    
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Spread" />
-                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
-                                                Minimum="1" 
-                                                Maximum="100"
-                                                Foreground="White"
-                                                HorizontalContentAlignment="Left"
-                                                Value="{Binding RandomRoomSpread, Mode=TwoWay}" 
-                                                Width="150" HorizontalAlignment="Right">
-                        </toolkit:IntegerUpDown>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Room Separation Padding (How much padding based on their size)" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding RandomRoomSpacing, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding RandomRoomSpacing, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
                     </Grid>
+
                 </StackPanel>
             </GroupBox>
 
@@ -291,6 +252,7 @@
                 <GroupBox.Visibility>
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMap}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMazeMap}" />
                     </MultiBinding>
                 </GroupBox.Visibility>
                 <StackPanel>
@@ -304,25 +266,29 @@
                 </StackPanel>
             </GroupBox>
 
-            <!-- Open World (Elevation Map) Parameters -->
-            <GroupBox Margin="10" Header="Open World Parameters" FontSize="18">
+            <!-- Elevation Map Parameters -->
+            <GroupBox Margin="10" Header="Open Cave Parameters" FontSize="18">
                 <GroupBox.Visibility>
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMap}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMazeMap}" />
                     </MultiBinding>
                 </GroupBox.Visibility>
                 <StackPanel>
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Elevation Frequency" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
-                            <TextBlock Text="{Binding OpenWorldElevationFrequency, StringFormat=F2}" VerticalAlignment="Center" FontSize="18" Margin="0, 0,10,0" />
-                            <Slider Value="{Binding OpenWorldElevationFrequency, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding ElevationFrequency, StringFormat=F2}" VerticalAlignment="Center" FontSize="18" Margin="0, 0,10,0" />
+                            <Slider Value="{Binding ElevationFrequency, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
                         </StackPanel>
                     </Grid>
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Elevation Cutoff Range"/>
-                        <control:Range DataContext="{Binding OpenWorldElevationRegionRange}" LowLimit="-1" HighLimit="1" Increment="0.1" StringFormat="F1" Width="300" HorizontalAlignment="Right" />
-                    </Grid>                    
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Elevation Selector (Selects portion of elevation  map Low to High)" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <TextBlock Text="{Binding ElevationSelector, StringFormat=F2}" VerticalAlignment="Center" FontSize="18" Margin="0, 0,10,0" />
+                            <Slider Value="{Binding ElevationSelector, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                        </StackPanel>
+                    </Grid>                 
                 </StackPanel>
             </GroupBox>
 
@@ -331,12 +297,18 @@
                 <GroupBox.Visibility>
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.MazeMap}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.CellularAutomataMazeMap}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutType.ElevationMazeMap}" />
+                        <Binding Path="ConnectionType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:LayoutConnectionType.Maze}" />
                     </MultiBinding>
                 </GroupBox.Visibility>
                 <StackPanel>
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Wall Removal Ratio" />
-                        <toolkit:DoubleUpDown Minimum="0.0" Maximum="1.0" Increment="0.05" Foreground="White" Value="{Binding MazeWallRemovalRatio, Mode=TwoWay}" Width="150" HorizontalAlignment="Right"  />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Wall Removal Percentage (Makes the maze easier)" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="405">
+                            <TextBlock Text="{Binding MazeWallRemovalRatio, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="0, 0,10,0" />
+                            <Slider Value="{Binding MazeWallRemovalRatio, Delay=300}" Width="350" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                        </StackPanel>
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Horizontal / Vertical Bias" />

@@ -11,17 +11,19 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
     {
         private int _width;
         private int _height;
-        private Range<int> _regionWidthRange;
-        private Range<int> _regionHeightRange;
+        private int _corridorDistanceThreshold;
         private int _numberRoomRows;
         private int _numberRoomCols;
-        private int _rectangularGridPadding;
-        private int _randomRoomCount;
-        private int _randomRoomSpread;
+        private double _fillRatioRooms;
+        private double _fillRatioCorridors;
+        private double _roomSize;
+        private double _roomSizeErradicity;
+        private double _randomRoomSpacing;
+        private double _randomRoomSeparationRatio;
         private double _mazeHorizontalVerticalBias;
         private double _mazeWallRemovalRatio;
-        private double _openWorldElevationFrequency;
-        private Range<double> _openWorldElevationRegionRange;
+        private double _elevationFrequency;
+        private double _elevationSelector;
         private double _hiddenDoorProbability;
         private double _cellularAutomataFillRatio;
         private bool _makeSymmetric;
@@ -60,27 +62,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public Range<int> RegionWidthRange
+        public int CorridorDistanceThreshold
         {
-            get { return _regionWidthRange; }
+            get { return _corridorDistanceThreshold; }
             set
             {
-                if (_regionWidthRange != value)
+                if (_corridorDistanceThreshold != value)
                 {
-                    _regionWidthRange = value;
-                    OnPropertyChanged("RegionWidthRange");
-                }
-            }
-        }
-        public Range<int> RegionHeightRange
-        {
-            get { return _regionHeightRange; }
-            set
-            {
-                if (_regionHeightRange != value)
-                {
-                    _regionHeightRange = value;
-                    OnPropertyChanged("RegionHeightRange");
+                    _corridorDistanceThreshold = value;
+                    OnPropertyChanged("CorridorDistanceThreshold");
                 }
             }
         }
@@ -108,51 +98,75 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public int RectangularGridPadding
+        public double FillRatioRooms
         {
-            get { return _rectangularGridPadding; }
+            get { return _fillRatioRooms; }
             set
             {
-                if (_rectangularGridPadding != value)
+                if (_fillRatioRooms != value)
                 {
-                    _rectangularGridPadding = value;
-                    OnPropertyChanged("RectangularGridPadding");
+                    _fillRatioRooms = value;
+                    OnPropertyChanged("FillRatioRooms");
                 }
             }
         }
-        public int RandomRoomCount
+        public double FillRatioCorridors
         {
-            get { return _randomRoomCount; }
+            get { return _fillRatioCorridors; }
             set
             {
-                if (_randomRoomCount != value)
+                if (_fillRatioCorridors != value)
                 {
-                    _randomRoomCount = value;
-                    OnPropertyChanged("RandomRoomCount");
+                    _fillRatioCorridors = value;
+                    OnPropertyChanged("FillRatioCorridors");
                 }
             }
         }
-        public int RandomRoomSpread
+        public double RoomSize
         {
-            get { return _randomRoomSpread; }
+            get { return _roomSize; }
             set
             {
-                if (_randomRoomSpread != value)
+                if (_roomSize != value)
                 {
-                    _randomRoomSpread = value;
-                    OnPropertyChanged("RandomRoomSpread");
+                    _roomSize = value;
+                    OnPropertyChanged("RoomSize");
                 }
             }
         }
-        public bool MakeSymmetric
+        public double RoomSizeErradicity
         {
-            get { return _makeSymmetric; }
+            get { return _roomSizeErradicity; }
             set
             {
-                if (_makeSymmetric != value)
+                if (_roomSizeErradicity != value)
                 {
-                    _makeSymmetric = value;
-                    OnPropertyChanged("MakeSymmetric");
+                    _roomSizeErradicity = value;
+                    OnPropertyChanged("RoomSizeErradicity");
+                }
+            }
+        }
+        public double RandomRoomSpacing
+        {
+            get { return _randomRoomSpacing; }
+            set
+            {
+                if (_randomRoomSpacing != value)
+                {
+                    _randomRoomSpacing = value;
+                    OnPropertyChanged("RandomRoomSpacing");
+                }
+            }
+        }
+        public double RandomRoomSeparationRatio
+        {
+            get { return _randomRoomSeparationRatio; }
+            set
+            {
+                if (_randomRoomSeparationRatio != value)
+                {
+                    _randomRoomSeparationRatio = value;
+                    OnPropertyChanged("RandomRoomSeparationRatio");
                 }
             }
         }
@@ -204,27 +218,39 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public double OpenWorldElevationFrequency
+        public double ElevationFrequency
         {
-            get { return _openWorldElevationFrequency; }
+            get { return _elevationFrequency; }
             set
             {
-                if (_openWorldElevationFrequency != value)
+                if (_elevationFrequency != value)
                 {
-                    _openWorldElevationFrequency = value;
-                    OnPropertyChanged("OpenWorldElevationFrequency");
+                    _elevationFrequency = value;
+                    OnPropertyChanged("ElevationFrequency");
                 }
             }
         }
-        public Range<double> OpenWorldElevationRegionRange
+        public double ElevationSelector
         {
-            get { return _openWorldElevationRegionRange; }
+            get { return _elevationSelector; }
             set
             {
-                if (_openWorldElevationRegionRange != value)
+                if (_elevationSelector != value)
                 {
-                    _openWorldElevationRegionRange = value;
-                    OnPropertyChanged("OpenWorldElevationRegionRange");
+                    _elevationSelector = value;
+                    OnPropertyChanged("ElevationSelector");
+                }
+            }
+        }
+        public bool MakeSymmetric
+        {
+            get { return _makeSymmetric; }
+            set
+            {
+                if (_makeSymmetric != value)
+                {
+                    _makeSymmetric = value;
+                    OnPropertyChanged("MakeSymmetric");
                 }
             }
         }
@@ -355,8 +381,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         {
             this.Width = 600;
             this.Height = 400;
-            this.RegionHeightRange = new Range<int>();
-            this.RegionWidthRange = new Range<int>();
             this.Type = LayoutType.RectangularRegion;
             this.ConnectionType = LayoutConnectionType.Corridor;
             this.NumberRoomRows = 3;
@@ -365,8 +389,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 
             this.MazeHorizontalVerticalBias = 0.5;
             this.MazeWallRemovalRatio = 0.5;
-            this.OpenWorldElevationFrequency = 0.1;
-            this.OpenWorldElevationRegionRange = new Range<double>(0.5, 1);
 
             this.WallSymbol = new SymbolDetailsTemplate();
             this.DoorSymbol = new SymbolDetailsTemplate();

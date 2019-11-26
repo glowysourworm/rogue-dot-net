@@ -40,9 +40,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             var allLocations = new List<GridCellInfo>();
             var regionDetected = false;
 
-            for (int i = boundary.Left + padding + 1; i <= boundary.Right - padding - 1; i++)
+            for (int i = boundary.Left; i <= boundary.Right; i++)
             {
-                for (int j = boundary.Top + padding + 1; j <= boundary.Bottom - padding - 1; j++)
+                for (int j = boundary.Top; j <= boundary.Bottom; j++)
                 {
                     if (grid[i, j] != null)
                     {
@@ -65,14 +65,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             }
 
             // Number of valid locations exceeds the threshold
-            if (locations.Count > (allLocations.Count * separationRatio))
+            if (locations.Count >= (allLocations.Count * (1 - separationRatio)))
             {
                 // Now, safely add the cells to the grid
                 foreach (var cell in locations)
                     grid[cell.Location.Column, cell.Location.Row] = cell;
             }
-
-            // Otherwise, just plot all of them
             else
             {
                 foreach (var cell in allLocations)

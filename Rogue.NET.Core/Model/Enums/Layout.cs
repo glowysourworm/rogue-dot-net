@@ -4,33 +4,37 @@ namespace Rogue.NET.Core.Model.Enums
 {
     public enum LayoutType : int
     {
-        [Display(Name = "Normal Rooms",
+        [Display(Name = "Rectangular Layout",
                  Description = "Generates connected rooms - non-overlapping")]
         RectangularRegion = 0,
 
-        [Display(Name = "Random Rooms",
+        [Display(Name = "Random Layout",
                  Description = "Generates connected rooms - overlapping or non-overlapping")]
         RandomRectangularRegion = 1,
 
-        [Display(Name = "Maze",
+        [Display(Name = "Random Layout (Cave-Like)",
+                 Description = "Generates connected rooms - overlapping or non-overlapping")]
+        RandomSmoothedRegion = 2,
+
+        [Display(Name = "Maze Layout",
                  Description = "Generates a single maze for the whole level!")]
-        MazeMap = 2,
+        MazeMap = 3,
+
+        [Display(Name = "Maze Layout (Cave-Like)",
+                 Description = "Generates a maze inside of a cave for the whole level!")]
+        CellularAutomataMazeMap = 4,
 
         [Display(Name = "Open Cave",
                  Description = "Generates an open layout (no defining borders) using a smooth elevation map")]
-        ElevationMap = 3,
+        ElevationMap = 5,
 
-        [Display(Name = "Cave",
+        [Display(Name = "Open Cave Maze Layout",
+                 Description = "Generates a maze inside of an open layout (no defining borders) using a smooth elevation map")]
+        ElevationMazeMap = 6,
+
+        [Display(Name = "Closed Cave",
                  Description = "Generates a cave-like layout with some mild to moderate obstructions")]
-        CellularAutomataMap = 4,
-
-        [Display(Name = "Anchored Rooms",
-                 Description = "Generates a set of rooms anchored by one main room")]
-        AnchoredRectangularRegions = 5,
-
-        [Display(Name = "Centered Rooms",
-                 Description = "Generates a set of rooms anchored by one main room")]
-        CenteredRectangularRegions = 6
+        CellularAutomataMap = 7
     }
     public enum LayoutCellularAutomataType : int
     {

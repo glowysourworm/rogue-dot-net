@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 {
@@ -98,23 +99,33 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        public IEnumerable<Region> BuildMazeCorridors(GridCellInfo[,] grid)
+        public IEnumerable<Region> BuildMazeCorridors(GridCellInfo[,] grid, MazeType mazeType, double wallRemovalRatio, double horizontalVerticalBias)
         {
+            // Procedure
+            //
+            // - Identify regions to pass to the maze generator (avoids these when removing walls)
+            // - Fill in empty cells with walls
+            // - Create mazes where there are 8-way walls surrounding a cell
+            // - Since maze generator removes walls (up to the edge of the avoid regions)
+            //   Must add back just those walls adjacent to the avoid regions
+            //
+            // - Then, BuildCorridors(...) will connect any mazes together that were interrupted
+            //   (Also, by the adding back of walls)
+            //
+
             var regions = grid.IdentifyRegions();
 
             // Leave room for a wall border around the outside
-            for (int i = 1; i < grid.GetLength(0) - 1; i++)
+            for (int i = 0; i < grid.GetLength(0); i++)
             {
-                for (int j = 1; j < grid.GetLength(1) - 1; j++)
+                for (int j = 0; j < grid.GetLength(1); j++)
                 {
                     // Skip region cells
                     if (grid[i, j] != null)
                         continue;
 
                     // Add walls in the negative space - leaving room for region cells
-                    //if (grid.GetAdjacentElements(i, j)
-                    //        .All(cell => cell == null || cell.IsWall))
-                        grid[i, j] = new GridCellInfo(i, j) { IsWall = true };
+                    grid[i, j] = new GridCellInfo(i, j) { IsWall = true };
                 }
             }
 
@@ -122,18 +133,35 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // considered.
 
             // Find empty regions and fill them with recrusive-backtracked corridors
+            //
+            // NOTE*** Avoiding edges that WERE created as walls - because the "Filled" rule won't touch those.
+            //
             for (int i = 1; i < grid.GetLength(0) - 1; i++)
             {
                 for (int j = 1; j < grid.GetLength(1) - 1; j++)
                 {
-                    if (grid[i, j] == null)
-                        continue;
-
-                    // Create a corridor here
+                    // Create a corridor where all adjacent cells are walls
                     if (grid.GetAdjacentElements(i, j).All(cell => cell.IsWall))
                     {
                         // Create the maze!
-                        _mazeRegionCreator.CreateCellsStartingAt(grid, grid[i, j].Location);
+                        _mazeRegionCreator.CreateCellsStartingAt(grid, regions, grid[i, j].Location, mazeType, wallRemovalRatio, horizontalVerticalBias);
+                    }
+                }
+            }
+
+            // Add back walls surrounding the regions
+            foreach (var region in regions)
+            {
+                foreach (var edgeCell in region.EdgeCells)
+                {
+                    var adjacentCells = grid.GetAdjacentElements(edgeCell.Column, edgeCell.Row);
+
+                    foreach (var cell in adjacentCells)
+                    {
+                        // Adjacent cell is not in region; but is on the edge. This should
+                        // be a wall cell
+                        if (region[cell.Location.Column, cell.Location.Row] == null)
+                            cell.IsWall = true;
                     }
                 }
             }

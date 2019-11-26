@@ -1,13 +1,17 @@
-﻿using Rogue.NET.Core.Math.Algorithm.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
+using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 {
@@ -17,22 +21,25 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
     {
         readonly IRegionGeometryCreator _regionGeometryCreator;
         readonly IRectangularRegionCreator _rectangularRegionCreator;
-        readonly IMazeRegionCreator _mazeRegionCreator;
         readonly ICellularAutomataRegionCreator _cellularAutomataRegionCreator;
+        readonly IMazeRegionCreator _mazeRegionCreator;
         readonly INoiseGenerator _noiseGenerator;
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         [ImportingConstructor]
         public RegionBuilder(IRegionGeometryCreator regionGeometryCreator,
                              IRectangularRegionCreator rectangularRegionCreator,
-                             IMazeRegionCreator mazeRegionCreator,
                              ICellularAutomataRegionCreator cellularAutomataRegionCreator,
-                             INoiseGenerator noiseGenerator)
+                             IMazeRegionCreator mazeRegionCreator,
+                             INoiseGenerator noiseGenerator,
+                             IRandomSequenceGenerator randomSequenceGenerator)
         {
             _regionGeometryCreator = regionGeometryCreator;
             _rectangularRegionCreator = rectangularRegionCreator;
-            _mazeRegionCreator = mazeRegionCreator;
             _cellularAutomataRegionCreator = cellularAutomataRegionCreator;
+            _mazeRegionCreator = mazeRegionCreator;
             _noiseGenerator = noiseGenerator;
+            _randomSequenceGenerator = randomSequenceGenerator;
         }
 
         public GridCellInfo[,] BuildRegions(LayoutTemplate template)
@@ -42,17 +49,19 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 case LayoutType.RectangularRegion:
                     return CreateRectangularGridRegions(template);
                 case LayoutType.RandomRectangularRegion:
-                    return CreateRandomRectangularRegions(template);
+                    return CreateRandomRectangularRegions(template, false);
+                case LayoutType.RandomSmoothedRegion:
+                    return CreateRandomRectangularRegions(template, true);
                 case LayoutType.MazeMap:
                     return CreateMazeMap(template);
                 case LayoutType.ElevationMap:
                     return CreateElevationMap(template);
                 case LayoutType.CellularAutomataMap:
                     return CreateCellularAutomataMap(template);
-                case LayoutType.AnchoredRectangularRegions:
-                    return CreateAnchoredRectangularRegions(template);
-                case LayoutType.CenteredRectangularRegions:
-                    return CreateCenteredRectangularRegions(template);
+                case LayoutType.CellularAutomataMazeMap:
+                    return CreateCellularAutomataMazeMap(template);
+                case LayoutType.ElevationMazeMap:
+                    return CreateElevationMazeMap(template);
                 default:
                     throw new Exception("Unhandled Layout Type RegionBuilder");
             }
@@ -75,10 +84,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var grid = new GridCellInfo[template.Width, template.Height];
 
             // Create the room rectangles
-            var roomBoundaries = _regionGeometryCreator.CreateGridRectangularRegions(template.NumberRoomCols, template.NumberRoomRows,
-                                                                                     template.RectangularGridPadding, template.RegionWidthRange,
-                                                                                     template.RegionHeightRange);
-
+            var roomBoundaries = _regionGeometryCreator.CreateGridRectangularRegions(template.Width, template.Height, template.NumberRoomCols, 
+                                                                                     template.NumberRoomRows, template.RoomSize, template.FillRatioRooms, 
+                                                                                     template.RoomSizeErradicity);
             // Create cells in the regions
             foreach (var boundary in roomBoundaries)
                 _rectangularRegionCreator.CreateCells(grid, boundary, false);
@@ -86,63 +94,31 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             return grid;
         }
 
-        private GridCellInfo[,] CreateRandomRectangularRegions(LayoutTemplate template)
+        private GridCellInfo[,] CreateRandomRectangularRegions(LayoutTemplate template, bool runSmoothingIteration)
         {
             // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
             var grid = new GridCellInfo[template.Width, template.Height];
 
             // Create the room rectangles - IF THERE'S TOO MUCH CLUTTER WITH SYMMETRY THEN WE CAN LIMIT THE BOUNDARY TO THE FIRST QUADRANT
-            var roomBoundaries = _regionGeometryCreator.CreateRandomRectangularRegions(new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height),
-                                                                                       template.RandomRoomCount, template.RegionWidthRange, template.RegionHeightRange,
-                                                                                       template.RandomRoomSpread);
+            var roomBoundaries = _regionGeometryCreator.CreateRandomRectangularRegions(template.Width, template.Height, template.FillRatioRooms, template.RoomSize, template.RoomSizeErradicity);
+
+            // Calculate padding limits
+            var roomMinHeight = roomBoundaries.Min(region => region.CellHeight);
+            var roomMinWidth = roomBoundaries.Min(region => region.CellWidth);
+
+            var paddingLimit = System.Math.Min(roomMinHeight / 2, roomMinWidth / 2);
+            var padding = (int)(paddingLimit * template.RandomRoomSpacing).Clip(0, paddingLimit);
 
             // Create contiguous regions - OVERWRITE EXISTING CELLS BECAUSE OF RANDOM LAYOUT
             foreach (var boundary in roomBoundaries)
-                _rectangularRegionCreator.CreateCellsXOR(grid, boundary, 0, 1);
+                _rectangularRegionCreator.CreateCellsXOR(grid, boundary, padding, template.RandomRoomSeparationRatio);
 
             // Run one smoothing / roughness iteration to make rough edges
-            //foreach (var boundary in roomBoundaries)
-            //    _cellularAutomataRegionCreator.RunSmoothingIteration(grid, boundary, 1);
-
-            return grid;
-        }
-
-        private GridCellInfo[,] CreateAnchoredRectangularRegions(LayoutTemplate template)
-        {
-            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
-
-            // Create the room rectangles - IF THERE'S TOO MUCH CLUTTER WITH SYMMETRY THEN WE CAN LIMIT THE BOUNDARY TO THE FIRST QUADRANT
-            var regionBoundaries = _regionGeometryCreator.CreateAnchoredRandomRectangularRegions(template.Width, template.Height, template.RandomRoomCount, 
-                                                                                                 template.RegionWidthRange, template.RegionHeightRange, 1);
-
-            // Create contiguous regions - OVERWRITE EXISTING CELLS BECAUSE OF RANDOM LAYOUT
-            foreach (var boundary in regionBoundaries)
-                _rectangularRegionCreator.CreateCellsXOR(grid, boundary, 0, 0.5);
-
-            // Run one smoothing / roughness iteration to make rough edges
-            //foreach (var boundary in regionBoundaries)
-            //    _cellularAutomataRegionCreator.RunSmoothingIteration(grid, boundary, 1);
-
-            return grid;
-        }
-
-        private GridCellInfo[,] CreateCenteredRectangularRegions(LayoutTemplate template)
-        {
-            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
-
-            // Create the room rectangles - IF THERE'S TOO MUCH CLUTTER WITH SYMMETRY THEN WE CAN LIMIT THE BOUNDARY TO THE FIRST QUADRANT
-            var regionBoundaries = _regionGeometryCreator.CreateCenteredRandomRectangularRegions(template.Width, template.Height, template.RandomRoomCount,
-                                                                                                 template.RegionWidthRange, template.RegionHeightRange, 1);
-
-            // Create contiguous regions - OVERWRITE EXISTING CELLS BECAUSE OF RANDOM LAYOUT
-            foreach (var boundary in regionBoundaries)
-                _rectangularRegionCreator.CreateCellsXOR(grid, boundary, 0, 0.5);
-
-            // Run one smoothing / roughness iteration to make rough edges
-            //foreach (var boundary in regionBoundaries)
-            //    _cellularAutomataRegionCreator.RunSmoothingIteration(grid, boundary, 1);
+            if (runSmoothingIteration)
+            {
+                //foreach (var boundary in roomBoundaries)
+                _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0,0), template.Width, template.Height), template.CellularAutomataType);
+            }
 
             return grid;
         }
@@ -155,8 +131,25 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Create the boundary
             var boundary = new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height);
 
-            // Create cellular automata in each region
+            // Create cellular automata in the
             _cellularAutomataRegionCreator.GenerateCells(grid, boundary, template.CellularAutomataType, template.CellularAutomataFillRatio, false);
+
+            return grid;
+        }
+
+        private GridCellInfo[,] CreateCellularAutomataMazeMap(LayoutTemplate template)
+        {
+            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
+            var grid = new GridCellInfo[template.Width, template.Height];
+
+            // Create the boundary
+            var boundary = new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height);
+
+            // Create cellular automata the region
+            _cellularAutomataRegionCreator.GenerateCells(grid, boundary, template.CellularAutomataType, template.CellularAutomataFillRatio, false);
+
+            // Fills cell regions with mazes
+            FillRegionsWithMazes(grid, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
 
             return grid;
         }
@@ -170,7 +163,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var boundary = new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height);
 
             // Create cellular automata in each region
-            _mazeRegionCreator.CreateCells(grid, boundary, template.MazeWallRemovalRatio, false);
+            _mazeRegionCreator.CreateCells(grid, boundary, MazeType.Filled, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias, false);
 
             return grid;
         }
@@ -180,14 +173,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
             var grid = new GridCellInfo[template.Width, template.Height];
 
-            // Create the boundary
-            var boundary = new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height);
-
+            // Map [-1, 1] to the proper elevation band of 0.4 using [0, 1] elevation selector
+            var elevationLow = (1.6 * template.ElevationSelector) - 1;
+            var elevationHigh = (1.6 * template.ElevationSelector) - 0.6;
+            
             // Create the regions using noise generation
-            _noiseGenerator.Run(NoiseType.PerlinNoise, template.Width, template.Height, template.OpenWorldElevationFrequency, new PostProcessingCallback((column, row, value) =>
+            _noiseGenerator.Run(NoiseType.PerlinNoise, template.Width, template.Height, template.ElevationFrequency, new PostProcessingCallback((column, row, value) =>
             {
                 // Create cells within the elevation band
-                if (template.OpenWorldElevationRegionRange.Contains(value))
+                if (value.Between(elevationLow, elevationHigh, true))
                 {
                     grid[column, row] = new GridCellInfo(column, row);
                 }
@@ -195,7 +189,64 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 return value;
             }));
 
+            // Run smoothing iteration
+            _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height), template.CellularAutomataType);
+
             return grid;
+        }
+
+        private GridCellInfo[,] CreateElevationMazeMap(LayoutTemplate template)
+        {
+            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
+            var grid = new GridCellInfo[template.Width, template.Height];
+
+            // Map [-1, 1] to the proper elevation band of 0.4 using [0, 1] elevation selector
+            var elevationLow = (1.6 * template.ElevationSelector) - 1;
+            var elevationHigh = (1.6 * template.ElevationSelector) - 0.6;
+
+            // Create the regions using noise generation
+            _noiseGenerator.Run(NoiseType.PerlinNoise, template.Width, template.Height, template.ElevationFrequency, new PostProcessingCallback((column, row, value) =>
+            {
+                // Create cells within the elevation band
+                if (value.Between(elevationLow, elevationHigh, true))
+                {
+                    grid[column, row] = new GridCellInfo(column, row);
+                }
+
+                return value;
+            }));
+
+            // Run smoothing iteration
+            _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height), template.CellularAutomataType);
+
+            // Fills cell regions with mazes
+            FillRegionsWithMazes(grid, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
+
+            return grid;
+        }
+
+        private void FillRegionsWithMazes(GridCellInfo[,] grid, double wallRemovalRatio, double horizontalVerticalBias)
+        {
+            // Identify regions
+            var regions = grid.IdentifyRegions();
+
+            if (regions.Count() == 0)
+                throw new Exception("Trying to fill regions with mazes; but no regions were generated");
+
+            // Create walls inside each region and run maze generator
+            foreach (var region in regions)
+            {
+                foreach (var cell in region.Cells)
+                    grid[cell.Column, cell.Row].IsWall = true;
+
+                for (int i = 0; i < region.Cells.Length; i++)
+                {
+                    // Look for other places to start a maze
+                    if (grid.GetAdjacentElements(region.Cells[i].Column, region.Cells[i].Row)
+                            .All(cell => cell.IsWall))
+                        _mazeRegionCreator.CreateCellsStartingAt(grid, new Region[] { }, _randomSequenceGenerator.GetRandomElement(region.Cells), MazeType.Open, wallRemovalRatio, horizontalVerticalBias);
+                }
+            }
         }
     }
 }
