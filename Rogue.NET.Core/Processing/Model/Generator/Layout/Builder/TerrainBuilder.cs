@@ -122,7 +122,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                             foundBlockedCell = true;
 
                             // Block off the tile on the Dijkstra input map
-                            terrainBlockedInputMap[i, j] = 10000;
+                            terrainBlockedInputMap[i, j] = DijkstraMap.RegionFeatureConstant;
                         }
                     }
                 }
@@ -146,12 +146,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                     var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Roguian);
 
                     // Creates Dijkstra map from the input map to find paths along the edges
-                    var dijkstraMap = new DijkstraMap(terrainBlockedInputMap, location1, location2);
+                    var dijkstraMap = new DijkstraMap(terrainBlockedInputMap, location1, location2, true);
 
                     dijkstraMap.Run();
 
                     // Generate Path locations
-                    var path = dijkstraMap.GeneratePath(true);
+                    var path = dijkstraMap.GeneratePath();
 
                     // Add path to the grid
                     foreach (var location in path)

@@ -28,7 +28,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         readonly IConnectionBuilder _corridorBuilder;
         readonly ITerrainBuilder _terrainBuilder;
         readonly IWallFinisher _wallFinisher;
-        readonly ICellularAutomataRegionCreator _cellularAutomataRegionCreator;
         readonly ILightingFinisher _lightingFinisher;
 
         // Size is great enough for an upstairs, downstairs, and 2 teleport pods (in and out of the room)
@@ -42,14 +41,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                IConnectionBuilder corridorBuilder,
                                ITerrainBuilder terrainBuilder,
                                IWallFinisher wallFinisher,
-                               ICellularAutomataRegionCreator cellularAutomataRegionCreator,
                                ILightingFinisher lightingFinisher)
         {
             _regionBuilder = regionBuilder;
             _corridorBuilder = corridorBuilder;
             _terrainBuilder = terrainBuilder;
             _wallFinisher = wallFinisher;
-            _cellularAutomataRegionCreator = cellularAutomataRegionCreator;
             _lightingFinisher = lightingFinisher;
         }
 
@@ -101,8 +98,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             switch (template.ConnectionType)
             {
                 case LayoutConnectionType.Corridor:
-                    return rectilinearCorridors ? _corridorBuilder.BuildRectilinearCorridors(grid) :
-                                                     _corridorBuilder.BuildCorridors(grid);
+                    //return rectilinearCorridors ? _corridorBuilder.BuildRectilinearCorridors(grid) :
+                    //                              _corridorBuilder.BuildCorridors(grid);
+                    return _corridorBuilder.BuildCorridors(grid, template.Name);
                 case LayoutConnectionType.Teleporter:
                     return _corridorBuilder.BuildConnectionPoints(grid);
                 case LayoutConnectionType.Maze:
@@ -119,9 +117,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                             case LayoutType.MazeMap:
                             case LayoutType.CellularAutomataMazeMap:
                             case LayoutType.ElevationMazeMap:
-                                return _corridorBuilder.BuildMazeCorridors(grid, MazeType.Open, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
                             default:
-                                throw new Exception("Unhandled Layout Type");
+                                throw new Exception("Unhandled or Unsupported Layout Type for maze connections");
                         }                        
                     }
                 default:

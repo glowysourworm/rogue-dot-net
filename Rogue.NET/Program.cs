@@ -19,6 +19,9 @@ namespace Rogue.NET
             if (!Directory.Exists(ResourceConstants.ScenarioDirectory))
                 Directory.CreateDirectory(ResourceConstants.ScenarioDirectory);
 
+            if (!Directory.Exists(ResourceConstants.DijkstraOutputDirectory))
+                Directory.CreateDirectory(ResourceConstants.DijkstraOutputDirectory);
+
             var loadingWindow = SplashWindowFactory.CreatePopupWindow(SplashEventType.Loading);
 
             // Show loading window - allow primary thread to process

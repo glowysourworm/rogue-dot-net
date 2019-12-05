@@ -1,6 +1,9 @@
 ﻿using Rogue.NET.Core.Converter.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
+using System;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,58 +35,31 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.LayoutControl
 
             this.DataContextChanged += (sender, e) =>
             {
-                _viewModel = (e.NewValue as LayoutTemplateViewModel) ?? _viewModel;
+                _viewModel = (e.NewValue as LayoutTemplateViewModel);
+
+                var newViewModel = e.NewValue as LayoutTemplateViewModel;
+                var oldViewModel = e.OldValue as LayoutTemplateViewModel;
+
+                if (oldViewModel != null)
+                    oldViewModel.PropertyChanged -= OnLayoutPropertyChanged;
+
+                if (newViewModel != null)
+                    newViewModel.PropertyChanged += OnLayoutPropertyChanged;
             };
         }
 
-        private void LayoutHeight_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void OnLayoutPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_viewModel == null)
-                return;
-
-            // Use converter to get value to set to the height
-            //_viewModel.Height = (int)_heightConverter.Convert(new object[]
-            //{
-            //    (int)e.NewValue,
-            //    _viewModel.Width,
-            //    _viewModel.Type,
-            //    _viewModel.SymmetryType,
-            //    _viewModel.RegionWidthRange.Low,
-            //    _viewModel.RegionWidthRange.High,
-            //    _viewModel.RegionHeightRange.Low,
-            //    _viewModel.RegionHeightRange.High,
-            //    _viewModel.NumberRoomCols,
-            //    _viewModel.NumberRoomRows,
-            //    _viewModel.RectangularGridPadding,
-            //    _viewModel.RandomRoomCount,
-            //    _viewModel.RandomRoomSpread,
-            //    _viewModel.MakeSymmetric
-            //}, null, null, null);
-        }
-
-        private void LayoutWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (_viewModel == null)
-                return;
-
-            //// Use converter to get value to set to the height
-            //_viewModel.Width = (int)_widthConverter.Convert(new object[]
-            //{
-            //    _viewModel.Height,
-            //    (int)e.NewValue,
-            //    _viewModel.Type,
-            //    _viewModel.SymmetryType,
-            //    _viewModel.RegionWidthRange.Low,
-            //    _viewModel.RegionWidthRange.High,
-            //    _viewModel.RegionHeightRange.Low,
-            //    _viewModel.RegionHeightRange.High,
-            //    _viewModel.NumberRoomCols,
-            //    _viewModel.NumberRoomRows,
-            //    _viewModel.RectangularGridPadding,
-            //    _viewModel.RandomRoomCount,
-            //    _viewModel.RandomRoomSpread,
-            //    _viewModel.MakeSymmetric
-            //}, null, null, null);
+            // TODO: Filter these in the UI
+            if (e.PropertyName == "Type" ||
+                e.PropertyName == "ConnectionType")
+            {
+                if (_viewModel.Type == LayoutType.CellularAutomataMazeMap ||
+                    _viewModel.Type == LayoutType.ElevationMazeMap ||
+                    _viewModel.Type == LayoutType.MazeMap &&
+                    _viewModel.ConnectionType == LayoutConnectionType.Maze)
+                    _viewModel.ConnectionType = LayoutConnectionType.Corridor;
+            }
         }
 
         private void EditWallSymbolButton_Click(object sender, RoutedEventArgs e)

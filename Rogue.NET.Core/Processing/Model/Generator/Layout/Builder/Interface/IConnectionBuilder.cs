@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
         /// <summary>
         /// Identifies regions and builds linear corridors between them
         /// </summary>
-        IEnumerable<Region> BuildCorridors(GridCellInfo[,] grid);
+        IEnumerable<Region> BuildCorridors(GridCellInfo[,] grid, string layoutName);
 
         /// <summary>
         /// Identifies regions and builds mazes into the negative space. It then connects the regions to the mazes.

@@ -118,7 +118,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout
 
             // Assign region data to new region
             return new Region(regionCells.ToArray(), edgeCells.ToArray(), regionBounds, bounds);
-        }
+        }       
 
         public static Compass GetDirectionOfAdjacentLocation(GridLocation location, GridLocation adjacentLocation)
         {

@@ -3251,3 +3251,51 @@ IMMEDIATE TODO'S:
 		IDEA:  Create cells for ALL tiles - try not to allocate memory during any of the large iterations.
 	
 	TODO: When renaming an asset - the generation asset names have to be updated.
+	
+	IDEA: How to generate perlin noise map animation (?) - Do animated shape "bands" using the divided elevation map and
+		  just create path drawings with different brushes. Probably can't do pixel-level animation easily.
+		  
+	CONTENT GENERATION:
+	
+		Need ways to create meaningful content with the layouts. Maybe find a way to give points to something like "the hidden door to the
+		cache of items" as a "hidden door with locations for content items".
+		
+		
+	CURSED ITEMS:  
+		
+		Consider developing "Is Cursed" into something more fully related to the scenario. 
+		
+		"Has Curse" -> "Curse Category" -> "Curse Alteration".. But the category is meaningful since it's a category of CURSE alterations.
+		
+		Also, consider Curse Alteration that forces your movement every "X" turns.. Or draws your towards "Certain Death" (Like lava pool or something)
+		
+	CORRIDOR GENERATION / REGION CONNECTING:
+	
+		Consider way to create a spanning tree that is NOT optimal - maybe intentionally. Something like the opposite of the MST - the greatest weighted
+		spanning tree.
+		
+		Maybe, as the tree is constructed, choose the nearest neighbor graph node based on random selection of the weights - but sub-optimal. It might
+		create more wandering hallways depending on the coefficient (slider) value. So, if the route fails - will need a teleporter.
+		
+	CELLULAR AUTOMATA:
+	
+		Try working with "birth / survival parameters" like a 3x3 grid - Brogue did this to "designCavern(...)" (Architect.c) using specific birth and
+		survival parameters like this - wondering if it helps to create filled in region as opposed to dissapearing cells.. or creating TOO many open
+		cells.. etc...
+		
+		"designCavern":  birth:  "ffffftttt",  survival:  "ffffttttt"
+		
+		"designLakes":   birth:  "ffffftttt",  survival:  "ffffttttt"
+		
+		Not sure how the cell pattern affects the birth and survival of cells; but it may be worth investigating.
+		
+	GRID SUPPORT:
+	
+		What about infinite support on the grid - so that the API expands the underlying array as needed (?)
+		
+		Example:  "More space needed for terrain because pathing doesn't work" -> Expand grid by 10 cells in X and Y!
+		
+		So, the API can support [-MAX, +MAX] coordinate space; and all content is based on the map API. 
+		
+	TODO: Use random smiley face image as the primary window icon (change at runtime)
+

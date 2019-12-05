@@ -1,6 +1,8 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Math.Algorithm;
 using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
@@ -11,6 +13,7 @@ using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
@@ -23,6 +26,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         readonly ICorridorCreator _corridorCreator;
         readonly IMazeRegionCreator _mazeRegionCreator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+
+        // Trying to keep numbers to be integer values (using double type)
+        public const double REPELLER_VARIANCE = 3.0;
+        public const double REPELLER_AMPLITUDE = 1.0;
 
         [ImportingConstructor]
         public ConnectionBuilder(ICorridorCreator corridorCreator, 
@@ -167,7 +174,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             }
 
             // Finally, connect the regions using MST -> Linear connectors
-            return BuildCorridors(grid);
+            return BuildCorridors(grid, "Maze Corridors");
         }
 
         public IEnumerable<Region> BuildConnectionPoints(GridCellInfo[,] grid)
@@ -220,31 +227,124 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             return regions;
         }
 
-        public IEnumerable<Region> BuildCorridors(GridCellInfo[,] grid)
+        //public IEnumerable<Region> BuildCorridors(GridCellInfo[,] grid)
+        //{
+        //    // Create base regions
+        //    var regions = grid.IdentifyRegions();
+
+        //    // Triangulate room positions
+        //    //
+        //    var graph = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Euclidean);
+
+        //    // For each edge in the triangulation - create a corridor
+        //    //
+        //    foreach (var edge in graph.Edges)
+        //    {
+        //        var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
+        //        var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
+
+        //        var cell1 = grid.Get(location1.Column, location1.Row);
+        //        var cell2 = grid.Get(location2.Column, location2.Row);
+
+        //        // Create the corridor cells
+        //        //
+        //        _corridorCreator.CreateCorridor(grid, cell1, cell2, false, false);
+        //    }
+
+        //    return regions;
+        //}
+
+        public IEnumerable<Region> BuildCorridors(GridCellInfo[,] grid, string layoutName)
         {
+            // Procedure
+            //
+            // 1) Identify Regions
+            // 2) Create cost map of terrain using edges of regions as gaussian repellers
+            //    (Also, mask off region cells)
+            // 3) Create region triangulation
+            // 4) Use Dijkstra's algorithm to connect the regions with the cost map
+            //
+
             // Create base regions
             var regions = grid.IdentifyRegions();
 
+            // Create cost map from the regions
+            var costMap = CreateRegionCostMap(grid, regions);
+
             // Triangulate room positions
-            //
             var graph = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Euclidean);
 
             // For each edge in the triangulation - create a corridor
-            //
             foreach (var edge in graph.Edges)
             {
                 var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
                 var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
 
-                var cell1 = grid.Get(location1.Column, location1.Row);
-                var cell2 = grid.Get(location2.Column, location2.Row);
+                var dijkstraMap = new DijkstraMap(costMap, location1, location2, true);
 
-                // Create the corridor cells
-                //
-                _corridorCreator.CreateCorridor(grid, cell1, cell2, false, false);
+                if (!dijkstraMap.Run())
+                {
+                    dijkstraMap.OutputCSV(ResourceConstants.DijkstraOutputDirectory,
+                                          layoutName +
+                                          " DijkstraMap_Edge_" +
+                                          edge.Point1.Vertex.Column + "_" +
+                                          edge.Point1.Vertex.Row + " to " +
+                                          edge.Point2.Vertex.Column + "_" +
+                                          edge.Point2.Vertex.Row);
+
+                    throw new Exception("Invalid Dijkstra Map (see output directory)");
+                }
+
+                foreach (var location in dijkstraMap.GeneratePath())
+                {
+                    if (location.Equals(location1) ||
+                        location.Equals(location2))
+                        continue;
+
+                    // Maze levels can have walls set up to punch through
+                    else if (grid[location.Column, location.Row] != null)
+                        grid[location.Column, location.Row].IsWall = false;
+
+                    // Empty cells need to be filled in
+                    else
+                        grid[location.Column, location.Row] = new GridCellInfo(location);
+                }
             }
 
             return regions;
+        }
+
+        /// <summary>
+        /// Creates cost map for the grid using pre-identified regions
+        /// </summary>
+        private double[,] CreateRegionCostMap(GridCellInfo[,] grid, IEnumerable<Region> regions)
+        {
+            var costMap = new double[grid.GetLength(0), grid.GetLength(1)];
+
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    // If grid cell is empty (null) then it does not belong to any region. Wall cells may
+                    // be left from generating maze regions or corridors
+                    if (grid[i, j] == null || grid[i, j].IsWall)
+                    {
+                        costMap[i, j] = 0;
+                    }
+                    else
+                        costMap[i, j] = DijkstraMap.RegionFeatureConstant;
+                }
+            }
+
+            return costMap;
+        }
+
+        private double CalculateRepellerInfluence(GridLocation repellerLocation, int fieldColumn, int fieldRow)
+        {
+            var argumentX = System.Math.Pow(fieldColumn - repellerLocation.Column, 2) / (2 * REPELLER_VARIANCE);
+            var argumentY = System.Math.Pow(fieldRow - repellerLocation.Row, 2) / (2 * REPELLER_VARIANCE);
+
+            return REPELLER_AMPLITUDE * System.Math.Exp(-1 * (argumentX + argumentY));
         }
     }
 }
