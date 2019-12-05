@@ -138,7 +138,6 @@ namespace Rogue.NET.Core.Math.Geometry
             // TODO:TERRAIN - USE GRID TO PREVENT ALLOCATING MORE GRID LOCATIONS
             // Track the frontier cells to check lowest cost next step
             var frontier = new SortedList<DijkstraMapNode, DijkstraMapNode>();
-            var frontierMap = new bool[_inputMap.GetLength(0), _inputMap.GetLength(1)];
 
             // Process the first element
             var column = _sourceLocation.Column;

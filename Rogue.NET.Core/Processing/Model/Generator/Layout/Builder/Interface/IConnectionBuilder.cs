@@ -7,11 +7,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
     public interface IConnectionBuilder
     {
         /// <summary>
-        /// Identifies regions and builds rectangular corridors between them. THIS SHOULD BE USED FOR RECTANGULAR ROOM REGIONS ONLY
-        /// </summary>
-        IEnumerable<Region> BuildRectilinearCorridors(GridCellInfo[,] grid);
-
-        /// <summary>
         /// Identifies regions and builds linear corridors between them
         /// </summary>
         IEnumerable<Region> BuildCorridors(GridCellInfo[,] grid, string layoutName);

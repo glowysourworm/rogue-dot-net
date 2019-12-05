@@ -1,21 +1,14 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Math.Algorithm;
-using Rogue.NET.Core.Math.Algorithm.Interface;
-using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
 using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
@@ -91,15 +84,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private IEnumerable<Region> CreateCorridors(GridCellInfo[,] grid, LayoutTemplate template)
         {
-            // Use rectilinear corridors for rectangular region layouts only
-            var rectilinearCorridors = template.Type == LayoutType.RandomRectangularRegion ||
-                                       template.Type == LayoutType.RectangularRegion;
-
             switch (template.ConnectionType)
             {
                 case LayoutConnectionType.Corridor:
-                    //return rectilinearCorridors ? _corridorBuilder.BuildRectilinearCorridors(grid) :
-                    //                              _corridorBuilder.BuildCorridors(grid);
                     return _corridorBuilder.BuildCorridors(grid, template.Name);
                 case LayoutConnectionType.Teleporter:
                     return _corridorBuilder.BuildConnectionPoints(grid);
@@ -119,7 +106,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                             case LayoutType.ElevationMazeMap:
                             default:
                                 throw new Exception("Unhandled or Unsupported Layout Type for maze connections");
-                        }                        
+                        }
                     }
                 default:
                     throw new Exception("Unhandled Connection Type");
