@@ -60,8 +60,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Check for invalid regions and expand them as needed
             ExpandInvalidRegions(grid, terrainMaskedGrid, terrainDict);
 
+            // Create final regions
+            var finalRegions = terrainMaskedGrid.IdentifyRegions();
+
+            // Calculate avoid regions for the connection builder
+            var avoidRegions = terrainDict.Where(element => !element.Key.IsPassable)
+                                          .SelectMany(element => element.Value.IdentifyRegions())
+                                          .Actualize();
+
             // Create corridors and new regions
-            var finalRegions = _connectionBuilder.BuildConnections(terrainMaskedGrid, template);
+            _connectionBuilder.BuildConnections(terrainMaskedGrid, finalRegions, template);
 
             // Transfer the corridor cells back to the primary and terrain grids
             TransferCorridors(terrainMaskedGrid, grid, terrainDict);

@@ -83,10 +83,25 @@ namespace Rogue.NET.Scenario.Processing.Service
                 var cellSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.CellSymbol), 1.0, cell.EffectiveLighting);
                 var doorSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, cell.EffectiveLighting);
                 var corridorSymbol = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(GameSymbol.SavePoint, GameSymbol.SavePoint), 1.0, cell.EffectiveLighting);
-                var wallLightSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, cell.EffectiveLighting);                
+                var wallLightSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, cell.EffectiveLighting);
+
+                // Terrain - Render using the terrain template
+                if (terrainNames.Any())
+                {
+                    // TODO:TERRAIN - HANDLE MULTIPLE LAYERS
+                    var layer = layoutTemplate.TerrainLayers.First(terrain => terrain.Name == terrainNames.First());
+
+                    var terrainSymbolVisible = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, cell.EffectiveLighting);
+                    var terrainSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, exploredLight);
+                    var terrainSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, revealedLight);
+
+                    visibleDrawing.Children.Add(new ImageDrawing(terrainSymbolVisible, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(terrainSymbolExplored, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(terrainSymbolRevealed, rect));
+                }
 
                 // Doors
-                if (cell.IsDoor)
+                else if (cell.IsDoor)
                 {
                     visibleDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
                     exploredDrawing.Children.Add(new ImageDrawing(doorSymbolExplored, rect));
@@ -116,20 +131,6 @@ namespace Rogue.NET.Scenario.Processing.Service
                 //    revealedDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
                 //}
 
-                // Terrain - Render using the terrain template
-                else if (terrainNames.Any())
-                {
-                    // TODO:TERRAIN - HANDLE MULTIPLE LAYERS
-                    var layer = layoutTemplate.TerrainLayers.First(terrain => terrain.Name == terrainNames.First());
-
-                    var terrainSymbolVisible = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, cell.EffectiveLighting);
-                    var terrainSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, exploredLight);
-                    var terrainSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, revealedLight);
-
-                    visibleDrawing.Children.Add(new ImageDrawing(terrainSymbolVisible, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(terrainSymbolExplored, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(terrainSymbolRevealed, rect));
-                }
 
                 // Room Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
                 else //if (isRoom || cell.IsCorridor)

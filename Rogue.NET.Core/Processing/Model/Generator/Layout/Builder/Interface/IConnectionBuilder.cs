@@ -8,8 +8,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
     public interface IConnectionBuilder
     {
         /// <summary>
-        /// Identifies regions and builds corridors between them
+        /// Builds corridors between specified regions
         /// </summary>
-        IEnumerable<Region> BuildConnections(GridCellInfo[,] grid, LayoutTemplate template);
+        void BuildConnections(GridCellInfo[,] grid, IEnumerable<Region> regions, LayoutTemplate template);
+
+        /// <summary>
+        /// Generates connections avoiding the provided regions. This is typically used for connecting regions separated
+        /// by terrain.
+        /// </summary>
+        void BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<Region> regions, IEnumerable<Region> avoidRegions, LayoutTemplate template);
     }
 }

@@ -37,19 +37,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             _regionValidator = regionValidator;
         }
 
-        public IEnumerable<Region> BuildConnections(GridCellInfo[,] grid, LayoutTemplate template)
+        public void BuildConnections(GridCellInfo[,] grid, IEnumerable<Region> regions, LayoutTemplate template)
         {
-            IEnumerable<Region> regions;
+            BuildConnectionsWithAvoidRegions(grid, regions, new Region[] { }, template);
+        }
 
-            if (!PreValidateRegions(grid, out regions))
-                throw new Exception("Invalid region layout in the grid - ConnectionBuilder.BuildCorridors");
+        public void BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<Region> regions, IEnumerable<Region> avoidRegions, LayoutTemplate template)
+        {
+            if (!PreValidateRegions(regions))
+                throw new Exception("Invalid region layout in the grid - ConnectionBuilder.BuildCorridorsWithAvoidRegions");
 
             switch (template.ConnectionType)
             {
                 case LayoutConnectionType.Corridor:
-                    return ConnectUsingShortestPath(grid, regions, template);
+                    ConnectUsingShortestPath(grid, regions, avoidRegions, template);
+                    break;
                 case LayoutConnectionType.Teleporter:
-                    return CreateConnectionPoints(grid, regions);
+                    CreateConnectionPoints(grid, regions);
+                    break;
                 case LayoutConnectionType.Maze:
                     {
                         // Use "Filled" rule for rectangular regions only. "Open" maze rule works better with non-rectangular regions.
@@ -60,7 +65,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                             case LayoutType.CellularAutomataMap:
                             case LayoutType.ElevationMap:
                             case LayoutType.RandomSmoothedRegion:
-                                return CreateMazeCorridors(grid, regions, MazeType.Filled, template);
+                                CreateMazeCorridors(grid, regions, avoidRegions, MazeType.Filled, template);
+                                break;
                             case LayoutType.MazeMap:
                             case LayoutType.CellularAutomataMazeMap:
                             case LayoutType.ElevationMazeMap:
@@ -68,6 +74,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                 throw new Exception("Unhandled or Unsupported Layout Type for maze connections");
                         }
                     }
+                    break;
                 default:
                     throw new Exception("Unhandled Connection Type");
             }
@@ -78,7 +85,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        private IEnumerable<Region> CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<Region> regions, MazeType mazeType, LayoutTemplate template)
+        private void CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<Region> regions, IEnumerable<Region> avoidRegions, MazeType mazeType, LayoutTemplate template)
         {
             // Procedure
             //
@@ -121,7 +128,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                     if (grid.GetAdjacentElements(i, j).All(cell => cell.IsWall))
                     {
                         // Create the maze!
-                        _mazeRegionCreator.CreateCellsStartingAt(grid, regions, grid[i, j].Location, mazeType, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
+                        _mazeRegionCreator.CreateCellsStartingAt(grid, regions.Union(avoidRegions), grid[i, j].Location, mazeType, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
                     }
                 }
             }
@@ -151,10 +158,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             //    throw new Exception("Maze Generation left no valid regions");
 
             // Finally, connect the regions using MST -> Linear connectors
-            return ConnectUsingShortestPath(grid, newRegions, template);
+            ConnectUsingShortestPath(grid, newRegions, avoidRegions, template);
         }
 
-        private IEnumerable<Region> CreateConnectionPoints(GridCellInfo[,] grid, IEnumerable<Region> regions)
+        private void CreateConnectionPoints(GridCellInfo[,] grid, IEnumerable<Region> regions)
         {
             // Check for no regions
             if (regions.Count() == 0)
@@ -162,7 +169,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
             // Check for a single region
             if (regions.Count() == 1)
-                return regions;
+                return;
 
             // Create mandatory connection points between rooms
             for (int i = 0; i < regions.Count() - 1; i++)
@@ -197,11 +204,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
             grid[lastLocation.Column, lastLocation.Row].IsMandatory = true;
             grid[lastLocation.Column, lastLocation.Row].MandatoryType = LayoutMandatoryLocationType.RoomConnector2;
-
-            return regions;
         }
 
-        private IEnumerable<Region> ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<Region> regions, LayoutTemplate template)
+        private void ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<Region> regions, IEnumerable<Region> avoidRegions, LayoutTemplate template)
         {
             // Procedure
             //
@@ -212,7 +217,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             //
 
             // Create cost map from the regions
-            var costMap = CreateRegionCostMap(grid, regions);
+            var costMap = CreateRegionCostMap(grid, regions.Union(avoidRegions));
 
             // Triangulate room positions
             var graph = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Euclidean);
@@ -255,15 +260,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                         };
                 }
             }
-
-            return regions;
         }
 
-        private bool PreValidateRegions(GridCellInfo[,] grid, out IEnumerable<Region> regions)
+        private bool PreValidateRegions(IEnumerable<Region> regions)
         {
-            // Generate the new room regions
-            regions = grid.IdentifyRegions();
-
             // Validate room regions
             var invalidRoomRegions = regions.Where(region => !_regionValidator.ValidateRoomRegion(region));
 
@@ -285,9 +285,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             {
                 for (int j = 0; j < grid.GetLength(1); j++)
                 {
-                    // If grid cell is empty (null) then it does not belong to any region. Wall cells may
-                    // be left from generating maze regions or corridors
-                    if (grid[i, j] == null || grid[i, j].IsWall)
+                    // Cell Costs:
+                    //
+                    // - If grid cell is empty (null) then it has zero cost as long as it doesn't belong to any region.
+                    // - A cell could be a wall left over from generating a maze - so allow walls to be zero cost.
+                    // - Impassible terrain or region features will have a high cost
+                    //
+                    if ((grid[i, j] == null || grid[i, j].IsWall) && 
+                        !regions.Any(region => region[i, j] != null))
                         costMap[i, j] = 0;
 
                     else

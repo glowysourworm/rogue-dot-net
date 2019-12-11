@@ -47,7 +47,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var grid = _regionBuilder.BuildRegions(template);
 
             // Identify Regions and create connectors
-            var regions = _connectionBuilder.BuildConnections(grid, template);
+            IEnumerable<Region> regions;
+
+            if (IdentifyValidRegions(grid, out regions))
+                _connectionBuilder.BuildConnections(grid, regions, template);
+
+            // No Valid Regions -> return default layout
+            else
+                return CreateDefaultLayout();
 
             // Make Symmetric!
             if (template.MakeSymmetric)
@@ -56,29 +63,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 MakeSymmetric(grid, template.SymmetryType);
 
                 // Second, re-create corridors
-                regions = _connectionBuilder.BuildConnections(grid, template);
+                if (IdentifyValidRegions(grid, out regions))
+                    _connectionBuilder.BuildConnections(grid, regions, template);
+
+                // No Valid Regions -> return default layout
+                else
+                    return CreateDefaultLayout();
             }
-
-            // Check for default room size constraints
-            var invalidRegions = regions.Where(region => !_regionValidator.ValidateRoomRegion(region));
-
-            // Must have at least one valid region
-            if (invalidRegions.Count() == regions.Count())
-                return CreateDefaultLayout();
-
-            // Remove invalid regions
-            else
-            {
-                foreach (var region in invalidRegions)
-                {
-                    // Remove region cells
-                    foreach (var cell in region.Cells)
-                        grid[cell.Column, cell.Row] = null;
-                }
-            }
-
-            // Remove invalid regions from the region collection
-            regions = regions.Except(invalidRegions);
 
             // Final room layer is calculated by the terrain builder
             LayerInfo roomLayer;
@@ -106,6 +97,37 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _lightingFinisher.CreateLighting(grid, roomLayer, template);
 
             return new LevelGrid(grid, roomLayer, terrainLayers);
+        }
+
+        /// <summary>
+        /// Identifies regions - removing invalid ones. Returns false if there are no valid regions.
+        /// </summary>
+        private bool IdentifyValidRegions(GridCellInfo[,] grid, out IEnumerable<Region> validRegions)
+        {
+            var regions = grid.IdentifyRegions();
+
+            // Check for default room size constraints
+            var invalidRegions = regions.Where(region => !_regionValidator.ValidateRoomRegion(region));
+
+            // Set valid regions
+            validRegions = regions.Except(invalidRegions);
+
+            // Must have at least one valid region
+            if (invalidRegions.Count() == regions.Count())
+                return false;
+
+            // Remove invalid regions
+            else
+            {
+                foreach (var region in invalidRegions)
+                {
+                    // Remove region cells
+                    foreach (var cell in region.Cells)
+                        grid[cell.Column, cell.Row] = null;
+                }
+            }
+
+            return true;
         }
 
         private LevelGrid CreateDefaultLayout()
