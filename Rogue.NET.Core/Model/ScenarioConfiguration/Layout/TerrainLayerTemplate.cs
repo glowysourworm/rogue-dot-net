@@ -10,7 +10,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         TerrainType _type;
         TerrainLayoutType _layoutType;
         bool _isPassable;
-        bool _isWalkable;
         bool _emitsLight;
         TerrainLayer _layer;
         SymbolDetailsTemplate _symbolDetails;
@@ -20,11 +19,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         {
             get { return _isPassable; }
             set { this.RaiseAndSetIfChanged(ref _isPassable, value); }
-        }
-        public bool IsWalkable
-        {
-            get { return _isWalkable; }
-            set { this.RaiseAndSetIfChanged(ref _isWalkable, value); }
         }
         public bool EmitsLight
         {

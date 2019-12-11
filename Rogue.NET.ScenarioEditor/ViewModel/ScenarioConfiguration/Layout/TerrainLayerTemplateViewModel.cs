@@ -8,7 +8,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         TerrainType _type;
         TerrainLayoutType _layoutType;
         bool _isPassable;
-        bool _isWalkable;
         bool _emitsLight;
         TerrainLayer _layer;
         SymbolDetailsTemplateViewModel _symbolDetails;
@@ -18,11 +17,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         {
             get { return _isPassable; }
             set { this.RaiseAndSetIfChanged(ref _isPassable, value); }
-        }
-        public bool IsWalkable
-        {
-            get { return _isWalkable; }
-            set { this.RaiseAndSetIfChanged(ref _isWalkable, value); }
         }
         public bool EmitsLight
         {
