@@ -52,7 +52,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 case LayoutConnectionType.Corridor:
                     ConnectUsingShortestPath(grid, regions, avoidRegions, template);
                     break;
-                case LayoutConnectionType.Teleporter:
+                case LayoutConnectionType.ConnectionPoints:
                     CreateConnectionPoints(grid, regions);
                     break;
                 case LayoutConnectionType.Maze:

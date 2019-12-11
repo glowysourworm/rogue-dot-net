@@ -57,9 +57,9 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Generates a corridor between rooms")]
         Corridor = 0,
 
-        [Display(Name = "Teleporter",
-                 Description = "Generates a teleporter pair between rooms")]
-        Teleporter = 1,
+        [Display(Name = "Scenario Object Pair",
+                 Description = "Generates a Scenario Object pair to transport character between rooms")]
+        ConnectionPoints = 1,
 
         [Display(Name = "Maze",
                  Description = "Generates a maze in the empty space between rooms")]

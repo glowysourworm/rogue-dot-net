@@ -98,7 +98,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // TODO:TERRAIN - Use pre-mapped mandatory cells
 
             // Add teleporter level content - (MAPPED)
-            if (level.Layout.Asset.ConnectionType == LayoutConnectionType.Teleporter)
+            if (level.Layout.Asset.ConnectionType == LayoutConnectionType.ConnectionPoints)
                 AddTeleporterLevelContent(level, freeCells, freeRoomCells);
 
             // Every level has a save point if not in survivor mode - (MAPPED)
