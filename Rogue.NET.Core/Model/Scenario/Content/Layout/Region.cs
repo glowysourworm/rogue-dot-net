@@ -122,6 +122,56 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 info.AddValue("EdgeCell" + counter++.ToString(), cell);
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is Region)
+            {
+                var region = obj as Region;
+
+                // Check that the number of cells matches
+                if (region.Cells.Length != this.Cells.Length)
+                    return false;
+
+                // Check that the boundary matches
+                if (!region.Bounds.Equals(this.Bounds))
+                    return false;
+
+                // Iterate until a mis-match is found
+                foreach (var otherCell in region.Cells)
+                {
+                    var match = false;
+
+                    foreach (var cell in this.Cells)
+                    {
+                        if (cell.Equals(otherCell))
+                        {
+                            match = true;
+                            break;
+                        }
+                    }
+
+                    if (!match)
+                        return false;
+                }
+
+                // Found match for each cell
+                return true;
+            }
+
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Cells[{0}], EdgeCells[{1}], Bounds=[{2}]", this.Cells.Length, this.EdgeCells.Length, this.Bounds.ToString());
+        }
+
         #region IRegionGraphWeightProvider
 
         public double CalculateWeight(Region adjacentNode, Metric.MetricType metricType)

@@ -107,6 +107,47 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
+        /// Returns adjacent elements that are reachable by a cardinal one. Example:  NW is connected if it is
+        /// non-null; and N is also non-null.
+        /// </summary>
+        public static T[] GetAdjacentElementsWithCardinalConnection<T>(this T[,] grid, int column, int row) where T : class
+        {
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+            var ne = grid.Get(column + 1, row - 1);
+            var nw = grid.Get(column - 1, row - 1);
+            var se = grid.Get(column + 1, row + 1);
+            var sw = grid.Get(column - 1, row + 1);
+
+            var count = 0;
+
+            if (n != null) count++;
+            if (s != null) count++;
+            if (e != null) count++;
+            if (w != null) count++;
+            if (ne != null && (n != null || e != null)) count++;
+            if (nw != null && (n != null || w != null)) count++;
+            if (se != null && (s != null || e != null)) count++;
+            if (sw != null && (s != null || w != null)) count++;
+
+            var result = new T[count];
+            var index = 0;
+
+            if (n != null) result[index++] = n;
+            if (s != null) result[index++] = s;
+            if (e != null) result[index++] = e;
+            if (w != null) result[index++] = w;
+            if (ne != null && (n != null || e != null)) result[index++] = ne;
+            if (nw != null && (n != null || w != null)) result[index++] = nw;
+            if (se != null && (s != null || e != null)) result[index++] = se;
+            if (sw != null && (s != null || w != null)) result[index++] = sw;
+
+            return result;
+        }
+
+        /// <summary>
         /// Returns all elements within the specified distance from the given location (using the Roguian metric). Method does
         /// not strip out null elements; but checks boundaries to prevent exceptions.
         /// </summary>
@@ -323,22 +364,37 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
-        /// Returns elements from the grid that match the given predicate. NOTE*** DOES NOT SCREEN FOR NULL VALUES
+        /// Returns adjacent element in the direction specified
         /// </summary>
-        public static IEnumerable<T> Where<T>(this T[,] grid, Func<T, bool> predicate)
+        /// <typeparam name="T">Type of grid element</typeparam>
+        /// <param name="grid">The input 2D array</param>
+        /// <param name="column">The column of the location</param>
+        /// <param name="row">The row of the location</param>
+        /// <param name="direction">The direction to look adjacent to specified location</param>
+        public static T GetElementInDirection<T>(this T[,] grid, int column, int row, Compass direction)
         {
-            var result = new List<T>();
-
-            for (int i=0;i<grid.GetLength(0);i++)
+            switch (direction)
             {
-                for (int j = 0; j < grid.GetLength(1); j++)
-                {
-                    if (predicate(grid[i, j]))
-                        result.Add(grid[i, j]);
-                }
+                case Compass.N:
+                    return grid.Get(column, row - 1);
+                case Compass.S:
+                    return grid.Get(column, row + 1);
+                case Compass.E:
+                    return grid.Get(column + 1, row);
+                case Compass.W:
+                    return grid.Get(column - 1, row);
+                case Compass.NW:
+                    return grid.Get(column - 1, row - 1);
+                case Compass.NE:
+                    return grid.Get(column + 1, row - 1);
+                case Compass.SE:
+                    return grid.Get(column + 1, row + 1);
+                case Compass.SW:
+                    return grid.Get(column - 1, row + 1);
+                case Compass.Null:
+                default:
+                    throw new Exception("Unhandled direction ArrayExtension.GetElementInDirection");
             }
-
-            return result;
         }
     }
 }

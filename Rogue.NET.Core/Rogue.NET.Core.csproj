@@ -43,6 +43,16 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Minimum Content|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug Minimum Content\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEBUG_MINIMUM_CONTENT</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AgileObjects.AgileMapper, Version=0.28.0.0, Culture=neutral, PublicKeyToken=40b730fcfbe52fee, processorArchitecture=MSIL">
       <HintPath>..\packages\AgileObjects.AgileMapper.0.28.0\lib\net40\AgileObjects.AgileMapper.dll</HintPath>
@@ -247,9 +257,11 @@
     <Compile Include="Processing\Model\Generator\Layout\Component\Interface\IMazeRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\Interface\IRectangularRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\Interface\IRegionGeometryCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Component\Interface\IRegionValidator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\MazeRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\RectangularRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\RegionGeometryCreator.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Component\RegionValidator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Finishing\Interface\ILightingFinisher.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Finishing\Interface\IWallFinisher.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Finishing\LightingFinisher.cs" />

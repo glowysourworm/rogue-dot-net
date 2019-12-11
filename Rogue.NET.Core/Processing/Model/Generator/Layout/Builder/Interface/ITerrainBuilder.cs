@@ -11,13 +11,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
     public interface ITerrainBuilder
     {
         /// <summary>
-        /// Builds set of terrain layers based on the layout template and the provided grid and feature map (input map of features for
-        /// Dijkstra's algorithm)
+        /// Builds set of terrain layers based on the layout template and the provided grid. Returns true if terrain layout was successful. Failure
+        /// happens typically when there's no unblocked regions of the grid left to create rooms from.
         /// </summary>
-        /// <param name="grid"></param>
-        /// <param name="template"></param>
-        /// <param name="roomLayer"></param>
-        /// <returns></returns>
-        IEnumerable<LayerInfo> BuildTerrain(GridCellInfo[,] grid, LayoutTemplate template, out LayerInfo roomLayer);
+        bool BuildTerrain(GridCellInfo[,] grid, IEnumerable<Region> regions, LayoutTemplate template, out LayerInfo roomLayer, out IEnumerable<LayerInfo> terrainLayers);
     }
 }

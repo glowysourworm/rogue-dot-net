@@ -1,8 +1,5 @@
 ﻿using AgileObjects.AgileMapper;
-using KellermanSoftware.CompareNetObjects;
 using NClone;
-using Rogue.NET.Common.Utility;
-using System;
 
 namespace Rogue.NET.Common.Extension
 {
@@ -30,17 +27,6 @@ namespace Rogue.NET.Common.Extension
         public static T DeepClone<T>(this T source)
         {
             return Clone.ObjectGraph<T>(source);
-        }
-
-        public static bool DeepEquals(this object source, object dest)
-        {
-            var logic = new CompareLogic(new ComparisonConfig()
-            {
-                MaxStructDepth = 5,
-                MaxDifferences = 5
-            });
-
-            return logic.Compare(source, dest).AreEqual;
         }
     }
 }

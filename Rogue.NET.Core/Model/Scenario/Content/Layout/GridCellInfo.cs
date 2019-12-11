@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout

@@ -358,11 +358,14 @@ namespace Rogue.NET.Core.Math.Geometry
 
                 currentLocation = lowestWeightLocation;
 
-                // Remove Wall from this cell (TODO:TERRAIN REMOVE THIS)
-                if (!result.Any(location => location.Equals(lowestWeightLocation)))
+                // Add this to the path (TODO:TERRAIN REMOVE THIS - USE THE GRID DIRECTLY TO PREVEN ALLOCATION)
+                if (!result.Any(location => location.Equals(lowestWeightLocation)) &&
+                    !lowestWeightLocation.Equals(_sourceLocation) &&
+                    !lowestWeightLocation.Equals(_targetLocation))
                     result.Add(lowestWeightLocation);
 
-                else
+                else if (!lowestWeightLocation.Equals(_sourceLocation) &&
+                         !lowestWeightLocation.Equals(_targetLocation))
                     throw new Exception("Loop in Dijkstra Map path finding");
             }
 

@@ -3,7 +3,9 @@ using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 using System;
@@ -19,6 +21,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
     public class LightingFinisher : ILightingFinisher
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IVisibilityCalculator _visibilityCalculator;
         readonly ILightGenerator _lightGenerator;
         readonly INoiseGenerator _noiseGenerator;
 
@@ -26,11 +29,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         const int WALL_LIGHT_SPACE_PARAMETER = 20;
         const int WALL_LIGHT_SPACE_MINIMUM = 5;
 
+        // Lighting constants
+        const double LIGHT_INTENSITY_THRESHOLD = 0.01;
+        const double LIGHT_POWER_LAW = 0.75;
+        const double LIGHT_FALLOFF_RADIUS = 2.0;
+
         [ImportingConstructor]
-        public LightingFinisher(ILightGenerator lightGenerator, INoiseGenerator noiseGenerator, IRandomSequenceGenerator randomSequenceGenerator)
+        public LightingFinisher(ILightGenerator lightGenerator, INoiseGenerator noiseGenerator, IVisibilityCalculator visibilityCalculator, IRandomSequenceGenerator randomSequenceGenerator)
         {
             _lightGenerator = lightGenerator;
             _noiseGenerator = noiseGenerator;
+            _visibilityCalculator = visibilityCalculator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
@@ -196,6 +205,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             // Create a minimum radius that is a function of the fill ratio
             var minimumRadius = ((1 - template.FillRatio) * WALL_LIGHT_SPACE_PARAMETER) + WALL_LIGHT_SPACE_MINIMUM;
 
+            // Collect the combined FOV for all wall lights
+            var wallLightFOV = new Dictionary<GridCellInfo, IEnumerable<DistanceLocation>>();
+
             // Combine color with existing lighting for the cell
             for (int i = 0; i < grid.GetLength(0); i++)
             {
@@ -218,17 +230,43 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         // Blend in the resulting light 
                         grid[i, j].WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
                         grid[i, j].IsWallLight = true;
+                        grid[i, j].BaseLight = ColorFilter.AddLight(grid[i, j].BaseLight,
+                                                                    new Light(light.Red, light.Green, light.Blue, wallLightIntensity));
+
+                        // Add to field of view
+                        wallLightFOV.Add(grid[i, j], _visibilityCalculator.CalculateVisibility(grid, grid[i, j].Location));
                     }
+                }
+            }
 
-                    //if (_randomSequenceGenerator.Get() < 0.5)
-                    //{
-                    //    // Go ahead and adjust light intensity here since the light instance is only local
-                    //    var wallLightIntensity = _randomSequenceGenerator.GetRandomValue(template.IntensityRange);
+            // Add base lighting contributions for the wall lights
+            foreach (var entry in wallLightFOV)
+            {
+                foreach (var cell in entry.Value)
+                {
+                    // Calculate 1 / r^a intensity (pseudo-power-law)
+                    var wallLight = entry.Key.WallLight;
+                    var intensity = cell.EuclideanDistance > LIGHT_FALLOFF_RADIUS ? (light.Intensity / System.Math.Pow(cell.EuclideanDistance - LIGHT_FALLOFF_RADIUS, LIGHT_POWER_LAW))
+                                                                                  : light.Intensity;
 
-                    //    // Blend in the resulting light 
-                    //    grid[i, j].WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
-                    //    grid[i, j].IsWallLight = true;
-                    //}
+                    // Add contribution to the effective lighting
+                    grid[cell.Location.Column, cell.Location.Row].BaseLight = ColorFilter.AddLight(grid[cell.Location.Column, cell.Location.Row].BaseLight, 
+                                                                                                   new Light(wallLight.Red, wallLight.Green, wallLight.Blue, intensity));
+                }
+            }
+        }
+
+        public void CreateDefaultLighting(GridCellInfo[,] grid)
+        {
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (grid[i, j] == null)
+                        continue;
+
+                    // Set a white light threshold (to simulate white light)
+                    grid[i, j].BaseLight = new Light(0xFF, 0xFF, 0xFF, 1);
                 }
             }
         }

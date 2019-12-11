@@ -3299,3 +3299,34 @@ IMMEDIATE TODO'S:
 		
 	TODO: Use random smiley face image as the primary window icon (change at runtime)
 
+	SIMULATION: 
+	
+		One thing to be able to handle would be grid traversal. I'm thinking a stochastic-ish simulation based on random 
+		region node selection could be managed.
+		
+		STOCHASTIC-ISH SIMULATION:
+		
+			1) Use region graph starting at stairs up
+			2) Simulate traversal through region based on bounding rectangle; and maybe a penalty for
+			   maze or difficult regions. Call this the "discovery" penalty.
+			3) Begin iterating through the graph using a breadth-first random search; but only to explore
+			   new nodes - which will be chosen randomly. 
+			   
+			   Back-tracking will cost just the non-penalized traversal cost; and be required to reach new nodes.
+			   
+			4) Continue breadth-first search until all nodes are discovered and traversed - using backtracking as
+			   specified. 
+
+		The result would be approximately the traversal cost. The point of this is mostly to be able to accurately place
+		food throughout the scenario.
+		
+		This food placement should be controlled (i'm thinking) by a simple "Easy / Moderate / Difficult" slider.. and
+		maybe taken away from the alterations (maybe) to prevent grinding or other ways around food consumption.
+		
+	DIJKSTRA MAP PERFORMANCE:
+	
+		Performance bottle neck is the sorted frontier list. An idea to optimize performance is to manually manage inserting
+		elements into the frontier - in order of cost.
+		
+		Also, prevent allocating memory - so try and use the GridCellInfo objects instead of special dijkstra map nodes.
+			

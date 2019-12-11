@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
@@ -177,6 +178,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         var column = yDirection ? location1Column : location1Column + (index - startIndex);
                         var row = yDirection ? location1Row + (index - startIndex) : location1Row;
 
+                        // CHECK MAX RADIUS FOR THIS OCTANT
+                        if (Metric.EuclideanDistance(column, row, center.Column, center.Row) > MAX_RADIUS)
+                            break;
+
                         // Current location
                         var location = getter(column, row);
 
@@ -248,7 +253,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     radius++;
 
                     // Re-evaluate loop condition
-                    iterate = !finalIteration && radius <= MAX_RADIUS;
+                    iterate = !finalIteration;
                 }
             }
 
@@ -350,6 +355,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             var centerPoint = CalculateCellCenter(center);
             var bounds = CalculateCellBoundary(location);
 
+            // Wall Lights - Use point to create minimum angle for the leading slope
+            //
             if (north && west)
             {
                 deltaY = bounds.BottomLeft.Y - centerPoint.Y;
@@ -405,8 +412,11 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             var west = location.Column < center.Column;
 
             var centerPoint = CalculateCellCenter(center);
+            var centerBoundary = CalculateCellBoundary(center);
             var bounds = CalculateCellBoundary(location);
 
+            // Wall Lights - Use point to create maximum angle for the trailing slope
+            //
             if (north && west)
             {
                 deltaY = bounds.TopRight.Y - centerPoint.Y;
@@ -471,7 +481,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             if (lightBlockingFeatures.None())
                 return false;
 
-            // Visibility Blocking Rules: Location must have blocked center point AND (one of) { Leading Point, Trailing Point }
+            // Visibility Blocking Rules: Location must have blocked leading and trailing points. Center point is used to determine 
+            //                            axis crossing features.
             //
             var slopeCenter = OctantSlope.CreateCenterSlope(location, center);
             var slopeLeading = OctantSlope.CreateLeadingSlope(location, center);

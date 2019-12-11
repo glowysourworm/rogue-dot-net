@@ -127,7 +127,8 @@ namespace Rogue.NET.Common.View
         {
             var instance = d as EnumComboBox;
 
-            if (instance != null)
+            if (instance != null &&
+                e.NewValue != null)
             {
                 var itemSource = instance.TheComboBox.ItemsSource as IEnumerable<EnumItem>;
 

@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -41,6 +42,23 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var intercept = inclusiveLowerBound;
 
             return (slope * _random.NextDouble()) + intercept;
+        }
+
+        public Compass GetRandomCardinalDirection()
+        {
+            var random = _random.NextDouble();
+
+            if (random < 0.25)
+                return Compass.N;
+
+            else if (random < 0.5)
+                return Compass.E;
+
+            else if (random < 0.75)
+                return Compass.S;
+
+            else
+                return Compass.W;
         }
 
         public double GetGaussian(double mean, double standardDeviation)

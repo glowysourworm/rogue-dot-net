@@ -25,6 +25,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         readonly IMazeRegionCreator _mazeRegionCreator;
         readonly INoiseGenerator _noiseGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IRegionValidator _regionValidator;
 
         [ImportingConstructor]
         public RegionBuilder(IRegionGeometryCreator regionGeometryCreator,
@@ -32,7 +33,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                              ICellularAutomataRegionCreator cellularAutomataRegionCreator,
                              IMazeRegionCreator mazeRegionCreator,
                              INoiseGenerator noiseGenerator,
-                             IRandomSequenceGenerator randomSequenceGenerator)
+                             IRandomSequenceGenerator randomSequenceGenerator,
+                             IRegionValidator regionValidator)
         {
             _regionGeometryCreator = regionGeometryCreator;
             _rectangularRegionCreator = rectangularRegionCreator;
@@ -40,6 +42,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             _mazeRegionCreator = mazeRegionCreator;
             _noiseGenerator = noiseGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _regionValidator = regionValidator;
         }
 
         public GridCellInfo[,] BuildRegions(LayoutTemplate template)
@@ -71,8 +74,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         {
             var grid = new GridCellInfo[20, 15];
 
-            for (int i = 0; i < grid.GetLength(0); i++)
-                for (int j = 0; j < grid.GetLength(1); j++)
+            for (int i = 1; i < grid.GetLength(0) - 1; i++)
+                for (int j = 1; j < grid.GetLength(1) - 1; j++)
                     grid[i, j] = new GridCellInfo(i, j);
 
             return grid;
@@ -90,6 +93,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Create cells in the regions
             foreach (var boundary in roomBoundaries)
                 _rectangularRegionCreator.CreateCells(grid, boundary, false);
+
+            // Finalize region creation
+            RemoveInvalidRegions(grid);
 
             return grid;
         }
@@ -120,6 +126,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0,0), template.Width, template.Height), template.CellularAutomataType);
             }
 
+            // Finalize region creation
+            RemoveInvalidRegions(grid);
+
             return grid;
         }
 
@@ -133,6 +142,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
             // Create cellular automata in the
             _cellularAutomataRegionCreator.GenerateCells(grid, boundary, template.CellularAutomataType, template.CellularAutomataFillRatio, false);
+
+            // Finalize region creation
+            RemoveInvalidRegions(grid);
 
             return grid;
         }
@@ -151,6 +163,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Fills cell regions with mazes
             FillRegionsWithMazes(grid, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
 
+            // Finalize region creation
+            RemoveInvalidRegions(grid);
+
             return grid;
         }
 
@@ -164,6 +179,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
             // Create cellular automata in each region
             _mazeRegionCreator.CreateCells(grid, boundary, MazeType.Filled, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias, false);
+
+            // Finalize region creation
+            RemoveInvalidRegions(grid);
 
             return grid;
         }
@@ -191,6 +209,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
             // Run smoothing iteration
             _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height), template.CellularAutomataType);
+
+            // Finalize region creation
+            RemoveInvalidRegions(grid);
 
             return grid;
         }
@@ -222,6 +243,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Fills cell regions with mazes
             FillRegionsWithMazes(grid, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
 
+            // Finalize region creation
+            RemoveInvalidRegions(grid);
+
             return grid;
         }
 
@@ -246,6 +270,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                             .All(cell => cell.IsWall))
                         _mazeRegionCreator.CreateCellsStartingAt(grid, new Region[] { }, _randomSequenceGenerator.GetRandomElement(region.Cells), MazeType.Open, wallRemovalRatio, horizontalVerticalBias);
                 }
+            }
+        }
+
+        private void RemoveInvalidRegions(GridCellInfo[,] grid)
+        {
+            var regions = grid.IdentifyRegions();
+
+            foreach (var invalidRegion in regions.Where(region => !_regionValidator.ValidateRoomRegion(region)))
+            {
+                // Remove grid cells where regions weren't large enough
+                foreach (var cell in invalidRegion.Cells)
+                    grid[cell.Column, cell.Row] = null;
             }
         }
     }

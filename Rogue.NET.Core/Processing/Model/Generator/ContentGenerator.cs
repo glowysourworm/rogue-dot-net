@@ -82,7 +82,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // NOTE*** ADD MAPPED CONTENT FIRST - BUT MUST IGNORE DURING THE MAPPING PHASE. THIS INCLUDES
             //         ANY NORMAL DOODADS
 
-            //must have for each level (Except the last one) (MAPPED)
+            // Must have for each level (Except the last one) (MAPPED)
             if (!lastLevel)
             {
                 var stairsDown = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsDownRogueName, DoodadNormalType.StairsDown);
@@ -90,23 +90,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 level.AddStairsDown(stairsDown);
             }
 
-            //Stairs up - every level has one - (MAPPED)
+            // Stairs up - every level has one - (MAPPED)
             var stairsUp = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsUpRogueName, DoodadNormalType.StairsUp);
             stairsUp.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
             level.AddStairsUp(stairsUp);
 
-            // TODO:TERRAIN
+            // TODO:TERRAIN - Use pre-mapped mandatory cells
 
-            //// Add teleporter level content - (MAPPED)
-            //if ((level.Layout.Asset.Type == LayoutType.ConnectedRectangularRooms ||
-            //     level.Layout.Asset.Type == LayoutType.ConnectedCellularAutomata) &&
-            //    level.Layout.Asset.ConnectionType == LayoutConnectionType.Teleporter)
-            //    AddTeleporterLevelContent(level, freeCells, freeRoomCells);
-
-            //if ((level.Layout.Asset.Type == LayoutType.ConnectedRectangularRooms ||
-            //     level.Layout.Asset.Type == LayoutType.ConnectedCellularAutomata) &&
-            //    level.Layout.Asset.ConnectionType == LayoutConnectionType.TeleporterRandom)
-            //    AddTeleportRandomLevelContent(level, freeCells, freeRoomCells);
+            // Add teleporter level content - (MAPPED)
+            if (level.Layout.Asset.ConnectionType == LayoutConnectionType.Teleporter)
+                AddTeleporterLevelContent(level, freeCells, freeRoomCells);
 
             // Every level has a save point if not in survivor mode - (MAPPED)
             if (!survivorMode)
@@ -116,16 +109,27 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 level.AddSavePoint(savePoint);
             }
 
+#if DEBUG_MINIMUM_CONTENT
+
+            // Don't generate contents
+
+#else
             // Applies to all levels - (UNMAPPED)
             GenerateEnemies(level, branchTemplate, encyclopedia);
             GenerateItems(level, branchTemplate);
             GenerateDoodads(level, branchTemplate);
-
+#endif
             MapLevel(level, freeCells, freeRoomCells);
 
+#if DEBUG_MINIMUM_CONTENT 
+
+            // Don't generate party room contents
+
+#else
             // Create party room if there's a room to use and the rate is greater than U[0,1] - (MAPPED)
             if ((layoutTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()) && freeRoomCells.Any())
                 AddPartyRoomContent(level, branchTemplate, encyclopedia, freeCells, freeRoomCells);
+#endif
         }
         private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
         {

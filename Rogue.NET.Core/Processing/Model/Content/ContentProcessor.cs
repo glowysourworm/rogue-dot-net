@@ -327,7 +327,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         public override void ApplyEndOfTurn(bool regenerate)
         {
+#if DEBUG_MINIMUM_CONTENT
+
+            // Don't process monster generation
+
+#else
             ProcessMonsterGeneration();
+#endif
         }
         #endregion
 
@@ -584,9 +590,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Add to level
             _modelService.Level.AddContent(item);
         }
-        #endregion
+#endregion
 
-        #region (private) Non-Player Character Reactions
+#region (private) Non-Player Character Reactions
         private void OnNonPlayerCharacterReaction(NonPlayerCharacter character)
         {
             // Sets turn counter 
@@ -970,9 +976,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 _alterationProcessor.Queue(character, alteration);
             }
         }
-        #endregion
+#endregion
 
-        #region (private) End-Of-Turn Methods
+#region (private) End-Of-Turn Methods
         private void ProcessMonsterGeneration()
         {
             // Create monster on generation rate roll
@@ -1019,6 +1025,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Queue level update for added content
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, enemy.Id));
         }
-        #endregion
+#endregion
     }
 }

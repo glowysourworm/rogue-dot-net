@@ -60,8 +60,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // Create Line-of-Sight to draw other data from
             foreach (var character in characters)
             {
-                IEnumerable<DistanceLocation> lineOfSightLocations = null;
-
                 var visibleLocations = _visibilityCalculator.CalculateVisibility(_grid, character.Location);
 
                 // TODO:TERRAIN - RE-CALCULATE VISIBLE / LINE-OF-SIGHT WITH NEW VISION PARAMETER

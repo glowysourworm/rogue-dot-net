@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 using System;
 using System.Collections.Generic;
@@ -18,29 +19,26 @@ namespace Rogue.NET.Core.Processing.Model.Generator
     public class LayoutGenerator : ILayoutGenerator
     {
         readonly IRegionBuilder _regionBuilder;
-        readonly IConnectionBuilder _corridorBuilder;
+        readonly IConnectionBuilder _connectionBuilder;
         readonly ITerrainBuilder _terrainBuilder;
         readonly IWallFinisher _wallFinisher;
         readonly ILightingFinisher _lightingFinisher;
-
-        // Size is great enough for an upstairs, downstairs, and 2 teleport pods (in and out of the room)
-        private const int ROOM_SIZE_MIN = 4;
-
-        // Default name used to initialize empty layer
-        private const string DEFAULT_LAYER_NAME = "Default Layer";
+        readonly IRegionValidator _regionValidator;
 
         [ImportingConstructor]
         public LayoutGenerator(IRegionBuilder regionBuilder,
-                               IConnectionBuilder corridorBuilder,
+                               IConnectionBuilder connectionBuilder,
                                ITerrainBuilder terrainBuilder,
                                IWallFinisher wallFinisher,
-                               ILightingFinisher lightingFinisher)
+                               ILightingFinisher lightingFinisher,
+                               IRegionValidator regionValidator)
         {
             _regionBuilder = regionBuilder;
-            _corridorBuilder = corridorBuilder;
+            _connectionBuilder = connectionBuilder;
             _terrainBuilder = terrainBuilder;
             _wallFinisher = wallFinisher;
             _lightingFinisher = lightingFinisher;
+            _regionValidator = regionValidator;
         }
 
         public LevelGrid CreateLayout(LayoutTemplate template)
@@ -49,10 +47,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var grid = _regionBuilder.BuildRegions(template);
 
             // Identify Regions and create connectors
-            var regions = CreateCorridors(grid, template);
-
-            if (regions.Count() <= 0)
-                return CreateDefaultLayout();
+            var regions = _connectionBuilder.BuildConnections(grid, template);
 
             // Make Symmetric!
             if (template.MakeSymmetric)
@@ -61,16 +56,48 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 MakeSymmetric(grid, template.SymmetryType);
 
                 // Second, re-create corridors
-                regions = CreateCorridors(grid, template);
+                regions = _connectionBuilder.BuildConnections(grid, template);
             }
 
-            var roomLayer = new LayerInfo("Room Layer", regions);
+            // Check for default room size constraints
+            var invalidRegions = regions.Where(region => !_regionValidator.ValidateRoomRegion(region));
+
+            // Must have at least one valid region
+            if (invalidRegions.Count() == regions.Count())
+                return CreateDefaultLayout();
+
+            // Remove invalid regions
+            else
+            {
+                foreach (var region in invalidRegions)
+                {
+                    // Remove region cells
+                    foreach (var cell in region.Cells)
+                        grid[cell.Column, cell.Row] = null;
+                }
+            }
+
+            // Remove invalid regions from the region collection
+            regions = regions.Except(invalidRegions);
 
             // Final room layer is calculated by the terrain builder
-            // LayerInfo roomLayer;
+            LayerInfo roomLayer;
+            IEnumerable<LayerInfo> terrainLayers;
 
-            // Build Terrain -> Identify new regions -> Re-connect regions
-            // var terrainLayers = _terrainBuilder.BuildTerrain(grid, template, out roomLayer);
+            // If there are any terrain layers - proceed building them and re-creating any blocked corridors
+            if (template.TerrainLayers.Any())
+            {
+                // Build Terrain -> Identify new regions -> Re-connect regions
+                if (!_terrainBuilder.BuildTerrain(grid, regions, template, out roomLayer, out terrainLayers))
+                    return CreateDefaultLayout();
+            }
+
+            // Create room layer with regions as-is
+            else
+            {
+                roomLayer = new LayerInfo("Room Layer", regions);
+                terrainLayers = new LayerInfo[] { };
+            }
 
             // Build Walls around cells
             _wallFinisher.CreateWalls(grid, false);
@@ -78,39 +105,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create Lighting
             _lightingFinisher.CreateLighting(grid, roomLayer, template);
 
-            // return new LevelGrid(grid, roomLayer, terrainLayers);
-            return new LevelGrid(grid, roomLayer, new LayerInfo[] { });
-        }
-
-        private IEnumerable<Region> CreateCorridors(GridCellInfo[,] grid, LayoutTemplate template)
-        {
-            switch (template.ConnectionType)
-            {
-                case LayoutConnectionType.Corridor:
-                    return _corridorBuilder.BuildCorridors(grid, template.Name);
-                case LayoutConnectionType.Teleporter:
-                    return _corridorBuilder.BuildConnectionPoints(grid);
-                case LayoutConnectionType.Maze:
-                    {
-                        // Use "Filled" rule for rectangular regions only. "Open" maze rule works better with non-rectangular regions.
-                        switch (template.Type)
-                        {
-                            case LayoutType.RectangularRegion:
-                            case LayoutType.RandomRectangularRegion:
-                            case LayoutType.CellularAutomataMap:
-                            case LayoutType.ElevationMap:
-                            case LayoutType.RandomSmoothedRegion:
-                                return _corridorBuilder.BuildMazeCorridors(grid, MazeType.Filled, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
-                            case LayoutType.MazeMap:
-                            case LayoutType.CellularAutomataMazeMap:
-                            case LayoutType.ElevationMazeMap:
-                            default:
-                                throw new Exception("Unhandled or Unsupported Layout Type for maze connections");
-                        }
-                    }
-                default:
-                    throw new Exception("Unhandled Connection Type");
-            }
+            return new LevelGrid(grid, roomLayer, terrainLayers);
         }
 
         private LevelGrid CreateDefaultLayout()
@@ -119,7 +114,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             var regions = grid.IdentifyRegions();
 
-            return new LevelGrid(grid, new LayerInfo("Room Layer", regions), new LayerInfo[] { });
+            var roomLayer = new LayerInfo("Room Layer", regions);
+
+            // Build Walls around cells
+            _wallFinisher.CreateWalls(grid, false);
+
+            // Create Lighting
+            _lightingFinisher.CreateDefaultLighting(grid);
+
+            return new LevelGrid(grid, roomLayer, new LayerInfo[] { });
         }
 
         private void MakeSymmetric(GridCellInfo[,] grid, LayoutSymmetryType symmetryType)
@@ -257,8 +260,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }
 
 #if DEBUG
-                if (region.Cells.Length < ROOM_SIZE_MIN)
-                    throw new Exception("Room Regions must have a minimum size of " + ROOM_SIZE_MIN.ToString());
+                if (!_regionValidator.ValidateRoomRegion(region))
+                    throw new Exception("Room Region invalid");
 
                 if (!roomConnector1)
                     throw new Exception("Room doesn't have a mandatory cell for connector 1");
@@ -266,7 +269,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 if (!roomConnector2)
                     throw new Exception("Room doesn't have a mandatory cell for connector 2");
 #else
-                if (region.Cells.Length < ROOM_SIZE_MIN)
+                if (!_regionValidator.ValidateRoomRegion(region))
                     return false;
 
                 if (!roomConnector1)

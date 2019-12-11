@@ -82,7 +82,8 @@ namespace Rogue.NET.Scenario.Processing.Service
                 var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.WallSymbol), 1.0, cell.EffectiveLighting);
                 var cellSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.CellSymbol), 1.0, cell.EffectiveLighting);
                 var doorSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, cell.EffectiveLighting);
-                var wallLightSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, cell.EffectiveLighting);
+                var corridorSymbol = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(GameSymbol.SavePoint, GameSymbol.SavePoint), 1.0, cell.EffectiveLighting);
+                var wallLightSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, cell.EffectiveLighting);                
 
                 // Doors
                 if (cell.IsDoor)
@@ -106,6 +107,14 @@ namespace Rogue.NET.Scenario.Processing.Service
                     exploredDrawing.Children.Add(new ImageDrawing(wallSymbolExplored, rect));
                     revealedDrawing.Children.Add(new ImageDrawing(wallSymbolRevealed, rect));
                 }
+
+                //// Corridors - Use for helping to debug dijkstra map connections
+                //else if (cell.IsCorridor)
+                //{
+                //    visibleDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                //    exploredDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                //    revealedDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                //}
 
                 // Terrain - Render using the terrain template
                 else if (terrainNames.Any())

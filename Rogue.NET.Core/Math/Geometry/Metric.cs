@@ -45,6 +45,11 @@ namespace Rogue.NET.Core.Math.Geometry
             return System.Math.Sqrt(System.Math.Pow((location2.Column - location1.Column), 2) + System.Math.Pow((location2.Row - location1.Row), 2));
         }
 
+        public static double EuclideanDistance(int column1, int row1, int column2, int row2)
+        {
+            return System.Math.Sqrt(System.Math.Pow((column2 - column1), 2) + System.Math.Pow((row2 - row1), 2));
+        }
+
         public static double EuclideanSquareDistance(GridLocation location1, GridLocation location2)
         {
             return System.Math.Pow((location2.Column - location1.Column), 2) + System.Math.Pow((location2.Row - location1.Row), 2);

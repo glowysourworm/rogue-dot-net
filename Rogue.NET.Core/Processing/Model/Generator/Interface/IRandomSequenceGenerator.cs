@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -67,5 +68,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
         /// Gets a random element from the collection with the supplied weight selector
         /// </summary>
         T GetWeightedRandom<T>(IEnumerable<T> collection, Func<T, double> weightSelector);
+
+        /// <summary>
+        /// Gets random N, S, E, or W direction
+        /// </summary>
+        Compass GetRandomCardinalDirection();
     }
 }

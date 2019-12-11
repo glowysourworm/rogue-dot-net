@@ -5,8 +5,6 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
@@ -17,23 +15,17 @@ namespace Rogue.NET.Core.Processing.Service
 {
     public class ModelLayoutService : IModelLayoutService
     {
-        private const double LIGHT_INTENSITY_THRESHOLD = 0.01;
-        private const double LIGHT_POWER_LAW = 0.75;
-        private const double LIGHT_FALLOFF_RADIUS = 2.0;
-
         readonly Level _level;
         readonly Player _player;
-        readonly IVisibilityCalculator _visibilityCalculator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         /// <summary>
         /// Non-importing constructor - should be loaded once per level
         /// </summary>
-        public ModelLayoutService(Level level, Player player, IVisibilityCalculator visibilityCalculator, IRandomSequenceGenerator randomSequenceGenerator)
+        public ModelLayoutService(Level level, Player player, IRandomSequenceGenerator randomSequenceGenerator)
         {
             _level = level;
             _player = player;
-            _visibilityCalculator = visibilityCalculator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
@@ -44,28 +36,6 @@ namespace Rogue.NET.Core.Processing.Service
             //
             foreach (var cell in _level.Grid.GetCells())
                 cell.EffectiveLighting = ColorFilter.Discretize(cell.BaseLight, ModelConstants.ColorChannelDiscretization);
-
-            // Calculate field of view from the perspective of each of the wall lights
-            var wallLightFOV = new Dictionary<GridCell, IEnumerable<DistanceLocation>>();
-
-            foreach (var cell in _level.Grid.GetWallLightCells())
-                wallLightFOV.Add(cell, _visibilityCalculator.CalculateVisibility(_level.Grid, cell.Location));
-
-            // Have to add up contributions from the wall lights
-            foreach (var entry in wallLightFOV)
-            {
-                foreach (var cell in entry.Value)
-                {
-                    // Calculate 1 / r^2 intensity
-                    var light = entry.Key.WallLight;
-                    var intensity = cell.EuclideanDistance > LIGHT_FALLOFF_RADIUS ? (light.Intensity / System.Math.Pow(cell.EuclideanDistance - LIGHT_FALLOFF_RADIUS, LIGHT_POWER_LAW))
-                                                                                  : light.Intensity;
-
-                    // Add contribution to the effective lighting
-                    _level.Grid[cell.Location.Column, cell.Location.Row].EffectiveLighting = ColorFilter.AddLight(_level.Grid[cell.Location.Column, cell.Location.Row].EffectiveLighting,
-                                                                                                                  new Light(light.Red, light.Green, light.Blue, intensity));
-                }
-            }
         }
 
         public bool IsPathToAdjacentCellBlocked(GridLocation location1,

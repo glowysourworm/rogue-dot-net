@@ -50,6 +50,17 @@
     <Prefer32Bit>true</Prefer32Bit>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Minimum Content|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug Minimum Content\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AgileObjects.AgileMapper, Version=0.28.0.0, Culture=neutral, PublicKeyToken=40b730fcfbe52fee, processorArchitecture=MSIL">
       <HintPath>..\packages\AgileObjects.AgileMapper.0.28.0\lib\net40\AgileObjects.AgileMapper.dll</HintPath>

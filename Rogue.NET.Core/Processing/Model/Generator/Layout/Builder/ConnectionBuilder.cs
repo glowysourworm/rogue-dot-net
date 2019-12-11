@@ -1,8 +1,6 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Utility;
+﻿using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Math.Algorithm;
 using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
@@ -13,7 +11,6 @@ using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Linq;
 using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
@@ -26,15 +23,54 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         readonly ICorridorCreator _corridorCreator;
         readonly IMazeRegionCreator _mazeRegionCreator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IRegionValidator _regionValidator;
 
         [ImportingConstructor]
-        public ConnectionBuilder(ICorridorCreator corridorCreator, 
-                               IMazeRegionCreator mazeRegionCreator, 
-                               IRandomSequenceGenerator randomSequenceGenerator)
+        public ConnectionBuilder(ICorridorCreator corridorCreator,
+                               IMazeRegionCreator mazeRegionCreator,
+                               IRandomSequenceGenerator randomSequenceGenerator,
+                               IRegionValidator regionValidator)
         {
             _corridorCreator = corridorCreator;
             _mazeRegionCreator = mazeRegionCreator;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _regionValidator = regionValidator;
+        }
+
+        public IEnumerable<Region> BuildConnections(GridCellInfo[,] grid, LayoutTemplate template)
+        {
+            IEnumerable<Region> regions;
+
+            if (!PreValidateRegions(grid, out regions))
+                throw new Exception("Invalid region layout in the grid - ConnectionBuilder.BuildCorridors");
+
+            switch (template.ConnectionType)
+            {
+                case LayoutConnectionType.Corridor:
+                    return ConnectUsingShortestPath(grid, regions, template);
+                case LayoutConnectionType.Teleporter:
+                    return CreateConnectionPoints(grid, regions);
+                case LayoutConnectionType.Maze:
+                    {
+                        // Use "Filled" rule for rectangular regions only. "Open" maze rule works better with non-rectangular regions.
+                        switch (template.Type)
+                        {
+                            case LayoutType.RectangularRegion:
+                            case LayoutType.RandomRectangularRegion:
+                            case LayoutType.CellularAutomataMap:
+                            case LayoutType.ElevationMap:
+                            case LayoutType.RandomSmoothedRegion:
+                                return CreateMazeCorridors(grid, regions, MazeType.Filled, template);
+                            case LayoutType.MazeMap:
+                            case LayoutType.CellularAutomataMazeMap:
+                            case LayoutType.ElevationMazeMap:
+                            default:
+                                throw new Exception("Unhandled or Unsupported Layout Type for maze connections");
+                        }
+                    }
+                default:
+                    throw new Exception("Unhandled Connection Type");
+            }
         }
 
         // Credit to this fellow for the idea for maze corridors!
@@ -42,11 +78,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        public IEnumerable<Region> BuildMazeCorridors(GridCellInfo[,] grid, MazeType mazeType, double wallRemovalRatio, double horizontalVerticalBias)
+        private IEnumerable<Region> CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<Region> regions, MazeType mazeType, LayoutTemplate template)
         {
             // Procedure
             //
-            // - Identify regions to pass to the maze generator (avoids these when removing walls)
+            // - (Pre-Validated) Identify regions to pass to the maze generator (avoids these when removing walls)
             // - Fill in empty cells with walls
             // - Create mazes where there are 8-way walls surrounding a cell
             // - Since maze generator removes walls (up to the edge of the avoid regions)
@@ -55,8 +91,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // - Then, BuildCorridors(...) will connect any mazes together that were interrupted
             //   (Also, by the adding back of walls)
             //
-
-            var regions = grid.IdentifyRegions();
 
             // Leave room for a wall border around the outside
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -87,7 +121,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                     if (grid.GetAdjacentElements(i, j).All(cell => cell.IsWall))
                     {
                         // Create the maze!
-                        _mazeRegionCreator.CreateCellsStartingAt(grid, regions, grid[i, j].Location, mazeType, wallRemovalRatio, horizontalVerticalBias);
+                        _mazeRegionCreator.CreateCellsStartingAt(grid, regions, grid[i, j].Location, mazeType, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
                     }
                 }
             }
@@ -109,33 +143,37 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 }
             }
 
+            // Re-identify regions to connect
+            var newRegions = grid.IdentifyRegions();
+
+            // TODO:TERRAIN - Validate resulting regions
+            //if (!PreValidateRegions(grid, out newRegions))
+            //    throw new Exception("Maze Generation left no valid regions");
+
             // Finally, connect the regions using MST -> Linear connectors
-            return BuildCorridors(grid, "Maze Corridors");
+            return ConnectUsingShortestPath(grid, newRegions, template);
         }
 
-        public IEnumerable<Region> BuildConnectionPoints(GridCellInfo[,] grid)
+        private IEnumerable<Region> CreateConnectionPoints(GridCellInfo[,] grid, IEnumerable<Region> regions)
         {
-            // Create base regions
-            var regions = grid.IdentifyRegions().ToList();
-
             // Check for no regions
-            if (regions.Count == 0)
+            if (regions.Count() == 0)
                 throw new Exception("No regions found ConnectionBuilder.BuildConnectionPoints");
 
             // Check for a single region
-            if (regions.Count == 1)
+            if (regions.Count() == 1)
                 return regions;
 
             // Create mandatory connection points between rooms
-            for (int i = 0; i < regions.Count - 1; i++)
+            for (int i = 0; i < regions.Count() - 1; i++)
             {
                 // Get random cells from the two regions
-                var region1Index = _randomSequenceGenerator.Get(0, regions[i].Cells.Length);
-                var region2Index = _randomSequenceGenerator.Get(0, regions[i + 1].Cells.Length);
+                var region1Index = _randomSequenceGenerator.Get(0, regions.ElementAt(i).Cells.Length);
+                var region2Index = _randomSequenceGenerator.Get(0, regions.ElementAt(i + 1).Cells.Length);
 
                 // Get cells from the array ~ O(1)
-                var location1 = regions[i].Cells[region1Index];
-                var location2 = regions[i + 1].Cells[region2Index];
+                var location1 = regions.ElementAt(i).Cells[region1Index];
+                var location2 = regions.ElementAt(i + 1).Cells[region2Index];
 
                 // Set cells to mandatory
                 grid[location1.Column, location1.Row].IsMandatory = true;
@@ -163,19 +201,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             return regions;
         }
 
-        public IEnumerable<Region> BuildCorridors(GridCellInfo[,] grid, string layoutName)
+        private IEnumerable<Region> ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<Region> regions, LayoutTemplate template)
         {
             // Procedure
             //
             // 1) Identify Regions
-            // 2) Create cost map of terrain using edges of regions as gaussian repellers
-            //    (Also, mask off region cells)
+            // 2) Create cost map of terrain 
             // 3) Create region triangulation
             // 4) Use Dijkstra's algorithm to connect the regions with the cost map
             //
-
-            // Create base regions
-            var regions = grid.IdentifyRegions();
 
             // Create cost map from the regions
             var costMap = CreateRegionCostMap(grid, regions);
@@ -194,7 +228,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 if (!dijkstraMap.Run())
                 {
                     dijkstraMap.OutputCSV(ResourceConstants.DijkstraOutputDirectory,
-                                          layoutName +
+                                          template.Name +
                                           " DijkstraMap_Edge_" +
                                           edge.Point1.Vertex.Column + "_" +
                                           edge.Point1.Vertex.Row + " to " +
@@ -206,21 +240,38 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
                 foreach (var location in dijkstraMap.GeneratePath())
                 {
-                    if (location.Equals(location1) ||
-                        location.Equals(location2))
-                        continue;
-
                     // Maze levels can have walls set up to punch through
-                    else if (grid[location.Column, location.Row] != null)
+                    if (grid[location.Column, location.Row] != null)
+                    {
                         grid[location.Column, location.Row].IsWall = false;
+                        grid[location.Column, location.Row].IsCorridor = true;
+                    }
 
                     // Empty cells need to be filled in
                     else
-                        grid[location.Column, location.Row] = new GridCellInfo(location);
+                        grid[location.Column, location.Row] = new GridCellInfo(location)
+                        {
+                            IsCorridor = true
+                        };
                 }
             }
 
             return regions;
+        }
+
+        private bool PreValidateRegions(GridCellInfo[,] grid, out IEnumerable<Region> regions)
+        {
+            // Generate the new room regions
+            regions = grid.IdentifyRegions();
+
+            // Validate room regions
+            var invalidRoomRegions = regions.Where(region => !_regionValidator.ValidateRoomRegion(region));
+
+            // Check for a valid room region
+            if (invalidRoomRegions.Count() > 0)
+                return false;
+
+            return true;
         }
 
         /// <summary>
@@ -238,7 +289,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                     // be left from generating maze regions or corridors
                     if (grid[i, j] == null || grid[i, j].IsWall)
                         costMap[i, j] = 0;
-                    
+
                     else
                         costMap[i, j] = DijkstraMap.RegionFeatureConstant;
                 }
