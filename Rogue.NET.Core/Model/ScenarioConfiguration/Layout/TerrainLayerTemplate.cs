@@ -9,6 +9,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
     {
         TerrainType _type;
         TerrainLayoutType _layoutType;
+        TerrainConnectionType _connectionType;
+        TerrainMaskingType _maskingType;
         bool _isPassable;
         bool _emitsLight;
         TerrainLayer _layer;
@@ -39,6 +41,16 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         {
             get { return _layoutType; }
             set { this.RaiseAndSetIfChanged(ref _layoutType, value); }
+        }
+        public TerrainConnectionType ConnectionType
+        {
+            get { return _connectionType; }
+            set { this.RaiseAndSetIfChanged(ref _connectionType, value); }
+        }
+        public TerrainMaskingType MaskingType
+        {
+            get { return _maskingType; }
+            set { this.RaiseAndSetIfChanged(ref _maskingType, value); }
         }
         public SymbolDetailsTemplate SymbolDetails
         {

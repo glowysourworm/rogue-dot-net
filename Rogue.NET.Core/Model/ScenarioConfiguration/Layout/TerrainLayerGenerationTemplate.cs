@@ -11,17 +11,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
     [Serializable]
     public class TerrainLayerGenerationTemplate : Template
     {
-        double _generationWeight;
         double _fillRatio;
         double _frequency;
         TerrainGenerationType _generationType;
         TerrainLayerTemplate _terrainLayer;
 
-        public double GenerationWeight
-        {
-            get { return _generationWeight; }
-            set { this.RaiseAndSetIfChanged(ref _generationWeight, value); }
-        }
         public double FillRatio
         {
             get { return _fillRatio; }
@@ -45,7 +39,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 
         public TerrainLayerGenerationTemplate()
         {
-            this.GenerationWeight = 0;
             this.FillRatio = 0;
             this.Frequency = 1;
             this.GenerationType = TerrainGenerationType.PerlinNoise;

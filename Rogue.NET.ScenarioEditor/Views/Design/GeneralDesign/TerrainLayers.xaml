@@ -86,13 +86,14 @@
                         <TextBlock Text="Terrain Layout Type" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <commonView:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainLayoutType}" EnumValue="{Binding LayoutType, Mode=TwoWay}" Width="250" HorizontalAlignment="Right" />
                     </Grid>
+                    <Grid Margin="5"
+                          Visibility="{Binding IsPassable, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                        <TextBlock Text="Terrain Connection Type" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <commonView:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainConnectionType}" EnumValue="{Binding ConnectionType, Mode=TwoWay}" Width="250" HorizontalAlignment="Right" />
+                    </Grid>
                     <Grid Margin="5">
                         <TextBlock Text="Is Passable" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <CheckBox IsChecked="{Binding IsPassable}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Margin="5">
-                        <TextBlock Text="Is Walkable" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                        <CheckBox IsChecked="{Binding IsWalkable}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="5">
                         <TextBlock Text="Emits Light" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
@@ -102,7 +103,10 @@
                           Visibility="{Binding EmitsLight, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                         <TextBlock FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Emitted Light Color" />
                         <controls:ColorComboBox SelectedValue="{Binding EmittedLight, Converter={StaticResource LightColorStringConverter}}" Width="300" HorizontalAlignment="Right" />
-                    </Grid>                    
+                    </Grid>
+                    <Grid Margin="5">
+                        <controls:EnumFlagsControl Header="Terrain Masking Type" EnumType="{x:Type coreModelEnums:TerrainMaskingType}" EnumValue="{Binding MaskingType, Mode=TwoWay}" />
+                    </Grid>
                 </StackPanel>
             </Grid>
 

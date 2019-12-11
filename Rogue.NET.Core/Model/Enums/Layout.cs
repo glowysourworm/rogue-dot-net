@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Rogue.NET.Core.Model.Enums
 {
@@ -137,17 +138,55 @@ namespace Rogue.NET.Core.Model.Enums
     }
     public enum TerrainLayoutType
     {
-        [Display(Name = "Layer Exclusive",
-                 Description = "Terrain layer cannot be placed with any other terrain layer at the specified level")]
-        LayerExclusive = 0,
+        [Display(Name = "Overlay",
+                 Description = "Terrain layer overlays other terrain layers beneath it")]
+        Overlay = 0,
 
         [Display(Name = "Completely Exclusive",
                  Description = "Terrain layer cannot be placed with any other terrain layers")]
         CompletelyExclusive = 1,
 
         [Display(Name = "Combined",
-                 Description = "Terrain layer can be placed with other terrain layers - not marked exclusive at the specified level")]
+                 Description = "Terrain layer can be placed with other terrain layers - not marked exclusive or overlaying this one")]
         Combined = 2
+    }
+    public enum TerrainConnectionType
+    {
+        [Display(Name = "Direct",
+                 Description = "Regions separated by terrain are connected directly")]
+        Direct = 0,
+
+        [Display(Name = "Avoid",
+                 Description = "Regions separated by terrain are connected - avoiding the impassible terrain")]
+        Avoid = 1,
+
+        [Display(Name = "Scenario Object Pair",
+                 Description = "Regions separated by terrain are connected using a pair of scenario objects for transport")]
+        ConnectionPoints = 2
+    }
+
+    [Flags]
+    public enum TerrainMaskingType
+    {
+        [Display(Name = "None", 
+                 Description = "No tiles are masked off during terrain creation")]
+        None = 0,
+
+        [Display(Name = "Rooms",
+                 Description = "Room regions are masked off during terrain creation")]
+        Regions = 1,
+
+        [Display(Name = "Corridors",
+                 Description = "Corridors are masked off during terrain creation")]
+        Corridors = 2,
+
+        [Display(Name = "Walls",
+                 Description = "Walls are masked off during terrain creation")]
+        Walls = 4,
+
+        [Display(Name = "Empty Space",
+                 Description = "Empty space is masked off during terrain creation")]
+        EmptySpace = 8
     }
     public enum TerrainGenerationType
     {

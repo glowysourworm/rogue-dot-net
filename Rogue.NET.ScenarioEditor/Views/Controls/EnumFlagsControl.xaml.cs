@@ -3,7 +3,9 @@ using Rogue.NET.Common.ViewModel;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -41,6 +43,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         public class EnumItem : NotifyViewModel
         {
             string _name;
+            string _displayName;
+            string _description;
             object _value;
             bool _isChecked;
 
@@ -48,6 +52,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             {
                 get { return _name; }
                 set { this.RaiseAndSetIfChanged(ref _name, value); }
+            }
+            public string DisplayName
+            {
+                get { return _displayName; }
+                set { this.RaiseAndSetIfChanged(ref _displayName, value); }
+            }
+            public string Description
+            {
+                get { return _description; }
+                set { this.RaiseAndSetIfChanged(ref _description, value); }
             }
             public object Value
             {
@@ -73,18 +87,23 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         {
             _initializing = true;
 
-            var itemValues = Enum.GetValues(this.EnumType);
-            var items = new ObservableCollection<EnumItem>();
+            var enumItems = new ObservableCollection<EnumItem>();
 
-            foreach (var itemValue in itemValues)
-                items.Add(new EnumItem()
+            foreach (Enum enumValue in Enum.GetValues(this.EnumType))
+            {
+                var enumName = Enum.GetName(this.EnumType, enumValue);
+
+                enumItems.Add(new EnumItem()
                 {
-                    Name = Enum.GetName(this.EnumType, itemValue),
-                    Value = itemValue,
-                    IsChecked = this.EnumValue == null ? false : (((int)itemValue & (int)this.EnumValue) != 0)
+                    Name = enumName,
+                    Value = enumValue,
+                    Description = enumValue.GetAttribute<DisplayAttribute>()?.Description ?? "",
+                    DisplayName = enumValue.GetAttribute<DisplayAttribute>()?.Name ?? "",
+                    IsChecked = this.EnumValue != null ? Enum.GetName(this.EnumType, this.EnumValue) == enumName : false
                 });
+            }
 
-            this.EnumItemsControl.ItemsSource = items;
+            this.EnumItemsControl.ItemsSource = enumItems;
 
             _initializing = false;
         }

@@ -6,13 +6,20 @@
             <ItemsControl x:Name="EnumItemsControl" Margin="10">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <CheckBox Checked="CheckBox_Checked" 
-                                  Unchecked="CheckBox_Checked" 
-                                  Width="150"
-                                  Margin="4"
-                                  Content="{Binding Name}" 
-                                  IsChecked="{Binding IsChecked}"
-                                  HorizontalAlignment="Left" />
+                        <StackPanel>
+                            <StackPanel Margin="3" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <CheckBox Checked="CheckBox_Checked" 
+                                          Unchecked="CheckBox_Checked" 
+                                          Margin="3"
+                                          IsChecked="{Binding IsChecked}" 
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center" />                                
+                                
+                                <TextBlock Text="{Binding DisplayName}" Foreground="White" FontSize="18" Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding Description}" Foreground="White" FontSize="16" Margin="3" TextWrapping="Wrap" />
+                        </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>

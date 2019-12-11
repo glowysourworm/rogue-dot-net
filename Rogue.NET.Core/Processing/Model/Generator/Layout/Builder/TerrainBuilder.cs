@@ -118,12 +118,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                         // Terrain layer already present
                                         return element.Value[column, row] != null &&
 
-                                               // Other terrain layers at this location don't exclude this layer at the same location
+                                               // Other terrain layers at this location exclude this layer
                                                (element.Key.LayoutType == TerrainLayoutType.CompletelyExclusive ||
 
-                                               // Other terrain layers at this location DO exclude other terrain; but not at this layer
-                                               (element.Key.LayoutType == TerrainLayoutType.LayerExclusive &&
-                                                element.Key.Layer == terrain.TerrainLayer.Layer));
+                                               // Other terrain layers at this location overlay this layer
+                                               (element.Key.LayoutType == TerrainLayoutType.Overlay &&
+                                                element.Key.Layer > terrain.TerrainLayer.Layer));
 
                                     }))
                                     {
