@@ -14,6 +14,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Processing.Event.Backend.Enum;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
+using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
@@ -144,10 +145,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var desiredLocation = _modelService.LayoutService.GetRandomAdjacentLocationForMovement(_modelService.Player.Location, CharacterAlignmentType.PlayerAligned);
 
             // Get direction for random move -> Move()
-            var direction = GridUtility.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location.Column,
-                                                                          _modelService.Player.Location.Row,
-                                                                          desiredLocation.Column,
-                                                                          desiredLocation.Row);
+            var direction = GridCalculator.GetDirectionOfAdjacentLocation(_modelService.Player.Location, desiredLocation);
 
             return Move(direction);
         }

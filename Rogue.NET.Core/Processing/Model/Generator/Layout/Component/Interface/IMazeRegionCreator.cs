@@ -41,6 +41,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
         /// <param name="startingLocation">Starting WALL location</param>
         /// <param name="avoidRegions">Regions to avoid while running the algorithm</param>
         /// <exception cref="ArgumentException">Starting location is null or NOT A WALL CELL</exception>
-        void CreateCellsStartingAt(GridCellInfo[,] grid, IEnumerable<Region> avoidRegions, GridLocation startingLocation, MazeType mazeType, double wallRemovalRatio, double horizontalVerticalBias);
+        void CreateCellsStartingAt(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> avoidRegions, GridLocation startingLocation, MazeType mazeType, double wallRemovalRatio, double horizontalVerticalBias);
     }
 }

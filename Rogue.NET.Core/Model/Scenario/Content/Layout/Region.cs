@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Math.Geometry.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -11,26 +12,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// Serializable data structure to store calculated room information
     /// </summary>
     [Serializable]
-    public class Region : ISerializable, IRegionGraphWeightProvider
+    public class Region<T> : ISerializable, IRegionGraphWeightProvider<T> where T : class, IGridLocator
     {
-        public GridLocation[] Cells { get; private set; }
-        public GridLocation[] EdgeCells { get; private set; }
-        public RegionBoundary Bounds { get; private set; }
-
-        /// <summary>
-        /// Calculated flag to specify whether region is rectangular (or amorphous)
-        /// </summary>
-        public bool IsRectangular { get; private set; }
+        public T[] Locations { get; private set; }
+        public T[] EdgeLocations { get; private set; }
+        public RegionBoundary Boundary { get; private set; }
 
         // Used during layout generation to store calculated nearest neighbors
-        Dictionary<Region, GraphConnection> _graphConnections;
+        Dictionary<Region<T>, GraphConnection> _graphConnections;
 
-        // 2D Arrays for region cells and edges
-        GridLocation[,] _gridLocations;
+        // 2D Arrays for region locations and edges
+        T[,] _gridLocations;
         bool[,] _edgeLocations;
 
         // Indexers for grid locations and edges
-        public GridLocation this[int column, int row]
+        public T this[int column, int row]
         {
             get { return _gridLocations[column, row]; }
         }
@@ -41,109 +37,118 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         protected struct GraphConnection
         {
-            public GridLocation Location { get; set; }
-            public GridLocation AdjacentLocation { get; set; }
-            public Region AdjacentRegion { get; set; }
+            public T Location { get; set; }
+            public T AdjacentLocation { get; set; }
+            public Region<T> AdjacentRegion { get; set; }
             public MetricType Metric { get; set; }
             public double Distance { get; set; }
         }
 
-        public Region(GridLocation[] cells, GridLocation[] edgeCells, RegionBoundary bounds, RegionBoundary parentBoundary)
+        public Region(T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
         {
-            this.Cells = cells;
-            this.EdgeCells = edgeCells;
-            this.Bounds = bounds;
-            this.IsRectangular = cells.Length == (bounds.CellWidth * bounds.CellHeight);
+            this.Locations = locations;
+            this.EdgeLocations = edgeLocations;
+            this.Boundary = boundary;
 
-            _graphConnections = new Dictionary<Region, GraphConnection>();
-            _gridLocations = new GridLocation[parentBoundary.CellWidth, parentBoundary.CellHeight];
-            _edgeLocations = new bool[parentBoundary.CellWidth, parentBoundary.CellHeight];
+            _graphConnections = new Dictionary<Region<T>, GraphConnection>();
+            _gridLocations = new T[parentBoundary.Width, parentBoundary.Height];
+            _edgeLocations = new bool[parentBoundary.Width, parentBoundary.Height];
 
             // Setup grid locations
-            foreach (var cell in cells)
-                _gridLocations[cell.Column, cell.Row] = cell;
+            foreach (var location in locations)
+                _gridLocations[location.Column, location.Row] = location;
 
             // Setup edge locations
-            foreach (var cell in edgeCells)
-                _edgeLocations[cell.Column, cell.Row] = true;
+            foreach (var location in edgeLocations)
+                _edgeLocations[location.Column, location.Row] = true;
         }
         public Region(SerializationInfo info, StreamingContext context)
         {
-            _graphConnections = new Dictionary<Region, GraphConnection>();
+            _graphConnections = new Dictionary<Region<T>, GraphConnection>();
 
-            this.Cells = new GridLocation[info.GetInt32("CellsLength")];
-            this.EdgeCells = new GridLocation[info.GetInt32("EdgeCellsLength")];
-            this.Bounds = (RegionBoundary)info.GetValue("Bounds", typeof(RegionBoundary));
-            this.IsRectangular = info.GetBoolean("IsRectangular");
+            this.Locations = new T[info.GetInt32("LocationsLength")];
+            this.EdgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
+            this.Boundary = (RegionBoundary)info.GetValue("Boundary", typeof(RegionBoundary));
 
             var parentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
 
-            _gridLocations = new GridLocation[parentBoundary.CellWidth, parentBoundary.CellHeight];
-            _edgeLocations = new bool[parentBoundary.CellWidth, parentBoundary.CellHeight];
+            _gridLocations = new T[parentBoundary.Width, parentBoundary.Height];
+            _edgeLocations = new bool[parentBoundary.Width, parentBoundary.Height];
 
-            for (int i = 0; i < this.Cells.Length; i++)
+            for (int i = 0; i < this.Locations.Length; i++)
             {
-                var cell = (GridLocation)info.GetValue("Cell" + i.ToString(), typeof(GridLocation));
+                var location = (T)info.GetValue("Location" + i.ToString(), typeof(T));
 
                 // Add to cell array
-                this.Cells[i] = cell;
+                this.Locations[i] = location;
 
                 // Add to 2D array
-                _gridLocations[cell.Column, cell.Row] = cell;
+                _gridLocations[location.Column, location.Row] = location;
             }
 
-            for (int i = 0; i < this.EdgeCells.Length; i++)
+            for (int i = 0; i < this.EdgeLocations.Length; i++)
             {
-                var edgeCell = (GridLocation)info.GetValue("EdgeCell" + i.ToString(), typeof(GridLocation));
+                var edgeLocation = (T)info.GetValue("EdgeLocation" + i.ToString(), typeof(T));
 
                 // Add to edge cell array
-                this.EdgeCells[i] = edgeCell;
+                this.EdgeLocations[i] = edgeLocation;
 
                 // Add to 2D edge array
-                _edgeLocations[edgeCell.Column, edgeCell.Row] = true;
+                _edgeLocations[edgeLocation.Column, edgeLocation.Row] = true;
             }
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("CellsLength", this.Cells.Length);
-            info.AddValue("EdgeCellsLength", this.EdgeCells.Length);
-            info.AddValue("Bounds", this.Bounds);
-            info.AddValue("IsRectangular", this.IsRectangular);
-            info.AddValue("ParentBoundary", new RegionBoundary(new GridLocation(0,0), _gridLocations.GetLength(0), _gridLocations.GetLength(1)));
+            info.AddValue("LocationsLength", this.Locations.Length);
+            info.AddValue("EdgeLocationsLength", this.EdgeLocations.Length);
+            info.AddValue("Boundary", this.Boundary);
+            info.AddValue("ParentBoundary", new RegionBoundary(0, 0, _gridLocations.GetLength(0), _gridLocations.GetLength(1)));
 
             var counter = 0;
 
-            foreach (var cell in this.Cells)
-                info.AddValue("Cell" + counter++.ToString(), cell);
+            foreach (var location in this.Locations)
+            {
+                // VALIDATE TYPE USED AS IGridLocator
+                if (location.GetType() != typeof(GridLocation))
+                    throw new SerializationException("Unsupported IGridLocator type during serialization Region.cs");
+
+                info.AddValue("Location" + counter++.ToString(), location);
+            }
 
             counter = 0;
 
-            foreach (var cell in this.EdgeCells)
-                info.AddValue("EdgeCell" + counter++.ToString(), cell);
+            foreach (var location in this.EdgeLocations)
+            {
+                // VALIDATE TYPE USED AS IGridLocator
+                if (location.GetType() != typeof(GridLocation))
+                    throw new SerializationException("Unsupported IGridLocator type during serialization Region.cs");
+
+                info.AddValue("EdgeLocation" + counter++.ToString(), location);
+            }
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is Region)
+            if (obj is Region<T>)
             {
-                var region = obj as Region;
+                var region = obj as Region<T>;
 
                 // Check that the number of cells matches
-                if (region.Cells.Length != this.Cells.Length)
+                if (region.Locations.Length != this.Locations.Length)
                     return false;
 
                 // Check that the boundary matches
-                if (!region.Bounds.Equals(this.Bounds))
+                if (!region.Boundary.Equals(this.Boundary))
                     return false;
 
                 // Iterate until a mis-match is found
-                foreach (var otherCell in region.Cells)
+                foreach (var otherLocation in region.Locations)
                 {
                     var match = false;
 
-                    foreach (var cell in this.Cells)
+                    foreach (var location in this.Locations)
                     {
-                        if (cell.Equals(otherCell))
+                        if (location.Equals(otherLocation))
                         {
                             match = true;
                             break;
@@ -169,12 +174,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         public override string ToString()
         {
-            return string.Format("Cells[{0}], EdgeCells[{1}], Bounds=[{2}]", this.Cells.Length, this.EdgeCells.Length, this.Bounds.ToString());
+            return string.Format("Locations[{0}], EdgeLocations[{1}], Boundary=[{2}]", this.Locations.Length, this.EdgeLocations.Length, this.Boundary.ToString());
         }
 
         #region IRegionGraphWeightProvider
 
-        public double CalculateWeight(Region adjacentNode, Metric.MetricType metricType)
+        public double CalculateWeight(Region<T> adjacentNode, Metric.MetricType metricType)
         {
             // Return previously calculated weight
             if (_graphConnections.ContainsKey(adjacentNode))
@@ -209,13 +214,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             //// Use a brute force O(n x m) search
             //else
             //{
-            GridLocation location = null;
-            GridLocation adjacentLocation = null;
+            T location = null;
+            T adjacentLocation = null;
             double distance = double.MaxValue;
 
-            foreach (var edgeLocation1 in this.EdgeCells)
+            foreach (var edgeLocation1 in this.EdgeLocations)
             {
-                foreach (var edgeLocation2 in adjacentNode.EdgeCells)
+                foreach (var edgeLocation2 in adjacentNode.EdgeLocations)
                 {
                     var nextDistance = metricType == MetricType.Roguian ? Metric.RoguianDistance(edgeLocation1, edgeLocation2)
                                                                         : Metric.EuclideanDistance(edgeLocation1, edgeLocation2);
@@ -246,7 +251,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             return _graphConnections[adjacentNode].Distance;
         }
 
-        public GridLocation GetConnectionPoint(Region adjacentRegion, Metric.MetricType metricType)
+        public T GetConnectionPoint(Region<T> adjacentRegion, Metric.MetricType metricType)
         {
             if (!_graphConnections.ContainsKey(adjacentRegion))
                 throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");
@@ -254,7 +259,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             return _graphConnections[adjacentRegion].Location;
         }
 
-        public GridLocation GetAdjacentConnectionPoint(Region adjacentRegion, Metric.MetricType metricType)
+        public T GetAdjacentConnectionPoint(Region<T> adjacentRegion, Metric.MetricType metricType)
         {
             if (!_graphConnections.ContainsKey(adjacentRegion))
                 throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");

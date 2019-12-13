@@ -1,40 +1,29 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 {
-    [PartCreationPolicy(CreationPolicy.Shared)]
-    [Export(typeof(IRegionValidator))]
-    public class RegionValidator : IRegionValidator
+    public static class RegionValidator
     {
         // Constraints may depend on the layout parameters - but, for now, just make them "big enough"
         const int ROOM_MIN_SIZE = 4;
         const int TERRAIN_MIN_SIZE = 4;
 
-        public RegionValidator()
+        public static int MinimumRoomSize
         {
-
-        }
-
-        public int MinimumRoomSize
-        { 
             get { return ROOM_MIN_SIZE; }
         }
 
-        public bool ValidateRoomRegion(Region region)
+        public static bool ValidateRoomRegion<T>(Region<T> region) where T : class, IGridLocator
         {
-            return region.Cells.Length >= ROOM_MIN_SIZE;
+            return region.Locations.Length >= ROOM_MIN_SIZE;
         }
 
-        public bool ValidateTerrainRegion(Region region)
+        public static bool ValidateTerrainRegion<T>(Region<T> region) where T : class, IGridLocator
         {
-            return region.Cells.Length >= TERRAIN_MIN_SIZE;
+            return region.Locations.Length >= TERRAIN_MIN_SIZE;
         }
     }
 }

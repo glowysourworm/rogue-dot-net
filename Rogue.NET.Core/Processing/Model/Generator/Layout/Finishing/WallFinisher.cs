@@ -23,9 +23,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             // Iterate - leaving a padding of 1 on the edge to create cells for walls
             //           without stepping out of bounds
             //
-            for (int i = 1; i < bounds.CellWidth - 1; i++)
+            for (int i = 1; i < bounds.Width - 1; i++)
             {
-                for (int j = 1; j < bounds.CellHeight - 1; j++)
+                for (int j = 1; j < bounds.Height - 1; j++)
                 {
                     // Locate a region or corridor
                     if (grid[i, j] == null)

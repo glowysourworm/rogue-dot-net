@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
@@ -36,8 +37,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // 1) Create integer "grid lines" to locate intersections
             // 2) Add intersecting cells to the result
 
-            var physicalLocation1 = GridUtility.TransformToPhysicalLayout(cell1.Location);
-            var physicalLocation2 = GridUtility.TransformToPhysicalLayout(cell2.Location);
+            var physicalLocation1 = GridCalculator.TransformToPhysicalLayout(cell1.Location);
+            var physicalLocation2 = GridCalculator.TransformToPhysicalLayout(cell2.Location);
 
             var minX = (int)System.Math.Min(physicalLocation1.X, physicalLocation2.X);
             var minY = (int)System.Math.Min(physicalLocation1.Y, physicalLocation2.Y);
@@ -195,8 +196,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                         foreach (var adjacentRoomCell in grid.GetCardinalAdjacentElements(corridor1.Location.Column, corridor1.Location.Row)
                                                              .Where(cell => grid[cell.Location.Column, cell.Location.Row] != null))
                         {
-                            var direction = GridUtility.GetDirectionOfAdjacentLocation(corridor1.Location, adjacentRoomCell.Location);
-                            var oppositeDirection = GridUtility.GetOppositeDirection(direction);
+                            var direction = GridCalculator.GetDirectionOfAdjacentLocation(corridor1.Location, adjacentRoomCell.Location);
+                            var oppositeDirection = GridCalculator.GetOppositeDirection(direction);
 
                             // TODO:TERRAIN
                             // Set up hidden door parameters for both "sides" of the door.
@@ -216,8 +217,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                         foreach (var adjacentRoomCell in grid.GetCardinalAdjacentElements(corridor2.Location.Column, corridor2.Location.Row)
                                                              .Where(cell => grid[cell.Location.Column, cell.Location.Row] != null))
                         {
-                            var direction = GridUtility.GetDirectionOfAdjacentLocation(corridor2.Location, adjacentRoomCell.Location);
-                            var oppositeDirection = GridUtility.GetOppositeDirection(direction);
+                            var direction = GridCalculator.GetDirectionOfAdjacentLocation(corridor2.Location, adjacentRoomCell.Location);
+                            var oppositeDirection = GridCalculator.GetOppositeDirection(direction);
 
                             // TODO:TERRAIN
                             // Set up hidden door parameters for both "sides" of the door.

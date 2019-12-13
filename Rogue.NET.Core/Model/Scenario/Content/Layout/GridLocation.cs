@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Globalization;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+using System;
+using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     [Serializable]
-    public class GridLocation
+    public class GridLocation : IGridLocator
     {
         public int Row { get; set; }
         public int Column { get; set; }
@@ -25,6 +24,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             Row = row;
             Column = column;
         }
+        public GridLocation(SerializationInfo info, StreamingContext context)
+        {
+            this.Column = info.GetInt32("Column");
+            this.Row = info.GetInt32("Row");
+        }
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Column", this.Column);
+            info.AddValue("Row", this.Row);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -46,5 +56,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             return "Column=" + Column.ToString() + " Row=" + Row.ToString();
         }
+
     }
 }

@@ -43,7 +43,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public void CreateLighting(GridCellInfo[,] grid, LayerInfo roomLayer, LayoutTemplate template)
+        public void CreateLighting(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> roomRegions, LayoutTemplate template)
         {
             // Procedure
             //
@@ -60,7 +60,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                 case TerrainAmbientLightingType.None:
                     break;
                 case TerrainAmbientLightingType.LightedRooms:
-                    CreateLightedRooms(grid, roomLayer.Regions, template.LightingAmbient1);
+                    CreateLightedRooms(grid, roomRegions, template.LightingAmbient1);
                     break;
                 case TerrainAmbientLightingType.PerlinNoiseLarge:
                 case TerrainAmbientLightingType.PerlinNoiseSmall:
@@ -81,7 +81,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                 case TerrainAmbientLightingType.None:
                     break;
                 case TerrainAmbientLightingType.LightedRooms:
-                    CreateLightedRooms(grid, roomLayer.Regions, template.LightingAmbient2);
+                    CreateLightedRooms(grid, roomRegions, template.LightingAmbient2);
                     break;
                 case TerrainAmbientLightingType.PerlinNoiseLarge:
                 case TerrainAmbientLightingType.PerlinNoiseSmall:
@@ -116,7 +116,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             }
         }
 
-        private void CreateLightedRooms(GridCellInfo[,] grid, IEnumerable<Region> regions, LightAmbientTemplate template)
+        private void CreateLightedRooms(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
@@ -129,8 +129,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     light.Intensity = _randomSequenceGenerator.GetRandomValue(template.IntensityRange);
 
                     // Combine color with existing lighting for the cell
-                    foreach (var cell in region.Cells)
-                        grid[cell.Column, cell.Row].BaseLight = ColorFilter.AddLight(grid[cell.Column, cell.Row].BaseLight, light);
+                    foreach (var location in region.Locations)
+                        grid[location.Column, location.Row].BaseLight = ColorFilter.AddLight(grid[location.Column, location.Row].BaseLight, light);
                 }
             }
         }

@@ -1,11 +1,24 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+using System;
 using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     [Serializable]
-    public class GridCell : ISerializable
+    public class GridCell : ISerializable, IGridLocator
     {
+        #region (public) IGridLocator
+        public int Column
+        {
+            get { return this.Location?.Column ?? -1; }
+        }
+
+        public int Row
+        {
+            get { return this.Location?.Row ?? -1; }
+        }
+        #endregion
+
         #region (public) (serialized) Volatile Properties (Change during game play)
         public bool IsExplored { get; set; }
         public bool IsRevealed { get; set; }
@@ -20,7 +33,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public bool IsDoor { get; private set; }
         public bool IsWall { get; private set; }
         public bool IsWallLight { get; private set; }
-        public bool IsCorridor { get; private set; }
         public int DoorSearchCounter { get; private set; }
         /// <summary>
         /// Light value for this particular cell - calculated during generation (NOTE** Does NOT act as a light source)
@@ -56,7 +68,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.BaseLight = Light.None;
             this.WallLight = Light.None;
         }
-        public GridCell(GridLocation location, bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter, bool isCorridor, Light baseLight, Light wallLight)
+        public GridCell(GridLocation location, bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter, Light baseLight, Light wallLight)
         {
             if (doorSearchCounter > 0 && !isDoor)
                 throw new ArgumentException("Trying to initialize door with improper parameters");
@@ -65,7 +77,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsWall = isWall;
             this.IsWallLight = isWallLight;
             this.IsDoor = isDoor;
-            this.IsCorridor = isCorridor;
             this.DoorSearchCounter = doorSearchCounter;
             this.IsExplored = false;
             this.IsRevealed = false;
@@ -76,8 +87,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.EffectiveLighting = baseLight;
         }
 
-        public GridCell(int column, int row, bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter, bool isCorridor, Light baseLight, Light wallLight)
-                : this(new GridLocation(column, row), isWall, isWallLight, isDoor, doorSearchCounter, isCorridor, baseLight, wallLight)
+        public GridCell(int column, int row, bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter, Light baseLight, Light wallLight)
+                : this(new GridLocation(column, row), isWall, isWallLight, isDoor, doorSearchCounter, baseLight, wallLight)
         {
         }
 
@@ -94,7 +105,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsDoor = info.GetBoolean("IsDoor");
             this.IsWall = info.GetBoolean("IsWall");
             this.IsWallLight = info.GetBoolean("IsWallLight");
-            this.IsCorridor = info.GetBoolean("IsCorridor");
             this.Location = (GridLocation)info.GetValue("Location", typeof(GridLocation));
             this.DoorSearchCounter = info.GetInt32("DoorSearchCounter");
             this.BaseLight = (Light)info.GetValue("BaseLight", typeof(Light));
@@ -108,7 +118,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("IsDoor", this.IsDoor);
             info.AddValue("IsWall", this.IsWall);
             info.AddValue("IsWallLight", this.IsWallLight);
-            info.AddValue("IsCorridor", this.IsCorridor);
             info.AddValue("Location", this.Location);
             info.AddValue("DoorSearchCounter", this.DoorSearchCounter);
             info.AddValue("BaseLight", this.BaseLight);

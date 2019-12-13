@@ -26,11 +26,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public Dictionary<GridLocation, LayoutMandatoryLocationType> MandatoryLocations { get; private set; }
         public RegionBoundary Bounds { get; private set; }
         public LayerMap RoomMap { get; private set; }
+        public LayerMap CorridorMap { get; private set; }
         public IEnumerable<LayerMap> TerrainMaps { get; private set; }
         #endregion
 
         /// <summary>
-        /// Constructs LevelGrid from the provided 2D cell arrays and the region arrays. The cells
+        /// Constructs LevelGrid from the provided 2D cell arrays and the regions. The cells
         /// in the cell array are by reference; and are not re-created. The region data arrays contain
         /// cell points that are treated as a value type. These are recreated during serialization (not
         /// unique) apart from the cell reference objects. The terrain array follows the same pattern.
@@ -39,12 +40,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         ///         all data prepared. Also, create the terrain array with all data prepared. Corridors 
         ///         may be created afterwards using the public indexer.
         /// </summary>
-        public LevelGrid(GridCellInfo[,] grid, LayerInfo roomLayer, IEnumerable<LayerInfo> terrainLayers)
+        public LevelGrid(GridCellInfo[,] grid, LayerInfo roomLayer, LayerInfo corridorLayer, IEnumerable<LayerInfo> terrainLayers)
         {
             _grid = new GridCell[grid.GetLength(0), grid.GetLength(1)];
+
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
-            this.RoomMap = new LayerMap(roomLayer.LayerName, roomLayer.Regions, this.Bounds.CellWidth, this.Bounds.CellHeight);
-            this.TerrainMaps = terrainLayers.Select(layer => new LayerMap(layer.LayerName, layer.Regions, this.Bounds.CellWidth, this.Bounds.CellHeight)).Actualize();
+            this.RoomMap = new LayerMap(roomLayer.LayerName, roomLayer.Regions, this.Bounds.Width, this.Bounds.Height);
+            this.CorridorMap = new LayerMap(corridorLayer.LayerName, corridorLayer.Regions, this.Bounds.Width, this.Bounds.Height);
+            this.TerrainMaps = terrainLayers.Select(layer => new LayerMap(layer.LayerName, layer.Regions, this.Bounds.Width, this.Bounds.Height)).Actualize();
             this.MandatoryLocations = new Dictionary<GridLocation, LayoutMandatoryLocationType>();
 
             // Initialize the grid
@@ -56,8 +59,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     {
                         // Create the grid cell
                         _grid[i, j] = new GridCell(grid[i,j].Location, grid[i, j].IsWall, grid[i, j].IsWallLight,
-                                                   grid[i, j].IsDoor, grid[i, j].DoorSearchCounter,
-                                                   grid[i, j].IsCorridor, grid[i, j].BaseLight,
+                                                   grid[i, j].IsDoor, grid[i, j].DoorSearchCounter, grid[i, j].BaseLight,
                                                    grid[i, j].WallLight);
 
                         // Check for mandatory locations
@@ -77,6 +79,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var terrainCount = info.GetInt32("TerrainMapCount");
             var mandatoryCount = info.GetInt32("MandatoryLocationsCount");
             var roomMap = (LayerMap)info.GetValue("RoomMap", typeof(LayerMap));
+            var corridorMap = (LayerMap)info.GetValue("CorridorMap", typeof(LayerMap));
 
             _grid = new GridCell[width, height];
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
@@ -110,6 +113,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
 
             this.RoomMap = roomMap;
+            this.CorridorMap = corridorMap;
             this.TerrainMaps = terrainData;
             this.MandatoryLocations = mandatoryData;
 
@@ -130,6 +134,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("TerrainMapCount", this.TerrainMaps.Count());
             info.AddValue("MandatoryLocationsCount", this.MandatoryLocations.Count);
             info.AddValue("RoomMap", this.RoomMap);
+            info.AddValue("CorridorMap", this.CorridorMap);
 
             for (int i = 0; i < _cellArray.Length; i++)
                 info.AddValue("Cell" + i.ToString(), _cellArray[i]);

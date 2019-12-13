@@ -240,9 +240,11 @@
     <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerGenerationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerTemplate.cs" />
     <Compile Include="Model\Scenario\Content\Layout\GridCellInfo.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\Interface\IGridLocator.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LayerInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Light.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LayerMap.cs" />
+    <Compile Include="Processing\Model\Content\Calculator\GridCalculator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ILightGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\ConnectionBuilder.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\Interface\IConnectionBuilder.cs" />
@@ -257,7 +259,6 @@
     <Compile Include="Processing\Model\Generator\Layout\Component\Interface\IMazeRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\Interface\IRectangularRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\Interface\IRegionGeometryCreator.cs" />
-    <Compile Include="Processing\Model\Generator\Layout\Component\Interface\IRegionValidator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\MazeRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\RectangularRegionCreator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Component\RegionGeometryCreator.cs" />
@@ -268,7 +269,6 @@
     <Compile Include="Math\Algorithm\NoiseGenerator.cs" />
     <Compile Include="Math\Algorithm\GeometryUtility.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Finishing\WallFinisher.cs" />
-    <Compile Include="Processing\Model\Generator\Layout\GridUtility.cs" />
     <Compile Include="Processing\Model\Generator\LightGenerator.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioCache.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioConfigurationCache.cs" />

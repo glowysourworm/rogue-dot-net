@@ -12,8 +12,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
     public interface IRegionBuilder
     {
         /// <summary>
-        /// Sets up regions of cells in the grid based on the template and returns the 2D cell array for the layout. Also,
-        /// generates an input "feature" map for Dijkstra's algorithm.
+        /// Sets up regions of cells in the grid based on the template and returns the 2D cell array for the layout
         /// </summary>
         public GridCellInfo[,] BuildRegions(LayoutTemplate template);
 

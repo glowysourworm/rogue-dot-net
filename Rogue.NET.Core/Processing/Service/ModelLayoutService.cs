@@ -5,6 +5,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
@@ -57,7 +58,7 @@ namespace Rogue.NET.Core.Processing.Service
                 character.AlignmentType != excludedAlignmentType)
                 return true;
 
-            var direction = GridUtility.GetDirectionBetweenAdjacentPoints(location1.Column, location1.Row, location2.Column, location2.Row);
+            var direction = GridCalculator.GetDirectionOfAdjacentLocation(location1, location2);
 
             switch (direction)
             {
@@ -78,8 +79,8 @@ namespace Rogue.NET.Core.Processing.Service
                         var diag1 = _level.Grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
                         var diag2 = _level.Grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
 
-                        var oppositeCardinal1 = GridUtility.GetOppositeDirection(cardinal1);
-                        var oppositeCardinal2 = GridUtility.GetOppositeDirection(cardinal2);
+                        var oppositeCardinal1 = GridCalculator.GetOppositeDirection(cardinal1);
+                        var oppositeCardinal2 = GridCalculator.GetOppositeDirection(cardinal2);
 
                         if (diag1 == null || diag2 == null)
                             return true;
@@ -244,7 +245,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         public Compass GetDirectionOfAdjacentLocation(GridLocation location, GridLocation adjacentLocation)
         {
-            return GridUtility.GetDirectionOfAdjacentLocation(location, adjacentLocation);
+            return GridCalculator.GetDirectionOfAdjacentLocation(location, adjacentLocation);
         }
 
         public GridLocation GetPointInDirection(GridLocation location, Compass direction)

@@ -3,10 +3,12 @@ using Rogue.NET.Core.Math.Algorithm;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using System;
 using System.Collections.Generic;
@@ -23,26 +25,23 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         readonly ICorridorCreator _corridorCreator;
         readonly IMazeRegionCreator _mazeRegionCreator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly IRegionValidator _regionValidator;
 
         [ImportingConstructor]
         public ConnectionBuilder(ICorridorCreator corridorCreator,
                                IMazeRegionCreator mazeRegionCreator,
-                               IRandomSequenceGenerator randomSequenceGenerator,
-                               IRegionValidator regionValidator)
+                               IRandomSequenceGenerator randomSequenceGenerator)
         {
             _corridorCreator = corridorCreator;
             _mazeRegionCreator = mazeRegionCreator;
             _randomSequenceGenerator = randomSequenceGenerator;
-            _regionValidator = regionValidator;
         }
 
-        public void BuildConnections(GridCellInfo[,] grid, IEnumerable<Region> regions, LayoutTemplate template)
+        public void BuildConnections(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, LayoutTemplate template)
         {
-            BuildConnectionsWithAvoidRegions(grid, regions, new Region[] { }, template);
+            BuildConnectionsWithAvoidRegions(grid, regions, new Region<GridCellInfo>[] { }, template);
         }
 
-        public void BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<Region> regions, IEnumerable<Region> avoidRegions, LayoutTemplate template)
+        public void BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
         {
             if (!PreValidateRegions(regions))
                 throw new Exception("Invalid region layout in the grid - ConnectionBuilder.BuildCorridorsWithAvoidRegions");
@@ -85,7 +84,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        private void CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<Region> regions, IEnumerable<Region> avoidRegions, MazeType mazeType, LayoutTemplate template)
+        private void CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, MazeType mazeType, LayoutTemplate template)
         {
             // Procedure
             //
@@ -109,7 +108,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                         continue;
 
                     // Add walls in the negative space - leaving room for region cells
-                    grid[i, j] = new GridCellInfo(i, j) { IsWall = true };
+                    grid[i, j] = new GridCellInfo(i, j) { IsWall = true, IsCorridor = false };
                 }
             }
 
@@ -136,32 +135,31 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Add back walls surrounding the regions
             foreach (var region in regions)
             {
-                foreach (var edgeCell in region.EdgeCells)
+                foreach (var edgeLocation in region.EdgeLocations)
                 {
-                    var adjacentCells = grid.GetAdjacentElements(edgeCell.Column, edgeCell.Row);
+                    var adjacentCells = grid.GetAdjacentElements(edgeLocation.Column, edgeLocation.Row);
 
                     foreach (var cell in adjacentCells)
                     {
                         // Adjacent cell is not in region; but is on the edge. This should
                         // be a wall cell
                         if (region[cell.Location.Column, cell.Location.Row] == null)
+                        {
                             cell.IsWall = true;
+                            cell.IsCorridor = false;
+                        }
                     }
                 }
             }
 
             // Re-identify regions to connect
-            var newRegions = grid.IdentifyRegions();
+            var newRegions = grid.IdentifyRegions(cell => !cell.IsWall);
 
-            // TODO:TERRAIN - Validate resulting regions
-            //if (!PreValidateRegions(grid, out newRegions))
-            //    throw new Exception("Maze Generation left no valid regions");
-
-            // Finally, connect the regions using MST -> Linear connectors
+            // Finally, connect the regions using shortest path
             ConnectUsingShortestPath(grid, newRegions, avoidRegions, template);
         }
 
-        private void CreateConnectionPoints(GridCellInfo[,] grid, IEnumerable<Region> regions)
+        private void CreateConnectionPoints(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions)
         {
             // Check for no regions
             if (regions.Count() == 0)
@@ -175,12 +173,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             for (int i = 0; i < regions.Count() - 1; i++)
             {
                 // Get random cells from the two regions
-                var region1Index = _randomSequenceGenerator.Get(0, regions.ElementAt(i).Cells.Length);
-                var region2Index = _randomSequenceGenerator.Get(0, regions.ElementAt(i + 1).Cells.Length);
+                var region1Index = _randomSequenceGenerator.Get(0, regions.ElementAt(i).Locations.Length);
+                var region2Index = _randomSequenceGenerator.Get(0, regions.ElementAt(i + 1).Locations.Length);
 
                 // Get cells from the array ~ O(1)
-                var location1 = regions.ElementAt(i).Cells[region1Index];
-                var location2 = regions.ElementAt(i + 1).Cells[region2Index];
+                var location1 = regions.ElementAt(i).Locations[region1Index];
+                var location2 = regions.ElementAt(i + 1).Locations[region2Index];
 
                 // Set cells to mandatory
                 grid[location1.Column, location1.Row].IsMandatory = true;
@@ -191,12 +189,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             }
 
             // Connect the first and last regions
-            var firstIndex = _randomSequenceGenerator.Get(0, regions.First().Cells.Length);
-            var lastIndex = _randomSequenceGenerator.Get(0, regions.Last().Cells.Length);
+            var firstIndex = _randomSequenceGenerator.Get(0, regions.First().Locations.Length);
+            var lastIndex = _randomSequenceGenerator.Get(0, regions.Last().Locations.Length);
 
             // Get cells from the array ~ O(1)
-            var firstLocation = regions.First().Cells[firstIndex];
-            var lastLocation = regions.Last().Cells[lastIndex];
+            var firstLocation = regions.First().Locations[firstIndex];
+            var lastLocation = regions.Last().Locations[lastIndex];
 
             // Set cells to mandatory
             grid[firstLocation.Column, firstLocation.Row].IsMandatory = true;
@@ -206,7 +204,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             grid[lastLocation.Column, lastLocation.Row].MandatoryType = LayoutMandatoryLocationType.RoomConnector2;
         }
 
-        private void ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<Region> regions, IEnumerable<Region> avoidRegions, LayoutTemplate template)
+        private void ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
         {
             // Procedure
             //
@@ -216,8 +214,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // 4) Use Dijkstra's algorithm to connect the regions with the cost map
             //
 
-            // Create cost map from the regions
-            var costMap = CreateRegionCostMap(grid, regions.Union(avoidRegions));
+            //// Create cost map from the regions
+            //var costMap = CreateRegionCostMap(grid, regions.Union(avoidRegions));
 
             // Triangulate room positions
             var graph = GeometryUtility.PrimsMinimumSpanningTree(regions, Metric.MetricType.Euclidean);
@@ -228,44 +226,22 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
                 var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
 
-                var dijkstraMap = new DijkstraMap(costMap, location1, location2, true);
+                // Create a Dijkstra path generator to find paths for the edge
+                var dijkstraMap = new DijkstraPathGenerator(grid, location1, new GridCellInfo[] { location2 }, true);
 
-                if (!dijkstraMap.Run())
+                // Embed path cells using callback to set properties
+                dijkstraMap.EmbedPaths(new DijkstraPathGenerator.DijkstraEmbedPathCallback(cell =>
                 {
-                    dijkstraMap.OutputCSV(ResourceConstants.DijkstraOutputDirectory,
-                                          template.Name +
-                                          " DijkstraMap_Edge_" +
-                                          edge.Point1.Vertex.Column + "_" +
-                                          edge.Point1.Vertex.Row + " to " +
-                                          edge.Point2.Vertex.Column + "_" +
-                                          edge.Point2.Vertex.Row);
-
-                    throw new Exception("Invalid Dijkstra Map (see output directory)");
-                }
-
-                foreach (var location in dijkstraMap.GeneratePath())
-                {
-                    // Maze levels can have walls set up to punch through
-                    if (grid[location.Column, location.Row] != null)
-                    {
-                        grid[location.Column, location.Row].IsWall = false;
-                        grid[location.Column, location.Row].IsCorridor = true;
-                    }
-
-                    // Empty cells need to be filled in
-                    else
-                        grid[location.Column, location.Row] = new GridCellInfo(location)
-                        {
-                            IsCorridor = true
-                        };
-                }
+                    cell.IsWall = false;
+                    cell.IsCorridor = true;
+                }));
             }
         }
 
-        private bool PreValidateRegions(IEnumerable<Region> regions)
+        private bool PreValidateRegions(IEnumerable<Region<GridCellInfo>> regions)
         {
             // Validate room regions
-            var invalidRoomRegions = regions.Where(region => !_regionValidator.ValidateRoomRegion(region));
+            var invalidRoomRegions = regions.Where(region => !RegionValidator.ValidateRoomRegion(region));
 
             // Check for a valid room region
             if (invalidRoomRegions.Count() > 0)
@@ -274,33 +250,33 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             return true;
         }
 
-        /// <summary>
-        /// Creates cost map for the grid using pre-identified regions
-        /// </summary>
-        private double[,] CreateRegionCostMap(GridCellInfo[,] grid, IEnumerable<Region> regions)
-        {
-            var costMap = new double[grid.GetLength(0), grid.GetLength(1)];
+        ///// <summary>
+        ///// Creates cost map for the grid using pre-identified regions
+        ///// </summary>
+        //private double[,] CreateRegionCostMap(GridCellInfo[,] grid, IEnumerable<Region> regions)
+        //{
+        //    var costMap = new double[grid.GetLength(0), grid.GetLength(1)];
 
-            for (int i = 0; i < grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < grid.GetLength(1); j++)
-                {
-                    // Cell Costs:
-                    //
-                    // - If grid cell is empty (null) then it has zero cost as long as it doesn't belong to any region.
-                    // - A cell could be a wall left over from generating a maze - so allow walls to be zero cost.
-                    // - Impassible terrain or region features will have a high cost
-                    //
-                    if ((grid[i, j] == null || grid[i, j].IsWall) && 
-                        !regions.Any(region => region[i, j] != null))
-                        costMap[i, j] = 0;
+        //    for (int i = 0; i < grid.GetLength(0); i++)
+        //    {
+        //        for (int j = 0; j < grid.GetLength(1); j++)
+        //        {
+        //            // Cell Costs:
+        //            //
+        //            // - If grid cell is empty (null) then it has zero cost as long as it doesn't belong to any region.
+        //            // - A cell could be a wall left over from generating a maze - so allow walls to be zero cost.
+        //            // - Impassible terrain or region features will have a high cost
+        //            //
+        //            if ((grid[i, j] == null || grid[i, j].IsWall) && 
+        //                !regions.Any(region => region[i, j] != null))
+        //                costMap[i, j] = 0;
 
-                    else
-                        costMap[i, j] = DijkstraMap.RegionFeatureConstant;
-                }
-            }
+        //            else
+        //                costMap[i, j] = DijkstraMap.RegionFeatureConstant;
+        //        }
+        //    }
 
-            return costMap;
-        }
+        //    return costMap;
+        //}
     }
 }

@@ -105,8 +105,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
         private bool CellularAutomataOpenRule(GridCellInfo[,] grid, RegionBoundary boundary, int column, int row)
         {
-            if (boundary.CellWidth < 3 ||
-                boundary.CellHeight < 3)
+            if (boundary.Width < 3 ||
+                boundary.Height < 3)
                 throw new ArgumentException("Trying to iterate cellular automata with too small of a boundary");
 
             return (Count(grid, boundary, column, row, 0) + Count(grid, boundary, column, row, 1)) >= 5;

@@ -125,7 +125,7 @@ namespace Rogue.NET.Core.Model.Scenario
             this.Consumables = new List<Consumable>();
 
             _levelContent = new List<ScenarioObject>();
-            _levelContentGrid = new List<ScenarioObject>[grid.Bounds.CellWidth, grid.Bounds.CellHeight];
+            _levelContentGrid = new List<ScenarioObject>[grid.Bounds.Width, grid.Bounds.Height];
             _levelContentArray = new ScenarioObject[] { };
             _levelContentDict = new Dictionary<string, ScenarioObject>();
 

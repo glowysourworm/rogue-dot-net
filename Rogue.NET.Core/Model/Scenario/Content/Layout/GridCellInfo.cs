@@ -1,14 +1,26 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     /// <summary>
     /// Component used for creating the LevelGrid during the generation phase.
     /// </summary>
-    public class GridCellInfo
+    public class GridCellInfo : IGridLocator
     {
+        #region (public) IGridLocator
+        public int Column
+        {
+            get { return this.Location?.Column ?? -1; }
+        }
+
+        public int Row
+        {
+            get { return this.Location?.Row ?? -1; }
+        }
+        #endregion
+
         public GridLocation Location { get; set; }
         public bool IsDoor { get; set; }
         public bool IsWall { get; set; }
@@ -31,6 +43,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Location = new GridLocation(column, row);
             this.BaseLight = new Light();
             this.WallLight = new Light();
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new System.NotSupportedException("ISerializable not supported for GridCellInfo - See IGridLocator interface");
         }
     }
 }

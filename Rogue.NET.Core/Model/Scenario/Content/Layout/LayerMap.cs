@@ -14,20 +14,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public string Name { get; private set; }
 
         // Keep a grid of region references per cell in the region
-        Region[,] _regionMap;
+        Region<GridLocation>[,] _regionMap;
 
         // Also, keep a collection of the regions for this layer
-        IEnumerable<Region> _regions;
+        IEnumerable<Region<GridLocation>> _regions;
 
         /// <summary>
         /// Gets the region for the specified location
         /// </summary>
-        public Region this[int column, int row]
+        public Region<GridLocation> this[int column, int row]
         {
             get { return _regionMap[column, row]; }
         }
 
-        public LayerMap(string layerName, IEnumerable<Region> regions, int width, int height)
+        public LayerMap(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)
         {
             Initialize(layerName, regions, width, height);
         }
@@ -39,11 +39,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var height = info.GetInt32("Height");
             var regionCount = info.GetInt32("RegionCount");
 
-            var regions = new List<Region>();
+            var regions = new List<Region<GridLocation>>();
 
             for (int i = 0; i < regionCount; i++)
             {
-                var region = (Region)info.GetValue("Region" + i.ToString(), typeof(Region));
+                var region = (Region<GridLocation>)info.GetValue("Region" + i.ToString(), typeof(Region<GridLocation>));
 
                 regions.Add(region);
             }
@@ -62,22 +62,22 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 info.AddValue("Region" + i.ToString(), _regions.ElementAt(i));
         }
 
-        private void Initialize(string layerName, IEnumerable<Region> regions, int width, int height)
+        private void Initialize(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)
         {
             this.Name = layerName;
 
             _regions = regions;
-            _regionMap = new Region[width, height];
+            _regionMap = new Region<GridLocation>[width, height];
 
             // Iterate regions and initialize the map
             foreach (var region in regions)
             {
-                foreach (var cell in region.Cells)
+                foreach (var location in region.Locations)
                 {
-                    if (_regionMap[cell.Column, cell.Row] != null)
+                    if (_regionMap[location.Column, location.Row] != null)
                         throw new Exception("Invalid Region construction - duplicate cell locations");
 
-                    _regionMap[cell.Column, cell.Row] = region;
+                    _regionMap[location.Column, location.Row] = region;
                 }
             }
         }
@@ -85,7 +85,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Returns all regions in the map
         /// </summary>
-        public IEnumerable<Region> GetRegions()
+        public IEnumerable<Region<GridLocation>> GetRegions()
         {
             return _regions;
         }

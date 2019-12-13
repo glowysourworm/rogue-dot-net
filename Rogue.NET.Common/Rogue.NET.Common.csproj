@@ -219,6 +219,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collection\BinarySearchTree.cs" />
     <Compile Include="Constant\CharacterSymbol.cs" />
     <Compile Include="Constant\GameSymbol.cs" />
     <Compile Include="Constant\Symbol.cs" />

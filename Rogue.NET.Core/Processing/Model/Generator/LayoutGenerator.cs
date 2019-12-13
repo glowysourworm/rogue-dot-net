@@ -1,16 +1,15 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -23,22 +22,19 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         readonly ITerrainBuilder _terrainBuilder;
         readonly IWallFinisher _wallFinisher;
         readonly ILightingFinisher _lightingFinisher;
-        readonly IRegionValidator _regionValidator;
 
         [ImportingConstructor]
         public LayoutGenerator(IRegionBuilder regionBuilder,
                                IConnectionBuilder connectionBuilder,
                                ITerrainBuilder terrainBuilder,
                                IWallFinisher wallFinisher,
-                               ILightingFinisher lightingFinisher,
-                               IRegionValidator regionValidator)
+                               ILightingFinisher lightingFinisher)
         {
             _regionBuilder = regionBuilder;
             _connectionBuilder = connectionBuilder;
             _terrainBuilder = terrainBuilder;
             _wallFinisher = wallFinisher;
             _lightingFinisher = lightingFinisher;
-            _regionValidator = regionValidator;
         }
 
         public LevelGrid CreateLayout(LayoutTemplate template)
@@ -47,7 +43,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var grid = _regionBuilder.BuildRegions(template);
 
             // Identify Regions and create connectors
-            IEnumerable<Region> regions;
+            IEnumerable<Region<GridCellInfo>> regions;
 
             if (IdentifyValidRegions(grid, out regions))
                 _connectionBuilder.BuildConnections(grid, regions, template);
@@ -72,42 +68,52 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             }
 
             // Final room layer is calculated by the terrain builder
-            LayerInfo roomLayer;
             IEnumerable<LayerInfo> terrainLayers;
 
             // If there are any terrain layers - proceed building them and re-creating any blocked corridors
             if (template.TerrainLayers.Any())
             {
                 // Build Terrain -> Identify new regions -> Re-connect regions
-                if (!_terrainBuilder.BuildTerrain(grid, regions, template, out roomLayer, out terrainLayers))
+                if (!_terrainBuilder.BuildTerrain(grid, regions, template, out terrainLayers))
                     return CreateDefaultLayout();
             }
 
-            // Create room layer with regions as-is
+            // Create empty terrain layer array
             else
-            {
-                roomLayer = new LayerInfo("Room Layer", regions);
                 terrainLayers = new LayerInfo[] { };
-            }
+
+            // Identify final room regions
+            var roomRegions = grid.IdentifyRegions(cell => !cell.IsWall && !cell.IsCorridor);
+
+            // Identify final corridor regions
+            var corridorRegions = grid.IdentifyRegions(cell => !cell.IsWall && cell.IsCorridor);
+
+            // *** Iterate regions to re-create using GridLocation (ONLY SUPPORTED SERIALIZED TYPE FOR REGIONS)
+            var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region));
+            var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region));
+
+            // Build layers
+            var roomLayer = new LayerInfo("Room Layer", finalRoomRegions);
+            var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions);
 
             // Build Walls around cells
             _wallFinisher.CreateWalls(grid, false);
 
             // Create Lighting
-            _lightingFinisher.CreateLighting(grid, roomLayer, template);
+            _lightingFinisher.CreateLighting(grid, roomRegions, template);
 
-            return new LevelGrid(grid, roomLayer, terrainLayers);
+            return new LevelGrid(grid, roomLayer, corridorLayer, terrainLayers);
         }
 
         /// <summary>
         /// Identifies regions - removing invalid ones. Returns false if there are no valid regions.
         /// </summary>
-        private bool IdentifyValidRegions(GridCellInfo[,] grid, out IEnumerable<Region> validRegions)
+        private bool IdentifyValidRegions(GridCellInfo[,] grid, out IEnumerable<Region<GridCellInfo>> validRegions)
         {
-            var regions = grid.IdentifyRegions();
+            var regions = grid.IdentifyRegions(cell => !cell.IsWall);
 
             // Check for default room size constraints
-            var invalidRegions = regions.Where(region => !_regionValidator.ValidateRoomRegion(region));
+            var invalidRegions = regions.Where(region => !RegionValidator.ValidateRoomRegion(region));
 
             // Set valid regions
             validRegions = regions.Except(invalidRegions);
@@ -122,21 +128,38 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 foreach (var region in invalidRegions)
                 {
                     // Remove region cells
-                    foreach (var cell in region.Cells)
-                        grid[cell.Column, cell.Row] = null;
+                    foreach (var location in region.Locations)
+                        grid[location.Column, location.Row] = null;
                 }
             }
 
             return true;
         }
 
+        /// <summary>
+        /// Converts Region to use GridLocation type for serialization.
+        /// </summary>
+        private Region<GridLocation> ConvertRegion(GridCellInfo[,] grid, Region<GridCellInfo> region)
+        {
+            return new Region<GridLocation>(region.Locations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
+                                            region.EdgeLocations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
+                                            region.Boundary,
+                                            new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
+        }
+
         private LevelGrid CreateDefaultLayout()
         {
             var grid = _regionBuilder.BuildDefaultRegion();
 
-            var regions = grid.IdentifyRegions();
+            var roomRegions = grid.IdentifyRegions(cell => !cell.IsWall && !cell.IsCorridor);
+            var corridorRegions = grid.IdentifyRegions(cell => cell.IsCorridor);
 
-            var roomLayer = new LayerInfo("Room Layer", regions);
+            // *** Iterate regions to re-create using GridLocation (ONLY SUPPORTED SERIALIZED TYPE FOR REGIONS)
+            var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region));
+            var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region));
+
+            var roomLayer = new LayerInfo("Room Layer", finalRoomRegions);
+            var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions);
 
             // Build Walls around cells
             _wallFinisher.CreateWalls(grid, false);
@@ -144,7 +167,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create Lighting
             _lightingFinisher.CreateDefaultLighting(grid);
 
-            return new LevelGrid(grid, roomLayer, new LayerInfo[] { });
+            return new LevelGrid(grid, roomLayer, corridorLayer, new LayerInfo[] { });
         }
 
         private void MakeSymmetric(GridCellInfo[,] grid, LayoutSymmetryType symmetryType)
@@ -162,11 +185,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                             {
                                 // E -> W
                                 if (grid[i, j] != null)
-                                    grid[mirrorColumn, j] = new GridCellInfo(mirrorColumn, j) { IsWall = grid[i, j].IsWall };
+                                    grid[mirrorColumn, j] = new GridCellInfo(mirrorColumn, j) { IsWall = grid[i, j].IsWall, IsCorridor = grid[i, j].IsCorridor };
 
                                 // W -> E
                                 else if (grid[mirrorColumn, j] != null)
-                                    grid[i, j] = new GridCellInfo(i, j) { IsWall = grid[mirrorColumn, j].IsWall };
+                                    grid[i, j] = new GridCellInfo(i, j) { IsWall = grid[mirrorColumn, j].IsWall, IsCorridor = grid[mirrorColumn, j].IsCorridor };
                             }
                         }
                     }
@@ -207,10 +230,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                 // Mirror cell over to other quadrants
                                 if (cell != null)
                                 {
-                                    grid[i, j] = new GridCellInfo(i, j) { IsWall = cell.IsWall };
-                                    grid[mirrorColumn, j] = new GridCellInfo(mirrorColumn, j) { IsWall = cell.IsWall };
-                                    grid[i, mirrorRow] = new GridCellInfo(i, mirrorRow) { IsWall = cell.IsWall };
-                                    grid[mirrorColumn, mirrorRow] = new GridCellInfo(mirrorColumn, mirrorRow) { IsWall = cell.IsWall };
+                                    grid[i, j] = new GridCellInfo(i, j) { IsWall = cell.IsWall, IsCorridor = cell.IsCorridor };
+                                    grid[mirrorColumn, j] = new GridCellInfo(mirrorColumn, j) { IsWall = cell.IsWall, IsCorridor = cell.IsCorridor };
+                                    grid[i, mirrorRow] = new GridCellInfo(i, mirrorRow) { IsWall = cell.IsWall, IsCorridor = cell.IsCorridor };
+                                    grid[mirrorColumn, mirrorRow] = new GridCellInfo(mirrorColumn, mirrorRow) { IsWall = cell.IsWall, IsCorridor = cell.IsCorridor };
                                 }
                             }
                         }
@@ -270,19 +293,19 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var roomConnector1 = false;
                 var roomConnector2 = false;
 
-                foreach (var cell in region.Cells)
+                foreach (var location in region.Locations)
                 {
-                    if (grid[cell.Column, cell.Row].IsMandatory &&
-                        grid[cell.Column, cell.Row].MandatoryType == LayoutMandatoryLocationType.RoomConnector1)
+                    if (grid[location.Column, location.Row].IsMandatory &&
+                        grid[location.Column, location.Row].MandatoryType == LayoutMandatoryLocationType.RoomConnector1)
                         roomConnector1 = true;
 
-                    if (grid[cell.Column, cell.Row].IsMandatory &&
-                        grid[cell.Column, cell.Row].MandatoryType == LayoutMandatoryLocationType.RoomConnector2)
+                    if (grid[location.Column, location.Row].IsMandatory &&
+                        grid[location.Column, location.Row].MandatoryType == LayoutMandatoryLocationType.RoomConnector2)
                         roomConnector2 = true;
                 }
 
 #if DEBUG
-                if (!_regionValidator.ValidateRoomRegion(region))
+                if (!RegionValidator.ValidateRoomRegion(region))
                     throw new Exception("Room Region invalid");
 
                 if (!roomConnector1)

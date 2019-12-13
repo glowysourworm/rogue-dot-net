@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace Rogue.NET.Core.Math.Geometry
             return System.Math.Pow((point2.X - point1.X), 2) + System.Math.Pow((point2.Y - point1.Y), 2);
         }
 
-        public static double EuclideanDistance(GridLocation location1, GridLocation location2)
+        public static double EuclideanDistance(IGridLocator location1, IGridLocator location2)
         {
             return System.Math.Sqrt(System.Math.Pow((location2.Column - location1.Column), 2) + System.Math.Pow((location2.Row - location1.Row), 2));
         }
@@ -50,7 +51,7 @@ namespace Rogue.NET.Core.Math.Geometry
             return System.Math.Sqrt(System.Math.Pow((column2 - column1), 2) + System.Math.Pow((row2 - row1), 2));
         }
 
-        public static double EuclideanSquareDistance(GridLocation location1, GridLocation location2)
+        public static double EuclideanSquareDistance(IGridLocator location1, IGridLocator location2)
         {
             return System.Math.Pow((location2.Column - location1.Column), 2) + System.Math.Pow((location2.Row - location1.Row), 2);
         }
@@ -83,7 +84,7 @@ namespace Rogue.NET.Core.Math.Geometry
             var y = (int)System.Math.Abs(point2.Y - point1.Y);
             return System.Math.Max(x, y);
         }
-        public static int RoguianDistance(GridLocation location1, GridLocation location2)
+        public static int RoguianDistance(IGridLocator location1, IGridLocator location2)
         {
             var x = System.Math.Abs(location2.Column - location1.Column);
             var y = System.Math.Abs(location2.Row - location1.Row);

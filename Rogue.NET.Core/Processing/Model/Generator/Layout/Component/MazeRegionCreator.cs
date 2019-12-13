@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
@@ -46,10 +47,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             var startingColumn = _randomSequenceGenerator.Get(boundary.Left, boundary.Right + 1);
             var startingRow = _randomSequenceGenerator.Get(boundary.Top, boundary.Bottom + 1);
 
-            RecursiveBacktracker(grid, new Region[] { }, grid[startingColumn, startingRow].Location, wallRemovalRatio, horizontalVerticalBias, mazeType);
+            RecursiveBacktracker(grid, new Region<GridCellInfo>[] { }, grid[startingColumn, startingRow].Location, wallRemovalRatio, horizontalVerticalBias, mazeType);
         }
 
-        public void CreateCellsStartingAt(GridCellInfo[,] grid, IEnumerable<Region> avoidRegions, GridLocation startingLocation, MazeType mazeType, double wallRemovalRatio, double horizontalVerticalBias)
+        public void CreateCellsStartingAt(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> avoidRegions, GridLocation startingLocation, MazeType mazeType, double wallRemovalRatio, double horizontalVerticalBias)
         {
             if (grid[startingLocation.Column, startingLocation.Row] == null)
                 throw new ArgumentException("Invalid starting location MazeRegionCreator.CreateCellsStartingAt");
@@ -57,7 +58,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             RecursiveBacktracker(grid, avoidRegions, startingLocation, wallRemovalRatio, horizontalVerticalBias, mazeType);
         }
 
-        private void RecursiveBacktracker(GridCellInfo[,] grid, IEnumerable<Region> avoidRegions, GridLocation startingLocation, double wallRemovalRatio, double horizontalVerticalBias, MazeType mazeType)
+        private void RecursiveBacktracker(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> avoidRegions, GridLocation startingLocation, double wallRemovalRatio, double horizontalVerticalBias, MazeType mazeType)
         {
             // Pre-Condition: All cells in the region must be filled with walls
             //
@@ -142,6 +143,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                         // Remove the wall
                         nextCell.IsWall = false;
 
+                        // Set as corridor
+                        nextCell.IsCorridor = true;
+
                         // Push on the stack
                         history.Push(nextCell);
 
@@ -180,6 +184,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                     // Remove the wall setting
                     grid[i, j].IsWall = false;
+
+                    // Set as corridor
+                    grid[i, j].IsCorridor = true;
                 }
             }
         }
@@ -196,7 +203,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             {
                 var horizontalCells = cardinalAdjacentCells.Where(cell =>
                 {
-                    var direction = GridUtility.GetDirectionOfAdjacentLocation(currentCell.Location, cell.Location);
+                    var direction = GridCalculator.GetDirectionOfAdjacentLocation(currentCell.Location, cell.Location);
 
                     return direction == Compass.E || direction == Compass.W;
                 });
@@ -214,7 +221,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             {
                 var verticalCells = cardinalAdjacentCells.Where(cell =>
                 {
-                    var direction = GridUtility.GetDirectionOfAdjacentLocation(currentCell.Location, cell.Location);
+                    var direction = GridCalculator.GetDirectionOfAdjacentLocation(currentCell.Location, cell.Location);
 
                     return direction == Compass.N || direction == Compass.S;
                 });
@@ -255,9 +262,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         /// </summary>
         private static bool FiveAdjacentWallsDirectionalRule(GridCellInfo currentCell, GridCellInfo nextCell, GridCellInfo[] nextCell8WayNeighbors)
         {
-            var direction = GridUtility.GetDirectionOfAdjacentLocation(currentCell.Location, nextCell.Location);
+            var direction = GridCalculator.GetDirectionOfAdjacentLocation(currentCell.Location, nextCell.Location);
             var neighborWallDirections = nextCell8WayNeighbors.Where(cell => cell.IsWall)
-                                                              .Select(cell => GridUtility.GetDirectionOfAdjacentLocation(nextCell.Location, cell.Location))
+                                                              .Select(cell => GridCalculator.GetDirectionOfAdjacentLocation(nextCell.Location, cell.Location))
                                                               .Actualize();
 
             // Check directional flag (OR'ed) to make sure ALL 5 cells are accounted for

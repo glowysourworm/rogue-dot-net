@@ -35,9 +35,9 @@ namespace Rogue.NET.Scenario.Processing.Service
         }
         public Rect Cell2UIRect(RegionBoundary r)
         {
-            Point p = Cell2UI((int)r.Location.Column, (int)r.Location.Row);
-            int w = (int)r.CellWidth * ModelConstants.CellWidth;
-            int h = (int)r.CellHeight * ModelConstants.CellHeight;
+            Point p = Cell2UI((int)r.Column, (int)r.Row);
+            int w = (int)r.Width * ModelConstants.CellWidth;
+            int h = (int)r.Height * ModelConstants.CellHeight;
             return new Rect(p, new Size(w, h));
         }
 

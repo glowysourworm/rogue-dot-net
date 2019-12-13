@@ -13,6 +13,7 @@ using Rogue.NET.Core.Processing.Action.Enum;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
+using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
@@ -765,10 +766,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (moveLocation == null)
                 return;
 
-            var moveDirection = GridUtility.GetDirectionBetweenAdjacentPoints(character.Location.Column,
-                                                                              character.Location.Row,
-                                                                              moveLocation.Column,
-                                                                              moveLocation.Row);
+            var moveDirection = GridCalculator.GetDirectionOfAdjacentLocation(character.Location, moveLocation);
 
             // GOING TO EXCLUDE CHARACTER / CHARACTER SWAP FOR THE SAME ALIGNMENT (reserved for Player only)
             //
