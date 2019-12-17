@@ -8,9 +8,17 @@ namespace Rogue.NET.Common.Collection
 {
     // AVL Binary Search Tree Implementation - https://en.wikipedia.org/wiki/AVL_tree
     //
-    // - O(log n) Insert, Delete, Search
+    // - O(log n) Insert, Delete
     // - Self balancing
+    // - O(1) Search using dictionary backup (also to retrieve count)
     // 
+    // UPDATE:  https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AVLTreeST.java.html
+    //
+    //          Must cleaner implementation - uses just a left and right pointer; calculates the
+    //          height; and rebalances the tree on each operation without using any additional
+    //          recursive lookups (height, or balance factor). Also, has an optional "assert check()"
+    //          to check the AVL tree "invariants" (the definition of the tree) after each operation
+    //  
 
     /// <summary>
     /// AVL Binary Search Tree implementation that gets the key from the value node by use of an 
@@ -21,13 +29,6 @@ namespace Rogue.NET.Common.Collection
     /// <typeparam name="T">Node type</typeparam>
     public class BinarySearchTree<K, T> where T : class where K : IComparable<K>
     {
-        ///// <summary>
-        ///// Delegate used to compare two node keys of the binary search tree. MUST RETURN -1, +1, or 0
-        ///// </summary>
-        //public delegate int BinarySearchTreeComparer(K key1, K key2);
-
-        //readonly BinarySearchTreeComparer _comparer;
-
         // Track values to help visualize when debugging
         Dictionary<K, T> _valueDict;
 
@@ -41,37 +42,29 @@ namespace Rogue.NET.Common.Collection
 
         protected class BinarySearchTreeNode
         {
-            public BinarySearchTreeNode Parent { get; set; }
             public BinarySearchTreeNode LeftChild { get; set; }
             public BinarySearchTreeNode RightChild { get; set; }
             public K Key { get; set; }
             public T Value { get; set; }
-            
+            public int Height { get; set; }
             public int BalanceFactor
             {
-                get { return GetDepth(this.RightChild) - GetDepth(this.LeftChild); }
+                get { return (this.LeftChild?.Height ?? -1) - (this.RightChild?.Height ?? -1); }
             }
 
-            private int GetDepth(BinarySearchTreeNode node)
+            public BinarySearchTreeNode(K key, T value)
             {
-                if (node == null)
-                    return 0;
-
-                else if (node.LeftChild == null &&
-                         node.RightChild == null)
-                         return 1;
-                else
-                    return System.Math.Max(GetDepth(node.LeftChild), GetDepth(node.RightChild));
-            }
-
-            /// <summary>
-            /// Sets the depth based on the parent node
-            /// </summary>
-            public BinarySearchTreeNode(BinarySearchTreeNode parent, K key, T value)
-            {
-                this.Parent = parent;
                 this.Key = key;
                 this.Value = value;
+            }
+
+            public override string ToString()
+            {
+                return string.Format("(Key={0}, BF={1}) -> Left:  {2}, Right: {3}", 
+                                        this.Key, 
+                                        this.BalanceFactor, 
+                                        this.LeftChild?.Key?.ToString() ?? "null", 
+                                        this.RightChild?.Key?.ToString() ?? "null");
             }
         }
 
@@ -82,51 +75,17 @@ namespace Rogue.NET.Common.Collection
 
         public void Insert(K key, T value)
         {
-            if (_root == null)
-                _root = new BinarySearchTreeNode(null, key, value);
+            // Insert value into the tree -> Rebalance the tree
+            _root = InsertImpl(_root, key, value);
 
-            else
-            {
-                // Perform insertion
-                var node = InsertImpl(_root, key, value);
-
-                // Use node to traverse the tree to re-balance it
-                var heavyNode = Retrace(node);
-
-                if (heavyNode != null)
-                    Balance(heavyNode);
-            }
-
-            // Track the values for debugging
+            // Track the values for debugging and a fast retrieval using the key
             _valueDict.Add(key, value);
         }
 
         public void Remove(K key)
         {
-            if (_root == null)
-                throw new Exception("Node not found in the tree BinarySearchTree");
-
-            else
-            {
-                // Perform search
-                var node = SearchImpl(_root, key);
-
-                // Perform removal
-                if (node != null)
-                {
-                    // Remove node and return node for retracing and balancing
-                    var lowestAffectedNode = RemovalImpl(node);
-
-                    // Retrace
-                    var heavyNode = Retrace(lowestAffectedNode);
-
-                    // Balance
-                    if (heavyNode != null)
-                        Balance(heavyNode);
-                }
-                else
-                    throw new Exception("Node not found in the tree BinarySearchTree");
-            }
+            // Remove the specified key -> Rebalance the tree
+            _root = RemovalImpl(_root, key);
 
             // Track the values for debugging
             _valueDict.Remove(key);
@@ -173,245 +132,85 @@ namespace Rogue.NET.Common.Collection
         }
 
         /// <summary>
-        /// Performs insertion of the node recursively and returns the node that was inserted. Returns null if insertion fails.
+        /// Performs insertion of the node recursively. Retraces to update balance factors and re-balance
+        /// the tree.
         /// </summary>
         private BinarySearchTreeNode InsertImpl(BinarySearchTreeNode node, K key, T value)
         {
+            if (node == null)
+                return new BinarySearchTreeNode(key, value);
+
             var comparison = key.CompareTo(node.Key);
 
             // Insert Left
             if (comparison < 0)
-            {
-                // Recurse Left
-                if (node.LeftChild != null)
-                    return InsertImpl(node.LeftChild, key, value);
-
-                // Create Left Child Node
-                else
-                {
-                    node.LeftChild = new BinarySearchTreeNode(node, key, value);
-                    return node.LeftChild;
-                }
-            }
+                node.LeftChild = InsertImpl(node.LeftChild, key, value);
 
             // Insert Right
             else if (comparison > 0)
-            {
-                // Recurse Right
-                if (node.RightChild != null)
-                    return InsertImpl(node.RightChild, key, value);
-
-                // Create Right Child Node
-                else
-                {
-                    node.RightChild = new BinarySearchTreeNode(node, key, value);
-                    return node.RightChild;
-                }
-            }
-
+                node.RightChild = InsertImpl(node.RightChild, key, value);
+            
             else
                 throw new Exception("Duplicate key insertion BinarySearchTree");
 
-            return null;
+            // Set the height
+            node.Height = System.Math.Max(node.LeftChild?.Height ?? -1, node.RightChild?.Height ?? -1) + 1;
+
+            return Balance(node);
         }
 
         /// <summary>
-        /// Performs a search on the tree for the given value. Returns null if search fails
+        /// Removes node from the tree using next-successor replacement (see procedure). Also, sets up balance factors.
         /// </summary>
-        private BinarySearchTreeNode SearchImpl(BinarySearchTreeNode node, K key)
+        private BinarySearchTreeNode RemovalImpl(BinarySearchTreeNode node, K key)
         {
-            if (node == null)
-                return null;
+            // Procedure:  https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AVLTreeST.java.html
+            //
 
             var comparison = key.CompareTo(node.Key);
 
-            // Search Left
             if (comparison < 0)
-                return SearchImpl(node.LeftChild, key);
+                node.LeftChild = RemovalImpl(node.LeftChild, key);
 
-            // Search Right
             else if (comparison > 0)
-                return SearchImpl(node.RightChild, key);
+                node.RightChild = RemovalImpl(node.RightChild, key);
 
-            // Node found
             else
-                return node;
+            {
+                // One child case
+                if (node.LeftChild == null)
+                    return node.RightChild;
+
+                else if (node.RightChild == null)
+                    return node.LeftChild;
+
+                // Next successor case/
+                else
+                {
+                    var temp = node;
+                    node = MinImpl(temp.RightChild);
+                    node.RightChild = DeleteMin(temp.RightChild);
+                    node.LeftChild = temp.LeftChild;
+                }
+            }
+
+            node.Height = System.Math.Max(node.LeftChild?.Height ?? -1, node.RightChild?.Height ?? -1) + 1;
+
+            return Balance(node);
         }
 
         /// <summary>
-        /// Gets the next successor from the tree - used during removal. Start with the node being removed.
+        /// Deletes the smallest entry from the subtree
         /// </summary>
-        private BinarySearchTreeNode SearchSuccessorImpl(BinarySearchTreeNode node, K key)
+        private BinarySearchTreeNode DeleteMin(BinarySearchTreeNode node)
         {
-            if (node == null)
-                return null;
+            if (node.LeftChild == null)
+                return node.RightChild;
 
-            var comparison = key.CompareTo(node.Key);
+            node.LeftChild = DeleteMin(node.LeftChild);
+            node.Height = System.Math.Max(node.LeftChild?.Height ?? -1, node.RightChild?.Height ?? -1) + 1;
 
-            // Key is smaller -> check to see if there are any smaller nodes still greater than the key
-            if (comparison < 0)
-            {
-                if (node.LeftChild != null)
-                    return SearchSuccessorImpl(node.LeftChild, key) ?? node;
-            }
-            else if (comparison > 0)
-                throw new Exception("Improper use of SearchSuccessorImpl starting node");
-
-            // The nodes are equal - so start search with the right child
-            else
-                return SearchSuccessorImpl(node.RightChild, key);
-
-            return null;
-        }
-
-        /// <summary>
-        /// Returns the first node up the tree that has a balance factor of -2 or +2
-        /// </summary>
-        private BinarySearchTreeNode Retrace(BinarySearchTreeNode node)
-        {
-            // No heavy node found - return null
-            if (node == null)
-                return null;
-
-            var balanceFactor = node.BalanceFactor;
-
-            // Heavy node found - return it for balancing
-            if (System.Math.Abs(balanceFactor) == 2)
-                return node;
-
-            else if (System.Math.Abs(balanceFactor) > 1)
-                throw new Exception("Invalid Balance Factor Binary Search Tree");
-
-            // Node not heavy - trace up the tree
-            else
-                return Retrace(node.Parent);
-        }
-
-        /// <summary>
-        /// Removes node from the tree using next-successor replacement (see procedure)
-        /// </summary>
-        private BinarySearchTreeNode RemovalImpl(BinarySearchTreeNode node)
-        {
-            // Procedure
-            //
-            // Case 1:  Node has zero children -> Remove the node
-            // Case 2:  Node has one child -> Make the child node this node
-            // Case 3:  Node has two children -> Search for immediate successor
-            //          
-            //          Case 3a:  Successor has no children -> Copy successor to this node -> Remove successor
-            //          Case 3b:  Successor has one child -> Copy successor to this node ->  Make the successor's child 
-            //                    the successor and remove the successor's reference
-            //          Case 3c:  (Not possible)
-            //
-            // After this, return the lowest level affected node to retrace and balance the tree
-            //
-
-            // Case 1
-            if (node.LeftChild == null &&
-                node.RightChild == null)
-            {
-                // Node is the root
-                if (node == _root)
-                {
-                    _root = null;
-                    return null;
-                }
-
-                if (node.Parent.LeftChild == node)
-                    node.Parent.LeftChild = null;
-
-                else
-                    node.Parent.RightChild = null;
-
-                return node.Parent;
-            }
-
-            // Case 3
-            else if (node.RightChild != null &&
-                     node.LeftChild != null)
-            {
-                // Get the immediate successor
-                var successor = SearchSuccessorImpl(node, node.Key);
-
-                // Copy successor value to node
-                node.Value = successor.Value;
-                node.Key = successor.Key;
-
-                // Case 3a
-                if (successor.LeftChild == null &&
-                    successor.RightChild == null)
-                {
-                    // Remove successor
-                    if (successor.Parent.LeftChild == successor)
-                        successor.Parent.LeftChild = null;
-
-                    else
-                        successor.Parent.RightChild = null;
-                }
-
-                // Case 3b
-                else
-                {
-                    // Successor can NOT have a left child because it would itself be the successor
-                    if (successor.LeftChild != null)
-                        throw new Exception("Improper use of successor removal");
-
-                    // Successor's right child now becomes the successor
-                    else
-                    {
-                        // Copy successor's child's reference to successor's parent
-                        if (successor.Parent.LeftChild == successor)
-                            successor.Parent.LeftChild = successor.RightChild;
-
-                        else
-                            successor.Parent.RightChild = successor.RightChild;
-
-                        // Set up successor's child with new parent reference
-                        successor.RightChild.Parent = successor.Parent;
-                    }
-                }
-
-                // Return the successor's parent for re-balancing
-                return successor.Parent;
-            }
-
-            // Case 2
-            else if (node.RightChild != null ||
-                     node.LeftChild != null)
-            {
-                var newChildNode = node.RightChild ?? node.LeftChild;
-
-                // Node is the root
-                if (node == _root)
-                {
-                    // Set up new root
-                    _root = newChildNode;
-
-                    // Set up the parent node
-                    newChildNode.Parent = null;
-
-                    // Return root for balancing check
-                    return newChildNode;
-                }
-
-                // Node is not the root
-                else
-                {
-                    if (node.Parent.LeftChild == node)
-                        node.Parent.LeftChild = newChildNode;
-
-                    if (node.Parent.RightChild == node)
-                        node.Parent.RightChild = newChildNode;
-
-                    // Set the new child node's parent
-                    newChildNode.Parent = node.Parent;
-
-                    return newChildNode.Parent;
-                }
-            }
-
-            else
-                throw new Exception("Improperly handled Removal implementation BinarySearchTree");
+            return Balance(node);
         }
 
         /// <summary>
@@ -437,16 +236,15 @@ namespace Rogue.NET.Common.Collection
         }
 
         /// <summary>
-        /// Performs tree balancing using the lowest ancestor with a balancing factor of +2 or -2
+        /// Peforms checking of balance factors and calls the appropriate rotate method
         /// </summary>
-        /// <param name="heavyNode">Tree node with + or - 2 balancing factor</param>
-        private void Balance(BinarySearchTreeNode heavyNode)
+        private BinarySearchTreeNode Balance(BinarySearchTreeNode node)
         {
             // Procedure - https://en.wikipedia.org/wiki/AVL_tree
             //
             // Examine situation with heavy node and direct child:
             //
-            // Let: heavyNode = X, and nextNode = Z. (Next node would be left or right depending on BalanceFactor(Z))
+            // Let: subTree = X, and nextNode = Z. (Next node would be left or right depending on BalanceFactor(Z))
 
             /* 
  	            Right Right  => Z is a right child of its parent X and Z is  not left-heavy 	(i.e. BalanceFactor(Z) ≥ 0)  (Rotate Left)
@@ -455,133 +253,100 @@ namespace Rogue.NET.Common.Collection
 	            Left  Right  => Z is a left  child of its parent X and Z is  right-heavy 	    (i.e. BalanceFactor(Z) = +1) (Double Rotate LeftRight)
             */
 
-            if (heavyNode.BalanceFactor == 2)
-            {
-                // Right Right
-                if (heavyNode.RightChild.BalanceFactor >= 0)
-                {
-                    RotateLeft(heavyNode.RightChild);
-                }
+            // Update:  https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AVLTreeST.java.html
 
-                // Right Left
-                else
-                {
-                    // See diagram (https://en.wikipedia.org/wiki/AVL_tree#/media/File:AVL-double-rl_K.svg)
-                    RotateRight(heavyNode.RightChild.LeftChild);
-                    RotateLeft(heavyNode.RightChild);
-                }
-            }
-            else if (heavyNode.BalanceFactor == -2)
+            if (node.BalanceFactor < -1)
             {
-                // Left Left
-                if (heavyNode.LeftChild.BalanceFactor <= 0)
-                {
-                    RotateRight(heavyNode.LeftChild);
-                }
-
                 // Left Right
-                else
-                {
-                    RotateLeft(heavyNode.LeftChild.RightChild);
-                    RotateRight(heavyNode.LeftChild);
-                }
+                if (node.RightChild.BalanceFactor > 0)
+                    node.RightChild = RotateRight(node.RightChild);
+
+                node = RotateLeft(node);
             }
-            else
-                throw new Exception("Improper use of tree balancing BinarySearchTree");
+            else if (node.BalanceFactor > 1)
+            {
+                // Right Left
+                if (node.LeftChild.BalanceFactor < 0)
+                    node.LeftChild = RotateLeft(node.LeftChild);
+
+                node = RotateRight(node);
+            }
+
+            return node;
         }
 
         /// <summary>
-        /// Performs a left rotation on the sub-tree starting with node
+        /// Performs a left rotation on the sub-tree and returns the new root
         /// </summary>
-        private void RotateLeft(BinarySearchTreeNode node)
+        private BinarySearchTreeNode RotateLeft(BinarySearchTreeNode subTree)
         {
             // Procedure - https://en.wikipedia.org/wiki/AVL_tree
             //
-            // - Pre-condition:  Node must have an un-balanced parent; Node is the right-child of the parent
-            // - Node's left child becomes node's parent's right child
-            // - Node's parent becomes the left child of node
-            // - Node's parent's parent becomes node's parent
-            //
+            // - Pre-condition:  Node must have a right-child and a balance factor of -2
+            // - Node's parent becomes node's right child
+            // - Node's right child become node's right child's left child
+            // - Set new balance factors (see Wikipedia)
 
-            if (node.Parent == null)
-                throw new Exception("Invalid RotateLeft pre-condition BinarySearchTree");
+            //if (subTree.BalanceFactor != -2)
+            //    throw new Exception("Invalid RotateLeft pre-condition BinarySearchTree");
 
-            if (node.Parent.RightChild != node)
-                throw new Exception("Invalid RotateLeft pre-condition BinarySearchTree");
+            //if (subTree.RightChild == null)
+            //    throw new Exception("Invalid RotateLeft pre-condition BinarySearchTree");
 
             // Refering to variables from Wikipedia entry
-            var G = node.Parent.Parent ?? null;
-            var X = node.Parent;
-            var Z = node;
-            var T = node.LeftChild ?? null;
+            var X = subTree;
+            var Z = subTree.RightChild;
+            var T = subTree.RightChild.LeftChild ?? null;
 
             // Node's left child becomes node's parent's right child:  X -> T
             X.RightChild = T;
-            T.Parent = X;
 
             // Node's parent becomes the left child of node:  X <- Z
             Z.LeftChild = X;
-            X.Parent = Z;
 
-            // Node's parent's parent becomes node's parent:  -> Z
-            Z.Parent = G;
+            // Set up height of nodes
+            X.Height = System.Math.Max(X.LeftChild?.Height ?? -1, X.RightChild?.Height ?? -1) + 1;
+            Z.Height = System.Math.Max(Z.LeftChild?.Height ?? -1, Z.RightChild?.Height ?? -1) + 1;
 
-            // Setup grand-parent reference
-            if (G != null)
-            {
-                if (G.LeftChild == X)
-                    G.LeftChild = Z;
-
-                else
-                    G.RightChild = Z;
-            }
+            // Return node of the new sub-tree
+            return Z;
         }
 
         /// <summary>
-        /// Performs a left rotation on the sub-tree starting with node
+        /// Performs a right rotation on the sub-tree and returns the new root
         /// </summary>
-        private void RotateRight(BinarySearchTreeNode node)
+        private BinarySearchTreeNode RotateRight(BinarySearchTreeNode node)
         {
             // Procedure - https://en.wikipedia.org/wiki/AVL_tree
             //
-            // - Pre-condition:  Node must have an un-balanced parent; Node is the left-child of the parent
-            // - Node's right child becomes node's parent's left child
-            // - Node's parent becomes the right child of node
-            // - Node's parent's parent becomes node's parent
-            //
+            // - Pre-condition:  Node must have a left-child and a balance factor of +2
+            // - Node's parent becomes node's left child
+            // - Node's left child become node's left child's right child
+            // - Set new height
 
-            if (node.Parent == null)
-                throw new Exception("Invalid RotateRight pre-condition BinarySearchTree");
+            //if (node.BalanceFactor != 2)
+            //    throw new Exception("Invalid RotateLeft pre-condition BinarySearchTree");
 
-            if (node.Parent.LeftChild != node)
-                throw new Exception("Invalid RotateRight pre-condition BinarySearchTree");
+            //if (node.LeftChild == null)
+            //    throw new Exception("Invalid RotateLeft pre-condition BinarySearchTree");
 
             // Refering to variables from Wikipedia entry
-            var G = node.Parent.Parent ?? null;
-            var X = node.Parent;
-            var Z = node;
-            var T = node.RightChild ?? null;
+            var X = node;
+            var Z = node.LeftChild;
+            var T = node.LeftChild.RightChild ?? null;
 
             // Node's right child becomes node's parent's left child:  T <- X
             X.LeftChild = T;
-            T.Parent = X;
 
             // Node's parent becomes the right child of node:  Z -> X
             Z.RightChild = X;
-            X.Parent = Z;
 
-            // Node's parent's parent becomes node's parent:  -> Z
-            Z.Parent = G;
+            // Set up height of nodes
+            X.Height = System.Math.Max(X.LeftChild?.Height ?? -1, X.RightChild?.Height ?? -1) + 1;
+            Z.Height = System.Math.Max(Z.LeftChild?.Height ?? -1, Z.RightChild?.Height ?? -1) + 1;
 
-            // Setup grand-parent reference
-            if (G != null)
-            {
-                if (G.LeftChild == X)
-                    G.LeftChild = Z;
-
-                else
-                    G.RightChild = Z;
-            }
+            // Return node of the new sub-tree
+            return Z;
         }
     }
 }

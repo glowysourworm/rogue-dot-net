@@ -76,6 +76,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             {
                 var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
 
+                var isCorridor = _modelService.Level.Grid.CorridorMap[cell.Location.Column, cell.Location.Row] != null;
                 var terrainNames = _modelService.Level.Grid.TerrainMaps.Where(terrainMap => terrainMap[cell.Location.Column, cell.Location.Row] != null)
                                                                        .Select(terrainMap => terrainMap.Name);
 
@@ -123,17 +124,17 @@ namespace Rogue.NET.Scenario.Processing.Service
                     revealedDrawing.Children.Add(new ImageDrawing(wallSymbolRevealed, rect));
                 }
 
-                //// Corridors - Use for helping to debug dijkstra map connections
-                //else if (cell.IsCorridor)
-                //{
-                //    visibleDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                //    exploredDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                //    revealedDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                //}
+                // Corridors - Use for helping to debug dijkstra map connections
+                else if (isCorridor)
+                {
+                    visibleDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                    exploredDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                    revealedDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                }
 
 
                 // Room Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
-                else //if (isRoom || cell.IsCorridor)
+                else
                 {
                     visibleDrawing.Children.Add(new ImageDrawing(cellSymbol, rect));
                     exploredDrawing.Children.Add(new ImageDrawing(cellSymbolExplored, rect));
