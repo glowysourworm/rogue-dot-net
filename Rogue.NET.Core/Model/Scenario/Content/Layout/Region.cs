@@ -18,8 +18,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public T[] EdgeLocations { get; private set; }
         public RegionBoundary Boundary { get; private set; }
 
-        // Used during layout generation to store calculated nearest neighbors
-        Dictionary<Region<T>, GraphConnection> _graphConnections;
+        // Used during layout generation to store calculated nearest neighbors (STORED BY HASH CODE)
+        Dictionary<int, GraphConnection> _graphConnections;
 
         // 2D Arrays for region locations and edges
         T[,] _gridLocations;
@@ -50,7 +50,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.EdgeLocations = edgeLocations;
             this.Boundary = boundary;
 
-            _graphConnections = new Dictionary<Region<T>, GraphConnection>();
+            _graphConnections = new Dictionary<int, GraphConnection>();
             _gridLocations = new T[parentBoundary.Width, parentBoundary.Height];
             _edgeLocations = new bool[parentBoundary.Width, parentBoundary.Height];
 
@@ -64,7 +64,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         public Region(SerializationInfo info, StreamingContext context)
         {
-            _graphConnections = new Dictionary<Region<T>, GraphConnection>();
+            _graphConnections = new Dictionary<int, GraphConnection>();
 
             this.Locations = new T[info.GetInt32("LocationsLength")];
             this.EdgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
@@ -144,18 +144,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 // Iterate until a mis-match is found
                 foreach (var otherLocation in region.Locations)
                 {
-                    var match = false;
-
-                    foreach (var location in this.Locations)
-                    {
-                        if (location.Equals(otherLocation))
-                        {
-                            match = true;
-                            break;
-                        }
-                    }
-
-                    if (!match)
+                    if (this[otherLocation.Column, otherLocation.Row] == null)
                         return false;
                 }
 
@@ -182,38 +171,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public double CalculateWeight(Region<T> adjacentNode, Metric.MetricType metricType)
         {
             // Return previously calculated weight
-            if (_graphConnections.ContainsKey(adjacentNode))
-                return _graphConnections[adjacentNode].Distance;
+            if (_graphConnections.ContainsKey(adjacentNode.GetHashCode()))
+                return _graphConnections[adjacentNode.GetHashCode()].Distance;
 
-            //// Use the centers to calculate the weight
-            //if (this.IsRectangular && adjacentNode.IsRectangular)
-            //{
-            //    var distance = double.MaxValue;
-
-            //    switch (metricType)
-            //    {
-            //        case Metric.MetricType.Roguian:
-            //            distance = Metric.RoguianDistance(this.Bounds.Center, adjacentNode.Bounds.Center);
-            //            break;
-            //        case Metric.MetricType.Euclidean:
-            //            distance = Metric.EuclideanDistance(this.Bounds.Center, adjacentNode.Bounds.Center);
-            //            break;
-            //        default:
-            //            throw new Exception("Unhandled metric type Region.CalculateWeight");
-            //    }
-
-            //    _graphConnections.Add(adjacentNode, new GraphConnection()
-            //    {
-            //        AdjacentLocation = adjacentNode.Bounds.Center,
-            //        AdjacentRegion = adjacentNode,
-            //        Distance = distance,
-            //        Metric = metricType,
-            //        Location = this.Bounds.Center
-            //    });
-            //}
-            //// Use a brute force O(n x m) search
-            //else
-            //{
+            // Use a brute force O(n x m) search
             T location = null;
             T adjacentLocation = null;
             double distance = double.MaxValue;
@@ -238,7 +199,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             if (distance == double.MaxValue)
                 throw new Exception("No adjacent node connection found Region.CalculateWeight");
 
-            _graphConnections.Add(adjacentNode, new GraphConnection()
+            _graphConnections.Add(adjacentNode.GetHashCode(), new GraphConnection()
             {
                 AdjacentLocation = adjacentLocation,
                 AdjacentRegion = adjacentNode,
@@ -246,25 +207,24 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 Metric = metricType,
                 Location = location
             });
-            //}
 
-            return _graphConnections[adjacentNode].Distance;
+            return _graphConnections[adjacentNode.GetHashCode()].Distance;
         }
 
         public T GetConnectionPoint(Region<T> adjacentRegion, Metric.MetricType metricType)
         {
-            if (!_graphConnections.ContainsKey(adjacentRegion))
+            if (!_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
                 throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");
 
-            return _graphConnections[adjacentRegion].Location;
+            return _graphConnections[adjacentRegion.GetHashCode()].Location;
         }
 
         public T GetAdjacentConnectionPoint(Region<T> adjacentRegion, Metric.MetricType metricType)
         {
-            if (!_graphConnections.ContainsKey(adjacentRegion))
+            if (!_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
                 throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");
 
-            return _graphConnections[adjacentRegion].AdjacentLocation;
+            return _graphConnections[adjacentRegion.GetHashCode()].AdjacentLocation;
         }
         #endregion
     }
