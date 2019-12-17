@@ -85,8 +85,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Identify final room regions
             var roomRegions = grid.IdentifyRegions(cell => !cell.IsWall && !cell.IsCorridor);
 
-            // Identify final corridor regions
-            var corridorRegions = grid.IdentifyRegions(cell => !cell.IsWall && cell.IsCorridor);
+            // Identify final corridor regions (1) Not a wall, 2) Marked a corridor, and 3) Not in any original region)
+            var corridorRegions = grid.IdentifyRegions(cell => !cell.IsWall && cell.IsCorridor && !regions.Any(region => region[cell.Location.Column, cell.Location.Row] != null));
 
             // *** Iterate regions to re-create using GridLocation (ONLY SUPPORTED SERIALIZED TYPE FOR REGIONS)
             var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region));
