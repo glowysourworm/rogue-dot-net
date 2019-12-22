@@ -13,11 +13,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             BaseType = UITypeAttributeBaseType.Asset)]
     public class LayoutTemplateViewModel : TemplateViewModel
     {
-        private int _width;
-        private int _height;
-        private int _corridorDistanceThreshold;
         private int _numberRoomRows;
         private int _numberRoomCols;
+        private double _widthRatio;
+        private double _heightRatio;
         private double _fillRatioRooms;
         private double _fillRatioCorridors;
         private double _roomSize;
@@ -42,21 +41,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private LightAmbientTemplateViewModel _lightingAmbient2;
         private double _lightingThreshold;        
 
-        public int Width
-        {
-            get { return _width; }
-            set { this.RaiseAndSetIfChanged(ref _width, value); }
-        }
-        public int Height
-        {
-            get { return _height; }
-            set { this.RaiseAndSetIfChanged(ref _height, value); }
-        }
-        public int CorridorDistanceThreshold
-        {
-            get { return _corridorDistanceThreshold; }
-            set { this.RaiseAndSetIfChanged(ref _corridorDistanceThreshold, value); }
-        }
         public int NumberRoomRows
         {
             get { return _numberRoomRows; }
@@ -66,6 +50,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         {
             get { return _numberRoomCols; }
             set { this.RaiseAndSetIfChanged(ref _numberRoomCols, value); }
+        }
+        public double WidthRatio
+        {
+            get { return _widthRatio; }
+            set { this.RaiseAndSetIfChanged(ref _widthRatio, value); }
+        }
+        public double HeightRatio
+        {
+            get { return _heightRatio; }
+            set { this.RaiseAndSetIfChanged(ref _heightRatio, value); }
         }
         public double FillRatioRooms
         {
@@ -187,8 +181,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 
         public LayoutTemplateViewModel() : base()
         {
-            this.Width = 80;
-            this.Height = 50;
             this.Type = LayoutType.RectangularRegion;
             this.CellularAutomataType = LayoutCellularAutomataType.Open;
             this.ConnectionType = LayoutConnectionType.Corridor;

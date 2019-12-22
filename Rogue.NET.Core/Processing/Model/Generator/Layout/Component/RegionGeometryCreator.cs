@@ -81,8 +81,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         {
             var roomPadding = 1;
 
-            var gridDivisionWidth = width / numberRegionColumns;
-            var gridDivisionHeight = height / numberRegionRows;
+            // Calculate the min number of region columns / rows based on a min division size of 4
+            var minGridDivisionSize = 4;
+
+            var numberRegionColumnsMax = (int)(width / (double)minGridDivisionSize);
+            var numberRegionRowsMax = (int)(height / (double)minGridDivisionSize);
+
+            var numberRegionColumnsSafe = numberRegionColumns.HighLimit(numberRegionColumnsMax);
+            var numberRegionRowsSafe = numberRegionRows.HighLimit(numberRegionRowsMax);
+
+            var gridDivisionWidth = width / numberRegionColumnsSafe;
+            var gridDivisionHeight = height / numberRegionRowsSafe;
 
             // Calculate room size based on parameters
             var roomWidthLimit = gridDivisionWidth - (2 * roomPadding);
@@ -105,11 +114,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             var regions = new List<RegionBoundary>();
 
             // Create regions according to template parameters
-            for (int i = 0; i < numberRegionColumns; i++)
+            for (int i = 0; i < numberRegionColumnsSafe; i++)
             {
                 var divisionColumn = i * gridDivisionWidth;
 
-                for (int j = 0; j < numberRegionRows; j++)
+                for (int j = 0; j < numberRegionRowsSafe; j++)
                 {
                     var divisionRow = j * gridDivisionHeight;
 

@@ -26,6 +26,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         readonly INoiseGenerator _noiseGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
+        const int LAYOUT_WIDTH_MAX = 100;
+        const int LAYOUT_WIDTH_MIN = 20;
+        const int LAYOUT_HEIGHT_MAX = 80;
+        const int LAYOUT_HEIGHT_MIN = 16;
+
         [ImportingConstructor]
         public RegionBuilder(IRegionGeometryCreator regionGeometryCreator,
                              IRectangularRegionCreator rectangularRegionCreator,
@@ -78,13 +83,21 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             return grid;
         }
 
-        private GridCellInfo[,] CreateRectangularGridRegions(LayoutTemplate template)
+        private GridCellInfo[,] CreateGrid(LayoutTemplate template)
         {
             // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
+            var width = (int)(template.WidthRatio * (LAYOUT_WIDTH_MAX - LAYOUT_WIDTH_MIN)) + LAYOUT_WIDTH_MIN;
+            var height = (int)(template.HeightRatio * (LAYOUT_HEIGHT_MAX - LAYOUT_HEIGHT_MIN)) + LAYOUT_HEIGHT_MIN;
+
+            return new GridCellInfo[width, height];
+        }
+
+        private GridCellInfo[,] CreateRectangularGridRegions(LayoutTemplate template)
+        {
+            var grid = CreateGrid(template);
 
             // Create the room rectangles
-            var roomBoundaries = _regionGeometryCreator.CreateGridRectangularRegions(template.Width, template.Height, template.NumberRoomCols, 
+            var roomBoundaries = _regionGeometryCreator.CreateGridRectangularRegions(grid.GetLength(0), grid.GetLength(1), template.NumberRoomCols, 
                                                                                      template.NumberRoomRows, template.RoomSize, template.FillRatioRooms, 
                                                                                      template.RoomSizeErradicity);
             // Create cells in the regions
@@ -96,11 +109,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
         private GridCellInfo[,] CreateRandomRectangularRegions(LayoutTemplate template, bool runSmoothingIteration)
         {
-            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
+            var grid = CreateGrid(template);
 
             // Create the room rectangles - IF THERE'S TOO MUCH CLUTTER WITH SYMMETRY THEN WE CAN LIMIT THE BOUNDARY TO THE FIRST QUADRANT
-            var roomBoundaries = _regionGeometryCreator.CreateRandomRectangularRegions(template.Width, template.Height, template.FillRatioRooms, template.RoomSize, template.RoomSizeErradicity);
+            var roomBoundaries = _regionGeometryCreator.CreateRandomRectangularRegions(grid.GetLength(0), grid.GetLength(1), template.FillRatioRooms, template.RoomSize, template.RoomSizeErradicity);
 
             // Calculate padding limits
             var roomMinHeight = roomBoundaries.Min(region => region.Height);
@@ -117,7 +129,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             if (runSmoothingIteration)
             {
                 //foreach (var boundary in roomBoundaries)
-                _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0,0), template.Width, template.Height), template.CellularAutomataType);
+                _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0,0), grid.GetLength(0), grid.GetLength(1)), template.CellularAutomataType);
             }
 
             return grid;
@@ -125,11 +137,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
         private GridCellInfo[,] CreateCellularAutomataMap(LayoutTemplate template)
         {
-            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
+            var grid = CreateGrid(template);
 
             // Create the boundary
-            var boundary = new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height);
+            var boundary = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
 
             // Create cellular automata in the
             _cellularAutomataRegionCreator.GenerateCells(grid, boundary, template.CellularAutomataType, template.CellularAutomataFillRatio, false);
@@ -139,11 +150,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
         private GridCellInfo[,] CreateCellularAutomataMazeMap(LayoutTemplate template)
         {
-            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
+            var grid = CreateGrid(template);
 
             // Create the boundary
-            var boundary = new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height);
+            var boundary = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
 
             // Create cellular automata the region
             _cellularAutomataRegionCreator.GenerateCells(grid, boundary, template.CellularAutomataType, template.CellularAutomataFillRatio, false);
@@ -156,11 +166,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
         private GridCellInfo[,] CreateMazeMap(LayoutTemplate template)
         {
-            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
+            var grid = CreateGrid(template);
 
             // Create the boundary
-            var boundary = new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height);
+            var boundary = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
 
             // Create maze in the region
             _mazeRegionCreator.CreateCells(grid, boundary, MazeType.Filled, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias, false);
@@ -170,15 +179,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
         private GridCellInfo[,] CreateElevationMap(LayoutTemplate template)
         {
-            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
+            var grid = CreateGrid(template);
 
             // Map [-1, 1] to the proper elevation band of 0.4 using [0, 1] elevation selector
             var elevationLow = (1.6 * template.ElevationSelector) - 1;
             var elevationHigh = (1.6 * template.ElevationSelector) - 0.6;
             
             // Create the regions using noise generation
-            _noiseGenerator.Run(NoiseType.PerlinNoise, template.Width, template.Height, template.ElevationFrequency, new PostProcessingCallback((column, row, value) =>
+            _noiseGenerator.Run(NoiseType.PerlinNoise, grid.GetLength(0), grid.GetLength(1), template.ElevationFrequency, (column, row, value) =>
             {
                 // Create cells within the elevation band
                 if (value.Between(elevationLow, elevationHigh, true))
@@ -187,25 +195,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 }
 
                 return value;
-            }));
+            });
 
             // Run smoothing iteration
-            _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height), template.CellularAutomataType);
+            _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1)), template.CellularAutomataType);
 
             return grid;
         }
 
         private GridCellInfo[,] CreateElevationMazeMap(LayoutTemplate template)
         {
-            // NOTE*** LAYOUT SIZE IS PRE-CALCULATED BASED ON ALL TEMPLATE PARAMETERS (INCLUDING SYMMETRY)
-            var grid = new GridCellInfo[template.Width, template.Height];
+            var grid = CreateGrid(template);
 
             // Map [-1, 1] to the proper elevation band of 0.4 using [0, 1] elevation selector
             var elevationLow = (1.6 * template.ElevationSelector) - 1;
             var elevationHigh = (1.6 * template.ElevationSelector) - 0.6;
 
             // Create the regions using noise generation
-            _noiseGenerator.Run(NoiseType.PerlinNoise, template.Width, template.Height, template.ElevationFrequency, new PostProcessingCallback((column, row, value) =>
+            _noiseGenerator.Run(NoiseType.PerlinNoise, grid.GetLength(0), grid.GetLength(1), template.ElevationFrequency, (column, row, value) =>
             {
                 // Create cells within the elevation band
                 if (value.Between(elevationLow, elevationHigh, true))
@@ -214,10 +221,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 }
 
                 return value;
-            }));
+            });
 
             // Run smoothing iteration
-            _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height), template.CellularAutomataType);
+            _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1)), template.CellularAutomataType);
 
             // Fills cell regions with mazes
             FillRegionsWithMazes(grid, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias);
