@@ -63,12 +63,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var maskedRegions = terrainMaskedGrid.IdentifyRegions(cell => !cell.IsWall);
 
             // Calculate avoid regions for the connection builder
-            var avoidRegions = terrainDict.Where(element => !element.Key.IsPassable)
+            var avoidRegions = terrainDict.Where(element => !element.Key.IsPassable && 
+                                                             element.Key.ConnectionType == TerrainConnectionType.Avoid)
                                           .SelectMany(element => element.Value.IdentifyRegions(cell => true))
                                           .Actualize();
 
             // Create corridors and new regions
-            _connectionBuilder.BuildConnections(terrainMaskedGrid, maskedRegions, template);
+            _connectionBuilder.BuildConnectionsWithAvoidRegions(terrainMaskedGrid, maskedRegions, avoidRegions, template);
 
             // Transfer the corridor cells back to the primary and terrain grids
             TransferCorridors(terrainMaskedGrid, grid, terrainDict);

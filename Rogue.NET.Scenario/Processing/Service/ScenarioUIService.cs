@@ -125,12 +125,12 @@ namespace Rogue.NET.Scenario.Processing.Service
                 }
 
                 // Corridors - Use for helping to debug dijkstra map connections
-                else if (isCorridor)
-                {
-                    visibleDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                }
+                //else if (isCorridor)
+                //{
+                //    visibleDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                //    exploredDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                //    revealedDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
+                //}
 
 
                 // Room Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering

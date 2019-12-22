@@ -61,26 +61,18 @@
             <GroupBox Margin="10" Header="General Parameters" FontSize="18">
                 <StackPanel>
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Width" />
-                        <toolkit:IntegerUpDown  Value="{Binding Width}"
-                                                Minimum="20"
-                                                Maximum="1000"
-                                                Increment="2"
-                                                Foreground="White"
-                                                HorizontalContentAlignment="Left"
-                                                Width="150" HorizontalAlignment="Right">
-                        </toolkit:IntegerUpDown>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Width" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding WidthRatio, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding WidthRatio, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
                     </Grid>
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Height" />
-                        <toolkit:IntegerUpDown  Value="{Binding Height}"
-                                                Minimum="20"
-                                                Maximum="1000" 
-                                                Increment="2"
-                                                Foreground="White"
-                                                HorizontalContentAlignment="Left"
-                                                Width="150" HorizontalAlignment="Right">
-                        </toolkit:IntegerUpDown>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Height" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding HeightRatio, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding HeightRatio, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Cell Symbol" />
@@ -202,19 +194,6 @@
                             <TextBlock Text="{Binding FillRatioCorridors, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
                         </StackPanel>
                     </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Corridor Connection Threshold" />
-                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
-                                                Minimum="1" 
-                                                Maximum="5"
-                                                Increment="1" 
-                                                FormatString="N0" 
-                                                Foreground="White"
-                                                HorizontalContentAlignment="Left"
-                                                Value="{Binding CorridorDistanceThreshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                Width="150" HorizontalAlignment="Right">
-                        </toolkit:IntegerUpDown>
-                    </Grid>                    
                 </StackPanel>
             </GroupBox>
 

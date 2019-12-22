@@ -43,15 +43,6 @@
                     <commonView:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainGenerationType}" EnumValue="{Binding GenerationType, Mode=TwoWay}" Width="250" HorizontalAlignment="Right" />
                 </Grid>
 
-                <!-- Generation Weight -->
-                <Grid Margin="5">
-                    <TextBlock Text="Generation Weight" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Width="250">
-                        <TextBlock Text="{Binding GenerationWeight, StringFormat=F2}" FontSize="18" Foreground="White" Margin="10, 0" />
-                        <Slider Value="{Binding GenerationWeight, Delay=300}" Width="200"  Minimum="0" Maximum="1" SmallChange="0.01" LargeChange="0.1" TickFrequency="0.1" TickPlacement="TopLeft" />
-                    </StackPanel>
-                </Grid>
-
                 <!-- Fill Ratio -->
                 <Grid Margin="5">
                     <TextBlock Text="Fill Ratio" FontSize="18" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
