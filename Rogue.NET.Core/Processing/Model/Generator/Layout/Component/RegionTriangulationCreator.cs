@@ -5,6 +5,7 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 
 using System;
@@ -18,9 +19,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
     [Export(typeof(IRegionTriangulationCreator))]
     public class RegionTriangulationCreator : IRegionTriangulationCreator
     {
-        public RegionTriangulationCreator()
-        {
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
+        [ImportingConstructor]
+        public RegionTriangulationCreator(IRandomSequenceGenerator randomSequenceGenerator)
+        {
+            _randomSequenceGenerator = randomSequenceGenerator;
         }
 
         public Graph<Region<T>> CreateTriangulation<T>(IEnumerable<Region<T>> regions, LayoutTemplate template) where T : class, IGridLocator
@@ -47,15 +51,43 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             if (regions.Count() == 1)
                 return graph;
 
-            // NOTE*** Delaunay output graph is not fully connected; but the regions ARE fully connected.
-            var delaunayGraph = CreateDelaunayTriangulation(graph, regions);
+            // Create corridors between the MST and Delaunay using the fill ratio
+            if (template.FillRatioCorridors > 0)
+            {
+                // NOTE*** Delaunay output graph is not fully connected; but the regions ARE fully connected.
+                var delaunayGraph = CreateDelaunayTriangulation(graph, regions);
 
-            // The MST must be re-created from the regions. The expensive work is already finished with the
-            // region connections being stored on each region.
-            //
-            var minimumSpanningGraph = CreateMinimumSpanningTree(regions);
+                // The MST must be re-created from the regions. The expensive work is already finished with the
+                // region connections being stored on each region.
+                //
+                var minimumSpanningGraph = CreateMinimumSpanningTree(regions);
 
-            return minimumSpanningGraph;
+                // Calculate extra corridor count
+                var extraCorridorCount = (int)(template.FillRatioCorridors * (delaunayGraph.Edges.Count() - minimumSpanningGraph.Edges.Count()));
+
+                // Create the final graph starting with the MST edges
+                var finalGraph = new Graph<Region<T>>(minimumSpanningGraph.Edges);
+
+                // Add additional edges at random from the Delaunay graph
+                var extraEdges = delaunayGraph.Edges
+                                              .Where(edge1 => !minimumSpanningGraph.Edges.Any(edge2 => edge1.Equals(edge2)))
+                                              .ToList();
+
+                for (int i = 0; i < extraCorridorCount; i++)
+                {
+                    // Get random edge from the extra edges
+                    var edge = _randomSequenceGenerator.GetRandomElement(extraEdges);
+
+                    extraEdges.Remove(edge);
+
+                    // Add the edge to the final graph
+                    finalGraph.AddEdge(edge);
+                }
+
+                return finalGraph;
+            }
+            else
+                return CreateMinimumSpanningTree(regions);
         }
 
         private Graph<Region<T>> CreateFullGraph<T>(IEnumerable<Region<T>> regions) where T : class, IGridLocator
