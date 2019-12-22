@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
@@ -839,13 +840,7 @@ namespace Rogue.NET.Core.Math.Geometry
         public DijkstraPathGenerator(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> avoidRegions, GridCellInfo sourceLocation, IEnumerable<GridCellInfo> targetLocations, bool obeyCardinalMovement) 
              : base(grid.GetLength(0), grid.GetLength(1), obeyCardinalMovement, sourceLocation, targetLocations, new DijkstraMapCostCallback((column, row) =>
              {
-                 if (grid[column, row] == null)
-                     return 0;
-
-                 else if (grid[column, row].IsWall)
-                     return 0;
-
-                 else if (avoidRegions.Any(region => region[column, row] != null))
+                 if (avoidRegions.Any(region => region[column, row] != null))
                      return DijkstraMapBase.RegionFeatureConstant;
 
                  else
@@ -861,7 +856,7 @@ namespace Rogue.NET.Core.Math.Geometry
         }
 
         public void EmbedPaths(DijkstraEmbedPathCallback callback)
-        {
+        {          
             Run();
 
             // Create paths for each target

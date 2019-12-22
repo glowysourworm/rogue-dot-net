@@ -3329,4 +3329,8 @@ IMMEDIATE TODO'S:
 		elements into the frontier - in order of cost.
 		
 		Also, prevent allocating memory - so try and use the GridCellInfo objects instead of special dijkstra map nodes.
+		
+	CORRIDOR BUILDER:
+	
+		Try using lower cost for existing corridors to prevent duplicates that are side-by-side
 			
