@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Common.Extension
 {
@@ -16,7 +14,7 @@ namespace Rogue.NET.Common.Extension
         /// <param name="dictionary">The IDictionary implementation</param>
         /// <param name="filter">Func that specifies a filter on the supplied dictionary</param>
         /// <returns>Returns new Dictionary of filtered values</returns>
-        public static IDictionary<K, V> Filter<K, V>(this IDictionary<K,V> dictionary, Func<KeyValuePair<K,V>, bool> filter)
+        public static IDictionary<K, V> Filter<K, V>(this IDictionary<K, V> dictionary, Func<KeyValuePair<K, V>, bool> filter)
         {
             var result = new Dictionary<K, V>();
 

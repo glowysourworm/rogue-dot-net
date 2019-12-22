@@ -35,7 +35,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             return _edgeLocations[column, row];
         }
 
-        protected struct GraphConnection
+        protected class GraphConnection
         {
             public T Location { get; set; }
             public T AdjacentLocation { get; set; }
@@ -168,11 +168,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         #region IRegionGraphWeightProvider
 
-        public double CalculateWeight(Region<T> adjacentNode, Metric.MetricType metricType)
+        public double CalculateConnection(Region<T> adjacentRegion, Metric.MetricType metricType)
         {
             // Return previously calculated weight
-            if (_graphConnections.ContainsKey(adjacentNode.GetHashCode()))
-                return _graphConnections[adjacentNode.GetHashCode()].Distance;
+            if (_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
+                return _graphConnections[adjacentRegion.GetHashCode()].Distance;
 
             // Use a brute force O(n x m) search
             T location = null;
@@ -181,7 +181,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             foreach (var edgeLocation1 in this.EdgeLocations)
             {
-                foreach (var edgeLocation2 in adjacentNode.EdgeLocations)
+                foreach (var edgeLocation2 in adjacentRegion.EdgeLocations)
                 {
                     var nextDistance = metricType == MetricType.Roguian ? Metric.RoguianDistance(edgeLocation1, edgeLocation2)
                                                                         : Metric.EuclideanDistance(edgeLocation1, edgeLocation2);
@@ -199,16 +199,43 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             if (distance == double.MaxValue)
                 throw new Exception("No adjacent node connection found Region.CalculateWeight");
 
-            _graphConnections.Add(adjacentNode.GetHashCode(), new GraphConnection()
+            _graphConnections.Add(adjacentRegion.GetHashCode(), new GraphConnection()
             {
                 AdjacentLocation = adjacentLocation,
-                AdjacentRegion = adjacentNode,
+                AdjacentRegion = adjacentRegion,
                 Distance = distance,
                 Metric = metricType,
                 Location = location
             });
 
-            return _graphConnections[adjacentNode.GetHashCode()].Distance;
+            // Set adjacent region's connection
+            adjacentRegion.SetConnection(this, metricType, adjacentLocation, location, distance);
+
+            return _graphConnections[adjacentRegion.GetHashCode()].Distance;
+        }
+
+        public void SetConnection(Region<T> adjacentRegion, Metric.MetricType metricType, T location, T adjacentLocation, double distance)
+        {
+            var key = adjacentRegion.GetHashCode();
+
+            if (!_graphConnections.ContainsKey(key))
+            {
+                _graphConnections.Add(key, new GraphConnection()
+                {
+                    AdjacentRegion = adjacentRegion,
+                    AdjacentLocation = adjacentLocation,
+                    Location = location,
+                    Distance = distance,
+                    Metric = metricType
+                });
+            }
+            else
+            {
+                _graphConnections[key].AdjacentLocation = adjacentLocation;
+                _graphConnections[key].Location = location;
+                _graphConnections[key].Distance = distance;
+                _graphConnections[key].Metric = metricType;
+            }
         }
 
         public T GetConnectionPoint(Region<T> adjacentRegion, Metric.MetricType metricType)

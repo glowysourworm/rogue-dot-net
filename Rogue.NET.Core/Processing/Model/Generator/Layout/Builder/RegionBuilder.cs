@@ -162,7 +162,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Create the boundary
             var boundary = new RegionBoundary(new GridLocation(0, 0), template.Width, template.Height);
 
-            // Create cellular automata in each region
+            // Create maze in the region
             _mazeRegionCreator.CreateCells(grid, boundary, MazeType.Filled, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias, false);
 
             return grid;

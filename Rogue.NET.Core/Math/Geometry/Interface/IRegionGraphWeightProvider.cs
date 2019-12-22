@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
 using static Rogue.NET.Core.Math.Geometry.Metric;
 
 namespace Rogue.NET.Core.Math.Geometry.Interface
@@ -10,9 +11,15 @@ namespace Rogue.NET.Core.Math.Geometry.Interface
     public interface IRegionGraphWeightProvider<T> where T : class, IGridLocator
     {
         /// <summary>
-        /// Returns calculated weight to the adjacent node given the specified metric
+        /// Calculates the connection parameters for the region - and the recipricol - and stores them
+        /// on the two involved regions. Returns the distance for the connection - with the specified metric type
         /// </summary>
-        double CalculateWeight(Region<T> adjacentRegion, MetricType metricType);
+        double CalculateConnection(Region<T> adjacentRegion, MetricType metricType);
+
+        /// <summary>
+        /// Sets a weight value calculated by another adjacent region
+        /// </summary>
+        void SetConnection(Region<T> adjacentRegion, Metric.MetricType metricType, T location, T adjacentLocation, double distance);
 
         /// <summary>
         /// Returns the connection point from the CalculateWeight(...) calculation

@@ -1,24 +1,59 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
+using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class GraphVertex<T, V> where T : class, IGridLocator
+    public class GraphVertex<T> : IGridLocator where T : class
     {
         /// <summary>
         /// The reference object for the vertex
         /// </summary>
-        public V Reference { get; private set; }
+        public T Reference { get; private set; }
 
-        /// <summary>
-        /// The vertex associated with the reference
-        /// </summary>
-        public T Vertex { get; private set; }
+        public int Column { get; set; }
+        public int Row { get; set; }
 
-        public GraphVertex(V reference, T vertex)
+        public GraphVertex(T reference, int column, int row)
         {
             this.Reference = reference;
-            this.Vertex = vertex;
+            this.Column = column;
+            this.Row = row;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is GraphVertex<T>)
+            {
+                var vertex = obj as GraphVertex<T>;
+
+                return vertex.Column == this.Column &&
+                       vertex.Row == this.Row &&
+                       vertex.Reference == this.Reference;
+            }
+
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = 397;
+
+            hash = (17 * hash) + this.Column.GetHashCode();
+            hash = (17 * hash) + this.Row.GetHashCode();
+            hash = (17 * hash) + this.Reference.GetHashCode();
+
+            return hash;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Column={0} Row={1}", this.Column, this.Row);
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

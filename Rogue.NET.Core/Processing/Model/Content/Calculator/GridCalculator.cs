@@ -80,13 +80,6 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             }
         }
 
-        public static Vertex TransformToPhysicalLayout(GridLocation location)
-        {
-            float x = (float)(ModelConstants.CellWidth * location.Column);
-            float y = (float)(ModelConstants.CellHeight * location.Row);
-            return new Vertex(x, y);
-        }
-
         public static Rect TransformToPhysicalLayout(RegionBoundary boundary)
         {
             float x = (float)(ModelConstants.CellWidth * boundary.Left);

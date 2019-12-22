@@ -1,10 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
 using System.Windows;
 
 namespace Rogue.NET.Core.Math.Geometry
@@ -55,16 +50,6 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             return System.Math.Pow((location2.Column - location1.Column), 2) + System.Math.Pow((location2.Row - location1.Row), 2);
         }
-
-        public static double EuclideanDistance(Vertex vertex1, Vertex vertex2)
-        {
-            return System.Math.Sqrt(System.Math.Pow((vertex2.X - vertex1.X), 2) + System.Math.Pow((vertex2.Y - vertex1.Y), 2));
-        }
-
-        public static double EuclideanSquareDistance(Vertex vertex1, Vertex vertex2)
-        {
-            return System.Math.Pow((vertex2.X - vertex1.X), 2) + System.Math.Pow((vertex2.Y - vertex1.Y), 2);
-        }
         #endregion
 
         #region Roguian Distance
@@ -88,22 +73,6 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             var x = System.Math.Abs(location2.Column - location1.Column);
             var y = System.Math.Abs(location2.Row - location1.Row);
-            return System.Math.Max(x, y);
-        }
-        public static int RoguianDistance(Vertex vertex1, Vertex vertex2)
-        {
-            var x = (int)System.Math.Abs(vertex2.X - vertex1.X);
-            var y = (int)System.Math.Abs(vertex2.Y - vertex1.Y);
-            return System.Math.Max(x, y);
-        }
-
-        /// <summary>
-        /// Calculates the length of the specified vector using a Roguian metric
-        /// </summary>
-        public static int RoguianLength(Vector vector)
-        {
-            var x = (int)System.Math.Abs(vector.X);
-            var y = (int)System.Math.Abs(vector.Y);
             return System.Math.Max(x, y);
         }
         #endregion

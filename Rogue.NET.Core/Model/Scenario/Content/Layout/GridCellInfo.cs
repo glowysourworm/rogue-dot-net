@@ -45,6 +45,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.WallLight = new Light();
         }
 
+        public override string ToString()
+        {
+            return this.Location?.ToString() ?? "{}";
+        }
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new System.NotSupportedException("ISerializable not supported for GridCellInfo - See IGridLocator interface");

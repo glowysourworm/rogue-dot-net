@@ -86,14 +86,14 @@ namespace Rogue.NET.Core.Math.Algorithm
             var meshHeight = (int)(height / (double)meshCellHeight).LowLimit(height + 1);
 
             // Create mesh - using points to describe random unit vectors
-            var mesh = new Vector[meshWidth, meshHeight];
+            var mesh = new GridVector[meshWidth, meshHeight];
 
             // Initialize the mesh
             for (int i = 0; i < meshWidth; i++)
             {
                 // Create random vector 
                 for (int j = 0; j < meshHeight; j++)
-                    mesh[i, j] = Vector.Create(_randomSequenceGenerator.GetDouble(0, System.Math.PI * 2), 1.0);
+                    mesh[i, j] = GridVector.Create(_randomSequenceGenerator.GetDouble(0, System.Math.PI * 2), 1.0);
             }
 
             var maxValue = double.MinValue;
@@ -120,10 +120,10 @@ namespace Rogue.NET.Core.Math.Algorithm
 
                     // Compute Distance Vectors for each point from the mesh cell vertex locations
                     //
-                    var vectorX0Y0 = new Vector(i - meshX0, j - meshY0);
-                    var vectorX1Y0 = new Vector(i - meshX1, j - meshY0);
-                    var vectorX0Y1 = new Vector(i - meshX0, j - meshY1);
-                    var vectorX1Y1 = new Vector(i - meshX1, j - meshY1);
+                    var vectorX0Y0 = new GridVector(i - meshX0, j - meshY0);
+                    var vectorX1Y0 = new GridVector(i - meshX1, j - meshY0);
+                    var vectorX0Y1 = new GridVector(i - meshX0, j - meshY1);
+                    var vectorX1Y1 = new GridVector(i - meshX1, j - meshY1);
 
                     // Compute Dot Products for each vector with the corresponding mesh vector
                     //
