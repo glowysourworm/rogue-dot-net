@@ -21,14 +21,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
     [Export(typeof(ITerrainBuilder))]
     public class TerrainBuilder : ITerrainBuilder
     {
-        readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly INoiseGenerator _noiseGenerator;
         readonly IConnectionBuilder _connectionBuilder;
 
+        const int TERRAIN_PADDING = 2;
+
         [ImportingConstructor]
-        public TerrainBuilder(IRandomSequenceGenerator randomSequenceGenerator, INoiseGenerator noiseGenerator, IConnectionBuilder connectionBuilder)
+        public TerrainBuilder(INoiseGenerator noiseGenerator, IConnectionBuilder connectionBuilder)
         {
-            _randomSequenceGenerator = randomSequenceGenerator;
             _noiseGenerator = noiseGenerator;
             _connectionBuilder = connectionBuilder;
         }
@@ -133,6 +133,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                                 new PostProcessingCallback(
                             (column, row, value) =>
                             {
+                                // Leave padding around the edge
+                                if (column < TERRAIN_PADDING ||
+                                    row < TERRAIN_PADDING ||
+                                    column + TERRAIN_PADDING >= grid.GetLength(0) ||
+                                    row + TERRAIN_PADDING >= grid.GetLength(1))
+                                    return 0;
+
                                 // Translate from [0,1] fill ration to the [-1, 1] Perlin noise range
                                 //
                                 if (value < ((2 * terrain.FillRatio) - 1))

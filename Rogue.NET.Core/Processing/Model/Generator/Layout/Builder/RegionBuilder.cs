@@ -181,6 +181,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         {
             var grid = CreateGrid(template);
 
+            // Edge padding
+            var padding = 1;
+
             // Map [-1, 1] to the proper elevation band of 0.4 using [0, 1] elevation selector
             var elevationLow = (1.6 * template.ElevationSelector) - 1;
             var elevationHigh = (1.6 * template.ElevationSelector) - 0.6;
@@ -188,6 +191,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Create the regions using noise generation
             _noiseGenerator.Run(NoiseType.PerlinNoise, grid.GetLength(0), grid.GetLength(1), template.ElevationFrequency, (column, row, value) =>
             {
+                // Leave padding around the edge
+                if (column < padding ||
+                    row < padding ||
+                    column + padding >= grid.GetLength(0) ||
+                    row + padding >= grid.GetLength(1))
+                    return 0;
+
                 // Create cells within the elevation band
                 if (value.Between(elevationLow, elevationHigh, true))
                 {
@@ -207,6 +217,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         {
             var grid = CreateGrid(template);
 
+            // Edge padding
+            var padding = 1;
+
             // Map [-1, 1] to the proper elevation band of 0.4 using [0, 1] elevation selector
             var elevationLow = (1.6 * template.ElevationSelector) - 1;
             var elevationHigh = (1.6 * template.ElevationSelector) - 0.6;
@@ -214,6 +227,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Create the regions using noise generation
             _noiseGenerator.Run(NoiseType.PerlinNoise, grid.GetLength(0), grid.GetLength(1), template.ElevationFrequency, (column, row, value) =>
             {
+                // Leave padding around the edge
+                if (column < padding ||
+                    row < padding ||
+                    column + padding >= grid.GetLength(0) ||
+                    row + padding >= grid.GetLength(1))
+                    return 0;
+
                 // Create cells within the elevation band
                 if (value.Between(elevationLow, elevationHigh, true))
                 {
