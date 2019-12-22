@@ -1,10 +1,10 @@
 ﻿using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Math.Geometry.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using static Rogue.NET.Core.Math.Geometry.Metric;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -40,7 +40,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             public T Location { get; set; }
             public T AdjacentLocation { get; set; }
             public Region<T> AdjacentRegion { get; set; }
-            public MetricType Metric { get; set; }
             public double Distance { get; set; }
         }
 
@@ -168,7 +167,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         #region IRegionGraphWeightProvider
 
-        public double CalculateConnection(Region<T> adjacentRegion, Metric.MetricType metricType)
+        public double CalculateConnection(Region<T> adjacentRegion)
         {
             // Return previously calculated weight
             if (_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
@@ -183,8 +182,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             {
                 foreach (var edgeLocation2 in adjacentRegion.EdgeLocations)
                 {
-                    var nextDistance = metricType == MetricType.Roguian ? Metric.RoguianDistance(edgeLocation1, edgeLocation2)
-                                                                        : Metric.EuclideanDistance(edgeLocation1, edgeLocation2);
+                    var nextDistance = Metric.EuclideanDistance(edgeLocation1, edgeLocation2);
 
                     // Reset candidates
                     if (nextDistance < distance)
@@ -204,17 +202,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 AdjacentLocation = adjacentLocation,
                 AdjacentRegion = adjacentRegion,
                 Distance = distance,
-                Metric = metricType,
                 Location = location
             });
 
             // Set adjacent region's connection
-            adjacentRegion.SetConnection(this, metricType, adjacentLocation, location, distance);
+            adjacentRegion.SetConnection(this, adjacentLocation, location, distance);
 
             return _graphConnections[adjacentRegion.GetHashCode()].Distance;
         }
 
-        public void SetConnection(Region<T> adjacentRegion, Metric.MetricType metricType, T location, T adjacentLocation, double distance)
+        public void SetConnection(Region<T> adjacentRegion, T location, T adjacentLocation, double distance)
         {
             var key = adjacentRegion.GetHashCode();
 
@@ -225,8 +222,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     AdjacentRegion = adjacentRegion,
                     AdjacentLocation = adjacentLocation,
                     Location = location,
-                    Distance = distance,
-                    Metric = metricType
+                    Distance = distance
                 });
             }
             else
@@ -234,11 +230,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 _graphConnections[key].AdjacentLocation = adjacentLocation;
                 _graphConnections[key].Location = location;
                 _graphConnections[key].Distance = distance;
-                _graphConnections[key].Metric = metricType;
             }
         }
 
-        public T GetConnectionPoint(Region<T> adjacentRegion, Metric.MetricType metricType)
+        public T GetConnectionPoint(Region<T> adjacentRegion)
         {
             if (!_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
                 throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");
@@ -246,7 +241,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             return _graphConnections[adjacentRegion.GetHashCode()].Location;
         }
 
-        public T GetAdjacentConnectionPoint(Region<T> adjacentRegion, Metric.MetricType metricType)
+        public T GetAdjacentConnectionPoint(Region<T> adjacentRegion)
         {
             if (!_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
                 throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");

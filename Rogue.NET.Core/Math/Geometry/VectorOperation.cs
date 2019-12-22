@@ -70,6 +70,8 @@ namespace Rogue.NET.Core.Math.Geometry
                     return Metric.RoguianDistance(location.Column, location.Row);
                 case MetricType.Euclidean:
                     return Metric.EuclideanDistance(location.Column, location.Row);
+                case MetricType.TaxiCab:
+                    return Metric.TaxiCabDistance(location.Column, location.Row);
                 default:
                     throw new Exception("Unhandled Metric Type VectorOperation.cs");
             }

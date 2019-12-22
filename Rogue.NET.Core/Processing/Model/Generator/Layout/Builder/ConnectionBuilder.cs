@@ -206,8 +206,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // For each edge in the triangulation - create a corridor
             foreach (var edge in graph.Edges)
             {
-                var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
-                var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference, Metric.MetricType.Euclidean);
+                var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference);
+                var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference);
 
                 // Create a Dijkstra path generator to find paths for the edge
                 var dijkstraMap = new DijkstraPathGenerator(grid, avoidRegions, location1, new GridCellInfo[] { location2 }, true);

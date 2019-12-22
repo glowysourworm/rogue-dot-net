@@ -11,11 +11,18 @@ namespace Rogue.NET.Core.Math.Geometry
         /// </summary>
         public enum MetricType
         {
+            /// <summary>
+            /// Diagonal movements equal cardinal movements
+            /// </summary>
             Roguian,
-            Euclidean
+            Euclidean,
+
+            /// <summary>
+            /// Diagonal distance is equal to the sum of both legs
+            /// </summary>
+            TaxiCab
         }
 
-        #region Euclidean Distance
         public static double EuclideanDistance(double x, double y)
         {
             return System.Math.Sqrt((x * x) + (y * y));
@@ -50,9 +57,7 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             return System.Math.Pow((location2.Column - location1.Column), 2) + System.Math.Pow((location2.Row - location1.Row), 2);
         }
-        #endregion
-
-        #region Roguian Distance
+        
         public static int RoguianDistance(int x, int y)
         {
             return System.Math.Abs(x - y);
@@ -75,6 +80,16 @@ namespace Rogue.NET.Core.Math.Geometry
             var y = System.Math.Abs(location2.Row - location1.Row);
             return System.Math.Max(x, y);
         }
-        #endregion
+
+        public static int TaxiCabDistance(IGridLocator location1, IGridLocator location2)
+        {
+            return System.Math.Abs(location2.Column - location1.Column) +
+                   System.Math.Abs(location2.Row - location1.Row);
+        }
+
+        public static int TaxiCabDistance(int column, int row)
+        {
+            return column + row;
+        }
     }
 }

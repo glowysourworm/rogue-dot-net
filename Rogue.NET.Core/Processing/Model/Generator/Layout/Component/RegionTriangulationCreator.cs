@@ -117,10 +117,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                     if (region1 == region2)
                         continue;
 
-                    var distance = region1.CalculateConnection(region2, Metric.MetricType.Euclidean);
+                    var distance = region1.CalculateConnection(region2);
 
-                    var location1 = region1.GetConnectionPoint(region2, Metric.MetricType.Euclidean);
-                    var location2 = region1.GetAdjacentConnectionPoint(region2, Metric.MetricType.Euclidean);
+                    var location1 = region1.GetConnectionPoint(region2);
+                    var location2 = region1.GetAdjacentConnectionPoint(region2);
 
                     // Duplicate vertices are unlikely; but possible. So, have to check
                     // for existing vertices
@@ -183,12 +183,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                     {
                         foreach (var region2 in usedRegions)
                         {
-                            var distance = region1.CalculateConnection(region2, Metric.MetricType.Euclidean);
+                            var distance = region1.CalculateConnection(region2);
 
                             if (distance < minDistance)
                             {
-                                var location1 = region1.GetConnectionPoint(region2, Metric.MetricType.Euclidean);
-                                var location2 = region1.GetAdjacentConnectionPoint(region2, Metric.MetricType.Euclidean);
+                                var location1 = region1.GetConnectionPoint(region2);
+                                var location2 = region1.GetAdjacentConnectionPoint(region2);
 
                                 var vertex1 = new GraphVertex<Region<T>>(region1, location1.Column, location1.Row);
                                 var vertex2 = new GraphVertex<Region<T>>(region2, location2.Column, location2.Row);
@@ -362,8 +362,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // (More Cleaning Up) Remove self referencing edges
             delaunayGraph.FilterByEdge(edge => edge.Point1.Reference == edge.Point2.Reference);
 
-            // delaunayGraph.OutputCSV(ResourceConstants.DijkstraOutputDirectory, "delaunay_before");
-
             // (Even More Cleaning Up) Keep only the edges involving the proper region connection points
             foreach (var region1 in regions)
             {
@@ -373,8 +371,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                         continue;
 
                     // Fetch ACTUAL connection points for the two regions
-                    var actualConnection1 = region1.GetConnectionPoint(region2, Metric.MetricType.Euclidean);
-                    var actualConnection2 = region1.GetAdjacentConnectionPoint(region2, Metric.MetricType.Euclidean);
+                    var actualConnection1 = region1.GetConnectionPoint(region2);
+                    var actualConnection2 = region1.GetAdjacentConnectionPoint(region2);
 
                     // Keep only the edge with the proper connection points
                     foreach (var edge in delaunayGraph.FindEdges(region1, region2))
@@ -402,8 +400,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // Finally, filter any vertices that aren't being used; but be sure that there is at least one
             // per region
             delaunayGraph.FilterByVertex(vertex => !delaunayGraph[vertex].Any());
-
-            // delaunayGraph.OutputCSV(ResourceConstants.DijkstraOutputDirectory, "delaunay_after");
 
             // Validate the graph
             if (delaunayGraph.Vertices.Any(vertex => delaunayGraph[vertex].Count() == 0))

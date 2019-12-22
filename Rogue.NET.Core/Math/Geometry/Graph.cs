@@ -141,56 +141,5 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             get { return _vertexDict[vertex].Get(); }
         }
-
-        // Use to help debug
-        public void OutputCSV(string directory, string filePrefix)
-        {
-            var width = this.Vertices.Max(vertex => vertex.Column) + 1;
-            var height = this.Vertices.Max(vertex => vertex.Row) + 1;
-
-            var map = new string[width, height];
-
-            map.Iterate((column, row) =>
-            {
-                if (this.Vertices.Any(vertex => vertex.Column == column && vertex.Row == row))
-                {
-                    map[column, row] = "N";
-                }
-
-                else if (this.Vertices.Any(vertex =>
-                {
-                    return vertex.Reference != null &&
-                          (vertex.Reference as Region<GridCellInfo>)[column, row] != null;
-                }))
-                {
-                    map[column, row] = "R";
-                }
-
-                else
-                    map[column, row] = "-";
-            });
-
-            OutputCSV(map, Path.Combine(directory, filePrefix + ".csv"));
-        }
-
-        private void OutputCSV(string[,] matrix, string fileName)
-        {
-            var builder = new StringBuilder();
-
-            // Output by row CSV
-            for (int j = 0; j < matrix.GetLength(1); j++)
-            {
-                for (int i = 0; i < matrix.GetLength(0); i++)
-                    builder.Append(matrix[i, j] + ", ");
-
-                // Remove trailing comma
-                builder.Remove(builder.Length - 1, 1);
-
-                // Append return carriage
-                builder.Append("\r\n");
-            }
-
-            File.WriteAllText(fileName, builder.ToString());
-        }
     }
 }
