@@ -47,12 +47,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             if (regions.Count() == 1)
                 return graph;
 
-            // TODO:TERRAIN - REMOVE THIS. Testing performance of full output
+            // NOTE*** Delaunay output graph is not fully connected; but the regions ARE fully connected.
             var delaunayGraph = CreateDelaunayTriangulation(graph, regions);
 
-            //var minimumSpanningGraph = CreateMinimumSpanningTree(delaunayGraph);
+            // The MST must be re-created from the regions. The expensive work is already finished with the
+            // region connections being stored on each region.
+            //
+            var minimumSpanningGraph = CreateMinimumSpanningTree(regions);
 
-            return delaunayGraph;
+            return minimumSpanningGraph;
         }
 
         private Graph<Region<T>> CreateFullGraph<T>(IEnumerable<Region<T>> regions) where T : class, IGridLocator
@@ -108,11 +111,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         /// <summary>
         /// Creates MST using Prim's Algorithm - which takes O(n log n)
         /// </summary>
-        private Graph<Region<T>> CreateMinimumSpanningTree<T>(Graph<Region<T>> delaunayGraph) where T : class, IGridLocator
+        private Graph<Region<T>> CreateMinimumSpanningTree<T>(IEnumerable<Region<T>> regions) where T : class, IGridLocator
         {
-            var regionCount = delaunayGraph.Vertices.Count();   // O(n)
-
-            if (regionCount < 1)
+            if (regions.Count() < 1)
                 throw new Exception("Trying to build MST with zero points");
 
             // Procedure
@@ -123,51 +124,60 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // 3) Choose the least distant edge and add that edge to the tree
             //
 
-            var result = new List<GraphEdge<Region<T>>>();
-            var unusedVertices = new List<GraphVertex<Region<T>>>(delaunayGraph.Vertices);
-
+            var unusedRegions = new List<Region<T>>(regions);
+            var usedRegions = new List<Region<T>>();
             var tree = new Graph<Region<T>>();
 
-            while (tree.Vertices.Count() < regionCount)
+            while (usedRegions.Count < regions.Count())
             {
                 // Initialize the tree
-                if (tree.Vertices.Count() == 0)
+                if (usedRegions.Count == 0)
                 {
                     // Add first vertex to the tree
-                    tree.AddVertex(unusedVertices.First());
+                    usedRegions.Add(unusedRegions.First());
 
                     // Remove vertex from unused vertices
-                    unusedVertices.Remove(unusedVertices.First());
+                    unusedRegions.RemoveAt(0);
                 }
 
                 else
                 {
-                    // Get the next edge that connects an UNUSED vertex to a USED vertex (in the tree)
-                    var nextEdges = unusedVertices.SelectMany(unusedVertex => delaunayGraph[unusedVertex])
-                                                 .Where(edge =>
-                                                 {
-                                                     return tree.Contains(edge.Point1) ||
-                                                            tree.Contains(edge.Point2);
-                                                 })
-                                                 .Actualize();
+                    Region<T> nextRegion = null;
+                    GraphEdge<Region<T>> nextEdge = null;
+                    double minDistance = double.MaxValue;
 
-                    var nextEdge = nextEdges.MinBy(edge =>
-                                            {
-                                                return edge.Point1
-                                                        .Reference
-                                                        .CalculateConnection(edge.Point2.Reference, Metric.MetricType.Euclidean);
-                                            });
+                    // Get the next edge that connects an UNUSED vertex to a USED vertex (in the tree)
+                    foreach (var region1 in unusedRegions)
+                    {
+                        foreach (var region2 in usedRegions)
+                        {
+                            var distance = region1.CalculateConnection(region2, Metric.MetricType.Euclidean);
+
+                            if (distance < minDistance)
+                            {
+                                var location1 = region1.GetConnectionPoint(region2, Metric.MetricType.Euclidean);
+                                var location2 = region1.GetAdjacentConnectionPoint(region2, Metric.MetricType.Euclidean);
+
+                                var vertex1 = new GraphVertex<Region<T>>(region1, location1.Column, location1.Row);
+                                var vertex2 = new GraphVertex<Region<T>>(region2, location2.Column, location2.Row);
+
+                                nextEdge = new GraphEdge<Region<T>>(vertex1, vertex2);
+                                nextRegion = region1;
+
+                                minDistance = distance;
+                            }
+                        }
+                    }
+
+                    if (nextEdge == null)
+                        throw new Exception("No edge found between regions Minimum Spanning Tree");
 
                     if (tree.Contains(nextEdge.Point1) &&
                         tree.Contains(nextEdge.Point2))
                         throw new Exception("Trying to add edge to tree that is already contained in the tree CreateMinimumSpanningTree<T>");
 
-                    // Mark used / unused vertices
-                    if (!tree.Contains(nextEdge.Point1))
-                        unusedVertices.Remove(nextEdge.Point1);
-
-                    if (!tree.Contains(nextEdge.Point2))
-                        unusedVertices.Remove(nextEdge.Point2);
+                    unusedRegions.Remove(nextRegion);
+                    usedRegions.Add(nextRegion);
 
                     // Add next edge to the tree
                     tree.AddEdge(nextEdge);
