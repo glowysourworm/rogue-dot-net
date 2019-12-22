@@ -94,11 +94,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region));
 
             // Build layers
-            var roomLayer = new LayerInfo("Room Layer", finalRoomRegions);
-            var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions);
+            var roomLayer = new LayerInfo("Room Layer", finalRoomRegions, true);
+            var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions, true);
 
             // Build Walls around cells
             _wallFinisher.CreateWalls(grid, false);
+
+            // Build Doors on connecting corridors - use original regions
+            _wallFinisher.CreateDoors(grid, regions, terrainLayers);
 
             // Create Lighting
             _lightingFinisher.CreateLighting(grid, roomRegions, template);
@@ -159,8 +162,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region));
             var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region));
 
-            var roomLayer = new LayerInfo("Room Layer", finalRoomRegions);
-            var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions);
+            var roomLayer = new LayerInfo("Room Layer", finalRoomRegions, true);
+            var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions, true);
 
             // Build Walls around cells
             _wallFinisher.CreateWalls(grid, false);

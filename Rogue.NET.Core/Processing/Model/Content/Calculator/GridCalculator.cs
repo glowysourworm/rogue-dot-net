@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
     /// </summary>
     public static class GridCalculator
     {
-        public static Compass GetDirectionOfAdjacentLocation(GridLocation location, GridLocation adjacentLocation)
+        public static Compass GetDirectionOfAdjacentLocation(IGridLocator location, IGridLocator adjacentLocation)
         {
             var north = (adjacentLocation.Row - location.Row) == -1;
             var south = (adjacentLocation.Row - location.Row) == 1;

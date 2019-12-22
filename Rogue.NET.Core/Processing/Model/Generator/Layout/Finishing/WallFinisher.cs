@@ -1,8 +1,12 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Model.Content.Calculator;
+using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 {
@@ -13,6 +17,89 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         public WallFinisher()
         {
 
+        }
+
+        public void CreateDoors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<LayerInfo> terrainLayers)
+        {
+            foreach (var region in regions)
+            {
+                // Iterate edge locations
+                foreach (var location in region.EdgeLocations)
+                {
+                    // Look for locations with a 4-way adjacent corridor - NOT in ANY region
+                    foreach (var adjacentCorridor in grid.GetCardinalAdjacentElements(location.Column, location.Row)
+                                                         .Where(cell => cell.IsCorridor &&
+                                                                       !cell.IsDoor &&
+                                                                       !regions.Any(otherRegion => otherRegion[cell.Column, cell.Row] != null)))
+                    {
+                        // Rules
+                        //
+                        // 1) Must have two directly adjacent walls to the door (on either side)
+                        // 2) Must have a walkable cell opposite the door
+
+                        var direction = GridCalculator.GetDirectionOfAdjacentLocation(location, adjacentCorridor);
+                        GridCellInfo oppositeDoorCell = null;
+                        GridCellInfo wallCell1 = null;
+                        GridCellInfo wallCell2 = null;
+                        
+                        // Check for the adjacent walls
+                        switch (direction)
+                        {
+                            case Compass.N:
+                            case Compass.S:
+                                {
+                                    wallCell1 = grid.Get(adjacentCorridor.Column - 1, adjacentCorridor.Row);
+                                    wallCell2 = grid.Get(adjacentCorridor.Column + 1, adjacentCorridor.Row);
+                                }
+                                break;
+                            case Compass.E:
+                            case Compass.W:
+                                {
+                                    wallCell1 = grid.Get(adjacentCorridor.Column, adjacentCorridor.Row - 1);
+                                    wallCell2 = grid.Get(adjacentCorridor.Column, adjacentCorridor.Row + 1);
+                                }
+                                break;
+                            default:
+                                throw new Exception("Unhandled door adjacent location");
+                        }
+
+                        // Check for walkable cell opposite the door                        
+                        switch (direction)
+                        {
+                            case Compass.N:
+                                {
+                                    oppositeDoorCell = grid.Get(adjacentCorridor.Column, adjacentCorridor.Row - 1);
+                                }
+                                break;
+                            case Compass.S:
+                                {
+                                    oppositeDoorCell = grid.Get(adjacentCorridor.Column, adjacentCorridor.Row + 1);
+                                }
+                                break;
+                            case Compass.E:
+                                {
+                                    oppositeDoorCell = grid.Get(adjacentCorridor.Column + 1, adjacentCorridor.Row);
+                                }
+                                break;
+                            case Compass.W:
+                                {
+                                    oppositeDoorCell = grid.Get(adjacentCorridor.Column - 1, adjacentCorridor.Row);
+                                }
+                                break;
+                            default:
+                                throw new Exception("Unhandled door adjacent location");
+                        }
+
+                        adjacentCorridor.IsDoor = wallCell1 != null &&
+                                                  wallCell2 != null &&
+                                                  wallCell1.IsWall &&
+                                                  wallCell2.IsWall &&
+                                                  oppositeDoorCell != null &&
+                                                 !oppositeDoorCell.IsWall &&
+                                                 !terrainLayers.Any(layer => !layer.IsPassable && layer[oppositeDoorCell.Column, oppositeDoorCell.Row] != null);
+                    }
+                }
+            }
         }
 
         public void CreateWalls(GridCellInfo[,] grid, bool createBorder)

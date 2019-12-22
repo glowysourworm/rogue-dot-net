@@ -103,7 +103,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                                     new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
                 });
 
-                return new LayerInfo(element.Key.Name, terrainRegions);
+                return new LayerInfo(element.Key.Name, terrainRegions, element.Key.IsPassable);
 
             }).Actualize();
 
@@ -167,9 +167,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                                   grid[column, row] != null &&
                                                   grid[column, row].IsCorridor)
                                         {
-                                            //// For impassible terrain - remove any wall or corridor settings
-                                            //if (!terrain.TerrainLayer.IsPassable)
-                                            //    grid[column, row].IsCorridor = false;
+                                            // For impassible terrain - remove any wall or corridor settings
+                                            if (!terrain.TerrainLayer.IsPassable)
+                                                grid[column, row].IsCorridor = false;
 
                                             // No Corridor mask applied - so go ahead and create the terrain
                                             terrainGrid[column, row] = grid[column, row];
@@ -180,9 +180,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                                   grid[column, row] != null &&
                                                   grid[column, row].IsWall)
                                         {
-                                            //// For impassible terrain - remove any wall or corridor settings
-                                            //if (!terrain.TerrainLayer.IsPassable)
-                                            //    grid[column, row].IsWall = false;
+                                            // For impassible terrain - remove any wall or corridor settings
+                                            if (!terrain.TerrainLayer.IsPassable)
+                                                grid[column, row].IsWall = false;
 
                                             // No Wall mask applied - so go ahead and create the terrain
                                             terrainGrid[column, row] = grid[column, row];
