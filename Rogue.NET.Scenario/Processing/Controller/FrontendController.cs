@@ -79,7 +79,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             // ANIMATION EVENTS
             eventAggregator.GetEvent<AnimationStartEvent>().Subscribe(async eventData =>
             {
-                var levelUIBounds = new Rect(0, 0, _levelCanvasViewModel.LevelWidth, _levelCanvasViewModel.LevelHeight);
+                var levelUIBounds = new Rect(0, 0, scenarioUIService.LevelUIWidth, scenarioUIService.LevelUIHeight);
                 var animation = scenarioUIService.CreateAnimation(eventData, levelUIBounds);
 
                 await _levelCanvasViewModel.PlayAnimationSeries(animation);
@@ -87,7 +87,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
 
             eventAggregator.GetEvent<ProjectileAnimationStartEvent>().Subscribe(async eventData =>
             {
-                var levelUIBounds = new Rect(0, 0, _levelCanvasViewModel.LevelWidth, _levelCanvasViewModel.LevelHeight);
+                var levelUIBounds = new Rect(0, 0, scenarioUIService.LevelUIWidth, scenarioUIService.LevelUIHeight);
                 var animation = scenarioUIService.CreateAnimation(eventData, levelUIBounds);
 
                 await _levelCanvasViewModel.PlayAnimationSeries(animation);
@@ -217,7 +217,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
         }
         private void OnUpdateLayout()
         {
-            _levelCanvasViewModel.UpdateLayout(_modelService.Level.Grid.Bounds);
+            _levelCanvasViewModel.UpdateLayout();
         }
         private void OnUpdateLayoutVisibility()
         {

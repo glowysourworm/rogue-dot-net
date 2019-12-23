@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Media.Animation.EventData;
 using Rogue.NET.Core.Media.Animation.Interface;
@@ -11,6 +12,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
 using Rogue.NET.Scenario.Processing.Service.Interface;
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
@@ -25,20 +27,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
     [Export(typeof(ILevelCanvasViewModel))]
     public class LevelCanvasViewModel : NotifyViewModel, ILevelCanvasViewModel
     {
-        readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly IScenarioUIService _scenarioUIService;
-
-        int _levelWidth;
-        int _levelHeight;
 
         // Targeting animation (singular)
         IAnimationPlayer _targetAnimationPlayer;
 
         // Layers
-        DrawingBrush _visibleLayer;
-        DrawingBrush _exploredLayer;
-        DrawingBrush _revealedLayer;
-        DrawingBrush _terrainLayer;
+        DrawingImage[,] _visibleLayer;
+        DrawingImage[,] _exploredLayer;
+        DrawingImage[,] _revealedLayer;
 
         // Opacity Masks
         DrawingBrush _exploredDrawingBrush;
@@ -48,11 +45,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         // Player (separate from contents)
         LevelCanvasImage _player;
 
+        public event SimpleEventHandler LayoutUpdated;
+
         [ImportingConstructor]
-        public LevelCanvasViewModel(IScenarioUIGeometryService scenarioUIGeometryService,
-                                    IScenarioUIService scenarioUIService)
+        public LevelCanvasViewModel(IScenarioUIService scenarioUIService)
         {
-            _scenarioUIGeometryService = scenarioUIGeometryService;
             _scenarioUIService = scenarioUIService;
 
             this.Animations = new ObservableCollection<FrameworkElement>();
@@ -62,55 +59,42 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.Characters = new ObservableCollection<LevelCanvasImage>();
             this.LightRadii = new ObservableCollection<LevelCanvasShape>();
 
-            this.VisibleLayer = new DrawingBrush();
-            this.ExploredLayer = new DrawingBrush();
-            this.RevealedLayer = new DrawingBrush();
-            this.TerrainLayer = new DrawingBrush();
             this.ExploredOpacityMask = new DrawingBrush();
             this.RevealedOpacityMask = new DrawingBrush();
             this.VisibleOpacityMask = new DrawingBrush();
 
-            this.VisibleLayer.ViewboxUnits = BrushMappingMode.Absolute;
-            this.ExploredLayer.ViewboxUnits = BrushMappingMode.Absolute;
-            this.RevealedLayer.ViewboxUnits = BrushMappingMode.Absolute;
-            this.TerrainLayer.ViewboxUnits = BrushMappingMode.Absolute;
+            RenderOptions.SetBitmapScalingMode(this.ExploredOpacityMask, BitmapScalingMode.LowQuality);
+            RenderOptions.SetBitmapScalingMode(this.RevealedOpacityMask, BitmapScalingMode.LowQuality);
+            RenderOptions.SetBitmapScalingMode(this.VisibleOpacityMask, BitmapScalingMode.LowQuality);
+
+            RenderOptions.SetCachingHint(this.ExploredOpacityMask, CachingHint.Cache);
+            RenderOptions.SetCachingHint(this.RevealedOpacityMask, CachingHint.Cache);
+            RenderOptions.SetCachingHint(this.VisibleOpacityMask, CachingHint.Cache);
+
             this.ExploredOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
             this.RevealedOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
             this.VisibleOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
 
-            this.VisibleLayer.ViewportUnits = BrushMappingMode.Absolute;
-            this.ExploredLayer.ViewportUnits = BrushMappingMode.Absolute;
-            this.RevealedLayer.ViewportUnits = BrushMappingMode.Absolute;
-            this.TerrainLayer.ViewportUnits = BrushMappingMode.Absolute;
             this.ExploredOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
             this.RevealedOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
             this.VisibleOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
-
-            // Defaults for canvas size
-            this.LevelHeight = 500;
-            this.LevelWidth = 500;
         }
 
         #region (public) Properties
-        public DrawingBrush VisibleLayer
+        public DrawingImage[,] VisibleLayer
         {
             get { return _visibleLayer; }
             set { this.RaiseAndSetIfChanged(ref _visibleLayer, value); }
         }
-        public DrawingBrush ExploredLayer
+        public DrawingImage[,] ExploredLayer
         {
             get { return _exploredLayer; }
             set { this.RaiseAndSetIfChanged(ref _exploredLayer, value); }
         }
-        public DrawingBrush RevealedLayer
+        public DrawingImage[,] RevealedLayer
         {
             get { return _revealedLayer; }
             set { this.RaiseAndSetIfChanged(ref _revealedLayer, value); }
-        }
-        public DrawingBrush TerrainLayer
-        {
-            get { return _terrainLayer; }
-            set { this.RaiseAndSetIfChanged(ref _terrainLayer, value); }
         }
         public DrawingBrush ExploredOpacityMask
         {
@@ -138,56 +122,31 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             get { return _player; }
             set { this.RaiseAndSetIfChanged(ref _player, value); }
         }
-
-        public int LevelWidth
-        {
-            get { return _levelWidth; }
-            set
-            {
-                _levelWidth = value;
-                OnPropertyChanged(() => this.LevelWidth);
-                OnLevelDimensionChange();
-            }
-        }
-        public int LevelHeight
-        {
-            get { return _levelHeight; }
-            set
-            {
-                _levelHeight = value;
-                OnPropertyChanged(() => this.LevelHeight);
-                OnLevelDimensionChange();
-            }
-        }
         #endregion
 
         #region (public) Update Methods
         /// <summary>
         /// Draws entire layout and applies visibility
         /// </summary>
-        public void UpdateLayout(RegionBoundary boundary)
+        public void UpdateLayout()
         {
-            var bounds = _scenarioUIGeometryService.Cell2UIRect(boundary);
+            // Re-draw the layout layers
+            this.VisibleLayer = new DrawingImage[_scenarioUIService.LevelWidth, _scenarioUIService.LevelHeight];
+            this.ExploredLayer = new DrawingImage[_scenarioUIService.LevelWidth, _scenarioUIService.LevelHeight];
+            this.RevealedLayer = new DrawingImage[_scenarioUIService.LevelWidth, _scenarioUIService.LevelHeight];
 
-            this.LevelWidth = (int)bounds.Width;
-            this.LevelHeight = (int)bounds.Height;
-
-            // Set DrawingBrush.Drawing = DrawingGroup. Each Drawing in DrawingGroup will be a terrain tile.
+            // Create DrawingImage instances from the resource cache
             //
-            // Build Terrain Drawing
-            DrawingGroup terrainDrawing, visibleDrawing, exploredDrawing, revealedDrawing;
-
-            _scenarioUIService.CreateLayoutDrawings(out visibleDrawing, out exploredDrawing, out revealedDrawing, out terrainDrawing);
-
-            this.VisibleLayer.Drawing = visibleDrawing;
-            this.ExploredLayer.Drawing = exploredDrawing;
-            this.RevealedLayer.Drawing = revealedDrawing;
-            this.TerrainLayer.Drawing = terrainDrawing;
+            _scenarioUIService.CreateLayoutDrawings(this.VisibleLayer, this.ExploredLayer, this.RevealedLayer);
 
             OnPropertyChanged(() => this.VisibleLayer);
             OnPropertyChanged(() => this.ExploredLayer);
             OnPropertyChanged(() => this.RevealedLayer);
-            OnPropertyChanged(() => this.TerrainLayer);
+
+            OnLevelDimensionChange();
+
+            if (this.LayoutUpdated != null)
+                this.LayoutUpdated();
         }
 
         public void UpdateContent(IEnumerable<ScenarioObject> contents, Player player)
@@ -223,7 +182,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
                         // Update Light Radius
                         if (characterLightRadius != null)
-                            _scenarioUIService.UpdateLightRadius(characterLightRadius, character, new Rect(0, 0, this.LevelWidth, this.LevelHeight));
+                            _scenarioUIService.UpdateLightRadius(characterLightRadius, character, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
 
                         // Add Light Radius
                         else
@@ -240,7 +199,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                         _scenarioUIService.UpdateAura(aura, characterAuras.First(x => x.Item1 == aura.Id).Item2.AuraColor,
                                                       characterAuras.First(x => x.Item1 == aura.Id).Item2.AuraRange,
                                                       character,
-                                                      new Rect(0, 0, this.LevelWidth, this.LevelHeight));
+                                                      new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
 
                     // Add Auras
                     foreach (var aura in auraAdditions)
@@ -292,7 +251,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             // Update Light Radius
             if (lightRadius != null)
-                _scenarioUIService.UpdateLightRadius(lightRadius, player, new Rect(0, 0, this.LevelWidth, this.LevelHeight));
+                _scenarioUIService.UpdateLightRadius(lightRadius, player, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
 
             // Add Light Radius
             else
@@ -354,7 +313,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             var canvasShape = new LevelCanvasShape(character.Id, character.Id, new RectangleGeometry());
 
-            _scenarioUIService.UpdateLightRadius(canvasShape, character, new Rect(0, 0, this.LevelWidth, this.LevelHeight));
+            _scenarioUIService.UpdateLightRadius(canvasShape, character, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
 
             return canvasShape;
         }
@@ -363,7 +322,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             var canvasShape = new LevelCanvasShape(alterationEffectId, character.Id, new RectangleGeometry());
 
-            _scenarioUIService.UpdateAura(canvasShape, auraColor, auraRange, character, new Rect(0, 0, this.LevelWidth, this.LevelHeight));
+            _scenarioUIService.UpdateAura(canvasShape, auraColor, auraRange, character, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
 
             return canvasShape;
         }
@@ -372,23 +331,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             // Fix Drawing Brush Properties
             //
-            this.VisibleLayer.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.ExploredLayer.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.RevealedLayer.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.TerrainLayer.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.ExploredOpacityMask.Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+            this.RevealedOpacityMask.Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+            this.VisibleOpacityMask.Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
 
-            this.ExploredOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.RevealedOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.VisibleOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-
-            this.VisibleLayer.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.ExploredLayer.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.RevealedLayer.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.TerrainLayer.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-
-            this.ExploredOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.RevealedOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            this.VisibleOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.ExploredOpacityMask.Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+            this.RevealedOpacityMask.Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+            this.VisibleOpacityMask.Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
         }
         #endregion
 

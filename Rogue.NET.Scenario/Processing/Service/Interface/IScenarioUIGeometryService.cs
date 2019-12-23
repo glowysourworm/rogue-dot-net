@@ -8,6 +8,7 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
         Point Cell2UI(int x, int y);
         Point Cell2UI(GridLocation p, bool offsetToMiddleOfCell = false);
         Rect Cell2UIRect(GridLocation p, bool addCellOffset);
+        Rect Cell2UIRect(int column, int row);
         Rect Cell2UIRect(RegionBoundary r);
 
         GridLocation UI2Cell(double roughX, double roughY);

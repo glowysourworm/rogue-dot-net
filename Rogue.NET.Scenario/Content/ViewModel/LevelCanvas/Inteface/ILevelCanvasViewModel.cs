@@ -1,15 +1,15 @@
-﻿using Rogue.NET.Core.Media;
+﻿using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
 {
@@ -18,10 +18,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
     /// </summary>
     public interface ILevelCanvasViewModel : INotifyPropertyChanged
     {
-        DrawingBrush VisibleLayer { get; set; }
-        DrawingBrush ExploredLayer { get; set; }
-        DrawingBrush RevealedLayer { get; set; }
-        DrawingBrush TerrainLayer { get; set; }
+        DrawingImage[,] VisibleLayer { get; set; }
+        DrawingImage[,] ExploredLayer { get; set; }
+        DrawingImage[,] RevealedLayer { get; set; }
+
         DrawingBrush ExploredOpacityMask { get; set; }
         DrawingBrush RevealedOpacityMask { get; set; }
         DrawingBrush VisibleOpacityMask { get; set; }
@@ -61,10 +61,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
         /// </summary>
         LevelCanvasImage Player { get; set; }
 
-        int LevelWidth { get; set; }
-        int LevelHeight { get; set; }
+        event SimpleEventHandler LayoutUpdated;
 
-        void UpdateLayout(RegionBoundary boundary);
+        void UpdateLayout();
         void UpdateContent(IEnumerable<ScenarioObject> contents, Player player);
         void UpdateLayoutVisibility(IEnumerable<GridLocation> exploredLocations,
                                     IEnumerable<GridLocation> visibleLocations,

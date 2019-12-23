@@ -1,25 +1,19 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows;
-using System.Windows.Input;
-using System.ComponentModel.Composition;
-
-using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
-using Rogue.NET.Core.Processing.Event.Level;
-using Rogue.NET.Scenario.Processing.Event.Content;
-using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
-using Rogue.NET.Common.Extension;
-using System;
-using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Scenario.Processing.Service.Interface;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
-using System.Linq;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Level;
+using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
+using Rogue.NET.Scenario.Processing.Event.Content;
+using Rogue.NET.Scenario.Processing.Service.Interface;
+
+using System.ComponentModel.Composition;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -27,13 +21,31 @@ namespace Rogue.NET.Scenario.Content.Views
     [Export]
     public partial class LevelCanvas : UserControl
     {
+        public static readonly DependencyProperty LevelWidthProperty =
+            DependencyProperty.Register("LevelWidth", typeof(int), typeof(LevelCanvas));
+
+        public static readonly DependencyProperty LevelHeightProperty =
+            DependencyProperty.Register("LevelHeight", typeof(int), typeof(LevelCanvas));
+        
+        public int LevelWidth
+        {
+            get { return (int)GetValue(LevelWidthProperty); }
+            set { SetValue(LevelWidthProperty, value); }
+        }
+
+        public int LevelHeight
+        {
+            get { return (int)GetValue(LevelHeightProperty); }
+            set { SetValue(LevelHeightProperty, value); }
+        }
+
         readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly ILevelCanvasViewModel _viewModel;
         readonly IModelService _modelService;
         readonly IPathFinder _pathFinder;
 
-        TranslateTransform _translateXform = new TranslateTransform(0,0);
-        ScaleTransform _scaleXform = new ScaleTransform(1,1);
+        TranslateTransform _translateXform = new TranslateTransform(0, 0);
+        ScaleTransform _scaleXform = new ScaleTransform(1, 1);
 
         const int SHIFT_AMOUNT = 60;
 
@@ -43,9 +55,10 @@ namespace Rogue.NET.Scenario.Content.Views
         [ImportingConstructor]
         public LevelCanvas(
             IScenarioUIGeometryService scenarioUIGeometryService,
+            IScenarioUIService scenarioUIService,
             ILevelCanvasViewModel viewModel,
             IModelService modelService,  // TODO: Find a way to remove the model service
-            IPathFinder pathFinder, 
+            IPathFinder pathFinder,
             IRogueEventAggregator eventAggregator)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
@@ -88,13 +101,24 @@ namespace Rogue.NET.Scenario.Content.Views
                 this.MousePath.Visibility = Visibility.Hidden;
             };
 
+            // Initialize Size / Rendering
+            _viewModel.LayoutUpdated += () =>
+            {
+                this.LevelWidth = scenarioUIService.LevelUIWidth;
+                this.LevelHeight = scenarioUIService.LevelUIHeight;
+
+                this.VisibleCanvas.SetGridLayer(_viewModel.VisibleLayer, _scenarioUIGeometryService);
+                this.ExploredCanvas.SetGridLayer(_viewModel.ExploredLayer, _scenarioUIGeometryService);
+                this.RevealedCanvas.SetGridLayer(_viewModel.RevealedLayer, _scenarioUIGeometryService);
+            };
+
             // subscribe to event to center screen when level loaded
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
                 // Zoom() -> CenterOnLocation( player )
                 Zoom(modelService.ZoomFactor);
             });
-            
+
             // subscribe to event to update RenderTransform on player move
             eventAggregator.GetEvent<LevelEvent>().Subscribe(update =>
             {
@@ -110,7 +134,7 @@ namespace Rogue.NET.Scenario.Content.Views
 
             eventAggregator.GetEvent<ZoomEvent>().Subscribe(eventData =>
             {
-                Zoom(eventData.NewZoomFactor); 
+                Zoom(eventData.NewZoomFactor);
             });
         }
 

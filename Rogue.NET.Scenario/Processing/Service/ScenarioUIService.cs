@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Common.Constant;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
@@ -13,6 +12,7 @@ using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
 using Rogue.NET.Scenario.Processing.Service.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -32,6 +32,17 @@ namespace Rogue.NET.Scenario.Processing.Service
         readonly IAnimationSequenceCreator _animationSequenceCreator;
         readonly IModelService _modelService;
 
+        public int LevelWidth { get { return _modelService.Level.Grid.Bounds.Width; } }
+        public int LevelHeight { get { return _modelService.Level.Grid.Bounds.Height; } }
+        public int LevelUIWidth
+        {
+            get { return (int)_scenarioUIGeometryService.Cell2UIRect(_modelService.Level.Grid.Bounds).Width; }
+        }
+        public int LevelUIHeight
+        {
+            get { return (int)_scenarioUIGeometryService.Cell2UIRect(_modelService.Level.Grid.Bounds).Height; }
+        }
+
         [ImportingConstructor]
         public ScenarioUIService(
                 IScenarioUIGeometryService scenarioUIGeometryService,
@@ -47,44 +58,20 @@ namespace Rogue.NET.Scenario.Processing.Service
             _modelService = modelService;
         }
 
-        public void CreateLayoutDrawings(out DrawingGroup visibleDrawing,
-                                         out DrawingGroup exploredDrawing,
-                                         out DrawingGroup revealedDrawing,
-                                         out DrawingGroup terrainDrawing)
+        public void CreateLayoutDrawings(DrawingImage[,] visibleLayer,
+                                         DrawingImage[,] exploredLayer,
+                                         DrawingImage[,] revealedLayer)
         {
-            visibleDrawing = new DrawingGroup();
-            exploredDrawing = new DrawingGroup();
-            revealedDrawing = new DrawingGroup();
-            terrainDrawing = new DrawingGroup();
-
             var layoutTemplate = _modelService.Level.Layout.Asset;
 
             var exploredLight = new Light(0xFF, 0xFF, 0xFF, 0.1);
             var revealedLight = new Light(0xFF, 0x00, 0xFF, 1);
 
-            var wallSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.WallSymbol), 1.0, exploredLight);
-            var cellSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.CellSymbol), 1.0, exploredLight);
-            var doorSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, exploredLight);
-            var wallLightSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, exploredLight);
-
-            var wallSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.WallSymbol), 1.0, revealedLight);
-            var cellSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.CellSymbol), 1.0, revealedLight);
-            var doorSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, revealedLight);
-            var wallLightSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, revealedLight);
-
             foreach (var cell in _modelService.Level.Grid.GetCells())
             {
-                var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
-
                 var isCorridor = _modelService.Level.Grid.CorridorMap[cell.Location.Column, cell.Location.Row] != null;
                 var terrainNames = _modelService.Level.Grid.TerrainMaps.Where(terrainMap => terrainMap[cell.Location.Column, cell.Location.Row] != null)
                                                                        .Select(terrainMap => terrainMap.Name);
-
-                var wallSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.WallSymbol), 1.0, cell.EffectiveLighting);
-                var cellSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.CellSymbol), 1.0, cell.EffectiveLighting);
-                var doorSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, cell.EffectiveLighting);
-                var corridorSymbol = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(GameSymbol.SavePoint, GameSymbol.SavePoint), 1.0, cell.EffectiveLighting);
-                var wallLightSymbol = _scenarioResourceService.GetImageSource(new ScenarioImage(layoutTemplate.DoorSymbol), 1.0, cell.EffectiveLighting);
 
                 // Terrain - Render using the terrain template
                 if (terrainNames.Any())
@@ -92,53 +79,41 @@ namespace Rogue.NET.Scenario.Processing.Service
                     // TODO:TERRAIN - HANDLE MULTIPLE LAYERS
                     var layer = layoutTemplate.TerrainLayers.First(terrain => terrain.Name == terrainNames.First());
 
-                    var terrainSymbolVisible = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, cell.EffectiveLighting);
-                    var terrainSymbolExplored = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, exploredLight);
-                    var terrainSymbolRevealed = _scenarioResourceService.GetImageSource(new ScenarioImage(layer.TerrainLayer.SymbolDetails), 1.0, revealedLight);
-
-                    visibleDrawing.Children.Add(new ImageDrawing(terrainSymbolVisible, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(terrainSymbolExplored, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(terrainSymbolRevealed, rect));
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, cell.EffectiveLighting);
+                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, exploredLight);
+                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, revealedLight);
                 }
 
                 // Doors
                 else if (cell.IsDoor)
                 {
-                    visibleDrawing.Children.Add(new ImageDrawing(doorSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(doorSymbolExplored, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(doorSymbolRevealed, rect));
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, cell.EffectiveLighting);
+                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
+                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
                 }
 
+                // Wall Lights
                 else if (cell.IsWallLight)
                 {
-                    visibleDrawing.Children.Add(new ImageDrawing(wallLightSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(wallLightSymbolExplored, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(wallLightSymbolRevealed, rect));
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, cell.EffectiveLighting);
+                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
+                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
                 }
 
-                // Walls - Add default wall to layers { Visible, Explored, Revealed } for rendering
+                // Walls
                 else if (cell.IsWall)
                 {
-                    visibleDrawing.Children.Add(new ImageDrawing(wallSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(wallSymbolExplored, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(wallSymbolRevealed, rect));
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, cell.EffectiveLighting);
+                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, exploredLight);
+                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, revealedLight);
                 }
 
-                // Corridors - Use for helping to debug dijkstra map connections
-                //else if (isCorridor)
-                //{
-                //    visibleDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                //    exploredDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                //    revealedDrawing.Children.Add(new ImageDrawing(corridorSymbol, rect));
-                //}
-
-
-                // Room Cells - Add "The Dot" to layers { Visible, Explored, Revealed } for rendering
+                // Walkable Cells
                 else
                 {
-                    visibleDrawing.Children.Add(new ImageDrawing(cellSymbol, rect));
-                    exploredDrawing.Children.Add(new ImageDrawing(cellSymbolExplored, rect));
-                    revealedDrawing.Children.Add(new ImageDrawing(cellSymbolRevealed, rect));
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, cell.EffectiveLighting);
+                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, exploredLight);
+                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, revealedLight);
                 }
             }
         }

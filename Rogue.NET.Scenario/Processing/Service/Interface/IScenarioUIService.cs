@@ -16,16 +16,21 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
     /// </summary>
     public interface IScenarioUIService
     {
+        int LevelWidth { get; }
+        int LevelHeight { get; }
+
+        int LevelUIWidth { get; }
+        int LevelUIHeight { get; }
+
         /// <summary>
         /// Creates primary drawings for the level rendering. These are expensive to calculate; but even more to
         /// render. So, to prevent performance issues, be sure to set a bitmap cache for the Level Canvas elements
         /// that have any of the large (in terms of child elements) renderings. So, this would be (usually) the 
         /// rooms, walls, and terrain.
         /// </summary>
-        void CreateLayoutDrawings(out DrawingGroup visibleDrawing,
-                                  out DrawingGroup exploredDrawing,
-                                  out DrawingGroup revealedDrawing,
-                                  out DrawingGroup terrainDrawing);
+        void CreateLayoutDrawings(DrawingImage[,] visibleLayer,
+                                  DrawingImage[,] exploredLayer,
+                                  DrawingImage[,] revealedLayer);
 
         Geometry CreateDoorLayout();
         Geometry CreateGeometry(IEnumerable<GridLocation> locations);

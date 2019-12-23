@@ -33,6 +33,10 @@ namespace Rogue.NET.Scenario.Processing.Service
                 return new Rect(pt, new Size(ModelConstants.CellWidth, ModelConstants.CellHeight));
             }
         }
+        public Rect Cell2UIRect(int column, int row)
+        {
+            return new Rect(Cell2UI(column, row), new Size(ModelConstants.CellWidth, ModelConstants.CellHeight));
+        }
         public Rect Cell2UIRect(RegionBoundary r)
         {
             Point p = Cell2UI((int)r.Column, (int)r.Row);

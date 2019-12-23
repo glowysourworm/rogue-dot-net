@@ -1,9 +1,5 @@
 ﻿using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using System.Windows;
 using System.Windows.Controls;
 
