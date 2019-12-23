@@ -245,7 +245,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 _scenarioContainer.CurrentLevel = levelNumber;
 
                 //If level is not loaded - must load it from the dungeon file
-                var nextLevel = _scenarioContainer.Levels.FirstOrDefault(level => level.Number == levelNumber);
+                var nextLevel = _scenarioContainer.Levels.FirstOrDefault(level => level.Parameters.Number == levelNumber);
 
                 if (nextLevel == null)
                     throw new Exception("Level " + levelNumber.ToString() + " not found in the Scenario Container");

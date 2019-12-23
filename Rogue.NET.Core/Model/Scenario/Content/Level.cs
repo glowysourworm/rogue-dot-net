@@ -20,24 +20,13 @@ namespace Rogue.NET.Core.Model.Scenario
     [Serializable]
     public class Level
     {
-        // TODO:TERRAIN - FIND A WAY TO PREVENT SERIALIZING THESE PROPERTIES
-
-        /// <summary>
-        /// Level branch that was used to generate this level - TODO:TERRAIN REDESIGN
-        /// </summary>
-        public LevelBranchTemplate LevelBranch { get; protected set; }
-
-        /// <summary>
-        /// Layout template that was used to generate this level - TODO:TERRAIN REDESIGN
-        /// </summary>
-        public LayoutGenerationTemplate Layout { get; protected set; }
-
-        /// <summary>
-        /// Primary layout container
-        /// </summary>
         public LevelGrid Grid { get; protected set; }
 
-        public int Number { get; protected set; }
+        /// <summary>
+        /// Contains all public parameters collected from the scenario configuration during generation
+        /// </summary>
+        public LevelParameters Parameters { get; protected set; }
+
         public bool HasStairsUp { get { return this.StairsUp != null; } }
         public bool HasStairsDown { get { return this.StairsDown != null; } }
         public bool HasSavePoint { get { return this.SavePoint != null; } }
@@ -108,11 +97,14 @@ namespace Rogue.NET.Core.Model.Scenario
                      LevelGrid grid,
                      int number)
         {
-            this.LevelBranch = levelBranch;
-            this.Layout = layout;
-
             this.Grid = grid;
-            this.Number = number;
+            this.Parameters = new LevelParameters()
+            {
+                Number = number,
+                LevelBranchName = levelBranch.Name,
+                LayoutName = layout.Name,
+                EnemyGenerationPerStep = levelBranch.MonsterGenerationPerStep
+            };
 
             this.StairsDown = null;
             this.StairsUp = null;

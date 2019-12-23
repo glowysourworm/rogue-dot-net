@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -8,10 +9,13 @@ using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -149,6 +153,24 @@ namespace Rogue.NET.Core.Processing.Service
         public double ZoomFactor { get; set; }
 
         public ScenarioEncyclopedia ScenarioEncyclopedia { get; private set; }
+
+        public IEnumerable<EnemyGenerationTemplate> GetEnemyTemplates()
+        {
+            // TODO: STORE AS PARAMETERS; OR A SEPARATE LOOKUP.. JUST CLEAN THIS UP!
+            return _configuration.ScenarioDesign
+                                 .LevelDesigns
+                                 .SelectMany(design => design.LevelBranches)
+                                 .First(branch => branch.Name == this.Level.Parameters.LevelBranchName)
+                                 .LevelBranch
+                                 .Enemies
+                                 .Actualize();
+        }
+
+        public LayoutTemplate GetLayoutTemplate()
+        {
+            // TODO: STORE AS PARAMETERS; OR A SEPARATE LOOKUP.. JUST CLEAN THIS UP!
+            return _configuration.LayoutTemplates.First(layout => layout.Name == this.Level.Parameters.LayoutName);
+        }
 
         public void GetPlayerAdvancementParameters(ref double hpPerPoint, ref double staminaPerPoint,
                                                    ref double strengthPerPoint, ref double agilityPerPoint,

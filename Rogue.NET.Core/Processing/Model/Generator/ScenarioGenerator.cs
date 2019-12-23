@@ -95,18 +95,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var levelGrid = _layoutGenerator.CreateLayout(layoutTemplate.Asset);
 
                 // Return a new level object
-                return new Level(branch, layoutTemplate, levelGrid, index + 1);
+                return new
+                {
+                    Level = new Level(branch, layoutTemplate, levelGrid, index + 1),
+                    Layout = layoutTemplate,
+                    Branch = branch
+                };
+
             }).Actualize();
 
-            var levelLayouts = levels.Select(level => level.Layout);
-
             // Create dictionary of Level -> LayoutTemplate
-            var layoutDictionary = levels.Zip(levelLayouts, (level, layout) => new { Level = level, Layout = layout })
-                                         .ToDictionary(x => x.Level, x => x.Layout);
+            var layoutDictionary = levels.ToDictionary(x => x.Level, x => x.Layout);
 
             // Create dictionary of Level -> LevelBranch
-            var branchDictionary = levels.Zip(levelBranches, (level, branch) => new { Level = level, Branch = branch })
-                                         .ToDictionary(x => x.Level, x => x.Branch);
+            var branchDictionary = levels.ToDictionary(x => x.Level, x => x.Branch);
 
             // Create static scenario data for generation
             var characterClasses = CreateCharacterClasses(configuration);
@@ -116,7 +118,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             scenario.Encyclopedia.Initialize(encyclopedia, characterClasses, alterationCategories);
 
             // *** Generate Contents
-            scenario.Levels = _contentGenerator.CreateContents(levels, scenario.Encyclopedia, branchDictionary, layoutDictionary, survivorMode)
+            scenario.Levels = _contentGenerator.CreateContents(levels.Select(x => x.Level), scenario.Encyclopedia, branchDictionary, layoutDictionary, survivorMode)
                                                      .ToList();
 
             // Generate Player

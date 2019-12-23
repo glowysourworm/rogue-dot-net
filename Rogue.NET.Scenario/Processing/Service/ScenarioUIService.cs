@@ -62,7 +62,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                                          DrawingImage[,] exploredLayer,
                                          DrawingImage[,] revealedLayer)
         {
-            var layoutTemplate = _modelService.Level.Layout.Asset;
+            var layoutTemplate = _modelService.GetLayoutTemplate();
 
             var exploredLight = new Light(0xFF, 0xFF, 0xFF, 0.1);
             var revealedLight = new Light(0xFF, 0x00, 0xFF, 1);

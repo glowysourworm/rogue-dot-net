@@ -27,6 +27,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public RegionBoundary Bounds { get; private set; }
         public LayerMap RoomMap { get; private set; }
         public LayerMap CorridorMap { get; private set; }
+        public LayerMap ImpassableTerrainMap { get; private set; }
         public IEnumerable<LayerMap> TerrainMaps { get; private set; }
         #endregion
 
@@ -47,6 +48,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
             this.RoomMap = new LayerMap(roomLayer.LayerName, roomLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.CorridorMap = new LayerMap(corridorLayer.LayerName, corridorLayer.Regions, this.Bounds.Width, this.Bounds.Height);
+            this.ImpassableTerrainMap = new LayerMap("Impassable Terrain", terrainLayers.Where(x => !x.IsPassable).SelectMany(layer => layer.Regions), this.Bounds.Width, this.Bounds.Height);
             this.TerrainMaps = terrainLayers.Select(layer => new LayerMap(layer.LayerName, layer.Regions, this.Bounds.Width, this.Bounds.Height)).Actualize();
             this.MandatoryLocations = new Dictionary<GridLocation, LayoutMandatoryLocationType>();
 
@@ -80,6 +82,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var mandatoryCount = info.GetInt32("MandatoryLocationsCount");
             var roomMap = (LayerMap)info.GetValue("RoomMap", typeof(LayerMap));
             var corridorMap = (LayerMap)info.GetValue("CorridorMap", typeof(LayerMap));
+            var impassableMap = (LayerMap)info.GetValue("ImpassableTerrainMap", typeof(LayerMap));
 
             _grid = new GridCell[width, height];
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
@@ -115,6 +118,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.RoomMap = roomMap;
             this.CorridorMap = corridorMap;
             this.TerrainMaps = terrainData;
+            this.ImpassableTerrainMap = impassableMap;
             this.MandatoryLocations = mandatoryData;
 
             // Leave these invalid until iteration is necessary
@@ -135,6 +139,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("MandatoryLocationsCount", this.MandatoryLocations.Count);
             info.AddValue("RoomMap", this.RoomMap);
             info.AddValue("CorridorMap", this.CorridorMap);
+            info.AddValue("ImpassableTerrainMap", this.ImpassableTerrainMap);
 
             for (int i = 0; i < _cellArray.Length; i++)
                 info.AddValue("Cell" + i.ToString(), _cellArray[i]);

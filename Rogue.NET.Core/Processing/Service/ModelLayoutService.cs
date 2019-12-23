@@ -280,9 +280,7 @@ namespace Rogue.NET.Core.Processing.Service
                 if (terrain[location.Column, location.Row] == null)
                     return false;
 
-                return !_level.Layout.Asset
-                              .TerrainLayers.First(layer => layer.Name == terrain.Name)
-                              .TerrainLayer.IsPassable;
+                return _level.Grid.ImpassableTerrainMap[location.Column, location.Row] != null;
             }))
             {
                 return true;

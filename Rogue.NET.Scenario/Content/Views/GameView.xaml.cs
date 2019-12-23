@@ -51,7 +51,7 @@ namespace Rogue.NET.Scenario.Views
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                _currentLevel = modelService.Level.Number;
+                _currentLevel = modelService.Level.Parameters.Number;
 
                 SetViewText();
             });

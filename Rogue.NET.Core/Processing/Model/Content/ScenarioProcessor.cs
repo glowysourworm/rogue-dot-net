@@ -845,10 +845,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                 OnScenarioEvent(_backendEventDataFactory.Save());
                                 break;
                             case DoodadNormalType.StairsDown:
-                                OnScenarioEvent(_backendEventDataFactory.LevelChange(_modelService.Level.Number + 1, PlayerStartLocation.StairsUp));
+                                OnScenarioEvent(_backendEventDataFactory.LevelChange(_modelService.Level.Parameters.Number + 1, PlayerStartLocation.StairsUp));
                                 break;
                             case DoodadNormalType.StairsUp:
-                                OnScenarioEvent(_backendEventDataFactory.LevelChange(_modelService.Level.Number - 1, PlayerStartLocation.StairsDown));
+                                OnScenarioEvent(_backendEventDataFactory.LevelChange(_modelService.Level.Parameters.Number - 1, PlayerStartLocation.StairsDown));
                                 break;
                         }
                     }

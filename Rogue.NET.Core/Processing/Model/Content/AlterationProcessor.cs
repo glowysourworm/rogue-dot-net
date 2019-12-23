@@ -496,7 +496,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var numberOfLevels = _modelService.GetNumberOfLevels();
 
             // Level Desired by Alteration
-            var desiredLevel = (_modelService.Level.Number + effect.LevelChange);
+            var desiredLevel = (_modelService.Level.Parameters.Number + effect.LevelChange);
 
             // Actual Level clipped by the min / max
             var actualLevel = desiredLevel.Clip(1, numberOfLevels);

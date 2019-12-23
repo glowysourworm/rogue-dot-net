@@ -980,15 +980,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
         private void ProcessMonsterGeneration()
         {
             // Create monster on generation rate roll
-            var createMonster = _modelService.Level.LevelBranch.MonsterGenerationPerStep > _randomSequenceGenerator.Get();
-
-            if (!createMonster)
+            if (_randomSequenceGenerator.Get() >= _modelService.Level.Parameters.EnemyGenerationPerStep)
                 return;
 
             // Select enemy templates with: 0) this level range, 2) non-objective, 3) non-unique enemies, 4) Generate on step
-            var enemyTemplates = _modelService.Level
-                                              .LevelBranch
-                                              .Enemies
+            var enemyTemplates = _modelService.GetEnemyTemplates()
                                               .Where(x =>
                                               {
                                                   return !x.Asset.IsUnique &&

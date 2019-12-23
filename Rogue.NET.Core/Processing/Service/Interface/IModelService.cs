@@ -1,12 +1,12 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Service.Interface
@@ -67,6 +67,16 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// "Encyclopedia" Rogue-Tanica. Contains all the meta-data for the Scenario objects, alteration categories, and character classes
         /// </summary>
         ScenarioEncyclopedia ScenarioEncyclopedia { get; }
+
+        /// <summary>
+        /// Gets the layout template for this level
+        /// </summary>
+        LayoutTemplate GetLayoutTemplate();
+
+        /// <summary>
+        /// Returns Enemy templates from the scenario configuration for the loaded level
+        /// </summary>
+        IEnumerable<EnemyGenerationTemplate> GetEnemyTemplates();
 
         /// <summary>
         /// Method to populate player advancement parameters
