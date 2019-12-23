@@ -50,6 +50,9 @@ namespace Rogue.NET.Core.Processing.Service
             if (cell1 == null || cell2 == null)
                 return true;
 
+            if (IsImpassableTerrain(location2))
+                return true;
+
             // Check that the cell is occupied by a character of the other faction
             var character = _level.GetAt<NonPlayerCharacter>(cell2.Location);
 
@@ -110,7 +113,7 @@ namespace Rogue.NET.Core.Processing.Service
         public GridLocation GetRandomLocation(bool excludeOccupiedLocations, IEnumerable<GridLocation> otherExcludedLocations = null)
         {
             var locations = _level.Grid.GetCells()
-                                       .Where(x => !x.IsWall && !x.IsDoor)
+                                       .Where(x => !x.IsWall && !x.IsDoor && !IsImpassableTerrain(x.Location))
                                        .Select(x => x.Location)
                                        .Except(otherExcludedLocations)
                                        .ToList();
@@ -138,6 +141,7 @@ namespace Rogue.NET.Core.Processing.Service
             var adjacentLocations = _level.
                                     Grid.
                                     GetAdjacentLocations(location).
+                                    Where(x => !IsImpassableTerrain(x)).
                                     Where(x =>
                                     {
                                         var character = _level.GetAt<NonPlayerCharacter>(x);
@@ -161,6 +165,7 @@ namespace Rogue.NET.Core.Processing.Service
             //
             return adjacentLocations.Where(x => !_level.Grid[x.Column, x.Row].IsWall &&
                                                 !_level.Grid[x.Column, x.Row].IsDoor &&
+                                                !IsImpassableTerrain(x) &&
                                                 !_level.IsCellOccupied(x, _player.Location));
         }
 
@@ -169,6 +174,7 @@ namespace Rogue.NET.Core.Processing.Service
             return _level
                    .Grid
                    .GetAdjacentLocations(location)
+                   .Where(x => !IsImpassableTerrain(x))
                    .Where(x =>
                     {
                         var character = _level.GetAt<NonPlayerCharacter>(x);
@@ -264,6 +270,25 @@ namespace Rogue.NET.Core.Processing.Service
                 default:
                     return location;
             }
+        }
+
+        private bool IsImpassableTerrain(GridLocation location)
+        {
+            // TODO:TERRAIN - Create better data structure - Check for non-passable terrain
+            if (_level.Grid.TerrainMaps.Any(terrain =>
+            {
+                if (terrain[location.Column, location.Row] == null)
+                    return false;
+
+                return !_level.Layout.Asset
+                              .TerrainLayers.First(layer => layer.Name == terrain.Name)
+                              .TerrainLayer.IsPassable;
+            }))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

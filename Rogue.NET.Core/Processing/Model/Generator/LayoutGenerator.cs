@@ -83,8 +83,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else
                 terrainLayers = new LayerInfo[] { };
 
-            // Identify final room regions
-            var roomRegions = grid.IdentifyRegions(cell => !cell.IsWall && !cell.IsCorridor);
+            // Identify final room regions (1) Not a wall, 2) Not a corridor, 3) Not impassable terrain
+            var roomRegions = grid.IdentifyRegions(cell => !cell.IsWall && !cell.IsCorridor && !terrainLayers.Any(layer => layer[cell.Column, cell.Row] != null && !layer.IsPassable));
 
             // Identify final corridor regions (1) Not a wall, 2) Marked a corridor, and 3) Not in any original region)
             var corridorRegions = grid.IdentifyRegions(cell => !cell.IsWall && cell.IsCorridor && !regions.Any(region => region[cell.Location.Column, cell.Location.Row] != null));

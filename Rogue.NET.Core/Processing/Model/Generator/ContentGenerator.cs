@@ -75,9 +75,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         private void GenerateLevelContent(Level level, LevelBranchTemplate branchTemplate, LayoutGenerationTemplate layoutTemplate, ScenarioEncyclopedia encyclopedia, bool lastLevel, bool survivorMode)
         {
+            // TODO:TERRAIN - Create new data structure for handling queries
+
             // Create lists to know what cells are free
             var rooms = level.Grid.RoomMap.GetRegions().ToList();
-            var freeCells = level.Grid.GetCells().Where(cell => !cell.IsWall).Select(x => x.Location).ToList();
+            var freeCells = level.Grid
+                                 .CorridorMap
+                                 .GetRegions()
+                                 .Union(rooms)
+                                 .SelectMany(region => region.Locations)
+                                 .ToList();
+
             var freeRoomCells = rooms.ToDictionary(room => room, room => room.Locations.Where(cell => !level.Grid[cell.Column, cell.Row].IsWall).Cast<GridLocation>().ToList());
 
             // NOTE*** ADD MAPPED CONTENT FIRST - BUT MUST IGNORE DURING THE MAPPING PHASE. THIS INCLUDES
