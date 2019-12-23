@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
         const int LAYOUT_WIDTH_MAX = 100;
         const int LAYOUT_WIDTH_MIN = 20;
-        const int LAYOUT_HEIGHT_MAX = 80;
+        const int LAYOUT_HEIGHT_MAX = 60;
         const int LAYOUT_HEIGHT_MIN = 16;
 
         [ImportingConstructor]
@@ -97,8 +97,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var grid = CreateGrid(template);
 
             // Create the room rectangles
-            var roomBoundaries = _regionGeometryCreator.CreateGridRectangularRegions(grid.GetLength(0), grid.GetLength(1), template.NumberRoomCols, 
-                                                                                     template.NumberRoomRows, template.RoomSize, template.FillRatioRooms, 
+            var roomBoundaries = _regionGeometryCreator.CreateGridRectangularRegions(grid.GetLength(0), grid.GetLength(1), template.RoomColumnRatio, 
+                                                                                     template.RoomRowRatio, template.RoomSize, template.FillRatioRooms, 
                                                                                      template.RoomSizeErradicity);
             // Create cells in the regions
             foreach (var boundary in roomBoundaries)

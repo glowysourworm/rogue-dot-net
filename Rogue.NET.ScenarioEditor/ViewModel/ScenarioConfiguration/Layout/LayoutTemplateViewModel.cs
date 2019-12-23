@@ -13,10 +13,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             BaseType = UITypeAttributeBaseType.Asset)]
     public class LayoutTemplateViewModel : TemplateViewModel
     {
-        private int _numberRoomRows;
-        private int _numberRoomCols;
         private double _widthRatio;
         private double _heightRatio;
+        private double _roomColumnRatio;
+        private double _roomRowRatio;
         private double _fillRatioRooms;
         private double _fillRatioCorridors;
         private double _roomSize;
@@ -41,16 +41,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private LightAmbientTemplateViewModel _lightingAmbient2;
         private double _lightingThreshold;        
 
-        public int NumberRoomRows
-        {
-            get { return _numberRoomRows; }
-            set { this.RaiseAndSetIfChanged(ref _numberRoomRows, value); }
-        }
-        public int NumberRoomCols
-        {
-            get { return _numberRoomCols; }
-            set { this.RaiseAndSetIfChanged(ref _numberRoomCols, value); }
-        }
         public double WidthRatio
         {
             get { return _widthRatio; }
@@ -60,6 +50,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         {
             get { return _heightRatio; }
             set { this.RaiseAndSetIfChanged(ref _heightRatio, value); }
+        }
+        public double RoomColumnRatio
+        {
+            get { return _roomColumnRatio; }
+            set { this.RaiseAndSetIfChanged(ref _roomColumnRatio, value); }
+        }
+        public double RoomRowRatio
+        {
+            get { return _roomRowRatio; }
+            set { this.RaiseAndSetIfChanged(ref _roomRowRatio, value); }
         }
         public double FillRatioRooms
         {
@@ -184,8 +184,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.Type = LayoutType.RectangularRegion;
             this.CellularAutomataType = LayoutCellularAutomataType.Open;
             this.ConnectionType = LayoutConnectionType.Corridor;
-            this.NumberRoomRows = 3;
-            this.NumberRoomCols = 3;
             this.HiddenDoorProbability = 0.2;
 
             this.MazeHorizontalVerticalBias = 0.5;

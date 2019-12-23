@@ -1,13 +1,11 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 {
@@ -18,6 +16,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         const int ROOM_SIZE_MIN = 2;
+        const int RECTANGULAR_DIV_COUNT_MAX = 10;
+        const int RECTANGULAR_DIV_COUNT_MIN = 2;
+        const int RECTANGULAR_DIV_MIN_SIZE = 4;
+        const double RECTANGULAR_FILL_RATIO_MIN = 0.2;
         const double RANDOM_ROOM_FILL_RATIO_MAX = 0.2;
         const double RANDOM_ROOM_FILL_RATIO_MULTIPLIER = 2.0;
 
@@ -76,26 +78,32 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             return regions;
         }
 
-        public IEnumerable<RegionBoundary> CreateGridRectangularRegions(int width, int height, int numberRegionColumns, int numberRegionRows, 
+        public IEnumerable<RegionBoundary> CreateGridRectangularRegions(int width, int height, double regionColumnRatio, double regionRowRatio,
                                                                         double regionSize, double regionFillRatio, double regionSizeErradicity)
         {
             var roomPadding = 1;
 
             // Calculate the min number of region columns / rows based on a min division size of 4
-            var minGridDivisionSize = 4;
+            var numberRegionColumnsMax = ((int)(width / (double)RECTANGULAR_DIV_MIN_SIZE)).HighLimit(RECTANGULAR_DIV_COUNT_MAX);
+            var numberRegionRowsMax = ((int)(height / (double)RECTANGULAR_DIV_MIN_SIZE)).HighLimit(RECTANGULAR_DIV_COUNT_MAX);
 
-            var numberRegionColumnsMax = (int)(width / (double)minGridDivisionSize);
-            var numberRegionRowsMax = (int)(height / (double)minGridDivisionSize);
-
-            var numberRegionColumnsSafe = numberRegionColumns.HighLimit(numberRegionColumnsMax);
-            var numberRegionRowsSafe = numberRegionRows.HighLimit(numberRegionRowsMax);
+            var numberRegionColumnsSafe = ((int)(numberRegionColumnsMax * regionColumnRatio)).Clip(RECTANGULAR_DIV_COUNT_MIN, numberRegionColumnsMax);
+            var numberRegionRowsSafe = ((int)(numberRegionRowsMax * regionColumnRatio)).Clip(RECTANGULAR_DIV_COUNT_MIN, numberRegionRowsMax);
 
             var gridDivisionWidth = width / numberRegionColumnsSafe;
             var gridDivisionHeight = height / numberRegionRowsSafe;
 
+            var regionFillRatioSafe = regionFillRatio.LowLimit(RECTANGULAR_FILL_RATIO_MIN);
+
             // Calculate room size based on parameters
-            var roomWidthLimit = gridDivisionWidth - (2 * roomPadding);
-            var roomHeightLimit = gridDivisionHeight - (2 * roomPadding);
+            // var roomWidthLimit = gridDivisionWidth - (2 * roomPadding);
+            // var roomHeightLimit = gridDivisionHeight - (2 * roomPadding);
+
+            // UPDATE:  Use one padding to add just a single wall between rooms (at minimum)
+            //          Then, check to see that any regions stay within the boundary - making size adjustments.
+            //
+            var roomWidthLimit = gridDivisionWidth - (roomPadding);
+            var roomHeightLimit = gridDivisionHeight - (roomPadding);
 
             var roomWidthMax = (int)((regionSize * (roomWidthLimit - ROOM_SIZE_MIN)) + ROOM_SIZE_MIN);
             var roomWidthMin = (int)(roomWidthMax - (regionSizeErradicity * (roomWidthMax - ROOM_SIZE_MIN)));
@@ -120,6 +128,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                 for (int j = 0; j < numberRegionRowsSafe; j++)
                 {
+                    // Check random fill ratio for adding a region
+                    if (_randomSequenceGenerator.Get() >= regionFillRatioSafe)
+                        continue;
+
                     var divisionRow = j * gridDivisionHeight;
 
                     // Draw a random region size
@@ -128,8 +140,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                     // Generate the upper left-hand corner for the region
                     var column = divisionColumn + _randomSequenceGenerator.Get(roomPadding, gridDivisionWidth - (regionWidth + roomPadding) + 1);
-
                     var row = divisionRow + _randomSequenceGenerator.Get(roomPadding, gridDivisionHeight - (regionHeight + roomPadding) + 1);
+
+                    // UPDATE: Check to see that region falls in bounds - cutting off the size if it's one over
+                    if (column + regionWidth >= width)
+                        regionWidth--;
+
+                    if (row + regionHeight >= height)
+                        regionHeight--;
 
                     // Call method to iterate grid to create region
                     //

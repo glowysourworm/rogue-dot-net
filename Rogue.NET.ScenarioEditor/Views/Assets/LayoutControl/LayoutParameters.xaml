@@ -127,30 +127,23 @@
                 </GroupBox.Visibility>
 
                 <StackPanel>
+
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Grid Columns" />
-                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
-                                                Minimum="1" 
-                                                Increment="1" 
-                                                FormatString="N0" 
-                                                Foreground="White"
-                                                HorizontalContentAlignment="Left"
-                                                Value="{Binding NumberRoomCols, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                Width="150" HorizontalAlignment="Right">
-                        </toolkit:IntegerUpDown>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Room Grid Columns" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding RoomColumnRatio, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding RoomColumnRatio, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
                     </Grid>
+
                     <Grid Margin="10,5,10,5">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Room Grid Rows" />
-                        <toolkit:IntegerUpDown Watermark="Enter a Value" 
-                                                Minimum="1" 
-                                                Increment="1" 
-                                                FormatString="N0" 
-                                                Foreground="White"
-                                                HorizontalContentAlignment="Left"
-                                                Value="{Binding NumberRoomRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                Width="150" HorizontalAlignment="Right">
-                        </toolkit:IntegerUpDown>
-                    </Grid>                    
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="18" Text="Room Grid Rows" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="300">
+                            <Slider Value="{Binding RoomRowRatio, Delay=300}" Width="250" TickFrequency="0.1" TickPlacement="TopLeft" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" />
+                            <TextBlock Text="{Binding RoomRowRatio, StringFormat=P0}" VerticalAlignment="Center" FontSize="18" Margin="10, 0,0,0" />
+                        </StackPanel>
+                    </Grid>
+              
                 </StackPanel>
             </GroupBox>
 

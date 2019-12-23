@@ -22,11 +22,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
         /// </summary>        
         /// <param name="height">Height of parent grid</param>
         /// <param name="width">Width of parent grid</param>
-        /// <param name="numberRegionColumns">Number of region columns</param>
-        /// <param name="numberRegionRows">Number of region rows</param>
+        /// <param name="regionColumnRatio">Ratio [0, 1] of region columns (min, max)</param>
+        /// <param name="regionRowRatio">Ratio [0, 1] of region rows (min, max)</param>
         /// <param name="regionSize">Region size [0,1]</param>
         /// <param name="regionFillRatio">Region fill ratio [0,1] (ratio of regions within the sub-divisions to fill)</param>
         /// <param name="regionSizeErradicity">Ratio [0,1] of erradic width / height parameters for the room sizes</param>
-        IEnumerable<RegionBoundary> CreateGridRectangularRegions(int width, int height, int numberRegionColumns, int numberRegionRows, double regionSize, double regionFillRatio, double regionSizeErradicity);
+        IEnumerable<RegionBoundary> CreateGridRectangularRegions(int width, int height, double regionColumnRatio, double regionRowRatio, double regionSize, double regionFillRatio, double regionSizeErradicity);
     }
 }

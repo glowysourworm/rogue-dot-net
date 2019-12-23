@@ -9,10 +9,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
     [Serializable]
     public class LayoutTemplate : Template
     {
-        private int _numberRoomRows;
-        private int _numberRoomCols;
         private double _widthRatio;
         private double _heightRatio;
+        private double _roomColumnRatio;
+        private double _roomRowRatio;
         private double _fillRatioRooms;
         private double _fillRatioCorridors;
         private double _roomSize;
@@ -37,30 +37,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private LightAmbientTemplate _lightingAmbient2;
         private double _lightingThreshold;
 
-        public int NumberRoomRows
-        {
-            get { return _numberRoomRows; }
-            set
-            {
-                if (_numberRoomRows != value)
-                {
-                    _numberRoomRows = value;
-                    OnPropertyChanged("NumberRoomRows");
-                }
-            }
-        }
-        public int NumberRoomCols
-        {
-            get { return _numberRoomCols; }
-            set
-            {
-                if (_numberRoomCols != value)
-                {
-                    _numberRoomCols = value;
-                    OnPropertyChanged("NumberRoomCols");
-                }
-            }
-        }
         public double WidthRatio
         {
             get { return _widthRatio; }
@@ -82,6 +58,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 {
                     _heightRatio = value;
                     OnPropertyChanged("HeightRatio");
+                }
+            }
+        }
+        public double RoomColumnRatio
+        {
+            get { return _roomColumnRatio; }
+            set
+            {
+                if (_roomColumnRatio != value)
+                {
+                    _roomColumnRatio = value;
+                    OnPropertyChanged("RoomColumnRatio");
+                }
+            }
+        }
+        public double RoomRowRatio
+        {
+            get { return _roomRowRatio; }
+            set
+            {
+                if (_roomRowRatio != value)
+                {
+                    _roomRowRatio = value;
+                    OnPropertyChanged("RoomRowRatio");
                 }
             }
         }
@@ -368,8 +368,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         {
             this.Type = LayoutType.RectangularRegion;
             this.ConnectionType = LayoutConnectionType.Corridor;
-            this.NumberRoomRows = 3;
-            this.NumberRoomCols = 3;
             this.HiddenDoorProbability = 0.2;
 
             this.MazeHorizontalVerticalBias = 0.5;
