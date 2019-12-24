@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Abstract;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Math.Geometry;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -91,15 +93,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 // Get weighted random layout template 
                 var layoutTemplate = _randomSequenceGenerator.GetWeightedRandom(branch.Layouts, template => template.GenerationWeight);
 
+                // Store transport points for the content generator
+                Graph<Region<GridLocation>> transporterGraph;
+
                 // Generate the level grid
-                var levelGrid = _layoutGenerator.CreateLayout(layoutTemplate.Asset);
+                var levelGrid = _layoutGenerator.CreateLayout(layoutTemplate.Asset, out transporterGraph);
 
                 // Return a new level object
                 return new
                 {
                     Level = new Level(branch, layoutTemplate, levelGrid, index + 1),
                     Layout = layoutTemplate,
-                    Branch = branch
+                    Branch = branch,
+                    TransporterGraph = transporterGraph,
+                    LastLevel = (index == levelBranches.Count() - 1)
                 };
 
             }).Actualize();
@@ -118,8 +125,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             scenario.Encyclopedia.Initialize(encyclopedia, characterClasses, alterationCategories);
 
             // *** Generate Contents
-            scenario.Levels = _contentGenerator.CreateContents(levels.Select(x => x.Level), scenario.Encyclopedia, branchDictionary, layoutDictionary, survivorMode)
-                                                     .ToList();
+            scenario.Levels = levels.Select(level =>
+            {
+                return _contentGenerator.CreateContents(level.Level, level.Branch,
+                                                        level.Layout, scenario.Encyclopedia,
+                                                        level.TransporterGraph, level.LastLevel,
+                                                        survivorMode);
+            }).ToList();
 
             // Generate Player
             scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplates.First(x => x.Name == characterClassName), scenario.Encyclopedia);
@@ -205,9 +217,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             encyclopedia.Add(ModelConstants.DoodadSavePointRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.SavePoint));
             encyclopedia.Add(ModelConstants.DoodadStairsDownRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.StairsDown));
             encyclopedia.Add(ModelConstants.DoodadStairsUpRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.StairsUp));
-            encyclopedia.Add(ModelConstants.DoodadTeleporterARogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Teleport1));
-            encyclopedia.Add(ModelConstants.DoodadTeleporterBRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Teleport2));
-            encyclopedia.Add(ModelConstants.DoodadTeleporterRandomRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.TeleportRandom));
+            encyclopedia.Add(ModelConstants.DoodadTransporterRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Transporter));
 
             // Load Encyclopedia Rogue-Tanica (Temporary Characters) (A little more to do here to get all alterations)
             foreach (var skillSet in configuration.SkillTemplates)

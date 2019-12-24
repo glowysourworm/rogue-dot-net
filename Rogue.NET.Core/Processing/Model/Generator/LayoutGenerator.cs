@@ -1,10 +1,14 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 
 using System;
@@ -23,35 +27,42 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         readonly ITerrainBuilder _terrainBuilder;
         readonly IWallFinisher _wallFinisher;
         readonly ILightingFinisher _lightingFinisher;
+        readonly IRegionTriangulationCreator _regionTriangulationCreator;
 
         [ImportingConstructor]
         public LayoutGenerator(IRegionBuilder regionBuilder,
                                IConnectionBuilder connectionBuilder,
                                ITerrainBuilder terrainBuilder,
                                IWallFinisher wallFinisher,
-                               ILightingFinisher lightingFinisher)
+                               ILightingFinisher lightingFinisher,
+                               IRegionTriangulationCreator regionTriangulationCreator)
         {
             _regionBuilder = regionBuilder;
             _connectionBuilder = connectionBuilder;
             _terrainBuilder = terrainBuilder;
             _wallFinisher = wallFinisher;
             _lightingFinisher = lightingFinisher;
+            _regionTriangulationCreator = regionTriangulationCreator;
         }
 
-        public LevelGrid CreateLayout(LayoutTemplate template)
+        public LevelGrid CreateLayout(LayoutTemplate template, out Graph<Region<GridLocation>> transporterGraph)
         {
+            transporterGraph = new Graph<Region<GridLocation>>();
+
             // Build regions of cells to initialize the layout grid
             var grid = _regionBuilder.BuildRegions(template);
 
             // Identify Regions and create connectors
             IEnumerable<Region<GridCellInfo>> regions;
 
-            if (IdentifyValidRegions(grid, out regions))
-                _connectionBuilder.BuildConnections(grid, regions, template);
+            var valid = IdentifyValidRegions(grid, out regions);
 
-            // No Valid Regions -> return default layout
-            else
+            if (!valid)
                 return CreateDefaultLayout();
+
+            // Create corridors 1st time (if not a transporter connection type)
+            if (template.ConnectionType != LayoutConnectionType.ConnectionPoints)
+                _connectionBuilder.BuildCorridors(grid, regions, template);
 
             // Make Symmetric!
             if (template.MakeSymmetric)
@@ -59,13 +70,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 // First, copy cells over
                 MakeSymmetric(grid, template.SymmetryType);
 
-                // Second, re-create corridors
-                if (IdentifyValidRegions(grid, out regions))
-                    _connectionBuilder.BuildConnections(grid, regions, template);
+                // Re-validate regions -> Re-create corridors
+                valid = IdentifyValidRegions(grid, out regions);
 
-                // No Valid Regions -> return default layout
-                else
+                if (!valid)
                     return CreateDefaultLayout();
+
+                // Create corridors 2nd time (if not a transporter connection type)
+                if (template.ConnectionType != LayoutConnectionType.ConnectionPoints)
+                    _connectionBuilder.BuildCorridors(grid, regions, template);
             }
 
             // Final room layer is calculated by the terrain builder
@@ -96,6 +109,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Build layers
             var roomLayer = new LayerInfo("Room Layer", finalRoomRegions, true);
             var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions, true);
+
+            // *** FINALIZE ROOM GRAPH FOR CONNECTION POINTS
+            //
+            if (template.ConnectionType == LayoutConnectionType.ConnectionPoints)
+                transporterGraph = _regionTriangulationCreator.CreateTriangulation(finalRoomRegions, template);
 
             // Build Walls around cells
             _wallFinisher.CreateWalls(grid, false);
@@ -246,90 +264,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 default:
                     break;
             }
-        }
-
-        /// <summary>
-        /// Validates the level - returns false if there is an issue so that a default layout can be generated. NOTE*** THROWS EXCEPTIONS
-        /// DURING DEBUG INSTEAD.
-        /// </summary>
-        private bool Validate(GridCellInfo[,] grid, LayerInfo roomLayer, IEnumerable<LayerInfo> terrainLayers)
-        {
-            var savePoint = false;
-            var stairsUp = false;
-            var stairsDown = false;
-
-            for (int i = 0; i < grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < grid.GetLength(1); j++)
-                {
-                    if (grid[i, j] != null &&
-                        grid[i, j].IsMandatory)
-                    {
-                        savePoint |= grid[i, j].MandatoryType == LayoutMandatoryLocationType.SavePoint;
-                        stairsUp |= grid[i, j].MandatoryType == LayoutMandatoryLocationType.StairsUp;
-                        stairsDown |= grid[i, j].MandatoryType == LayoutMandatoryLocationType.StairsDown;
-                    }
-                }
-            }
-
-#if DEBUG
-            if (!savePoint)
-                throw new Exception("Layout must have a mandatory cell for the save point");
-
-            if (!stairsUp)
-                throw new Exception("Layout must have a mandatory cell for the stairs up");
-
-            if (!stairsDown)
-                throw new Exception("Layout must have a mandatory cell for the stairs down");
-#else
-            if (!savePoint)
-                return false;
-
-            if (!stairsUp)
-                return false;
-
-            if (!stairsDown)
-                return false;
-#endif
-
-            foreach (var region in roomLayer.Regions)
-            {
-                var roomConnector1 = false;
-                var roomConnector2 = false;
-
-                foreach (var location in region.Locations)
-                {
-                    if (grid[location.Column, location.Row].IsMandatory &&
-                        grid[location.Column, location.Row].MandatoryType == LayoutMandatoryLocationType.RoomConnector1)
-                        roomConnector1 = true;
-
-                    if (grid[location.Column, location.Row].IsMandatory &&
-                        grid[location.Column, location.Row].MandatoryType == LayoutMandatoryLocationType.RoomConnector2)
-                        roomConnector2 = true;
-                }
-
-#if DEBUG
-                if (!RegionValidator.ValidateRoomRegion(region))
-                    throw new Exception("Room Region invalid");
-
-                if (!roomConnector1)
-                    throw new Exception("Room doesn't have a mandatory cell for connector 1");
-
-                if (!roomConnector2)
-                    throw new Exception("Room doesn't have a mandatory cell for connector 2");
-#else
-                if (!_regionValidator.ValidateRoomRegion(region))
-                    return false;
-
-                if (!roomConnector1)
-                    return false;
-
-                if (!roomConnector2)
-                    return false;
-#endif
-            }
-
-            return true;
         }
     }
 }

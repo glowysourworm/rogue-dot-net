@@ -19,9 +19,7 @@ namespace Rogue.NET.Core.Model
         public const string DoodadSavePointRogueName = "Save Point";
         public const string DoodadStairsUpRogueName = "Stairs Up";
         public const string DoodadStairsDownRogueName = "Stairs Down";
-        public const string DoodadTeleporterARogueName = "Teleporter A";
-        public const string DoodadTeleporterBRogueName = "Teleporter B";
-        public const string DoodadTeleporterRandomRogueName = "Random Teleporter";
+        public const string DoodadTransporterRogueName = "Transporter";
 
         /// <summary>
         /// Number of "buckets" allowed per color / alpha channel when calculating symbol effects

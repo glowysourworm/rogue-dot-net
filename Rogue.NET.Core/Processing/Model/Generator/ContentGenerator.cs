@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
@@ -6,10 +7,11 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -39,82 +41,54 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _itemGenerator = itemGenerator;
         }
 
-        public IEnumerable<Level> CreateContents(
-                IEnumerable<Level> levels,
-                ScenarioEncyclopedia encyclopedia,
-                IDictionary<Level, LevelBranchTemplate> selectedBranches,
-                IDictionary<Level, LayoutGenerationTemplate> selectedLayouts,
-                bool survivorMode)
+        public Level CreateContents(Level level,
+                                    LevelBranchTemplate branchTemplate,
+                                    LayoutGenerationTemplate layoutTemplate,
+                                    ScenarioEncyclopedia encyclopedia,
+                                    Graph<Region<GridLocation>> transporterGraph,
+                                    bool lastLevel,
+                                    bool survivorMode)
         {
-            var result = new List<Level>();
-
-            for (int i = 0; i < levels.Count(); i++)
-            {
-                // Get Level to map contents INTO
-                var level = levels.ElementAt(i);
-
-                // Get the level branch template from the scenario design
-                var branchTemplate = selectedBranches[level];
-
-                // Get the layout template that was selected from this branch
-                var layoutTemplate = selectedLayouts[level];
-
-                // Generate level contents from the template
-                GenerateLevelContent(level,
-                                     branchTemplate,
-                                     layoutTemplate,
-                                     encyclopedia,
-                                     i == levels.Count() - 1,
-                                     survivorMode);
-
-                result.Add(level);
-            }
-
-            return result;
-        }
-
-        private void GenerateLevelContent(Level level, LevelBranchTemplate branchTemplate, LayoutGenerationTemplate layoutTemplate, ScenarioEncyclopedia encyclopedia, bool lastLevel, bool survivorMode)
-        {
-            // TODO:TERRAIN - Create new data structure for handling queries
-
-            // Create lists to know what cells are free
-            var rooms = level.Grid.RoomMap.GetRegions().ToList();
-            var freeCells = level.Grid
-                                 .CorridorMap
-                                 .GetRegions()
-                                 .Union(rooms)
-                                 .SelectMany(region => region.Locations)
-                                 .ToList();
-
-            var freeRoomCells = rooms.ToDictionary(room => room, room => room.Locations.Where(cell => !level.Grid[cell.Column, cell.Row].IsWall).Cast<GridLocation>().ToList());
-
             // NOTE*** ADD MAPPED CONTENT FIRST - BUT MUST IGNORE DURING THE MAPPING PHASE. THIS INCLUDES
             //         ANY NORMAL DOODADS
+
+            // Remove transport points from walkable cells; and randomize the collection
+            //
+            var transporterDict = transporterGraph.Vertices
+                                                  .Select(vertex => vertex.Reference)
+                                                  .Distinct()
+                                                  .ToDictionary(region => region, region => _randomSequenceGenerator.GetRandomElement(region.Locations));
+
+            var openLocations = level.Grid.GetWalkableCells()
+                                          .Except(transporterDict.Values.Select(location => level.Grid[location.Column, location.Row]))
+                                          .Select(cell => cell.Location)
+                                          .Actualize();
+
+            var randomizedLocations = _randomSequenceGenerator.Randomize(openLocations);
+            var randomizedLocationQueue = new Queue<GridLocation>(randomizedLocations);
 
             // Must have for each level (Except the last one) (MAPPED)
             if (!lastLevel)
             {
                 var stairsDown = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsDownRogueName, DoodadNormalType.StairsDown);
-                stairsDown.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
+                stairsDown.Location = randomizedLocationQueue.Dequeue();
                 level.AddStairsDown(stairsDown);
             }
 
             // Stairs up - every level has one - (MAPPED)
             var stairsUp = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsUpRogueName, DoodadNormalType.StairsUp);
-            stairsUp.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
+            stairsUp.Location = randomizedLocationQueue.Dequeue();
             level.AddStairsUp(stairsUp);
-
-            // TODO:TERRAIN - Use pre-mapped mandatory cells
 
             // Add teleporter level content - (MAPPED)
             if (layoutTemplate.Asset.ConnectionType == LayoutConnectionType.ConnectionPoints)
-                AddTeleporterLevelContent(level, freeCells, freeRoomCells);
+                AddTransporters(level, transporterDict, transporterGraph);
 
             // Every level has a save point if not in survivor mode - (MAPPED)
             if (!survivorMode)
             {
                 var savePoint = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadSavePointRogueName, DoodadNormalType.SavePoint);
-                savePoint.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
+                savePoint.Location = randomizedLocationQueue.Dequeue();
                 level.AddSavePoint(savePoint);
             }
 
@@ -128,17 +102,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             GenerateItems(level, branchTemplate);
             GenerateDoodads(level, branchTemplate);
 #endif
-            MapLevel(level, freeCells, freeRoomCells);
+            MapLevel(level, randomizedLocationQueue);
 
-#if DEBUG_MINIMUM_CONTENT 
-
-            // Don't generate party room contents
-
-#else
-            // Create party room if there's a room to use and the rate is greater than U[0,1] - (MAPPED)
-            if ((layoutTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()) && freeRoomCells.Any())
-                AddPartyRoomContent(level, branchTemplate, encyclopedia, freeCells, freeRoomCells);
-#endif
+            return level;
         }
         private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
         {
@@ -193,264 +159,80 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     level.AddContent(consumable);
             }
         }
-        private void AddTeleporterLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Region<GridLocation>, List<GridLocation>> freeRoomCells)
+        private void AddTransporters(Level level, IDictionary<Region<GridLocation>, GridLocation> transporterDict,  Graph<Region<GridLocation>> transportGraph)
         {
-            var rooms = level.Grid.RoomMap.GetRegions().ToList();
+            var transporters = new List<DoodadNormal>();
+            var usedRegions = new List<Region<GridLocation>>();
 
-            // Connect rooms with teleporters sequentially to make sure can reach all rooms
-            for (int i = 0; i < rooms.Count - 1; i++)
+            // Create the transporters
+            foreach (var element in transporterDict)
             {
-                var teleport1 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterARogueName, DoodadNormalType.Teleport1);
-                var teleport2 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterBRogueName, DoodadNormalType.Teleport2);
+                // Create the transporter for this location
+                var transporter = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTransporterRogueName, DoodadNormalType.Transporter);
 
-                var location1 = GetRandomCell(true, rooms.ElementAt(i), freeCells, freeRoomCells);
-                var location2 = GetRandomCell(true, rooms.ElementAt(i + 1), freeCells, freeRoomCells);
+                // Set transporter location
+                transporter.Location = element.Value;
 
-                if (location1 == null)
-                    throw new Exception("Trying to place teleporter but ran out of room!");
+                // Add to the list for lookup
+                transporters.Add(transporter);
 
-                if (location2 == null)
-                    throw new Exception("Trying to place teleporter but ran out of room!");
-
-                teleport1.Location = location1;
-                teleport2.Location = location2;
-
-                teleport1.PairId = teleport2.Id;
-                teleport2.PairId = teleport1.Id;
-
-                level.AddContent(teleport1);
-                level.AddContent(teleport2);
+                // Add it to the level content
+                level.AddContent(transporter);
             }
 
-            var lastRoomTeleport = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterARogueName, DoodadNormalType.Teleport1);
-            var firstRoomTeleport = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterBRogueName, DoodadNormalType.Teleport2);
-
-            var lastRoomLocation = GetRandomCell(true, rooms.ElementAt(rooms.Count - 1), freeCells, freeRoomCells);
-            var firstRoomLocation = GetRandomCell(true, rooms.ElementAt(0), freeCells, freeRoomCells);
-
-            if (lastRoomLocation == null)
-                throw new Exception("Trying to place teleporter but ran out of room!");
-
-            if (firstRoomLocation == null)
-                throw new Exception("Trying to place teleporter but ran out of room!");
-
-            lastRoomTeleport.Location = lastRoomLocation;
-            firstRoomTeleport.Location = firstRoomLocation;
-
-            // Pair the teleporters
-            firstRoomTeleport.PairId = lastRoomTeleport.Id;
-            lastRoomTeleport.PairId = firstRoomTeleport.Id;
-
-            level.AddContent(lastRoomTeleport);
-            level.AddContent(firstRoomTeleport);
-
-            //Add some extra ones (one per room)
-            for (int i = 0; i < rooms.Count; i++)
+            // Link them together
+            foreach (var element in transporterDict)
             {
-                var extraLocation1 = GetRandomCell(false, null, freeCells, freeRoomCells);
-                var extraLocation2 = GetRandomCell(false, null, freeCells, freeRoomCells);
+                // Get vertices for this region
+                var vertices = transportGraph.Find(element.Key);
 
-                // If we ran out of room then just return since these are extra
-                if (extraLocation1 == null ||
-                    extraLocation2 == null)
-                    return;
+                // Find all connecting edges
+                var connectingEdges = vertices.SelectMany(vertex => transportGraph[vertex]);
 
-                var extraTeleport1 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterARogueName, DoodadNormalType.Teleport1);
-                var extraTeleport2 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterBRogueName, DoodadNormalType.Teleport2);
+                // Locate connected regions and add to the transporter list
+                var connectingLocations = connectingEdges.Select(edge =>
+                {
+                    if (edge.Point1.Reference == element.Key)
+                        return transporterDict[edge.Point2.Reference];
 
-                extraTeleport1.Location = extraLocation1;
-                extraTeleport2.Location = extraLocation2;
+                    else
+                        return transporterDict[edge.Point1.Reference];
+                });
 
-                // Pair the teleporters
-                extraTeleport1.PairId = extraTeleport2.Id;
-                extraTeleport2.PairId = extraTeleport1.Id;
+                // Set all connection id's for each transporter
+                var primaryTransporter = transporters.First(x => x.Location.Equals(element.Value));
 
-                level.AddContent(extraTeleport1);
-                level.AddContent(extraTeleport2);
+                // Get other transporters by connecting location
+                var otherTransporters = transporters.Where(x => connectingLocations.Contains(x.Location));
+
+                // Set connecting id's
+                foreach (var transporterId in otherTransporters.Select(x => x.Id))
+                    primaryTransporter.TransportGroupIds.Add(transporterId);
+
+                // ALSO SET PRIMARY ID
+                primaryTransporter.TransportGroupIds.Add(primaryTransporter.Id);
             }
         }
-        private void AddTeleportRandomLevelContent(Level level, IList<GridLocation> freeCells, Dictionary<Region<GridLocation>, List<GridLocation>> freeRoomCells)
-        {
-            var rooms = level.Grid.RoomMap.GetRegions().ToList();
-
-            // Random teleporters send character to random point in the level. Add
-            // one per room
-            for (int i = 0; i < rooms.Count; i++)
-            {
-                var doodad = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterRandomRogueName, DoodadNormalType.TeleportRandom);
-                var location = GetRandomCell(true, rooms[i], freeCells, freeRoomCells);
-
-                if (location == null)
-                    throw new Exception("Trying to place teleporter but ran out of room!");
-
-                doodad.Location = location;
-                level.AddContent(doodad);
-            }
-        }
-        private void AddPartyRoomContent(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia, IList<GridLocation> freeCells, Dictionary<Region<GridLocation>, List<GridLocation>> freeRoomCells)
-        {
-            // *** Party Room Procedure (TODO: Parameterize this at some point)
-            //
-            //     1) Choose Room at random
-            //     2) Draw random number of Enemies between [1, 5] -> Place Enemies
-            //     3) Draw random number of Consumables between [1, 3] -> Place Consumables
-            //     4) Draw random number of Equipment between [1, 2] -> Place Equipment
-            //     5) Repeat steps 2-4 until either:
-            //          A) Reach total asset number between [15, 30]
-            //       OR B) Run out of room
-            //
-
-            var partyRoom = _randomSequenceGenerator.GetRandomElement(level.Grid.RoomMap.GetRegions());
-
-            var totalAssetNumber = _randomSequenceGenerator.Get(15, 30);
-            var enemyNumber = _randomSequenceGenerator.Get(1, 5);
-            var consumableNumber = _randomSequenceGenerator.Get(1, 3);
-            var equipmentNumber = _randomSequenceGenerator.Get(1, 2);
-
-            var generatedAssets = 0;
-            var availableLocation = true;
-
-            // Generate -> Map assets while there's available room and the limit hasn't been exceeded
-            while ((generatedAssets < totalAssetNumber) && availableLocation)
-            {
-                // Enemies
-                for (int i = 0; (i < enemyNumber) &&
-                                (generatedAssets < totalAssetNumber) &&
-                                 availableLocation; i++)
-                {
-                    // If Asset generation fails - exit loop
-                    var enemy = GenerateEnemy(branchTemplate, encyclopedia);
-
-                    if (enemy == null)
-                        break;
-
-                    // Draw random cell from remaining locations
-                    var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
-
-                    if (location != null)
-                    {
-                        // Map the enemy - add to level content
-                        enemy.Location = location;
-                        level.AddContent(enemy);
-                        generatedAssets++;
-                    }
-                    else
-                        availableLocation = false;
-                }
-
-                // Consumables
-                for (int i = 0; (i < consumableNumber) &&
-                                (generatedAssets < totalAssetNumber) &&
-                                 availableLocation; i++)
-                {
-                    // If Asset generation fails - exit loop
-                    var consumable = GenerateConsumable(branchTemplate);
-
-                    if (consumable == null)
-                        break;
-
-                    // Draw random cell from remaining locations
-                    var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
-
-                    if (location != null)
-                    {
-                        // Map the enemy - add to level content
-                        consumable.Location = location;
-                        level.AddContent(consumable);
-                        generatedAssets++;
-                    }
-                    else
-                        availableLocation = false;
-                }
-
-                // Equipment
-                for (int i = 0; (i < equipmentNumber) &&
-                                (generatedAssets < totalAssetNumber) &&
-                                availableLocation; i++)
-                {
-                    // If Asset generation fails - exit loop
-                    var equipment = GenerateEquipment(branchTemplate);
-
-                    if (equipment == null)
-                        break;
-
-                    // Draw random cell from remaining locations
-                    var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
-
-                    if (location != null)
-                    {
-                        // Map the enemy - add to level content
-                        equipment.Location = location;
-                        level.AddContent(equipment);
-                        generatedAssets++;
-                    }
-                    else
-                        availableLocation = false;
-                }
-            }
-        }
-        private void MapLevel(Level level, IList<GridLocation> freeCells, Dictionary<Region<GridLocation>, List<GridLocation>> freeRoomCells)
+        private void MapLevel(Level level, Queue<GridLocation> randomizedLocationQueue)
         {
             var levelContents = level.GetContents();
 
             // Map Level Contents:  Set locations for each ScenarioObject. Removal of these can be
             // done based on the total length of the levelContents array - which will be altered during
             // the loop interally to the Level.
-            for (int i = levelContents.Length - 1; i >= 0; i--)
+            for (int i = levelContents.Length - 1; i >= 0 && randomizedLocationQueue.Any(); i--)
             {
                 // Already Placed
                 if (levelContents[i] is DoodadNormal)
                     continue;
 
-                var location = GetRandomCell(false, null, freeCells, freeRoomCells);
+                var location = randomizedLocationQueue.Dequeue();
 
                 // Entire grid is occupied
                 if (location == null)
                     level.RemoveContent(levelContents[i]);
                 else
                     levelContents[i].Location = location;
-            }
-        }
-        private GridLocation GetRandomCell(bool inRoom, Region<GridLocation> room, IList<GridLocation> freeCells, Dictionary<Region<GridLocation>, List<GridLocation>> freeRoomCells)
-        {
-            // Check overall collection of cells for remaining locations
-            if (freeCells.Count == 0)
-                return null;
-
-            if (inRoom)
-            {
-                var roomCells = freeRoomCells[room];
-
-                if (roomCells.Count == 0)
-                    return null;
-
-                var randomIndex = _randomSequenceGenerator.Get(0, roomCells.Count);
-
-                var location = roomCells[randomIndex];
-
-                // Update both collections
-                roomCells.RemoveAt(randomIndex);
-
-                if (freeCells.Contains(location))
-                    freeCells.Remove(location);
-
-                return location;
-            }
-            else
-            {
-                var randomIndex = _randomSequenceGenerator.Get(0, freeCells.Count);
-
-                var location = freeCells[randomIndex];
-
-                // Update both collections
-                freeCells.RemoveAt(randomIndex);
-
-                var containingRoom = freeRoomCells.Values.FirstOrDefault(x => x.Contains(location));
-
-                if (containingRoom != null)
-                    containingRoom.Remove(location);
-
-                return location;
             }
         }
 

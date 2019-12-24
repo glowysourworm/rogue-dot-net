@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Linq;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Processing.Model.Extension;
-using Rogue.NET.Common.Extension;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -15,6 +16,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         private GridCell[,] _grid;
         private GridCell[] _doorArray;
         private GridCell[] _cellArray;
+        private GridCell[] _walkableArray;
         private GridCell[] _wallLightArray;
 
         #region Properties / Indexers
@@ -23,7 +25,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             //NOTE*** Returns null as a default
             get { return _grid.Get(column, row); }
         }
-        public Dictionary<GridLocation, LayoutMandatoryLocationType> MandatoryLocations { get; private set; }
         public RegionBoundary Bounds { get; private set; }
         public LayerMap RoomMap { get; private set; }
         public LayerMap CorridorMap { get; private set; }
@@ -50,7 +51,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.CorridorMap = new LayerMap(corridorLayer.LayerName, corridorLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.ImpassableTerrainMap = new LayerMap("Impassable Terrain", terrainLayers.Where(x => !x.IsPassable).SelectMany(layer => layer.Regions), this.Bounds.Width, this.Bounds.Height);
             this.TerrainMaps = terrainLayers.Select(layer => new LayerMap(layer.LayerName, layer.Regions, this.Bounds.Width, this.Bounds.Height)).Actualize();
-            this.MandatoryLocations = new Dictionary<GridLocation, LayoutMandatoryLocationType>();
 
             // Initialize the grid
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -60,13 +60,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     if (grid[i, j] != null)
                     {
                         // Create the grid cell
-                        _grid[i, j] = new GridCell(grid[i,j].Location, grid[i, j].IsWall, grid[i, j].IsWallLight,
+                        _grid[i, j] = new GridCell(grid[i, j].Location, grid[i, j].IsWall, grid[i, j].IsWallLight,
                                                    grid[i, j].IsDoor, grid[i, j].DoorSearchCounter, grid[i, j].BaseLight,
                                                    grid[i, j].WallLight);
-
-                        // Check for mandatory locations
-                        if (grid[i,j].IsMandatory)
-                            this.MandatoryLocations.Add(grid[i, j].Location, grid[i, j].MandatoryType);
                     }
                 }
             }
@@ -79,7 +75,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var height = info.GetInt32("Height");
             var count = info.GetInt32("Count");
             var terrainCount = info.GetInt32("TerrainMapCount");
-            var mandatoryCount = info.GetInt32("MandatoryLocationsCount");
             var roomMap = (LayerMap)info.GetValue("RoomMap", typeof(LayerMap));
             var corridorMap = (LayerMap)info.GetValue("CorridorMap", typeof(LayerMap));
             var impassableMap = (LayerMap)info.GetValue("ImpassableTerrainMap", typeof(LayerMap));
@@ -88,10 +83,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
 
             var terrainData = new List<LayerMap>();
-            var mandatoryData = new Dictionary<GridLocation, LayoutMandatoryLocationType>();
 
             // Populate cell grid
-            for (int i=0;i<count;i++)
+            for (int i = 0; i < count; i++)
             {
                 var cell = (GridCell)info.GetValue("Cell" + i.ToString(), typeof(GridCell));
 
@@ -106,20 +100,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 terrainData.Add(terrain);
             }
 
-            // Populate Mandatory Locations
-            for (int i = 0; i < mandatoryCount; i++)
-            {
-                var location = (GridLocation)info.GetValue("MandatoryLocation" + i.ToString(), typeof(GridLocation));
-                var type = (LayoutMandatoryLocationType)info.GetValue("MandatoryLocationType" + i.ToString(), typeof(LayoutMandatoryLocationType));
-
-                mandatoryData.Add(location, type);
-            }
-
             this.RoomMap = roomMap;
             this.CorridorMap = corridorMap;
             this.TerrainMaps = terrainData;
             this.ImpassableTerrainMap = impassableMap;
-            this.MandatoryLocations = mandatoryData;
 
             // Leave these invalid until iteration is necessary
             _doorArray = null;
@@ -136,7 +120,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("Height", _grid.GetLength(1));
             info.AddValue("Count", _cellArray.Length);
             info.AddValue("TerrainMapCount", this.TerrainMaps.Count());
-            info.AddValue("MandatoryLocationsCount", this.MandatoryLocations.Count);
             info.AddValue("RoomMap", this.RoomMap);
             info.AddValue("CorridorMap", this.CorridorMap);
             info.AddValue("ImpassableTerrainMap", this.ImpassableTerrainMap);
@@ -146,14 +129,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             for (int i = 0; i < this.TerrainMaps.Count(); i++)
                 info.AddValue("TerrainMap" + i.ToString(), this.TerrainMaps.ElementAt(i));
-
-            for (int i = 0; i < this.MandatoryLocations.Count; i++)
-            {
-                var element = this.MandatoryLocations.ElementAt(i);
-
-                info.AddValue("MandatoryLocation" + i.ToString(), element.Key);
-                info.AddValue("MandatoryLocationType" + i.ToString(), element.Value);
-            }
         }
         #endregion
 
@@ -166,16 +141,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             var cells = new List<GridCell>();
             var doorCells = new List<GridCell>();
+            var walkableCells = new List<GridCell>();
             var wallLightCells = new List<GridCell>();
 
-            for (int i=0;i<_grid.GetLength(0);i++)
+            for (int i = 0; i < _grid.GetLength(0); i++)
             {
-                for (int j=0;j<_grid.GetLength(1);j++)
+                for (int j = 0; j < _grid.GetLength(1); j++)
                 {
                     if (_grid[i, j] == null)
                         continue;
 
                     cells.Add(_grid[i, j]);
+
+                    if (!_grid[i, j].IsWall &&
+                         this.ImpassableTerrainMap[i, j] == null)
+                        walkableCells.Add(_grid[i, j]);
 
                     if (_grid[i, j].IsDoor)
                         doorCells.Add(_grid[i, j]);
@@ -187,6 +167,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             _cellArray = cells.ToArray();
             _doorArray = doorCells.ToArray();
+            _walkableArray = walkableCells.ToArray();
             _wallLightArray = wallLightCells.ToArray();
         }
         public GridCell[] GetDoors()
@@ -202,6 +183,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 RebuildArrays();
 
             return _cellArray;
+        }
+        public GridCell[] GetWalkableCells()
+        {
+            if (_cellArray == null)
+                RebuildArrays();
+
+            return _walkableArray;
         }
         public GridCell[] GetWallLightCells()
         {

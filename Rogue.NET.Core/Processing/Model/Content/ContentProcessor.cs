@@ -364,58 +364,40 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, doodadTitle + " (Press \"D\" to Use)");
                     }
                     break;
-                case DoodadNormalType.TeleportRandom:
+                case DoodadNormalType.Transporter:
                     {
-                        character.Location = _modelService.LayoutService.GetRandomLocation(true);
-                        if (character is Player)
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Teleport!");
+                        // Cycle through the ID list and take the next transporter
+                        //
+                        // TODO: IF ENEMY IS ON THE TRANSPORTER - FIND A NEW LOCATION FOR IT. DON'T REMOVE IT - 
+                        //       IT MAY BE AN OBJECTIVE
+                        //
 
-                        // Queue update to level 
-                        if (character is Enemy)
-                            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, character.Id));
+                        //var nextTransporterId = doodad.TransportGroupIds.Next(doodad.Id);
+                        //var nextTransporter = level.GetContent(nextTransporterId);
 
-                        else
-                            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerLocation, _modelService.Player.Id));
-                    }
-                    break;
-                case DoodadNormalType.Teleport1:
-                case DoodadNormalType.Teleport2:
-                    {
-                        var otherTeleporter = level.DoodadsNormal.First(x => x.PairId == doodad.Id);
+                        //// Have to swap locations if character is sitting on other teleporter
+                        //if (level.IsCellOccupiedByCharacter(nextTransporter.Location, _modelService.Player.Location))
+                        //{
+                        //    // Fetch other character
+                        //    var otherCharacter = level.GetAt<Character>(nextTransporter.Location);
 
-                        // Show the other teleporter also if it's hidden
-                        otherTeleporter.IsHidden = false;
+                        //    // Set location to character location
+                        //    otherCharacter.Location = character.Location;
 
-                        // Have to boot enemy if it's sitting on other teleporter
-                        if (character is Player && level.IsCellOccupiedByCharacter(otherTeleporter.Location, _modelService.Player.Location))
-                        {
-                            var enemy = level.GetAt<Enemy>(otherTeleporter.Location);
+                        //    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, otherCharacter.Id));
+                        //}
 
-                            // Remove from the level
-                            level.RemoveContent(enemy);
+                        //// Set character location to other teleporter
+                        //character.Location = nextTransporter.Location;
 
-                            // Queue update to the level
-                            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, enemy.Id));
-                        }
-                        // Enemy is trying to teleport in where Player is
-                        else if (character is Enemy && character.Location.Equals(_modelService.Player.Location))
-                        {
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Enemy is trying to use your teleporter!");
-                            break;
-                        }
+                        //if (character is Player)
+                        //{
+                        //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You were transported!");
 
-                        // Set character location to other teleporter
-                        character.Location = otherTeleporter.Location;
-
-                        // Queue update to level 
-                        if (character is Enemy)
-                            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, character.Id));
-
-                        else
-                            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerLocation, _modelService.Player.Id));
-
-                        if (character is Player)
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Teleport!");
+                        //    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerLocation, _modelService.Player.Id));
+                        //}
+                        //else
+                        //    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, character.Id));
 
                         break;
                     }
@@ -591,9 +573,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Add to level
             _modelService.Level.AddContent(item);
         }
-#endregion
+        #endregion
 
-#region (private) Non-Player Character Reactions
+        #region (private) Non-Player Character Reactions
         private void OnNonPlayerCharacterReaction(NonPlayerCharacter character)
         {
             // Sets turn counter 
@@ -974,9 +956,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 _alterationProcessor.Queue(character, alteration);
             }
         }
-#endregion
+        #endregion
 
-#region (private) End-Of-Turn Methods
+        #region (private) End-Of-Turn Methods
         private void ProcessMonsterGeneration()
         {
             // Create monster on generation rate roll
@@ -1019,6 +1001,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Queue level update for added content
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, enemy.Id));
         }
-#endregion
+        #endregion
     }
 }

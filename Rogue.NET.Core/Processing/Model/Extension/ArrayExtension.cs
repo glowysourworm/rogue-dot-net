@@ -566,5 +566,21 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             // Assign region data to new region
             return new Region<T>(regionLocations.ToArray(), edgeLocations.ToArray(), boundary, parentBoundary);
         }
+
+        /// <summary>
+        /// Returns elements of the 2D array that match the given predicate
+        /// </summary>
+        public static IEnumerable<T> Where<T>(this T[,] grid, Func<T, bool> predicate)
+        {
+            var list = new List<T>();
+
+            grid.Iterate((column, row) =>
+            {
+                if (predicate(grid[column, row]))
+                    list.Add(grid[column, row]);
+            });
+
+            return list;
+        }
     }
 }

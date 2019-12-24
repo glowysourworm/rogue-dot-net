@@ -124,6 +124,26 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             throw new Exception("PickRandom<T> has an issue searching using CDF method");
         }
 
+        public IEnumerable<T> Randomize<T>(IEnumerable<T> collection)
+        {
+            var list = new List<T>();
+            var indices = new List<int>(Enumerable.Range(0, collection.Count()));
+
+            while (indices.Count > 0)
+            {
+                // Fetch a random index
+                var randomIndex = GetRandomElement(indices);
+
+                // Add random element to the result
+                list.Add(collection.ElementAt(randomIndex));
+
+                // Remove used index from indices
+                indices.Remove(randomIndex);
+            }
+
+            return list;
+        }
+
         // https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
         private double GetNormal()
         {

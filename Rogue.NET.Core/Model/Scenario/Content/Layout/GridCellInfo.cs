@@ -26,8 +26,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public bool IsWall { get; set; }
         public bool IsWallLight { get; set; }
         public bool IsCorridor { get; set; }
-        public bool IsMandatory { get; set; }
-        public LayoutMandatoryLocationType MandatoryType { get; set; }
         public int DoorSearchCounter { get; set; }
         public Light BaseLight { get; set; }
         public Light WallLight { get; set; }

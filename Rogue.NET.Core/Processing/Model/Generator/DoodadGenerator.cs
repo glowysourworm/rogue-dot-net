@@ -44,14 +44,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 case DoodadNormalType.SavePoint:
                     result.GameSymbol = GameSymbol.SavePoint;
                     break;
-                case DoodadNormalType.Teleport1:
+                case DoodadNormalType.Transporter:
                     result.GameSymbol = GameSymbol.Teleport1;
-                    break;
-                case DoodadNormalType.Teleport2:
-                    result.GameSymbol = GameSymbol.Teleport2;
-                    break;
-                case DoodadNormalType.TeleportRandom:
-                    result.GameSymbol = GameSymbol.TeleportRandom;
                     break;
                 default:
                     break;

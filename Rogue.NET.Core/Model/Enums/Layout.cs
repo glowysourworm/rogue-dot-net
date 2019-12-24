@@ -57,8 +57,8 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Generates a corridor between rooms")]
         Corridor = 0,
 
-        [Display(Name = "Scenario Object Pair",
-                 Description = "Generates a Scenario Object pair to transport character between rooms")]
+        [Display(Name = "Transport Points",
+                 Description = "Generates a scenario object pair to transport character between rooms")]
         ConnectionPoints = 1,
 
         [Display(Name = "Maze",
@@ -74,43 +74,6 @@ namespace Rogue.NET.Core.Model.Enums
         [Display(Name = "4 - Way",
                  Description = "Generates a symmetric map using a 4-way fold")]
         Quadrant = 1
-    }
-    public enum LayoutMandatoryLocationType
-    {
-        /// <summary>
-        /// Mandatory location for the stairs up
-        /// </summary>
-        StairsUp,
-
-        /// <summary>
-        /// Mandatory location for the stairs down
-        /// </summary>
-        StairsDown,
-
-        /// <summary>
-        /// Mandatory location for the save point
-        /// </summary>
-        SavePoint,
-
-        /// <summary>
-        /// Mandatory location for a room connecting doodad pair (1)
-        /// </summary>
-        RoomConnector1,
-
-        /// <summary>
-        /// Mandatory location for a room connecting doodad pair (2)
-        /// </summary>
-        RoomConnector2,
-
-        /// <summary>
-        /// Mandatory location for a doodad pair (1) that was created when dividing another region with terrain
-        /// </summary>
-        TerrainConnector1,
-
-        /// <summary>
-        /// Mandatory location for a doodad pair (2) that was created when dividing another region with terrain
-        /// </summary>
-        TerrainConnector2
     }
     public enum TerrainType
     {
@@ -158,11 +121,7 @@ namespace Rogue.NET.Core.Model.Enums
 
         [Display(Name = "Avoid",
                  Description = "Regions separated by terrain are connected - avoiding the impassible terrain")]
-        Avoid = 1,
-
-        [Display(Name = "Scenario Object Pair",
-                 Description = "Regions separated by terrain are connected using a pair of scenario objects for transport")]
-        ConnectionPoints = 2
+        Avoid = 1
     }
 
     [Flags]

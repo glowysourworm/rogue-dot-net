@@ -73,17 +73,21 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 return false;
             }
 
-            // Calculate avoid regions for the connection builder
-            var avoidRegions = terrainDict.Where(element => !element.Key.IsPassable &&
-                                                             element.Key.ConnectionType == TerrainConnectionType.Avoid)
-                                          .SelectMany(element => element.Value.IdentifyRegions(cell => true))
-                                          .Actualize();
+            // CORRIDORS
+            if (template.ConnectionType != LayoutConnectionType.ConnectionPoints)
+            {
+                // Calculate avoid regions for the connection builder
+                var avoidRegions = terrainDict.Where(element => !element.Key.IsPassable &&
+                                                                 element.Key.ConnectionType == TerrainConnectionType.Avoid)
+                                              .SelectMany(element => element.Value.IdentifyRegions(cell => true))
+                                              .Actualize();
 
-            // Create corridors and new regions
-            _connectionBuilder.BuildConnectionsWithAvoidRegions(terrainMaskedGrid, maskedRegions, avoidRegions, template);
+                // Create corridors and new regions
+                _connectionBuilder.BuildCorridorsWithAvoidRegions(terrainMaskedGrid, maskedRegions, avoidRegions, template);
 
-            // Transfer the corridor cells back to the primary and terrain grids
-            TransferCorridors(terrainMaskedGrid, grid, terrainDict);
+                // Transfer the corridor cells back to the primary and terrain grids
+                TransferCorridors(terrainMaskedGrid, grid, terrainDict);
+            }
 
             // Create the terrain layers
             terrainLayers = terrainDict.Select(element =>

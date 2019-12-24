@@ -3333,4 +3333,17 @@ IMMEDIATE TODO'S:
 	CORRIDOR BUILDER:
 	
 		Try using lower cost for existing corridors to prevent duplicates that are side-by-side
+		
+	TELEPORTERS -> DOODAD GROUPS
+	
+		Problem with design of transport pairs (doodad pairs) is that triangulation (which is a nice idea) would have many
+		doodads in a single region. 
+		
+		A solution is to have ONE "Transporter" per walkable region. This transporter would be part of a DoodadGroup (new object). This
+		object is itself a doodad and contains a list of ORDERED ID's to cycle between the connected regions.
+		
+		Another way to navigate between the transporters is for the user to choose their destination. This would be GREAT! But, it
+		would require some more UI work. 
+		
+	ANOTHER NAME FOR DOODAD (?) DEVICE (?)
 			

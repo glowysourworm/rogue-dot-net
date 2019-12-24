@@ -2,6 +2,7 @@
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
@@ -52,7 +53,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                 return graph;
 
             // Create corridors between the MST and Delaunay using the fill ratio
-            if (template.FillRatioCorridors > 0)
+            //
+            // NOTE*** Connection points must only have an MST - because of the minimum size room (4 cells)
+            //
+            if (template.FillRatioCorridors > 0 &&
+                template.ConnectionType != LayoutConnectionType.ConnectionPoints)
             {
                 // NOTE*** Delaunay output graph is not fully connected; but the regions ARE fully connected.
                 var delaunayGraph = CreateDelaunayTriangulation(graph, regions);

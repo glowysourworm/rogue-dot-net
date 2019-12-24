@@ -70,6 +70,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
         T GetWeightedRandom<T>(IEnumerable<T> collection, Func<T, double> weightSelector);
 
         /// <summary>
+        /// Shuffles a collection and returns a new one with randomly placed elements
+        /// </summary>
+        IEnumerable<T> Randomize<T>(IEnumerable<T> collection);
+
+        /// <summary>
         /// Gets random N, S, E, or W direction
         /// </summary>
         Compass GetRandomCardinalDirection();

@@ -311,9 +311,36 @@ namespace Rogue.NET.Common.Extension
                 destCollection.RemoveAt(i);
         }
 
+        /// <summary>
+        /// Randomizes the input collection
+        /// </summary>
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> collection)
         {
             return MoreEnumerable.Shuffle(collection);
+        }
+
+        /// <summary>
+        /// Returns the next item in the collection after the specified one. If it's the last item - then 
+        /// the first item is returned
+        /// </summary>
+        public static T Next<T>(this IEnumerable<T> collection, T item) where T : class
+        {
+            var found = false;
+
+            foreach (var otherItem in collection)
+            {
+                if (found)
+                    return otherItem;
+
+                else if (otherItem == item)
+                    found = true;
+            }
+
+            if (found)
+                return collection.First();
+
+            else
+                throw new Exception("Item in collection not found EnumerableExtension.Next()");
         }
     }
 }

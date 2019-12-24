@@ -176,7 +176,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         GameSymbol = GameSymbol.SavePoint,
                         Type = DoodadType.Normal.ToString()
                     };
-                case DoodadNormalType.Teleport1:
+                case DoodadNormalType.Transporter:
                     return new ScenarioMetaData()
                     {
                         Description = "A shrine dedicated to magical transport",
@@ -186,39 +186,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         IsUnique = false,
                         LongDescription = "Contains strange markings related to magical transportation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = ModelConstants.DoodadTeleporterARogueName,
+                        RogueName = ModelConstants.DoodadTransporterRogueName,
                         SymbolType = SymbolType.Game,
                         GameSymbol = GameSymbol.Teleport1,
-                        Type = DoodadType.Normal.ToString()
-                    };
-                case DoodadNormalType.Teleport2:
-                    return new ScenarioMetaData()
-                    {
-                        Description = "A shrine dedicated to magical transport",
-                        IsCursed = false,
-                        IsIdentified = false,
-                        IsObjective = false,
-                        IsUnique = false,
-                        LongDescription = "Contains strange markings related to magical transportation",
-                        ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = ModelConstants.DoodadTeleporterBRogueName,
-                        SymbolType = SymbolType.Game,
-                        GameSymbol = GameSymbol.Teleport2,
-                        Type = DoodadType.Normal.ToString()
-                    };
-                case DoodadNormalType.TeleportRandom:
-                    return new ScenarioMetaData()
-                    {
-                        Description = "A shrine dedicated to magical transport",
-                        IsCursed = false,
-                        IsIdentified = false,
-                        IsObjective = false,
-                        IsUnique = false,
-                        LongDescription = "Contains strange markings related to magical transportation",
-                        ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = ModelConstants.DoodadTeleporterRandomRogueName,
-                        SymbolType = SymbolType.Game,
-                        GameSymbol = GameSymbol.TeleportRandom,
                         Type = DoodadType.Normal.ToString()
                     };
                 default:

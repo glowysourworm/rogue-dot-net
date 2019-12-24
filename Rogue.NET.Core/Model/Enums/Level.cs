@@ -99,18 +99,6 @@ namespace Rogue.NET.Core.Model.Enums
         StairsUp,
         StairsDown,
         SavePoint,
-        Teleport1,
-        Teleport2,
-        TeleportRandom,
-    }
-    public enum DoodadPairType
-    {
-        TeleportPair
-    }
-    public enum GenerationRate
-    {
-        Low = 0,
-        Medium,
-        High,
+        Transporter
     }
 }
