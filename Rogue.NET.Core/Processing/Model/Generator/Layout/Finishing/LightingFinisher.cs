@@ -8,10 +8,12 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+
 using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
@@ -30,9 +32,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         const int WALL_LIGHT_SPACE_MINIMUM = 5;
 
         // Lighting constants
-        const double LIGHT_INTENSITY_THRESHOLD = 0.01;
+        const double LIGHT_INTENSITY_THRESHOLD = 0.3;
         const double LIGHT_POWER_LAW = 0.75;
         const double LIGHT_FALLOFF_RADIUS = 2.0;
+        const double LIGHT_PERLIN_FREQUENCY = 0.08;
 
         [ImportingConstructor]
         public LightingFinisher(ILightGenerator lightGenerator, INoiseGenerator noiseGenerator, IVisibilityCalculator visibilityCalculator, IRandomSequenceGenerator randomSequenceGenerator)
@@ -59,11 +62,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             {
                 case TerrainAmbientLightingType.None:
                     break;
-                case TerrainAmbientLightingType.LightedRooms:
-                    CreateLightedRooms(grid, roomRegions, template.LightingAmbient1);
-                    break;
                 case TerrainAmbientLightingType.PerlinNoiseLarge:
-                case TerrainAmbientLightingType.PerlinNoiseSmall:
                     CreatePerlinNoiseLighting(grid, template.LightingAmbient1);
                     break;
                 case TerrainAmbientLightingType.WhiteNoise:
@@ -80,11 +79,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             {
                 case TerrainAmbientLightingType.None:
                     break;
-                case TerrainAmbientLightingType.LightedRooms:
-                    CreateLightedRooms(grid, roomRegions, template.LightingAmbient2);
-                    break;
                 case TerrainAmbientLightingType.PerlinNoiseLarge:
-                case TerrainAmbientLightingType.PerlinNoiseSmall:
                     CreatePerlinNoiseLighting(grid, template.LightingAmbient2);
                     break;
                 case TerrainAmbientLightingType.WhiteNoise:
@@ -100,9 +95,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
         private void CreateLightThreshold(GridCellInfo[,] grid, LayoutTemplate template)
         {
-            if (template.LightingThreshold <= 0)
-                return;
-
             for (int i = 0; i < grid.GetLength(0); i++)
             {
                 for (int j = 0; j < grid.GetLength(1); j++)
@@ -111,26 +103,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         continue;
 
                     // Set a white light threshold (to simulate white light)
-                    grid[i, j].BaseLight = new Light(0xFF, 0xFF, 0xFF, template.LightingThreshold);
-                }
-            }
-        }
-
-        private void CreateLightedRooms(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, LightAmbientTemplate template)
-        {
-            // Create the light for the room
-            var light = _lightGenerator.GenerateLight(template.Light);
-
-            foreach (var region in regions)
-            {
-                if (_randomSequenceGenerator.Get() < template.FillRatio)
-                {
-                    // Create random intensity within the parameters
-                    light.Intensity = _randomSequenceGenerator.GetRandomValue(template.IntensityRange);
-
-                    // Combine color with existing lighting for the cell
-                    foreach (var location in region.Locations)
-                        grid[location.Column, location.Row].BaseLight = ColorFilter.AddLight(grid[location.Column, location.Row].BaseLight, light);
+                    grid[i, j].BaseLight = new Light(0xFF, 0xFF, 0xFF, ScaleIntensity(template.LightingThreshold));
                 }
             }
         }
@@ -150,7 +123,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     if (_randomSequenceGenerator.Get() < template.FillRatio)
                     {
                         // Go ahead and adjust light intensity here since the light instance is only local
-                        light.Intensity = _randomSequenceGenerator.GetRandomValue(template.IntensityRange);
+                        light.Intensity = ScaleIntensity(_randomSequenceGenerator.GetRandomValue(template.IntensityRange));
 
                         // Blend the current light value with the new light
                         grid[i, j].BaseLight = ColorFilter.AddLight(grid[i, j].BaseLight, light);
@@ -164,10 +137,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
 
-            // Create a frequency for the perlin noise
-            var frequency = template.Type == TerrainAmbientLightingType.PerlinNoiseSmall ? 0.5 : 0.08;
-
-            _noiseGenerator.Run(NoiseType.PerlinNoise, grid.GetLength(0), grid.GetLength(1), frequency, (column, row, value) =>
+            _noiseGenerator.Run(NoiseType.PerlinNoise, grid.GetLength(0), grid.GetLength(1), LIGHT_PERLIN_FREQUENCY, (column, row, value) =>
             {
                 if (grid[column, row] != null)
                 {
@@ -184,7 +154,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         var subScaledValue = peakMeasuredValue / template.FillRatio;
 
                         // Create light intensity value by scaling the sub-scaled value from the min -> max intensity
-                        light.Intensity = (subScaledValue * (template.IntensityRange.High - template.IntensityRange.Low)) + template.IntensityRange.Low;
+                        light.Intensity = ScaleIntensity((subScaledValue * (template.IntensityRange.High - template.IntensityRange.Low)) + template.IntensityRange.Low);
 
                         // Add light to the grid
                         grid[column, row].BaseLight = ColorFilter.AddLight(grid[column, row].BaseLight, light);
@@ -225,7 +195,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         installedWallLights.Add(grid[i, j].Location);
 
                         // Go ahead and adjust light intensity here since the light instance is only local
-                        var wallLightIntensity = _randomSequenceGenerator.GetRandomValue(template.IntensityRange);
+                        var wallLightIntensity = ScaleIntensity(_randomSequenceGenerator.GetRandomValue(template.IntensityRange));
 
                         // Blend in the resulting light 
                         grid[i, j].WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
@@ -249,8 +219,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     var intensity = cell.EuclideanDistance > LIGHT_FALLOFF_RADIUS ? (light.Intensity / System.Math.Pow(cell.EuclideanDistance - LIGHT_FALLOFF_RADIUS, LIGHT_POWER_LAW))
                                                                                   : light.Intensity;
 
+                    // Don't modify base lighting if the intensity is too low
+                    if (intensity < LIGHT_INTENSITY_THRESHOLD)
+                        continue;
+
                     // Add contribution to the effective lighting
-                    grid[cell.Location.Column, cell.Location.Row].BaseLight = ColorFilter.AddLight(grid[cell.Location.Column, cell.Location.Row].BaseLight, 
+                    grid[cell.Location.Column, cell.Location.Row].BaseLight = ColorFilter.AddLight(grid[cell.Location.Column, cell.Location.Row].BaseLight,
                                                                                                    new Light(wallLight.Red, wallLight.Green, wallLight.Blue, intensity));
                 }
             }
@@ -269,6 +243,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     grid[i, j].BaseLight = new Light(0xFF, 0xFF, 0xFF, 1);
                 }
             }
+        }
+
+        /// <summary>
+        /// Takes [0,1] intensity and scales it linearly to the constraints
+        /// </summary>
+        private double ScaleIntensity(double unitIntensity)
+        {
+            return ((1 - LIGHT_INTENSITY_THRESHOLD) * unitIntensity) + LIGHT_INTENSITY_THRESHOLD;
         }
     }
 }

@@ -160,8 +160,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         ApplyEffects(drawing, cacheImage);
 
                         // Apply Lighting
-                        ApplyLighting(drawing, cacheImage.Lighting);
-
+                        ApplyLighting(drawing, new Light(cacheImage.LightRed, 
+                                                         cacheImage.LightGreen, 
+                                                         cacheImage.LightBlue, 
+                                                         cacheImage.LightIntensity));
                         // Create the image source
                         return new DrawingImage(drawing);
                     }
@@ -188,8 +190,17 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             var ctrl = new Smiley();
             ctrl.Width = ModelConstants.CellWidth * cacheImage.Scale;
             ctrl.Height = ModelConstants.CellHeight * cacheImage.Scale;
-            ctrl.SmileyColor = ColorFilter.AddLightingEffect((Color)ColorConverter.ConvertFromString(cacheImage.SmileyBodyColor), cacheImage.Lighting);
-            ctrl.SmileyLineColor = ColorFilter.AddLightingEffect((Color)ColorConverter.ConvertFromString(cacheImage.SmileyLineColor), cacheImage.Lighting);
+            ctrl.SmileyColor = ColorFilter.AddLightingEffect((Color)ColorConverter.ConvertFromString(cacheImage.SmileyBodyColor), 
+                                                                    new Light(cacheImage.LightRed,
+                                                                              cacheImage.LightGreen,
+                                                                              cacheImage.LightBlue,
+                                                                              cacheImage.LightIntensity));
+
+            ctrl.SmileyLineColor = ColorFilter.AddLightingEffect((Color)ColorConverter.ConvertFromString(cacheImage.SmileyLineColor), 
+                                                                        new Light(cacheImage.LightRed,
+                                                                                  cacheImage.LightGreen,
+                                                                                  cacheImage.LightBlue,
+                                                                                  cacheImage.LightIntensity));
             ctrl.SmileyExpression = cacheImage.SmileyExpression;
 
             // TODO: fix the initialization problem

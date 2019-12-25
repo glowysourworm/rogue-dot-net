@@ -160,24 +160,16 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "No lighting generated")]
         None = 0,
 
-        [Display(Name = "Lighted Rooms",
-                 Description = "Generates fully lit rooms with the specified parameters")]
-        LightedRooms = 1,
-
-        [Display(Name = "Large Natural Lighting",
+        [Display(Name = "Smooth Natural Lighting",
                  Description = "Natural lighting generated using random features similar to your layout")]
-        PerlinNoiseLarge = 2,
-
-        [Display(Name = "Small Natural Lighting",
-                 Description = "Natural lighting generated using random features that are smaller compared to your layout features")]
-        PerlinNoiseSmall = 3,
+        PerlinNoiseLarge = 1,
 
         [Display(Name = "Speckeled Natural Lighting",
                  Description = "Natural lighting generated using white noise")]
-        WhiteNoise = 4,
+        WhiteNoise = 2,
 
         [Display(Name = "Wall Lighting",
                  Description = "Point source lights emanating from random wall tiles")]
-        WallLighting = 5
+        WallLighting = 3
     }
 }

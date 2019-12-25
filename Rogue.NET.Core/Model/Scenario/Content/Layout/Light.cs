@@ -29,6 +29,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Blue = 0x00;
             this.Intensity = 0.0;
         }
+        public Light(Light light, double newIntensity)
+        {
+            this.Red = light.Red;
+            this.Green = light.Green;
+            this.Blue = light.Blue;
+            this.Intensity = newIntensity;
+        }
         public Light(byte red, byte green, byte blue, double intensity)
         {
             this.Red = red;

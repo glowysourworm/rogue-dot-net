@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
@@ -64,11 +65,13 @@ namespace Rogue.NET.Scenario.Processing.Service
         {
             var layoutTemplate = _modelService.GetLayoutTemplate();
 
-            var exploredLight = new Light(0xFF, 0xFF, 0xFF, 0.1);
-            var revealedLight = new Light(0xFF, 0x00, 0xFF, 1);
 
             foreach (var cell in _modelService.Level.Grid.GetCells())
             {
+                var visibleLight = cell.BaseLight;
+                var exploredLight = new Light(cell.BaseLight, 0.3);
+                var revealedLight = new Light(cell.BaseLight, 1.0);
+
                 var isCorridor = _modelService.Level.Grid.CorridorMap[cell.Location.Column, cell.Location.Row] != null;
                 var terrainNames = _modelService.Level.Grid.TerrainMaps.Where(terrainMap => terrainMap[cell.Location.Column, cell.Location.Row] != null)
                                                                        .Select(terrainMap => terrainMap.Name);
@@ -79,7 +82,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                     // TODO:TERRAIN - HANDLE MULTIPLE LAYERS
                     var layer = layoutTemplate.TerrainLayers.First(terrain => terrain.Name == terrainNames.First());
 
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, cell.EffectiveLighting);
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, visibleLight);
                     exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, exploredLight);
                     revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, revealedLight);
                 }
@@ -87,7 +90,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                 // Doors
                 else if (cell.IsDoor)
                 {
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, cell.EffectiveLighting);
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, visibleLight);
                     exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
                     revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
                 }
@@ -95,7 +98,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                 // Wall Lights
                 else if (cell.IsWallLight)
                 {
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, cell.EffectiveLighting);
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, visibleLight);
                     exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
                     revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
                 }
@@ -103,7 +106,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                 // Walls
                 else if (cell.IsWall)
                 {
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, cell.EffectiveLighting);
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, visibleLight);
                     exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, exploredLight);
                     revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, revealedLight);
                 }
@@ -111,7 +114,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                 // Walkable Cells
                 else
                 {
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, cell.EffectiveLighting);
+                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, visibleLight);
                     exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, exploredLight);
                     revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, revealedLight);
                 }

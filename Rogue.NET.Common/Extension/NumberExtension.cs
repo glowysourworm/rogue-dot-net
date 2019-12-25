@@ -34,6 +34,14 @@ namespace Rogue.NET.Common.Extension
             return Math.Min(Math.Max(lowLimit, number), highLimit);
         }
 
+        public static byte Clip(this byte number, byte lowLimit = 0, byte highLimit = 1)
+        {
+            if (lowLimit > highLimit)
+                throw new ArgumentException("Invalid limits int.Clip()");
+
+            return Math.Min(Math.Max(lowLimit, number), highLimit);
+        }
+
         public static double LowLimit(this double number, double lowLimit = 0)
         {
             return Math.Max(number, lowLimit);

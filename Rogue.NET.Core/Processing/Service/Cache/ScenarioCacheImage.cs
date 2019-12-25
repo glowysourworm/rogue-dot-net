@@ -31,7 +31,11 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         public string GameSymbol { get; set; }
 
         // Lighting
-        public Light Lighting { get; set; }
+        public byte LightRed { get; set; }
+        public byte LightGreen { get; set; }
+        public byte LightBlue { get; set; }
+        public double LightIntensity { get; set; }
+
 
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
@@ -57,7 +61,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SymbolUseColorMask = scenarioImage.SymbolUseColorMask;
             this.GameSymbol = scenarioImage.GameSymbol;
 
-            this.Lighting = lighting;
+            this.LightRed = lighting.Red;
+            this.LightGreen = lighting.Green;
+            this.LightBlue = lighting.Blue;
+            this.LightIntensity = lighting.Intensity;
 
             this.IsGrayScale = isGrayScale;
         }
@@ -86,7 +93,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SymbolUseColorMask = symbolDetails.SymbolUseColorMask;
             this.GameSymbol = symbolDetails.GameSymbol;
 
-            this.Lighting = lighting;
+            this.LightRed = lighting.Red;
+            this.LightGreen = lighting.Green;
+            this.LightBlue = lighting.Blue;
+            this.LightIntensity = lighting.Intensity;
 
             this.IsGrayScale = grayScale;
         }

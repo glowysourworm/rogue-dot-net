@@ -82,7 +82,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var blue = (baseColor.B * light.Blue) / 255.0;
 
             // Invent a "darkness" value that subtracts light to simulate darkening (NOTE*** Darkness scale is [-0.5, 0.5])
-            var darkness = (1 - light.Intensity) / 2.0;
+            var darkness = (1 - light.Intensity.Clip(0.3, 1)) / 2.0;
 
             // Create the color from the tinted value
             var color = Color.FromArgb(baseColor.A, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
