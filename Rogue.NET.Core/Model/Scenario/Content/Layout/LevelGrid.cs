@@ -42,14 +42,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         ///         all data prepared. Also, create the terrain array with all data prepared. Corridors 
         ///         may be created afterwards using the public indexer.
         /// </summary>
-        public LevelGrid(GridCellInfo[,] grid, LayerInfo roomLayer, LayerInfo corridorLayer, IEnumerable<LayerInfo> terrainLayers)
+        public LevelGrid(GridCellInfo[,] grid, ConnectedLayerInfo roomLayer, LayerInfo corridorLayer, IEnumerable<LayerInfo> terrainLayers)
         {
             _grid = new GridCell[grid.GetLength(0), grid.GetLength(1)];
 
+            // Select distinct, impassable regions for the impassable terrain map
+            var impassableTerrainRegions = terrainLayers.Where(layer => !layer.IsPassable)
+                                                        .SelectMany(layer => layer.Regions);
+
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
-            this.RoomMap = new LayerMap(roomLayer.LayerName, roomLayer.Regions, this.Bounds.Width, this.Bounds.Height);
+            this.RoomMap = new LayerMap(roomLayer.LayerName, roomLayer.RegionGraph, this.Bounds.Width, this.Bounds.Height);
             this.CorridorMap = new LayerMap(corridorLayer.LayerName, corridorLayer.Regions, this.Bounds.Width, this.Bounds.Height);
-            this.ImpassableTerrainMap = new LayerMap("Impassable Terrain", terrainLayers.Where(x => !x.IsPassable).SelectMany(layer => layer.Regions), this.Bounds.Width, this.Bounds.Height);
+            this.ImpassableTerrainMap = new LayerMap("Impassable Terrain", impassableTerrainRegions, this.Bounds.Width, this.Bounds.Height);
             this.TerrainMaps = terrainLayers.Select(layer => new LayerMap(layer.LayerName, layer.Regions, this.Bounds.Width, this.Bounds.Height)).Actualize();
 
             // Initialize the grid

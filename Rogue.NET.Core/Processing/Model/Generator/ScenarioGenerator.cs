@@ -97,7 +97,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 Graph<Region<GridLocation>> transporterGraph;
 
                 // Generate the level grid
-                var levelGrid = _layoutGenerator.CreateLayout(layoutTemplate.Asset, out transporterGraph);
+                var levelGrid = _layoutGenerator.CreateLayout(layoutTemplate.Asset);
 
                 // Return a new level object
                 return new
@@ -105,7 +105,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     Level = new Level(branch, layoutTemplate, levelGrid, index + 1),
                     Layout = layoutTemplate,
                     Branch = branch,
-                    TransporterGraph = transporterGraph,
                     LastLevel = (index == levelBranches.Count() - 1)
                 };
 
@@ -129,7 +128,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 return _contentGenerator.CreateContents(level.Level, level.Branch,
                                                         level.Layout, scenario.Encyclopedia,
-                                                        level.TransporterGraph, level.LastLevel,
+                                                        level.LastLevel,
                                                         survivorMode);
             }).ToList();
 

@@ -45,10 +45,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _regionTriangulationCreator = regionTriangulationCreator;
         }
 
-        public LevelGrid CreateLayout(LayoutTemplate template, out Graph<Region<GridLocation>> transporterGraph)
+        public LevelGrid CreateLayout(LayoutTemplate template)
         {
-            transporterGraph = new Graph<Region<GridLocation>>();
-
             // Build regions of cells to initialize the layout grid
             var grid = _regionBuilder.BuildRegions(template);
 
@@ -103,17 +101,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var corridorRegions = grid.IdentifyRegions(cell => !cell.IsWall && cell.IsCorridor && !regions.Any(region => region[cell.Location.Column, cell.Location.Row] != null));
 
             // *** Iterate regions to re-create using GridLocation (ONLY SUPPORTED SERIALIZED TYPE FOR REGIONS)
-            var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region));
-            var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region));
+            var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region)).Actualize();
+            var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region)).Actualize();
+
+            // *** FINALIZE ROOM GRAPH FOR CONNECTION POINTS (TODO: CONSIDER RE-DESIGN TO CREATE THIS AS IT GOES)
+            //
+            var roomGraph = _regionTriangulationCreator.CreateTriangulation(finalRoomRegions, template);
 
             // Build layers
-            var roomLayer = new LayerInfo("Room Layer", finalRoomRegions, true);
+            var roomLayer = new ConnectedLayerInfo("Room Layer", roomGraph, true);
             var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions, true);
-
-            // *** FINALIZE ROOM GRAPH FOR CONNECTION POINTS
-            //
-            if (template.ConnectionType == LayoutConnectionType.ConnectionPoints)
-                transporterGraph = _regionTriangulationCreator.CreateTriangulation(finalRoomRegions, template);
 
             // Build Walls around cells
             _wallFinisher.CreateWalls(grid, false);
@@ -180,7 +177,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region));
             var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region));
 
-            var roomLayer = new LayerInfo("Room Layer", finalRoomRegions, true);
+            // Should return single vertex graph
+            var finalRoomGraph = _regionTriangulationCreator.CreateTriangulation(finalRoomRegions, new LayoutTemplate());
+
+            var roomLayer = new ConnectedLayerInfo("Room Layer", finalRoomGraph, true);
             var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions, true);
 
             // Build Walls around cells

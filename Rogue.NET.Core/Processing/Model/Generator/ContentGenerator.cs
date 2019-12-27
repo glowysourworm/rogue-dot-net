@@ -45,7 +45,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                     LevelBranchTemplate branchTemplate,
                                     LayoutGenerationTemplate layoutTemplate,
                                     ScenarioEncyclopedia encyclopedia,
-                                    Graph<Region<GridLocation>> transporterGraph,
                                     bool lastLevel,
                                     bool survivorMode)
         {
@@ -54,10 +53,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             // Remove transport points from walkable cells; and randomize the collection
             //
-            var transporterDict = transporterGraph.Vertices
-                                                  .Select(vertex => vertex.Reference)
-                                                  .Distinct()
-                                                  .ToDictionary(region => region, region => _randomSequenceGenerator.GetRandomElement(region.Locations));
+            var transporterDict = level.Grid
+                                       .RoomMap
+                                       .Regions
+                                       .ToDictionary(region => region, region => _randomSequenceGenerator.GetRandomElement(region.Locations));
 
             var openLocations = level.Grid.GetWalkableCells()
                                           .Except(transporterDict.Values.Select(location => level.Grid[location.Column, location.Row]))
@@ -82,7 +81,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             // Add teleporter level content - (MAPPED)
             if (layoutTemplate.Asset.ConnectionType == LayoutConnectionType.ConnectionPoints)
-                AddTransporters(level, transporterDict, transporterGraph);
+                AddTransporters(level, transporterDict);
 
             // Every level has a save point if not in survivor mode - (MAPPED)
             if (!survivorMode)
@@ -159,7 +158,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     level.AddContent(consumable);
             }
         }
-        private void AddTransporters(Level level, IDictionary<Region<GridLocation>, GridLocation> transporterDict,  Graph<Region<GridLocation>> transportGraph)
+        private void AddTransporters(Level level, IDictionary<Region<GridLocation>, GridLocation> transporterDict)
         {
             var transporters = new List<DoodadNormal>();
             var usedRegions = new List<Region<GridLocation>>();
@@ -183,21 +182,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Link them together
             foreach (var element in transporterDict)
             {
-                // Get vertices for this region
-                var vertices = transportGraph.Find(element.Key);
-
                 // Find all connecting edges
-                var connectingEdges = vertices.SelectMany(vertex => transportGraph[vertex]);
+                var connectedRegions = level.Grid.RoomMap.Connections(element.Key.Id);
 
                 // Locate connected regions and add to the transporter list
-                var connectingLocations = connectingEdges.Select(edge =>
-                {
-                    if (edge.Point1.Reference == element.Key)
-                        return transporterDict[edge.Point2.Reference];
-
-                    else
-                        return transporterDict[edge.Point1.Reference];
-                });
+                var connectingLocations = connectedRegions.Select(region => transporterDict[region]);
 
                 // Set all connection id's for each transporter
                 var primaryTransporter = transporters.First(x => x.Location.Equals(element.Value));

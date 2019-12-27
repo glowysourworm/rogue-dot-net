@@ -7,6 +7,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
 {
     public interface ILayoutGenerator
     {
-        LevelGrid CreateLayout(LayoutTemplate template, out Graph<Region<GridLocation>> transporterGraph);
+        LevelGrid CreateLayout(LayoutTemplate template);
     }
 }

@@ -14,6 +14,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     [Serializable]
     public class Region<T> : ISerializable, IRegionGraphWeightProvider<T> where T : class, IGridLocator
     {
+        public string Id { get; private set; }
         public T[] Locations { get; private set; }
         public T[] EdgeLocations { get; private set; }
         public RegionBoundary Boundary { get; private set; }
@@ -45,6 +46,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         public Region(T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
         {
+            this.Id = Guid.NewGuid().ToString();
             this.Locations = locations;
             this.EdgeLocations = edgeLocations;
             this.Boundary = boundary;
@@ -65,6 +67,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             _graphConnections = new Dictionary<int, GraphConnection>();
 
+            this.Id = info.GetString("Id");
             this.Locations = new T[info.GetInt32("LocationsLength")];
             this.EdgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
             this.Boundary = (RegionBoundary)info.GetValue("Boundary", typeof(RegionBoundary));
@@ -98,6 +101,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            info.AddValue("Id", this.Id);
             info.AddValue("LocationsLength", this.Locations.Length);
             info.AddValue("EdgeLocationsLength", this.EdgeLocations.Length);
             info.AddValue("Boundary", this.Boundary);
