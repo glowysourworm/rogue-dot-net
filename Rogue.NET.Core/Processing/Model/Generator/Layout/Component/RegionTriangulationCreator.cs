@@ -122,7 +122,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                     if (region1 == region2)
                         continue;
 
-                    var distance = region1.CalculateConnection(region2);
+                    var distance = region1.CalculateConnection(region2, _randomSequenceGenerator);
 
                     var location1 = region1.GetConnectionPoint(region2);
                     var location2 = region1.GetAdjacentConnectionPoint(region2);
@@ -188,7 +188,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                     {
                         foreach (var region2 in usedRegions)
                         {
-                            var distance = region1.CalculateConnection(region2);
+                            var distance = region1.CalculateConnection(region2, _randomSequenceGenerator);
 
                             if (distance < minDistance)
                             {

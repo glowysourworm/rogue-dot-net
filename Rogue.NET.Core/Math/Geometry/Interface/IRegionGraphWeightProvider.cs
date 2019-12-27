@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 
 namespace Rogue.NET.Core.Math.Geometry.Interface
 {
@@ -12,7 +13,7 @@ namespace Rogue.NET.Core.Math.Geometry.Interface
         /// Calculates the connection parameters for the region - and the recipricol - and stores them
         /// on the two involved regions. Returns the distance for the connection - with the specified metric type
         /// </summary>
-        double CalculateConnection(Region<T> adjacentRegion);
+        double CalculateConnection(Region<T> adjacentRegion, IRandomSequenceGenerator randomSequenceGenerator);
 
         /// <summary>
         /// Sets a weight value calculated by another adjacent region

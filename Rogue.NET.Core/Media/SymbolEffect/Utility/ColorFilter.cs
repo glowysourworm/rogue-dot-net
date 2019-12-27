@@ -1,12 +1,11 @@
-﻿using Rogue.NET.Common.ViewModel;
-using System.Collections.Generic;
-using System.Windows.Media;
-using System.Linq;
-using System;
-using Rogue.NET.Common.Extension;
-using System.ComponentModel;
-using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 {
@@ -82,7 +81,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var blue = (baseColor.B * light.Blue) / 255.0;
 
             // Invent a "darkness" value that subtracts light to simulate darkening (NOTE*** Darkness scale is [-0.5, 0.5])
-            var darkness = (1 - light.Intensity.Clip(0.3, 1)) / 2.0;
+            var darkness = (1 - light.Intensity) / 2.0;
 
             // Create the color from the tinted value
             var color = Color.FromArgb(baseColor.A, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
@@ -159,7 +158,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var max = System.Math.Max(System.Math.Max(r, g), b);
             var min = System.Math.Min(System.Math.Min(r, g), b);
 
-            return    (System.Math.PI / 3.0) * (max == min ? 0.0 :
+            return (System.Math.PI / 3.0) * (max == min ? 0.0 :
                                          max == r ? (0.0 + ((g - b) / (max - min))) :
                                          max == g ? (2.0 + ((b - r) / (max - min))) :
                                          max == b ? (4.0 + ((r - g) / (max - min))) : 0.0);

@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Math.Geometry.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
-
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -171,16 +171,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         #region IRegionGraphWeightProvider
 
-        public double CalculateConnection(Region<T> adjacentRegion)
+        public double CalculateConnection(Region<T> adjacentRegion, IRandomSequenceGenerator randomSequenceGenerator)
         {
             // Return previously calculated weight
             if (_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
                 return _graphConnections[adjacentRegion.GetHashCode()].Distance;
 
             // Use a brute force O(n x m) search
-            T location = null;
-            T adjacentLocation = null;
-            double distance = double.MaxValue;
+            var candidateLocations = new Dictionary<T, List<T>>();
+            var distance = double.MaxValue;
 
             foreach (var edgeLocation1 in this.EdgeLocations)
             {
@@ -191,15 +190,33 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     // Reset candidates
                     if (nextDistance < distance)
                     {
+                        // Clear out more distant locations
+                        candidateLocations.Clear();
+
                         distance = nextDistance;
-                        location = edgeLocation1;
-                        adjacentLocation = edgeLocation2;
+
+                        // Keep track of locations with this distance
+                        candidateLocations.Add(edgeLocation1, new List<T>() { edgeLocation2 });
                     }
+                    else if (nextDistance == distance)
+                    {
+                        if (!candidateLocations.ContainsKey(edgeLocation1))
+                            candidateLocations.Add(edgeLocation1, new List<T>() { edgeLocation2 });
+
+                        else
+                            candidateLocations[edgeLocation1].Add(edgeLocation2);
+                    }
+                        
                 }
             }
 
             if (distance == double.MaxValue)
                 throw new Exception("No adjacent node connection found Region.CalculateWeight");
+
+            // Choose edge locations randomly
+            var element = randomSequenceGenerator.GetRandomElement(candidateLocations);
+            var location = element.Key;
+            var adjacentLocation = randomSequenceGenerator.GetRandomElement(element.Value);
 
             _graphConnections.Add(adjacentRegion.GetHashCode(), new GraphConnection()
             {

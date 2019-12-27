@@ -32,7 +32,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         const int WALL_LIGHT_SPACE_MINIMUM = 5;
 
         // Lighting constants
-        const double LIGHT_INTENSITY_THRESHOLD = 0.3;
+        const double LIGHT_INTENSITY_THRESHOLD = 0.35;
         const double LIGHT_POWER_LAW = 0.75;
         const double LIGHT_FALLOFF_RADIUS = 2.0;
         const double LIGHT_PERLIN_FREQUENCY = 0.08;
