@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Interface
         /// </summary>
         /// <param name="grid">The level grid</param>
         /// <param name="location">The input location</param>
-        IEnumerable<DistanceLocation> CalculateVisibility(LevelGrid grid, GridLocation location);
+        IEnumerable<DistanceLocation> CalculateVisibility(LayoutGrid grid, GridLocation location);
 
         /// <summary>
         /// Calculates visibility from the vantage point of the input location. The return value is the set of locations that are lit up from the 

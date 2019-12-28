@@ -113,7 +113,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         {
         }
 
-        public IEnumerable<DistanceLocation> CalculateVisibility(LevelGrid grid, GridLocation location)
+        public IEnumerable<DistanceLocation> CalculateVisibility(LayoutGrid grid, GridLocation location)
         {
             return CalculateVisibilityImpl((column, row) =>
             {

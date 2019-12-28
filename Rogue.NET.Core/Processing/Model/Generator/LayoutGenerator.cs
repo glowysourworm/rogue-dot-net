@@ -42,7 +42,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _regionTriangulationCreator = regionTriangulationCreator;
         }
 
-        public LevelGrid CreateLayout(LayoutTemplate template)
+        public LayoutGrid CreateLayout(LayoutTemplate template)
         {
             // Build regions of cells to initialize the layout grid
             var grid = _regionBuilder.BuildRegions(template);
@@ -118,7 +118,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create Lighting
             _lightingFinisher.CreateLighting(grid, roomRegions, template);
 
-            return new LevelGrid(grid, roomLayer, corridorLayer, terrainLayers);
+            return new LayoutGrid(grid, roomLayer, corridorLayer, terrainLayers);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                             new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
         }
 
-        private LevelGrid CreateDefaultLayout()
+        private LayoutGrid CreateDefaultLayout()
         {
             var grid = _regionBuilder.BuildDefaultRegion();
 
@@ -186,7 +186,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create Lighting
             _lightingFinisher.CreateDefaultLighting(grid);
 
-            return new LevelGrid(grid, roomLayer, corridorLayer, new LayerInfo[] { });
+            return new LayoutGrid(grid, roomLayer, corridorLayer, new LayerInfo[] { });
         }
 
         private void MakeSymmetric(GridCellInfo[,] grid, LayoutSymmetryType symmetryType)

@@ -876,7 +876,7 @@ namespace Rogue.NET.Core.Math.Geometry
 
     public class DijkstraLevelGrid : DijkstraMapBase
     {
-        public DijkstraLevelGrid(LevelGrid grid, IGridLocator sourceLocation, IEnumerable<IGridLocator> targetLocations, bool obeyCardinalMovement)
+        public DijkstraLevelGrid(LayoutGrid grid, IGridLocator sourceLocation, IEnumerable<IGridLocator> targetLocations, bool obeyCardinalMovement)
              : base(grid.Bounds.Width, grid.Bounds.Height, obeyCardinalMovement, sourceLocation, targetLocations, new DijkstraMapCostCallback((column, row) =>
              {
                  if (grid[column, row] == null)

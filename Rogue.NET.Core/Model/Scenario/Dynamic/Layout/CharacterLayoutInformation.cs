@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 {
     public class CharacterLayoutInformation : ICharacterLayoutInformation
     {
-        readonly LevelGrid _grid;
+        readonly LayoutGrid _grid;
         readonly IVisibilityCalculator _visibilityCalculator;
 
         Dictionary<CharacterBase, IEnumerable<DistanceLocation>> _visibleDict;
@@ -35,7 +35,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         /// Constructor for the CharacterLayoutInformation should be called once per
         /// level and updated on each turn.
         /// </summary>
-        public CharacterLayoutInformation(LevelGrid grid, IVisibilityCalculator visibilityCalculator)
+        public CharacterLayoutInformation(LayoutGrid grid, IVisibilityCalculator visibilityCalculator)
         {
             _grid = grid;
             _visibilityCalculator = visibilityCalculator;

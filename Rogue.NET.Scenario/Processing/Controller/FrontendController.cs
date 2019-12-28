@@ -213,7 +213,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
         #region (private) Update Methods
         private void OnUpdateAllContent()
         {
-            _levelCanvasViewModel.UpdateContent(_modelService.Level.GetContents(), _modelService.Player);
+            _levelCanvasViewModel.UpdateContent(_modelService.Level.AllContent, _modelService.Player);
         }
         private void OnUpdateLayout()
         {

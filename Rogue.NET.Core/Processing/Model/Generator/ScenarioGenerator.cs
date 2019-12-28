@@ -93,16 +93,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 // Get weighted random layout template 
                 var layoutTemplate = _randomSequenceGenerator.GetWeightedRandom(branch.Layouts, template => template.GenerationWeight);
 
-                // Store transport points for the content generator
-                Graph<Region<GridLocation>> transporterGraph;
-
                 // Generate the level grid
                 var levelGrid = _layoutGenerator.CreateLayout(layoutTemplate.Asset);
 
                 // Return a new level object
                 return new
                 {
-                    Level = new Level(branch, layoutTemplate, levelGrid, index + 1),
+                    Level = new Level(layoutTemplate.Asset, branch, levelGrid, index + 1),
                     Layout = layoutTemplate,
                     Branch = branch,
                     LastLevel = (index == levelBranches.Count() - 1)

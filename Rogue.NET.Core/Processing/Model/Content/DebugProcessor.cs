@@ -71,11 +71,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
             foreach (var cell in _modelService.Level.Grid.GetCells())
                 cell.IsRevealed = true;
 
-            if (_modelService.Level.HasStairsDown)
-                _modelService.Level.StairsDown.IsRevealed = true;
+            if (_modelService.Level.HasStairsDown())
+                _modelService.Level.GetStairsDown().IsRevealed = true;
 
-            if (_modelService.Level.HasStairsUp)
-                _modelService.Level.StairsUp.IsRevealed = true;
+            if (_modelService.Level.HasStairsUp())
+                _modelService.Level.GetStairsUp().IsRevealed = true;
 
             foreach (var consumable in _modelService.Level.Consumables)
                 consumable.IsRevealed = true;
@@ -83,7 +83,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             foreach (var equipment in _modelService.Level.Equipment)
                 equipment.IsRevealed = true;
 
-            foreach (var scenarioObject in _modelService.Level.GetContents())
+            foreach (var scenarioObject in _modelService.Level.AllContent)
             {
                 scenarioObject.IsHidden = false;
                 scenarioObject.IsRevealed = true;
@@ -153,7 +153,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             {
                 var consumable = level.Consumables.ElementAt(i);
 
-                level.RemoveContent(consumable);
+                level.RemoveContent(consumable.Id);
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, consumable.Id));
             }
 
@@ -161,7 +161,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             {
                 var equipment = level.Equipment.ElementAt(i);
 
-                level.RemoveContent(equipment);
+                level.RemoveContent(equipment.Id);
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, equipment.Id));
             }
 
@@ -169,12 +169,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
             {
                 var character = level.NonPlayerCharacters.ElementAt(i);
 
-                level.RemoveContent(character);
+                level.RemoveContent(character.Id);
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, character.Id));
             }
 
-            if (level.HasStairsDown)
-                player.Location = level.StairsDown.Location;
+            if (level.HasStairsDown())
+                player.Location = level.GetStairsDown().Location;
 
             // Generate Hunger
             player.Hunger += player.FoodUsagePerTurnBase * pathLength;

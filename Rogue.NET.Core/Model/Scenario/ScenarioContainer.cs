@@ -1,6 +1,8 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+
 using System;
 using System.Collections.Generic;
 

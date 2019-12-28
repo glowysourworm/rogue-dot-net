@@ -3,7 +3,7 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 

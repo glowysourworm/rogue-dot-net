@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
 
     [Serializable]
-    public class LevelGrid : ISerializable
+    public class LayoutGrid : ISerializable
     {
         private GridCell[,] _grid;
         private GridCell[] _doorArray;
@@ -42,7 +42,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         ///         all data prepared. Also, create the terrain array with all data prepared. Corridors 
         ///         may be created afterwards using the public indexer.
         /// </summary>
-        public LevelGrid(GridCellInfo[,] grid, ConnectedLayerInfo roomLayer, LayerInfo corridorLayer, IEnumerable<LayerInfo> terrainLayers)
+        public LayoutGrid(GridCellInfo[,] grid, ConnectedLayerInfo roomLayer, LayerInfo corridorLayer, IEnumerable<LayerInfo> terrainLayers)
         {
             _grid = new GridCell[grid.GetLength(0), grid.GetLength(1)];
 
@@ -73,7 +73,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
 
         #region ISerializable
-        public LevelGrid(SerializationInfo info, StreamingContext context)
+        public LayoutGrid(SerializationInfo info, StreamingContext context)
         {
             var width = info.GetInt32("Width");
             var height = info.GetInt32("Height");

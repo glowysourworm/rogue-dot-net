@@ -88,7 +88,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     character.Equipment.Add(item.Id, item as Equipment);
 
                 // Remove from the level
-                level.RemoveContent(item);
+                level.RemoveContent(item.Id);
 
                 // Queue level update event for removed item
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, item.Id));
@@ -234,7 +234,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Update level object
             var level = _modelService.Level;
 
-            level.RemoveContent(character);
+            level.RemoveContent(character.Id);
 
             // Queue Animation for enemy death
             if (character.DeathAnimation.Animations.Count > 0)

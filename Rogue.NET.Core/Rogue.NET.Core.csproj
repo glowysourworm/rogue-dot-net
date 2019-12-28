@@ -247,6 +247,7 @@
     <Compile Include="Model\Scenario\Content\Layout\LayerInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Light.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LayerMap.cs" />
+    <Compile Include="Model\Scenario\Content\Level.cs" />
     <Compile Include="Model\Scenario\Content\LevelParameters.cs" />
     <Compile Include="Processing\Model\Content\Calculator\GridCalculator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ILightGenerator.cs" />
@@ -639,8 +640,8 @@
     <Compile Include="Model\Scenario\Content\Layout\GridCell.cs" />
     <Compile Include="Model\Scenario\Content\Layout\GridLocation.cs" />
     <Compile Include="Model\Scenario\Content\Layout\RegionBoundary.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\LevelGrid.cs" />
-    <Compile Include="Model\Scenario\Content\Level.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\LayoutGrid.cs" />
+    <Compile Include="Model\Scenario\Content\LevelContent.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioImage.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioObject.cs" />
     <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />

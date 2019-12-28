@@ -79,6 +79,8 @@ namespace Rogue.NET.Core.Processing.Service
             this.ZoomFactor = zoomFactor;
             this.ScenarioEncyclopedia = encyclopedia;
 
+            level.Load(player, injectedContents);
+
             // Have to provide locations for the injected contents
             foreach (var content in injectedContents)
             {
@@ -107,16 +109,16 @@ namespace Rogue.NET.Core.Processing.Service
             switch (startLocation)
             {
                 case PlayerStartLocation.SavePoint:
-                    if (level.HasSavePoint)
-                        player.Location = level.SavePoint.Location;
+                    if (level.HasSavePoint())
+                        player.Location = level.GetSavePoint().Location;
                     else
-                        player.Location = level.StairsUp.Location;
+                        player.Location = level.GetStairsUp().Location;
                     break;
                 case PlayerStartLocation.StairsUp:
-                    player.Location = level.StairsUp.Location;
+                    player.Location = level.GetStairsUp().Location;
                     break;
                 case PlayerStartLocation.StairsDown:
-                    player.Location = level.StairsDown.Location;
+                    player.Location = level.GetStairsDown().Location;
                     break;
                 case PlayerStartLocation.Random:
                     player.Location = _modelLayoutService.GetRandomLocation(true);

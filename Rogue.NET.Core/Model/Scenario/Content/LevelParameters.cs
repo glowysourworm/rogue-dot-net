@@ -13,5 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public string LevelBranchName { get; set; }
         public string LayoutName { get; set; }
         public double EnemyGenerationPerStep { get; set; }
+
+        public LevelParameters() { }
     }
 }

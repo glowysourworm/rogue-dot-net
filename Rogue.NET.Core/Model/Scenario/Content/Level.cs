@@ -1,103 +1,48 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Event;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.Character;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 
-namespace Rogue.NET.Core.Model.Scenario
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+
+using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.Character;
+
+namespace Rogue.NET.Core.Model.Scenario.Content
 {
     [Serializable]
-    public class Level
+    public class Level : ISerializable
     {
-        public LevelGrid Grid { get; protected set; }
+        readonly LevelContent _content;
+        readonly LayoutGrid _grid;
+
+        // NOTE*** Player NOT serialized
+        Player _player;
 
         /// <summary>
-        /// Contains all public parameters collected from the scenario configuration during generation
+        /// The primary layout grid for the level
         /// </summary>
+        public LayoutGrid Grid
+        {
+            get { return _grid; }
+        }
+
         public LevelParameters Parameters { get; protected set; }
 
-        public bool HasStairsUp { get { return this.StairsUp != null; } }
-        public bool HasStairsDown { get { return this.StairsDown != null; } }
-        public bool HasSavePoint { get { return this.SavePoint != null; } }
-
-        public DoodadNormal StairsUp { get; protected set; }
-        public DoodadNormal StairsDown { get; protected set; }
-        public DoodadNormal SavePoint { get; protected set; }
-
-        IList<NonPlayerCharacter> _nonPlayerCharacters;
-        IList<Equipment> _equipment;
-        IList<Consumable> _consumables;
-        IList<DoodadMagic> _doodadMagics;
-        IList<DoodadNormal> _doodadNormals;
-
-        // Player is not part of the Level - these are maintained to provide fast access to 
-        // all content and locations
-        IList<ScenarioObject> _levelContent;
-
-        // Gives the contents by location[column, row]
-        IList<ScenarioObject>[,] _levelContentGrid;
-
-        // Gives the contents as an array
-        ScenarioObject[] _levelContentArray;
-
-        // Gives the contents as a dictionary
-        IDictionary<string, ScenarioObject> _levelContentDict;
-
-        public IEnumerable<NonPlayerCharacter> NonPlayerCharacters
-        {
-            get { return _nonPlayerCharacters; }
-            protected set { _nonPlayerCharacters = new List<NonPlayerCharacter>(value); }
-        }
-        public IEnumerable<Equipment> Equipment
-        {
-            get { return _equipment; }
-            protected set { _equipment = new List<Equipment>(value); }
-        }
-        public IEnumerable<Consumable> Consumables
-        {
-            get { return _consumables; }
-            protected set { _consumables = new List<Consumable>(value); }
-        }
-        public IEnumerable<DoodadMagic> Doodads
-        {
-            get { return _doodadMagics; }
-            protected set { _doodadMagics = new List<DoodadMagic>(value); }
-        }
-        public IEnumerable<DoodadNormal> DoodadsNormal
-        {
-            get { return _doodadNormals; }
-            protected set { _doodadNormals = new List<DoodadNormal>(value); }
-        }
-
-        public Level(LevelBranchTemplate levelBranch,
-                     LayoutGenerationTemplate layout,
-                     LevelGrid grid,
-                     int number)
-        {
-            Initialize(levelBranch, 
-                       layout,
-                       grid, 
-                       number);
-        }
-
-        private void Initialize(
+        public Level(LayoutTemplate layout,
                      LevelBranchTemplate levelBranch,
-                     LayoutGenerationTemplate layout,
-                     LevelGrid grid,
+                     LayoutGrid grid,
                      int number)
         {
-            this.Grid = grid;
+            _grid = grid;
+            _content = new LevelContent(grid);
+
             this.Parameters = new LevelParameters()
             {
                 Number = number,
@@ -105,113 +50,32 @@ namespace Rogue.NET.Core.Model.Scenario
                 LayoutName = layout.Name,
                 EnemyGenerationPerStep = levelBranch.MonsterGenerationPerStep
             };
-
-            this.StairsDown = null;
-            this.StairsUp = null;
-            this.SavePoint = null;
-
-            this.NonPlayerCharacters = new List<NonPlayerCharacter>();
-            this.Doodads = new List<DoodadMagic>();
-            this.Equipment = new List<Equipment>();
-            this.DoodadsNormal = new List<DoodadNormal>();
-            this.Consumables = new List<Consumable>();
-
-            _levelContent = new List<ScenarioObject>();
-            _levelContentGrid = new List<ScenarioObject>[grid.Bounds.Width, grid.Bounds.Height];
-            _levelContentArray = new ScenarioObject[] { };
-            _levelContentDict = new Dictionary<string, ScenarioObject>();
-
-            RebuildContentGrid();
         }
-        
-        public void AddStairsDown(DoodadNormal stairsDown)
-        {
-            this.StairsDown = stairsDown;
 
-            AddContent(stairsDown);
+        public Level(SerializationInfo info, StreamingContext context)
+        {
+            _grid = (LayoutGrid)info.GetValue("Grid", typeof(LayoutGrid));
+            _content = (LevelContent)info.GetValue("Content", typeof(LevelContent));
+            this.Parameters = (LevelParameters)info.GetValue("Parameters", typeof(LevelParameters));
         }
-        public void AddStairsUp(DoodadNormal stairsUp)
-        {
-            this.StairsUp = stairsUp;
 
-            AddContent(stairsUp);
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Grid", _grid);
+            info.AddValue("Content", _content);
+            info.AddValue("Parameters", this.Parameters);
         }
-        public void AddSavePoint(DoodadNormal savePoint)
+
+        /// <summary>
+        /// Loads level with player reference and any other extracted contents from the previous level
+        /// </summary>
+        public void Load(Player player, IEnumerable<ScenarioObject> extractedContent)
         {
-            this.SavePoint = savePoint;
+            _player = player;
 
-            AddContent(savePoint);
-        }
-        public void AddContent(ScenarioObject scenarioObject)
-        {
-            if (_levelContent.Contains(scenarioObject))
-                throw new Exception("Trying to add duplicate Scenario Object to Level");
-
-            if (scenarioObject is NonPlayerCharacter)
-                _nonPlayerCharacters.Add(scenarioObject as NonPlayerCharacter);
-
-            else if (scenarioObject is Consumable)
-                _consumables.Add(scenarioObject as Consumable);
-
-            else if (scenarioObject is Equipment)
-                _equipment.Add(scenarioObject as Equipment);
-
-            else if (scenarioObject is DoodadMagic)
-                _doodadMagics.Add(scenarioObject as DoodadMagic);
-
-            else if (scenarioObject is DoodadNormal)
-                _doodadNormals.Add(scenarioObject as DoodadNormal);
-
-            else
-                throw new Exception("Trying to add unknown type to Level");
-
-            // Maintain collections
-            _levelContent.Add(scenarioObject);
-
-            // If object has an empty location it will be changed later on - which has an event hook below
-            if (scenarioObject.Location != null)
-                _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Add(scenarioObject);
-
-            scenarioObject.LocationChangedEvent += OnScenarioObjectLocationChanged;
-
-            // Maintain array
-            MaintainLevelContentsArray();
-        }
-        public void RemoveContent(ScenarioObject scenarioObject)
-        {
-            if (!_levelContent.Contains(scenarioObject))
-                throw new Exception("Trying to remove non-existent Scenario Object from Level");
-
-            if (scenarioObject is NonPlayerCharacter)
-                _nonPlayerCharacters.Remove(scenarioObject as NonPlayerCharacter);
-
-            else if (scenarioObject is Consumable)
-                _consumables.Remove(scenarioObject as Consumable);
-
-            else if (scenarioObject is Equipment)
-                _equipment.Remove(scenarioObject as Equipment);
-
-            else if (scenarioObject is DoodadMagic)
-                _doodadMagics.Remove(scenarioObject as DoodadMagic);
-
-            else if (scenarioObject is DoodadNormal)
-                _doodadNormals.Remove(scenarioObject as DoodadNormal);
-
-            else
-                throw new Exception("Trying to remove unknown type from Level");
-
-            // Maintain private collections
-            _levelContent.Remove(scenarioObject);
-
-            // If the CellPoint is empty then the object is being removed before it's mapped (by the Generators). So,
-            // this is safe to do. The CellPoint should never be set to Empty by any of the in-game components (Logic)
-            if (scenarioObject.Location != null)
-                _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Remove(scenarioObject);
-
-            scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
-
-            // Maintain array
-            MaintainLevelContentsArray();
+            // Add extrated content (from previous level) to this level. Example: Friendly characters
+            foreach (var scenarioObject in extractedContent)
+                _content.AddContent(scenarioObject);
         }
 
         /// <summary>
@@ -219,95 +83,97 @@ namespace Rogue.NET.Core.Model.Scenario
         /// </summary>
         public IEnumerable<ScenarioObject> Unload()
         {
-            //foreach (var scenarioObject in _levelContent)
-            //{
-            //    scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
-            //}
-
-            // Remove Temporary Characters
-            var temporaryCharacters = _nonPlayerCharacters.Where(x => x is TemporaryCharacter).ToList();
-            foreach (var character in temporaryCharacters)
-                RemoveContent(character);
-
-            // Remove Friendlies in Player Party
-            var friendlies = _levelContent.Where(x => x is Friendly)
-                                          .Cast<Friendly>()
-                                          .Where(x => x.InPlayerParty)
-                                          .Actualize();
-
-            foreach (var friendly in friendlies)
-                RemoveContent(friendly);
-
-            return friendlies;
+            return _content.Unload();
         }
 
-        private void MaintainLevelContentsArray()
+        public bool HasContent(string scenarioObjectId)
         {
-            _levelContentArray = _levelContent.ToArray();
-            _levelContentDict = _levelContent.ToDictionary(x => x.Id, x => x);
+            return _content.Contains(scenarioObjectId);
         }
 
-        public ScenarioObject[] GetContents()
+        public ScenarioObject GetContent(string scenarioObjectId)
         {
-            return _levelContentArray;
-        }
-        public ScenarioObject GetContent(string id)
-        {
-            return _levelContentDict[id];
+            return _content[scenarioObjectId];
         }
 
-        public bool HasContent(string id)
+        public void AddContent(ScenarioObject scenarioObject)
         {
-            return _levelContentDict.ContainsKey(id);
+            _content.AddContent(scenarioObject);
         }
 
-        /// <summary>
-        /// Checks level contents to see if cell is occupied. (NOTE** Must provide player location as well)
-        /// </summary>
-        /// <param name="cellPoint">point in question</param>
-        /// <param name="playerLocation">player location (not provided by Level)</param>
-        public bool IsCellOccupied(GridLocation location, GridLocation playerLocation)
+        public void RemoveContent(string scenarioObjectId)
         {
-            return (_levelContentGrid[location.Column, location.Row].Count > 0) || (location.Equals(playerLocation));
+            _content.RemoveContent(scenarioObjectId);
         }
-        public bool IsCellOccupiedByCharacter(GridLocation location, GridLocation playerLocation)
+
+        #region Content Queries
+        public DoodadNormal GetStairsUp()
         {
-            return _levelContentGrid[location.Column, location.Row].Any(x => x is CharacterBase) || (location.Equals(playerLocation));
-        }        
+            return _content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.StairsUp);
+        }
+        public DoodadNormal GetStairsDown()
+        {
+            return _content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.StairsDown);
+        }
+        public DoodadNormal GetSavePoint()
+        {
+            return _content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.SavePoint);
+        }
+        public bool HasStairsUp()
+        {
+            return _content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.StairsUp);
+        }
+        public bool HasStairsDown()
+        {
+            return _content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.StairsDown);
+        }
+        public bool HasSavePoint()
+        {
+            return _content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.SavePoint);
+        }
+
+        public IEnumerable<ScenarioObject> AllContent { get { return _content.AllContent; } }
+        public IEnumerable<Consumable> Consumables { get { return _content.Consumables; } }
+        public IEnumerable<DoodadMagic> Doodads { get { return _content.Doodads; } }
+        public IEnumerable<DoodadNormal> DoodadsNormal { get { return _content.DoodadsNormal; } }
+        public IEnumerable<Enemy> Enemies { get { return _content.Enemies; } }
+        public IEnumerable<Equipment> Equipment { get { return _content.Equipment; } }
+        public IEnumerable<Friendly> Friendlies { get { return _content.Friendlies; } }
+        public IEnumerable<NonPlayerCharacter> NonPlayerCharacters { get { return _content.NonPlayerCharacters; } }
+        public IEnumerable<TemporaryCharacter> TemporaryCharacters { get { return _content.TemporaryCharacters; } }
 
         /// <summary>
         /// Returns the First-Or-Default object of type T located at the cellPoint
         /// </summary>
         public T GetAt<T>(GridLocation location) where T : ScenarioObject
         {
-            var scenarioObjects = _levelContentGrid[location.Column, location.Row];
-
-            return (T)scenarioObjects.Where(x => x is T).Cast<T>().FirstOrDefault();
+            return _content[location.Column, location.Row].Where(scenarioObject => scenarioObject is T)
+                                                          .Cast<T>()
+                                                          .FirstOrDefault();
         }
 
         public IEnumerable<T> GetManyAt<T>(GridLocation location) where T : ScenarioObject
         {
-            return _levelContentGrid[location.Column, location.Row].Where(x => x is T).Cast<T>();
+            return _content[location.Column, location.Row].Where(scenarioObject => scenarioObject is T)
+                                                          .Cast<T>()
+                                                          .Actualize();
         }
 
-        private void RebuildContentGrid()
+        /// <summary>
+        /// Checks level contents to see if cell is occupied. (NOTE** Includes the player location)
+        /// </summary>
+        public bool IsCellOccupied(GridLocation location)
         {
-            for (int i = 0; i < _levelContentGrid.GetLength(0); i++)
-            {
-                for (int j = 0; j < _levelContentGrid.GetLength(1); j++)
-                    _levelContentGrid[i, j] = new List<ScenarioObject>();
-            }
-
-            foreach (var scenarioObject in _levelContent)
-                _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Add(scenarioObject);
+            return location.Equals(_player.Location) || _content[location.Column, location.Row].Any();
         }
-        private void OnScenarioObjectLocationChanged(object sender, LocationChangedEventArgs e)
+
+        /// <summary>
+        /// Checks level contents to see if cell is occupied by a character. (NOTE*** Includes the player location)
+        /// </summary>
+        public bool IsCellOccupiedByCharacter(GridLocation location)
         {
-            if (e.OldLocation != null)
-                _levelContentGrid[e.OldLocation.Column, e.OldLocation.Row].Remove(e.ScenarioObject);
-
-            if (e.NewLocation != null)
-                _levelContentGrid[e.NewLocation.Column, e.NewLocation.Row].Add(e.ScenarioObject);
+            return location.Equals(_player.Location) || _content[location.Column, location.Row].Any(scenarioObject => scenarioObject is CharacterBase);
         }
+        #endregion
     }
 }

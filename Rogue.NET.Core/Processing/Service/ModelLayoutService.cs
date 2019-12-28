@@ -4,11 +4,12 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -94,13 +95,13 @@ namespace Rogue.NET.Core.Processing.Service
                         {
                             b1 |= diag1.IsWall;
                             b1 |= cell2.IsWall;
-                            b1 |= (_level.IsCellOccupiedByCharacter(diag1.Location, _player.Location) && includeBlockedByCharacters);
+                            b1 |= (_level.IsCellOccupiedByCharacter(diag1.Location) && includeBlockedByCharacters);
                         }
                         if (diag2 != null)
                         {
                             b1 |= diag2.IsWall;
                             b1 |= cell2.IsWall;
-                            b2 |= (_level.IsCellOccupiedByCharacter(diag2.Location, _player.Location) && includeBlockedByCharacters);
+                            b2 |= (_level.IsCellOccupiedByCharacter(diag2.Location) && includeBlockedByCharacters);
                         }
 
                         // Both paths are blocked
@@ -123,7 +124,7 @@ namespace Rogue.NET.Core.Processing.Service
             // Slower operation
             if (excludeOccupiedLocations)
             {
-                var occupiedLocations = _level.GetContents().Select(x => x.Location);
+                var occupiedLocations = _level.AllContent.Select(x => x.Location);
 
                 var freeCells = locations.Except(occupiedLocations);
 
@@ -165,7 +166,7 @@ namespace Rogue.NET.Core.Processing.Service
             return adjacentLocations.Where(x => !_level.Grid[x.Column, x.Row].IsWall &&
                                                 !_level.Grid[x.Column, x.Row].IsDoor &&
                                                 _level.Grid.ImpassableTerrainMap[x.Column, x.Row] == null &&
-                                                !_level.IsCellOccupied(x, _player.Location));
+                                                !_level.IsCellOccupied(x));
         }
 
         public IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(GridLocation location, CharacterAlignmentType swappableAlignmentType = CharacterAlignmentType.None)

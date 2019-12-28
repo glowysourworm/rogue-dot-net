@@ -429,7 +429,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (actor is Enemy)
             {
                 // Remove Content
-                _modelService.Level.RemoveContent(actor);
+                _modelService.Level.RemoveContent(actor.Id);
 
                 // Publish Message
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal,
@@ -1061,7 +1061,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 case AlterationRandomPlacementType.InRangeOfSourceCharacter:
                     {
                         var locationsInRange = _modelService.LayoutService.GetLocationsInRange(sourceLocation, sourceRange, false);
-                        var unOccupiedLocations = locationsInRange.Where(x => !level.IsCellOccupied(x, player.Location));
+                        var unOccupiedLocations = locationsInRange.Where(x => !level.IsCellOccupied(x));
 
                         openLocation = unOccupiedLocations.Any() ? unOccupiedLocations.PickRandom() : null;
                     }
@@ -1077,8 +1077,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
         #region (private) Reveal Methods - DOES NOT UPDATE UI. BACKEND MODEL PROCESSING ONLY
         private void RevealSavePoint()
         {
-            if (_modelService.Level.HasSavePoint)
-                _modelService.Level.SavePoint.IsRevealed = true;
+            if (_modelService.Level.HasSavePoint())
+                _modelService.Level.GetSavePoint().IsRevealed = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense odd shrines near by...");
         }
@@ -1098,11 +1098,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void RevealStairs()
         {
-            if (_modelService.Level.HasStairsDown)
-                _modelService.Level.StairsDown.IsRevealed = true;
+            if (_modelService.Level.HasStairsDown())
+                _modelService.Level.GetStairsDown().IsRevealed = true;
 
-            if (_modelService.Level.HasStairsUp)
-                _modelService.Level.StairsUp.IsRevealed = true;
+            if (_modelService.Level.HasStairsUp())
+                _modelService.Level.GetStairsUp().IsRevealed = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense exits nearby");
         }

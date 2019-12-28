@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -71,13 +72,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 var stairsDown = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsDownRogueName, DoodadNormalType.StairsDown);
                 stairsDown.Location = randomizedLocationQueue.Dequeue();
-                level.AddStairsDown(stairsDown);
+                level.AddContent(stairsDown);
             }
 
             // Stairs up - every level has one - (MAPPED)
             var stairsUp = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsUpRogueName, DoodadNormalType.StairsUp);
             stairsUp.Location = randomizedLocationQueue.Dequeue();
-            level.AddStairsUp(stairsUp);
+            level.AddContent(stairsUp);
 
             // Add teleporter level content - (MAPPED)
             if (layoutTemplate.Asset.ConnectionType == LayoutConnectionType.ConnectionPoints)
@@ -88,7 +89,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 var savePoint = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadSavePointRogueName, DoodadNormalType.SavePoint);
                 savePoint.Location = randomizedLocationQueue.Dequeue();
-                level.AddSavePoint(savePoint);
+                level.AddContent(savePoint);
             }
 
 #if DEBUG_MINIMUM_CONTENT
@@ -105,7 +106,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             return level;
         }
-        private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
+        private void GenerateDoodads(LevelContent level, LevelBranchTemplate branchTemplate)
         {
             var generationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.DoodadGenerationRange);
 
@@ -119,7 +120,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     level.AddContent(doodad);
             }
         }
-        private void GenerateEnemies(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia)
+        private void GenerateEnemies(LevelContent level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia)
         {
             var generationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.EnemyGenerationRange);
 
@@ -133,7 +134,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     level.AddContent(enemy);
             }
         }
-        private void GenerateItems(Level level, LevelBranchTemplate branchTemplate)
+        private void GenerateItems(LevelContent level, LevelBranchTemplate branchTemplate)
         {
             var equipmentGenerationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.EquipmentGenerationRange);
             var consumableGenerationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.ConsumableGenerationRange);
@@ -204,12 +205,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         }
         private void MapLevel(Level level, Queue<GridLocation> randomizedLocationQueue)
         {
-            var levelContents = level.GetContents();
+            var levelContents = level.AllContent.ToList();
 
             // Map Level Contents:  Set locations for each ScenarioObject. Removal of these can be
             // done based on the total length of the levelContents array - which will be altered during
             // the loop interally to the Level.
-            for (int i = levelContents.Length - 1; i >= 0 && randomizedLocationQueue.Any(); i--)
+            for (int i = levelContents.Count - 1; i >= 0 && randomizedLocationQueue.Any(); i--)
             {
                 // Already Placed
                 if (levelContents[i] is DoodadNormal)
@@ -219,7 +220,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                 // Entire grid is occupied
                 if (location == null)
-                    level.RemoveContent(levelContents[i]);
+                    level.RemoveContent(levelContents[i].Id);
                 else
                     levelContents[i].Location = location;
             }
