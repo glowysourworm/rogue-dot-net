@@ -64,10 +64,11 @@ namespace Rogue.NET.Core.Processing.Service
 
         public void CycleTarget(Compass direction)
         {
-            var enemiesInRange = _modelService.CharacterContentInformation
-                                             .GetVisibleCharacters(_modelService.Player)
-                                             .Cast<Enemy>()
-                                             .ToList();
+            // Query for player visible locations
+            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
+
+            // Calculate enemies in range that are visible
+            var enemiesInRange = _modelService.Level.GetManyAt<Enemy>(visibleLocations).ToList();
 
             // Filter out invisible enemies
             if (!_modelService.Player.Alteration.CanSeeInvisible())
@@ -111,7 +112,7 @@ namespace Rogue.NET.Core.Processing.Service
 
             // Set tracker on the selected enemy and update
             if (targetedEnemy != null)
-                _targetTrackerLocation = targetedEnemy.Location;
+                _targetTrackerLocation = _modelService.GetLocation(targetedEnemy);
         }
 
         public void StartTargeting(GridLocation location)

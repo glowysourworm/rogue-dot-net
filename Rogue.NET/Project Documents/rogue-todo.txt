@@ -3360,4 +3360,9 @@ IMMEDIATE TODO'S:
 			6) Enumeration
 		
 		Probably based on multiple data structures - including Dictionary<,>, BST, Linked List, Array, etc.. Sacrificing memory for performance.
+		
+		
+	.NET SERIALIZATION:
+	
+		Try using the IDeserializationCallback - seems to be how they connect object references (!!!)
 			

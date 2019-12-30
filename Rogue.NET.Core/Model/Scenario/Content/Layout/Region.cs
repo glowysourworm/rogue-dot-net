@@ -34,21 +34,28 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         bool[,] _edgeLocations;
         bool[,] _occupiedLocationGrid;
 
-        // Indexers for grid locations and edges
+        #region (public) Indexers for grid locations and edges
         public T this[int column, int row]
         {
             get { return _gridLocations[column, row]; }
+        }
+        public T this[IGridLocator location]
+        {
+            get { return _gridLocations[location.Column, location.Row]; }
         }
         public bool IsEdge(int column, int row)
         {
             return _edgeLocations[column, row];
         }
-        public bool IsOccupied(int column, int row)
+        public bool IsOccupied(IGridLocator location)
         {
-            return _occupiedLocationGrid[column, row];
+            return _occupiedLocationGrid[location.Column, location.Row];
         }
-        public void SetOccupied(int column, int row, bool occupied)
+        public void SetOccupied(IGridLocator location, bool occupied)
         {
+            var column = location.Column;
+            var row = location.Row;
+
             // Occupied
             if (_occupiedLocationGrid[column, row])
             {
@@ -71,6 +78,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             _occupiedLocationGrid[column, row] = occupied;
         }
+        #endregion
 
         /// <summary>
         /// Returns id's for the nearest neighbor connected regions

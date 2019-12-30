@@ -4,12 +4,10 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Content;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
@@ -40,7 +38,6 @@ namespace Rogue.NET.Core.Processing.Service
         // Dynamic (non-serialized) data about line-of-sight / visible line-of-sight / aura line-of-sight
         // per character (These must be re-created each level)
         ICharacterLayoutInformation _characterLayoutInformation;
-        ICharacterContentInformation _characterContentInformation;
 
         // Stateful sub-component to provide layout calculations using the loaded level
         IModelLayoutService _modelLayoutService;
@@ -49,7 +46,6 @@ namespace Rogue.NET.Core.Processing.Service
         string _killedBy;
 
         public ICharacterLayoutInformation CharacterLayoutInformation { get { return _characterLayoutInformation; } }
-        public ICharacterContentInformation CharacterContentInformation { get { return _characterContentInformation; } }
         public IModelLayoutService LayoutService { get { return _modelLayoutService; } }
 
         [ImportingConstructor]
@@ -79,51 +75,35 @@ namespace Rogue.NET.Core.Processing.Service
             this.ZoomFactor = zoomFactor;
             this.ScenarioEncyclopedia = encyclopedia;
 
-            level.Load(player, injectedContents);
-
-            // Have to provide locations for the injected contents
-            foreach (var content in injectedContents)
-            {
-                // TODO: This doesn't currently have any specification other than 
-                //       type:
-                //      
-                //       Friendly:  starts at Player location
-                if (content is Friendly)
-                {
-                    // Set Friendly Location
-                    content.Location = player.Location;
-
-                    // Add Friendly to Level
-                    level.AddContent(content);
-                }
-
-                else
-                    throw new Exception("Unhandled injected content type");
-            }
-
-            _characterLayoutInformation = new CharacterLayoutInformation(this.Level.Grid, _visibilityCalculator);
-            _characterContentInformation = new CharacterContentInformation(_characterLayoutInformation);
-            _modelLayoutService = new ModelLayoutService(level, _randomSequenceGenerator);
+            GridLocation location;
 
             // Calculate player start location
             switch (startLocation)
             {
                 case PlayerStartLocation.SavePoint:
                     if (level.HasSavePoint())
-                        player.Location = level.GetSavePoint().Location;
+                        location = level.GetLocation(level.GetSavePoint());
                     else
-                        player.Location = level.GetStairsUp().Location;
+                        location = level.GetLocation(level.GetStairsUp());
                     break;
                 case PlayerStartLocation.StairsUp:
-                    player.Location = level.GetStairsUp().Location;
+                    location = level.GetLocation(level.GetStairsUp());
                     break;
                 case PlayerStartLocation.StairsDown:
-                    player.Location = level.GetStairsDown().Location;
+                    location = level.GetLocation(level.GetStairsDown());
                     break;
                 case PlayerStartLocation.Random:
-                    player.Location = _modelLayoutService.GetRandomLocation(true);
+                    location = level.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Placement, _randomSequenceGenerator, new GridLocation[] { });
                     break;
+                default:
+                    throw new Exception("Unhandled player start location");
             }
+
+            // Load the level
+            level.Load(player, location, injectedContents);
+
+            _characterLayoutInformation = new CharacterLayoutInformation(level, _visibilityCalculator);
+            _modelLayoutService = new ModelLayoutService(level, _randomSequenceGenerator);
 
             UpdateVisibility();
         }
@@ -135,7 +115,6 @@ namespace Rogue.NET.Core.Processing.Service
 
             _configuration = null;
 
-            _characterContentInformation = null;
             _characterLayoutInformation = null;
             _modelLayoutService = null;
 
@@ -152,9 +131,16 @@ namespace Rogue.NET.Core.Processing.Service
 
         public Player Player { get; private set; }
 
+        public GridLocation PlayerLocation { get { return this.Level.GetLocation(this.Player); } }
+
         public double ZoomFactor { get; set; }
 
         public ScenarioEncyclopedia ScenarioEncyclopedia { get; private set; }
+
+        public GridLocation GetLocation(ScenarioObject scenarioObject)
+        {
+            return this.Level.GetLocation(scenarioObject);
+        }
 
         public IEnumerable<EnemyGenerationTemplate> GetEnemyTemplates()
         {
@@ -255,8 +241,25 @@ namespace Rogue.NET.Core.Processing.Service
                                  .Cast<Character>()
                                  .Union(new Character[] { this.Player }));
 
-            // Apply blanket update for contents
-            _characterContentInformation.ApplyUpdate(this.Level, this.Player);
+            // TODO: COMPONENTIZE THIS NICELY
+
+            // Calculate visible contents
+            var visibleLocations = _characterLayoutInformation.GetVisibleLocations(this.Player);
+            var visibleContent = this.Level.GetManyAt<ScenarioObject>(visibleLocations);
+
+            // Visible content has to be updated for the IsExplored / IsRevealed flags
+            foreach (var scenarioObject in visibleContent)
+            {
+                // Set Explored for all non-character objects
+                if (!(scenarioObject is Character))
+                    scenarioObject.IsExplored = true;
+
+                // Set this based on whether the cell is physically visible. Once the cell is seen
+                // the IsRevealed flag gets reset. Also, the IsDetected flag gets reset. 
+                scenarioObject.IsRevealed = false;
+                scenarioObject.IsDetectedAlignment = false;
+                scenarioObject.IsDetectedCategory = false;
+            }
         }
     }
 }

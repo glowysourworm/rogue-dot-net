@@ -19,8 +19,8 @@ using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -107,14 +107,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public ScenarioObject Move(Compass direction)
         {
             // Desired Location
-            var desiredLocation = _modelService.LayoutService.GetPointInDirection(_modelService.Player.Location, direction);
+            var desiredLocation = _modelService.LayoutService.GetPointInDirection(_modelService.PlayerLocation, direction);
 
             // Invalid location
             if (desiredLocation == null)
                 return null;
 
             //Look for road blocks - move player
-            if (!_modelService.LayoutService.IsPathToAdjacentCellBlocked(_modelService.Player.Location, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
+            if (!_modelService.LayoutService.IsPathToAdjacentCellBlocked(_modelService.PlayerLocation, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
             {
                 // Check for character swaps
                 var swapCharacter = _modelService.Level.GetAt<NonPlayerCharacter>(desiredLocation);
@@ -123,29 +123,29 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 if (swapCharacter != null &&
                     swapCharacter.AlignmentType == CharacterAlignmentType.PlayerAligned)
                 {
-                    swapCharacter.Location = _modelService.Player.Location;
+                    _modelService.Level.MoveContent(swapCharacter, _modelService.PlayerLocation);
 
                     OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, swapCharacter.Id));
                 }
 
                 // Update player location
-                _modelService.Player.Location = desiredLocation;
+                _modelService.Level.MoveContent(_modelService.Player, desiredLocation);
 
                 // Notify Listener queue
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerLocation, _modelService.Player.Id));
             }
 
             //See what the player stepped on... Prefer Items first
-            return _modelService.Level.GetAt<ItemBase>(_modelService.Player.Location) ??
-                   _modelService.Level.GetAt<ScenarioObject>(_modelService.Player.Location);
+            return _modelService.Level.GetAt<ItemBase>(_modelService.PlayerLocation) ??
+                   _modelService.Level.GetAt<ScenarioObject>(_modelService.PlayerLocation);
         }
         public ScenarioObject MoveRandom()
         {
             // Get random adjacent location
-            var desiredLocation = _modelService.LayoutService.GetRandomAdjacentLocationForMovement(_modelService.Player.Location, CharacterAlignmentType.PlayerAligned);
+            var desiredLocation = _modelService.LayoutService.GetRandomAdjacentLocationForMovement(_modelService.PlayerLocation, CharacterAlignmentType.PlayerAligned);
 
             // Get direction for random move -> Move()
-            var direction = GridCalculator.GetDirectionOfAdjacentLocation(_modelService.Player.Location, desiredLocation);
+            var direction = GridCalculator.GetDirectionOfAdjacentLocation(_modelService.PlayerLocation, desiredLocation);
 
             return Move(direction);
         }
@@ -196,7 +196,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var player = _modelService.Player;
 
             // Get points involved with the attack
-            var location = _modelService.Player.Location;
+            var location = _modelService.PlayerLocation;
             var attackLocation = _modelService.LayoutService.GetPointInDirection(location, direction);
 
             // Invalid attack location
@@ -275,6 +275,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return LevelContinuationAction.DoNothing;
             }
 
+            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(player);
+            var visibleCharacters = _modelService.Level.GetManyAt<Character>(visibleLocations);
+
             // Check for targeting
             if (consumable.HasAlteration)
             {
@@ -294,7 +297,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 }
 
                 else if (alteration.RequiresCharacterInRange() &&
-                        !_modelService.CharacterContentInformation.GetVisibleCharacters(player).Any())
+                        !visibleCharacters.Any())
                 {
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must have enemies in range");
                     return LevelContinuationAction.DoNothing;
@@ -446,6 +449,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             var rangeWeapon = _modelService.Player.Equipment.Values.FirstOrDefault(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
             var targetedEnemy = _targetingService.GetTargetedCharacter();
+            var targetedEnemyLocation = _modelService.GetLocation(targetedEnemy);
 
             if (rangeWeapon == null)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Range Weapons are equipped");
@@ -457,7 +461,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return LevelContinuationAction.DoNothing;
             }
 
-            else if (Metric.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MinFiringDistance)
+            else if (Metric.RoguianDistance(_modelService.PlayerLocation, targetedEnemyLocation) <= ModelConstants.MinFiringDistance)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Too close to fire your weapon");
 
             else
@@ -490,22 +494,19 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                 // Calculate hit - if enemy hit then queue ammunition alteration
                 var enemyHit = _interactionCalculator.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
-                var animationTarget = targetedEnemy.Location;
+                var animationTarget = targetedEnemyLocation;
 
                 // Enemy missed -> Re-calculate target location near enemy
                 if (!enemyHit)
                 {
-                    var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(targetedEnemy.Location);
+                    var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(targetedEnemyLocation);
 
                     if (adjacentLocations.Any())
                     {
                         animationTarget = adjacentLocations.PickRandom();
 
-                        // Add item to level contents and place on the map
-                        ammo.Location = animationTarget;
-
                         // Add content to level
-                        _modelService.Level.AddContent(ammo);
+                        _modelService.Level.AddContent(ammo, animationTarget);
 
                         // Signal front end to update UI
                         OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, ammo.Id));
@@ -514,8 +515,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                 // Process the animation
                 OnProjectileAnimationEvent(_backendEventDataFactory.AmmoAnimation(ammo,
-                                                                                  _modelService.Player.Location,
-                                                                                  targetedEnemy.Location));
+                                                                                  _modelService.PlayerLocation,
+                                                                                  targetedEnemyLocation));
             }
 
             // Clear the targeting service
@@ -545,7 +546,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         public void Search()
         {
-            var location = _modelService.Player.Location;
+            var location = _modelService.PlayerLocation;
             var grid = _modelService.Level.Grid;
 
             GridCell c = grid[location.Column, location.Row];
@@ -789,7 +790,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public LevelContinuationAction InvokeDoodad()
         {
             var player = _modelService.Player;
-            var doodad = _modelService.Level.GetAt<DoodadBase>(player.Location);
+            var doodad = _modelService.Level.GetAt<DoodadBase>(_modelService.PlayerLocation);
             if (doodad == null)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing here to use! (Requires Scenario Object)");
@@ -974,22 +975,19 @@ namespace Rogue.NET.Core.Processing.Model.Content
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentRemove, itemId));
 
             // Default animation target location is the target's location
-            var animationTarget = targetedCharacter.Location;
+            var animationTarget = _modelService.GetLocation(targetedCharacter);
 
             // Calculate Equipment Throw Hit - If there's a miss then try to place item on the map next to the targeted character
             if (!_interactionCalculator.CalculateEquipmentThrow(_modelService.Player, targetedCharacter, thrownItem))
             {
-                var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(targetedCharacter.Location);
+                var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(animationTarget);
 
                 if (adjacentLocations.Any())
                 {
                     animationTarget = adjacentLocations.PickRandom();
 
-                    // Add item to level contents and place on the map
-                    thrownItem.Location = animationTarget;
-
                     // Add content to level
-                    _modelService.Level.AddContent(thrownItem);
+                    _modelService.Level.AddContent(thrownItem, animationTarget);
 
                     // Signal front end to update UI
                     OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, thrownItem.Id));
@@ -997,7 +995,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             // Queue projectile animation
-            OnProjectileAnimationEvent(_backendEventDataFactory.ThrowAnimation(thrownItem, player.Location, animationTarget));
+            OnProjectileAnimationEvent(_backendEventDataFactory.ThrowAnimation(thrownItem, _modelService.PlayerLocation, animationTarget));
 
             // Clear the targeting service
             _targetingService.Clear();
@@ -1043,7 +1041,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, itemId));
 
             // Set the animation target location
-            var animationTarget = targetedCharacter.Location;
+            var animationTarget = _modelService.GetLocation(targetedCharacter);
 
             // Calcualte Dodge
             var dodge = _interactionCalculator.CalculateDodge(_modelService.Player, targetedCharacter);
@@ -1051,17 +1049,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // If there is a dodge (or miss) - place the item on the ground near the defender and don't queue alteration
             if (dodge)
             {
-                var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(targetedCharacter.Location);
+                var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(animationTarget);
 
                 if (adjacentLocations.Any())
                 {
                     animationTarget = adjacentLocations.PickRandom();
 
-                    // Add item to level contents and place on the map
-                    thrownItem.Location = animationTarget;
-
                     // Add content to level
-                    _modelService.Level.AddContent(thrownItem);
+                    _modelService.Level.AddContent(thrownItem, animationTarget);
 
                     // Signal front end to update UI
                     OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, thrownItem.Id));
@@ -1069,7 +1064,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             // Queue projectile animation
-            OnProjectileAnimationEvent(_backendEventDataFactory.ThrowAnimation(thrownItem, player.Location, animationTarget));
+            OnProjectileAnimationEvent(_backendEventDataFactory.ThrowAnimation(thrownItem, _modelService.PlayerLocation, animationTarget));
 
             // Check for a projectile alteration - queue after the projectile animation
             if (thrownItem.HasProjectileAlteration && !dodge)

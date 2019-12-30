@@ -242,7 +242,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                                               .GetAuras()
                                               .Where(x => _modelService.CharacterLayoutInformation
                                                                        .GetAuraAffectedLocations(character, x.Item1.Id)
-                                                                       .Contains(player.Location))
+                                                                       .Contains(_modelService.PlayerLocation))
                                               .Select(x => x.Item1)
                                               .GroupBy(x => x.GetType());
 

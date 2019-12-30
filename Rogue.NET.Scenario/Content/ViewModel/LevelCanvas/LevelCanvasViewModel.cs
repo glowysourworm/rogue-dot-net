@@ -161,6 +161,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             // Update / Add
             foreach (var scenarioObject in contents)
             {
+                // TODO: REFACTOR. PLAYER IS NOW A PART OF THE LEVEL CONTENT
+                if (scenarioObject is Player)
+                    continue;
+
                 // Characters
                 if (scenarioObject is Character)
                 {

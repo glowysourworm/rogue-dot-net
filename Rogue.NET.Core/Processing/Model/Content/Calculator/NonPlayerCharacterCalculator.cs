@@ -45,6 +45,9 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             var staminaRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
             var hpRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.HpRegen);
 
+            var characterLocation = _modelService.GetLocation(character);
+            var playerLocation = _modelService.PlayerLocation;
+
             // Penalized for action taken - no natural regeneration
             if (actionTaken)
             {
@@ -73,7 +76,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             character.Alteration.DecrementEventTimes();
 
             // Calculate Auras Affecting Enemy
-            var distance = Metric.EuclideanDistance(player.Location, character.Location);
+            var distance = Metric.EuclideanDistance(characterLocation, playerLocation);
 
             // TODO:FRIENDLY - Check for alteration target type for affected characters
 
@@ -82,7 +85,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                                     .GetAuras()
                                     .Where(x => _modelService.CharacterLayoutInformation
                                                              .GetAuraAffectedLocations(player, x.Item1.Id)
-                                                             .Contains(character.Location))
+                                                             .Contains(characterLocation))
                                     .Select(x => x.Item1)
                                     .GroupBy(x => x.GetType());
 

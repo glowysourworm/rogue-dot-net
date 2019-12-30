@@ -2,11 +2,12 @@
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Service.Interface
@@ -49,14 +50,14 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         Player Player { get; }
 
         /// <summary>
+        /// Returns the location of the player
+        /// </summary>
+        GridLocation PlayerLocation { get; }
+
+        /// <summary>
         /// Exposes layout information per character [ visible locations, line-of-sight, explored, revealed ]
         /// </summary>
         ICharacterLayoutInformation CharacterLayoutInformation { get; }
-
-        /// <summary>
-        /// Exposes content information per character [ visible content, revealed content, line-of-sight content ]
-        /// </summary>
-        ICharacterContentInformation CharacterContentInformation { get; }
 
         /// <summary>
         /// Exposes layout service for performing layout calculations based on the loaded level
@@ -67,6 +68,11 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// "Encyclopedia" Rogue-Tanica. Contains all the meta-data for the Scenario objects, alteration categories, and character classes
         /// </summary>
         ScenarioEncyclopedia ScenarioEncyclopedia { get; }
+
+        /// <summary>
+        /// Returns the location of the specified content object
+        /// </summary>
+        public GridLocation GetLocation(ScenarioObject scenarioObject);
 
         /// <summary>
         /// Gets the layout template for this level

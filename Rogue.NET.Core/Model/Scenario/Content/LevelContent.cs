@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
 
 using System;
@@ -13,17 +14,17 @@ using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario
 {
-    [Serializable]
-    public class LevelContent : ISerializable
+    public class LevelContent
     {
-        // Event forwarding from scenario object location change
-        public event EventHandler<LocationChangedEventArgs> ScenarioObjectLocationChanged;
-
         // Gives the contents by location[column, row]
         IList<ScenarioObject>[,] _levelContentGrid;
 
         // Gives the contents as a dictionary
-        IDictionary<string, ScenarioObject> _levelContentDict;
+        Dictionary<string, ScenarioObject> _levelContentDict;
+        Dictionary<string, GridLocation> _levelLocationDict;
+
+        // TEMPORARY PLAYER REFERENCE - DOES NOT GET SERIALIZED
+        Player _player;
 
         IList<NonPlayerCharacter> _nonPlayerCharacters;
         IList<Enemy> _enemies;
@@ -34,6 +35,8 @@ namespace Rogue.NET.Core.Model.Scenario
         IList<DoodadMagic> _doodadMagics;
         IList<DoodadNormal> _doodadNormals;
 
+        // TEMPORARY PLAYER REFERENCE - DOES NOT GET SERIALIZED
+        public Player Player { get { return _player; } }
         public IEnumerable<ScenarioObject> AllContent
         {
             get { return _levelContentDict.Values; }
@@ -79,48 +82,47 @@ namespace Rogue.NET.Core.Model.Scenario
             protected set { _doodadNormals = new List<DoodadNormal>(value); }
         }
 
+        #region (public) Getters / Indexers
+
         /// <summary>
         /// Indexer for all content at the specified location
         /// </summary>
-        public IEnumerable<ScenarioObject> this[int column, int row]
+        public IEnumerable<ScenarioObject> this[IGridLocator location]
         {
-            get { return _levelContentGrid[column, row]; }
+            get { return _levelContentGrid[location.Column, location.Row]; }
         }
 
         /// <summary>
-        /// Indexer for the content object with the specified id
+        /// Returns the location of the specified object id
         /// </summary>
-        public ScenarioObject this[string scenarioObjectId]
+        public GridLocation this[string scenarioObjectId]
         {
-            get { return _levelContentDict[scenarioObjectId]; }
+            get { return _levelLocationDict[scenarioObjectId]; }
         }
+
+        /// <summary>
+        /// Returns the object for the specified object id
+        /// </summary>
+        public ScenarioObject Get(string scenarioObjectId)
+        {
+            return _levelContentDict[scenarioObjectId];
+        }
+
+        #endregion
 
         public LevelContent(LayoutGrid grid)
         {
-            Initialize(grid.Bounds.Width, grid.Bounds.Height, new Dictionary<string, ScenarioObject>());
+            Initialize(grid.Bounds.Width, 
+                       grid.Bounds.Height, 
+                       new Dictionary<string, ScenarioObject>(), 
+                       new Dictionary<string, GridLocation>());
         }
 
-        public LevelContent(SerializationInfo info, StreamingContext context)
-        {
-            var width = info.GetInt32("Width");
-            var height = info.GetInt32("Height");
-
-            var contentDict = (Dictionary<string, ScenarioObject>)info.GetValue("Content", typeof(Dictionary<string, ScenarioObject>));
-
-            Initialize(width, height, contentDict);
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Width", _levelContentGrid.GetLength(0));
-            info.AddValue("Height", _levelContentGrid.GetLength(1));
-            info.AddValue("Content", _levelContentDict);
-        }
-
-        private void Initialize(int width, int height, Dictionary<string, ScenarioObject> contentDict)
+        private void Initialize(int width, int height, Dictionary<string, ScenarioObject> contentDict, Dictionary<string, GridLocation> locationDict)
         {
             _levelContentGrid = new List<ScenarioObject>[width, height];
             _levelContentDict = new Dictionary<string, ScenarioObject>();
+            _levelLocationDict = new Dictionary<string, GridLocation>();
 
             this.NonPlayerCharacters = new List<NonPlayerCharacter>();
             this.Enemies = new List<Enemy>();
@@ -137,8 +139,13 @@ namespace Rogue.NET.Core.Model.Scenario
             });
 
             // Add level contents from the dictionary
-            foreach (var scenarioObject in contentDict.Values)
-                AddContent(scenarioObject);
+            foreach (var element in contentDict)
+            {
+                var scenarioObject = contentDict[element.Key];
+                var location = locationDict[element.Key];
+
+                AddContent(scenarioObject, location);
+            }
         }
 
         public bool Contains(string scenarioObjectId)
@@ -146,12 +153,18 @@ namespace Rogue.NET.Core.Model.Scenario
             return _levelContentDict.ContainsKey(scenarioObjectId);
         }
 
-        public void AddContent(ScenarioObject scenarioObject)
+        public void AddContent(ScenarioObject scenarioObject, GridLocation location)
         {
             if (_levelContentDict.ContainsKey(scenarioObject.Id))
                 throw new Exception("Trying to add duplicate Scenario Object to Level");
 
-            if (scenarioObject is NonPlayerCharacter)
+            if (scenarioObject is Player && _player != null)
+                throw new Exception("Trying to add Player reference twice LevelContent.cs");
+
+            if (scenarioObject is Player)
+                _player = scenarioObject as Player;
+
+            else if (scenarioObject is NonPlayerCharacter)
                 _nonPlayerCharacters.Add(scenarioObject as NonPlayerCharacter);
 
             else if (scenarioObject is Enemy)
@@ -180,21 +193,24 @@ namespace Rogue.NET.Core.Model.Scenario
 
             // Maintain collections
             _levelContentDict.Add(scenarioObject.Id, scenarioObject);
+            _levelLocationDict.Add(scenarioObject.Id, location);
 
-            // If object has an empty location it will be changed later on - which has an event hook below
-            if (scenarioObject.Location != null)
-                _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Add(scenarioObject);
-
-            scenarioObject.LocationChangedEvent += OnScenarioObjectLocationChanged;
+            // Maintain 2D array
+            _levelContentGrid[location.Column, location.Row].Add(scenarioObject);
         }
+
         public void RemoveContent(string scenarioObjectId)
         {
             if (!_levelContentDict.ContainsKey(scenarioObjectId))
                 throw new Exception("Trying to remove non-existent Scenario Object from Level");
 
             var scenarioObject = _levelContentDict[scenarioObjectId];
+            var location = _levelLocationDict[scenarioObjectId];
 
-            if (scenarioObject is NonPlayerCharacter)
+            if (scenarioObject is Player)
+                _player = null;
+
+            else if (scenarioObject is NonPlayerCharacter)
                 _nonPlayerCharacters.Remove(scenarioObject as NonPlayerCharacter);
 
             else if (scenarioObject is Enemy)
@@ -219,28 +235,22 @@ namespace Rogue.NET.Core.Model.Scenario
                 _doodadNormals.Remove(scenarioObject as DoodadNormal);
 
             else
-                throw new Exception("Trying to remove unknown type from Level");
+                throw new Exception("Trying to remove unknown type from Level");            
 
             // Maintain private collections
             _levelContentDict.Remove(scenarioObject.Id);
-
-            // If the CellPoint is empty then the object is being removed before it's mapped (by the Generators). So,
-            // this is safe to do. The CellPoint should never be set to Empty by any of the in-game components (Logic)
-            if (scenarioObject.Location != null)
-                _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Remove(scenarioObject);
-
-            scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
+            _levelLocationDict.Remove(scenarioObject.Id);
+            _levelContentGrid[location.Column, location.Row].Remove(scenarioObject);
         }
 
         /// <summary>
-        /// Unloads data and returns extracted content to be moved with the Player
+        /// Unloads data and returns extracted content to be moved with the Player. The Player reference is removed from 
+        /// this instance of the LevelContent.
         /// </summary>
         public IEnumerable<ScenarioObject> Unload()
         {
-            foreach (var scenarioObject in _levelContentDict.Values)
-            {
-                scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
-            }
+            // REMOVE PLAYER FROM LEVEL - NULLIFIES THE REFERENCE
+            RemoveContent(_player.Id);
 
             // Remove Temporary Characters
             var temporaryCharacters = _temporaryCharacters.ToList();
@@ -253,18 +263,6 @@ namespace Rogue.NET.Core.Model.Scenario
                 RemoveContent(friendly.Id);
 
             return friendlies;
-        }
-
-        private void OnScenarioObjectLocationChanged(object sender, LocationChangedEventArgs e)
-        {
-            if (e.OldLocation != null)
-                _levelContentGrid[e.OldLocation.Column, e.OldLocation.Row].Remove(e.ScenarioObject);
-
-            if (e.NewLocation != null)
-                _levelContentGrid[e.NewLocation.Column, e.NewLocation.Row].Add(e.ScenarioObject);
-
-            if (this.ScenarioObjectLocationChanged != null)
-                this.ScenarioObjectLocationChanged(this, e);
         }
     }
 }

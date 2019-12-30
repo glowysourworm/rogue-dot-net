@@ -126,34 +126,34 @@ namespace Rogue.NET.Scenario.Content.Views
                 this.MapCanvas.Children.Remove(rectangle);
 
             var levelUIBounds = scenarioUIGeometryService.Cell2UIRect(modelService.Level.Grid.Bounds);
-            var playerLocation = scenarioUIGeometryService.Cell2UI(modelService.Player.Location);
+            var playerLocation = scenarioUIGeometryService.Cell2UI(modelService.PlayerLocation);
             var midpointLocation = new Point(150, 90);
 
-            // Add visible contents to map
-            foreach (var content in modelService.CharacterContentInformation.GetVisibleContents(modelService.Player))
-            {
-                var contentMarker = new Rectangle();
-                contentMarker.StrokeThickness = 0;
-                contentMarker.Fill = content is Enemy ? Brushes.Red : Brushes.LightBlue;
-                contentMarker.Fill = content is ItemBase ? Brushes.YellowGreen : contentMarker.Fill;
+            //// Add visible contents to map
+            //foreach (var content in modelService.CharacterContentInformation.GetVisibleContents(modelService.Player))
+            //{
+            //    var contentMarker = new Rectangle();
+            //    contentMarker.StrokeThickness = 0;
+            //    contentMarker.Fill = content is Enemy ? Brushes.Red : Brushes.LightBlue;
+            //    contentMarker.Fill = content is ItemBase ? Brushes.YellowGreen : contentMarker.Fill;
 
-                // Center on player location - calculate offset relative to player
-                var contentLocation = scenarioUIGeometryService.Cell2UI(content.Location);
-                var offset = new Point(contentLocation.X - playerLocation.X, contentLocation.Y - playerLocation.Y);
+            //    // Center on player location - calculate offset relative to player
+            //    var contentLocation = scenarioUIGeometryService.Cell2UI(modelService.GetLocation(content));
+            //    var offset = new Point(contentLocation.X - playerLocation.X, contentLocation.Y - playerLocation.Y);
 
-                var mapOffsetX = (offset.X / levelUIBounds.Width) * this.MapCanvas.RenderSize.Width;
-                var mapOffsetY = (offset.Y / levelUIBounds.Height) * this.MapCanvas.RenderSize.Height;
+            //    var mapOffsetX = (offset.X / levelUIBounds.Width) * this.MapCanvas.RenderSize.Width;
+            //    var mapOffsetY = (offset.Y / levelUIBounds.Height) * this.MapCanvas.RenderSize.Height;
 
-                contentMarker.Width = MARKER_SIZE;
-                contentMarker.Height = MARKER_SIZE;
+            //    contentMarker.Width = MARKER_SIZE;
+            //    contentMarker.Height = MARKER_SIZE;
 
-                Canvas.SetLeft(contentMarker, mapOffsetX + midpointLocation.X - (MARKER_SIZE / 2.0));
-                Canvas.SetTop(contentMarker, mapOffsetY + midpointLocation.Y - (MARKER_SIZE / 2.0));
+            //    Canvas.SetLeft(contentMarker, mapOffsetX + midpointLocation.X - (MARKER_SIZE / 2.0));
+            //    Canvas.SetTop(contentMarker, mapOffsetY + midpointLocation.Y - (MARKER_SIZE / 2.0));
 
-                _canvasPoints.Add(contentMarker);
+            //    _canvasPoints.Add(contentMarker);
 
-                this.MapCanvas.Children.Add(contentMarker);
-            }
+            //    this.MapCanvas.Children.Add(contentMarker);
+            //}
         }
     }
 }

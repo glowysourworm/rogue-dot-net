@@ -65,14 +65,13 @@ namespace Rogue.NET.Scenario.Processing.Service
         {
             var layoutTemplate = _modelService.GetLayoutTemplate();
 
-
             foreach (var location in _modelService.Level.Grid.FullMap.GetLocations())
             {
                 var cell = _modelService.Level.Grid[location.Column, location.Row];
 
                 var visibleLight = cell.BaseLight;
-                var exploredLight = new Light(cell.BaseLight, 0.3);
-                var revealedLight = new Light(cell.BaseLight, 1.0);
+                var exploredLight = CreateExploredLight(cell.BaseLight);
+                var revealedLight = CreateRevealedLight(cell.BaseLight);
 
                 var isCorridor = _modelService.Level.Grid.CorridorMap[cell.Location.Column, cell.Location.Row] != null;
                 var terrainNames = _modelService.Level.Grid.TerrainMaps.Where(terrainMap => terrainMap[cell.Location.Column, cell.Location.Row] != null)
@@ -123,30 +122,6 @@ namespace Rogue.NET.Scenario.Processing.Service
             }
         }
 
-        public Geometry CreateDoorLayout()
-        {
-            var doorsGeometry = new StreamGeometry();
-
-            // Draw Doors
-            using (var stream = doorsGeometry.Open())
-            {
-                foreach (var location in _modelService.Level.Grid.DoorMap.GetLocations())
-                {
-                    // TODO:TERRAIN
-                    //var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
-                    //var visibleDoors = cell.VisibleDoors;
-
-                    //stream.BeginFigure(rect.TopLeft, false, false);
-                    //stream.LineTo(rect.TopRight, (visibleDoors & Compass.N) != 0, true);
-                    //stream.LineTo(rect.BottomRight, (visibleDoors & Compass.E) != 0, true);
-                    //stream.LineTo(rect.BottomLeft, (visibleDoors & Compass.S) != 0, true);
-                    //stream.LineTo(rect.TopLeft, (visibleDoors & Compass.W) != 0, true);
-                }
-            }
-
-            return doorsGeometry;
-        }
-
         public Geometry CreateGeometry(IEnumerable<GridLocation> locations)
         {
             var result = new StreamGeometry();
@@ -171,21 +146,25 @@ namespace Rogue.NET.Scenario.Processing.Service
         {
             // Calculate visible-to-player
             //
-            // Content object is within player's sight radius
-            var visibleToPlayer = _modelService.CharacterContentInformation
-                                               .GetVisibleContents(_modelService.Player)
-                                               .Contains(scenarioObject) ||
+            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
+            var visibleCharacters = _modelService.Level.GetManyAt<ScenarioObject>(visibleLocations);
 
-                                  // Content object is Player
-                                  scenarioObject == _modelService.Player ||
+            // Content object is within player's sight radius 
+            var lineOfSightVisible = scenarioObject == _modelService.Player || visibleCharacters.Contains(scenarioObject);
 
-                                  // Detected or Revealed
+            // Content object is visible on the map (Explored, Detected, Revealed)
+            var visibleToPlayer = lineOfSightVisible ||
+
+                                  // Detected, or Revealed
+                                  scenarioObject.IsExplored ||
                                   scenarioObject.IsDetectedAlignment ||
                                   scenarioObject.IsDetectedCategory ||
                                   scenarioObject.IsRevealed;
 
+            var location = _modelService.Level.GetLocation(scenarioObject);
+
             // Effective Lighting
-            var lighting = _modelService.Level.Grid[scenarioObject.Location.Column, scenarioObject.Location.Row].EffectiveLighting;
+            var lighting = _modelService.Level.Grid[location].EffectiveLighting;
 
             // "Invisible" status
             var isCharacterInVisibleToPlayer = false;
@@ -215,8 +194,12 @@ namespace Rogue.NET.Scenario.Processing.Service
                                                !_modelService.Player.Alteration.CanSeeInvisible();
             }
 
-            // Detected, Revealed, or Normal image source
-            if (scenarioObject.IsDetectedAlignment)
+            // Normal -> Detected -> Revealed -> Explored
+            if (lineOfSightVisible)
+            {
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, lighting);
+            }
+            else if (scenarioObject.IsDetectedAlignment)
             {
                 // TODO: The "RogueName" should probably be for the alteration category; but don't have that information for
                 //       Alignment detection
@@ -241,7 +224,11 @@ namespace Rogue.NET.Scenario.Processing.Service
             }
             else if (scenarioObject.IsRevealed)
             {
-                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, lighting);
+                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, CreateRevealedLight(lighting));
+            }
+            else if (scenarioObject.IsExplored)
+            {
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, CreateExploredLight(lighting));
             }
             else
             {
@@ -255,7 +242,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             content.Visibility = visibleToPlayer && !isCharacterInVisibleToPlayer ? Visibility.Visible : Visibility.Hidden;
 
             // Set Location (Canvas Location)
-            content.Location = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
+            content.Location = _scenarioUIGeometryService.Cell2UI(location);
         }
 
         public void UpdateLightRadius(LevelCanvasShape canvasShape, Character character, Rect levelUIBounds)
@@ -263,7 +250,8 @@ namespace Rogue.NET.Scenario.Processing.Service
             if (character.SymbolType != SymbolType.Smiley)
                 throw new Exception("Trying to create light radius for non-smiley symbol");
 
-            var point = _scenarioUIGeometryService.Cell2UI(character.Location, true);
+            var location = _modelService.Level.GetLocation(character);
+            var point = _scenarioUIGeometryService.Cell2UI(location, true);
             var lightRadiusUI = character.GetLightRadius() * ModelConstants.CellHeight;
 
             // Effective Character Symbol
@@ -288,8 +276,9 @@ namespace Rogue.NET.Scenario.Processing.Service
         {
             (aura.RenderedGeometry as RectangleGeometry).Rect = levelUIBounds;
 
+            var location = _modelService.Level.GetLocation(character);
             var auraUI = (double)auraRange * (double)ModelConstants.CellHeight;
-            var point = _scenarioUIGeometryService.Cell2UI(character.Location, true);
+            var point = _scenarioUIGeometryService.Cell2UI(location, true);
 
             // Create Brush
             var brush = new RadialGradientBrush(new GradientStopCollection(new GradientStop[]
@@ -335,6 +324,16 @@ namespace Rogue.NET.Scenario.Processing.Service
         public IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor)
         {
             return _animationSequenceCreator.CreateTargetingAnimation(_scenarioUIGeometryService.Cell2UI(location), fillColor, strokeColor);
+        }
+
+        private Light CreateExploredLight(Light lighting)
+        {
+            return new Light(lighting, 0.3);
+        }
+
+        private Light CreateRevealedLight(Light lighting)
+        {
+            return new Light(lighting, 1.0);
         }
     }
 }

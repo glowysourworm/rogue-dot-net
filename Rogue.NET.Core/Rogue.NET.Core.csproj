@@ -652,8 +652,6 @@
     <Compile Include="Model\Scenario\Content\ScenarioImage.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioObject.cs" />
     <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Content\CharacterContentInformation.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Content\Interface\ICharacterContentInformation.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\CharacterLayoutInformation.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\DistanceLocation.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\Interface\ICharacterLayoutInformation.cs" />

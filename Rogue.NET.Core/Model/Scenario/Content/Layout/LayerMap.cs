@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             get { return _regionMap[column, row]; }
         }
 
+        /// <summary>
+        /// Gets the region for the specified location
+        /// </summary>
+        public Region<GridLocation> this[IGridLocator location]
+        {
+            get { return _regionMap[location.Column, location.Row]; }
+        }
+
         public IEnumerable<Region<GridLocation>> Regions
         {
             get { return _regions; }
@@ -50,20 +59,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                            .Actualize();
         }
 
-        public bool IsOccupied(int column, int row)
+        public bool IsOccupied(IGridLocator location)
         {
-            return _regions.Any(region => region.IsOccupied(column, row));
+            return _regions.Any(region => region.IsOccupied(location));
         }
 
         /// <summary>
         /// Sets up occupied data for this location for all involved regions
         /// </summary>
-        public void SetOccupied(int column, int row, bool occupied)
+        public void SetOccupied(IGridLocator location, bool occupied)
         {
             foreach (var region in _regions)
             {
-                if (region[column, row] != null)
-                    region.SetOccupied(column, row, occupied);
+                if (region[location] != null)
+                    region.SetOccupied(location, occupied);
             }
         }
 

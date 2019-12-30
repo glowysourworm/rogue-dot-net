@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
@@ -13,7 +14,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 {
     public class CharacterLayoutInformation : ICharacterLayoutInformation
     {
-        readonly LayoutGrid _grid;
+        readonly Level _level;
         readonly IVisibilityCalculator _visibilityCalculator;
 
         Dictionary<CharacterBase, IEnumerable<DistanceLocation>> _visibleDict;
@@ -35,9 +36,9 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         /// Constructor for the CharacterLayoutInformation should be called once per
         /// level and updated on each turn.
         /// </summary>
-        public CharacterLayoutInformation(LayoutGrid grid, IVisibilityCalculator visibilityCalculator)
+        public CharacterLayoutInformation(Level level, IVisibilityCalculator visibilityCalculator)
         {
-            _grid = grid;
+            _level = level;
             _visibilityCalculator = visibilityCalculator;
 
             _visibleDict = new Dictionary<CharacterBase, IEnumerable<DistanceLocation>>();
@@ -60,7 +61,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // Create Line-of-Sight to draw other data from
             foreach (var character in characters)
             {
-                var visibleLocations = _visibilityCalculator.CalculateVisibility(_grid, character.Location);
+                // Fetch character location from the level
+                var characterLocation = _level.GetLocation(character);
+
+                // Calculate visible locations
+                var visibleLocations = _visibilityCalculator.CalculateVisibility(_level.Grid, characterLocation);
 
                 // TODO:TERRAIN - RE-CALCULATE VISIBLE / LINE-OF-SIGHT WITH NEW VISION PARAMETER
                 _visibleDict.Add(character, visibleLocations);
@@ -78,7 +83,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                     // Visible Cells -> Explored / No Longer Revealed
                     foreach (var location in visibleLocations.Select(x => x.Location))
                     {
-                        var cell = _grid[location.Column, location.Row];
+                        var cell = _level.Grid[location];
 
                         cell.IsExplored = true;
                         cell.IsRevealed = false;
@@ -103,15 +108,17 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                 }
             }
 
-            _exploredLocations = _grid.FullMap
-                                      .GetLocations()
-                                      .Where(x => _grid[x.Column, x.Row].IsExplored)
-                                      .ToList();
+            _exploredLocations = _level.Grid
+                                       .FullMap
+                                       .GetLocations()
+                                       .Where(x => _level.Grid[x].IsExplored)
+                                       .ToList();
 
-            _revealedLocations = _grid.FullMap
-                                      .GetLocations()
-                                      .Where(x => _grid[x.Column, x.Row].IsRevealed)
-                                      .ToList();
+            _revealedLocations = _level.Grid
+                                       .FullMap
+                                       .GetLocations()
+                                       .Where(x => _level.Grid[x].IsRevealed)
+                                       .ToList();
         }
 
         public IEnumerable<GridLocation> GetLineOfSightLocations(CharacterBase character)

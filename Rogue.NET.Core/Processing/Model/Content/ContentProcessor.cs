@@ -166,8 +166,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public void DropPlayerItem(string itemId)
         {
             var item = _modelService.Player.Inventory[itemId];
-            var adjacentFreeLocations = _modelService.LayoutService.GetFreeAdjacentLocations(_modelService.Player.Location);
-            var dropLocation = adjacentFreeLocations.FirstOrDefault();
+            var adjacentFreeLocations = _modelService.LayoutService.GetFreeAdjacentLocations(_modelService.PlayerLocation);
+            var dropLocation = _randomSequenceGenerator.GetRandomElement(adjacentFreeLocations);
 
             if (dropLocation == null)
             {
@@ -186,14 +186,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         return;
                 }
 
-                // Set item location
-                equipment.Location = dropLocation;
-
                 // Remove from inventory
                 _modelService.Player.Equipment.Remove(equipment.Id);
 
                 // Add level content
-                _modelService.Level.AddContent(equipment);
+                _modelService.Level.AddContent(equipment, dropLocation);
 
                 // Queue updates
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentRemove, equipment.Id));
@@ -203,14 +200,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
             {
                 var consumable = item as Consumable;
 
-                // Set item location
-                consumable.Location = dropLocation;
-
                 // Remove from inventory
                 _modelService.Player.Consumables.Remove(consumable.Id);
 
                 // Add level content
-                _modelService.Level.AddContent(consumable);
+                _modelService.Level.AddContent(consumable, dropLocation);
 
                 // Queue updates
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, consumable.Id));
@@ -233,12 +227,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Update level object
             var level = _modelService.Level;
+            var characterLocation = _modelService.GetLocation(character);
 
             level.RemoveContent(character.Id);
 
             // Queue Animation for enemy death
             if (character.DeathAnimation.Animations.Count > 0)
-                OnAnimationEvent(_backendEventDataFactory.Animation(character.DeathAnimation, character.Location, new GridLocation[] { character.Location }));
+                OnAnimationEvent(_backendEventDataFactory.Animation(character.DeathAnimation, characterLocation, new GridLocation[] { characterLocation }));
 
             // (ENEMY ONLY) Calculate player gains
             if (character is Enemy)
@@ -541,14 +536,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void DropCharacterItem(NonPlayerCharacter character, ItemBase item)
         {
-            var adjacentFreeLocations = _modelService.LayoutService.GetFreeAdjacentLocations(character.Location);
+            var characterLocation = _modelService.GetLocation(character);
+            var adjacentFreeLocations = _modelService.LayoutService.GetFreeAdjacentLocations(characterLocation);
             var location = adjacentFreeLocations.FirstOrDefault();
 
             if (location == null)
                 return;
-
-            // Provide new location for item
-            item.Location = location;
 
             // Remove from enemy inventory
             if (item is Equipment)
@@ -571,7 +564,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 character.Consumables.Remove(item.Id);
 
             // Add to level
-            _modelService.Level.AddContent(item);
+            _modelService.Level.AddContent(item, location);
         }
         #endregion
 
@@ -646,7 +639,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         var moveLocation = CalculateCharacterMoveLocation(character, desiredLocation);
                         if (moveLocation != null &&
                             moveLocation != null &&
-                           !moveLocation.Equals(_modelService.Player.Location)) // TODO: MAKE THIS PART OF THE LAYOUT ENGINE METHODS
+                           !moveLocation.Equals(_modelService.PlayerLocation)) // TODO: MAKE THIS PART OF THE LAYOUT ENGINE METHODS
                         {
                             ProcessCharacterMove(character, moveLocation);
                             actionTaken = true;
@@ -667,37 +660,39 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // NOTE*** Reserving character-character swapping for the Player ONLY
             //
 
+            var characterLocation = _modelService.GetLocation(character);
+
             //Return random if confused
             if (character.Is(CharacterStateType.MovesRandomly))
-                return _modelService.LayoutService.GetRandomAdjacentLocationForMovement(character.Location, character.AlignmentType);
+                return _modelService.LayoutService.GetRandomAdjacentLocationForMovement(characterLocation, character.AlignmentType);
 
             // TODO:TERRAIN
             switch (character.BehaviorDetails.CurrentBehavior.MovementType)
             {
                 case CharacterMovementType.Random:
                     {
-                        return _modelService.LayoutService.GetRandomAdjacentLocationForMovement(character.Location, character.AlignmentType);
+                        return _modelService.LayoutService.GetRandomAdjacentLocationForMovement(characterLocation, character.AlignmentType);
                     }
                 case CharacterMovementType.HeatSeeker:
                     {
                         return _modelService.LayoutService
-                                            .GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
+                                            .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
                                             .MinBy(x => Metric.RoguianDistance(x, desiredLocation));
                     }
                 case CharacterMovementType.StandOffIsh:
                     {
                         return _modelService.LayoutService
-                                            .GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
+                                            .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
                                             .OrderBy(x => Metric.RoguianDistance(x, desiredLocation))
                                             .LastOrDefault();
                     }
                 case CharacterMovementType.PathFinder:
                     {
-                        var nextLocation = _pathFinder.FindCharacterNextPathLocation(character.Location, desiredLocation, character.AlignmentType);
+                        var nextLocation = _pathFinder.FindCharacterNextPathLocation(characterLocation, desiredLocation, character.AlignmentType);
 
                         if (nextLocation == null)
                             return _modelService.LayoutService
-                                                .GetFreeAdjacentLocationsForMovement(character.Location, character.AlignmentType)
+                                                .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
                                                 .OrderBy(x => Metric.RoguianDistance(x, desiredLocation))
                                                 .FirstOrDefault();
                         else
@@ -715,20 +710,21 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // 2) Enemy-Aligned:   Nearest target character in range
             //
 
-            var opposingCharacters = CalculateOpposingCharactersInVisibleRange(character);
+            var characterLocation = _modelService.GetLocation(character);
+            var opposingCharacters = CalculateCharactersInVisibleRange(character, true);
+            var alignedCharacters = CalculateCharactersInVisibleRange(character, false);
 
             // Move into attack position
             if (opposingCharacters.Any())
             {
-                return opposingCharacters.MinBy(x => Metric.RoguianDistance(character.Location, x.Location))
-                                         .Location;
+                var opposingCharacter = opposingCharacters.MinBy(x => Metric.RoguianDistance(characterLocation, _modelService.GetLocation(x)));
+
+                return _modelService.GetLocation(opposingCharacter);
             }
 
             // If Player-Aligned - Move with Player (if they're in range)
             else if (character.AlignmentType == CharacterAlignmentType.PlayerAligned &&
-                     _modelService.CharacterContentInformation
-                                  .GetVisibleCharacters(character)
-                                  .Contains(_modelService.Player))
+                     alignedCharacters.Contains(_modelService.Player))
             {
                 // For friendlies - have to set flag to notify that they're now in the player "party"
                 // which will move them from level to level
@@ -736,7 +732,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     (character as Friendly).InPlayerParty = true;
 
                 // TODO: Need some other parameters like: "Keep a certain distance from Player"
-                return _modelService.Player.Location;
+                return _modelService.PlayerLocation;
             }
             else
                 return null;
@@ -748,59 +744,61 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (moveLocation == null)
                 return;
 
-            var moveDirection = GridCalculator.GetDirectionOfAdjacentLocation(character.Location, moveLocation);
+            var characterLocation = _modelService.GetLocation(character);
+            var moveDirection = GridCalculator.GetDirectionOfAdjacentLocation(characterLocation, moveLocation);
 
             // GOING TO EXCLUDE CHARACTER / CHARACTER SWAP FOR THE SAME ALIGNMENT (reserved for Player only)
             //
-            if (!_modelService.LayoutService.IsPathToAdjacentCellBlocked(character.Location, moveLocation, true, CharacterAlignmentType.None))
+            if (!_modelService.LayoutService.IsPathToAdjacentCellBlocked(characterLocation, moveLocation, true, CharacterAlignmentType.None))
             {
                 // Update enemy location
-                character.Location = moveLocation;
+                _modelService.Level.MoveContent(character, moveLocation);
 
                 // Notify listener queue
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, character.Id));
             }
 
             // Check for items - DON'T ALLOW TEMPORARY CHARACTERS / FRIENDLIES TO PICK UP ITEMS
-            var item = _modelService.Level.GetAt<ItemBase>(character.Location);
+            var item = _modelService.Level.GetAt<ItemBase>(moveLocation);
             if (item != null &&
                 character is Enemy)
                 StepOnItem(character, item);
 
             // Check for doodad
-            var doodad = _modelService.Level.GetAt<DoodadBase>(character.Location);
+            var doodad = _modelService.Level.GetAt<DoodadBase>(moveLocation);
             if (doodad != null)
                 StepOnDoodad(character, doodad);
         }
-        private IEnumerable<Character> CalculateOpposingCharactersInVisibleRange(NonPlayerCharacter character)
+        private IEnumerable<Character> CalculateCharactersInVisibleRange(NonPlayerCharacter character, bool opposingAlignment)
         {
-            IEnumerable<Character> opposingCharactersInRange = null;
+            IEnumerable<Character> charactersInRange = null;
+
+            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(character);
+
+            var playerAligned = (character.AlignmentType == CharacterAlignmentType.PlayerAligned && !opposingAlignment) ||
+                                (character.AlignmentType == CharacterAlignmentType.EnemyAligned && opposingAlignment);
 
             // Player Aligned
-            if (character.AlignmentType == CharacterAlignmentType.PlayerAligned)
+            if (playerAligned)
             {
-                opposingCharactersInRange = _modelService
-                                                .CharacterContentInformation
-                                                .GetVisibleCharacters(character)
-                                                .Where(x => x is NonPlayerCharacter)
-                                                .Cast<NonPlayerCharacter>()
-                                                .Where(x => x.AlignmentType == CharacterAlignmentType.EnemyAligned)
-                                                .Actualize();
+                charactersInRange = _modelService.Level
+                                                 .GetManyAt<Character>(visibleLocations)
+                                                 .Where(character => character is Player || 
+                                                                    (character is NonPlayerCharacter && 
+                                                                    (character as NonPlayerCharacter).AlignmentType == CharacterAlignmentType.PlayerAligned))
+                                                 .Actualize();
             }
 
             // Enemy Aligned
             else
             {
-                // Adding a cast to provide a way to see IComparable (see MoreLinq MinBy)
-                opposingCharactersInRange = _modelService
-                                                .CharacterContentInformation
-                                                .GetVisibleCharacters(character)
-                                                .Where(x => x is Friendly || x is Player)
-                                                .Cast<Character>()
-                                                .Actualize();
+                charactersInRange = _modelService.Level
+                                                 .GetManyAt<NonPlayerCharacter>(visibleLocations)
+                                                 .Where(character => character.AlignmentType == CharacterAlignmentType.EnemyAligned)
+                                                 .Actualize();
             }
 
-            return opposingCharactersInRange.Actualize();
+            return charactersInRange;
         }
         private bool CalculateCharacterWillAttack(NonPlayerCharacter character, out Character targetCharacter, out bool anyCharactersInVisibleRange)
         {
@@ -812,7 +810,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return false;
 
             // Get all characters in sight range
-            var opposingCharactersInVisibleRange = CalculateOpposingCharactersInVisibleRange(character);
+            var opposingCharactersInVisibleRange = CalculateCharactersInVisibleRange(character, true);
 
             // Filter out cases where they're not "noticed" (use IsAlerted flag en-mas)
             var opposingCharacterTargets = opposingCharactersInVisibleRange
@@ -820,8 +818,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                                            !x.Is(CharacterStateType.Invisible) ||
                                                           (!character.IsAlerted && x.Is(CharacterStateType.Invisible))).Actualize();
 
-            var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(character.Location);
-            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Metric.RoguianDistance(x.Location, character.Location));
+            var characterLocation = _modelService.GetLocation(character);
+            var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(characterLocation);
+            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Metric.RoguianDistance(_modelService.GetLocation(x), characterLocation));
 
             // Set flag to notify any characters in sight range
             anyCharactersInVisibleRange = opposingCharactersInVisibleRange.Any();
@@ -848,7 +847,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         {
                             return adjacentLocations.Any(x =>
                             {
-                                return opposingCharacterTargets.Select(z => z.Location).Contains(x);
+                                return opposingCharacterTargets.Select(z => _modelService.GetLocation(z)).Contains(x);
                             });
                         }
                     }
@@ -863,8 +862,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessCharacterAttack(NonPlayerCharacter character, Character targetCharacter)
         {
-            var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(character.Location);
-            var isTargetAdjacent = adjacentLocations.Contains(targetCharacter.Location);
+            var characterLocation = _modelService.GetLocation(character);
+            var targetLocation = _modelService.GetLocation(targetCharacter);
+            var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(characterLocation);
+            var isTargetAdjacent = adjacentLocations.Contains(targetLocation);
 
             // If Adjacent Opposing Character
             if (isTargetAdjacent &&
@@ -887,7 +888,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (character.IsEquippedRangeCombat())
             {
                 // Check for line of sight and firing range
-                var range = Metric.RoguianDistance(character.Location, targetCharacter.Location);
+                var range = Metric.RoguianDistance(characterLocation, targetLocation);
 
                 // These are guaranteed by the enemy check IsRangeMelee()
                 var rangeWeapon = character.Equipment.Values.First(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
@@ -903,8 +904,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                     // Queue animation
                     OnProjectileAnimationEvent(_backendEventDataFactory.AmmoAnimation(ammo,
-                                                                                      character.Location,
-                                                                                      targetCharacter.Location));
+                                                                                      characterLocation,
+                                                                                      targetLocation));
                 }
             }
         }
@@ -978,24 +979,15 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (enemyTemplates.Count <= 0)
                 return;
 
-            // Check to see that there is an empty cell available
-            var availableLocation =
-                    _modelService.LayoutService
-                                 .GetRandomLocation(true, _modelService.CharacterLayoutInformation
-                                                                       .GetVisibleLocations(_modelService.Player));
-
-            if (availableLocation == null)
-                return;
+            // Fetch locations visible to the player
+            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
 
             // Create enemy from template
             var template = _randomSequenceGenerator.GetWeightedRandom(enemyTemplates, x => x.GenerationWeight);
             var enemy = _characterGenerator.GenerateEnemy(template.Asset, _modelService.ScenarioEncyclopedia);
 
-            // Map enemy location to level
-            enemy.Location = availableLocation;
-
             // Add content to level -> Update Visibility
-            _modelService.Level.AddContent(enemy);
+            _modelService.Level.AddContentRandom(_randomSequenceGenerator, enemy, ContentRandomPlacementType.Random, visibleLocations);
             _modelService.UpdateVisibility();
 
             // Queue level update for added content

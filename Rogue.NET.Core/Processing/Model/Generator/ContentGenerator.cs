@@ -153,14 +153,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 // Create the transporter for this location
                 var transporter = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTransporterRogueName, DoodadNormalType.Transporter);
 
-                // Set transporter location
-                transporter.Location = element.Value;
-
                 // Add to the list for lookup
                 transporters.Add(transporter);
 
                 // Add it to the level content
-                level.AddContent(transporter);
+                level.AddContent(transporter, element.Value);
             }
 
             // Link them together
@@ -173,10 +170,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var connectingLocations = connectedRegions.Select(region => transporterDict[region]);
 
                 // Set all connection id's for each transporter
-                var primaryTransporter = transporters.First(x => x.Location.Equals(element.Value));
+                var primaryTransporter = transporters.First(x => level.GetLocation(x).Equals(element.Value));
 
                 // Get other transporters by connecting location
-                var otherTransporters = transporters.Where(x => connectingLocations.Contains(x.Location));
+                var otherTransporters = transporters.Where(x => connectingLocations.Contains(level.GetLocation(x)));
 
                 // Set connecting id's
                 foreach (var transporterId in otherTransporters.Select(x => x.Id))

@@ -23,9 +23,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         readonly LevelContent _levelContent;
         readonly LayoutGrid _grid;
 
-        // NOTE*** Player NOT serialized
-        Player _player;
-
         /// <summary>
         /// The primary layout grid for the level
         /// </summary>
@@ -34,8 +31,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             get { return _grid; }
         }
 
-        public Player Player { get {return _player;} }
+        /// <summary>
+        /// Primary Player reference
+        /// </summary>
+        public Player Player { get { return _levelContent.Player; } }
 
+        /// <summary>
+        /// Parameters left from level generation
+        /// </summary>
         public LevelParameters Parameters { get; protected set; }
 
         public Level(LayoutTemplate layout,
@@ -53,34 +56,67 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 LayoutName = layout.Name,
                 EnemyGenerationPerStep = levelBranch.MonsterGenerationPerStep
             };
-
-            _levelContent.ScenarioObjectLocationChanged += OnScenarioObjectLocationChanged;
         }
 
         public Level(SerializationInfo info, StreamingContext context)
         {
             _grid = (LayoutGrid)info.GetValue("Grid", typeof(LayoutGrid));
-            _levelContent = (LevelContent)info.GetValue("Content", typeof(LevelContent));
             this.Parameters = (LevelParameters)info.GetValue("Parameters", typeof(LevelParameters));
+
+            var count = info.GetInt32("ContentCount");
+
+            // Instantiate the level content
+            _levelContent = new LevelContent(_grid);
+
+            // Deserialize the content
+            for (int i = 0; i < count; i++)
+            {
+                var scenarioObject = (ScenarioObject)info.GetValue("Content" + i.ToString(), typeof(ScenarioObject));
+                var location = (GridLocation)info.GetValue("Location" + i.ToString(), typeof(GridLocation));
+
+                _levelContent.AddContent(scenarioObject, location);
+            }
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Grid", _grid);
-            info.AddValue("Content", _levelContent);
             info.AddValue("Parameters", this.Parameters);
+
+            // Serialize the number of content entries
+            if (_levelContent.Player != null)
+                info.AddValue("ContentCount", _levelContent.AllContent.Count() - 1);
+
+            else
+                info.AddValue("ContentCount", _levelContent.AllContent.Count());
+
+            var counter = 0;
+
+            // Serialize the content
+            foreach (var content in _levelContent.AllContent)
+            {
+                // *** SERIALIZE EVERYTHING EXCEPT THE PLAYER
+                if (content is Player)
+                    continue;
+
+                // Store the object and its location
+                info.AddValue("Content" + counter, content);
+                info.AddValue("Location" + counter++, _levelContent[content.Id]);
+            }
         }
 
         /// <summary>
         /// Loads level with player reference and any other extracted contents from the previous level
         /// </summary>
-        public void Load(Player player, IEnumerable<ScenarioObject> extractedContent)
+        public void Load(Player player, GridLocation location, IEnumerable<ScenarioObject> extractedContent)
         {
-            _player = player;
+            // TODO: NEEDS FURTHER DESIGN WHEN CHANGING LEVELS. FOR NOW, JUST PUT CONTENT WHERE PLAYER IS STANDING.
 
             // Add extrated content (from previous level) to this level. Example: Friendly characters
             foreach (var scenarioObject in extractedContent)
-                _levelContent.AddContent(scenarioObject);
+                _levelContent.AddContent(scenarioObject, location);
+
+            _levelContent.AddContent(player, location);
         }
 
         /// <summary>
@@ -98,15 +134,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
         public ScenarioObject GetContent(string scenarioObjectId)
         {
-            return _levelContent[scenarioObjectId];
+            return _levelContent.Get(scenarioObjectId);
         }
 
         /// <summary>
         /// Adds content at it's last saved location
         /// </summary>
-        public bool AddContent(ScenarioObject scenarioObject)
+        public bool AddContent(ScenarioObject scenarioObject, GridLocation location)
         {
-            _levelContent.AddContent(scenarioObject);
+            if (_grid.WalkableMap[location] == null)
+                throw new Exception("Trying to add content to a non-walkable location");
+
+            _levelContent.AddContent(scenarioObject, location);
 
             return true;
         }
@@ -140,10 +179,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 return false;
 
             // Add content to the level
-            _levelContent.AddContent(scenarioObject);
-
-            // Set content location -> FIRES EVENT TO UPDATE OCCUPANCY OF THE LAYOUT GRID
-            scenarioObject.Location = randomLocation;
+            _levelContent.AddContent(scenarioObject, randomLocation);
 
             return true;
         }
@@ -153,11 +189,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public bool AddContentBeneath(CharacterBase character, ScenarioObject content)
         {
-            // Add content to the level
-            _levelContent.AddContent(content);
+            var location = _levelContent[character.Id];
 
-            // Set content location -> FIRES EVENT TO UPDATE OCCUPANCY OF THE LAYOUT GRID
-            content.Location = character.Location;
+            // Add content to the level
+            _levelContent.AddContent(content, location);
 
             return true;
         }
@@ -167,12 +202,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public bool AddContentAdjacent(IRandomSequenceGenerator randomSequenceGenerator, CharacterBase character, ScenarioObject content)
         {
+            var location = _levelContent[character.Id];
+
             // Gets adjacent locations to the character
-            var adjacentLocations = _grid.GetAdjacentLocations(character.Location);
+            var adjacentLocations = _grid.GetAdjacentLocations(location);
 
             // Filters out occupied locations
-            var nonOccupiedLocations = adjacentLocations.Where(location => _grid.LayerContains(LayoutGrid.LayoutLayer.Walkable, location) &&
-                                                                          !_grid.IsOccupied(location.Column, location.Row));
+            var nonOccupiedLocations = adjacentLocations.Where(location => _grid.LayerContains(LayoutGrid.LayoutLayer.Placement, location) &&
+                                                                          !_grid.IsOccupied(location));
             // Finally, select one of these at random
             var randomLocation = randomSequenceGenerator.GetRandomElement(nonOccupiedLocations);
 
@@ -180,10 +217,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 return false;
 
             // Add content to the level
-            _levelContent.AddContent(content);
-
-            // Set content location -> FIRES EVENT TO UPDATE OCCUPANCY OF THE LAYOUT GRID
-            content.Location = character.Location;
+            _levelContent.AddContent(content, randomLocation);
 
             return true;
         }
@@ -275,18 +309,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             if (!locations.Any())
                 return false;
 
-            // Add contents first
-            foreach (var scenarioObject in scenarioObjects)
-                _levelContent.AddContent(scenarioObject);
-
-            // Set locations for the contents
+            // Add contents to level
             for (int i = 0; i < locations.Count(); i++)
             {
                 var location = locations.ElementAt(i);
                 var scenarioObject = scenarioObjects.ElementAt(i);
 
-                // Set content location -> FIRES EVENT TO UPDATE OCCUPANCY OF THE LAYOUT GRID
-                scenarioObject.Location = location;
+                _levelContent.AddContent(scenarioObject, location);
             }
 
             return true;
@@ -297,23 +326,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             _levelContent.RemoveContent(scenarioObjectId);
         }
 
-        private void OnScenarioObjectLocationChanged(object sender, LocationChangedEventArgs e)
+        public void MoveContent(ScenarioObject scenarioObject, GridLocation newLocation)
         {
-            // Update layout grid occupied data
-            //
-            if (e.OldLocation != null)
-            {
-                var oldLocationOccupied = _levelContent[e.OldLocation.Column, e.OldLocation.Row].Any();
-
-                _grid.SetOccupied(e.OldLocation.Column, e.OldLocation.Row, oldLocationOccupied);
-            }
-
-            if (e.NewLocation != null)
-            {
-                var newLocationOccupied = _levelContent[e.NewLocation.Column, e.NewLocation.Row].Any();
-
-                _grid.SetOccupied(e.NewLocation.Column, e.NewLocation.Row, newLocationOccupied);
-            }          
+            // Process as a Remove -> Add
+            RemoveContent(scenarioObject.Id);
+            AddContent(scenarioObject, newLocation);
         }
 
         #region Content Queries
@@ -352,21 +369,32 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public IEnumerable<NonPlayerCharacter> NonPlayerCharacters { get { return _levelContent.NonPlayerCharacters; } }
         public IEnumerable<TemporaryCharacter> TemporaryCharacters { get { return _levelContent.TemporaryCharacters; } }
 
+        public GridLocation GetLocation(ScenarioObject scenarioObject)
+        {
+            return _levelContent[scenarioObject.Id];
+        }
+
         /// <summary>
         /// Returns the First-Or-Default object of type T located at the cellPoint
         /// </summary>
         public T GetAt<T>(GridLocation location) where T : ScenarioObject
         {
-            return _levelContent[location.Column, location.Row].Where(scenarioObject => scenarioObject is T)
-                                                          .Cast<T>()
-                                                          .FirstOrDefault();
+            return _levelContent[location].Where(scenarioObject => scenarioObject is T)
+                                          .Cast<T>()
+                                          .FirstOrDefault();
         }
 
         public IEnumerable<T> GetManyAt<T>(GridLocation location) where T : ScenarioObject
         {
-            return _levelContent[location.Column, location.Row].Where(scenarioObject => scenarioObject is T)
-                                                          .Cast<T>()
-                                                          .Actualize();
+            return _levelContent[location].Where(scenarioObject => scenarioObject is T)
+                                          .Cast<T>()
+                                          .Actualize();
+        }
+
+        public IEnumerable<T> GetManyAt<T>(IEnumerable<GridLocation> locations) where T : ScenarioObject
+        {
+            return locations.SelectMany(location => GetManyAt<T>(location))
+                            .Actualize();
         }
 
         /// <summary>
@@ -374,7 +402,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public bool IsCellOccupied(GridLocation location)
         {
-            return location.Equals(_player.Location) || _levelContent[location.Column, location.Row].Any();
+            return _grid.IsOccupied(location);
         }
 
         /// <summary>
@@ -382,7 +410,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public bool IsCellOccupiedByCharacter(GridLocation location)
         {
-            return location.Equals(_player.Location) || _levelContent[location.Column, location.Row].Any(scenarioObject => scenarioObject is CharacterBase);
+            return _levelContent[location].Any(scenarioObject => scenarioObject is CharacterBase);
         }
         #endregion
     }

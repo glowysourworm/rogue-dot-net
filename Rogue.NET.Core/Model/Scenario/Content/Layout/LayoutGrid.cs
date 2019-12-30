@@ -3,6 +3,7 @@ using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
@@ -87,6 +88,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             //NOTE*** Returns null as a default
             get { return _grid.Get(column, row); }
         }
+        public virtual GridCell this[IGridLocator location]
+        {
+            //NOTE*** Returns null as a default
+            get { return _grid.Get(location.Column, location.Row); }
+        }
         public RegionBoundary Bounds { get; private set; }
 
         // Connected Layers - Maintain Dijkstra Graph
@@ -107,39 +113,39 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Sets up cell occupation data in EACH of the regions for ALL layers
         /// </summary>
-        public void SetOccupied(int column, int row, bool occupied)
+        public void SetOccupied(IGridLocator location, bool occupied)
         {
             // Connected layers
-            this.ConnectionMap.SetOccupied(column, row, occupied);
+            this.ConnectionMap.SetOccupied(location, occupied);
 
             // Non-connected layers
-            this.FullMap.SetOccupied(column, row, occupied);
-            this.WalkableMap.SetOccupied(column, row, occupied);
-            this.PlacementMap.SetOccupied(column, row, occupied);
-            this.RoomMap.SetOccupied(column, row, occupied);
-            this.CorridorMap.SetOccupied(column, row, occupied);
-            this.DoorMap.SetOccupied(column, row, occupied);
-            this.WallMap.SetOccupied(column, row, occupied);
-            this.WallLightMap.SetOccupied(column, row, occupied);
-            this.ImpassableTerrainMap.SetOccupied(column, row, occupied);
+            this.FullMap.SetOccupied(location, occupied);
+            this.WalkableMap.SetOccupied(location, occupied);
+            this.PlacementMap.SetOccupied(location, occupied);
+            this.RoomMap.SetOccupied(location, occupied);
+            this.CorridorMap.SetOccupied(location, occupied);
+            this.DoorMap.SetOccupied(location, occupied);
+            this.WallMap.SetOccupied(location, occupied);
+            this.WallLightMap.SetOccupied(location, occupied);
+            this.ImpassableTerrainMap.SetOccupied(location, occupied);
 
             foreach (var layer in this.TerrainMaps)
-                layer.SetOccupied(column, row, occupied);
+                layer.SetOccupied(location, occupied);
         }
 
-        public bool IsOccupied(int column, int row)
+        public bool IsOccupied(IGridLocator location)
         {
-            return this.ConnectionMap.IsOccupied(column, row) ||
-                   this.FullMap.IsOccupied(column, row) ||
-                   this.WalkableMap.IsOccupied(column, row) ||
-                   this.PlacementMap.IsOccupied(column, row) ||
-                   this.RoomMap.IsOccupied(column, row) ||
-                   this.DoorMap.IsOccupied(column, row) ||
-                   this.WallMap.IsOccupied(column, row) ||
-                   this.WallLightMap.IsOccupied(column, row) ||
-                   this.CorridorMap.IsOccupied(column, row) ||
-                   this.ImpassableTerrainMap.IsOccupied(column, row) ||
-                   this.TerrainMaps.Any(map => map.IsOccupied(column, row));
+            return this.ConnectionMap.IsOccupied(location) ||
+                   this.FullMap.IsOccupied(location) ||
+                   this.WalkableMap.IsOccupied(location) ||
+                   this.PlacementMap.IsOccupied(location) ||
+                   this.RoomMap.IsOccupied(location) ||
+                   this.DoorMap.IsOccupied(location) ||
+                   this.WallMap.IsOccupied(location) ||
+                   this.WallLightMap.IsOccupied(location) ||
+                   this.CorridorMap.IsOccupied(location) ||
+                   this.ImpassableTerrainMap.IsOccupied(location) ||
+                   this.TerrainMaps.Any(map => map.IsOccupied(location));
         }
         #endregion
 

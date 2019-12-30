@@ -101,8 +101,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 {
                     OnAnimationEvent(_backendEventDataFactory.Animation(
                                                 alteration.Animation,
-                                                actor.Location,
-                                                affectedCharacters.Select(x => x.Location).Actualize()));
+                                                _modelService.GetLocation(actor),
+                                                affectedCharacters.Select(x => _modelService.GetLocation(x)).Actualize()));
                 }
             }
 
@@ -354,9 +354,17 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 case AlterationTargetType.Target:
                     return (actor is Player) ? new Character[] { targetedCharacter } : new Character[] { _modelService.Player };
                 case AlterationTargetType.AllInRange:
-                    return _modelService.CharacterContentInformation.GetVisibleCharacters(actor).Union(new Character[] { actor });
+                    {
+                        var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(actor);
+
+                        return _modelService.Level.GetManyAt<Character>(visibleLocations);
+                    }
                 case AlterationTargetType.AllInRangeExceptSource:
-                    return _modelService.CharacterContentInformation.GetVisibleCharacters(actor);
+                    {
+                        var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(actor);
+
+                        return _modelService.Level.GetManyAt<Character>(visibleLocations).Except(new Character[] { actor });
+                    }
                 default:
                     throw new Exception("Unknown Attack Attribute Target Type");
             }
@@ -471,16 +479,17 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessTeleport(TeleportRandomAlterationEffect effect, Character character)
         {
-            GridLocation openLocation = null;
+            var characterLocation = _modelService.GetLocation(character);
 
             // Calculate Teleport Location
-            openLocation = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
+            var openLocation = GetRandomLocation(effect.TeleportType, characterLocation, effect.Range);
 
             // TODO:  Centralize handling of "Find a random cell" and deal with "no open locations"
             if (openLocation == null)
                 return;
 
-            character.Location = openLocation;
+            // Process content move
+            _modelService.Level.MoveContent(character, openLocation);
 
             // Publish Message
             if (character is Player)
@@ -530,16 +539,15 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Method that shares code paths for creating { Enemy, Friendly, TemporaryCharacter }
             //
 
-            var location = GetRandomLocation(randomPlacementType, actor.Location, range);
+            var actorLocation = _modelService.GetLocation(actor);
+            var location = GetRandomLocation(randomPlacementType, actorLocation, range);
 
             // TODO:ALTERATION (Handle Exception ?)
             if (location == null)
                 return;
 
-            character.Location = location;
-
             // Add Content to Level -> Update Visibility
-            _modelService.Level.AddContent(character);
+            _modelService.Level.AddContent(character, location);
             _modelService.UpdateVisibility();
 
             // Publish Message

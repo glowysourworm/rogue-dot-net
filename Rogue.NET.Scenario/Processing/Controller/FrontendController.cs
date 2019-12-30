@@ -3,6 +3,7 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Command.Frontend.Data;
 using Rogue.NET.Core.Processing.Command.Frontend.Enum;
@@ -119,7 +120,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 case FrontendCommandType.StartTargeting:
                     {
                         // Begin target tracking starting with the player
-                        _targetingService.StartTargeting(_modelService.Player.Location);
+                        _targetingService.StartTargeting(_modelService.PlayerLocation);
 
                         // Update the animation
                         UpdateTargetAnimation();

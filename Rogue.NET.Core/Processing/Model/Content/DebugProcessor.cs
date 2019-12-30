@@ -85,6 +85,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             foreach (var scenarioObject in _modelService.Level.AllContent)
             {
+                if (scenarioObject is Player)
+                    continue;
+
                 scenarioObject.IsHidden = false;
                 scenarioObject.IsRevealed = true;
             }
@@ -174,8 +177,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             if (level.HasStairsDown())
-                player.Location = level.GetStairsDown().Location;
+            {
+                var location = level.GetLocation(level.GetStairsDown());
 
+                level.MoveContent(player, location);
+
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerLocation, player.Id));
+            }
             // Generate Hunger
             player.Hunger += player.FoodUsagePerTurnBase * pathLength;
 

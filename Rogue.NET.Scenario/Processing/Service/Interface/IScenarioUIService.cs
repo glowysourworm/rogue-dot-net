@@ -32,7 +32,6 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
                                   DrawingImage[,] exploredLayer,
                                   DrawingImage[,] revealedLayer);
 
-        Geometry CreateDoorLayout();
         Geometry CreateGeometry(IEnumerable<GridLocation> locations);
 
         void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject);
