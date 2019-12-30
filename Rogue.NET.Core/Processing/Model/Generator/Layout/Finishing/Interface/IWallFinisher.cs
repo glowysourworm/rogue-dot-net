@@ -1,5 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
-
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface

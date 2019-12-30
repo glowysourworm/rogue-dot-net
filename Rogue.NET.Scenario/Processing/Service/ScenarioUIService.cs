@@ -66,8 +66,10 @@ namespace Rogue.NET.Scenario.Processing.Service
             var layoutTemplate = _modelService.GetLayoutTemplate();
 
 
-            foreach (var cell in _modelService.Level.Grid.GetCells())
+            foreach (var location in _modelService.Level.Grid.FullMap.GetLocations())
             {
+                var cell = _modelService.Level.Grid[location.Column, location.Row];
+
                 var visibleLight = cell.BaseLight;
                 var exploredLight = new Light(cell.BaseLight, 0.3);
                 var revealedLight = new Light(cell.BaseLight, 1.0);
@@ -128,7 +130,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             // Draw Doors
             using (var stream = doorsGeometry.Open())
             {
-                foreach (var cell in _modelService.Level.Grid.GetDoors())
+                foreach (var location in _modelService.Level.Grid.DoorMap.GetLocations())
                 {
                     // TODO:TERRAIN
                     //var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);

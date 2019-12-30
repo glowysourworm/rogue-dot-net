@@ -101,4 +101,47 @@ namespace Rogue.NET.Core.Model.Enums
         SavePoint,
         Transporter
     }
+
+    public enum ContentRandomPlacementType
+    {
+        /// <summary>
+        /// Content will be placed on a random walkable location
+        /// </summary>
+        Random = 0,
+
+        /// <summary>
+        /// Content will be placed inside a random region - WITH DEFAULT TO A RANDOM LEVEL LOCATION
+        /// </summary>
+        RandomRegion = 1,
+
+        /// <summary>
+        /// Content will be place inside a random corridor - WITH DEFAULT TO A RANDOM LEVEL LOCATION
+        /// </summary>
+        RandomCorridor = 2
+    }
+
+    /// <summary>
+    /// Specifies how content groups are added to the level
+    /// </summary>
+    public enum ContentGroupPlacementType
+    {
+        /// <summary>
+        /// Contents are placed in adjacent cells. This should fail if there are no adjacent cells with enough room
+        /// for the contents.
+        /// </summary>
+        Adjacent = 0,
+
+        /// <summary>
+        /// This will "randomly maximize" the total distance between the contents in the group. The random number will
+        /// be drawn from a Poisson distribution to get a value "close to" the max distance. This draw will occur once
+        /// per content object in the group. The first object will be placed somewhere near the edge of a region or
+        /// the edge region if there are multiple.
+        /// </summary>
+        RandomlyDistant = 1,
+
+        /// <summary>
+        /// Same as Randomly Distant with the added constraint that they're all located in rooms
+        /// </summary>
+        RandomlyDistantRoom = 2
+    }
 }

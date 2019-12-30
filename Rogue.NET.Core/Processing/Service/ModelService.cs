@@ -103,7 +103,7 @@ namespace Rogue.NET.Core.Processing.Service
 
             _characterLayoutInformation = new CharacterLayoutInformation(this.Level.Grid, _visibilityCalculator);
             _characterContentInformation = new CharacterContentInformation(_characterLayoutInformation);
-            _modelLayoutService = new ModelLayoutService(level, player, _randomSequenceGenerator);
+            _modelLayoutService = new ModelLayoutService(level, _randomSequenceGenerator);
 
             // Calculate player start location
             switch (startLocation)

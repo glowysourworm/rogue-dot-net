@@ -1,17 +1,18 @@
 ﻿using Rogue.NET.Common.Extension;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class GraphEdgeCollection<T> where T : class
+    [Serializable]
+    public class GraphEdgeCollection : ISerializable
     {
-        Dictionary<GraphEdge<T>, GraphEdge<T>> _edges;
+        Dictionary<GraphEdge, GraphEdge> _edges;
 
-        public void Add(GraphEdge<T> edge)
+        public void Add(GraphEdge edge)
         {
             if (_edges.Keys.Any(otherEdge =>
             {
@@ -25,37 +26,47 @@ namespace Rogue.NET.Core.Math.Geometry
             _edges.Add(edge, edge);
         }
 
-        public void Remove(GraphEdge<T> edge)
+        public void Remove(GraphEdge edge)
         {
             _edges.Remove(edge);
         }
 
-        public IEnumerable<GraphEdge<T>> Get()
+        public IEnumerable<GraphEdge> Get()
         {
             return _edges.Keys;
         }
 
-        public bool Contains(GraphEdge<T> edge)
+        public bool Contains(GraphEdge edge)
         {
             return _edges.ContainsKey(edge);
         }
 
-        public void Filter(Func<GraphEdge<T>, bool> predicate)
+        public void Filter(Func<GraphEdge, bool> predicate)
         {
             _edges.Filter(element => predicate(element.Key));
         }
 
         public GraphEdgeCollection()
         {
-            _edges = new Dictionary<GraphEdge<T>, GraphEdge<T>>();
+            _edges = new Dictionary<GraphEdge, GraphEdge>();
         }
 
-        public GraphEdgeCollection(IEnumerable<GraphEdge<T>> edges)
+        public GraphEdgeCollection(IEnumerable<GraphEdge> edges)
         {
-            _edges = new Dictionary<GraphEdge<T>, GraphEdge<T>>();
+            _edges = new Dictionary<GraphEdge, GraphEdge>();
 
             foreach (var edge in edges)
                 _edges.Add(edge, edge);
+        }
+
+        public GraphEdgeCollection(SerializationInfo info, StreamingContext context)
+        {
+            _edges = (Dictionary<GraphEdge, GraphEdge>)info.GetValue("Edges", typeof(Dictionary<GraphEdge, GraphEdge>));
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Edges", _edges);
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
+
 using System.Collections.Generic;
-using System.Windows;
 
 namespace Rogue.NET.Core.Processing.Model.Algorithm.Interface
 {

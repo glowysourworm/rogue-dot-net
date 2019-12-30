@@ -2,14 +2,17 @@
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
+
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
+
 using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
 using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
@@ -97,13 +100,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var grid = CreateGrid(template);
 
             // Create the room rectangles
-            var roomBoundaries = _regionGeometryCreator.CreateGridRectangularRegions(grid.GetLength(0), grid.GetLength(1), template.RoomColumnRatio, 
-                                                                                     template.RoomRowRatio, template.RoomSize, template.FillRatioRooms, 
+            var roomBoundaries = _regionGeometryCreator.CreateGridRectangularRegions(grid.GetLength(0), grid.GetLength(1), template.RoomColumnRatio,
+                                                                                     template.RoomRowRatio, template.RoomSize, template.FillRatioRooms,
                                                                                      template.RoomSizeErradicity);
             // Create cells in the regions
             foreach (var boundary in roomBoundaries)
                 _rectangularRegionCreator.CreateCells(grid, boundary, false);
-            
+
             return grid;
         }
 
@@ -129,7 +132,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             if (runSmoothingIteration)
             {
                 //foreach (var boundary in roomBoundaries)
-                _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0,0), grid.GetLength(0), grid.GetLength(1)), template.CellularAutomataType);
+                _cellularAutomataRegionCreator.RunSmoothingIteration(grid, new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1)), template.CellularAutomataType);
             }
 
             return grid;
@@ -187,7 +190,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Map [-1, 1] to the proper elevation band of 0.4 using [0, 1] elevation selector
             var elevationLow = (1.6 * template.ElevationSelector) - 1;
             var elevationHigh = (1.6 * template.ElevationSelector) - 0.6;
-            
+
             // Create the regions using noise generation
             _noiseGenerator.Run(NoiseType.PerlinNoise, grid.GetLength(0), grid.GetLength(1), template.ElevationFrequency, (column, row, value) =>
             {

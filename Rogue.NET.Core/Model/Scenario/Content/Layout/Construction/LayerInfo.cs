@@ -1,8 +1,7 @@
-﻿using Rogue.NET.Core.Math.Geometry;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Rogue.NET.Core.Model.Scenario.Content.Layout
+namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Construction
 {
     /// <summary>
     /// Class that represents a layer (collection of regions) for generating a layer map in the level grid

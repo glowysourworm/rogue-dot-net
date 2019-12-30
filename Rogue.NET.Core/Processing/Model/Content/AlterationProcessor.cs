@@ -23,6 +23,7 @@ using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -1091,8 +1092,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void RevealLayout()
         {
-            foreach (var cell in _modelService.Level.Grid.GetCells())
-                cell.IsRevealed = true;
+            foreach (var location in _modelService.Level.Grid.FullMap.GetLocations())
+                _modelService.Level.Grid[location.Column, location.Row].IsRevealed = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your senses are vastly awakened");
         }

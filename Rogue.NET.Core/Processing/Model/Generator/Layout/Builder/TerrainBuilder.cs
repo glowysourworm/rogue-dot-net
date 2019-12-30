@@ -1,10 +1,11 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Algorithm.Interface;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
-using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
 
@@ -33,7 +34,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             _connectionBuilder = connectionBuilder;
         }
 
-        public bool BuildTerrain(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, LayoutTemplate template, out IEnumerable<LayerInfo> terrainLayers)
+        public bool BuildTerrain(GridCellInfo[,] grid, 
+                                 IEnumerable<Region<GridCellInfo>> baseRegions, 
+                                 LayoutTemplate template, 
+                                 out IEnumerable<Region<GridCellInfo>> modifiedRegions,
+                                 out Graph modifiedRegionGraph, 
+                                 out IEnumerable<LayerInfo> terrainLayers)
         {
             // Procedure
             //
@@ -49,10 +55,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             //
 
             // Create all terrain layers in order and separate them by logical layers (see LayoutTerrainLayer enum)
-            var terrainDict = CreateTerrain(grid, regions, template);
+            var terrainDict = CreateTerrain(grid, baseRegions, template);
 
             // (Terrain Initial Clean-up) Remove non-overlapping terrain
-            RemoveTerrainIslands(grid, terrainDict, regions);
+            RemoveTerrainIslands(grid, terrainDict, baseRegions);
 
             // Create combined terrain-blocked grid. This will have null cells where impassible terrain exists.
             var terrainMaskedGrid = CreateTerrainMaskedGrid(grid, terrainDict);
@@ -64,16 +70,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             RemoveInvalidRegions(grid, terrainMaskedGrid, terrainDict);
 
             // Create masked regions - THESE CONTAIN ORIGINAL REGION AND / OR CORRIDOR CELLS
-            var maskedRegions = terrainMaskedGrid.IdentifyRegions(cell => !cell.IsWall);
+            modifiedRegions = terrainMaskedGrid.IdentifyRegions(cell => !cell.IsWall);
 
             // Check that there are valid regions
-            if (!maskedRegions.Any(region => RegionValidator.ValidateRoomRegion(region)))
+            if (!modifiedRegions.Any(region => RegionValidator.ValidateRoomRegion(region)))
             {
+                modifiedRegions = null;
+                modifiedRegionGraph = null;
                 terrainLayers = new LayerInfo[] { };
                 return false;
             }
 
-            // CORRIDORS
+            // CONNECTION POINTS - CREATE NEW TRIANGULATION
             if (template.ConnectionType != LayoutConnectionType.ConnectionPoints)
             {
                 // Calculate avoid regions for the connection builder
@@ -83,10 +91,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                               .Actualize();
 
                 // Create corridors and new regions
-                _connectionBuilder.BuildCorridorsWithAvoidRegions(terrainMaskedGrid, maskedRegions, avoidRegions, template);
+                modifiedRegionGraph = _connectionBuilder.BuildConnectionsWithAvoidRegions(terrainMaskedGrid, modifiedRegions, avoidRegions, template);
 
                 // Transfer the corridor cells back to the primary and terrain grids
                 TransferCorridors(terrainMaskedGrid, grid, terrainDict);
+            }
+            else
+            {
+                // Create connection points and new triangulation
+                modifiedRegionGraph = _connectionBuilder.BuildConnections(grid, modifiedRegions, template);
             }
 
             // Create the terrain layers
@@ -98,14 +111,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 // Next, convert to regions of grid locations
                 var terrainRegions = regionsCellInfo.Select(cellInfoRegion =>
                 {
-                    var locations = cellInfoRegion.Locations.Select(cell => cell.Location);
-                    var edgeLocations = cellInfoRegion.EdgeLocations.Select(cell => cell.Location);
+                    var locations = cellInfoRegion.Locations.Select(cell => cell.Location).ToArray();
+                    var edgeLocations = cellInfoRegion.EdgeLocations.Select(cell => cell.Location).ToArray();
 
-                    return new Region<GridLocation>(locations.ToArray(),
-                                                    edgeLocations.ToArray(),
+                    return new Region<GridLocation>(locations,
+                                                    edgeLocations,
                                                     cellInfoRegion.Boundary,
                                                     new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
-                });
+                }).Actualize();
 
                 return new LayerInfo(element.Key.Name, terrainRegions, element.Key.IsPassable);
 

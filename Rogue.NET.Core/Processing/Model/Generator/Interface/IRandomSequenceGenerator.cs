@@ -49,10 +49,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
         double GetTriangle(double start, double peak, double end);
 
         /// <summary>
-        /// Generates an exponentially distributed random number with the given rate parameter (lambda). The
-        /// exponential distribution has support on [0, Infinity).
+        /// Generates Binomially distributed random integer on [0, exclusive upper bound) with specified mean
         /// </summary>
-        double GetExponential(double rate);
+        public int GetBinomialRandomInteger(int exclusiveUpperBound, int mean);
 
         /// <summary>
         /// Gets random value from a Range<T> object
@@ -63,6 +62,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
         /// Gets a random element from the collection
         /// </summary>
         T GetRandomElement<T>(IEnumerable<T> collection);
+
+        /// <summary>
+        /// Returns unique (up to reference comparison) random elements from the collection
+        /// </summary>
+        IEnumerable<T> GetDistinctRandomElements<T>(IEnumerable<T> collection, int count);
 
         /// <summary>
         /// Gets a random element from the collection with the supplied weight selector

@@ -71,6 +71,15 @@ namespace Rogue.NET.Common.Extension
                 return number > low && number < high;
         }
 
+        public static bool Between(this int number, int low, int high, bool orEqual = false)
+        {
+            if (orEqual)
+                return number >= low && number <= high;
+
+            else
+                return number > low && number < high;
+        }
+
         public static double RoundOrderMagnitudeUp(this double number)
         {
             // Round up the log_10 of the number - which gives the inverse order-of-magnitude of

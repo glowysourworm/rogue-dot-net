@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Math.Geometry.Interface
         /// Calculates the connection parameters for the region - and the recipricol - and stores them
         /// on the two involved regions. Returns the distance for the connection - with the specified metric type
         /// </summary>
-        double CalculateConnection(Region<T> adjacentRegion, IRandomSequenceGenerator randomSequenceGenerator);
+        void CalculateConnection(Region<T> adjacentRegion, IRandomSequenceGenerator randomSequenceGenerator);
 
         /// <summary>
         /// Sets a weight value calculated by another adjacent region
@@ -23,12 +23,6 @@ namespace Rogue.NET.Core.Math.Geometry.Interface
         /// <summary>
         /// Returns the connection point from the CalculateWeight(...) calculation
         /// </summary>
-        T GetConnectionPoint(Region<T> adjacentRegion);
-
-        /// <summary>
-        /// Returns the connection point from this region to the adjacent region calculated
-        /// during CalculateWeight(...)
-        /// </summary>
-        T GetAdjacentConnectionPoint(Region<T> adjacentRegion);
+        RegionConnection<T> GetConnection(Region<T> adjacentRegion);
     }
 }

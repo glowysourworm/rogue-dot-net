@@ -2,8 +2,10 @@
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+
 using System;
 using System.ComponentModel.Composition;
+
 using static Rogue.NET.Core.Math.Algorithm.Interface.INoiseGenerator;
 
 namespace Rogue.NET.Core.Math.Algorithm

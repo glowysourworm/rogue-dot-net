@@ -513,10 +513,10 @@ namespace Rogue.NET.Core.Processing.Model.Extension
                 edgeLocations.Add(firstElement);
 
             // Track the region boundary
-            var top = int.MaxValue;
-            var bottom = int.MinValue;
-            var left = int.MaxValue;
-            var right = int.MinValue;
+            var top = firstElement.Row;
+            var bottom = firstElement.Row;
+            var left = firstElement.Column;
+            var right = firstElement.Column;
 
             while (resultQueue.Count > 0)
             {
@@ -565,6 +565,77 @@ namespace Rogue.NET.Core.Processing.Model.Extension
 
             // Assign region data to new region
             return new Region<T>(regionLocations.ToArray(), edgeLocations.ToArray(), boundary, parentBoundary);
+        }
+
+        /// <summary>
+        /// Scans the supplied grid for (overlapping) rectangular regions whose elements pass the given predicate. These are packaged
+        /// into a collection.
+        /// </summary>
+        public static IEnumerable<Region<T>> ScanRectanglarRegions<T>(this T[,] grid, int rectangleWidth, int rectangleHeight, Func<T, bool> predicate) where T : class, IGridLocator
+        {
+            // TODO: OPTIMIZE BY SKIPPING SECTIONS THAT AREN'T GOING TO PASS THE PREDICATE (OR) BY SCANNING RECTANGLE-BY-RECTANGLE
+            //       INSTEAD OF CELL-BY-CELL, RECTANGLE-BY-RECTANGLE
+            var regions = new List<Region<T>>();
+
+            // Run a single scane of the grid to locate regions
+            for (int i = 0; i < grid.GetLength(0) - rectangleWidth; i++)
+            {
+                for (int j = 0; j < grid.GetLength(1) - rectangleHeight; j++)
+                {                    
+                    var locations = new List<T>();
+                    var edgeLocations = new List<T>();
+                    var top = int.MaxValue;
+                    var bottom = int.MinValue;
+                    var left = int.MaxValue;
+                    var right = int.MinValue;
+                    var predicateFailed = false;
+
+                    // Run sub-scan over the current rectangle block
+                    for (int column = i; column < i + rectangleWidth && !predicateFailed; column++)
+                    {
+                        for (int row = j; row < j + rectangleHeight && !predicateFailed; row++)
+                        {
+                            // Passes predicate test
+                            if (grid[column, row] != null && 
+                                predicate(grid[column, row]))
+                            {
+                                locations.Add(grid[column, row]);
+
+                                // Edge locations
+                                if (column == i ||
+                                    column == (i + rectangleWidth - 1) ||
+                                    row == j ||
+                                    row == (j + rectangleHeight - 1))
+                                    edgeLocations.Add(grid[column, row]);
+
+                                // Expand the region boundary
+                                if (column < left)
+                                    left = column;
+
+                                if (column > right)
+                                    right = column;
+
+                                if (row < top)
+                                    top = row;
+
+                                if (row > bottom)
+                                    bottom = row;
+                            }
+
+                            else
+                                predicateFailed = true;
+                        }
+                    }
+
+                    if (!predicateFailed)
+                        regions.Add(new Region<T>(locations.ToArray(),
+                                                  edgeLocations.ToArray(),
+                                                  new RegionBoundary(left, top, right - left + 1, bottom - top + 1),
+                                                  new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1))));
+                }
+            }
+
+            return regions;
         }
 
         /// <summary>

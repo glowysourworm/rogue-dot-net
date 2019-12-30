@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
@@ -36,12 +36,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             _regionTriangulationCreator = regionTriangulationCreator;
         }
 
-        public void BuildCorridors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, LayoutTemplate template)
+        public Graph BuildConnections(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, LayoutTemplate template)
         {
-            BuildCorridorsWithAvoidRegions(grid, regions, new Region<GridCellInfo>[] { }, template);
+            return BuildConnectionsWithAvoidRegions(grid, regions, new Region<GridCellInfo>[] { }, template);
         }
 
-        public void BuildCorridorsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
+        public Graph BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
         {
             if (!PreValidateRegions(regions))
                 throw new Exception("Invalid region layout in the grid - ConnectionBuilder.BuildCorridorsWithAvoidRegions");
@@ -49,10 +49,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             switch (template.ConnectionType)
             {
                 case LayoutConnectionType.Corridor:
-                    ConnectUsingShortestPath(grid, regions, avoidRegions, template);
-                    break;
+                    return ConnectUsingShortestPath(grid, regions, avoidRegions, template);
                 case LayoutConnectionType.ConnectionPoints:
-                    throw new Exception("Trying to create connection points by calling IConnectionBuilder - these were left to external code");
+                    // throw new Exception("Trying to create connection points by calling IConnectionBuilder - these were left to external code");
+
+                    // Just create a new triangulation - the connection points are left to the content layout
+                    return _regionTriangulationCreator.CreateTriangulation(regions, template);
                 case LayoutConnectionType.Maze:
                     {
                         // Use "Filled" rule for rectangular regions only. "Open" maze rule works better with non-rectangular regions.
@@ -63,8 +65,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                             case LayoutType.CellularAutomataMap:
                             case LayoutType.ElevationMap:
                             case LayoutType.RandomSmoothedRegion:
-                                CreateMazeCorridors(grid, regions, avoidRegions, MazeType.Filled, template);
-                                break;
+                                return CreateMazeCorridors(grid, regions, avoidRegions, MazeType.Filled, template);
                             case LayoutType.MazeMap:
                             case LayoutType.CellularAutomataMazeMap:
                             case LayoutType.ElevationMazeMap:
@@ -72,7 +73,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                 throw new Exception("Unhandled or Unsupported Layout Type for maze connections");
                         }
                     }
-                    break;
                 default:
                     throw new Exception("Unhandled Connection Type");
             }
@@ -83,7 +83,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        private void CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, MazeType mazeType, LayoutTemplate template)
+        private Graph CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, MazeType mazeType, LayoutTemplate template)
         {
             // Procedure
             //
@@ -155,10 +155,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var newRegions = grid.IdentifyRegions(cell => !cell.IsWall);
 
             // Finally, connect the regions using shortest path
-            ConnectUsingShortestPath(grid, newRegions, avoidRegions, template);
+            return ConnectUsingShortestPath(grid, newRegions, avoidRegions, template);
         }
 
-        private void ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
+        private Graph ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
         {
             // Procedure
             //
@@ -173,8 +173,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // For each edge in the triangulation - create a corridor
             foreach (var edge in graph.Edges)
             {
-                var location1 = edge.Point1.Reference.GetConnectionPoint(edge.Point2.Reference);
-                var location2 = edge.Point1.Reference.GetAdjacentConnectionPoint(edge.Point2.Reference);
+                var region1 = regions.First(region => region.Id == edge.Point1.ReferenceId);
+                var region2 = regions.First(region => region.Id == edge.Point2.ReferenceId);
+
+                region1.CalculateConnection(region2, _randomSequenceGenerator);
+
+                var connection = region1.GetConnection(region2);
+
+                var location1 = connection.Location;
+                var location2 = connection.AdjacentLocation;
 
                 // Create a Dijkstra path generator to find paths for the edge
                 var dijkstraMap = new DijkstraPathGenerator(grid, avoidRegions, location1, new GridCellInfo[] { location2 }, true);
@@ -186,6 +193,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                     cell.IsCorridor = true;
                 }));
             }
+
+            return graph;
         }
 
         private bool PreValidateRegions(IEnumerable<Region<GridCellInfo>> regions)

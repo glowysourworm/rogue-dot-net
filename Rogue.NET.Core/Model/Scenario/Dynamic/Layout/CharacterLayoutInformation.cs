@@ -103,14 +103,14 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                 }
             }
 
-            _exploredLocations = _grid.GetCells()
-                                      .Where(x => x.IsExplored)
-                                      .Select(x => x.Location)
+            _exploredLocations = _grid.FullMap
+                                      .GetLocations()
+                                      .Where(x => _grid[x.Column, x.Row].IsExplored)
                                       .ToList();
 
-            _revealedLocations = _grid.GetCells()
-                                      .Where(x => x.IsRevealed)
-                                      .Select(x => x.Location)
+            _revealedLocations = _grid.FullMap
+                                      .GetLocations()
+                                      .Where(x => _grid[x.Column, x.Row].IsRevealed)
                                       .ToList();
         }
 

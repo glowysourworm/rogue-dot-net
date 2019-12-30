@@ -18,16 +18,14 @@ namespace Rogue.NET.Core.Processing.Service
     public class ModelLayoutService : IModelLayoutService
     {
         readonly Level _level;
-        readonly Player _player;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         /// <summary>
         /// Non-importing constructor - should be loaded once per level
         /// </summary>
-        public ModelLayoutService(Level level, Player player, IRandomSequenceGenerator randomSequenceGenerator)
+        public ModelLayoutService(Level level, IRandomSequenceGenerator randomSequenceGenerator)
         {
             _level = level;
-            _player = player;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
@@ -36,8 +34,9 @@ namespace Rogue.NET.Core.Processing.Service
             // For now, this calculation just copies the cell's lighting value to the effective value. This will
             // soon be using all light sources in the calculation.
             //
-            foreach (var cell in _level.Grid.GetCells())
-                cell.EffectiveLighting = ColorFilter.Discretize(cell.BaseLight, ModelConstants.ColorChannelDiscretization);
+            foreach (var location in _level.Grid.FullMap.GetLocations())
+                _level.Grid[location.Column, location.Row].EffectiveLighting = ColorFilter.Discretize(_level.Grid[location.Column, location.Row].BaseLight,     
+                                                                                                      ModelConstants.ColorChannelDiscretization);
         }
 
         public bool IsPathToAdjacentCellBlocked(GridLocation location1,
@@ -113,27 +112,20 @@ namespace Rogue.NET.Core.Processing.Service
 
         public GridLocation GetRandomLocation(bool excludeOccupiedLocations, IEnumerable<GridLocation> otherExcludedLocations = null)
         {
-            var locations = _level.Grid.GetWalkableCells()
-                                       .Select(x => x.Location)
-                                       .Except(otherExcludedLocations)
-                                       .ToList();
-
-            if (locations.Count <= 0)
-                return null;
-
             // Slower operation
             if (excludeOccupiedLocations)
             {
-                var occupiedLocations = _level.AllContent.Select(x => x.Location);
+                var nonOccupiedLocations = _level.Grid.FullMap.GetNonOccupiedLocations();
 
-                var freeCells = locations.Except(occupiedLocations);
+                if (otherExcludedLocations != null)
+                    nonOccupiedLocations = nonOccupiedLocations.Except(otherExcludedLocations);
 
                 // Return random cell
-                return _randomSequenceGenerator.GetRandomElement(freeCells);
+                return _randomSequenceGenerator.GetRandomElement(nonOccupiedLocations);
             }
             // O(1)
             else
-                return _randomSequenceGenerator.GetRandomElement(locations);
+                return _level.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Walkable, _randomSequenceGenerator, otherExcludedLocations ?? new GridLocation[] { });
         }
 
         public GridLocation GetRandomAdjacentLocationForMovement(GridLocation location, CharacterAlignmentType swappableAlignmentType = CharacterAlignmentType.None)
@@ -171,18 +163,17 @@ namespace Rogue.NET.Core.Processing.Service
 
         public IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(GridLocation location, CharacterAlignmentType swappableAlignmentType = CharacterAlignmentType.None)
         {
-            return _level
-                   .Grid
-                   .GetAdjacentLocations(location)
-                   .Where(x => _level.Grid.ImpassableTerrainMap[x.Column, x.Row] == null)
-                   .Where(x =>
-                    {
-                        var character = _level.GetAt<NonPlayerCharacter>(x);
+            return _level.Grid
+                         .GetAdjacentLocations(location)
+                         .Where(x => _level.Grid.ImpassableTerrainMap[x.Column, x.Row] == null)
+                         .Where(x =>
+                          {
+                              var character = _level.GetAt<NonPlayerCharacter>(x);
 
-                        // No Character (OR) Alignment Type Matches (AND) Not Wall (AND) Not Door
-                        return (character == null ? true : character.AlignmentType == swappableAlignmentType) &&
-                               !_level.Grid[x.Column, x.Row].IsWall;
-                    });
+                              // No Character (OR) Alignment Type Matches (AND) Not Wall (AND) Not Door
+                              return (character == null ? true : character.AlignmentType == swappableAlignmentType) &&
+                                     !_level.Grid[x.Column, x.Row].IsWall;
+                          });
         }
 
         public IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int cellRange, bool includeSourceLocation)

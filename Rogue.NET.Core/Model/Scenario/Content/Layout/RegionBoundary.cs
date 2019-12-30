@@ -43,6 +43,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public int Top { get { return this.Row; } }
         public int Bottom { get { return (this.Row + this.Height) - 1; } }
 
+        public GridLocation GetCenter()
+        {
+            return new GridLocation(this.Left + (this.Width / 2), 
+                                    this.Top + (this.Height / 2));
+        }
+
         public override string ToString()
         {
             return "X=" + Column + " Y=" + Row + " Width=" + Width + " Height=" + Height;

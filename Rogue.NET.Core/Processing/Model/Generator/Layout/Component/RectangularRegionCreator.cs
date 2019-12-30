@@ -1,13 +1,12 @@
-﻿using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 {
@@ -31,7 +30,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                     grid[i, j] = new GridCellInfo(i, j);
                 }
-            } 
+            }
         }
 
         public void CreateCellsXOR(GridCellInfo[,] grid, RegionBoundary boundary, int padding, double separationRatio)

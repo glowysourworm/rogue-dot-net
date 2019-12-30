@@ -5,15 +5,20 @@ using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario
 {
     [Serializable]
-    public class LevelContent
+    public class LevelContent : ISerializable
     {
+        // Event forwarding from scenario object location change
+        public event EventHandler<LocationChangedEventArgs> ScenarioObjectLocationChanged;
+
         // Gives the contents by location[column, row]
         IList<ScenarioObject>[,] _levelContentGrid;
 
@@ -92,12 +97,29 @@ namespace Rogue.NET.Core.Model.Scenario
 
         public LevelContent(LayoutGrid grid)
         {
-            Initialize(grid);
+            Initialize(grid.Bounds.Width, grid.Bounds.Height, new Dictionary<string, ScenarioObject>());
         }
 
-        private void Initialize(LayoutGrid grid)
+        public LevelContent(SerializationInfo info, StreamingContext context)
         {
-            _levelContentGrid = new List<ScenarioObject>[grid.Bounds.Width, grid.Bounds.Height];
+            var width = info.GetInt32("Width");
+            var height = info.GetInt32("Height");
+
+            var contentDict = (Dictionary<string, ScenarioObject>)info.GetValue("Content", typeof(Dictionary<string, ScenarioObject>));
+
+            Initialize(width, height, contentDict);
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Width", _levelContentGrid.GetLength(0));
+            info.AddValue("Height", _levelContentGrid.GetLength(1));
+            info.AddValue("Content", _levelContentDict);
+        }
+
+        private void Initialize(int width, int height, Dictionary<string, ScenarioObject> contentDict)
+        {
+            _levelContentGrid = new List<ScenarioObject>[width, height];
             _levelContentDict = new Dictionary<string, ScenarioObject>();
 
             this.NonPlayerCharacters = new List<NonPlayerCharacter>();
@@ -113,6 +135,10 @@ namespace Rogue.NET.Core.Model.Scenario
             {
                 _levelContentGrid[column, row] = new List<ScenarioObject>();
             });
+
+            // Add level contents from the dictionary
+            foreach (var scenarioObject in contentDict.Values)
+                AddContent(scenarioObject);
         }
 
         public bool Contains(string scenarioObjectId)
@@ -236,6 +262,9 @@ namespace Rogue.NET.Core.Model.Scenario
 
             if (e.NewLocation != null)
                 _levelContentGrid[e.NewLocation.Column, e.NewLocation.Row].Add(e.ScenarioObject);
+
+            if (this.ScenarioObjectLocationChanged != null)
+                this.ScenarioObjectLocationChanged(this, e);
         }
     }
 }

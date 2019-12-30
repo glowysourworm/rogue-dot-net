@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Math.Geometry.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -17,14 +18,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public string Id { get; private set; }
         public T[] Locations { get; private set; }
         public T[] EdgeLocations { get; private set; }
+        public IEnumerable<T> OccupiedLocations { get { return _occupiedLocations; } }
+        public IEnumerable<T> NonOccupiedLocations { get { return _nonOccupiedLocations; } }
         public RegionBoundary Boundary { get; private set; }
 
+        // Occupied Location Collections
+        List<T> _occupiedLocations;
+        List<T> _nonOccupiedLocations;
+
         // Used during layout generation to store calculated nearest neighbors (STORED BY HASH CODE)
-        Dictionary<int, GraphConnection> _graphConnections;
+        Dictionary<string, RegionConnection<T>> _regionConnections;
 
         // 2D Arrays for region locations and edges
         T[,] _gridLocations;
         bool[,] _edgeLocations;
+        bool[,] _occupiedLocationGrid;
 
         // Indexers for grid locations and edges
         public T this[int column, int row]
@@ -35,13 +43,41 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             return _edgeLocations[column, row];
         }
-
-        protected class GraphConnection
+        public bool IsOccupied(int column, int row)
         {
-            public T Location { get; set; }
-            public T AdjacentLocation { get; set; }
-            public Region<T> AdjacentRegion { get; set; }
-            public double Distance { get; set; }
+            return _occupiedLocationGrid[column, row];
+        }
+        public void SetOccupied(int column, int row, bool occupied)
+        {
+            // Occupied
+            if (_occupiedLocationGrid[column, row])
+            {
+                if (!occupied)
+                {
+                    _occupiedLocations.Remove(_gridLocations[column, row]);
+                    _nonOccupiedLocations.Add(_gridLocations[column, row]);
+                }
+            }
+
+            // Non-Occupied
+            else
+            {
+                if (occupied)
+                {
+                    _nonOccupiedLocations.Remove(_gridLocations[column, row]);
+                    _occupiedLocations.Add(_gridLocations[column, row]);
+                }
+            }
+
+            _occupiedLocationGrid[column, row] = occupied;
+        }
+
+        /// <summary>
+        /// Returns id's for the nearest neighbor connected regions
+        /// </summary>
+        public IEnumerable<string> GetConnectionIds()
+        {
+            return _regionConnections.Keys;
         }
 
         public Region(T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
@@ -51,22 +87,36 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.EdgeLocations = edgeLocations;
             this.Boundary = boundary;
 
-            _graphConnections = new Dictionary<int, GraphConnection>();
+            _regionConnections = new Dictionary<string, RegionConnection<T>>();
             _gridLocations = new T[parentBoundary.Width, parentBoundary.Height];
             _edgeLocations = new bool[parentBoundary.Width, parentBoundary.Height];
+            _occupiedLocationGrid = new bool[parentBoundary.Width, parentBoundary.Height];
+
+            _occupiedLocations = new List<T>();
+            _nonOccupiedLocations = new List<T>(locations);
 
             // Setup grid locations
             foreach (var location in locations)
+            {
+                // Validate location inside boundary
+                if (!boundary.Contains(location))
+                    throw new Exception("Invalid location for the region boundary Region.cs");
+
                 _gridLocations[location.Column, location.Row] = location;
+            }
 
             // Setup edge locations
             foreach (var location in edgeLocations)
+            {
+                // Validate location inside boundary
+                if (!boundary.Contains(location))
+                    throw new Exception("Invalid edge location for the region boundary Region.cs");
+
                 _edgeLocations[location.Column, location.Row] = true;
+            }
         }
         public Region(SerializationInfo info, StreamingContext context)
         {
-            _graphConnections = new Dictionary<int, GraphConnection>();
-
             this.Id = info.GetString("Id");
             this.Locations = new T[info.GetInt32("LocationsLength")];
             this.EdgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
@@ -74,18 +124,33 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             var parentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
 
+            _regionConnections = (Dictionary<string, RegionConnection<T>>)info.GetValue("RegionConnections", typeof(Dictionary<string, RegionConnection<T>>));
+
             _gridLocations = new T[parentBoundary.Width, parentBoundary.Height];
             _edgeLocations = new bool[parentBoundary.Width, parentBoundary.Height];
+            _occupiedLocationGrid = new bool[parentBoundary.Width, parentBoundary.Height];
+
+            // Initialize occupied collections
+            _occupiedLocations = new List<T>();
+            _nonOccupiedLocations = new List<T>();
 
             for (int i = 0; i < this.Locations.Length; i++)
             {
                 var location = (T)info.GetValue("Location" + i.ToString(), typeof(T));
+                var locationOccupied = info.GetBoolean("LocationOccupied" + i.ToString());
 
                 // Add to cell array
                 this.Locations[i] = location;
 
-                // Add to 2D array
+                if (locationOccupied)
+                    _occupiedLocations.Add(location);
+
+                else
+                    _nonOccupiedLocations.Add(location);
+
+                // Add to 2D array (AND) Occupied 2D array
                 _gridLocations[location.Column, location.Row] = location;
+                _occupiedLocationGrid[location.Column, location.Row] = locationOccupied;
             }
 
             for (int i = 0; i < this.EdgeLocations.Length; i++)
@@ -106,6 +171,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("EdgeLocationsLength", this.EdgeLocations.Length);
             info.AddValue("Boundary", this.Boundary);
             info.AddValue("ParentBoundary", new RegionBoundary(0, 0, _gridLocations.GetLength(0), _gridLocations.GetLength(1)));
+            info.AddValue("RegionConnections", _regionConnections);
 
             var counter = 0;
 
@@ -115,7 +181,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 if (location.GetType() != typeof(GridLocation))
                     throw new SerializationException("Unsupported IGridLocator type during serialization Region.cs");
 
-                info.AddValue("Location" + counter++.ToString(), location);
+                info.AddValue("Location" + counter.ToString(), location);
+                info.AddValue("LocationOccupied" + counter++.ToString(), _occupiedLocationGrid[location.Column, location.Row]);
             }
 
             counter = 0;
@@ -171,11 +238,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         #region IRegionGraphWeightProvider
 
-        public double CalculateConnection(Region<T> adjacentRegion, IRandomSequenceGenerator randomSequenceGenerator)
+        public void CalculateConnection(Region<T> adjacentRegion, IRandomSequenceGenerator randomSequenceGenerator)
         {
             // Return previously calculated weight
-            if (_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
-                return _graphConnections[adjacentRegion.GetHashCode()].Distance;
+            if (_regionConnections.ContainsKey(adjacentRegion.Id))
+                return;
 
             // Use a brute force O(n x m) search
             var candidateLocations = new Dictionary<T, List<T>>();
@@ -206,7 +273,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                         else
                             candidateLocations[edgeLocation1].Add(edgeLocation2);
                     }
-                        
+
                 }
             }
 
@@ -218,29 +285,25 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var location = element.Key;
             var adjacentLocation = randomSequenceGenerator.GetRandomElement(element.Value);
 
-            _graphConnections.Add(adjacentRegion.GetHashCode(), new GraphConnection()
+            _regionConnections.Add(adjacentRegion.Id, new RegionConnection<T>()
             {
+                AdjacentRegionId = adjacentRegion.Id,
                 AdjacentLocation = adjacentLocation,
-                AdjacentRegion = adjacentRegion,
-                Distance = distance,
-                Location = location
+                Location = location,
+                Distance = distance
             });
 
             // Set adjacent region's connection
             adjacentRegion.SetConnection(this, adjacentLocation, location, distance);
-
-            return _graphConnections[adjacentRegion.GetHashCode()].Distance;
         }
 
         public void SetConnection(Region<T> adjacentRegion, T location, T adjacentLocation, double distance)
         {
-            var key = adjacentRegion.GetHashCode();
-
-            if (!_graphConnections.ContainsKey(key))
+            if (!_regionConnections.ContainsKey(adjacentRegion.Id))
             {
-                _graphConnections.Add(key, new GraphConnection()
+                _regionConnections.Add(adjacentRegion.Id, new RegionConnection<T>()
                 {
-                    AdjacentRegion = adjacentRegion,
+                    AdjacentRegionId = adjacentRegion.Id,
                     AdjacentLocation = adjacentLocation,
                     Location = location,
                     Distance = distance
@@ -248,26 +311,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
             else
             {
-                _graphConnections[key].AdjacentLocation = adjacentLocation;
-                _graphConnections[key].Location = location;
-                _graphConnections[key].Distance = distance;
+                _regionConnections[adjacentRegion.Id].AdjacentLocation = adjacentLocation;
+                _regionConnections[adjacentRegion.Id].Location = location;
+                _regionConnections[adjacentRegion.Id].Distance = distance;
             }
         }
 
-        public T GetConnectionPoint(Region<T> adjacentRegion)
+        public RegionConnection<T> GetConnection(Region<T> adjacentRegion)
         {
-            if (!_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
+            if (!_regionConnections.ContainsKey(adjacentRegion.Id))
                 throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");
 
-            return _graphConnections[adjacentRegion.GetHashCode()].Location;
-        }
-
-        public T GetAdjacentConnectionPoint(Region<T> adjacentRegion)
-        {
-            if (!_graphConnections.ContainsKey(adjacentRegion.GetHashCode()))
-                throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");
-
-            return _graphConnections[adjacentRegion.GetHashCode()].AdjacentLocation;
+            return _regionConnections[adjacentRegion.Id];
         }
         #endregion
     }

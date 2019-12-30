@@ -6,6 +6,7 @@ using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Math.Algorithm;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -66,12 +67,26 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return (mean + (GetNormal() * standardDeviation)).Clip(0, 3.5 * standardDeviation);
         }
 
-        public double GetExponential(double rate)
+        public int GetBinomialRandomInteger(int exclusiveUpperBound, int mean)
         {
-            if (rate <= 0)
-                throw new ArgumentException("Trying to generate exponential with rate <= 0 RandomSequenceGenerator");
+            if (!mean.Between(0, exclusiveUpperBound, false))
+                throw new ArgumentException("Trying to generate exponential with flatness parameter NOT in [0, 1] RandomSequenceGenerator");
 
-            return -1 * System.Math.Log(_random.NextDouble()) / rate;
+            // The Binomial distribution is simulated using a weighted random draw with the specified distribution
+            //
+            // https://en.wikipedia.org/wiki/Binomial_distribution
+            //
+            // E[X] = np = (exclusiveUpperBound - 1) * (probability of success per trial) => p = mean / (exclusiveUpperBound - 1)
+            //
+
+            var domain = Enumerable.Range(0, exclusiveUpperBound);
+            var binomialPdf = domain.Select(integer => GetBinomialPDF(integer, exclusiveUpperBound - 1, mean / (double)(exclusiveUpperBound - 1)))
+                                    .ToList();
+
+            return GetWeightedRandom(domain, integer =>
+            {
+                return binomialPdf[integer];
+            });
         }
 
         public T GetRandomValue<T>(Range<T> range) where T : IComparable<T>
@@ -86,6 +101,27 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             // NOTE*** Random.NextDouble() is [1, 0) (exclusive upper bound)
             return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * _random.NextDouble()));
+        }
+
+        public IEnumerable<T> GetDistinctRandomElements<T>(IEnumerable<T> collection, int count)
+        {
+            if (count > collection.Count())
+                throw new ArgumentException("Trying to draw too many elements from the collection RandomSequenceGenerator.GetDistinctRandomElements");
+
+            // Start with a full collection and remove elements randomly until the count is reached
+            //
+            var list = new List<T>(collection);
+
+            while (list.Count > count)
+            {
+                // Draw random index from the list
+                var randomIndex = Get(0, list.Count);
+
+                // Remove at that index ~ O(n)
+                list.RemoveAt(randomIndex);
+            }
+
+            return list;
         }
 
         /// <summary>
@@ -183,6 +219,23 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else
                 return end - System.Math.Sqrt((1 - uniform) * (end - start) * (end - peak));
+        }
+
+        /// <summary>
+        /// Generates Binomial(n, p) where n is the upper bound, and p is the probabiliy parameter (of success) for the
+        /// given independent Bernoulli trials.
+        /// </summary>
+        private double GetBinomialPDF(int domain, int upperBound, double parameter)
+        {
+            var n = upperBound;
+            var k = domain;
+            var p = parameter;
+
+            var factorialN = FactorialAlgorithm.Run(n);
+            var factorialK = FactorialAlgorithm.Run(k);
+            var factorialNK = FactorialAlgorithm.Run(n - k);
+
+            return (factorialN / (double)(factorialK * factorialNK)) * System.Math.Pow(p, k) * System.Math.Pow(1 - p, n - k);
         }
     }
 }

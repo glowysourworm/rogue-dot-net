@@ -1,8 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
+
 using System;
 using System.ComponentModel.Composition;
 
@@ -43,7 +44,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
             // Iterate grid cells and fill them in randomly
             // 
-            
+
             Iterate(grid, boundary, 1, CELLULAR_AUTOMATA_FILLED_PADDING, (grid, boundary, column, row) =>
             {
                 if (grid[column, row] != null && !overwrite)

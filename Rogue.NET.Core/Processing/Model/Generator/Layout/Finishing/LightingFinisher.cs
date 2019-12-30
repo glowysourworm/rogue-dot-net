@@ -3,6 +3,7 @@ using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
@@ -46,7 +47,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public void CreateLighting(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> roomRegions, LayoutTemplate template)
+        public void CreateLighting(GridCellInfo[,] grid, LayoutTemplate template)
         {
             // Procedure
             //

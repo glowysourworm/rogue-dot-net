@@ -3346,4 +3346,18 @@ IMMEDIATE TODO'S:
 		would require some more UI work. 
 		
 	ANOTHER NAME FOR DOODAD (?) DEVICE (?)
+	
+	OVERALL PERFORMANCE:
+	
+		.NET List<> implementation requires O(N) time to do Remove, RemoveAt, and Add (if capacity is reached). Consider trying a new
+		List<> implementation that supports:
+		
+			1) O(1) Remove, RemoveAt, Add
+			2) Sorting O(log N) using a Binary Search Tree
+			3) O(log N) searching using BST
+			4) Indexing O(1)
+			5) Serialization
+			6) Enumeration
+		
+		Probably based on multiple data structures - including Dictionary<,>, BST, Linked List, Array, etc.. Sacrificing memory for performance.
 			

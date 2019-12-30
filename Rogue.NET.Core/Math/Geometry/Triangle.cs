@@ -3,20 +3,20 @@ using System;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
-    public class Triangle<T> where T : class
+    public class Triangle
     {
-        public GraphVertex<T> Point1 { get; private set; }
-        public GraphVertex<T> Point2 { get; private set; }
-        public GraphVertex<T> Point3 { get; private set; }
+        public GraphVertex Point1 { get; private set; }
+        public GraphVertex Point2 { get; private set; }
+        public GraphVertex Point3 { get; private set; }
 
-        public Triangle(GraphVertex<T> point1, GraphVertex<T> point2, GraphVertex<T> point3)
+        public Triangle(GraphVertex point1, GraphVertex point2, GraphVertex point3)
         {
             this.Point1 = point1;
             this.Point2 = point2;
             this.Point3 = point3;
         }
 
-        public bool ContainsEdge(GraphVertex<T> vertex1, GraphVertex<T> vertex2)
+        public bool ContainsEdge(GraphVertex vertex1, GraphVertex vertex2)
         {
             var pointsShared = 0;
 
@@ -32,14 +32,14 @@ namespace Rogue.NET.Core.Math.Geometry
             return pointsShared > 1;
         }
 
-        public bool ContainsPoint(GraphVertex<T> point)
+        public bool ContainsPoint(GraphVertex point)
         {
             return point.Equals(this.Point1) ||
                    point.Equals(this.Point2) ||
                    point.Equals(this.Point3);
         }
 
-        public bool CircumCircleContains(GraphVertex<T> point)
+        public bool CircumCircleContains(GraphVertex point)
         {
             // Procedure
             //
@@ -69,7 +69,7 @@ namespace Rogue.NET.Core.Math.Geometry
                 return false;
 
             // Re-number the vertices to be counter-clockwise (1 -> 2 -> 3)
-            GraphVertex<T> point1, point2, point3;
+            GraphVertex point1, point2, point3;
 
             // NOTE*** This is flipped in sign because of UI coordinates (y -> -y)
             //
@@ -115,11 +115,11 @@ namespace Rogue.NET.Core.Math.Geometry
 
         public override string ToString()
         {
-            return string.Format("P1=({0},{1}) P2=({2},{3}) P3=({4},{5})", 
-                        this.Point1.Column, 
-                        this.Point1.Row, 
+            return string.Format("P1=({0},{1}) P2=({2},{3}) P3=({4},{5})",
+                        this.Point1.Column,
+                        this.Point1.Row,
                         this.Point2.Column,
-                        this.Point2.Row, 
+                        this.Point2.Row,
                         this.Point3.Column,
                         this.Point3.Row);
         }

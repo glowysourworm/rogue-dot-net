@@ -1,8 +1,10 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -41,7 +43,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         GridCellInfo oppositeDoorCell = null;
                         GridCellInfo wallCell1 = null;
                         GridCellInfo wallCell2 = null;
-                        
+
                         // Check for the adjacent walls
                         switch (direction)
                         {
@@ -161,7 +163,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             // Optionally, create border
             if (createBorder)
             {
-                for (int i=0;i<grid.GetLength(0);i++)
+                for (int i = 0; i < grid.GetLength(0); i++)
                 {
                     grid[i, 0] = new GridCellInfo(i, 0) { IsWall = true };
                     grid[i, grid.GetLength(1) - 1] = new GridCellInfo(i, grid.GetLength(1) - 1) { IsWall = true };

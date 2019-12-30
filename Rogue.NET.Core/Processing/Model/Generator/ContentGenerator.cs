@@ -49,9 +49,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                     bool lastLevel,
                                     bool survivorMode)
         {
-            // NOTE*** ADD MAPPED CONTENT FIRST - BUT MUST IGNORE DURING THE MAPPING PHASE. THIS INCLUDES
-            //         ANY NORMAL DOODADS
-
             // Remove transport points from walkable cells; and randomize the collection
             //
             var transporterDict = level.Grid
@@ -59,38 +56,26 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                        .Regions
                                        .ToDictionary(region => region, region => _randomSequenceGenerator.GetRandomElement(region.Locations));
 
-            var openLocations = level.Grid.GetWalkableCells()
-                                          .Except(transporterDict.Values.Select(location => level.Grid[location.Column, location.Row]))
-                                          .Select(cell => cell.Location)
-                                          .Actualize();
+            var mandatoryNormalDoodads = new List<DoodadNormal>();
 
-            var randomizedLocations = _randomSequenceGenerator.Randomize(openLocations);
-            var randomizedLocationQueue = new Queue<GridLocation>(randomizedLocations);
-
-            // Must have for each level (Except the last one) (MAPPED)
+            // Must have for each level (Except the last one)
             if (!lastLevel)
-            {
-                var stairsDown = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsDownRogueName, DoodadNormalType.StairsDown);
-                stairsDown.Location = randomizedLocationQueue.Dequeue();
-                level.AddContent(stairsDown);
-            }
+                mandatoryNormalDoodads.Add(_doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsDownRogueName, DoodadNormalType.StairsDown));
 
-            // Stairs up - every level has one - (MAPPED)
-            var stairsUp = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsUpRogueName, DoodadNormalType.StairsUp);
-            stairsUp.Location = randomizedLocationQueue.Dequeue();
-            level.AddContent(stairsUp);
+            // Stairs up - every level has one
+            mandatoryNormalDoodads.Add(_doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsUpRogueName, DoodadNormalType.StairsUp));
 
-            // Add teleporter level content - (MAPPED)
+            // Every level has a save point if not in survivor mode
+            if (!survivorMode)
+                mandatoryNormalDoodads.Add(_doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadSavePointRogueName, DoodadNormalType.SavePoint));
+
+            // ADD MANDATORY NORMAL DOODADS "DISTANTLY"
+            if (!level.AddContentGroup(_randomSequenceGenerator, mandatoryNormalDoodads, ContentGroupPlacementType.RandomlyDistant, transporterDict.Values))
+                throw new Exception("Unable to place mandatory normal doodads ContentGenerator");
+
+            // Add teleporter level content
             if (layoutTemplate.Asset.ConnectionType == LayoutConnectionType.ConnectionPoints)
                 AddTransporters(level, transporterDict);
-
-            // Every level has a save point if not in survivor mode - (MAPPED)
-            if (!survivorMode)
-            {
-                var savePoint = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadSavePointRogueName, DoodadNormalType.SavePoint);
-                savePoint.Location = randomizedLocationQueue.Dequeue();
-                level.AddContent(savePoint);
-            }
 
 #if DEBUG_MINIMUM_CONTENT
 
@@ -102,11 +87,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             GenerateItems(level, branchTemplate);
             GenerateDoodads(level, branchTemplate);
 #endif
-            MapLevel(level, randomizedLocationQueue);
-
             return level;
         }
-        private void GenerateDoodads(LevelContent level, LevelBranchTemplate branchTemplate)
+        private void GenerateDoodads(Level level, LevelBranchTemplate branchTemplate)
         {
             var generationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.DoodadGenerationRange);
 
@@ -117,10 +100,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var doodad = GenerateDoodad(branchTemplate);
 
                 if (doodad != null)
-                    level.AddContent(doodad);
+                    level.AddContentRandom(_randomSequenceGenerator, doodad, ContentRandomPlacementType.Random, new GridLocation[] { });
             }
         }
-        private void GenerateEnemies(LevelContent level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia)
+        private void GenerateEnemies(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia)
         {
             var generationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.EnemyGenerationRange);
 
@@ -131,10 +114,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var enemy = GenerateEnemy(branchTemplate, encyclopedia);
 
                 if (enemy != null)
-                    level.AddContent(enemy);
+                    level.AddContentRandom(_randomSequenceGenerator, enemy, ContentRandomPlacementType.Random, new GridLocation[] { });
             }
         }
-        private void GenerateItems(LevelContent level, LevelBranchTemplate branchTemplate)
+        private void GenerateItems(Level level, LevelBranchTemplate branchTemplate)
         {
             var equipmentGenerationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.EquipmentGenerationRange);
             var consumableGenerationNumber = _randomSequenceGenerator.GetRandomValue(branchTemplate.ConsumableGenerationRange);
@@ -146,7 +129,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var equipment = GenerateEquipment(branchTemplate);
 
                 if (equipment != null)
-                    level.AddContent(equipment);
+                    level.AddContentRandom(_randomSequenceGenerator, equipment, ContentRandomPlacementType.Random, new GridLocation[] { });
             }
 
             // Make a configured number of random draws from the consumable templates for this branch
@@ -156,7 +139,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var consumable = GenerateConsumable(branchTemplate);
 
                 if (consumable != null)
-                    level.AddContent(consumable);
+                    level.AddContentRandom(_randomSequenceGenerator, consumable, ContentRandomPlacementType.Random, new GridLocation[] { });
             }
         }
         private void AddTransporters(Level level, IDictionary<Region<GridLocation>, GridLocation> transporterDict)
@@ -184,7 +167,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             foreach (var element in transporterDict)
             {
                 // Find all connecting edges
-                var connectedRegions = level.Grid.RoomMap.Connections(element.Key.Id);
+                var connectedRegions = level.Grid.ConnectionMap.Connections(element.Key.Id);
 
                 // Locate connected regions and add to the transporter list
                 var connectingLocations = connectedRegions.Select(region => transporterDict[region]);
@@ -201,28 +184,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
                 // ALSO SET PRIMARY ID
                 primaryTransporter.TransportGroupIds.Add(primaryTransporter.Id);
-            }
-        }
-        private void MapLevel(Level level, Queue<GridLocation> randomizedLocationQueue)
-        {
-            var levelContents = level.AllContent.ToList();
-
-            // Map Level Contents:  Set locations for each ScenarioObject. Removal of these can be
-            // done based on the total length of the levelContents array - which will be altered during
-            // the loop interally to the Level.
-            for (int i = levelContents.Count - 1; i >= 0 && randomizedLocationQueue.Any(); i--)
-            {
-                // Already Placed
-                if (levelContents[i] is DoodadNormal)
-                    continue;
-
-                var location = randomizedLocationQueue.Dequeue();
-
-                // Entire grid is occupied
-                if (location == null)
-                    level.RemoveContent(levelContents[i].Id);
-                else
-                    levelContents[i].Location = location;
             }
         }
 
