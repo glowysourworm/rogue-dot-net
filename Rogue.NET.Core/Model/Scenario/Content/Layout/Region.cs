@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// Serializable data structure to store calculated room information
     /// </summary>
     [Serializable]
-    public class Region<T> : ISerializable, IRegionGraphWeightProvider<T> where T : class, IGridLocator
+    public class Region<T> : ISerializable, IDeserializationCallback, IRegionGraphWeightProvider<T> where T : class, IGridLocator
     {
         public string Id { get; private set; }
         public T[] Locations { get; private set; }
@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         // Used during layout generation to store calculated nearest neighbors (STORED BY HASH CODE)
         Dictionary<string, RegionConnection<T>> _regionConnections;
 
-        // 2D Arrays for region locations and edges
+        // 2D Arrays for region locations and edges - NOT SERIALIZED
         T[,] _gridLocations;
         bool[,] _edgeLocations;
         bool[,] _occupiedLocationGrid;
@@ -138,27 +138,19 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _edgeLocations = new bool[parentBoundary.Width, parentBoundary.Height];
             _occupiedLocationGrid = new bool[parentBoundary.Width, parentBoundary.Height];
 
-            // Initialize occupied collections
+            // Initialize occupied collections - NOT SERIALIZED
             _occupiedLocations = new List<T>();
             _nonOccupiedLocations = new List<T>();
 
             for (int i = 0; i < this.Locations.Length; i++)
             {
                 var location = (T)info.GetValue("Location" + i.ToString(), typeof(T));
-                var locationOccupied = info.GetBoolean("LocationOccupied" + i.ToString());
 
                 // Add to cell array
                 this.Locations[i] = location;
 
-                if (locationOccupied)
-                    _occupiedLocations.Add(location);
-
-                else
-                    _nonOccupiedLocations.Add(location);
-
-                // Add to 2D array (AND) Occupied 2D array
+                // Add to 2D array 
                 _gridLocations[location.Column, location.Row] = location;
-                _occupiedLocationGrid[location.Column, location.Row] = locationOccupied;
             }
 
             for (int i = 0; i < this.EdgeLocations.Length; i++)
@@ -172,6 +164,52 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 _edgeLocations[edgeLocation.Column, edgeLocation.Row] = true;
             }
         }
+
+        public void OnDeserialization(object sender)
+        {
+            if (sender == null)
+                return;
+
+            var grid = sender as GridCell[,];
+
+            if (grid == null)
+                throw new Exception("Improper use of OnDeserialization()  LayerMap");
+
+            // Setup grid locations
+            for (int i=0;i<this.Locations.Length;i++)
+            {
+                var location = this.Locations[i] as GridLocation;
+
+                if (location == null)
+                    throw new Exception("Improper use of Region<T> - Should be set up for GridLocation for storage");
+
+                var referenceLocation = grid[location.Column, location.Row].Location as T;
+
+                // SET REFERENCES FROM THE PRIMARY GRID
+                this.Locations[i] = referenceLocation;
+
+                // SET REFERENCES FROM THE PRIMARY GRID
+                _gridLocations[location.Column, location.Row] = referenceLocation;
+            }
+
+            // Setup edge locations
+            for (int i = 0; i < this.EdgeLocations.Length; i++)
+            {
+                var location = this.EdgeLocations[i] as GridLocation;
+
+                if (location == null)
+                    throw new Exception("Improper use of Region<T> - Should be set up for GridLocation for storage");
+
+                var referenceLocation = grid[location.Column, location.Row].Location as T;
+
+                // SET REFERENCES FROM THE PRIMARY GRID
+                this.EdgeLocations[i] = referenceLocation;
+
+                // SET REFERENCES FROM THE PRIMARY GRID
+                _gridLocations[location.Column, location.Row] = referenceLocation;
+            }
+        }
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Id", this.Id);
@@ -189,8 +227,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 if (location.GetType() != typeof(GridLocation))
                     throw new SerializationException("Unsupported IGridLocator type during serialization Region.cs");
 
-                info.AddValue("Location" + counter.ToString(), location);
-                info.AddValue("LocationOccupied" + counter++.ToString(), _occupiedLocationGrid[location.Column, location.Row]);
+                info.AddValue("Location" + counter++.ToString(), location);
             }
 
             counter = 0;
@@ -332,6 +369,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             return _regionConnections[adjacentRegion.Id];
         }
+
         #endregion
     }
 }

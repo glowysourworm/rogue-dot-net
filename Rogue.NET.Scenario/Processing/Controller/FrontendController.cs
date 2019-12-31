@@ -247,14 +247,14 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 var character = _levelCanvasViewModel.Characters.FirstOrDefault(x => x.ScenarioObjectId == contentId);
 
                 // SHOULDN'T HAVE TO CHECK HERE; BUT THERE'S QUEUEING ISSUES THAT NEED TO BE SOLVED
-                if (_modelService.Level.HasContent(contentId) && doodad != null)
-                    _scenarioUIService.UpdateContent(doodad, _modelService.Level.GetContent(contentId));
+                if (_modelService.Level.Contains(contentId) && doodad != null)
+                    _scenarioUIService.UpdateContent(doodad, _modelService.Level.Get(contentId));
 
-                if (_modelService.Level.HasContent(contentId) && item != null)
-                    _scenarioUIService.UpdateContent(item, _modelService.Level.GetContent(contentId));
+                if (_modelService.Level.Contains(contentId) && item != null)
+                    _scenarioUIService.UpdateContent(item, _modelService.Level.Get(contentId));
 
-                if (_modelService.Level.HasContent(contentId) && character != null)
-                    _scenarioUIService.UpdateContent(character, _modelService.Level.GetContent(contentId));
+                if (_modelService.Level.Contains(contentId) && character != null)
+                    _scenarioUIService.UpdateContent(character, _modelService.Level.Get(contentId));
             }
         }
         #endregion

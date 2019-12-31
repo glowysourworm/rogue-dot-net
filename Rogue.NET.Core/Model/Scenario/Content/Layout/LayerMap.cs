@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// Component for storing and mainintaining a 2D cell array for a layer of the level layout
     /// </summary>
     [Serializable]
-    public class LayerMap : ISerializable
+    public class LayerMap : ISerializable, IDeserializationCallback
     {
         public string Name { get; private set; }
 
@@ -99,6 +99,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
 
             Initialize(name, regions, width, height);
+        }
+
+        public void OnDeserialization(object sender)
+        {
+            if (sender == null)
+                return;
+
+            var grid = sender as GridCell[,];
+
+            if (grid == null)
+                throw new Exception("Improper use of OnDeserialization()  LayerMap");
+
+            foreach (var region in _regions)
+                region.OnDeserialization(grid);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

@@ -265,6 +265,19 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.WallLightMap = wallLightMap;
             this.ImpassableTerrainMap = impassableMap;
             this.TerrainMaps = terrainData;
+
+            // DESERIALIZATION CALLBACK - SET GRIDLOCATION REFERENCES
+            this.ConnectionMap.OnDeserialization(_grid);
+            this.FullMap.OnDeserialization(_grid);
+            this.WalkableMap.OnDeserialization(_grid);
+            this.PlacementMap.OnDeserialization(_grid);
+            this.RoomMap.OnDeserialization(_grid);
+            this.DoorMap.OnDeserialization(_grid);
+            this.CorridorMap.OnDeserialization(_grid);
+            this.WallMap.OnDeserialization(_grid);
+            this.WallLightMap.OnDeserialization(_grid);
+            this.ImpassableTerrainMap.OnDeserialization(_grid);
+            this.TerrainMaps.ForEach(map => map.OnDeserialization(_grid));
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

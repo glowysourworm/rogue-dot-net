@@ -74,7 +74,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 var scenarioObject = (ScenarioObject)info.GetValue("Content" + i.ToString(), typeof(ScenarioObject));
                 var location = (GridLocation)info.GetValue("Location" + i.ToString(), typeof(GridLocation));
 
+                // Add the content to the container
                 _levelContent.AddContent(scenarioObject, location);
+
+                // Grid does NOT SERIALIZE OCCUPIED DATA. THIS IS SET HERE MANUALLY.
+                _grid.SetOccupied(location, true);
             }
         }
 
@@ -127,16 +131,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             return _levelContent.Unload();
         }
 
-        public bool HasContent(string scenarioObjectId)
-        {
-            return _levelContent.Contains(scenarioObjectId);
-        }
-
-        public ScenarioObject GetContent(string scenarioObjectId)
-        {
-            return _levelContent.Get(scenarioObjectId);
-        }
-
         /// <summary>
         /// Adds content at it's last saved location
         /// </summary>
@@ -145,7 +139,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             if (_grid.WalkableMap[location] == null)
                 throw new Exception("Trying to add content to a non-walkable location");
 
+            // Add content to the container
             _levelContent.AddContent(scenarioObject, location);
+
+            // Set this location as occupied
+            _grid.SetOccupied(location, true);
 
             return true;
         }
@@ -178,8 +176,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             if (randomLocation == null)
                 return false;
 
-            // Add content to the level
-            _levelContent.AddContent(scenarioObject, randomLocation);
+            // Add content to the level -> Set Occupied Layout Grid
+            AddContent(scenarioObject, randomLocation);
 
             return true;
         }
@@ -191,8 +189,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         {
             var location = _levelContent[character.Id];
 
-            // Add content to the level
-            _levelContent.AddContent(content, location);
+            // Add content to the level -> Set Occupied Layout Grid
+            AddContent(content, location);
 
             return true;
         }
@@ -216,8 +214,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             if (randomLocation == null)
                 return false;
 
-            // Add content to the level
-            _levelContent.AddContent(content, randomLocation);
+            // Add content to the level -> Set Occupied Layout Grid
+            AddContent(content, randomLocation);
 
             return true;
         }
@@ -315,7 +313,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 var location = locations.ElementAt(i);
                 var scenarioObject = scenarioObjects.ElementAt(i);
 
-                _levelContent.AddContent(scenarioObject, location);
+                // Add content to the level -> Set Occupied Layout Grid
+                AddContent(scenarioObject, location);
             }
 
             return true;
@@ -323,7 +322,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
         public void RemoveContent(string scenarioObjectId)
         {
+            // Get location of the object
+            var location = _levelContent[scenarioObjectId];
+
+            // Remove content from the container
             _levelContent.RemoveContent(scenarioObjectId);
+
+            // Set non-occupied in the layout grid
+            _grid.SetOccupied(location, false);
         }
 
         public void MoveContent(ScenarioObject scenarioObject, GridLocation newLocation)
@@ -395,6 +401,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         {
             return locations.SelectMany(location => GetManyAt<T>(location))
                             .Actualize();
+        }
+
+        public bool Contains(string scenarioObjectId)
+        {
+            return _levelContent.Contains(scenarioObjectId);
+        }
+
+        public ScenarioObject Get(string scenarioObjectId)
+        {
+            return _levelContent.Get(scenarioObjectId);
         }
 
         /// <summary>

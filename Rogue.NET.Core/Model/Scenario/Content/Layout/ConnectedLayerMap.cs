@@ -55,6 +55,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _graph = (Graph)info.GetValue("Graph", typeof(Graph));
         }
 
+
         public new void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
