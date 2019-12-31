@@ -53,19 +53,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             Corridor,
 
             /// <summary>
-            /// Contains cell regions marked "Door"
-            /// </summary>
-            Door,
-
-            /// <summary>
             /// Contains cell regions marked "Wall"
             /// </summary>
             Wall,
-
-            /// <summary>
-            /// Contains cell regions marked "Wall Light"
-            /// </summary>
-            WallLight,
 
             /// <summary>
             /// Contains cell regions of impassable terrain
@@ -104,9 +94,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public LayerMap PlacementMap { get; private set; }
         public LayerMap RoomMap { get; private set; }
         public LayerMap CorridorMap { get; private set; }
-        public LayerMap DoorMap { get; private set; }
         public LayerMap WallMap { get; private set; }
-        public LayerMap WallLightMap { get; private set; }
         public LayerMap ImpassableTerrainMap { get; private set; }
         public IEnumerable<LayerMap> TerrainMaps { get; private set; }
 
@@ -124,9 +112,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.PlacementMap.SetOccupied(location, occupied);
             this.RoomMap.SetOccupied(location, occupied);
             this.CorridorMap.SetOccupied(location, occupied);
-            this.DoorMap.SetOccupied(location, occupied);
             this.WallMap.SetOccupied(location, occupied);
-            this.WallLightMap.SetOccupied(location, occupied);
             this.ImpassableTerrainMap.SetOccupied(location, occupied);
 
             foreach (var layer in this.TerrainMaps)
@@ -140,9 +126,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                    this.WalkableMap.IsOccupied(location) ||
                    this.PlacementMap.IsOccupied(location) ||
                    this.RoomMap.IsOccupied(location) ||
-                   this.DoorMap.IsOccupied(location) ||
                    this.WallMap.IsOccupied(location) ||
-                   this.WallLightMap.IsOccupied(location) ||
                    this.CorridorMap.IsOccupied(location) ||
                    this.ImpassableTerrainMap.IsOccupied(location) ||
                    this.TerrainMaps.Any(map => map.IsOccupied(location));
@@ -166,9 +150,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                           LayerInfo placementLayer,
                           LayerInfo roomLayer,
                           LayerInfo corridorLayer,
-                          LayerInfo doorLayer,
                           LayerInfo wallLayer,
-                          LayerInfo wallLightLayer,
                           IEnumerable<LayerInfo> terrainLayers)
         {
             // Primary 2D array
@@ -190,9 +172,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.PlacementMap = new LayerMap(placementLayer.LayerName, placementLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.RoomMap = new LayerMap(roomLayer.LayerName, roomLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.CorridorMap = new LayerMap(corridorLayer.LayerName, corridorLayer.Regions, this.Bounds.Width, this.Bounds.Height);
-            this.DoorMap = new LayerMap(doorLayer.LayerName, doorLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.WallMap = new LayerMap(wallLayer.LayerName, wallLayer.Regions, this.Bounds.Width, this.Bounds.Height);
-            this.WallLightMap = new LayerMap(wallLightLayer.LayerName, wallLightLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.ImpassableTerrainMap = new LayerMap("Impassable Terrain", impassableTerrainRegions, this.Bounds.Width, this.Bounds.Height);
             this.TerrainMaps = terrainLayers.Select(layer => new LayerMap(layer.LayerName, layer.Regions, this.Bounds.Width, this.Bounds.Height))
                                             .Actualize();
@@ -227,9 +207,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var walkableMap = (LayerMap)info.GetValue("WalkableMap", typeof(LayerMap));
             var placementMap = (LayerMap)info.GetValue("PlacementMap", typeof(LayerMap));
             var corridorMap = (LayerMap)info.GetValue("CorridorMap", typeof(LayerMap));
-            var doorMap = (LayerMap)info.GetValue("DoorMap", typeof(LayerMap));
             var wallMap = (LayerMap)info.GetValue("WallMap", typeof(LayerMap));
-            var wallLightMap = (LayerMap)info.GetValue("WallLightMap", typeof(LayerMap));
             var impassableMap = (LayerMap)info.GetValue("ImpassableTerrainMap", typeof(LayerMap));
 
             _grid = new GridCell[width, height];
@@ -259,10 +237,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.WalkableMap = walkableMap;
             this.PlacementMap = placementMap;
             this.RoomMap = roomMap;
-            this.DoorMap = doorMap;
             this.CorridorMap = corridorMap;
             this.WallMap = wallMap;
-            this.WallLightMap = wallLightMap;
             this.ImpassableTerrainMap = impassableMap;
             this.TerrainMaps = terrainData;
 
@@ -272,10 +248,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.WalkableMap.OnDeserialization(_grid);
             this.PlacementMap.OnDeserialization(_grid);
             this.RoomMap.OnDeserialization(_grid);
-            this.DoorMap.OnDeserialization(_grid);
             this.CorridorMap.OnDeserialization(_grid);
             this.WallMap.OnDeserialization(_grid);
-            this.WallLightMap.OnDeserialization(_grid);
             this.ImpassableTerrainMap.OnDeserialization(_grid);
             this.TerrainMaps.ForEach(map => map.OnDeserialization(_grid));
         }
@@ -303,9 +277,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("WalkableMap", this.WalkableMap);
             info.AddValue("PlacementMap", this.PlacementMap);
             info.AddValue("CorridorMap", this.CorridorMap);
-            info.AddValue("DoorMap", this.DoorMap);
             info.AddValue("WallMap", this.WallMap);
-            info.AddValue("WallLightMap", this.WallLightMap);
             info.AddValue("ImpassableTerrainMap", this.ImpassableTerrainMap);
 
             for (int i = 0; i < cells.Count; i++)
@@ -476,12 +448,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     return this.RoomMap;
                 case LayoutLayer.Corridor:
                     return this.ConnectionMap;
-                case LayoutLayer.Door:
-                    return this.DoorMap;
                 case LayoutLayer.Wall:
                     return this.WallMap;
-                case LayoutLayer.WallLight:
-                    return this.WallLightMap;
                 case LayoutLayer.ImpassableTerrain:
                     return this.ImpassableTerrainMap;
                 default:

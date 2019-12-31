@@ -205,14 +205,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var corridorRegions = grid.IdentifyRegions(cell => !cell.IsWall &&
                                                                 cell.IsCorridor);
 
-            // Identify final door regions (These will be mostly single location regions)
-            var doorRegions = grid.IdentifyRegions(cell => cell.IsDoor);
-
             // Identify final wall regions
             var wallRegions = grid.IdentifyRegions(cell => cell.IsWall);
-
-            // Identify final wall light regions
-            var wallLightRegions = grid.IdentifyRegions(cell => cell.IsWallLight);
 
             // *** Iterate regions to re-create using GridLocation (ONLY SUPPORTED SERIALIZED TYPE FOR REGIONS)
             var finalRegions = regions.Select(region => ConvertRegion(grid, region)).Actualize();
@@ -221,9 +215,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var finalPlacementRegions = placementRegions.Select(region => ConvertRegion(grid, region)).Actualize();
             var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region)).Actualize();
             var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region)).Actualize();
-            var finalDoorRegions = doorRegions.Select(region => ConvertRegion(grid, region)).Actualize();
             var finalWallRegions = wallRegions.Select(region => ConvertRegion(grid, region)).Actualize();
-            var finalWallLightRegions = wallLightRegions.Select(region => ConvertRegion(grid, region)).Actualize();
 
             // Build layers
             var fullLayer = new LayerInfo("Full Layer", finalRegions, false);
@@ -232,12 +224,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var placementLayer = new LayerInfo("Placement Layer", finalPlacementRegions, true);
             var roomLayer = new LayerInfo("Room Layer", finalRoomRegions, true);
             var corridorLayer = new LayerInfo("Corridor Layer", finalCorridorRegions, true);
-            var doorLayer = new LayerInfo("Door Layer", finalDoorRegions, true);
             var wallLayer = new LayerInfo("Wall Layer", finalWallRegions, false);
-            var wallLightLayer = new LayerInfo("Wall Light Layer", finalWallLightRegions, false);
 
             return new LayoutGrid(grid, fullLayer, connectionLayer, walkableLayer, placementLayer, roomLayer,
-                                  corridorLayer, doorLayer, wallLayer, wallLightLayer, terrainLayers);
+                                  corridorLayer, wallLayer, terrainLayers);
         }
 
         /// <summary>
