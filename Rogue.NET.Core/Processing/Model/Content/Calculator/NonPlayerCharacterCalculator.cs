@@ -45,7 +45,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             var staminaRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
             var hpRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.HpRegen);
 
-            var characterLocation = _modelService.GetLocation(character);
+            var characterLocation = _modelService.GetContentLocation(character);
             var playerLocation = _modelService.PlayerLocation;
 
             // Penalized for action taken - no natural regeneration

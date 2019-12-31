@@ -1,4 +1,4 @@
-﻿using Rogue.NET.Core.Model.Event;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
@@ -10,11 +10,12 @@ using Rogue.NET.Core.Processing.Model.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+
+using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.Character;
 
 namespace Rogue.NET.Core.Model.Scenario
 {
-    public class LevelContent
+    public class ContentGrid
     {
         // Gives the contents by location[column, row]
         IList<ScenarioObject>[,] _levelContentGrid;
@@ -23,9 +24,7 @@ namespace Rogue.NET.Core.Model.Scenario
         Dictionary<string, ScenarioObject> _levelContentDict;
         Dictionary<string, GridLocation> _levelLocationDict;
 
-        // TEMPORARY PLAYER REFERENCE - DOES NOT GET SERIALIZED
-        Player _player;
-
+        IList<CharacterBase> _characters;
         IList<NonPlayerCharacter> _nonPlayerCharacters;
         IList<Enemy> _enemies;
         IList<Friendly> _friendlies;
@@ -35,11 +34,14 @@ namespace Rogue.NET.Core.Model.Scenario
         IList<DoodadMagic> _doodadMagics;
         IList<DoodadNormal> _doodadNormals;
 
-        // TEMPORARY PLAYER REFERENCE - DOES NOT GET SERIALIZED
-        public Player Player { get { return _player; } }
         public IEnumerable<ScenarioObject> AllContent
         {
             get { return _levelContentDict.Values; }
+        }
+        public IEnumerable<CharacterBase> Characters
+        {
+            get { return _characters; }
+            protected set { _characters = new List<CharacterBase>(value); }
         }
         public IEnumerable<NonPlayerCharacter> NonPlayerCharacters
         {
@@ -84,37 +86,61 @@ namespace Rogue.NET.Core.Model.Scenario
 
         #region (public) Getters / Indexers
 
-        /// <summary>
-        /// Indexer for all content at the specified location
-        /// </summary>
         public IEnumerable<ScenarioObject> this[IGridLocator location]
         {
             get { return _levelContentGrid[location.Column, location.Row]; }
         }
-
-        /// <summary>
-        /// Returns the location of the specified object id
-        /// </summary>
+        public IEnumerable<ScenarioObject> this[int column, int row]
+        {
+            get { return _levelContentGrid[column, row]; }
+        }
+        public GridLocation this[ScenarioObject scenarioObject]
+        {
+            get { return _levelLocationDict[scenarioObject.Id]; }
+        }
         public GridLocation this[string scenarioObjectId]
         {
             get { return _levelLocationDict[scenarioObjectId]; }
         }
-
-        /// <summary>
-        /// Returns the object for the specified object id
-        /// </summary>
+        public bool Contains(string scenarioObjectId)
+        {
+            return _levelContentDict.ContainsKey(scenarioObjectId);
+        }
         public ScenarioObject Get(string scenarioObjectId)
         {
             return _levelContentDict[scenarioObjectId];
         }
 
+        /// <summary>
+        /// Returns the First-Or-Default object of type T located at the cellPoint
+        /// </summary>
+        public T GetAt<T>(GridLocation location) where T : ScenarioObject
+        {
+            return this[location].Where(scenarioObject => scenarioObject is T)
+                                 .Cast<T>()
+                                 .FirstOrDefault();
+        }
+
+        public IEnumerable<T> GetManyAt<T>(GridLocation location) where T : ScenarioObject
+        {
+            return this[location].Where(scenarioObject => scenarioObject is T)
+                                 .Cast<T>()
+                                 .Actualize();
+        }
+
+        public IEnumerable<T> GetManyAt<T>(IEnumerable<GridLocation> locations) where T : ScenarioObject
+        {
+            return locations.SelectMany(location => GetManyAt<T>(location))
+                            .Actualize();
+        }
+
         #endregion
 
-        public LevelContent(LayoutGrid grid)
+        public ContentGrid(LayoutGrid grid)
         {
-            Initialize(grid.Bounds.Width, 
-                       grid.Bounds.Height, 
-                       new Dictionary<string, ScenarioObject>(), 
+            Initialize(grid.Bounds.Width,
+                       grid.Bounds.Height,
+                       new Dictionary<string, ScenarioObject>(),
                        new Dictionary<string, GridLocation>());
         }
 
@@ -124,6 +150,7 @@ namespace Rogue.NET.Core.Model.Scenario
             _levelContentDict = new Dictionary<string, ScenarioObject>();
             _levelLocationDict = new Dictionary<string, GridLocation>();
 
+            this.Characters = new List<CharacterBase>();
             this.NonPlayerCharacters = new List<NonPlayerCharacter>();
             this.Enemies = new List<Enemy>();
             this.Friendlies = new List<Friendly>();
@@ -148,54 +175,41 @@ namespace Rogue.NET.Core.Model.Scenario
             }
         }
 
-        public bool Contains(string scenarioObjectId)
-        {
-            return _levelContentDict.ContainsKey(scenarioObjectId);
-        }
-
         public void AddContent(ScenarioObject scenarioObject, GridLocation location)
         {
             if (_levelContentDict.ContainsKey(scenarioObject.Id))
                 throw new Exception("Trying to add duplicate Scenario Object to Level");
 
-            if (scenarioObject is Player && _player != null)
-                throw new Exception("Trying to add Player reference twice LevelContent.cs");
+            // Maintain private collections
+            if (scenarioObject is CharacterBase)
+                _characters.Add(scenarioObject as CharacterBase);
 
-            if (scenarioObject is Player)
-                _player = scenarioObject as Player;
-
-            else if (scenarioObject is NonPlayerCharacter)
+            if (scenarioObject is NonPlayerCharacter)
                 _nonPlayerCharacters.Add(scenarioObject as NonPlayerCharacter);
 
-            else if (scenarioObject is Enemy)
+            if (scenarioObject is Enemy)
                 _enemies.Add(scenarioObject as Enemy);
 
-            else if (scenarioObject is Friendly)
+            if (scenarioObject is Friendly)
                 _friendlies.Add(scenarioObject as Friendly);
 
-            else if (scenarioObject is TemporaryCharacter)
+            if (scenarioObject is TemporaryCharacter)
                 _temporaryCharacters.Add(scenarioObject as TemporaryCharacter);
 
-            else if (scenarioObject is Consumable)
+            if (scenarioObject is Consumable)
                 _consumables.Add(scenarioObject as Consumable);
 
-            else if (scenarioObject is Equipment)
+            if (scenarioObject is Equipment)
                 _equipment.Add(scenarioObject as Equipment);
 
-            else if (scenarioObject is DoodadMagic)
+            if (scenarioObject is DoodadMagic)
                 _doodadMagics.Add(scenarioObject as DoodadMagic);
 
-            else if (scenarioObject is DoodadNormal)
+            if (scenarioObject is DoodadNormal)
                 _doodadNormals.Add(scenarioObject as DoodadNormal);
 
-            else
-                throw new Exception("Trying to add unknown type to Level");
-
-            // Maintain collections
             _levelContentDict.Add(scenarioObject.Id, scenarioObject);
             _levelLocationDict.Add(scenarioObject.Id, location);
-
-            // Maintain 2D array
             _levelContentGrid[location.Column, location.Row].Add(scenarioObject);
         }
 
@@ -207,37 +221,34 @@ namespace Rogue.NET.Core.Model.Scenario
             var scenarioObject = _levelContentDict[scenarioObjectId];
             var location = _levelLocationDict[scenarioObjectId];
 
-            if (scenarioObject is Player)
-                _player = null;
+            // Maintain private collections
+            if (scenarioObject is CharacterBase)
+                _characters.Remove(scenarioObject as CharacterBase);
 
-            else if (scenarioObject is NonPlayerCharacter)
+            if (scenarioObject is NonPlayerCharacter)
                 _nonPlayerCharacters.Remove(scenarioObject as NonPlayerCharacter);
 
-            else if (scenarioObject is Enemy)
+            if (scenarioObject is Enemy)
                 _enemies.Remove(scenarioObject as Enemy);
 
-            else if (scenarioObject is Friendly)
+            if (scenarioObject is Friendly)
                 _friendlies.Remove(scenarioObject as Friendly);
 
-            else if (scenarioObject is TemporaryCharacter)
+            if (scenarioObject is TemporaryCharacter)
                 _temporaryCharacters.Remove(scenarioObject as TemporaryCharacter);
 
-            else if (scenarioObject is Consumable)
+            if (scenarioObject is Consumable)
                 _consumables.Remove(scenarioObject as Consumable);
 
-            else if (scenarioObject is Equipment)
+            if (scenarioObject is Equipment)
                 _equipment.Remove(scenarioObject as Equipment);
 
-            else if (scenarioObject is DoodadMagic)
+            if (scenarioObject is DoodadMagic)
                 _doodadMagics.Remove(scenarioObject as DoodadMagic);
 
-            else if (scenarioObject is DoodadNormal)
+            if (scenarioObject is DoodadNormal)
                 _doodadNormals.Remove(scenarioObject as DoodadNormal);
-
-            else
-                throw new Exception("Trying to remove unknown type from Level");            
-
-            // Maintain private collections
+            
             _levelContentDict.Remove(scenarioObject.Id);
             _levelLocationDict.Remove(scenarioObject.Id);
             _levelContentGrid[location.Column, location.Row].Remove(scenarioObject);
@@ -249,9 +260,6 @@ namespace Rogue.NET.Core.Model.Scenario
         /// </summary>
         public IEnumerable<ScenarioObject> Unload()
         {
-            // REMOVE PLAYER FROM LEVEL - NULLIFIES THE REFERENCE
-            RemoveContent(_player.Id);
-
             // Remove Temporary Characters
             var temporaryCharacters = _temporaryCharacters.ToList();
             foreach (var character in temporaryCharacters)

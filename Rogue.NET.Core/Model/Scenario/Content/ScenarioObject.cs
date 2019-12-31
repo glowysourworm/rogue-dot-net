@@ -8,7 +8,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
     [Serializable]
     public abstract class ScenarioObject : ScenarioImage
     {
-        public bool IsExplored { get; set; }
         public bool IsHidden { get; set; }
         public bool IsRevealed { get; set; }
         public bool IsDetectedAlignment { get; set; }

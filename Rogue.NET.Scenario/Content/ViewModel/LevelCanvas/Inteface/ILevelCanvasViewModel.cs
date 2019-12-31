@@ -64,7 +64,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
         event SimpleEventHandler LayoutUpdated;
 
         void UpdateLayout();
-        void UpdateContent(IEnumerable<ScenarioObject> contents, Player player);
+        void UpdateContent(IEnumerable<ScenarioObject> content, IEnumerable<ScenarioObject> memorizedContent, Player player);
         void UpdateLayoutVisibility(IEnumerable<GridLocation> exploredLocations,
                                     IEnumerable<GridLocation> visibleLocations,
                                     IEnumerable<GridLocation> revealedLocations);

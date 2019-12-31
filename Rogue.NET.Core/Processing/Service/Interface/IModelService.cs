@@ -72,7 +72,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// <summary>
         /// Returns the location of the specified content object
         /// </summary>
-        public GridLocation GetLocation(ScenarioObject scenarioObject);
+        public GridLocation GetContentLocation(ScenarioObject scenarioObject);
 
         /// <summary>
         /// Gets the layout template for this level

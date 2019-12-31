@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Model;
-using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
+﻿using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
+
 using System.Windows;
 using System.Windows.Controls;
 

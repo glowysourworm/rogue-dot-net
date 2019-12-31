@@ -54,7 +54,7 @@ namespace Rogue.NET.Core.Processing.Service
                 return true;
 
             // Check that the cell is occupied by a character of the other faction
-            var character = _level.GetAt<NonPlayerCharacter>(cell2.Location);
+            var character = _level.Content.GetAt<NonPlayerCharacter>(cell2.Location);
 
             if (character != null &&
                 includeBlockedByCharacters &&
@@ -136,7 +136,7 @@ namespace Rogue.NET.Core.Processing.Service
                                     Where(x => _level.Grid.ImpassableTerrainMap[x.Column, x.Row] == null).
                                     Where(x =>
                                     {
-                                        var character = _level.GetAt<NonPlayerCharacter>(x);
+                                        var character = _level.Content.GetAt<NonPlayerCharacter>(x);
 
                                         // No Character (OR) Alignment Type Matches
                                         return character == null ? true : character.AlignmentType == swappableAlignmentType;
@@ -168,7 +168,7 @@ namespace Rogue.NET.Core.Processing.Service
                          .Where(x => _level.Grid.ImpassableTerrainMap[x.Column, x.Row] == null)
                          .Where(x =>
                           {
-                              var character = _level.GetAt<NonPlayerCharacter>(x);
+                              var character = _level.Content.GetAt<NonPlayerCharacter>(x);
 
                               // No Character (OR) Alignment Type Matches (AND) Not Wall (AND) Not Door
                               return (character == null ? true : character.AlignmentType == swappableAlignmentType) &&

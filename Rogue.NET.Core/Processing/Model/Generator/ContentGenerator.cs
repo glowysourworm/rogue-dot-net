@@ -170,10 +170,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var connectingLocations = connectedRegions.Select(region => transporterDict[region]);
 
                 // Set all connection id's for each transporter
-                var primaryTransporter = transporters.First(x => level.GetLocation(x).Equals(element.Value));
+                var primaryTransporter = transporters.First(x => level.Content[x].Equals(element.Value));
 
                 // Get other transporters by connecting location
-                var otherTransporters = transporters.Where(x => connectingLocations.Contains(level.GetLocation(x)));
+                var otherTransporters = transporters.Where(x => connectingLocations.Contains(level.Content[x]));
 
                 // Set connecting id's
                 foreach (var transporterId in otherTransporters.Select(x => x.Id))

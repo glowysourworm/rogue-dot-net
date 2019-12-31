@@ -149,117 +149,112 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 this.LayoutUpdated();
         }
 
-        public void UpdateContent(IEnumerable<ScenarioObject> contents, Player player)
+        public void UpdateContent(IEnumerable<ScenarioObject> content, 
+                                  IEnumerable<ScenarioObject> memorizedContent, 
+                                  Player player)
         {
+            // NOTE*** Memorized content includes ONLY Doodads and Items
+            //
             // Remove (Filter out anything that isn't in the level)
-            this.Doodads.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId));
-            this.Characters.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
-            this.Items.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId));
-            this.LightRadii.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
-            this.Auras.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
+            this.Doodads.Filter(x => content.None(z => z.Id == x.ScenarioObjectId) &&
+                                     memorizedContent.None(z => z.Id == x.ScenarioObjectId));
 
-            // Update / Add
-            foreach (var scenarioObject in contents)
+            this.Characters.Filter(x => content.None(z => z.Id == x.ScenarioObjectId) &&
+                                        x.ScenarioObjectId != player.Id);
+
+            this.Items.Filter(x => content.None(z => z.Id == x.ScenarioObjectId) &&
+                                   memorizedContent.None(z => z.Id == x.ScenarioObjectId));
+
+            this.LightRadii.Filter(x => content.None(z => z.Id == x.ScenarioObjectId));
+
+            this.Auras.Filter(x => content.None(z => z.Id == x.ScenarioObjectId));
+
+            // Create content dictionary with unique references - showing memorized content
+            var allContent = content.Union(memorizedContent)
+                                    .Distinct()
+                                    .ToDictionary(x => x, x => memorizedContent.Contains(x));
+
+            // Doodads
+            foreach (var scenarioObject in allContent.Keys.Where(x => x is DoodadBase))
             {
-                // TODO: REFACTOR. PLAYER IS NOW A PART OF THE LEVEL CONTENT
-                if (scenarioObject is Player)
-                    continue;
+                var doodad = scenarioObject as DoodadBase;
+                var doodadViewModel = this.Doodads.FirstOrDefault(x => x.ScenarioObjectId == doodad.Id);
 
-                // Characters
-                if (scenarioObject is Character)
-                {
-                    // Character
-                    var character = scenarioObject as Character;
-                    var characterViewModel = this.Characters.FirstOrDefault(x => x.ScenarioObjectId == scenarioObject.Id);
+                // Update Content
+                if (doodadViewModel != null)
+                    _scenarioUIService.UpdateContent(doodadViewModel, scenarioObject, allContent[scenarioObject]);
 
-                    // Update Content
-                    if (characterViewModel != null)
-                        _scenarioUIService.UpdateContent(characterViewModel, scenarioObject);
-
-                    else
-                        this.Characters.Add(CreateContent(scenarioObject));
-
-                    // Check for Character Light Radius
-                    if (character.SymbolType == SymbolType.Smiley)
-                    {
-                        var characterLightRadius = this.LightRadii.FirstOrDefault(x => x.ScenarioObjectId == character.Id);
-
-                        // Update Light Radius
-                        if (characterLightRadius != null)
-                            _scenarioUIService.UpdateLightRadius(characterLightRadius, character, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
-
-                        // Add Light Radius
-                        else
-                            this.LightRadii.Add(CreateLightRadius(character));
-                    }
-
-                    // Auras
-                    var characterAuras = character.Alteration.GetAuraSourceParameters();
-                    var auraUpdates = this.Auras.Where(x => characterAuras.Select(z => z.Item1).Contains(x.Id));
-                    var auraAdditions = characterAuras.Where(x => !auraUpdates.Any(z => z.Id == x.Item1));
-
-                    // Update Auras
-                    foreach (var aura in auraUpdates)
-                        _scenarioUIService.UpdateAura(aura, characterAuras.First(x => x.Item1 == aura.Id).Item2.AuraColor,
-                                                      characterAuras.First(x => x.Item1 == aura.Id).Item2.AuraRange,
-                                                      character,
-                                                      new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
-
-                    // Add Auras
-                    foreach (var aura in auraAdditions)
-                        this.Auras.Add(CreateAura(character, aura.Item1, aura.Item2.AuraColor, aura.Item2.AuraRange));
-
-                    // Remove Auras*** This has to be checked because there may be characters that have had their
-                    //                 equipment removed
-                    this.Auras.Filter(x => x.ScenarioObjectId == character.Id &&
-                                           !characterAuras.Any(z => z.Item1 == x.Id));
-                }
-
-                // Items
-                if (scenarioObject is ItemBase)
-                {
-                    var item = scenarioObject as ItemBase;
-                    var itemViewModel = this.Items.FirstOrDefault(x => x.ScenarioObjectId == item.Id);
-
-                    // Update Content
-                    if (itemViewModel != null)
-                        _scenarioUIService.UpdateContent(itemViewModel, scenarioObject);
-
-                    else
-                        this.Items.Add(CreateContent(scenarioObject));
-                }
-
-                // Doodads
-                else if (scenarioObject is DoodadBase)
-                {
-                    var doodad = scenarioObject as DoodadBase;
-                    var doodadViewModel = this.Doodads.FirstOrDefault(x => x.ScenarioObjectId == doodad.Id);
-
-                    // Update Content
-                    if (doodadViewModel != null)
-                        _scenarioUIService.UpdateContent(doodadViewModel, scenarioObject);
-
-                    else
-                        this.Doodads.Add(CreateContent(scenarioObject));
-                }
+                else
+                    this.Doodads.Add(CreateContent(scenarioObject, allContent[scenarioObject]));
             }
 
-            // Player Update
-            var lightRadius = this.LightRadii.FirstOrDefault(x => x.ScenarioObjectId == player.Id);
+            // Items
+            foreach (var scenarioObject in allContent.Keys.Where(x => x is ItemBase))
+            {
+                var item = scenarioObject as ItemBase;
+                var itemViewModel = this.Items.FirstOrDefault(x => x.ScenarioObjectId == item.Id);
 
-            // Update
-            if (this.Player == null)
-                this.Player = new LevelCanvasImage(player.Id);
+                // Update Content
+                if (itemViewModel != null)
+                    _scenarioUIService.UpdateContent(itemViewModel, scenarioObject, allContent[scenarioObject]);
 
-            _scenarioUIService.UpdateContent(this.Player, player);
+                else
+                    this.Items.Add(CreateContent(scenarioObject, allContent[scenarioObject]));
+            }
 
-            // Update Light Radius
-            if (lightRadius != null)
-                _scenarioUIService.UpdateLightRadius(lightRadius, player, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
+            // Characters
+            foreach (var scenarioObject in allContent.Keys.Where(x => x is Character))
+            {
+                // Character
+                var character = scenarioObject as Character;
+                var characterViewModel = this.Characters.FirstOrDefault(x => x.ScenarioObjectId == scenarioObject.Id);
 
-            // Add Light Radius
-            else
-                this.LightRadii.Add(CreateLightRadius(player));
+                // Update Content
+                if (characterViewModel != null)
+                    _scenarioUIService.UpdateContent(characterViewModel, scenarioObject, allContent[scenarioObject]);
+
+                else
+                    this.Characters.Add(CreateContent(scenarioObject, allContent[scenarioObject]));
+
+                // SET PLAYER REFERENCE
+                if (scenarioObject is Player)
+                    this.Player = this.Characters.First(character => character.ScenarioObjectId == player.Id);
+
+                // Check for Character Light Radius
+                if (character.SymbolType == SymbolType.Smiley)
+                {
+                    var characterLightRadius = this.LightRadii.FirstOrDefault(x => x.ScenarioObjectId == character.Id);
+
+                    // Update Light Radius
+                    if (characterLightRadius != null)
+                        _scenarioUIService.UpdateLightRadius(characterLightRadius, character, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
+
+                    // Add Light Radius
+                    else
+                        this.LightRadii.Add(CreateLightRadius(character));
+                }
+
+                // Auras
+                var characterAuras = character.Alteration.GetAuraSourceParameters();
+                var auraUpdates = this.Auras.Where(x => characterAuras.Select(z => z.Item1).Contains(x.Id));
+                var auraAdditions = characterAuras.Where(x => !auraUpdates.Any(z => z.Id == x.Item1));
+
+                // Update Auras
+                foreach (var aura in auraUpdates)
+                    _scenarioUIService.UpdateAura(aura, characterAuras.First(x => x.Item1 == aura.Id).Item2.AuraColor,
+                                                  characterAuras.First(x => x.Item1 == aura.Id).Item2.AuraRange,
+                                                  character,
+                                                  new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
+
+                // Add Auras
+                foreach (var aura in auraAdditions)
+                    this.Auras.Add(CreateAura(character, aura.Item1, aura.Item2.AuraColor, aura.Item2.AuraRange));
+
+                // Remove Auras*** This has to be checked because there may be characters that have had their
+                //                 equipment removed
+                this.Auras.Filter(x => x.ScenarioObjectId == character.Id &&
+                                       !characterAuras.Any(z => z.Item1 == x.Id));
+            }
         }
 
         /// <summary>
@@ -295,7 +290,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         #endregion
 
         #region (private) Add / Update collections
-        private LevelCanvasImage CreateContent(ScenarioObject scenarioObject)
+        private LevelCanvasImage CreateContent(ScenarioObject scenarioObject, bool isMemorized)
         {
             var image = new LevelCanvasImage(scenarioObject.Id);
 
@@ -308,7 +303,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             image.Height = ModelConstants.CellHeight;
             image.Stretch = Stretch.None;
 
-            _scenarioUIService.UpdateContent(image, scenarioObject);
+            _scenarioUIService.UpdateContent(image, scenarioObject, isMemorized);
 
             return image;
         }

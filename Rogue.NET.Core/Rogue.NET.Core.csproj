@@ -649,7 +649,7 @@
     <Compile Include="Model\Scenario\Content\Layout\GridLocation.cs" />
     <Compile Include="Model\Scenario\Content\Layout\RegionBoundary.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LayoutGrid.cs" />
-    <Compile Include="Model\Scenario\Content\LevelContent.cs" />
+    <Compile Include="Model\Scenario\Content\ContentGrid.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioImage.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioObject.cs" />
     <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />

@@ -82,15 +82,15 @@ namespace Rogue.NET.Core.Processing.Service
             {
                 case PlayerStartLocation.SavePoint:
                     if (level.HasSavePoint())
-                        location = level.GetLocation(level.GetSavePoint());
+                        location = level.Content[level.GetSavePoint()];
                     else
-                        location = level.GetLocation(level.GetStairsUp());
+                        location = level.Content[level.GetStairsUp()];
                     break;
                 case PlayerStartLocation.StairsUp:
-                    location = level.GetLocation(level.GetStairsUp());
+                    location = level.Content[level.GetStairsUp()];
                     break;
                 case PlayerStartLocation.StairsDown:
-                    location = level.GetLocation(level.GetStairsDown());
+                    location = level.Content[level.GetStairsDown()];
                     break;
                 case PlayerStartLocation.Random:
                     location = level.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Placement, _randomSequenceGenerator, new GridLocation[] { });
@@ -131,15 +131,15 @@ namespace Rogue.NET.Core.Processing.Service
 
         public Player Player { get; private set; }
 
-        public GridLocation PlayerLocation { get { return this.Level.GetLocation(this.Player); } }
+        public GridLocation PlayerLocation { get { return this.Level.Content[this.Player]; } }
 
         public double ZoomFactor { get; set; }
 
         public ScenarioEncyclopedia ScenarioEncyclopedia { get; private set; }
 
-        public GridLocation GetLocation(ScenarioObject scenarioObject)
+        public GridLocation GetContentLocation(ScenarioObject scenarioObject)
         {
-            return this.Level.GetLocation(scenarioObject);
+            return this.Level.Content[scenarioObject];
         }
 
         public IEnumerable<EnemyGenerationTemplate> GetEnemyTemplates()
@@ -237,23 +237,21 @@ namespace Rogue.NET.Core.Processing.Service
             // Apply blanket update for layout visibiltiy
             _characterLayoutInformation
                 .ApplyUpdate(this.Level
-                                 .NonPlayerCharacters
-                                 .Cast<Character>()
-                                 .Union(new Character[] { this.Player }));
+                                 .Content
+                                 .Characters);
 
             // TODO: COMPONENTIZE THIS NICELY
 
             // Calculate visible contents
             var visibleLocations = _characterLayoutInformation.GetVisibleLocations(this.Player);
-            var visibleContent = this.Level.GetManyAt<ScenarioObject>(visibleLocations);
+            var visibleContent = this.Level.Content.GetManyAt<ScenarioObject>(visibleLocations);
+
+            // Update Memorized Contents
+            this.Level.UpdateMemorizedContent(visibleLocations);
 
             // Visible content has to be updated for the IsExplored / IsRevealed flags
             foreach (var scenarioObject in visibleContent)
             {
-                // Set Explored for all non-character objects
-                if (!(scenarioObject is Character))
-                    scenarioObject.IsExplored = true;
-
                 // Set this based on whether the cell is physically visible. Once the cell is seen
                 // the IsRevealed flag gets reset. Also, the IsDetected flag gets reset. 
                 scenarioObject.IsRevealed = false;

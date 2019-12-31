@@ -236,7 +236,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             player.Alteration.ApplyTargetAuraEffects(new AuraAlterationEffect[] { });
 
             // Apply Enemy Auras (where Player is in an affected cell)
-            foreach (var character in _modelService.Level.NonPlayerCharacters)
+            foreach (var character in _modelService.Level.Content.NonPlayerCharacters)
             {
                 var characterAuras = character.Alteration
                                               .GetAuras()

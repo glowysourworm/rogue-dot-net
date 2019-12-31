@@ -151,7 +151,7 @@ namespace Rogue.NET.Scenario.Content.Views
             var midpt = new Point(bounds.Width / 2.0D, bounds.Height / 2.0D);
 
             // Transform LevelCanvas -> Window
-            var adjustment = this.PlayerCanvas.TransformToAncestor(window).Transform(location);
+            var adjustment = this.LevelContainerBorder.TransformToAncestor(window).Transform(location);
 
             _translateXform.X += (midpt.X - (adjustment.X));
             _translateXform.Y += (midpt.Y - (adjustment.Y));

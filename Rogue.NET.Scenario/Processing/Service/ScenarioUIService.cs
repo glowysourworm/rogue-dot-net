@@ -142,12 +142,12 @@ namespace Rogue.NET.Scenario.Processing.Service
             return result;
         }
 
-        public void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject)
+        public void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject, bool isMemorized)
         {
             // Calculate visible-to-player
             //
             var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
-            var visibleCharacters = _modelService.Level.GetManyAt<ScenarioObject>(visibleLocations);
+            var visibleCharacters = _modelService.Level.Content.GetManyAt<ScenarioObject>(visibleLocations);
 
             // Content object is within player's sight radius 
             var lineOfSightVisible = scenarioObject == _modelService.Player || visibleCharacters.Contains(scenarioObject);
@@ -155,13 +155,14 @@ namespace Rogue.NET.Scenario.Processing.Service
             // Content object is visible on the map (Explored, Detected, Revealed)
             var visibleToPlayer = lineOfSightVisible ||
 
-                                  // Detected, or Revealed
-                                  scenarioObject.IsExplored ||
+                                  // Memorized, Detected, or Revealed
+                                  isMemorized ||
                                   scenarioObject.IsDetectedAlignment ||
                                   scenarioObject.IsDetectedCategory ||
                                   scenarioObject.IsRevealed;
 
-            var location = _modelService.Level.GetLocation(scenarioObject);
+            var location = isMemorized ? _modelService.Level.MemorizedContent[scenarioObject] :
+                                         _modelService.Level.Content[scenarioObject];
 
             // Effective Lighting
             var lighting = _modelService.Level.Grid[location].EffectiveLighting;
@@ -194,7 +195,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                                                !_modelService.Player.Alteration.CanSeeInvisible();
             }
 
-            // Normal -> Detected -> Revealed -> Explored
+            // Normal -> Detected -> Revealed -> Memorized
             if (lineOfSightVisible)
             {
                 content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, lighting);
@@ -226,7 +227,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             {
                 content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, CreateRevealedLight(lighting));
             }
-            else if (scenarioObject.IsExplored)
+            else if (isMemorized)
             {
                 content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, CreateExploredLight(lighting));
             }
@@ -250,7 +251,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             if (character.SymbolType != SymbolType.Smiley)
                 throw new Exception("Trying to create light radius for non-smiley symbol");
 
-            var location = _modelService.Level.GetLocation(character);
+            var location = _modelService.Level.Content[character];
             var point = _scenarioUIGeometryService.Cell2UI(location, true);
             var lightRadiusUI = character.GetLightRadius() * ModelConstants.CellHeight;
 
@@ -276,7 +277,7 @@ namespace Rogue.NET.Scenario.Processing.Service
         {
             (aura.RenderedGeometry as RectangleGeometry).Rect = levelUIBounds;
 
-            var location = _modelService.Level.GetLocation(character);
+            var location = _modelService.Level.Content[character];
             var auraUI = (double)auraRange * (double)ModelConstants.CellHeight;
             var point = _scenarioUIGeometryService.Cell2UI(location, true);
 

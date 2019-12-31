@@ -227,7 +227,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Update level object
             var level = _modelService.Level;
-            var characterLocation = _modelService.GetLocation(character);
+            var characterLocation = _modelService.GetContentLocation(character);
 
             level.RemoveContent(character.Id);
 
@@ -274,9 +274,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             //                      1) Process Enemy Reaction (Applies End-Of-Turn)
             //                      2) Check for Enemy Death (After Enemy Reaction)
             //
-            for (int i = _modelService.Level.NonPlayerCharacters.Count() - 1; i >= 0; i--)
+            for (int i = _modelService.Level.Content.NonPlayerCharacters.Count() - 1; i >= 0; i--)
             {
-                var character = _modelService.Level.NonPlayerCharacters.ElementAt(i);
+                var character = _modelService.Level.Content.NonPlayerCharacters.ElementAt(i);
 
                 if (character.Hp <= 0)
                     CharacterDeath(character);
@@ -536,7 +536,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void DropCharacterItem(NonPlayerCharacter character, ItemBase item)
         {
-            var characterLocation = _modelService.GetLocation(character);
+            var characterLocation = _modelService.GetContentLocation(character);
             var adjacentFreeLocations = _modelService.LayoutService.GetFreeAdjacentLocations(characterLocation);
             var location = adjacentFreeLocations.FirstOrDefault();
 
@@ -660,7 +660,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // NOTE*** Reserving character-character swapping for the Player ONLY
             //
 
-            var characterLocation = _modelService.GetLocation(character);
+            var characterLocation = _modelService.GetContentLocation(character);
 
             //Return random if confused
             if (character.Is(CharacterStateType.MovesRandomly))
@@ -710,16 +710,16 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // 2) Enemy-Aligned:   Nearest target character in range
             //
 
-            var characterLocation = _modelService.GetLocation(character);
+            var characterLocation = _modelService.GetContentLocation(character);
             var opposingCharacters = CalculateCharactersInVisibleRange(character, true);
             var alignedCharacters = CalculateCharactersInVisibleRange(character, false);
 
             // Move into attack position
             if (opposingCharacters.Any())
             {
-                var opposingCharacter = opposingCharacters.MinBy(x => Metric.RoguianDistance(characterLocation, _modelService.GetLocation(x)));
+                var opposingCharacter = opposingCharacters.MinBy(x => Metric.RoguianDistance(characterLocation, _modelService.GetContentLocation(x)));
 
-                return _modelService.GetLocation(opposingCharacter);
+                return _modelService.GetContentLocation(opposingCharacter);
             }
 
             // If Player-Aligned - Move with Player (if they're in range)
@@ -744,7 +744,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (moveLocation == null)
                 return;
 
-            var characterLocation = _modelService.GetLocation(character);
+            var characterLocation = _modelService.GetContentLocation(character);
             var moveDirection = GridCalculator.GetDirectionOfAdjacentLocation(characterLocation, moveLocation);
 
             // GOING TO EXCLUDE CHARACTER / CHARACTER SWAP FOR THE SAME ALIGNMENT (reserved for Player only)
@@ -759,13 +759,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             // Check for items - DON'T ALLOW TEMPORARY CHARACTERS / FRIENDLIES TO PICK UP ITEMS
-            var item = _modelService.Level.GetAt<ItemBase>(moveLocation);
+            var item = _modelService.Level.Content.GetAt<ItemBase>(moveLocation);
             if (item != null &&
                 character is Enemy)
                 StepOnItem(character, item);
 
             // Check for doodad
-            var doodad = _modelService.Level.GetAt<DoodadBase>(moveLocation);
+            var doodad = _modelService.Level.Content.GetAt<DoodadBase>(moveLocation);
             if (doodad != null)
                 StepOnDoodad(character, doodad);
         }
@@ -782,6 +782,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (playerAligned)
             {
                 charactersInRange = _modelService.Level
+                                                 .Content
                                                  .GetManyAt<Character>(visibleLocations)
                                                  .Where(character => character is Player || 
                                                                     (character is NonPlayerCharacter && 
@@ -793,6 +794,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else
             {
                 charactersInRange = _modelService.Level
+                                                 .Content
                                                  .GetManyAt<NonPlayerCharacter>(visibleLocations)
                                                  .Where(character => character.AlignmentType == CharacterAlignmentType.EnemyAligned)
                                                  .Actualize();
@@ -818,9 +820,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                                            !x.Is(CharacterStateType.Invisible) ||
                                                           (!character.IsAlerted && x.Is(CharacterStateType.Invisible))).Actualize();
 
-            var characterLocation = _modelService.GetLocation(character);
+            var characterLocation = _modelService.GetContentLocation(character);
             var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(characterLocation);
-            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Metric.RoguianDistance(_modelService.GetLocation(x), characterLocation));
+            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Metric.RoguianDistance(_modelService.GetContentLocation(x), characterLocation));
 
             // Set flag to notify any characters in sight range
             anyCharactersInVisibleRange = opposingCharactersInVisibleRange.Any();
@@ -847,7 +849,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         {
                             return adjacentLocations.Any(x =>
                             {
-                                return opposingCharacterTargets.Select(z => _modelService.GetLocation(z)).Contains(x);
+                                return opposingCharacterTargets.Select(z => _modelService.GetContentLocation(z)).Contains(x);
                             });
                         }
                     }
@@ -862,8 +864,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessCharacterAttack(NonPlayerCharacter character, Character targetCharacter)
         {
-            var characterLocation = _modelService.GetLocation(character);
-            var targetLocation = _modelService.GetLocation(targetCharacter);
+            var characterLocation = _modelService.GetContentLocation(character);
+            var targetLocation = _modelService.GetContentLocation(targetCharacter);
             var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(characterLocation);
             var isTargetAdjacent = adjacentLocations.Contains(targetLocation);
 

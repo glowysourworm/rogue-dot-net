@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -62,7 +63,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             foreach (var character in characters)
             {
                 // Fetch character location from the level
-                var characterLocation = _level.GetLocation(character);
+                var characterLocation = _level.Content[character];
 
                 // Calculate visible locations
                 var visibleLocations = _visibilityCalculator.CalculateVisibility(_level.Grid, characterLocation);
@@ -123,12 +124,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         public IEnumerable<GridLocation> GetLineOfSightLocations(CharacterBase character)
         {
-            return _lineOfSightDict[character].Select(x => x.Location);
+            return _lineOfSightDict[character].Select(x => x.Location).Actualize();
         }
 
         public IEnumerable<GridLocation> GetVisibleLocations(CharacterBase character)
         {
-            return _visibleDict[character].Select(x => x.Location);
+            return _visibleDict[character].Select(x => x.Location).Actualize();
         }
 
         public IEnumerable<GridLocation> GetAuraAffectedLocations(CharacterBase character, string alterationEffectId)

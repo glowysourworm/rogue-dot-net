@@ -77,13 +77,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (_modelService.Level.HasStairsUp())
                 _modelService.Level.GetStairsUp().IsRevealed = true;
 
-            foreach (var consumable in _modelService.Level.Consumables)
+            foreach (var consumable in _modelService.Level.Content.Consumables)
                 consumable.IsRevealed = true;
 
-            foreach (var equipment in _modelService.Level.Equipment)
+            foreach (var equipment in _modelService.Level.Content.Equipment)
                 equipment.IsRevealed = true;
 
-            foreach (var scenarioObject in _modelService.Level.AllContent)
+            foreach (var scenarioObject in _modelService.Level.Content.AllContent)
             {
                 if (scenarioObject is Player)
                     continue;
@@ -92,7 +92,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 scenarioObject.IsRevealed = true;
             }
 
-            foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
+            foreach (var consumable in _modelService.Level.Content.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
 
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAll, ""));
@@ -122,15 +122,15 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Give all items and experience to the player and 
             // put player at exit
-            foreach (var consumable in level.Consumables)
+            foreach (var consumable in level.Content.Consumables)
                 player.Consumables.Add(consumable.Id, consumable);
 
-            foreach (var equipment in level.Equipment)
+            foreach (var equipment in level.Content.Equipment)
                 player.Equipment.Add(equipment.Id, equipment);
 
-            for (int i = level.NonPlayerCharacters.Count() - 1; i >= 0; i--)
+            for (int i = level.Content.NonPlayerCharacters.Count() - 1; i >= 0; i--)
             {
-                var character = level.NonPlayerCharacters.ElementAt(i);
+                var character = level.Content.NonPlayerCharacters.ElementAt(i);
 
                 foreach (var equipment in character.Equipment)
                 {
@@ -152,25 +152,25 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             // REMOVE ALL CONTENTS
-            for (int i = level.Consumables.Count() - 1; i >= 0; i--)
+            for (int i = level.Content.Consumables.Count() - 1; i >= 0; i--)
             {
-                var consumable = level.Consumables.ElementAt(i);
+                var consumable = level.Content.Consumables.ElementAt(i);
 
                 level.RemoveContent(consumable.Id);
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, consumable.Id));
             }
 
-            for (int i = level.Equipment.Count() - 1; i >= 0; i--)
+            for (int i = level.Content.Equipment.Count() - 1; i >= 0; i--)
             {
-                var equipment = level.Equipment.ElementAt(i);
+                var equipment = level.Content.Equipment.ElementAt(i);
 
                 level.RemoveContent(equipment.Id);
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, equipment.Id));
             }
 
-            for (int i = level.NonPlayerCharacters.Count() - 1; i >= 0; i--)
+            for (int i = level.Content.NonPlayerCharacters.Count() - 1; i >= 0; i--)
             {
-                var character = level.NonPlayerCharacters.ElementAt(i);
+                var character = level.Content.NonPlayerCharacters.ElementAt(i);
 
                 level.RemoveContent(character.Id);
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, character.Id));
@@ -178,7 +178,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             if (level.HasStairsDown())
             {
-                var location = level.GetLocation(level.GetStairsDown());
+                var location = level.Content[level.GetStairsDown()];
 
                 level.MoveContent(player, location);
 

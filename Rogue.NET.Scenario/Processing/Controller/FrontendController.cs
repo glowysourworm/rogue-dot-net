@@ -184,7 +184,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                     OnUpdateLayoutVisibility();
                     break;
                 case LevelEventType.PlayerLocation:
-                    _scenarioUIService.UpdateContent(_levelCanvasViewModel.Player, _modelService.Player);
+                    _scenarioUIService.UpdateContent(_levelCanvasViewModel.Player, _modelService.Player, false);
                     break;
                 case LevelEventType.PlayerConsumableRemove:
                     break;
@@ -214,7 +214,9 @@ namespace Rogue.NET.Scenario.Processing.Controller
         #region (private) Update Methods
         private void OnUpdateAllContent()
         {
-            _levelCanvasViewModel.UpdateContent(_modelService.Level.AllContent, _modelService.Player);
+            _levelCanvasViewModel.UpdateContent(_modelService.Level.Content.AllContent, 
+                                                _modelService.Level.MemorizedContent.AllContent,
+                                                _modelService.Player);
         }
         private void OnUpdateLayout()
         {
@@ -237,25 +239,6 @@ namespace Rogue.NET.Scenario.Processing.Controller
             _levelCanvasViewModel.Characters.Filter(x => contentIds.Contains(x.ScenarioObjectId));
             _levelCanvasViewModel.LightRadii.Filter(x => contentIds.Contains(x.ScenarioObjectId));
             _levelCanvasViewModel.Auras.Filter(x => contentIds.Contains(x.ScenarioObjectId));
-        }
-        private void OnUpdateContent(IEnumerable<string> contentIds)
-        {
-            foreach (var contentId in contentIds)
-            {
-                var item = _levelCanvasViewModel.Items.FirstOrDefault(x => x.ScenarioObjectId == contentId);
-                var doodad = _levelCanvasViewModel.Doodads.FirstOrDefault(x => x.ScenarioObjectId == contentId);
-                var character = _levelCanvasViewModel.Characters.FirstOrDefault(x => x.ScenarioObjectId == contentId);
-
-                // SHOULDN'T HAVE TO CHECK HERE; BUT THERE'S QUEUEING ISSUES THAT NEED TO BE SOLVED
-                if (_modelService.Level.Contains(contentId) && doodad != null)
-                    _scenarioUIService.UpdateContent(doodad, _modelService.Level.Get(contentId));
-
-                if (_modelService.Level.Contains(contentId) && item != null)
-                    _scenarioUIService.UpdateContent(item, _modelService.Level.Get(contentId));
-
-                if (_modelService.Level.Contains(contentId) && character != null)
-                    _scenarioUIService.UpdateContent(character, _modelService.Level.Get(contentId));
-            }
         }
         #endregion
 

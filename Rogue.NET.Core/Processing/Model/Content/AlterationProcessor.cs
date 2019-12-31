@@ -101,8 +101,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 {
                     OnAnimationEvent(_backendEventDataFactory.Animation(
                                                 alteration.Animation,
-                                                _modelService.GetLocation(actor),
-                                                affectedCharacters.Select(x => _modelService.GetLocation(x)).Actualize()));
+                                                _modelService.GetContentLocation(actor),
+                                                affectedCharacters.Select(x => _modelService.GetContentLocation(x)).Actualize()));
                 }
             }
 
@@ -357,13 +357,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     {
                         var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(actor);
 
-                        return _modelService.Level.GetManyAt<Character>(visibleLocations);
+                        return _modelService.Level.Content.GetManyAt<Character>(visibleLocations);
                     }
                 case AlterationTargetType.AllInRangeExceptSource:
                     {
                         var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(actor);
 
-                        return _modelService.Level.GetManyAt<Character>(visibleLocations).Except(new Character[] { actor });
+                        return _modelService.Level.Content.GetManyAt<Character>(visibleLocations).Except(new Character[] { actor });
                     }
                 default:
                     throw new Exception("Unknown Attack Attribute Target Type");
@@ -479,7 +479,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessTeleport(TeleportRandomAlterationEffect effect, Character character)
         {
-            var characterLocation = _modelService.GetLocation(character);
+            var characterLocation = _modelService.GetContentLocation(character);
 
             // Calculate Teleport Location
             var openLocation = GetRandomLocation(effect.TeleportType, characterLocation, effect.Range);
@@ -539,7 +539,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Method that shares code paths for creating { Enemy, Friendly, TemporaryCharacter }
             //
 
-            var actorLocation = _modelService.GetLocation(actor);
+            var actorLocation = _modelService.GetContentLocation(actor);
             var location = GetRandomLocation(randomPlacementType, actorLocation, range);
 
             // TODO:ALTERATION (Handle Exception ?)
@@ -573,7 +573,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         private void ProcessDetectAlteration(DetectAlterationAlterationEffect effect)
         {
             // Consumables on the map
-            var consumables = _modelService.Level.Consumables
+            var consumables = _modelService.Level.Content.Consumables
                                            .Where(x => (x.HasAlteration &&
                                                         x.Alteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
                                                        (x.HasProjectileAlteration &&
@@ -581,7 +581,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                            .Actualize();
 
             // Equipment on the map
-            var equipment = _modelService.Level.Equipment
+            var equipment = _modelService.Level.Content.Equipment
                                          .Where(x => (x.HasAttackAlteration &&
                                                       x.AttackAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
                                                      (x.HasEquipAlteration &&
@@ -591,7 +591,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                          .Actualize();
 
             // Doodads on the map
-            var doodads = _modelService.Level.Doodads
+            var doodads = _modelService.Level.Content.Doodads
                                              .Where(x => (x.IsInvoked &&
                                                           x.InvokedAlteration.AlterationCategory.Name == effect.AlterationCategory.RogueName) ||
                                                          (x.IsAutomatic &&
@@ -599,7 +599,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                              .Actualize();
 
             // Non-Player Characters (Enemies, Friendlies, and Temp. Characters)
-            var nonPlayerCharacters = _modelService.Level.NonPlayerCharacters
+            var nonPlayerCharacters = _modelService.Level.Content.NonPlayerCharacters
                                        .Where(x => x.BehaviorDetails
                                                     .Behaviors
                                                     .Where(behavior => behavior.AttackType == CharacterAttackType.Alteration)
@@ -670,6 +670,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             // Consumables on the map
             _modelService.Level
+                         .Content
                          .Consumables
                          .ForEach(x =>
                          {
@@ -690,6 +691,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Equipment on the map
             _modelService.Level
+                         .Content
                          .Equipment
                          .ForEach(x =>
                          {
@@ -720,6 +722,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Doodads on the map
             _modelService.Level
+                         .Content
                          .Doodads
                          .ForEach(x =>
                          {
@@ -739,6 +742,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Non-Player Characters (Enemies, Friendlies, and Temp. Characters)
             _modelService.Level
+                         .Content
                          .NonPlayerCharacters
                          .ForEach(x =>
                          {
@@ -1093,7 +1097,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void RevealMonsters()
         {
-            foreach (var character in _modelService.Level.NonPlayerCharacters)
+            foreach (var character in _modelService.Level.Content.NonPlayerCharacters)
                 character.IsRevealed = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance...");
@@ -1117,24 +1121,24 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void RevealItems()
         {
-            foreach (var consumable in _modelService.Level.Consumables)
+            foreach (var consumable in _modelService.Level.Content.Consumables)
                 consumable.IsRevealed = true;
 
-            foreach (var equipment in _modelService.Level.Equipment)
+            foreach (var equipment in _modelService.Level.Content.Equipment)
                 equipment.IsRevealed = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
         }
         private void RevealFood()
         {
-            foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
+            foreach (var consumable in _modelService.Level.Content.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Hunger makes a good sauce.....  :)");
         }
         private void RevealScenarioObjects()
         {
-            foreach (var scenarioObject in _modelService.Level.Doodads)
+            foreach (var scenarioObject in _modelService.Level.Content.Doodads)
             {
                 // Remove Hidden Status
                 scenarioObject.IsHidden = false;

@@ -68,7 +68,7 @@ namespace Rogue.NET.Core.Processing.Service
             var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
 
             // Calculate enemies in range that are visible
-            var enemiesInRange = _modelService.Level.GetManyAt<Enemy>(visibleLocations).ToList();
+            var enemiesInRange = _modelService.Level.Content.GetManyAt<Enemy>(visibleLocations).ToList();
 
             // Filter out invisible enemies
             if (!_modelService.Player.Alteration.CanSeeInvisible())
@@ -112,7 +112,7 @@ namespace Rogue.NET.Core.Processing.Service
 
             // Set tracker on the selected enemy and update
             if (targetedEnemy != null)
-                _targetTrackerLocation = _modelService.GetLocation(targetedEnemy);
+                _targetTrackerLocation = _modelService.GetContentLocation(targetedEnemy);
         }
 
         public void StartTargeting(GridLocation location)
@@ -142,7 +142,7 @@ namespace Rogue.NET.Core.Processing.Service
         // Returns true if the location was valid
         private void CaptureTarget(GridLocation location)
         {
-            var character = _modelService.Level.GetAt<Character>(location);
+            var character = _modelService.Level.Content.GetAt<Character>(location);
             var gridCell = _modelService.Level.Grid[location.Column, location.Row];
 
             // Clear target tracker
@@ -195,7 +195,7 @@ namespace Rogue.NET.Core.Processing.Service
             if (_targetTrackerLocation == null)
                 return TargetType.None;
 
-            var character = _modelService.Level.GetAt<Character>(_targetTrackerLocation);
+            var character = _modelService.Level.Content.GetAt<Character>(_targetTrackerLocation);
             var gridCell = _modelService.Level.Grid[_targetTrackerLocation.Column, _targetTrackerLocation.Row];
 
             if (gridCell == null)

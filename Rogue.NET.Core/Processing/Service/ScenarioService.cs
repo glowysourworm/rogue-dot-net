@@ -355,8 +355,8 @@ namespace Rogue.NET.Core.Processing.Service
 
                     // So, must check for the enemy to be available. The way to avoid this is
                     // to either do pruning of the queues; or to do full multi-threaded decoupling (lots of work).
-                    if (_modelService.Level.NonPlayerCharacters.Any(x => x.Id == workItem.Actor.Id))
-                        _contentProcessor.ProcessCharacterReaction(_modelService.Level.NonPlayerCharacters.First(x => x.Id == workItem.Actor.Id));
+                    if (_modelService.Level.Content.NonPlayerCharacters.Any(x => x.Id == workItem.Actor.Id))
+                        _contentProcessor.ProcessCharacterReaction(_modelService.Level.Content.NonPlayerCharacters.First(x => x.Id == workItem.Actor.Id));
                     break;
                 case LevelProcessingActionType.CharacterAlteration:
                     _alterationProcessor.Process(workItem.Actor, workItem.AlterationAffectedCharacters, workItem.Alteration);

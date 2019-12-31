@@ -137,7 +137,7 @@
                     </ItemsControl>
 
                     <!-- Player -->
-                    <Canvas   x:Name="PlayerCanvas"           
+                    <!--Canvas   x:Name="PlayerCanvas"           
                               ClipToBounds="False"
                               Background="Transparent"
                               Width="{Binding LevelWidth}"
@@ -145,7 +145,7 @@
                         <ContentPresenter Canvas.Left="{Binding Player.Location.X}"
                                       Canvas.Top="{Binding Player.Location.Y}"
                                       Content="{Binding Player}" />
-                    </Canvas>
+                    </-->
                     
                     <!-- Mouse-Grid Interaction -->
                     <Canvas x:Name="MouseCanvas"
