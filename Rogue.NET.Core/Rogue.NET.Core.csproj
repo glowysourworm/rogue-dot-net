@@ -206,6 +206,7 @@
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
+    <Compile Include="IO\Compressed.cs" />
     <Compile Include="Math\Algorithm\DijkstrasAlgorithm.cs" />
     <Compile Include="Math\Algorithm\Factorial.cs" />
     <Compile Include="Math\Algorithm\Interface\INoiseGenerator.cs" />

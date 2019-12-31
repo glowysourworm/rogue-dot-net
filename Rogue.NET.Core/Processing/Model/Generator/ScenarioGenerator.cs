@@ -19,6 +19,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.IO;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -123,10 +124,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // *** Generate Contents
             scenario.Levels = levels.Select(level =>
             {
-                return _contentGenerator.CreateContents(level.Level, level.Branch,
-                                                        level.Layout, scenario.Encyclopedia,
-                                                        level.LastLevel,
-                                                        survivorMode);
+                var uncompressedLevel = _contentGenerator.CreateContents(level.Level, level.Branch,
+                                                                         level.Layout, scenario.Encyclopedia,
+                                                                         level.LastLevel,
+                                                                         survivorMode);
+
+                // COMPRESS MEMORY STORAGE
+                return new Compressed<int, Level>(uncompressedLevel.Parameters.Number, uncompressedLevel);
+
             }).ToList();
 
             // Generate Player

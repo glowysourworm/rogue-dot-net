@@ -3,13 +3,11 @@ using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
-using System;
+
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Processing.Service.Cache
 {
@@ -32,7 +30,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         }
 
-        
+
         public IEnumerable<string> GetScenarioNames()
         {
             return _scenarios.Select(x => x.Player.RogueName);

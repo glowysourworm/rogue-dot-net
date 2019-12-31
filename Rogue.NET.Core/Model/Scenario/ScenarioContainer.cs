@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.IO;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
@@ -11,7 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario
     [Serializable]
     public class ScenarioContainer
     {
-        public List<Level> Levels { get; set; }
+        public List<Compressed<int, Level>> Levels { get; set; }
         public Player Player { get; set; }
         public PlayerStartLocation SaveLocation { get; set; }
         public int Seed { get; set; }
@@ -34,7 +35,7 @@ namespace Rogue.NET.Core.Model.Scenario
         public ScenarioContainer()
         {
             this.Player = new Player();
-            this.Levels = new List<Level>();
+            this.Levels = new List<Compressed<int, Level>>();
             this.CurrentLevel = 1;
             this.Encyclopedia = new ScenarioEncyclopedia();
             this.SaveLocation = PlayerStartLocation.StairsUp;

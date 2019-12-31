@@ -164,7 +164,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 _scenarioContainer = null;
             }
 
-            //Read dungeon file - TODO: No real need for "Open"; so need some small refactoring
+            // Fetch scenario container from the cache
             _scenarioContainer = _scenarioResourceService.GetScenario(playerName);
 
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
@@ -183,6 +183,12 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
             });
+
+            // Update the compressed level from the loaded one
+            var loadedLevel = _modelService.Level;
+            var compressedLevel = _scenarioContainer.Levels.First(level => level.Key == loadedLevel.Parameters.Number);
+
+            compressedLevel.Checkin(loadedLevel);
 
             // Update the Save Level
             _scenarioContainer.SaveLevel = _scenarioContainer.CurrentLevel;
@@ -245,7 +251,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 _scenarioContainer.CurrentLevel = levelNumber;
 
                 //If level is not loaded - must load it from the dungeon file
-                var nextLevel = _scenarioContainer.Levels.FirstOrDefault(level => level.Parameters.Number == levelNumber);
+                var nextLevel = _scenarioContainer.Levels.FirstOrDefault(level => level.Key == levelNumber);
 
                 if (nextLevel == null)
                     throw new Exception("Level " + levelNumber.ToString() + " not found in the Scenario Container");
@@ -258,6 +264,15 @@ namespace Rogue.NET.Scenario.Processing.Controller
 
                 if (_modelService.IsLoaded)
                 {
+                    // Get Level to Compress back to memory
+                    var loadedLevel = _modelService.Level;
+
+                    // Find compressed buffer to update
+                    var compressedLevel = _scenarioContainer.Levels.First(level => level.Key == loadedLevel.Parameters.Number);
+
+                    // UPDATE COMPRESSED BUFFER
+                    compressedLevel.Checkin(loadedLevel);
+
                     // Content moved to next level
                     extractedContent = _modelService.Unload();
 
@@ -269,7 +284,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 _modelService.Load(
                     _scenarioContainer.Player,
                     location,
-                    nextLevel,
+                    nextLevel.Checkout(),
                     zoomFactor,
                     extractedContent ?? new ScenarioObject[] { },
                     _scenarioContainer.Encyclopedia,
