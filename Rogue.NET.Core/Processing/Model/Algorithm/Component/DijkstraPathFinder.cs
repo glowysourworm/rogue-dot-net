@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
@@ -11,26 +12,38 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
 {
     public class DijkstraPathFinder : DijkstraMapBase
     {
+        /// <summary>
+        /// Returns true if the path is blocked for movement
+        /// </summary>
+        public delegate bool DijkstraPathFinderBlockedCallback(int column1, int row1, int column2, int row2);
+
         readonly LayoutGrid _layoutGrid;
+        readonly DijkstraPathFinderBlockedCallback _blockedCallback;
 
         public DijkstraPathFinder(LayoutGrid layoutGrid,
                                   IGridLocator sourceLocation,
                                   IEnumerable<IGridLocator> targetLocations,
-                                  DijkstraMapCostCallback costCallback)
+                                  DijkstraPathFinderBlockedCallback blockedCallback)
              : base(layoutGrid.Bounds.Width,
                     layoutGrid.Bounds.Height,
                     false,
                     sourceLocation,
                     targetLocations,
-                    costCallback,
-             new DijkstraMapLocatorCallback((column, row) =>
-             {
-                 return layoutGrid[column, row].Location;
-             }))
+                    new DijkstraMapCostCallback((column1, row1, column2, row2) =>
+                    {
+                        return blockedCallback(column1, row1, column2, row2) ? DijkstraMapBase.MapCostInfinity : 0;
+                    }),
+                    new DijkstraMapLocatorCallback((column, row) =>
+                    {
+                        return layoutGrid[column, row].Location;
+                    }))
         {
             _layoutGrid = layoutGrid;
+            _blockedCallback = blockedCallback;
 
             Run();
+
+            // OutputCSV(ResourceConstants.DijkstraOutputDirectory, "dijkstraPathFinder");
         }
 
         public float GetMovementCost(IGridLocator targetLocation)
@@ -58,9 +71,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             // Backtrack until the source is reached
             while (!nextLocation.Equals(this.SourceLocation))
             {
-                // Get the next location towards the source - taking the smallest adjacent output
+                // Get the next location towards the source - taking the smallest adjacent output that isn't blocked
                 nextLocation = this.OutputMap
                                    .GetAdjacentValueLocators(nextLocation.Column, nextLocation.Row)
+                                   .Where(location => !_blockedCallback(nextLocation.Column, nextLocation.Row, location.Column, location.Row))
                                    .MinBy(location => this.OutputMap[location.Column, location.Row]);
 
                 nextOutput = this.OutputMap[nextLocation.Column, nextLocation.Row];

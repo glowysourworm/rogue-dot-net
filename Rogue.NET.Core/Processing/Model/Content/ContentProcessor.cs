@@ -752,10 +752,21 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var characterLocation = _modelService.GetContentLocation(character);
             var moveDirection = GridCalculator.GetDirectionOfAdjacentLocation(characterLocation, moveLocation);
 
-            // GOING TO EXCLUDE CHARACTER / CHARACTER SWAP FOR THE SAME ALIGNMENT (reserved for Player only)
-            //
-            if (!_modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(characterLocation, moveLocation, true, CharacterAlignmentType.None))
+            // Include check for character swap
+            if (!_modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(characterLocation, moveLocation, true, character.AlignmentType))
             {
+                // Check for character swaps
+                var swapCharacter = _modelService.Level.Content.GetAt<NonPlayerCharacter>(moveLocation);
+
+                // Swap the charcter's location
+                if (swapCharacter != null &&
+                    swapCharacter.AlignmentType == character.AlignmentType)
+                {
+                    _modelService.Level.MoveContent(swapCharacter, characterLocation);
+
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, swapCharacter.Id));
+                }
+
                 // Update enemy location
                 _modelService.Level.MoveContent(character, moveLocation);
 

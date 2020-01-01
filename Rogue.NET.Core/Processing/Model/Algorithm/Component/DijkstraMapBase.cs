@@ -57,6 +57,13 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         private readonly DijkstraMapCostCallback _costCallback;
         private readonly DijkstraMapLocatorCallback _locatorCallback;
 
+        // Visited locations on the map
+        private bool[,] _visitedMap;
+
+        // Frontier BST for the map
+        BinarySearchTree<float, List<IGridLocator>> _frontier;
+        
+        // Cell movement cost
         const int CELL_MOVEMENT_COST = 1;
 
         protected DijkstraMapBase(int width,
@@ -77,21 +84,25 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             this.OutputMap = new float[width, height];
             this.SourceLocation = sourceLocation;
             this.TargetLocations = targetLocations;
+
+            _visitedMap = new bool[width, height];
+            _frontier = new BinarySearchTree<float, List<IGridLocator>>();
         }
 
         protected void Run()
         {
-            // Initialize the output map
-            this.OutputMap.Iterate((column, row) =>
+            // Initialize the private maps
+            for (int i = 0; i < _width; i++)
             {
-                this.OutputMap[column, row] = ((column == this.SourceLocation.Column) && (row == this.SourceLocation.Row)) ? 0 : MapCostInfinity;
-            });
+                for (int j = 0; j < _height; j++)
+                {
+                    // Initialize output map
+                    this.OutputMap[i, j] = ((i == this.SourceLocation.Column) && (j == this.SourceLocation.Row)) ? 0 : MapCostInfinity;
 
-            // Track visited elements AND queued elements (prevents a LOT of extra looking up on the queue)
-            var visitedMap = new bool[_width, _height];
-
-            // Track the frontier cells to check lowest cost next step
-            var frontier = new BinarySearchTree<float, List<IGridLocator>>();
+                    // Initialize visited map
+                    _visitedMap[i, j] = false;
+                }
+            }
 
             // Track goal progress
             var goalDict = this.TargetLocations
@@ -102,14 +113,14 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             var row = this.SourceLocation.Row;
 
             // Iterate while any target not reached (AND) not visited
-            while (!visitedMap[column, row] &&
+            while (!_visitedMap[column, row] &&
                     goalDict.Any(element => !element.Value))
             {
                 // Set current parameters
                 var currentWeight = this.OutputMap[column, row];
 
                 // Mark the element as visited
-                visitedMap[column, row] = true;
+                _visitedMap[column, row] = true;
 
                 // Search cardinally adjacent elements (N,S,E,W)
                 var north = row - 1 >= 0;
@@ -128,45 +139,45 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                 //
 
                 // CARDINAL LOCATIONS
-                if (north && !visitedMap[column, row - 1])
+                if (north && !_visitedMap[column, row - 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column, row - 1, column, row);
+                    UpdateOutputMap(currentWeight, column, row - 1, column, row);
                 }
 
-                if (south && !visitedMap[column, row + 1])
+                if (south && !_visitedMap[column, row + 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column, row + 1, column, row);
+                    UpdateOutputMap(currentWeight, column, row + 1, column, row);
                 }
 
-                if (east && !visitedMap[column + 1, row])
+                if (east && !_visitedMap[column + 1, row])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column + 1, row, column, row);
+                    UpdateOutputMap(currentWeight, column + 1, row, column, row);
                 }
 
-                if (west && !visitedMap[column - 1, row])
+                if (west && !_visitedMap[column - 1, row])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column - 1, row, column, row);
+                    UpdateOutputMap(currentWeight, column - 1, row, column, row);
                 }
 
                 // NON-CARDINAL LOCATIONS
-                if (!this.ObeyCardinalMovement && north && east && !visitedMap[column + 1, row - 1])
+                if (!this.ObeyCardinalMovement && north && east && !_visitedMap[column + 1, row - 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column + 1, row - 1, column, row);
+                    UpdateOutputMap(currentWeight, column + 1, row - 1, column, row);
                 }
 
-                if (!this.ObeyCardinalMovement && north && west && !visitedMap[column - 1, row - 1])
+                if (!this.ObeyCardinalMovement && north && west && !_visitedMap[column - 1, row - 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column - 1, row - 1, column, row);
+                    UpdateOutputMap(currentWeight, column - 1, row - 1, column, row);
                 }
 
-                if (!this.ObeyCardinalMovement && south && east && !visitedMap[column + 1, row + 1])
+                if (!this.ObeyCardinalMovement && south && east && !_visitedMap[column + 1, row + 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column + 1, row + 1, column, row);
+                    UpdateOutputMap(currentWeight, column + 1, row + 1, column, row);
                 }
 
-                if (!this.ObeyCardinalMovement && south && west && !visitedMap[column - 1, row + 1])
+                if (!this.ObeyCardinalMovement && south && west && !_visitedMap[column - 1, row + 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column - 1, row + 1, column, row);
+                    UpdateOutputMap(currentWeight, column - 1, row + 1, column, row);
                 }
 
                 // Update goal dictionary
@@ -177,11 +188,11 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     goalDict[locator] = true;
 
                 // Select next location from frontier queue - using the smallest weight
-                if (frontier.Count > 0)
+                if (_frontier.Count > 0)
                 {
                     // Lists in the frontier must have an entry
-                    var nextCostList = frontier.Min();
-                    var nextCost = frontier.MinKey();
+                    var nextCostList = _frontier.Min();
+                    var nextCost = _frontier.MinKey();
 
                     // Get the first from the list
                     var nextNode = nextCostList.First();
@@ -190,7 +201,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     nextCostList.RemoveAt(0);
 
                     if (nextCostList.Count == 0)
-                        frontier.Remove(nextCost);
+                        _frontier.Remove(nextCost);
 
                     // Move to next location
                     column = nextNode.Column;
@@ -199,7 +210,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             }
         }
 
-        private void UpdateOutputMap(BinarySearchTree<float, List<IGridLocator>> frontier, float currentWeight, int destColumn, int destRow, int sourceColumn, int sourceRow)
+        private void UpdateOutputMap(float currentWeight, int destColumn, int destRow, int sourceColumn, int sourceRow)
         {
             // Procedure
             //
@@ -229,13 +240,13 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             var locator = _locatorCallback(destColumn, destRow);
 
             // UPDATE THE FRONTIER
-            var oldWeightList = frontier.Search(oldWeight);
-            var newWeightList = frontier.Search(newWeight);
+            var oldWeightList = _frontier.Search(oldWeight);
+            var newWeightList = _frontier.Search(newWeight);
 
             // Both weights are absent from the frontier
             if (oldWeightList == null &&
                 newWeightList == null)
-                frontier.Insert(newWeight, new List<IGridLocator>() { locator });
+                _frontier.Insert(newWeight, new List<IGridLocator>() { locator });
 
             // Old weight list exists; New weight list is absent
             else if (oldWeightList != null &&
@@ -247,10 +258,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
 
                 // Remove unused node
                 if (oldWeightList.Count == 0)
-                    frontier.Remove(oldWeight);
+                    _frontier.Remove(oldWeight);
 
                 // Insert new node in the frontier
-                frontier.Insert(newWeight, new List<IGridLocator>() { locator });
+                _frontier.Insert(newWeight, new List<IGridLocator>() { locator });
             }
 
             // Old weight is absent; New weight exists
@@ -370,20 +381,11 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             return result;
         }
 
-        //// Use to help debug
-        //protected void OutputCSV(string directory, string filePrefix)
-        //{
-        //    var inputMap = new float[_width, _height];
-
-        //    for (int i = 0; i < _width; i++)
-        //    {
-        //        for (int j = 0; j < _height; j++)
-        //            inputMap[i, j] = _costCallback(i, j);
-        //    }
-
-        //    OutputCSV(inputMap, Path.Combine(directory, filePrefix + "_input.csv"));
-        //    OutputCSV(this.OutputMap, Path.Combine(directory, filePrefix + "_output.csv"));
-        //}
+        // Use to help debug
+        protected void OutputCSV(string directory, string filePrefix)
+        {
+            OutputCSV(this.OutputMap, Path.Combine(directory, filePrefix + "_output.csv"));
+        }
 
         private void OutputCSV(float[,] matrix, string fileName)
         {

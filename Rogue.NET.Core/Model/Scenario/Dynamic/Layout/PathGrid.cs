@@ -4,7 +4,7 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm.Component;
 using Rogue.NET.Core.Processing.Model.Content.Calculator;
-
+using System;
 using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
@@ -27,8 +27,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         {
             // Calculate the attack goals
             var attackGoals = _contentGrid.NonPlayerCharacters
-                                          .Where(otherCharacter => otherCharacter.AlignmentType != character.AlignmentType &&
-                                                                   otherCharacter != character)
+                                          .Where(otherCharacter => otherCharacter.AlignmentType != character.AlignmentType)
                                           .Cast<CharacterBase>()
                                           .ToList();
 
@@ -62,17 +61,17 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
                 if (cell1 == null ||
                     cell2 == null)
-                    return DijkstraMapBase.MapCostInfinity;
+                    return true;
 
                 if (_layoutGrid.WalkableMap[column2, row2] != null &&
                    !IsPathToAdjacentLocationBlocked(cell1.Location,
                                                     cell2.Location,
                                                     true,
                                                     character.AlignmentType))
-                    return 0;
+                    return false;
 
                 else
-                    return DijkstraMapBase.MapCostInfinity;
+                    return true;
             });
 
             // PAYOFF = GOAL REWARD - MOVEMENT COST
@@ -82,7 +81,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             foreach (var goal in attackGoals)
             {
                 // TODO:BEHAVIOR - FIND A WAY TO CALCULATE GOAL REWARDS
-                var goalReward = 10;
+                var goalReward = 50;
                 var payoff = goalReward - dijkstraMap.GetMovementCost(_contentGrid[goal]);
 
                 if (payoff > maxPayoff)
@@ -180,13 +179,53 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                         {
                             b1 |= diag1.IsWall;
                             b1 |= cell2.IsWall;
-                            b1 |= (characters1.Any() && includeBlockedByCharacters);
+
+                            if (includeBlockedByCharacters)
+                            {
+                                switch (excludedAlignmentType)
+                                {
+                                    case CharacterAlignmentType.PlayerAligned:
+                                        b1 |= characters1.Any(character => (character is NonPlayerCharacter) && 
+                                                                           (character as NonPlayerCharacter).AlignmentType == CharacterAlignmentType.EnemyAligned);
+                                        break;
+                                    case CharacterAlignmentType.EnemyAligned:
+                                        b1 |= characters1.Any(character =>  (character is Player) ||
+                                                                           ((character is NonPlayerCharacter) &&
+                                                                            (character as NonPlayerCharacter).AlignmentType == CharacterAlignmentType.PlayerAligned));
+                                        break;
+                                    case CharacterAlignmentType.None:
+                                        b1 |= characters1.Any();
+                                        break;
+                                    default:
+                                        throw new Exception("Unhandled Alignment Type PathGrid.IsPathToAdjacentLocationBlocked");
+                                }
+                            }
                         }
                         if (diag2 != null)
                         {
-                            b1 |= diag2.IsWall;
-                            b1 |= cell2.IsWall;
-                            b2 |= (characters2.Any() && includeBlockedByCharacters);
+                            b2 |= diag2.IsWall;
+                            b2 |= cell2.IsWall;
+
+                            if (includeBlockedByCharacters)
+                            {
+                                switch (excludedAlignmentType)
+                                {
+                                    case CharacterAlignmentType.PlayerAligned:
+                                        b2 |= characters2.Any(character => (character is NonPlayerCharacter) &&
+                                                                           (character as NonPlayerCharacter).AlignmentType == CharacterAlignmentType.EnemyAligned);
+                                        break;
+                                    case CharacterAlignmentType.EnemyAligned:
+                                        b2 |= characters2.Any(character => (character is Player) ||
+                                                                           ((character is NonPlayerCharacter) &&
+                                                                            (character as NonPlayerCharacter).AlignmentType == CharacterAlignmentType.PlayerAligned));
+                                        break;
+                                    case CharacterAlignmentType.None:
+                                        b2 |= characters2.Any();
+                                        break;
+                                    default:
+                                        throw new Exception("Unhandled Alignment Type PathGrid.IsPathToAdjacentLocationBlocked");
+                                }
+                            }
                         }
 
                         // Both paths are blocked

@@ -204,7 +204,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Check to see whether path is clear to attack
-            var blocked = _modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(location, attackLocation, false, CharacterAlignmentType.PlayerAligned);
+            var blocked = _modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(location, attackLocation, false);
 
             // Get target for attack
             var character = _modelService.Level.Content.GetAt<NonPlayerCharacter>(attackLocation);
