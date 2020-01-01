@@ -64,7 +64,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             _backendEventDataFactory = backendEventDataFactory;
         }
 
-        public bool Validate(Character actor, AlterationContainer alteration)
+        public bool Validate(CharacterBase actor, AlterationContainer alteration)
         {
             // First, validate the Alteration Cost
             if (!_alterationCalculator.CalculateMeetsAlterationCost(actor, alteration.Cost))
@@ -75,7 +75,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             return true;
         }
 
-        public void Queue(Character actor, AlterationContainer alteration)
+        public void Queue(CharacterBase actor, AlterationContainer alteration)
         {
             // Calculate Affected Characters
             var affectedCharacters = CalculateAffectedCharacters(alteration, actor);
@@ -83,7 +83,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             Queue(actor, affectedCharacters, alteration);
         }
 
-        public void Queue(Character actor, IEnumerable<Character> affectedCharacters, AlterationContainer alteration)
+        public void Queue(CharacterBase actor, IEnumerable<CharacterBase> affectedCharacters, AlterationContainer alteration)
         {
             // Run animations before applying alterations
             if (alteration.SupportsAnimations() &&
@@ -116,7 +116,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             });
         }
 
-        public void Process(Character actor, IEnumerable<Character> affectedCharacters, AlterationContainer alteration)
+        public void Process(CharacterBase actor, IEnumerable<CharacterBase> affectedCharacters, AlterationContainer alteration)
         {
             // Apply alteration cost (ONLY ONE-TIME APPLIED HERE. PER-STEP APPLIED IN CHARACTER ALTERATION)
             if (alteration.Effect.GetCostType(alteration) == AlterationCostType.OneTime)
@@ -197,7 +197,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
 
         #region (private) Alteration Apply Methods
-        private void ApplyAlteration(AlterationContainer alteration, Character affectedCharacter, Character actor)
+        private void ApplyAlteration(AlterationContainer alteration, CharacterBase affectedCharacter, CharacterBase actor)
         {
             // Aura => Actor is affected because the aura is collected by the source character to be applied
             //         to the target characters in the CharacterAlteration on turn.
@@ -289,7 +289,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         #endregion
 
         #region (private) Alteration Calculation Methods
-        public IEnumerable<Character> CalculateAffectedCharacters(AlterationContainer alteration, Character actor)
+        public IEnumerable<CharacterBase> CalculateAffectedCharacters(AlterationContainer alteration, CharacterBase actor)
         {
             if (alteration is ConsumableAlteration)
                 return CalculateAffectedCharacters(alteration as ConsumableAlteration, actor);
@@ -319,51 +319,51 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else
                 throw new Exception("Unknown AlterationBase type");
         }
-        private IEnumerable<Character> CalculateAffectedCharacters(ConsumableAlteration alteration, Character actor)
+        private IEnumerable<CharacterBase> CalculateAffectedCharacters(ConsumableAlteration alteration, CharacterBase actor)
         {
             return CalculateAffectedCharacters(alteration.Animation.TargetType, actor);
         }
-        private IEnumerable<Character> CalculateAffectedCharacters(DoodadAlteration alteration, Character actor)
+        private IEnumerable<CharacterBase> CalculateAffectedCharacters(DoodadAlteration alteration, CharacterBase actor)
         {
             return CalculateAffectedCharacters(alteration.Animation.TargetType, actor);
         }
-        private IEnumerable<Character> CalculateAffectedCharacters(EnemyAlteration alteration, Character actor)
+        private IEnumerable<CharacterBase> CalculateAffectedCharacters(EnemyAlteration alteration, CharacterBase actor)
         {
             return CalculateAffectedCharacters(alteration.Animation.TargetType, actor);
         }
-        private IEnumerable<Character> CalculateAffectedCharacters(EquipmentCurseAlteration alteration, Character actor)
+        private IEnumerable<CharacterBase> CalculateAffectedCharacters(EquipmentCurseAlteration alteration, CharacterBase actor)
         {
             return CalculateAffectedCharacters(AlterationTargetType.Source, actor);
         }
-        private IEnumerable<Character> CalculateAffectedCharacters(EquipmentEquipAlteration alteration, Character actor)
+        private IEnumerable<CharacterBase> CalculateAffectedCharacters(EquipmentEquipAlteration alteration, CharacterBase actor)
         {
             return CalculateAffectedCharacters(AlterationTargetType.Source, actor);
         }
-        private IEnumerable<Character> CalculateAffectedCharacters(SkillAlteration alteration, Character actor)
+        private IEnumerable<CharacterBase> CalculateAffectedCharacters(SkillAlteration alteration, CharacterBase actor)
         {
             return CalculateAffectedCharacters(alteration.Animation.TargetType, actor);
         }
-        private IEnumerable<Character> CalculateAffectedCharacters(AlterationTargetType targetType, Character actor)
+        private IEnumerable<CharacterBase> CalculateAffectedCharacters(AlterationTargetType targetType, CharacterBase actor)
         {
             var targetedCharacter = _targetingService.GetTargetedCharacter();
 
             switch (targetType)
             {
                 case AlterationTargetType.Source:
-                    return new List<Character>() { actor };
+                    return new List<CharacterBase>() { actor };
                 case AlterationTargetType.Target:
-                    return (actor is Player) ? new Character[] { targetedCharacter } : new Character[] { _modelService.Player };
+                    return (actor is Player) ? new CharacterBase[] { targetedCharacter } : new CharacterBase[] { _modelService.Player };
                 case AlterationTargetType.AllInRange:
                     {
                         var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(actor);
 
-                        return _modelService.Level.Content.GetManyAt<Character>(visibleLocations);
+                        return _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations);
                     }
                 case AlterationTargetType.AllInRangeExceptSource:
                     {
                         var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(actor);
 
-                        return _modelService.Level.Content.GetManyAt<Character>(visibleLocations).Except(new Character[] { actor });
+                        return _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations).Except(new CharacterBase[] { actor });
                     }
                 default:
                     throw new Exception("Unknown Attack Attribute Target Type");
@@ -372,7 +372,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         #endregion
 
         #region (private) Other Methods
-        private void ProcessSteal(Character actor, Character actee)
+        private void ProcessSteal(CharacterBase actor, CharacterBase actee)
         {
             // Get random item from actee's inventory
             var acteeInventory = actee.Inventory;
@@ -433,7 +433,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     _modelService.GetDisplayName(actee));
             }
         }
-        private void ProcessRunAway(Character actor)
+        private void ProcessRunAway(CharacterBase actor)
         {
             if (actor is Enemy)
             {
@@ -477,7 +477,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Update the UI (TODO:ALTERATION - figure out more systematic updating)
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentReveal, ""));
         }
-        private void ProcessTeleport(TeleportRandomAlterationEffect effect, Character character)
+        private void ProcessTeleport(TeleportRandomAlterationEffect effect, CharacterBase character)
         {
             var characterLocation = _modelService.GetContentLocation(character);
 
@@ -513,41 +513,34 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             OnScenarioEvent(_backendEventDataFactory.LevelChange(actualLevel, PlayerStartLocation.Random));
         }
-        private void ProcessCreateEnemy(CreateEnemyAlterationEffect effect, Character actor)
+        private void ProcessCreateEnemy(CreateEnemyAlterationEffect effect, CharacterBase actor)
         {
             // Create Enemy
             var enemy = _characterGenerator.GenerateEnemy(effect.Enemy, _modelService.ScenarioEncyclopedia);
 
             ProcessCreateNonPlayerCharacter(enemy, effect.RandomPlacementType, effect.Range, actor);
         }
-        private void ProcessCreateFriendly(CreateFriendlyAlterationEffect effect, Character actor)
+        private void ProcessCreateFriendly(CreateFriendlyAlterationEffect effect, CharacterBase actor)
         {
             // Create Friendly
             var friendly = _characterGenerator.GenerateFriendly(effect.Friendly, _modelService.ScenarioEncyclopedia);
 
             ProcessCreateNonPlayerCharacter(friendly, effect.RandomPlacementType, effect.Range, actor);
         }
-        private void ProcessCreateTemporaryCharacter(CreateTemporaryCharacterAlterationEffect effect, Character actor)
+        private void ProcessCreateTemporaryCharacter(CreateTemporaryCharacterAlterationEffect effect, CharacterBase actor)
         {
             // Create Temporary Character
             var temporaryCharacter = _characterGenerator.GenerateTemporaryCharacter(effect.TemporaryCharacter, _modelService.ScenarioEncyclopedia);
 
             ProcessCreateNonPlayerCharacter(temporaryCharacter, effect.RandomPlacementType, effect.Range, actor);
         }
-        private void ProcessCreateNonPlayerCharacter(NonPlayerCharacter character, AlterationRandomPlacementType randomPlacementType, int range, Character actor)
+        private void ProcessCreateNonPlayerCharacter(NonPlayerCharacter character, AlterationRandomPlacementType randomPlacementType, int range, CharacterBase actor)
         {
             // Method that shares code paths for creating { Enemy, Friendly, TemporaryCharacter }
             //
 
-            var actorLocation = _modelService.GetContentLocation(actor);
-            var location = GetRandomLocation(randomPlacementType, actorLocation, range);
-
-            // TODO:ALTERATION (Handle Exception ?)
-            if (location == null)
-                return;
-
             // Add Content to Level -> Update Visibility
-            _modelService.Level.AddContent(character, location);
+            _modelService.Level.AddContentAdjacent(_randomSequenceGenerator, actor, character);
             _modelService.UpdateVisibility();
 
             // Publish Message
@@ -865,7 +858,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, ""));
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentReveal, ""));
         }
-        private void ProcessEquipmentEnhance(EquipmentEnhanceAlterationEffect effect, Character affectedCharacter)
+        private void ProcessEquipmentEnhance(EquipmentEnhanceAlterationEffect effect, CharacterBase affectedCharacter)
         {
             // Enhance Equipment:
             //
@@ -910,7 +903,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Equipped Item to Enhance");
             }
         }
-        private void ProcessEquipmentDamage(EquipmentDamageAlterationEffect effect, Character actor, Character affectedCharacter)
+        private void ProcessEquipmentDamage(EquipmentDamageAlterationEffect effect, CharacterBase actor, CharacterBase affectedCharacter)
         {
             // Damage Equipment: Choose an equipped item at random and apply damage effect
             //

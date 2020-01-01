@@ -13,36 +13,36 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 {
     public static class CharacterExtension
     {
-        public static double GetHaulMax(this Character character)
+        public static double GetHaulMax(this CharacterBase character)
         {
             return character.StrengthBase * ModelConstants.HaulMaxStrengthMultiplier;
         }
-        public static double GetStrengthBase(this Character character)
+        public static double GetStrengthBase(this CharacterBase character)
         {
             return character.StrengthBase;
         }
-        public static double GetHaul(this Character character)
+        public static double GetHaul(this CharacterBase character)
         {
             return character.Equipment.Values.Sum(x => x.Weight) +
                    character.Consumables.Values.Sum(x => x.Weight);
         }
-        public static double GetAttackBase(this Character character)
+        public static double GetAttackBase(this CharacterBase character)
         {
             return character.StrengthBase;
         }
-        public static double GetDefenseBase(this Character character)
+        public static double GetDefenseBase(this CharacterBase character)
         {
             return character.GetStrengthBase() * ModelConstants.Melee.DefenseBaseMultiplier;
         }
-        public static double GetTotalStaminaRegen(this Character character)
+        public static double GetTotalStaminaRegen(this CharacterBase character)
         {
             return character.StaminaRegenBase + character.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
         }
-        public static double GetTotalHpRegen(this Character character)
+        public static double GetTotalHpRegen(this CharacterBase character)
         {
             return character.HpRegenBase + character.Alteration.GetAttribute(CharacterAttribute.HpRegen);
         }
-        public static double GetStrength(this Character character)
+        public static double GetStrength(this CharacterBase character)
         {
             var result = character.StrengthBase;
 
@@ -51,7 +51,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return System.Math.Max(0.1, result);
         }
-        public static double GetAgility(this Character character)
+        public static double GetAgility(this CharacterBase character)
         {
             var result = character.AgilityBase;
 
@@ -60,7 +60,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return System.Math.Max(0.1, result);
         }
-        public static double GetIntelligence(this Character character)
+        public static double GetIntelligence(this CharacterBase character)
         {
             var result = character.IntelligenceBase;
 
@@ -69,7 +69,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return System.Math.Max(0.1, result);
         }
-        public static double GetLightRadius(this Character character)
+        public static double GetLightRadius(this CharacterBase character)
         {
             var result = character.LightRadiusBase;
 
@@ -78,7 +78,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return System.Math.Max(0.1, result);
         }
-        public static double GetSpeed(this Character character)
+        public static double GetSpeed(this CharacterBase character)
         {
             var speed = character.SpeedBase + character.Alteration.GetAttribute(CharacterAttribute.Speed);
 
@@ -86,7 +86,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             return speed.Clip(0.1, 1);
         }
 
-        public static double GetAttack(this Character character)
+        public static double GetAttack(this CharacterBase character)
         {
             
             var attack = 0D;
@@ -120,7 +120,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return System.Math.Max(0, result);
         }
-        public static double GetDefense(this Character character)
+        public static double GetDefense(this CharacterBase character)
         {
             var defense = 0D;
 
@@ -153,7 +153,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return System.Math.Max(0, result);
         }
-        public static double GetThrowAttack(this Character character, Equipment equipment)
+        public static double GetThrowAttack(this CharacterBase character, Equipment equipment)
         {
             // Get the character attribute for calculating the attack value
             var characterAttributeValue = equipment.CombatType == CharacterBaseAttribute.Strength ? character.GetStrength() :
@@ -166,7 +166,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         /// <summary>
         /// Returns effective attack attributes for use with direct melee calculation
         /// </summary>
-        public static IEnumerable<AttackAttribute> GetMeleeAttributes(this Character character)
+        public static IEnumerable<AttackAttribute> GetMeleeAttributes(this CharacterBase character)
         {
             // Create base attribute list from the intrinsic character attributes
             var result = character.AttackAttributes
@@ -213,7 +213,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         /// Returns the end-of-turn malign attack attribute contribution used at the end
         /// of each character turn.
         /// </summary>
-        public static double GetMalignAttackAttributeHit(this Character character)
+        public static double GetMalignAttackAttributeHit(this CharacterBase character)
         {
             var result = 0D;
 
@@ -251,7 +251,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         /// <summary>
         /// Returns true if character has an altered state that matches the input altered state.
         /// </summary>
-        public static bool Is(this Character character, CharacterStateType characterStateType)
+        public static bool Is(this CharacterBase character, CharacterStateType characterStateType)
         {
             // Altered States from Character.Alteration
             return character.Alteration

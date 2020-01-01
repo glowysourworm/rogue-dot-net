@@ -203,10 +203,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             }
 
             // Characters
-            foreach (var scenarioObject in allContent.Keys.Where(x => x is Character))
+            foreach (var scenarioObject in allContent.Keys.Where(x => x is CharacterBase))
             {
                 // Character
-                var character = scenarioObject as Character;
+                var character = scenarioObject as CharacterBase;
                 var characterViewModel = this.Characters.FirstOrDefault(x => x.ScenarioObjectId == scenarioObject.Id);
 
                 // Update Content
@@ -308,7 +308,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             return image;
         }
 
-        private LevelCanvasShape CreateLightRadius(Character character)
+        private LevelCanvasShape CreateLightRadius(CharacterBase character)
         {
             var canvasShape = new LevelCanvasShape(character.Id, character.Id, new RectangleGeometry());
 
@@ -317,7 +317,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             return canvasShape;
         }
 
-        private LevelCanvasShape CreateAura(Character character, string alterationEffectId, string auraColor, int auraRange)
+        private LevelCanvasShape CreateAura(CharacterBase character, string alterationEffectId, string auraColor, int auraRange)
         {
             var canvasShape = new LevelCanvasShape(alterationEffectId, character.Id, new RectangleGeometry());
 

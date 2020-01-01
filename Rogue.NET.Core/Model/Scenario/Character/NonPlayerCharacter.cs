@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
     /// characters.
     /// </summary>
     [Serializable]
-    public class NonPlayerCharacter : Character
+    public class NonPlayerCharacter : CharacterBase
     {
         public CharacterAlignmentType AlignmentType { get; set; }
         public BehaviorDetails BehaviorDetails { get; set; }

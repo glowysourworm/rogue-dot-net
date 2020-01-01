@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.Scenario.Character
 {
     [Serializable]
-    public class Player : Character
+    public class Player : CharacterBase
     {
         public IList<SkillSet> SkillSets { get; set; }
         public int SkillPoints { get; set; }

@@ -7,13 +7,14 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.Character;
+using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.CharacterBase;
 
 namespace Rogue.NET.Core.Model.Scenario.Content
 {
@@ -211,7 +212,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         }
 
         /// <summary>
-        /// Adds content to a random, adjacent, un-occupied location
+        /// Adds content to a random, adjacent, un-occupied, walkable location
         /// </summary>
         public bool AddContentAdjacent(IRandomSequenceGenerator randomSequenceGenerator, CharacterBase character, ScenarioObject content)
         {
@@ -221,7 +222,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             var adjacentLocations = _grid.GetAdjacentLocations(location);
 
             // Filters out occupied locations
-            var nonOccupiedLocations = adjacentLocations.Where(location => _grid.LayerContains(LayoutGrid.LayoutLayer.Placement, location) &&
+            var nonOccupiedLocations = adjacentLocations.Where(location => _grid.LayerContains(LayoutGrid.LayoutLayer.Walkable, location) &&
                                                                           !_grid.IsOccupied(location));
             // Finally, select one of these at random
             var randomLocation = randomSequenceGenerator.GetRandomElement(nonOccupiedLocations);
@@ -422,6 +423,81 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public bool IsCellOccupiedByCharacter(GridLocation location)
         {
             return _content[location].Any(scenarioObject => scenarioObject is CharacterBase);
+        }
+
+        public bool IsPathToAdjacentLocationBlocked(GridLocation location1,
+                                                    GridLocation location2,
+                                                    bool includeBlockedByCharacters,
+                                                    CharacterAlignmentType excludedAlignmentType = CharacterAlignmentType.None)
+        {
+            var cell1 = _grid[location1];
+            var cell2 = _grid[location2];
+
+            if (cell1 == null || cell2 == null)
+                return true;
+
+            if (_grid.ImpassableTerrainMap[location2] != null)
+                return true;
+
+            // Check that the cell is occupied by a character of the other faction
+            var character = _content.GetAt<NonPlayerCharacter>(cell2.Location);
+
+            if (character != null &&
+                includeBlockedByCharacters &&
+                character.AlignmentType != excludedAlignmentType)
+                return true;
+
+            var direction = GridCalculator.GetDirectionOfAdjacentLocation(location1, location2);
+
+            switch (direction)
+            {
+                case Compass.N:
+                case Compass.S:
+                case Compass.E:
+                case Compass.W:
+                    return cell2.IsWall;
+
+                case Compass.NE:
+                case Compass.NW:
+                case Compass.SE:
+                case Compass.SW:
+                    {
+                        Compass cardinal1;
+                        Compass cardinal2;
+
+                        var diag1 = _grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
+                        var diag2 = _grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
+
+                        var oppositeCardinal1 = GridCalculator.GetOppositeDirection(cardinal1);
+                        var oppositeCardinal2 = GridCalculator.GetOppositeDirection(cardinal2);
+
+                        if (diag1 == null || diag2 == null)
+                            return true;
+
+                        var characters1 = _content.GetManyAt<CharacterBase>(diag1.Location);
+                        var characters2 = _content.GetManyAt<CharacterBase>(diag2.Location);
+
+                        bool b1 = (diag1 == null);
+                        bool b2 = (diag2 == null);
+
+                        if (diag1 != null)
+                        {
+                            b1 |= diag1.IsWall;
+                            b1 |= cell2.IsWall;
+                            b1 |= (characters1.Any() && includeBlockedByCharacters);
+                        }
+                        if (diag2 != null)
+                        {
+                            b1 |= diag2.IsWall;
+                            b1 |= cell2.IsWall;
+                            b2 |= (characters2.Any() && includeBlockedByCharacters);
+                        }
+
+                        // Both paths are blocked
+                        return b1 || b2;
+                    }
+            }
+            return false;
         }
         #endregion
     }

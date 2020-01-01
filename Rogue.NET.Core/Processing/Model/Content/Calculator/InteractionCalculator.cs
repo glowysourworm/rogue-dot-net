@@ -37,7 +37,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public void CalculateAttackAttributeHit(string alterationDisplayName, Character defender, IEnumerable<AttackAttribute> offenseAttributes)
+        public void CalculateAttackAttributeHit(string alterationDisplayName, CharacterBase defender, IEnumerable<AttackAttribute> offenseAttributes)
         {
             // Get the defender's attributes
             var defenseAttributes = defender.GetMeleeAttributes();
@@ -67,13 +67,13 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, alterationDisplayName + " misses");
         }
 
-        public double CalculateCharacterTurnIncrement(Player player, Character character)
+        public double CalculateCharacterTurnIncrement(Player player, CharacterBase character)
         {
             // Check for divide by zero and apply min speed to return a guaranteed turn for the enemy.
             return player.GetSpeed() <= ModelConstants.MinSpeed ? 1.0D : character.GetSpeed() / player.GetSpeed();
         }
 
-        public bool CalculateInteraction(Character attacker, Character defender, PhysicalAttackType attackType)
+        public bool CalculateInteraction(CharacterBase attacker, CharacterBase defender, PhysicalAttackType attackType)
         {
             // Result implies that an attack was made
             var result = false;
@@ -132,7 +132,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             return result;
         }
 
-        public bool CalculateEquipmentThrow(Character attacker, Character defender, Equipment thrownItem)
+        public bool CalculateEquipmentThrow(CharacterBase attacker, CharacterBase defender, Equipment thrownItem)
         {
             // Result implies that the item hit the defender
             var result = false;
@@ -181,7 +181,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             return result;
         }
 
-        public bool CalculateDodge(Character attacker, Character defender)
+        public bool CalculateDodge(CharacterBase attacker, CharacterBase defender)
         {
             // Calculate dodge
             var dodgeProbability = RogueCalculator.CalculateAttributeProbability(defender.GetAgility(), attacker.GetAgility());
@@ -190,7 +190,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             return _randomSequenceGenerator.Get() < dodgeProbability;
         }
 
-        public bool CalculateAlterationBlock(Character attacker, Character defender, AlterationBlockType blockType)
+        public bool CalculateAlterationBlock(CharacterBase attacker, CharacterBase defender, AlterationBlockType blockType)
         {
             switch (blockType)
             {

@@ -33,7 +33,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
     public class ContentProcessor : BackendProcessor, IContentProcessor
     {
         readonly IModelService _modelService;
-        readonly IPathFinder _pathFinder;
         readonly IAlterationProcessor _alterationProcessor;
         readonly INonPlayerCharacterCalculator _nonPlayerCharacterCalculator;
         readonly IPlayerCalculator _playerCalculator;
@@ -47,7 +46,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
         [ImportingConstructor]
         public ContentProcessor(
             IModelService modelService,
-            IPathFinder pathFinder,
             IAlterationProcessor alterationProcessor,
             INonPlayerCharacterCalculator nonPlayerCharacterCalculator,
             IPlayerCalculator playerCalculator,
@@ -59,7 +57,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
             IBackendEventDataFactory backendEventDataFactory)
         {
             _modelService = modelService;
-            _pathFinder = pathFinder;
             _alterationProcessor = alterationProcessor;
             _nonPlayerCharacterCalculator = nonPlayerCharacterCalculator;
             _playerCalculator = playerCalculator;
@@ -72,7 +69,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
 
         #region (public) Methods
-        public void StepOnItem(Character character, ItemBase item)
+        public void StepOnItem(CharacterBase character, ItemBase item)
         {
             var level = _modelService.Level;
             var haulMax = character.GetHaulMax();
@@ -110,7 +107,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (character is Player)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Too much weight in your inventory");
         }
-        public void StepOnDoodad(Character character, DoodadBase doodad)
+        public void StepOnDoodad(CharacterBase character, DoodadBase doodad)
         {
             // Show the Doodad (could be hidden)
             doodad.IsHidden = false;
@@ -268,6 +265,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         public void CalculateCharacterReactions()
         {
+            // PRE-CALCULATE DIJKSTRA MAP
+            _modelService.CharacterLayoutInformation.CalculateCharacterPaths();
+
             // TODO: BUILD A BACKEND SEQUENCER!!!
             //
             // Character Reactions: 0) Check whether character is still alive 
@@ -334,7 +334,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         #endregion
 
         #region (private) Sub-Methods
-        private void StepOnDoodadNormal(Character character, DoodadNormal doodad)
+        private void StepOnDoodadNormal(CharacterBase character, DoodadNormal doodad)
         {
             var level = _modelService.Level;
             var metaData = _modelService.ScenarioEncyclopedia[doodad.RogueName];
@@ -398,7 +398,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     }
             }
         }
-        private void StepOnDoodadMagic(Character character, DoodadMagic doodad)
+        private void StepOnDoodadMagic(CharacterBase character, DoodadMagic doodad)
         {
             var level = _modelService.Level;
             var metaData = _modelService.ScenarioEncyclopedia[doodad.RogueName];
@@ -605,7 +605,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 var actionTaken = false;
 
                 // Calculate Attack if Requirements Met
-                Character targetCharacter;
+                CharacterBase targetCharacter;
                 bool anyCharactersInVisibleRange;
                 if (CalculateCharacterWillAttack(character, out targetCharacter, out anyCharactersInVisibleRange))
                 {
@@ -630,21 +630,30 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 // If no attack taken calculate a move instead
                 else
                 {
-                    // Desired location is the ultimate destination for the character
-                    var desiredLocation = CalculateDesiredLocationInRange(character);
+                    var moveLocation = _modelService.CharacterLayoutInformation.GetNextPathLocation(character);
 
-                    if (desiredLocation != null)
+                    if (moveLocation != null &&
+                       !moveLocation.Equals(_modelService.PlayerLocation))
                     {
-                        // Move location is the next location for the character
-                        var moveLocation = CalculateCharacterMoveLocation(character, desiredLocation);
-                        if (moveLocation != null &&
-                            moveLocation != null &&
-                           !moveLocation.Equals(_modelService.PlayerLocation)) // TODO: MAKE THIS PART OF THE LAYOUT ENGINE METHODS
-                        {
-                            ProcessCharacterMove(character, moveLocation);
-                            actionTaken = true;
-                        }
+                        ProcessCharacterMove(character, moveLocation);
+                        actionTaken = true;
                     }
+
+                    //// Desired location is the ultimate destination for the character
+                    //var desiredLocation = CalculateDesiredLocationInRange(character);
+
+                    //if (desiredLocation != null)
+                    //{
+                    //    // Move location is the next location for the character
+                    //    var moveLocation = CalculateCharacterMoveLocation(character, desiredLocation);
+                    //    if (moveLocation != null &&
+                    //        moveLocation != null &&
+                    //       !moveLocation.Equals(_modelService.PlayerLocation)) // TODO: MAKE THIS PART OF THE LAYOUT ENGINE METHODS
+                    //    {
+                    //        ProcessCharacterMove(character, moveLocation);
+                    //        actionTaken = true;
+                    //    }
+                    //}
                 }
 
                 // Reset IsAlerted status if no opposing characters present
@@ -657,50 +666,52 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private GridLocation CalculateCharacterMoveLocation(NonPlayerCharacter character, GridLocation desiredLocation)
         {
-            // NOTE*** Reserving character-character swapping for the Player ONLY
-            //
+            throw new Exception();
 
-            var characterLocation = _modelService.GetContentLocation(character);
+            //// NOTE*** Reserving character-character swapping for the Player ONLY
+            ////
 
-            //Return random if confused
-            if (character.Is(CharacterStateType.MovesRandomly))
-                return _modelService.LayoutService.GetRandomAdjacentLocationForMovement(characterLocation, character.AlignmentType);
+            //var characterLocation = _modelService.GetContentLocation(character);
 
-            // TODO:TERRAIN
-            switch (character.BehaviorDetails.CurrentBehavior.MovementType)
-            {
-                case CharacterMovementType.Random:
-                    {
-                        return _modelService.LayoutService.GetRandomAdjacentLocationForMovement(characterLocation, character.AlignmentType);
-                    }
-                case CharacterMovementType.HeatSeeker:
-                    {
-                        return _modelService.LayoutService
-                                            .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
-                                            .MinBy(x => Metric.RoguianDistance(x, desiredLocation));
-                    }
-                case CharacterMovementType.StandOffIsh:
-                    {
-                        return _modelService.LayoutService
-                                            .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
-                                            .OrderBy(x => Metric.RoguianDistance(x, desiredLocation))
-                                            .LastOrDefault();
-                    }
-                case CharacterMovementType.PathFinder:
-                    {
-                        var nextLocation = _pathFinder.FindCharacterNextPathLocation(characterLocation, desiredLocation, character.AlignmentType);
+            ////Return random if confused
+            //if (character.Is(CharacterStateType.MovesRandomly))
+            //    return _modelService.LayoutService.GetRandomAdjacentLocationForMovement(characterLocation, character.AlignmentType);
 
-                        if (nextLocation == null)
-                            return _modelService.LayoutService
-                                                .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
-                                                .OrderBy(x => Metric.RoguianDistance(x, desiredLocation))
-                                                .FirstOrDefault();
-                        else
-                            return nextLocation;
-                    }
-                default:
-                    throw new Exception("Unknown Enemy Movement Type");
-            }
+            //// TODO:TERRAIN
+            //switch (character.BehaviorDetails.CurrentBehavior.MovementType)
+            //{
+            //    case CharacterMovementType.Random:
+            //        {
+            //            return _modelService.LayoutService.GetRandomAdjacentLocationForMovement(characterLocation, character.AlignmentType);
+            //        }
+            //    case CharacterMovementType.HeatSeeker:
+            //        {
+            //            return _modelService.LayoutService
+            //                                .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
+            //                                .MinBy(x => Metric.RoguianDistance(x, desiredLocation));
+            //        }
+            //    case CharacterMovementType.StandOffIsh:
+            //        {
+            //            return _modelService.LayoutService
+            //                                .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
+            //                                .OrderBy(x => Metric.RoguianDistance(x, desiredLocation))
+            //                                .LastOrDefault();
+            //        }
+            //    case CharacterMovementType.PathFinder:
+            //        {
+            //            var nextLocation = _pathFinder.FindCharacterNextPathLocation(characterLocation, desiredLocation, character.AlignmentType);
+
+            //            if (nextLocation == null)
+            //                return _modelService.LayoutService
+            //                                    .GetFreeAdjacentLocationsForMovement(characterLocation, character.AlignmentType)
+            //                                    .OrderBy(x => Metric.RoguianDistance(x, desiredLocation))
+            //                                    .FirstOrDefault();
+            //            else
+            //                return nextLocation;
+            //        }
+            //    default:
+            //        throw new Exception("Unknown Enemy Movement Type");
+            //}
         }
         private GridLocation CalculateDesiredLocationInRange(NonPlayerCharacter character)
         {
@@ -749,7 +760,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // GOING TO EXCLUDE CHARACTER / CHARACTER SWAP FOR THE SAME ALIGNMENT (reserved for Player only)
             //
-            if (!_modelService.LayoutService.IsPathToAdjacentCellBlocked(characterLocation, moveLocation, true, CharacterAlignmentType.None))
+            if (!_modelService.Level.IsPathToAdjacentLocationBlocked(characterLocation, moveLocation, true, CharacterAlignmentType.None))
             {
                 // Update enemy location
                 _modelService.Level.MoveContent(character, moveLocation);
@@ -769,9 +780,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (doodad != null)
                 StepOnDoodad(character, doodad);
         }
-        private IEnumerable<Character> CalculateCharactersInVisibleRange(NonPlayerCharacter character, bool opposingAlignment)
+        private IEnumerable<CharacterBase> CalculateCharactersInVisibleRange(NonPlayerCharacter character, bool opposingAlignment)
         {
-            IEnumerable<Character> charactersInRange = null;
+            IEnumerable<CharacterBase> charactersInRange = null;
 
             var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(character);
 
@@ -783,7 +794,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             {
                 charactersInRange = _modelService.Level
                                                  .Content
-                                                 .GetManyAt<Character>(visibleLocations)
+                                                 .GetManyAt<CharacterBase>(visibleLocations)
                                                  .Where(character => character is Player || 
                                                                     (character is NonPlayerCharacter && 
                                                                     (character as NonPlayerCharacter).AlignmentType == CharacterAlignmentType.PlayerAligned))
@@ -802,7 +813,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             return charactersInRange;
         }
-        private bool CalculateCharacterWillAttack(NonPlayerCharacter character, out Character targetCharacter, out bool anyCharactersInVisibleRange)
+        private bool CalculateCharacterWillAttack(NonPlayerCharacter character, out CharacterBase targetCharacter, out bool anyCharactersInVisibleRange)
         {
             targetCharacter = null;
             anyCharactersInVisibleRange = false;
@@ -862,7 +873,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     throw new Exception("Unhandled Character Attack Type");
             }
         }
-        private void ProcessCharacterAttack(NonPlayerCharacter character, Character targetCharacter)
+        private void ProcessCharacterAttack(NonPlayerCharacter character, CharacterBase targetCharacter)
         {
             var characterLocation = _modelService.GetContentLocation(character);
             var targetLocation = _modelService.GetContentLocation(targetCharacter);
@@ -882,7 +893,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 {
                     // Validate -> Queue Equipment Attack Alteration
                     if (_alterationProcessor.Validate(character, alteration))
-                        _alterationProcessor.Queue(character, new Character[] { targetCharacter }, alteration);
+                        _alterationProcessor.Queue(character, new CharacterBase[] { targetCharacter }, alteration);
                 }
             }
 
@@ -911,7 +922,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 }
             }
         }
-        private void ProcessCharacterAlterationAttack(NonPlayerCharacter character, Character targetCharacter)
+        private void ProcessCharacterAlterationAttack(NonPlayerCharacter character, CharacterBase targetCharacter)
         {
             // Cast the appropriate behavior
             var template = character.BehaviorDetails.CurrentBehavior.Alteration;

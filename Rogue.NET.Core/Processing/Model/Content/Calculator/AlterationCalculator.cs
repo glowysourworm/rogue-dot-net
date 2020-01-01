@@ -36,7 +36,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             _symbolDetailsGenerator = symbolDetailsGenerator;
         }
 
-        public ScenarioImage CalculateEffectiveSymbol(Character character)
+        public ScenarioImage CalculateEffectiveSymbol(CharacterBase character)
         {
             var symbol = new ScenarioImage();
 
@@ -98,7 +98,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             return symbol;
         }
 
-        public bool CalculateMeetsAlterationCost(Character character, AlterationCost cost)
+        public bool CalculateMeetsAlterationCost(CharacterBase character, AlterationCost cost)
         {
             var isPlayer = character is Player;
 
@@ -138,7 +138,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
 
             return true;
         }
-        public bool CalculateCharacterMeetsAlterationCost(Character character, AlterationCostTemplate cost)
+        public bool CalculateCharacterMeetsAlterationCost(CharacterBase character, AlterationCostTemplate cost)
         {
             return (character.Hp - cost.Hp) >= 0 &&
                    (character.Stamina - cost.Stamina) >= 0;
@@ -172,14 +172,14 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             return true;
         }
 
-        public void ApplyOneTimeAlterationCost(Character character, AlterationCost alterationCost)
+        public void ApplyOneTimeAlterationCost(CharacterBase character, AlterationCost alterationCost)
         {
             if (character is Player)
                 ApplyOneTimeAlterationCost(character as Player, alterationCost);
             else
                 ApplyOneTimeAlterationCost(character as Enemy, alterationCost);
         }
-        public void ApplyPermanentEffect(Character character, PermanentAlterationEffect alterationEffect)
+        public void ApplyPermanentEffect(CharacterBase character, PermanentAlterationEffect alterationEffect)
         {
             character.StrengthBase += alterationEffect.Strength;
             character.IntelligenceBase += alterationEffect.Intelligence;
@@ -261,7 +261,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Stamina has changed by " + alterationEffect.Stamina.ToString("N0"));
             }
         }
-        public void ApplyRemedy(Character character, RemedyAlterationEffect alterationEffect)
+        public void ApplyRemedy(CharacterBase character, RemedyAlterationEffect alterationEffect)
         {
             // Alteration applies remedy to remove or modify internal collections
             var remediedEffects = character.Alteration.ApplyRemedy(alterationEffect);
@@ -334,7 +334,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                     throw new Exception("Unhandled Alteration Modify Equipment Type");
             }
         }
-        public void ApplyEquipmentDamageEffect(Character affectedCharacter, EquipmentDamageAlterationEffect effect, Equipment item)
+        public void ApplyEquipmentDamageEffect(CharacterBase affectedCharacter, EquipmentDamageAlterationEffect effect, Equipment item)
         {
             switch (effect.Type)
             {
@@ -434,7 +434,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             }
         }
 
-        public void ApplyDrainMeleeEffect(Character actor, Character affectedCharacter, DrainMeleeAlterationEffect effect)
+        public void ApplyDrainMeleeEffect(CharacterBase actor, CharacterBase affectedCharacter, DrainMeleeAlterationEffect effect)
         {
             actor.Hp += effect.Hp;
             affectedCharacter.Hp -= effect.Hp;

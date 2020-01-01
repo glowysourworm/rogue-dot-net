@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Processing.Service
         TargetType _targetType;
         GridLocation _targetLocation;
         GridLocation _targetTrackerLocation;
-        Character _targetCharacter;
+        CharacterBase _targetCharacter;
 
         [ImportingConstructor]
         public TargetingService(IModelService modelService)
@@ -124,7 +124,7 @@ namespace Rogue.NET.Core.Processing.Service
                 throw new Exception("Trying to start targeting from invalid location");
         }
 
-        public Character GetTargetedCharacter()
+        public CharacterBase GetTargetedCharacter()
         {
             return _targetCharacter;
         }
@@ -142,7 +142,7 @@ namespace Rogue.NET.Core.Processing.Service
         // Returns true if the location was valid
         private void CaptureTarget(GridLocation location)
         {
-            var character = _modelService.Level.Content.GetAt<Character>(location);
+            var character = _modelService.Level.Content.GetAt<CharacterBase>(location);
             var gridCell = _modelService.Level.Grid[location.Column, location.Row];
 
             // Clear target tracker
@@ -195,7 +195,7 @@ namespace Rogue.NET.Core.Processing.Service
             if (_targetTrackerLocation == null)
                 return TargetType.None;
 
-            var character = _modelService.Level.Content.GetAt<Character>(_targetTrackerLocation);
+            var character = _modelService.Level.Content.GetAt<CharacterBase>(_targetTrackerLocation);
             var gridCell = _modelService.Level.Grid[_targetTrackerLocation.Column, _targetTrackerLocation.Row];
 
             if (gridCell == null)

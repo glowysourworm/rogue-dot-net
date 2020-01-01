@@ -118,7 +118,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return temporaryCharacter;
         }
 
-        protected void SetCharacterProperties(Character character, CharacterTemplate template, ScenarioEncyclopedia encyclopedia)
+        protected void SetCharacterProperties(CharacterBase character, CharacterTemplate template, ScenarioEncyclopedia encyclopedia)
         {
             character.RogueName = template.Name;
 

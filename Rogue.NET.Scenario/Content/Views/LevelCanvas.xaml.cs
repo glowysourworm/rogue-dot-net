@@ -42,7 +42,6 @@ namespace Rogue.NET.Scenario.Content.Views
         readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly ILevelCanvasViewModel _viewModel;
         readonly IModelService _modelService;
-        readonly IPathFinder _pathFinder;
 
         TranslateTransform _translateXform = new TranslateTransform(0, 0);
         ScaleTransform _scaleXform = new ScaleTransform(1, 1);
@@ -58,13 +57,11 @@ namespace Rogue.NET.Scenario.Content.Views
             IScenarioUIService scenarioUIService,
             ILevelCanvasViewModel viewModel,
             IModelService modelService,  // TODO: Find a way to remove the model service
-            IPathFinder pathFinder,
             IRogueEventAggregator eventAggregator)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
             _modelService = modelService;
             _viewModel = viewModel;
-            _pathFinder = pathFinder;
 
             this.DataContext = viewModel;
 

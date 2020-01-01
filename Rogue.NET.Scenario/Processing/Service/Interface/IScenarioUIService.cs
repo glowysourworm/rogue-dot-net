@@ -35,8 +35,8 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
         Geometry CreateGeometry(IEnumerable<GridLocation> locations);
 
         void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject, bool isMemorized);
-        void UpdateLightRadius(LevelCanvasShape canvasShape, Character character, Rect levelUIBounds);
-        void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, Character character, Rect levelUIBounds);
+        void UpdateLightRadius(LevelCanvasShape canvasShape, CharacterBase character, Rect levelUIBounds);
+        void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, CharacterBase character, Rect levelUIBounds);
 
         IAnimationPlayer CreateAnimation(AnimationEventData eventData, Rect levelUIBounds);
         IAnimationPlayer CreateAnimation(ProjectileAnimationEventData eventData, Rect levelUIBounds);

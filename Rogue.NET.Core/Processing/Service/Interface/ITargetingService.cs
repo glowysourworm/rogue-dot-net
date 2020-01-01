@@ -53,7 +53,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// <summary>
         /// Returns targeted character
         /// </summary>
-        Character GetTargetedCharacter();
+        CharacterBase GetTargetedCharacter();
 
         /// <summary>
         /// Clears out target information

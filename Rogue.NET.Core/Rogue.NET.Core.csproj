@@ -258,6 +258,7 @@
     <Compile Include="Model\Scenario\Content\Level.cs" />
     <Compile Include="Model\Scenario\Content\LevelParameters.cs" />
     <Compile Include="Processing\Model\Content\Calculator\GridCalculator.cs" />
+    <Compile Include="Processing\Model\Extension\GridLocator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ILightGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\ConnectionBuilder.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\Interface\IConnectionBuilder.cs" />
@@ -535,7 +536,6 @@
     <Compile Include="Processing\Model\Content\Calculator\Interface\IInteractionCalculator.cs" />
     <Compile Include="Processing\Model\Content\Calculator\Interface\IPlayerCalculator.cs" />
     <Compile Include="Processing\Model\Content\Calculator\PlayerCalculator.cs" />
-    <Compile Include="Processing\Model\Algorithm\Interface\IPathFinder.cs" />
     <Compile Include="Processing\Model\Content\Interface\IScenarioProcessor.cs" />
     <Compile Include="Processing\Model\Content\ScenarioProcessor.cs" />
     <Compile Include="Processing\Command\Backend\LevelCommand.cs" />
@@ -560,7 +560,6 @@
     <Compile Include="Processing\Model\Generator\Interface\IRandomSequenceGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ISkillSetGenerator.cs" />
     <Compile Include="Processing\Model\Generator\RandomSequenceGenerator.cs" />
-    <Compile Include="Processing\Model\Algorithm\SimplePathFinder.cs" />
     <Compile Include="Processing\Model\Content\ContentProcessor.cs" />
     <Compile Include="Processing\Model\Content\Interface\IContentProcessor.cs" />
     <Compile Include="Processing\Model\Algorithm\Interface\IVisibilityCalculator.cs" />
@@ -615,7 +614,7 @@
     <Compile Include="Model\Scenario\Alteration\Common\Extension\AlterationEffectExtension.cs" />
     <Compile Include="Model\Scenario\Character\Behavior\Behavior.cs" />
     <Compile Include="Model\Scenario\Character\Behavior\BehaviorDetails.cs" />
-    <Compile Include="Model\Scenario\Character\Character.cs" />
+    <Compile Include="Model\Scenario\Character\CharacterBase.cs" />
     <Compile Include="Model\Scenario\Character\Extension\CharacterExtension.cs" />
     <Compile Include="Model\Scenario\Character\Extension\PlayerExtension.cs" />
     <Compile Include="Model\Scenario\Content\Item\Extension\EquipmentExtension.cs" />

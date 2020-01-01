@@ -1,10 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Processing.Service.Interface
 {
@@ -19,14 +16,6 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// every turn.
         /// </summary>
         void CalculateEffectiveLighting();
-
-        /// <summary>
-        /// Checks to see if path to adjacent cell is blocked for character movement. Can optionally specify character alignemnt type
-        /// </summary>
-        bool IsPathToAdjacentCellBlocked(GridLocation location1,
-                                         GridLocation location2,
-                                         bool includeBlockedByCharacters,
-                                         CharacterAlignmentType excludedAlignmentType = CharacterAlignmentType.None);
 
         /// <summary>
         /// Returns random location or CellPoint.Empty. The "excludeOccupiedLocations" and the "otherExcludedLocations" options are 

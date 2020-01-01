@@ -171,7 +171,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             var isCharacterInVisibleToPlayer = false;
 
             // Calculate effective symbol
-            var effectiveSymbol = (scenarioObject is Character) ? _alterationCalculator.CalculateEffectiveSymbol(scenarioObject as Character) :
+            var effectiveSymbol = (scenarioObject is CharacterBase) ? _alterationCalculator.CalculateEffectiveSymbol(scenarioObject as CharacterBase) :
                                                                   scenarioObject;
 
             // Non-Player Characters
@@ -246,7 +246,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             content.Location = _scenarioUIGeometryService.Cell2UI(location);
         }
 
-        public void UpdateLightRadius(LevelCanvasShape canvasShape, Character character, Rect levelUIBounds)
+        public void UpdateLightRadius(LevelCanvasShape canvasShape, CharacterBase character, Rect levelUIBounds)
         {
             if (character.SymbolType != SymbolType.Smiley)
                 throw new Exception("Trying to create light radius for non-smiley symbol");
@@ -273,7 +273,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             canvasShape.Stroke = null;
         }
 
-        public void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, Character character, Rect levelUIBounds)
+        public void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, CharacterBase character, Rect levelUIBounds)
         {
             (aura.RenderedGeometry as RectangleGeometry).Rect = levelUIBounds;
 

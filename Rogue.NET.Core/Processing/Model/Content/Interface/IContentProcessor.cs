@@ -20,8 +20,8 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
         void ProcessCharacterReaction(NonPlayerCharacter character);
 
         void DropPlayerItem(string itemId);
-        void StepOnItem(Character character, ItemBase item);
-        void StepOnDoodad(Character character, DoodadBase doodad);
+        void StepOnItem(CharacterBase character, ItemBase item);
+        void StepOnDoodad(CharacterBase character, DoodadBase doodad);
         bool Equip(string equipId);
         void CharacterDeath(NonPlayerCharacter character);
     }

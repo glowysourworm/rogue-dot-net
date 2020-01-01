@@ -2,7 +2,6 @@
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -35,79 +34,8 @@ namespace Rogue.NET.Core.Processing.Service
             // soon be using all light sources in the calculation.
             //
             foreach (var location in _level.Grid.FullMap.GetLocations())
-                _level.Grid[location.Column, location.Row].EffectiveLighting = ColorFilter.Discretize(_level.Grid[location.Column, location.Row].BaseLight,     
+                _level.Grid[location.Column, location.Row].EffectiveLighting = ColorFilter.Discretize(_level.Grid[location.Column, location.Row].BaseLight,
                                                                                                       ModelConstants.ColorChannelDiscretization);
-        }
-
-        public bool IsPathToAdjacentCellBlocked(GridLocation location1,
-                                                GridLocation location2,
-                                                bool includeBlockedByCharacters,
-                                                CharacterAlignmentType excludedAlignmentType = CharacterAlignmentType.None)
-        {
-            var cell1 = _level.Grid[location1.Column, location1.Row];
-            var cell2 = _level.Grid[location2.Column, location2.Row];
-
-            if (cell1 == null || cell2 == null)
-                return true;
-
-            if (_level.Grid.ImpassableTerrainMap[location2.Column, location2.Row] != null)
-                return true;
-
-            // Check that the cell is occupied by a character of the other faction
-            var character = _level.Content.GetAt<NonPlayerCharacter>(cell2.Location);
-
-            if (character != null &&
-                includeBlockedByCharacters &&
-                character.AlignmentType != excludedAlignmentType)
-                return true;
-
-            var direction = GridCalculator.GetDirectionOfAdjacentLocation(location1, location2);
-
-            switch (direction)
-            {
-                case Compass.N:
-                case Compass.S:
-                case Compass.E:
-                case Compass.W:
-                    return cell2.IsWall;
-
-                case Compass.NE:
-                case Compass.NW:
-                case Compass.SE:
-                case Compass.SW:
-                    {
-                        Compass cardinal1;
-                        Compass cardinal2;
-
-                        var diag1 = _level.Grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
-                        var diag2 = _level.Grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
-
-                        var oppositeCardinal1 = GridCalculator.GetOppositeDirection(cardinal1);
-                        var oppositeCardinal2 = GridCalculator.GetOppositeDirection(cardinal2);
-
-                        if (diag1 == null || diag2 == null)
-                            return true;
-
-                        bool b1 = (diag1 == null);
-                        bool b2 = (diag2 == null);
-                        if (diag1 != null)
-                        {
-                            b1 |= diag1.IsWall;
-                            b1 |= cell2.IsWall;
-                            b1 |= (_level.IsCellOccupiedByCharacter(diag1.Location) && includeBlockedByCharacters);
-                        }
-                        if (diag2 != null)
-                        {
-                            b1 |= diag2.IsWall;
-                            b1 |= cell2.IsWall;
-                            b2 |= (_level.IsCellOccupiedByCharacter(diag2.Location) && includeBlockedByCharacters);
-                        }
-
-                        // Both paths are blocked
-                        return b1 || b2;
-                    }
-            }
-            return false;
         }
 
         public GridLocation GetRandomLocation(bool excludeOccupiedLocations, IEnumerable<GridLocation> otherExcludedLocations = null)

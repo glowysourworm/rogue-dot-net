@@ -10,7 +10,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 namespace Rogue.NET.Core.Model.Scenario.Character
 {
     [Serializable]
-    public abstract class Character : ScenarioObject
+    public abstract class CharacterBase : ScenarioObject
     {
         public Dictionary<string, Equipment> Equipment { get; set; }
         public Dictionary<string, Consumable> Consumables { get; set; }     
@@ -46,7 +46,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public Dictionary<string, AttackAttribute> AttackAttributes { get; set; }
 
-        public Character()
+        public CharacterBase()
         {
             this.Alteration = new CharacterAlteration();
             this.Equipment = new Dictionary<string, Equipment>();

@@ -9,19 +9,19 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator.Interface
 {
     public interface IAlterationCalculator
     {
-        ScenarioImage CalculateEffectiveSymbol(Character character);
+        ScenarioImage CalculateEffectiveSymbol(CharacterBase character);
 
-        bool CalculateMeetsAlterationCost(Character character, AlterationCost cost);
-        bool CalculateCharacterMeetsAlterationCost(Character character, AlterationCostTemplate cost);
+        bool CalculateMeetsAlterationCost(CharacterBase character, AlterationCost cost);
+        bool CalculateCharacterMeetsAlterationCost(CharacterBase character, AlterationCostTemplate cost);
         bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost);
 
-        void ApplyOneTimeAlterationCost(Character character, AlterationCost alterationCost);
-        void ApplyPermanentEffect(Character character, PermanentAlterationEffect alterationEffect);
-        void ApplyRemedy(Character character, RemedyAlterationEffect alterationEffect);
+        void ApplyOneTimeAlterationCost(CharacterBase character, AlterationCost alterationCost);
+        void ApplyPermanentEffect(CharacterBase character, PermanentAlterationEffect alterationEffect);
+        void ApplyRemedy(CharacterBase character, RemedyAlterationEffect alterationEffect);
 
         void ApplyEquipmentEnhanceEffect(Player player, EquipmentEnhanceAlterationEffect effect, Equipment item);
-        void ApplyEquipmentDamageEffect(Character affectedCharacter, EquipmentDamageAlterationEffect effect, Equipment item);
+        void ApplyEquipmentDamageEffect(CharacterBase affectedCharacter, EquipmentDamageAlterationEffect effect, Equipment item);
 
-        void ApplyDrainMeleeEffect(Character actor, Character affectedCharacter, DrainMeleeAlterationEffect effect);
+        void ApplyDrainMeleeEffect(CharacterBase actor, CharacterBase affectedCharacter, DrainMeleeAlterationEffect effect);
     }
 }

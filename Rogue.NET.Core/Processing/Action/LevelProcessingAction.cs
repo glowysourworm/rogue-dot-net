@@ -9,9 +9,9 @@ namespace Rogue.NET.Core.Processing.Action
     {
         public LevelProcessingActionType Type { get; set; }
 
-        public Character Actor { get; set; }
+        public CharacterBase Actor { get; set; }
 
-        public IEnumerable<Character> AlterationAffectedCharacters { get; set; }
+        public IEnumerable<CharacterBase> AlterationAffectedCharacters { get; set; }
 
         public AlterationContainer Alteration { get; set; }
     }

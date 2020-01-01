@@ -1,4 +1,6 @@
 ﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
@@ -17,7 +19,7 @@ namespace Rogue.NET.Core.Math.Geometry
         /// <summary>
         /// Delegate used to fetch a cost for the specified column / row of the grid
         /// </summary>
-        public delegate float DijkstraMapCostCallback(int column, int row);
+        public delegate float DijkstraMapCostCallback(int column1, int row1, int column2, int row2);
 
         /// <summary>
         /// Delegate used to fetch a reference to the associated grid locator
@@ -45,10 +47,14 @@ namespace Rogue.NET.Core.Math.Geometry
         protected float[,] OutputMap { get; private set; }
 
         /// <summary>
-        /// Constant that indictaes a region of the grid - typically used for a mask to prevent iterating
-        /// back onto the regions.
+        /// Constant that indictaes a region of the grid that is to be AVOIDED; but CROSSABLE.
         /// </summary>
-        protected readonly static float RegionFeatureConstant = 10000;
+        protected readonly static float MapCostAvoid = 10000;
+
+        /// <summary>
+        /// Constant that indicates that a region is off-limits to the Dijkstra map.
+        /// </summary>
+        protected readonly static float MapCostInfinity = float.PositiveInfinity;
 
         private readonly int _width;
         private readonly int _height;
@@ -58,7 +64,6 @@ namespace Rogue.NET.Core.Math.Geometry
         private bool _hasRun;
 
         const int CELL_MOVEMENT_COST = 1;
-        const float MAP_MAX_VALUE = float.MaxValue;
 
         protected DijkstraMapBase(int width,
                                   int height,
@@ -85,7 +90,7 @@ namespace Rogue.NET.Core.Math.Geometry
             // Initialize the output map
             this.OutputMap.Iterate((column, row) =>
             {
-                this.OutputMap[column, row] = ((column == this.SourceLocation.Column) && (row == this.SourceLocation.Row)) ? 0 : MAP_MAX_VALUE;
+                this.OutputMap[column, row] = ((column == this.SourceLocation.Column) && (row == this.SourceLocation.Row)) ? 0 : MapCostInfinity;
             });
 
             // Track visited elements AND queued elements (prevents a LOT of extra looking up on the queue)
@@ -131,43 +136,43 @@ namespace Rogue.NET.Core.Math.Geometry
                 // CARDINAL LOCATIONS
                 if (north && !visitedMap[column, row - 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column, row - 1);
+                    UpdateOutputMap(frontier, currentWeight, column, row - 1, column, row);
                 }
 
                 if (south && !visitedMap[column, row + 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column, row + 1);
+                    UpdateOutputMap(frontier, currentWeight, column, row + 1, column, row);
                 }
 
                 if (east && !visitedMap[column + 1, row])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column + 1, row);
+                    UpdateOutputMap(frontier, currentWeight, column + 1, row, column, row);
                 }
 
                 if (west && !visitedMap[column - 1, row])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column - 1, row);
+                    UpdateOutputMap(frontier, currentWeight, column - 1, row, column, row);
                 }
 
                 // NON-CARDINAL LOCATIONS
                 if (!this.ObeyCardinalMovement && north && east && !visitedMap[column + 1, row - 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column + 1, row - 1);
+                    UpdateOutputMap(frontier, currentWeight, column + 1, row - 1, column, row);
                 }
 
                 if (!this.ObeyCardinalMovement && north && west && !visitedMap[column - 1, row - 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column - 1, row - 1);
+                    UpdateOutputMap(frontier, currentWeight, column - 1, row - 1, column, row);
                 }
 
                 if (!this.ObeyCardinalMovement && south && east && !visitedMap[column + 1, row + 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column + 1, row + 1);
+                    UpdateOutputMap(frontier, currentWeight, column + 1, row + 1, column, row);
                 }
 
                 if (!this.ObeyCardinalMovement && south && west && !visitedMap[column - 1, row + 1])
                 {
-                    UpdateOutputMap(frontier, currentWeight, column - 1, row + 1);
+                    UpdateOutputMap(frontier, currentWeight, column - 1, row + 1, column, row);
                 }
 
                 // Update goal dictionary
@@ -205,7 +210,7 @@ namespace Rogue.NET.Core.Math.Geometry
             _hasRun = true;
         }
 
-        private void UpdateOutputMap(BinarySearchTree<float, List<IGridLocator>> frontier, float currentWeight, int column, int row)
+        private void UpdateOutputMap(BinarySearchTree<float, List<IGridLocator>> frontier, float currentWeight, int destColumn, int destRow, int sourceColumn, int sourceRow)
         {
             // Procedure
             //
@@ -222,16 +227,17 @@ namespace Rogue.NET.Core.Math.Geometry
             //
 
             // Pre-fetch the cost list for this frontier location
-            var oldWeight = this.OutputMap[column, row];
+            var oldWeight = this.OutputMap[destColumn, destRow];
 
             // Update the output map
-            this.OutputMap[column, row] = System.Math.Min(this.OutputMap[column, row], currentWeight + _costCallback(column, row) + CELL_MOVEMENT_COST);
+            this.OutputMap[destColumn, destRow] = System.Math.Min(this.OutputMap[destColumn, destRow], 
+                                                                                currentWeight + _costCallback(sourceColumn, sourceRow, destColumn, destRow) + CELL_MOVEMENT_COST);
 
             // Update the frontier
-            var newWeight = this.OutputMap[column, row];
+            var newWeight = this.OutputMap[destColumn, destRow];
 
             // Fetch locator for this location
-            var locator = _locatorCallback(column, row);
+            var locator = _locatorCallback(destColumn, destRow);
 
             // UPDATE THE FRONTIER
             var oldWeightList = frontier.Search(oldWeight);
@@ -308,7 +314,7 @@ namespace Rogue.NET.Core.Math.Geometry
                 var east = column + 1 < _width;
                 var west = column - 1 >= 0;
 
-                var lowestWeight = MAP_MAX_VALUE;
+                var lowestWeight = MapCostInfinity;
                 var lowestWeightLocation = currentLocation;
 
                 if (north && (this.OutputMap[column, row - 1] < lowestWeight))
@@ -378,20 +384,20 @@ namespace Rogue.NET.Core.Math.Geometry
             return result;
         }
 
-        // Use to help debug
-        protected void OutputCSV(string directory, string filePrefix)
-        {
-            var inputMap = new float[_width, _height];
+        //// Use to help debug
+        //protected void OutputCSV(string directory, string filePrefix)
+        //{
+        //    var inputMap = new float[_width, _height];
 
-            for (int i = 0; i < _width; i++)
-            {
-                for (int j = 0; j < _height; j++)
-                    inputMap[i, j] = _costCallback(i, j);
-            }
+        //    for (int i = 0; i < _width; i++)
+        //    {
+        //        for (int j = 0; j < _height; j++)
+        //            inputMap[i, j] = _costCallback(i, j);
+        //    }
 
-            OutputCSV(inputMap, Path.Combine(directory, filePrefix + "_input.csv"));
-            OutputCSV(this.OutputMap, Path.Combine(directory, filePrefix + "_output.csv"));
-        }
+        //    OutputCSV(inputMap, Path.Combine(directory, filePrefix + "_input.csv"));
+        //    OutputCSV(this.OutputMap, Path.Combine(directory, filePrefix + "_output.csv"));
+        //}
 
         private void OutputCSV(float[,] matrix, string fileName)
         {
@@ -402,7 +408,7 @@ namespace Rogue.NET.Core.Math.Geometry
             {
                 for (int i = 0; i < matrix.GetLength(0); i++)
                 {
-                    if (matrix[i, j] != MAP_MAX_VALUE)
+                    if (matrix[i, j] != MapCostInfinity)
                         builder.Append(matrix[i, j].ToString("F3") + ", ");
 
                     else
@@ -429,11 +435,22 @@ namespace Rogue.NET.Core.Math.Geometry
 
         readonly GridCellInfo[,] _grid;
 
-        public DijkstraPathGenerator(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> avoidRegions, GridCellInfo sourceLocation, IEnumerable<GridCellInfo> targetLocations, bool obeyCardinalMovement)
-             : base(grid.GetLength(0), grid.GetLength(1), obeyCardinalMovement, sourceLocation, targetLocations, new DijkstraMapCostCallback((column, row) =>
+        public DijkstraPathGenerator(GridCellInfo[,] grid, 
+                                     IEnumerable<Region<GridCellInfo>> avoidRegions, 
+                                     GridCellInfo sourceLocation, 
+                                     IEnumerable<GridCellInfo> targetLocations, 
+                                     bool obeyCardinalMovement)
+             : base(grid.GetLength(0), 
+                    grid.GetLength(1), 
+                    obeyCardinalMovement, 
+                    sourceLocation, 
+                    targetLocations, 
+                    new DijkstraMapCostCallback((column1, row1, column2, row2) =>
              {
-                 if (avoidRegions.Any(region => region[column, row] != null))
-                     return DijkstraMapBase.RegionFeatureConstant;
+                 // MOVEMENT COST BASED ON THE DESTINATION CELL
+                 //
+                 if (avoidRegions.Any(region => region[column2, row2] != null))
+                     return DijkstraMapBase.MapCostAvoid;
 
                  else
                      return 0;
@@ -466,26 +483,111 @@ namespace Rogue.NET.Core.Math.Geometry
         }
     }
 
-    public class DijkstraLevelGrid : DijkstraMapBase
+    public class DijkstraPathFinder : DijkstraMapBase
     {
-        public DijkstraLevelGrid(LayoutGrid grid, IGridLocator sourceLocation, IEnumerable<IGridLocator> targetLocations, bool obeyCardinalMovement)
-             : base(grid.Bounds.Width, grid.Bounds.Height, obeyCardinalMovement, sourceLocation, targetLocations, new DijkstraMapCostCallback((column, row) =>
-             {
-                 if (grid[column, row] == null)
-                     return 0;
+        readonly Level _level;
 
-                 else if (grid[column, row].IsWall)
+        // NOTE*** Source / Target are swapped during the scan. Multiple "targets" are traced back to a single "source"
+        public DijkstraPathFinder(Level level, 
+                                  IGridLocator goalLocation, 
+                                  IEnumerable<IGridLocator> sourceLocations, 
+                                  bool obeyCardinalMovement)
+             : base(level.Grid.Bounds.Width, 
+                    level.Grid.Bounds.Height, 
+                    obeyCardinalMovement, 
+                    goalLocation, 
+                    sourceLocations, 
+                    new DijkstraMapCostCallback((column1, row1, column2, row2) =>
+             {
+                 var cell1 = level.Grid[column1, row1];
+                 var cell2 = level.Grid[column2, row2];
+
+                 if (cell1 == null ||
+                     cell2 == null)
+                     return DijkstraMapBase.MapCostInfinity;
+
+                 if (level.Grid.WalkableMap[column2, row2] != null &&
+                    !level.IsPathToAdjacentLocationBlocked(cell1.Location, 
+                                                           cell2.Location, false))
                      return 0;
 
                  else
-                     return DijkstraMapBase.RegionFeatureConstant;
+                     return DijkstraMapBase.MapCostInfinity;
 
              }), new DijkstraMapLocatorCallback((column, row) =>
              {
-                 throw new NotImplementedException("DijkstraLevelGrid locator callback. Have to prevent iterating out into null cells");
+                 return level.Grid[column, row].Location;
              }))
         {
+            _level = level;
+
             Run();
+        }
+
+        /// <summary>
+        /// Gets the next step in the path from the specified 
+        /// </summary>
+        public GridLocation GetNextPathLocation(IGridLocator sourceLocation)
+        {
+            if (!this.TargetLocations.Any(location => location.Column == sourceLocation.Column &&
+                                                      location.Row == sourceLocation.Row))
+                throw new Exception("Trying to get Dijkstra path for non-routed location");
+
+            // NOTE*** Source / Target locations swapped in the constructor
+            var output = this.OutputMap[sourceLocation.Column, sourceLocation.Row];
+
+            // Get the next lowest cost output from the Dijkstra output map - select this location
+            if (this.ObeyCardinalMovement)
+            {
+                var nextLocation = this.OutputMap
+                                       .GetCardinalAdjacentValueLocators(sourceLocation.Column, sourceLocation.Row)
+                                       .Where(location => this.OutputMap[location.Column, location.Row] < output)
+                                       .MinBy(location => Metric.RoguianDistance(location, sourceLocation));
+
+                return _level.Grid[nextLocation].Location;
+            }
+            else
+            {
+                var nextLocation = this.OutputMap
+                                       .GetAdjacentValueLocators(sourceLocation.Column, sourceLocation.Row)
+                                       .Where(location => this.OutputMap[location.Column, location.Row] < output)
+                                       .MinBy(location => Metric.RoguianDistance(location, sourceLocation));
+
+                return _level.Grid[nextLocation].Location;
+            }
+        }
+
+        /// <summary>
+        /// Gets the next step in the path from the GOAL to the specified SOURCE
+        /// </summary>
+        public GridLocation GetReverseNextPathLocation(IGridLocator sourceLocation)
+        {
+            if (!this.TargetLocations.Any(location => location.Column == sourceLocation.Column &&
+                                                      location.Row == sourceLocation.Row))
+                throw new Exception("Trying to get Dijkstra path for non-routed location");
+
+            // NOTE*** Source / Target locations swapped in the constructor
+            var output = this.OutputMap[this.SourceLocation.Column, this.SourceLocation.Row];
+
+            // Get the next highest cost output from the Dijkstra output map - select this location
+            if (this.ObeyCardinalMovement)
+            {
+                var nextLocation = this.OutputMap
+                                       .GetCardinalAdjacentValueLocators(this.SourceLocation.Column, this.SourceLocation.Row)
+                                       .Where(location => this.OutputMap[location.Column, location.Row] > output)
+                                       .MinBy(location => this.OutputMap[location.Column, location.Row]);
+
+                return _level.Grid[nextLocation].Location;
+            }
+            else
+            {
+                var nextLocation = this.OutputMap
+                                       .GetAdjacentValueLocators(this.SourceLocation.Column, this.SourceLocation.Row)
+                                       .Where(location => this.OutputMap[location.Column, location.Row] > output)
+                                       .MinBy(location => this.OutputMap[location.Column, location.Row]);
+
+                return _level.Grid[nextLocation].Location;
+            }
         }
     }
 }

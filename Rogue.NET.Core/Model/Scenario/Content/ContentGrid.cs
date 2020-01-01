@@ -11,8 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.Character;
-
 namespace Rogue.NET.Core.Model.Scenario
 {
     public class ContentGrid

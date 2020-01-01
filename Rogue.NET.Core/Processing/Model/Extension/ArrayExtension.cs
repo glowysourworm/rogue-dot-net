@@ -388,6 +388,138 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
+        /// Returns locators for the adjacent elements whose values are non-null; and in bounds
+        /// </summary>
+        public static IGridLocator[] GetAdjacentElementLocators<T>(this T[,] grid, int column, int row) where T : class
+        {
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+            var ne = grid.Get(column + 1, row - 1);
+            var nw = grid.Get(column - 1, row - 1);
+            var se = grid.Get(column + 1, row + 1);
+            var sw = grid.Get(column - 1, row + 1);
+
+            // Need this to be optimized for speed
+            var count = 0;
+            if (n != null) count++;
+            if (s != null) count++;
+            if (e != null) count++;
+            if (w != null) count++;
+            if (ne != null) count++;
+            if (nw != null) count++;
+            if (se != null) count++;
+            if (sw != null) count++;
+
+            var result = new IGridLocator[count];
+            var index = 0;
+
+            if (n != null) result[index++] = new GridLocator(column, row - 1);
+            if (s != null) result[index++] = new GridLocator(column, row + 1);
+            if (e != null) result[index++] = new GridLocator(column + 1, row);
+            if (w != null) result[index++] = new GridLocator(column - 1, row);
+            if (ne != null) result[index++] = new GridLocator(column + 1, row - 1);
+            if (nw != null) result[index++] = new GridLocator(column - 1, row - 1);
+            if (se != null) result[index++] = new GridLocator(column + 1, row + 1);
+            if (sw != null) result[index++] = new GridLocator(column - 1, row + 1);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns locators for the adjacent elements whose values are non-null; and in bounds
+        /// </summary>
+        public static IGridLocator[] GetCardinalAdjacentElementLocators<T>(this T[,] grid, int column, int row) where T : class
+        {
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+
+            // Need this to be optimized for speed
+            var count = 0;
+            if (n != null) count++;
+            if (s != null) count++;
+            if (e != null) count++;
+            if (w != null) count++;
+
+            var result = new IGridLocator[count];
+            var index = 0;
+
+            if (n != null) result[index++] = new GridLocator(column, row - 1);
+            if (s != null) result[index++] = new GridLocator(column, row + 1);
+            if (e != null) result[index++] = new GridLocator(column + 1, row);
+            if (w != null) result[index++] = new GridLocator(column - 1, row);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns locators for 8-way adjacent values that are in bounds
+        /// </summary>
+        public static IGridLocator[] GetAdjacentValueLocators<T>(this T[,] grid, int column, int row) where T : struct
+        {
+            var north = (row - 1 >= 0);
+            var south = (row + 1 < grid.GetLength(1));
+            var east = (column + 1 < grid.GetLength(0));
+            var west = (column - 1 >= 0);
+
+            // Need this to be optimized for speed
+            var count = 0;
+            if (north) count++;
+            if (south) count++;
+            if (east) count++;
+            if (west) count++;
+            if (north && east) count++;
+            if (north && west) count++;
+            if (south && east) count++;
+            if (south && west) count++;
+
+            var result = new IGridLocator[count];
+            var index = 0;
+
+            if (north) result[index++] = new GridLocation(column, row - 1);
+            if (south) result[index++] = new GridLocation(column, row + 1);
+            if (east) result[index++] = new GridLocation(column + 1, row);
+            if (west) result[index++] = new GridLocation(column - 1, row);
+            if (north && east) result[index++] = new GridLocation(column + 1, row - 1);
+            if (north && west) result[index++] = new GridLocation(column - 1, row - 1);
+            if (south && east) result[index++] = new GridLocation(column + 1, row + 1);
+            if (south && west) result[index++] = new GridLocation(column - 1, row + 1);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns locators for 4-way adjacent values that are in bounds
+        /// </summary>
+        public static IGridLocator[] GetCardinalAdjacentValueLocators<T>(this T[,] grid, int column, int row) where T : struct
+        {
+            var north = (row - 1 >= 0);
+            var south = (row + 1 < grid.GetLength(1));
+            var east = (column + 1 < grid.GetLength(0));
+            var west = (column - 1 >= 0);
+
+            // Need this to be optimized for speed
+            var count = 0;
+            if (north) count++;
+            if (south) count++;
+            if (east) count++;
+            if (west) count++;
+
+            var result = new IGridLocator[count];
+            var index = 0;
+
+            if (north) result[index++] = new GridLocation(column, row - 1);
+            if (south) result[index++] = new GridLocation(column, row + 1);
+            if (east) result[index++] = new GridLocation(column + 1, row);
+            if (west) result[index++] = new GridLocation(column - 1, row);
+
+            return result;
+        }
+
+        /// <summary>
         /// Returns adjacent element in the direction specified
         /// </summary>
         /// <typeparam name="T">Type of grid element</typeparam>

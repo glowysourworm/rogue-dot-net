@@ -114,7 +114,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return null;
 
             //Look for road blocks - move player
-            if (!_modelService.LayoutService.IsPathToAdjacentCellBlocked(_modelService.PlayerLocation, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
+            if (!_modelService.Level.IsPathToAdjacentLocationBlocked(_modelService.PlayerLocation, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
             {
                 // Check for character swaps
                 var swapCharacter = _modelService.Level.Content.GetAt<NonPlayerCharacter>(desiredLocation);
@@ -204,7 +204,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Check to see whether path is clear to attack
-            var blocked = _modelService.LayoutService.IsPathToAdjacentCellBlocked(location, attackLocation, false, CharacterAlignmentType.PlayerAligned);
+            var blocked = _modelService.Level.IsPathToAdjacentLocationBlocked(location, attackLocation, false, CharacterAlignmentType.PlayerAligned);
 
             // Get target for attack
             var character = _modelService.Level.Content.GetAt<NonPlayerCharacter>(attackLocation);
@@ -229,7 +229,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     {
                         // If player meets alteration cost, queue with affected enemy
                         if (_alterationProcessor.Validate(player, alteration))
-                            _alterationProcessor.Queue(player, new Character[] { character }, alteration);
+                            _alterationProcessor.Queue(player, new CharacterBase[] { character }, alteration);
                     }
                 }
             }
@@ -276,7 +276,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
 
             var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(player);
-            var visibleCharacters = _modelService.Level.Content.GetManyAt<Character>(visibleLocations);
+            var visibleCharacters = _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations);
 
             // Check for targeting
             if (consumable.HasAlteration)
@@ -920,11 +920,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
             player.Hunger = 0;
 
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, player.Id));
-        }
-
-        public void ApplyEndOfTurn()
-        {
-            throw new NotImplementedException();
         }
 
         #region (private) Sub-Methods
