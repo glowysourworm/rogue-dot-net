@@ -100,7 +100,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var doodad = GenerateDoodad(branchTemplate);
 
                 if (doodad != null)
-                    level.AddContentRandom(_randomSequenceGenerator, doodad, ContentRandomPlacementType.Random, new GridLocation[] { });
+                    level.AddContentRandom(_randomSequenceGenerator, doodad, ContentRandomPlacementType.Random);
             }
         }
         private void GenerateEnemies(Level level, LevelBranchTemplate branchTemplate, ScenarioEncyclopedia encyclopedia)
@@ -114,7 +114,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var enemy = GenerateEnemy(branchTemplate, encyclopedia);
 
                 if (enemy != null)
-                    level.AddContentRandom(_randomSequenceGenerator, enemy, ContentRandomPlacementType.Random, new GridLocation[] { });
+                    level.AddContentRandom(_randomSequenceGenerator, enemy, ContentRandomPlacementType.Random);
             }
         }
         private void GenerateItems(Level level, LevelBranchTemplate branchTemplate)
@@ -129,7 +129,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var equipment = GenerateEquipment(branchTemplate);
 
                 if (equipment != null)
-                    level.AddContentRandom(_randomSequenceGenerator, equipment, ContentRandomPlacementType.Random, new GridLocation[] { });
+                    level.AddContentRandom(_randomSequenceGenerator, equipment, ContentRandomPlacementType.Random);
             }
 
             // Make a configured number of random draws from the consumable templates for this branch
@@ -139,7 +139,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var consumable = GenerateConsumable(branchTemplate);
 
                 if (consumable != null)
-                    level.AddContentRandom(_randomSequenceGenerator, consumable, ContentRandomPlacementType.Random, new GridLocation[] { });
+                    level.AddContentRandom(_randomSequenceGenerator, consumable, ContentRandomPlacementType.Random);
             }
         }
         private void AddTransporters(Level level, IDictionary<Region<GridLocation>, GridLocation> transporterDict)

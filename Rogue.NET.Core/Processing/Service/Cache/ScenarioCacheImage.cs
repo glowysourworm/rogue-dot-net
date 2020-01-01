@@ -1,13 +1,11 @@
-﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using System.Windows.Media;
 
 namespace Rogue.NET.Core.Processing.Service.Cache
 {
-    public class ScenarioCacheImage
+    public struct ScenarioCacheImage
     {
         // Scale Relative to the ModelConstant Height / Width
         public double Scale { get; set; }
@@ -36,9 +34,67 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         public byte LightBlue { get; set; }
         public double LightIntensity { get; set; }
 
-
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ScenarioCacheImage)
+            {
+                var image = (ScenarioCacheImage)obj;
+
+                return image.CharacterColor == this.CharacterColor &&
+                       image.CharacterScale == this.CharacterScale &&
+                       image.CharacterSymbol == this.CharacterSymbol &&
+                       image.CharacterSymbolCategory == this.CharacterSymbolCategory &&
+                       image.GameSymbol == this.GameSymbol &&
+                       image.IsGrayScale == this.IsGrayScale &&
+                       image.LightBlue == this.LightBlue &&
+                       image.LightGreen == this.LightGreen &&
+                       image.LightIntensity == this.LightIntensity &&
+                       image.LightRed == this.LightRed &&
+                       image.Scale == this.Scale &&
+                       image.SmileyAuraColor == this.SmileyAuraColor &&
+                       image.SmileyBodyColor == this.SmileyBodyColor &&
+                       image.SmileyExpression == this.SmileyExpression &&
+                       image.SmileyLineColor == this.SmileyLineColor &&
+                       image.Symbol == this.Symbol &&
+                       image.SymbolHue == this.SymbolHue &&
+                       image.SymbolLightness == this.SymbolLightness &&
+                       image.SymbolSaturation == this.SymbolSaturation &&
+                       image.SymbolScale == this.SymbolScale &&
+                       image.SymbolUseColorMask == this.SymbolUseColorMask &&
+                       image.Type == this.Type;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Scale.GetHashCode() +
+                   this.Type.GetHashCode() +
+                   this.SmileyExpression.GetHashCode() +
+                   this.SmileyBodyColor?.GetHashCode() ?? 0 +
+                   this.SmileyLineColor?.GetHashCode() ?? 0 +
+                   this.SmileyAuraColor?.GetHashCode() ?? 0 +
+                   this.CharacterSymbol?.GetHashCode() ?? 0 +
+                   this.CharacterSymbolCategory?.GetHashCode() ?? 0+
+                   this.CharacterColor?.GetHashCode() ?? 0 +
+                   this.CharacterScale.GetHashCode() +
+                   this.Symbol?.GetHashCode() ?? 0 +
+                   this.SymbolHue.GetHashCode() +
+                   this.SymbolSaturation.GetHashCode() +
+                   this.SymbolLightness.GetHashCode() +
+                   this.SymbolScale.GetHashCode() +
+                   this.SymbolUseColorMask.GetHashCode() +
+                   this.GameSymbol?.GetHashCode() ?? 0 +
+                   this.LightRed.GetHashCode() +
+                   this.LightGreen.GetHashCode() +
+                   this.LightBlue.GetHashCode() +
+                   this.LightIntensity.GetHashCode() +
+                   this.IsGrayScale.GetHashCode();
+        }
 
         public ScenarioCacheImage(ScenarioImage scenarioImage, bool isGrayScale, double scale, Light lighting)
         {

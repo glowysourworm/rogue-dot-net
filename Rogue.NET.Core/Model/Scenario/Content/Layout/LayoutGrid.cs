@@ -327,23 +327,27 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Returns random non-occupied location from the specified layer map
         /// </summary>
-        public GridLocation GetNonOccupiedLocation(LayoutLayer layer, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations)
+        public GridLocation GetNonOccupiedLocation(LayoutLayer layer, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations = null)
         {
             var map = SelectLayer(layer);
 
-            return randomSequenceGenerator.GetRandomElement(map.GetNonOccupiedLocations().Except(excludedLocations));
+            if (excludedLocations != null)
+                return randomSequenceGenerator.GetRandomElement(map.GetNonOccupiedLocations().Except(excludedLocations));
+
+            else
+                return randomSequenceGenerator.GetRandomElement(map.GetNonOccupiedLocations());
         }
 
         /// <summary>
         /// Returns random group of non-occupied locations from the specified layer map - FROM A SINGLE REGION. Will return empty if there are no such
         /// regions available. 
         /// </summary>
-        public IEnumerable<GridLocation> GetNonOccupiedRegionLocations(LayoutLayer layer, int locationCount, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations)
+        public IEnumerable<GridLocation> GetNonOccupiedRegionLocations(LayoutLayer layer, int locationCount, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations = null)
         {
             var map = SelectLayer(layer);
 
-            var qualifiedRegions = map.Regions
-                                      .Where(region => region.NonOccupiedLocations.Except(excludedLocations).Count() >= locationCount);
+            var qualifiedRegions = excludedLocations != null ? map.Regions.Where(region => region.NonOccupiedLocations.Except(excludedLocations).Count() >= locationCount)
+                                                             : map.Regions.Where(region => region.NonOccupiedLocations.Count() >= locationCount);
 
             if (qualifiedRegions.Count() == 0)
                 return new GridLocation[] { };
@@ -352,21 +356,27 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var region = randomSequenceGenerator.GetRandomElement(qualifiedRegions);
 
             // Return randomly chosen non-occupied locations
-            return randomSequenceGenerator.GetDistinctRandomElements(region.NonOccupiedLocations.Except(excludedLocations), locationCount);
+            return randomSequenceGenerator.GetDistinctRandomElements(excludedLocations != null ? region.NonOccupiedLocations.Except(excludedLocations)
+                                                                                               : region.NonOccupiedLocations, locationCount);
         }
 
         /// <summary>
         /// Returns a rectangle of non-occupied contiguous locations from the specified layer map. Will return null if there are no such rectangles are available. 
         /// </summary>
-        public Region<GridLocation> GetNonOccupiedRegionLocationGroup(LayoutLayer layer, int width, int height, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations)
+        public Region<GridLocation> GetNonOccupiedRegionLocationGroup(LayoutLayer layer, int width, int height, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations = null)
         {
             var map = SelectLayer(layer);
 
             // Search for sub-regions that have a contiguous square of non-occupied cells
             var qualifiedRegions = _grid.ScanRectanglarRegions(width, height, location =>
             {
-                return map[location.Column, location.Row] != null &&
-                      !excludedLocations.Any(otherLocation => otherLocation.Equals(location));
+                if (excludedLocations != null)
+                {
+                    return map[location] != null &&
+                          !excludedLocations.Any(otherLocation => otherLocation.Equals(location));
+                }
+                else
+                    return map[location] != null;
             });
 
             if (qualifiedRegions.Count() == 0)
@@ -387,14 +397,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Returns a location that is near the edge of the specified layer map
         /// </summary>
-        public GridLocation GetNonOccupiedEdgeLocation(LayoutLayer layer, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations)
+        public GridLocation GetNonOccupiedEdgeLocation(LayoutLayer layer, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations = null)
         {
             // Have to create a PDF based on edge distance - with a peak at SIMULATION_EDGE_NEARNESS (in the dimension of the
             // closest edge). Then, use this PDF to create weighted random draw over the space of non-occupied locations.
 
             var map = SelectLayer(layer);
 
-            var edgePdf = GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), map.Boundary);
+            var edgePdf = excludedLocations != null ? GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), map.Boundary)
+                                                    : GetDistancePdf(map.GetNonOccupiedLocations(), map.Boundary);
 
             return randomSequenceGenerator.GetWeightedRandom(edgePdf.Keys, location => edgePdf[location]);
         }
@@ -402,14 +413,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Returns a location that is "maximally distant" from the specified source location - using the sepcified map
         /// </summary>
-        public GridLocation GetNonOccupiedDistantLocation(LayoutLayer layer, GridLocation sourceLocation, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations)
+        public GridLocation GetNonOccupiedDistantLocation(LayoutLayer layer, GridLocation sourceLocation, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations = null)
         {
             // Have to create a PDF based on distance from a source location - with a peak at SIMULATION_DISTANT_PARAMETER (in distance). 
             // Then, use this PDF to create weighted random draw over the space of non-occupied locations.
 
             var map = SelectLayer(layer);
 
-            var edgePdf = GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), new GridLocation[] { sourceLocation });
+            var edgePdf = excludedLocations != null ? GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), new GridLocation[] { sourceLocation })
+                                                    : GetDistancePdf(map.GetNonOccupiedLocations(), new GridLocation[] { sourceLocation });
 
             return randomSequenceGenerator.GetWeightedRandom(edgePdf.Keys, location => edgePdf[location]);
         }
@@ -417,16 +429,36 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Returns a location that is "maximally distant" from the specified source locations - using the specified layer map
         /// </summary>
-        public GridLocation GetNonOccupiedDistantLocations(LayoutLayer layer, IEnumerable<GridLocation> sourceLocations, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations)
+        public GridLocation GetNonOccupiedDistantLocations(LayoutLayer layer, IEnumerable<GridLocation> sourceLocations, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations = null)
         {
             // Have to create a PDF based on distance from a source location - with a peak at SIMULATION_DISTANT_PARAMETER (in distance). 
             // Then, use this PDF to create weighted random draw over the space of non-occupied locations.
 
             var map = SelectLayer(layer);
 
-            var edgePdf = GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), sourceLocations);
+            var edgePdf = excludedLocations != null ? GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), sourceLocations)
+                                                    : GetDistancePdf(map.GetNonOccupiedLocations(), sourceLocations);
 
             return randomSequenceGenerator.GetWeightedRandom(edgePdf.Keys, location => edgePdf[location]);
+        }
+
+        /// <summary>
+        /// Returns non-occupied locations in range of the specified location - using the specified layer map
+        /// </summary>
+        public IEnumerable<GridLocation> GetNonOccupiedLocationsNear(LayoutLayer layer, GridLocation location, int range)
+        {
+            var map = SelectLayer(layer);
+
+            var locations = new List<GridLocation>();
+
+            // Iterate around the location on the primary grid - checking the layer map
+            _grid.IterateAround(location.Column, location.Row, range, (column, row) =>
+            {
+                if (map[column, row] != null)
+                    locations.Add(_grid[column, row].Location);
+            });
+
+            return locations;
         }
 
         /// <summary>

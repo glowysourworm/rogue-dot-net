@@ -207,12 +207,16 @@
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
     <Compile Include="IO\Compressed.cs" />
-    <Compile Include="Math\Algorithm\DijkstrasAlgorithm.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Layout\AuraGrid.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Layout\PathGrid.cs" />
+    <Compile Include="Processing\Model\Algorithm\Component\DijkstraPathFinder.cs" />
+    <Compile Include="Processing\Model\Algorithm\Component\DijkstraPathGenerator.cs" />
+    <Compile Include="Processing\Model\Algorithm\DijkstrasAlgorithm.cs" />
     <Compile Include="Math\Algorithm\Factorial.cs" />
     <Compile Include="Math\Algorithm\Interface\INoiseGenerator.cs" />
-    <Compile Include="Math\Geometry\DijkstraMap.cs" />
+    <Compile Include="Processing\Model\Algorithm\Component\DijkstraMapBase.cs" />
     <Compile Include="Math\Geometry\Graph.cs" />
-    <Compile Include="Math\Geometry\DijkstraGraph.cs" />
+    <Compile Include="Processing\Model\Algorithm\Component\DijkstraGraph.cs" />
     <Compile Include="Math\Geometry\GraphEdgeCollection.cs" />
     <Compile Include="Math\Geometry\GraphTraversal.cs" />
     <Compile Include="Math\Geometry\Triangle.cs" />
@@ -257,6 +261,7 @@
     <Compile Include="Model\Scenario\Content\Layout\RegionConnection.cs" />
     <Compile Include="Model\Scenario\Content\Level.cs" />
     <Compile Include="Model\Scenario\Content\LevelParameters.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Layout\VisibilityGrid.cs" />
     <Compile Include="Processing\Model\Content\Calculator\GridCalculator.cs" />
     <Compile Include="Processing\Model\Extension\GridLocator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ILightGenerator.cs" />
@@ -562,8 +567,7 @@
     <Compile Include="Processing\Model\Generator\RandomSequenceGenerator.cs" />
     <Compile Include="Processing\Model\Content\ContentProcessor.cs" />
     <Compile Include="Processing\Model\Content\Interface\IContentProcessor.cs" />
-    <Compile Include="Processing\Model\Algorithm\Interface\IVisibilityCalculator.cs" />
-    <Compile Include="Processing\Model\Algorithm\ShadowCasterVisibilityCalculator.cs" />
+    <Compile Include="Processing\Model\Algorithm\VisibilityCalculator.cs" />
     <Compile Include="Processing\Model\Generator\BehaviorGenerator.cs" />
     <Compile Include="Processing\Model\Generator\ContentGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\IBehaviorGenerator.cs" />
@@ -652,9 +656,7 @@
     <Compile Include="Model\Scenario\Content\ScenarioImage.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioObject.cs" />
     <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Layout\CharacterLayoutInformation.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\DistanceLocation.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Layout\Interface\ICharacterLayoutInformation.cs" />
     <Compile Include="Model\Scenario\RogueBase.cs" />
     <Compile Include="Model\Scenario\ScenarioContainer.cs" />
     <Compile Include="Model\Scenario\Abstract\ScenarioMetaData.cs" />
@@ -662,8 +664,6 @@
     <Compile Include="Model\Scenario\Statistic\DoodadStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\EnemyStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\ItemStatistic.cs" />
-    <Compile Include="Processing\Service\Interface\IModelLayoutService.cs" />
-    <Compile Include="Processing\Service\ModelLayoutService.cs" />
     <Compile Include="Processing\Service\Validation\Interface\IScenarioValidationResult.cs" />
     <Compile Include="Processing\Service\Validation\Interface\IScenarioValidationRule.cs" />
     <Compile Include="Processing\Service\Validation\ScenarioValidationResult.cs" />

@@ -240,8 +240,9 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             {
                 var characterAuras = character.Alteration
                                               .GetAuras()
-                                              .Where(x => _modelService.CharacterLayoutInformation
-                                                                       .GetAuraAffectedLocations(character, x.Item1.Id)
+                                              .Where(x => _modelService.Level
+                                                                       .AuraGrid
+                                                                       .GetAuraAffectedLocations(x.Item1.Id)
                                                                        .Contains(_modelService.PlayerLocation))
                                               .Select(x => x.Item1)
                                               .GroupBy(x => x.GetType());

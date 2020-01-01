@@ -38,10 +38,8 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
 
         public ScenarioImage CalculateEffectiveSymbol(CharacterBase character)
         {
-            var symbol = new ScenarioImage();
-
-            // Map properties onto the symbol
-            character.MapOnto(symbol);
+            // Copy image properties onto new instance
+            var symbol = ScenarioImage.Copy(character);
 
             bool firstAlteration = true;
 

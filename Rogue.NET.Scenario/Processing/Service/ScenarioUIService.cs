@@ -146,7 +146,7 @@ namespace Rogue.NET.Scenario.Processing.Service
         {
             // Calculate visible-to-player
             //
-            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
+            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(_modelService.Player);
             var visibleCharacters = _modelService.Level.Content.GetManyAt<ScenarioObject>(visibleLocations);
 
             // Content object is within player's sight radius 

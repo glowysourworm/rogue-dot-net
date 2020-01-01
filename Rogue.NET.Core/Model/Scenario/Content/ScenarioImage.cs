@@ -118,6 +118,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.CharacterSymbol = template.CharacterSymbol;
             this.CharacterSymbolCategory = template.CharacterSymbolCategory;
             this.CharacterScale = template.CharacterScale;
+            this.GameSymbol = template.GameSymbol;
             this.SmileyBodyColor = template.SmileyBodyColor;
             this.SmileyExpression = template.SmileyExpression;
             this.SmileyLightRadiusColor = template.SmileyAuraColor;
@@ -126,10 +127,36 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.SymbolHue = template.SymbolHue;
             this.SymbolLightness = template.SymbolLightness;
             this.SymbolSaturation = template.SymbolSaturation;
-            this.SymbolHue = template.SymbolHue;
             this.SymbolScale = template.SymbolScale;
             this.SymbolType = template.SymbolType;
             this.SymbolUseColorMask = template.SymbolUseColorMask;
+        }
+
+        /// <summary>
+        /// NOTE*** Use this in place of mapper for performance
+        /// </summary>
+        public static ScenarioImage Copy(ScenarioImage source)
+        {
+            var dest = new ScenarioImage();
+
+            dest.CharacterColor = source.CharacterColor;
+            dest.CharacterSymbol = source.CharacterSymbol;
+            dest.CharacterSymbolCategory = source.CharacterSymbolCategory;
+            dest.CharacterScale = source.CharacterScale;
+            dest.GameSymbol = source.GameSymbol;
+            dest.SmileyBodyColor = source.SmileyBodyColor;
+            dest.SmileyExpression = source.SmileyExpression;
+            dest.SmileyLightRadiusColor = source.SmileyLightRadiusColor;
+            dest.SmileyLineColor = source.SmileyLineColor;
+            dest.Symbol = source.Symbol;
+            dest.SymbolHue = source.SymbolHue;
+            dest.SymbolLightness = source.SymbolLightness;
+            dest.SymbolSaturation = source.SymbolSaturation;
+            dest.SymbolScale = source.SymbolScale;
+            dest.SymbolType = source.SymbolType;
+            dest.SymbolUseColorMask = source.SymbolUseColorMask;
+
+            return dest;
         }
     }
 }

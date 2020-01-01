@@ -6,7 +6,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
+using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 
@@ -24,7 +24,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
     public class LightingFinisher : ILightingFinisher
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly IVisibilityCalculator _visibilityCalculator;
         readonly ILightGenerator _lightGenerator;
         readonly INoiseGenerator _noiseGenerator;
 
@@ -39,11 +38,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         const double LIGHT_PERLIN_FREQUENCY = 0.08;
 
         [ImportingConstructor]
-        public LightingFinisher(ILightGenerator lightGenerator, INoiseGenerator noiseGenerator, IVisibilityCalculator visibilityCalculator, IRandomSequenceGenerator randomSequenceGenerator)
+        public LightingFinisher(ILightGenerator lightGenerator, INoiseGenerator noiseGenerator, IRandomSequenceGenerator randomSequenceGenerator)
         {
             _lightGenerator = lightGenerator;
             _noiseGenerator = noiseGenerator;
-            _visibilityCalculator = visibilityCalculator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
@@ -205,7 +203,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                                                                     new Light(light.Red, light.Green, light.Blue, wallLightIntensity));
 
                         // Add to field of view
-                        wallLightFOV.Add(grid[i, j], _visibilityCalculator.CalculateVisibility(grid, grid[i, j].Location));
+                        wallLightFOV.Add(grid[i, j], VisibilityCalculator.CalculateVisibility(grid, grid[i, j].Location));
                     }
                 }
             }

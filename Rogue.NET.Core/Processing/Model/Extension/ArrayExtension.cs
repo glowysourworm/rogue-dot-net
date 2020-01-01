@@ -31,6 +31,32 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
+        /// Iterates - starting at the provided column and row - outwards to the specified radius - checking the grid
+        /// boundary as it goes.
+        /// </summary>
+        public static void IterateAround<T>(this T[,] grid, int column, int row, int radius, GridCallback<T> callback)
+        {
+            for (int k = 0; k <= radius; k++)
+            {
+                for (int i = column - radius; i <= column + radius; i++)
+                {
+                    for (int j = row - radius; j <= row + radius; j++)
+                    {
+                        // Check for the boundary
+                        if (i < 0 ||
+                            i >= grid.GetLength(0) ||
+                            j < 0 ||
+                            j >= grid.GetLength(1))
+                            continue;
+
+                        else
+                            callback(i, j);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Performs a boundary-safe indexing operation to get the cell from the grid. Returns default(T) if out-of-bounds
         /// or no cell was at that location.
         /// </summary>

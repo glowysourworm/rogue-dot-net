@@ -3,7 +3,6 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
@@ -53,16 +52,6 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// Returns the location of the player
         /// </summary>
         GridLocation PlayerLocation { get; }
-
-        /// <summary>
-        /// Exposes layout information per character [ visible locations, line-of-sight, explored, revealed ]
-        /// </summary>
-        ICharacterLayoutInformation CharacterLayoutInformation { get; }
-
-        /// <summary>
-        /// Exposes layout service for performing layout calculations based on the loaded level
-        /// </summary>
-        IModelLayoutService LayoutService { get; }
 
         /// <summary>
         /// "Encyclopedia" Rogue-Tanica. Contains all the meta-data for the Scenario objects, alteration categories, and character classes

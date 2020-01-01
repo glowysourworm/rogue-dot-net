@@ -51,7 +51,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         public bool MoveTarget(Compass direction)
         {
-            var location = _modelService.LayoutService.GetPointInDirection(_targetTrackerLocation, direction);
+            var location = _modelService.Level.GetPointInDirection(_targetTrackerLocation, direction);
 
             if (IsValidTarget(location))
             {
@@ -65,7 +65,7 @@ namespace Rogue.NET.Core.Processing.Service
         public void CycleTarget(Compass direction)
         {
             // Query for player visible locations
-            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
+            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(_modelService.Player);
 
             // Calculate enemies in range that are visible
             var enemiesInRange = _modelService.Level.Content.GetManyAt<Enemy>(visibleLocations).ToList();
@@ -182,7 +182,8 @@ namespace Rogue.NET.Core.Processing.Service
                 return false;
 
             // Must be a visible location
-            if (!_modelService.CharacterLayoutInformation
+            if (!_modelService.Level
+                              .VisibilityGrid
                               .GetVisibleLocations(_modelService.Player)
                               .Contains(location))
                 return false;

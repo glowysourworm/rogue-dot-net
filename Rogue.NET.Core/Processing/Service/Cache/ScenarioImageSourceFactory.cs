@@ -27,30 +27,29 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         //
         readonly ISvgCache _svgCache;
 
-        IDictionary<string, DrawingImage> _imageSourceCache;
+        IDictionary<ScenarioCacheImage, DrawingImage> _imageSourceCache;
 
         [ImportingConstructor]
         public ScenarioImageSourceFactory(ISvgCache svgCache)
         {
             _svgCache = svgCache;
 
-            _imageSourceCache = new Dictionary<string, DrawingImage>();
+            _imageSourceCache = new Dictionary<ScenarioCacheImage, DrawingImage>();
         }
         public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Light lighting)
         {
             var cacheImage = CreateCacheImage(symbolDetails, false, scale, lighting);
-            var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
-            if (_imageSourceCache.ContainsKey(cacheKey))
-                return _imageSourceCache[cacheKey];
+            if (_imageSourceCache.ContainsKey(cacheImage))
+                return _imageSourceCache[cacheImage];
 
             // Cache the result
             else
             {
                 var result = GetImageSource(cacheImage);
 
-                _imageSourceCache[cacheKey] = result;
+                _imageSourceCache[cacheImage] = result;
 
                 return result;
             }
@@ -58,18 +57,17 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Light lighting)
         {
             var cacheImage = CreateCacheImage(scenarioImage, false, scale, lighting);
-            var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
-            if (_imageSourceCache.ContainsKey(cacheKey))
-                return _imageSourceCache[cacheKey];
+            if (_imageSourceCache.ContainsKey(cacheImage))
+                return _imageSourceCache[cacheImage];
 
             // Cache the result
             else
             {
                 var result = GetImageSource(cacheImage);
 
-                _imageSourceCache[cacheKey] = result;
+                _imageSourceCache[cacheImage] = result;
 
                 return result;
             }
@@ -77,11 +75,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Light lighting)
         {
             var cacheImage = CreateCacheImage(scenarioImage, true, scale, lighting);
-            var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
-            if (_imageSourceCache.ContainsKey(cacheKey))
-                return _imageSourceCache[cacheKey];
+            if (_imageSourceCache.ContainsKey(cacheImage))
+                return _imageSourceCache[cacheImage];
 
             var source = GetImageSource(cacheImage);
 
@@ -91,7 +88,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 DrawingFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new HSLEffect(0, -1, 0, false));
 
                 // Cache the gray-scale image
-                _imageSourceCache[cacheKey] = source;
+                _imageSourceCache[cacheImage] = source;
 
                 return source;
             }
@@ -101,13 +98,12 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Light lighting)
         {
             var cacheImage = CreateCacheImage(scenarioImage, false, scale, lighting);
-            var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached FrameworkElement
-            if (_imageSourceCache.ContainsKey(cacheKey))
+            if (_imageSourceCache.ContainsKey(cacheImage))
             {
                 // Using Clone() to create new framework elements
-                var source = _imageSourceCache[cacheKey].Clone();
+                var source = _imageSourceCache[cacheImage].Clone();
 
                 return CreateScaledImage(source, scale);
             }
@@ -130,7 +126,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         var source = new DrawingImage(drawing);
 
                         // Cache the image source
-                        _imageSourceCache[cacheKey] = source;
+                        _imageSourceCache[cacheImage] = source;
 
                         return CreateScaledImage(source, cacheImage.Scale);
                     }

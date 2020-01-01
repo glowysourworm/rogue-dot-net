@@ -107,14 +107,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public ScenarioObject Move(Compass direction)
         {
             // Desired Location
-            var desiredLocation = _modelService.LayoutService.GetPointInDirection(_modelService.PlayerLocation, direction);
+            var desiredLocation = _modelService.Level.GetPointInDirection(_modelService.PlayerLocation, direction);
 
             // Invalid location
             if (desiredLocation == null)
                 return null;
 
             //Look for road blocks - move player
-            if (!_modelService.Level.IsPathToAdjacentLocationBlocked(_modelService.PlayerLocation, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
+            if (!_modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(_modelService.PlayerLocation, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
             {
                 // Check for character swaps
                 var swapCharacter = _modelService.Level.Content.GetAt<NonPlayerCharacter>(desiredLocation);
@@ -141,8 +141,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         public ScenarioObject MoveRandom()
         {
-            // Get random adjacent location
-            var desiredLocation = _modelService.LayoutService.GetRandomAdjacentLocationForMovement(_modelService.PlayerLocation, CharacterAlignmentType.PlayerAligned);
+            // Calculate random free location
+            var desiredLocation = _modelService.Level.GetFreeAdjacentMovementLocation(_modelService.Player, _randomSequenceGenerator);
 
             // Get direction for random move -> Move()
             var direction = GridCalculator.GetDirectionOfAdjacentLocation(_modelService.PlayerLocation, desiredLocation);
@@ -197,14 +197,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Get points involved with the attack
             var location = _modelService.PlayerLocation;
-            var attackLocation = _modelService.LayoutService.GetPointInDirection(location, direction);
+            var attackLocation = _modelService.Level.GetPointInDirection(location, direction);
 
             // Invalid attack location
             if (attackLocation == null)
                 return;
 
             // Check to see whether path is clear to attack
-            var blocked = _modelService.Level.IsPathToAdjacentLocationBlocked(location, attackLocation, false, CharacterAlignmentType.PlayerAligned);
+            var blocked = _modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(location, attackLocation, false, CharacterAlignmentType.PlayerAligned);
 
             // Get target for attack
             var character = _modelService.Level.Content.GetAt<NonPlayerCharacter>(attackLocation);
@@ -275,7 +275,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return LevelContinuationAction.DoNothing;
             }
 
-            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(player);
+            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(player);
             var visibleCharacters = _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations);
 
             // Check for targeting
@@ -499,7 +499,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 // Enemy missed -> Re-calculate target location near enemy
                 if (!enemyHit)
                 {
-                    var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(targetedEnemyLocation);
+                    var adjacentLocations = _modelService.Level.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, targetedEnemyLocation, 1);
 
                     if (adjacentLocations.Any())
                     {
@@ -975,7 +975,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Calculate Equipment Throw Hit - If there's a miss then try to place item on the map next to the targeted character
             if (!_interactionCalculator.CalculateEquipmentThrow(_modelService.Player, targetedCharacter, thrownItem))
             {
-                var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(animationTarget);
+                var adjacentLocations = _modelService.Level.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, animationTarget, 1);
 
                 if (adjacentLocations.Any())
                 {
@@ -1044,7 +1044,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // If there is a dodge (or miss) - place the item on the ground near the defender and don't queue alteration
             if (dodge)
             {
-                var adjacentLocations = _modelService.LayoutService.GetFreeAdjacentLocations(animationTarget);
+                var adjacentLocations = _modelService.Level.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, animationTarget, 1);
 
                 if (adjacentLocations.Any())
                 {

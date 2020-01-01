@@ -114,15 +114,13 @@ namespace Rogue.NET.Core.Model.Scenario
         /// </summary>
         public T GetAt<T>(GridLocation location) where T : ScenarioObject
         {
-            return this[location].Where(scenarioObject => scenarioObject is T)
-                                 .Cast<T>()
+            return this[location].OfType<T>()
                                  .FirstOrDefault();
         }
 
         public IEnumerable<T> GetManyAt<T>(GridLocation location) where T : ScenarioObject
         {
-            return this[location].Where(scenarioObject => scenarioObject is T)
-                                 .Cast<T>()
+            return this[location].OfType<T>()
                                  .Actualize();
         }
 

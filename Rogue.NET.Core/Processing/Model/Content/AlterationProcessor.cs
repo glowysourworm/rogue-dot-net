@@ -355,13 +355,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     return (actor is Player) ? new CharacterBase[] { targetedCharacter } : new CharacterBase[] { _modelService.Player };
                 case AlterationTargetType.AllInRange:
                     {
-                        var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(actor);
+                        var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(actor);
 
                         return _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations);
                     }
                 case AlterationTargetType.AllInRangeExceptSource:
                     {
-                        var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(actor);
+                        var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(actor);
 
                         return _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations).Except(new CharacterBase[] { actor });
                     }
@@ -1062,14 +1062,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
             switch (placementType)
             {
                 case AlterationRandomPlacementType.InLevel:
-                    openLocation = _modelService.LayoutService.GetRandomLocation(true);
+                    openLocation = _modelService.Level.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Walkable, _randomSequenceGenerator, new GridLocation[] { });
                     break;
                 case AlterationRandomPlacementType.InRangeOfSourceCharacter:
                     {
-                        var locationsInRange = _modelService.LayoutService.GetLocationsInRange(sourceLocation, sourceRange, false);
-                        var unOccupiedLocations = locationsInRange.Where(x => !level.IsCellOccupied(x));
+                        var unOccupiedLocations = _modelService.Level.GetLocationsInRange(sourceLocation, sourceRange);
 
-                        openLocation = unOccupiedLocations.Any() ? unOccupiedLocations.PickRandom() : null;
+                        openLocation = _randomSequenceGenerator.GetRandomElement(unOccupiedLocations);
                     }
                     break;
                 default:

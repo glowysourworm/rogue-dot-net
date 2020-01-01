@@ -4,19 +4,19 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 
 namespace Rogue.NET.Core.Processing.Model.Algorithm
 {
-    [Export(typeof(IVisibilityCalculator))]
-    public class ShadowCasterVisibilityCalculator : IVisibilityCalculator
+    /// <summary>
+    /// Calculates visibility using "shadow casting" algorithm
+    /// </summary>
+    public static class VisibilityCalculator
     {
         const int MAX_RADIUS = 20;
 
@@ -111,11 +111,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             }
         }
 
-        public ShadowCasterVisibilityCalculator()
-        {
-        }
-
-        public IEnumerable<DistanceLocation> CalculateVisibility(LayoutGrid grid, GridLocation location)
+        public static IEnumerable<DistanceLocation> CalculateVisibility(LayoutGrid grid, GridLocation location)
         {
             return CalculateVisibilityImpl((column, row) =>
             {
@@ -129,7 +125,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             }, location);
         }
 
-        public IEnumerable<DistanceLocation> CalculateVisibility(GridCellInfo[,] grid, GridLocation location)
+        public static IEnumerable<DistanceLocation> CalculateVisibility(GridCellInfo[,] grid, GridLocation location)
         {
             return CalculateVisibilityImpl((column, row) =>
             {
@@ -143,7 +139,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             }, location);
         }
 
-        private IEnumerable<DistanceLocation> CalculateVisibilityImpl(Func<int, int, GridLocation> getter, Func<GridLocation, bool> getterIsLightBlocking, GridLocation center)
+        private static IEnumerable<DistanceLocation> CalculateVisibilityImpl(Func<int, int, GridLocation> getter, Func<GridLocation, bool> getterIsLightBlocking, GridLocation center)
         {
             // Implementing Shadow Casting - by Björn Bergström [bjorn.bergstrom@roguelikedevelopment.org] 
             //
@@ -262,7 +258,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             return result.Values;
         }
 
-        private void CalculateIterationLocations(GridLocation center, int radius, Octant octant, out int location1Column, out int location1Row, out int location2Column, out int location2Row, out bool yDirection)
+        private static void CalculateIterationLocations(GridLocation center, int radius, Octant octant, out int location1Column, out int location1Row, out int location2Column, out int location2Row, out bool yDirection)
         {
             // NOTE*** MUST ITERATE CLOCKWISE AROUND THE CIRCLE
             switch (octant)

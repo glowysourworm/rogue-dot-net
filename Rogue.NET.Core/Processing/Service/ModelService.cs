@@ -5,12 +5,9 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 
@@ -28,33 +25,20 @@ namespace Rogue.NET.Core.Processing.Service
     {
         static readonly string INFINITY = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E });
 
-        readonly IVisibilityCalculator _visibilityCalculator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
 
         // Stored configuration for the scenario
         ScenarioConfigurationContainer _configuration;
 
-        // Dynamic (non-serialized) data about line-of-sight / visible line-of-sight / aura line-of-sight
-        // per character (These must be re-created each level)
-        ICharacterLayoutInformation _characterLayoutInformation;
-
-        // Stateful sub-component to provide layout calculations using the loaded level
-        IModelLayoutService _modelLayoutService;
-
         // Enemy to have slain the player
         string _killedBy;
 
-        public ICharacterLayoutInformation CharacterLayoutInformation { get { return _characterLayoutInformation; } }
-        public IModelLayoutService LayoutService { get { return _modelLayoutService; } }
-
         [ImportingConstructor]
         public ModelService(
-                IVisibilityCalculator visibilityCalculator,
                 IRandomSequenceGenerator randomSequenceGenerator,
                 ISymbolDetailsGenerator symbolDetailsGenerator)
         {
-            _visibilityCalculator = visibilityCalculator;
             _randomSequenceGenerator = randomSequenceGenerator;
             _symbolDetailsGenerator = symbolDetailsGenerator;
         }
@@ -102,9 +86,6 @@ namespace Rogue.NET.Core.Processing.Service
             // Load the level
             level.Load(player, location, injectedContents);
 
-            _characterLayoutInformation = new CharacterLayoutInformation(level, _visibilityCalculator);
-            _modelLayoutService = new ModelLayoutService(level, _randomSequenceGenerator);
-
             UpdateVisibility();
         }
 
@@ -114,9 +95,6 @@ namespace Rogue.NET.Core.Processing.Service
             IEnumerable<ScenarioObject> extractedContent = this.Level.Unload();
 
             _configuration = null;
-
-            _characterLayoutInformation = null;
-            _modelLayoutService = null;
 
             this.Level = null;
             this.Player = null;
@@ -232,18 +210,18 @@ namespace Rogue.NET.Core.Processing.Service
         public void UpdateVisibility()
         {
             // Calculate effective lighting for each cell
-            _modelLayoutService.CalculateEffectiveLighting();
+            this.Level.CalculateEffectiveLighting();
 
             // Apply blanket update for layout visibiltiy
-            _characterLayoutInformation
-                .ApplyUpdate(this.Level
-                                 .Content
-                                 .Characters);
+            foreach (var character in this.Level.Content.NonPlayerCharacters)
+                this.Level.VisibilityGrid.Update(character, this.Level.Content[character]);
+
+            this.Level.VisibilityGrid.Update(this.Player, this.Level.Content[this.Player]);
 
             // TODO: COMPONENTIZE THIS NICELY
 
             // Calculate visible contents
-            var visibleLocations = _characterLayoutInformation.GetVisibleLocations(this.Player);
+            var visibleLocations = this.Level.VisibilityGrid.GetVisibleLocations(this.Player);
             var visibleContent = this.Level.Content.GetManyAt<ScenarioObject>(visibleLocations);
 
             // Update Memorized Contents

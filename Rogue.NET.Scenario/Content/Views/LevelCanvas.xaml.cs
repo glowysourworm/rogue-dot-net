@@ -4,7 +4,6 @@ using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Level;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
 using Rogue.NET.Scenario.Processing.Event.Content;
@@ -26,7 +25,7 @@ namespace Rogue.NET.Scenario.Content.Views
 
         public static readonly DependencyProperty LevelHeightProperty =
             DependencyProperty.Register("LevelHeight", typeof(int), typeof(LevelCanvas));
-        
+
         public int LevelWidth
         {
             get { return (int)GetValue(LevelWidthProperty); }

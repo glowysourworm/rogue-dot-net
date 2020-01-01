@@ -342,5 +342,10 @@ namespace Rogue.NET.Common.Extension
             else
                 throw new Exception("Item in collection not found EnumerableExtension.Next()");
         }
+
+        public static IEnumerable<V> OfType<T, V>(this IEnumerable<T> collection)
+        {
+            return collection.Where(item => item is V).Cast<V>();
+        }
     }
 }

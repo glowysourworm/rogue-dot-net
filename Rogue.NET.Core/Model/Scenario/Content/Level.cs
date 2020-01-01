@@ -1,10 +1,12 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Event;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Content.Calculator;
@@ -21,13 +23,39 @@ namespace Rogue.NET.Core.Model.Scenario.Content
     [Serializable]
     public class Level : ISerializable
     {
-        readonly ContentGrid _content;
-        readonly ContentGrid _memorizedContent;
-        readonly LayoutGrid _grid;
+        /// <summary>
+        /// Primary layout storage component for the level
+        /// </summary>
+        public LayoutGrid Grid { get; private set; }
 
-        public ContentGrid Content { get { return _content; } }
-        public ContentGrid MemorizedContent { get { return _memorizedContent; } }
-        public LayoutGrid Grid { get { return _grid; } }
+        /// <summary>
+        /// Primary content storage / query component for the level
+        /// </summary>
+        public ContentGrid Content { get; private set; }
+
+        /// <summary>
+        /// Player-memorized content for the level (SERIALIZED)
+        /// </summary>
+        public ContentGrid MemorizedContent { get; private set; }
+
+        /// <summary>
+        /// Calculated visibility data for the level (NON-SERIALIZED)
+        /// </summary>
+        public VisibilityGrid VisibilityGrid { get; private set; }
+
+        /// <summary>
+        /// Calculated path finding data for the level (NON-SERIALIZED)
+        /// </summary>
+        public PathGrid PathGrid { get; private set; }
+
+        /// <summary>
+        /// Calculated aura data for the level (NON-SERIALIZED)
+        /// </summary>
+        public AuraGrid AuraGrid { get; private set; }
+
+        /// <summary>
+        /// Parameters left over from level generation
+        /// </summary>
         public LevelParameters Parameters { get; protected set; }
 
         public Level(LayoutTemplate layout,
@@ -35,9 +63,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                      LayoutGrid grid,
                      int number)
         {
-            _grid = grid;
-            _content = new ContentGrid(grid);
-            _memorizedContent = new ContentGrid(grid);
+            this.Grid = grid;
+            this.Content = new ContentGrid(grid);
+            this.MemorizedContent = new ContentGrid(grid);
+            this.VisibilityGrid = new VisibilityGrid(grid);
+            this.PathGrid = new PathGrid(grid, this.Content);
+            this.AuraGrid = new AuraGrid(this.VisibilityGrid);
 
             this.Parameters = new LevelParameters()
             {
@@ -50,15 +81,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
         public Level(SerializationInfo info, StreamingContext context)
         {
-            _grid = (LayoutGrid)info.GetValue("Grid", typeof(LayoutGrid));
+            this.Grid = (LayoutGrid)info.GetValue("Grid", typeof(LayoutGrid));
             this.Parameters = (LevelParameters)info.GetValue("Parameters", typeof(LevelParameters));
 
             var count = info.GetInt32("ContentCount");
             var memorizedCount = info.GetInt32("MemorizedContentCount");
 
             // Instantiate the level content and memorized content
-            _content = new ContentGrid(_grid);
-            _memorizedContent = new ContentGrid(_grid);
+            this.Content = new ContentGrid(this.Grid);
+            this.MemorizedContent = new ContentGrid(this.Grid);
+            this.VisibilityGrid = new VisibilityGrid(this.Grid);
+            this.PathGrid = new PathGrid(this.Grid, this.Content);
+            this.VisibilityGrid = new VisibilityGrid(this.Grid);
 
             // Deserialize the content
             for (int i = 0; i < count; i++)
@@ -67,10 +101,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 var location = (GridLocation)info.GetValue("Location" + i.ToString(), typeof(GridLocation));
 
                 // Add the content to the container
-                _content.AddContent(scenarioObject, location);
+                this.Content.AddContent(scenarioObject, location);
 
                 // Grid does NOT SERIALIZE OCCUPIED DATA. THIS IS SET HERE MANUALLY.
-                _grid.SetOccupied(location, true);
+                this.Grid.SetOccupied(location, true);
             }
 
             // Deserialize the memorized content
@@ -80,27 +114,27 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 var location = (GridLocation)info.GetValue("MemorizedLocation" + i.ToString(), typeof(GridLocation));
 
                 // MATCH UP ANY REFERENCES STILL HELD BY THE LEVEL CONTENT GRID
-                if (_content.Contains(scenarioObject.Id))
-                    scenarioObject = _content.Get(scenarioObject.Id);
+                if (this.Content.Contains(scenarioObject.Id))
+                    scenarioObject = this.Content.Get(scenarioObject.Id);
 
                 // Add the content to the container
-                _memorizedContent.AddContent(scenarioObject, location);
+                this.MemorizedContent.AddContent(scenarioObject, location);
             }
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Grid", _grid);
+            info.AddValue("Grid", this.Grid);
             info.AddValue("Parameters", this.Parameters);
 
             // Serialize the number of content entries
-            info.AddValue("ContentCount", _content.AllContent.Where(content => !(content is Player)).Count());
-            info.AddValue("MemorizedContentCount", _memorizedContent.AllContent.Count());
+            info.AddValue("ContentCount", this.Content.AllContent.Where(content => !(content is Player)).Count());
+            info.AddValue("MemorizedContentCount", this.MemorizedContent.AllContent.Count());
 
             var counter = 0;
 
             // Serialize the content
-            foreach (var content in _content.AllContent)
+            foreach (var content in this.Content.AllContent)
             {
                 // *** SERIALIZE EVERYTHING EXCEPT THE PLAYER
                 if (content is Player)
@@ -108,7 +142,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
                 // Store the object and its location
                 info.AddValue("Content" + counter, content);
-                info.AddValue("Location" + counter++, _content[content.Id]);
+                info.AddValue("Location" + counter++, this.Content[content.Id]);
             }
 
             counter = 0;
@@ -117,11 +151,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             //                               LEVEL CONTENTS THAT ARE PICKED UP WILL BE LOST REFERENCES.
             //                               SO, THE REFERENCES ARE MATCHED DURING DESERIALIZATION FOR
             //                               ANY DUPLICATES STILL IN THE LEVEL CONTENT GRID.
-            foreach (var content in _memorizedContent.AllContent)
+            foreach (var content in this.MemorizedContent.AllContent)
             {
                 // Store the object and its location
                 info.AddValue("MemorizedContent" + counter, content);
-                info.AddValue("MemorizedLocation" + counter++, _memorizedContent[content.Id]);
+                info.AddValue("MemorizedLocation" + counter++, this.MemorizedContent[content.Id]);
             }
         }
 
@@ -134,9 +168,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
             // Add extrated content (from previous level) to this level. Example: Friendly characters
             foreach (var scenarioObject in extractedContent)
-                _content.AddContent(scenarioObject, location);
+                this.Content.AddContent(scenarioObject, location);
 
-            _content.AddContent(player, location);
+            this.Content.AddContent(player, location);
         }
 
         /// <summary>
@@ -144,7 +178,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public IEnumerable<ScenarioObject> Unload()
         {
-            return _content.Unload();
+            return this.Content.Unload();
         }
 
         /// <summary>
@@ -152,14 +186,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public bool AddContent(ScenarioObject scenarioObject, GridLocation location)
         {
-            if (_grid.WalkableMap[location] == null)
+            if (this.Grid.WalkableMap[location] == null)
                 throw new Exception("Trying to add content to a non-walkable location");
 
             // Add content to the container
-            _content.AddContent(scenarioObject, location);
+            this.Content.AddContent(scenarioObject, location);
 
             // Set this location as occupied
-            _grid.SetOccupied(location, true);
+            this.Grid.SetOccupied(location, true);
 
             return true;
         }
@@ -170,20 +204,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public bool AddContentRandom(IRandomSequenceGenerator randomSequenceGenerator, 
                                      ScenarioObject scenarioObject, 
                                      ContentRandomPlacementType contentPlacementType,
-                                     IEnumerable<GridLocation> excludedLocations)
+                                     IEnumerable<GridLocation> excludedLocations = null)
         {
             GridLocation randomLocation = null;
 
             switch (contentPlacementType)
             {
                 case ContentRandomPlacementType.Random:
-                    randomLocation = _grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Placement, randomSequenceGenerator, excludedLocations);
+                    randomLocation = this.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Placement, randomSequenceGenerator, excludedLocations);
                     break;
                 case ContentRandomPlacementType.RandomRegion:
-                    randomLocation = _grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Room, randomSequenceGenerator, excludedLocations);
+                    randomLocation = this.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Room, randomSequenceGenerator, excludedLocations);
                     break;
                 case ContentRandomPlacementType.RandomCorridor:
-                    randomLocation = _grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Corridor, randomSequenceGenerator, excludedLocations);
+                    randomLocation = this.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Corridor, randomSequenceGenerator, excludedLocations);
                     break;
                 default:
                     throw new Exception("Unhandled ContentRandomPlacementType Level.cs");
@@ -203,7 +237,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public bool AddContentBeneath(CharacterBase character, ScenarioObject content)
         {
-            var location = _content[character.Id];
+            var location = this.Content[character.Id];
 
             // Add content to the level -> Set Occupied Layout Grid
             AddContent(content, location);
@@ -216,14 +250,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public bool AddContentAdjacent(IRandomSequenceGenerator randomSequenceGenerator, CharacterBase character, ScenarioObject content)
         {
-            var location = _content[character.Id];
+            var location = this.Content[character];
 
             // Gets adjacent locations to the character
-            var adjacentLocations = _grid.GetAdjacentLocations(location);
+            var adjacentLocations = this.Grid.GetAdjacentLocations(location);
 
             // Filters out occupied locations
-            var nonOccupiedLocations = adjacentLocations.Where(location => _grid.LayerContains(LayoutGrid.LayoutLayer.Walkable, location) &&
-                                                                          !_grid.IsOccupied(location));
+            var nonOccupiedLocations = adjacentLocations.Where(location => this.Grid.LayerContains(LayoutGrid.LayoutLayer.Walkable, location) &&
+                                                                          !this.Grid.IsOccupied(location));
             // Finally, select one of these at random
             var randomLocation = randomSequenceGenerator.GetRandomElement(nonOccupiedLocations);
 
@@ -242,7 +276,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public bool AddContentGroup(IRandomSequenceGenerator randomSequenceGenerator, 
                                     IEnumerable<ScenarioObject> scenarioObjects, 
                                     ContentGroupPlacementType placementType,
-                                    IEnumerable<GridLocation> excludedLocations)
+                                    IEnumerable<GridLocation> excludedLocations = null)
         {
             // Have to be able to query the layout grid for NON-OCCUPIED cells. So, the occupation of cells needs to be 
             // dually maintained - once for the content grid; and once for the layout grid.
@@ -259,7 +293,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 case ContentGroupPlacementType.Adjacent:
                     {
                         // Get a contiguous, random rectangle of non-occupied locations
-                        var squareRegion = _grid.GetNonOccupiedRegionLocationGroup(LayoutGrid.LayoutLayer.Placement, squareEdge, squareEdge, 
+                        var squareRegion = this.Grid.GetNonOccupiedRegionLocationGroup(LayoutGrid.LayoutLayer.Placement, squareEdge, squareEdge, 
                                                                                   randomSequenceGenerator, 
                                                                                   excludedLocations);
 
@@ -273,14 +307,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 case ContentGroupPlacementType.RandomlyDistant:
                     {
                         // Start with location near the edge of the walkable map
-                        var location = _grid.GetNonOccupiedEdgeLocation(LayoutGrid.LayoutLayer.Placement, randomSequenceGenerator, excludedLocations);
+                        var location = this.Grid.GetNonOccupiedEdgeLocation(LayoutGrid.LayoutLayer.Placement, randomSequenceGenerator, excludedLocations);
 
                         var distantLocations = new List<GridLocation>() { location };
 
                         for (int i = 1; i < scenarioObjects.Count(); i++)
                         {
                             // Calculate next location based on the previous
-                            location = _grid.GetNonOccupiedDistantLocations(LayoutGrid.LayoutLayer.Placement, distantLocations, randomSequenceGenerator, excludedLocations);
+                            location = this.Grid.GetNonOccupiedDistantLocations(LayoutGrid.LayoutLayer.Placement, distantLocations, randomSequenceGenerator, excludedLocations);
 
                             if (location != null)
                                 distantLocations.Add(location);
@@ -296,14 +330,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 case ContentGroupPlacementType.RandomlyDistantRoom:
                     {
                         // Start with location near the edge of the room map
-                        var location = _grid.GetNonOccupiedEdgeLocation(LayoutGrid.LayoutLayer.Room, randomSequenceGenerator, excludedLocations);
+                        var location = this.Grid.GetNonOccupiedEdgeLocation(LayoutGrid.LayoutLayer.Room, randomSequenceGenerator, excludedLocations);
 
                         var distantLocations = new List<GridLocation>() { location };
 
                         for (int i = 1; i < scenarioObjects.Count(); i++)
                         {
                             // Calculate next location based on the previous
-                            location = _grid.GetNonOccupiedDistantLocations(LayoutGrid.LayoutLayer.Room, distantLocations, randomSequenceGenerator, excludedLocations);
+                            location = this.Grid.GetNonOccupiedDistantLocations(LayoutGrid.LayoutLayer.Room, distantLocations, randomSequenceGenerator, excludedLocations);
 
                             if (location != null)
                                 distantLocations.Add(location);
@@ -339,13 +373,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public void RemoveContent(string scenarioObjectId)
         {
             // Get location of the object
-            var location = _content[scenarioObjectId];
+            var location = this.Content[scenarioObjectId];
 
             // Remove content from the container
-            _content.RemoveContent(scenarioObjectId);
+            this.Content.RemoveContent(scenarioObjectId);
 
             // Set non-occupied in the layout grid
-            _grid.SetOccupied(location, false);
+            this.Grid.SetOccupied(location, false);
         }
 
         public void MoveContent(ScenarioObject scenarioObject, GridLocation newLocation)
@@ -364,140 +398,132 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             foreach (var location in visibleLocations)
             {
                 // Remove any existing content from visible location
-                var memorizedContentIds = _memorizedContent[location].Select(scenarioObject => scenarioObject.Id)
+                var memorizedContentIds = this.MemorizedContent[location].Select(scenarioObject => scenarioObject.Id)
                                                                      .Actualize();
 
                 // (Modifies collection)
                 foreach (var contentId in memorizedContentIds)
-                    _memorizedContent.RemoveContent(contentId);
+                    this.MemorizedContent.RemoveContent(contentId);
 
                 // Query any contents from the level content grid
-                var levelContent = _content[location].Where(scenarioObject => scenarioObject is ItemBase ||
+                var levelContent = this.Content[location].Where(scenarioObject => scenarioObject is ItemBase ||
                                                                               scenarioObject is DoodadBase).Actualize();
 
                 // Add these to the memorized content
                 foreach (var content in levelContent)
-                    _memorizedContent.AddContent(content, location);
+                    this.MemorizedContent.AddContent(content, location);
             }
 
             return true;
         }
 
         #region Content Queries
+        public Player GetPlayer()
+        {
+            return this.Content
+                       .Characters
+                       .OfType<Player>()
+                       .First();
+        }
         public DoodadNormal GetStairsUp()
         {
-            return _content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.StairsUp);
+            return this.Content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.StairsUp);
         }
         public DoodadNormal GetStairsDown()
         {
-            return _content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.StairsDown);
+            return this.Content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.StairsDown);
         }
         public DoodadNormal GetSavePoint()
         {
-            return _content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.SavePoint);
+            return this.Content.DoodadsNormal.FirstOrDefault(doodad => doodad.NormalType == DoodadNormalType.SavePoint);
         }
         public bool HasStairsUp()
         {
-            return _content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.StairsUp);
+            return this.Content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.StairsUp);
         }
         public bool HasStairsDown()
         {
-            return _content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.StairsDown);
+            return this.Content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.StairsDown);
         }
         public bool HasSavePoint()
         {
-            return _content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.SavePoint);
+            return this.Content.DoodadsNormal.Any(doodad => doodad.NormalType == DoodadNormalType.SavePoint);
         }
 
-        /// <summary>
-        /// Checks level contents to see if cell is occupied. (NOTE** Includes the player location)
-        /// </summary>
-        public bool IsCellOccupied(GridLocation location)
+        public bool IsOccupied(GridLocation location)
         {
-            return _grid.IsOccupied(location);
+            return this.Grid.IsOccupied(location);
+        }
+        public bool IsOccupiedByCharacter(GridLocation location)
+        {
+            return this.Content[location].Any(scenarioObject => scenarioObject is CharacterBase);
         }
 
-        /// <summary>
-        /// Checks level contents to see if cell is occupied by a character. (NOTE*** Includes the player location)
-        /// </summary>
-        public bool IsCellOccupiedByCharacter(GridLocation location)
+        public GridLocation GetPointInDirection(GridLocation location, Compass direction)
         {
-            return _content[location].Any(scenarioObject => scenarioObject is CharacterBase);
-        }
-
-        public bool IsPathToAdjacentLocationBlocked(GridLocation location1,
-                                                    GridLocation location2,
-                                                    bool includeBlockedByCharacters,
-                                                    CharacterAlignmentType excludedAlignmentType = CharacterAlignmentType.None)
-        {
-            var cell1 = _grid[location1];
-            var cell2 = _grid[location2];
-
-            if (cell1 == null || cell2 == null)
-                return true;
-
-            if (_grid.ImpassableTerrainMap[location2] != null)
-                return true;
-
-            // Check that the cell is occupied by a character of the other faction
-            var character = _content.GetAt<NonPlayerCharacter>(cell2.Location);
-
-            if (character != null &&
-                includeBlockedByCharacters &&
-                character.AlignmentType != excludedAlignmentType)
-                return true;
-
-            var direction = GridCalculator.GetDirectionOfAdjacentLocation(location1, location2);
-
             switch (direction)
             {
-                case Compass.N:
-                case Compass.S:
-                case Compass.E:
-                case Compass.W:
-                    return cell2.IsWall;
-
-                case Compass.NE:
-                case Compass.NW:
-                case Compass.SE:
-                case Compass.SW:
-                    {
-                        Compass cardinal1;
-                        Compass cardinal2;
-
-                        var diag1 = _grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
-                        var diag2 = _grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
-
-                        var oppositeCardinal1 = GridCalculator.GetOppositeDirection(cardinal1);
-                        var oppositeCardinal2 = GridCalculator.GetOppositeDirection(cardinal2);
-
-                        if (diag1 == null || diag2 == null)
-                            return true;
-
-                        var characters1 = _content.GetManyAt<CharacterBase>(diag1.Location);
-                        var characters2 = _content.GetManyAt<CharacterBase>(diag2.Location);
-
-                        bool b1 = (diag1 == null);
-                        bool b2 = (diag2 == null);
-
-                        if (diag1 != null)
-                        {
-                            b1 |= diag1.IsWall;
-                            b1 |= cell2.IsWall;
-                            b1 |= (characters1.Any() && includeBlockedByCharacters);
-                        }
-                        if (diag2 != null)
-                        {
-                            b1 |= diag2.IsWall;
-                            b1 |= cell2.IsWall;
-                            b2 |= (characters2.Any() && includeBlockedByCharacters);
-                        }
-
-                        // Both paths are blocked
-                        return b1 || b2;
-                    }
+                case Compass.N: return this.Grid[location.Column, location.Row - 1]?.Location ?? null;
+                case Compass.S: return this.Grid[location.Column, location.Row + 1]?.Location ?? null;
+                case Compass.E: return this.Grid[location.Column + 1, location.Row]?.Location ?? null;
+                case Compass.W: return this.Grid[location.Column - 1, location.Row]?.Location ?? null;
+                case Compass.NE: return this.Grid[location.Column + 1, location.Row - 1]?.Location ?? null;
+                case Compass.NW: return this.Grid[location.Column - 1, location.Row - 1]?.Location ?? null;
+                case Compass.SW: return this.Grid[location.Column - 1, location.Row + 1]?.Location ?? null;
+                case Compass.SE: return this.Grid[location.Column + 1, location.Row + 1]?.Location ?? null;
+                case Compass.Null:
+                default:
+                    return location;
             }
-            return false;
+        }
+
+        public GridLocation GetFreeAdjacentLocation(CharacterBase character, IRandomSequenceGenerator randomSequenceGenerator)
+        {
+            // Get non-occupied locations near the character with range 1
+            var adjacentLocations = this.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, this.Content[character], 1);
+
+            // Return random element from these locations
+            return randomSequenceGenerator.GetRandomElement(adjacentLocations);
+        }
+
+        public GridLocation GetFreeAdjacentMovementLocation(CharacterBase character, IRandomSequenceGenerator randomSequenceGenerator)
+        {
+            // Get adjacent locations
+            var freeLocations = this.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, this.Content[character], 1);
+
+            var alignmentType = character is Player ? CharacterAlignmentType.PlayerAligned : CharacterAlignmentType.EnemyAligned;
+
+            // Check for path blocking
+            var openLocations = freeLocations.Where(location => this.PathGrid
+                                                                    .IsPathToAdjacentLocationBlocked(this.Content[character], location, true, alignmentType))
+                                             .Actualize();
+
+            return randomSequenceGenerator.GetRandomElement(openLocations);
+        }
+
+        public IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int range)
+        {
+            // Query for locations near the character from the walkable layer
+            return this.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, location, range);
+        }
+
+        public IEnumerable<GridLocation> GetVisibleLocationsInRange(CharacterBase character, int range)
+        {
+            // Query for locations near the character from the walkable layer
+            var locationsNear = this.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, this.Content[character], range);
+
+            // Cross reference this collection with the visibility grid
+            return locationsNear.Where(location => this.VisibilityGrid.IsVisibleTo(location, character))
+                                .Actualize();
+        }
+        
+        public void CalculateEffectiveLighting()
+        {
+            // For now, this calculation just copies the cell's lighting value to the effective value. This will
+            // soon be using all light sources in the calculation.
+            //
+            foreach (var location in this.Grid.FullMap.GetLocations())
+                this.Grid[location].EffectiveLighting = ColorFilter.Discretize(this.Grid[location].BaseLight, ModelConstants.ColorChannelDiscretization);
         }
         #endregion
     }

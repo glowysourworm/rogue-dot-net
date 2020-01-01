@@ -12,15 +12,14 @@ using Rogue.NET.Core.Processing.Action;
 using Rogue.NET.Core.Processing.Action.Enum;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
-using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Utility;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -163,8 +162,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public void DropPlayerItem(string itemId)
         {
             var item = _modelService.Player.Inventory[itemId];
-            var adjacentFreeLocations = _modelService.LayoutService.GetFreeAdjacentLocations(_modelService.PlayerLocation);
-            var dropLocation = _randomSequenceGenerator.GetRandomElement(adjacentFreeLocations);
+            var dropLocation = _modelService.Level.GetFreeAdjacentLocation(_modelService.Player, _randomSequenceGenerator);
 
             if (dropLocation == null)
             {
@@ -265,9 +263,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         public void CalculateCharacterReactions()
         {
-            // PRE-CALCULATE DIJKSTRA MAP
-            _modelService.CharacterLayoutInformation.CalculateCharacterPaths();
-
             // TODO: BUILD A BACKEND SEQUENCER!!!
             //
             // Character Reactions: 0) Check whether character is still alive 
@@ -536,9 +531,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void DropCharacterItem(NonPlayerCharacter character, ItemBase item)
         {
-            var characterLocation = _modelService.GetContentLocation(character);
-            var adjacentFreeLocations = _modelService.LayoutService.GetFreeAdjacentLocations(characterLocation);
-            var location = adjacentFreeLocations.FirstOrDefault();
+            var location = _modelService.Level.GetFreeAdjacentLocation(character, _randomSequenceGenerator);
 
             if (location == null)
                 return;
@@ -630,9 +623,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 // If no attack taken calculate a move instead
                 else
                 {
-                    var moveLocation = _modelService.CharacterLayoutInformation.GetNextPathLocation(character);
+                    var moveLocation = _modelService.Level.PathGrid.CalculateNextLocation(character);
 
                     if (moveLocation != null &&
+                       !moveLocation.Equals(_modelService.Level.Content[character]) &&
                        !moveLocation.Equals(_modelService.PlayerLocation))
                     {
                         ProcessCharacterMove(character, moveLocation);
@@ -760,7 +754,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // GOING TO EXCLUDE CHARACTER / CHARACTER SWAP FOR THE SAME ALIGNMENT (reserved for Player only)
             //
-            if (!_modelService.Level.IsPathToAdjacentLocationBlocked(characterLocation, moveLocation, true, CharacterAlignmentType.None))
+            if (!_modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(characterLocation, moveLocation, true, CharacterAlignmentType.None))
             {
                 // Update enemy location
                 _modelService.Level.MoveContent(character, moveLocation);
@@ -784,7 +778,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             IEnumerable<CharacterBase> charactersInRange = null;
 
-            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(character);
+            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(character);
 
             var playerAligned = (character.AlignmentType == CharacterAlignmentType.PlayerAligned && !opposingAlignment) ||
                                 (character.AlignmentType == CharacterAlignmentType.EnemyAligned && opposingAlignment);
@@ -795,8 +789,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 charactersInRange = _modelService.Level
                                                  .Content
                                                  .GetManyAt<CharacterBase>(visibleLocations)
-                                                 .Where(character => character is Player || 
-                                                                    (character is NonPlayerCharacter && 
+                                                 .Where(character => character is Player ||
+                                                                    (character is NonPlayerCharacter &&
                                                                     (character as NonPlayerCharacter).AlignmentType == CharacterAlignmentType.PlayerAligned))
                                                  .Actualize();
             }
@@ -993,7 +987,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Fetch locations visible to the player
-            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
+            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(_modelService.Player);
 
             // Create enemy from template
             var template = _randomSequenceGenerator.GetWeightedRandom(enemyTemplates, x => x.GenerationWeight);

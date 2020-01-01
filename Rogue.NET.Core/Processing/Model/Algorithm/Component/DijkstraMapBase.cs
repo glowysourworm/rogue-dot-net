@@ -1,8 +1,4 @@
 ﻿using Rogue.NET.Common.Collection;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
 
@@ -12,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Rogue.NET.Core.Math.Geometry
+namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
 {
     public abstract class DijkstraMapBase
     {
@@ -49,19 +45,17 @@ namespace Rogue.NET.Core.Math.Geometry
         /// <summary>
         /// Constant that indictaes a region of the grid that is to be AVOIDED; but CROSSABLE.
         /// </summary>
-        protected readonly static float MapCostAvoid = 10000;
+        public readonly static float MapCostAvoid = 10000;
 
         /// <summary>
         /// Constant that indicates that a region is off-limits to the Dijkstra map.
         /// </summary>
-        protected readonly static float MapCostInfinity = float.PositiveInfinity;
+        public readonly static float MapCostInfinity = float.PositiveInfinity;
 
         private readonly int _width;
         private readonly int _height;
         private readonly DijkstraMapCostCallback _costCallback;
         private readonly DijkstraMapLocatorCallback _locatorCallback;
-
-        private bool _hasRun;
 
         const int CELL_MOVEMENT_COST = 1;
 
@@ -176,14 +170,11 @@ namespace Rogue.NET.Core.Math.Geometry
                 }
 
                 // Update goal dictionary
-                for (int i = 0; i < goalDict.Count; i++)
-                {
-                    var element = goalDict.ElementAt(i);
+                var locator = _locatorCallback(column, row);
 
-                    if (element.Key.Column == column &&
-                        element.Key.Row == row)
-                        goalDict[element.Key] = true;
-                }
+                // O(1)
+                if (goalDict.ContainsKey(locator))
+                    goalDict[locator] = true;
 
                 // Select next location from frontier queue - using the smallest weight
                 if (frontier.Count > 0)
@@ -206,8 +197,6 @@ namespace Rogue.NET.Core.Math.Geometry
                     row = nextNode.Row;
                 }
             }
-
-            _hasRun = true;
         }
 
         private void UpdateOutputMap(BinarySearchTree<float, List<IGridLocator>> frontier, float currentWeight, int destColumn, int destRow, int sourceColumn, int sourceRow)
@@ -230,7 +219,7 @@ namespace Rogue.NET.Core.Math.Geometry
             var oldWeight = this.OutputMap[destColumn, destRow];
 
             // Update the output map
-            this.OutputMap[destColumn, destRow] = System.Math.Min(this.OutputMap[destColumn, destRow], 
+            this.OutputMap[destColumn, destRow] = System.Math.Min(this.OutputMap[destColumn, destRow],
                                                                                 currentWeight + _costCallback(sourceColumn, sourceRow, destColumn, destRow) + CELL_MOVEMENT_COST);
 
             // Update the frontier
@@ -292,9 +281,6 @@ namespace Rogue.NET.Core.Math.Geometry
 
         protected IEnumerable<IGridLocator> GeneratePath(IGridLocator targetLocation)
         {
-            if (!_hasRun)
-                throw new Exception("Must call Run() before generating a path DijkstraMapBase");
-
             if (!this.TargetLocations.Contains(targetLocation))
                 throw new Exception("Requested target location not specified by the constructor DijkstraMapBase");
 
@@ -423,171 +409,6 @@ namespace Rogue.NET.Core.Math.Geometry
             }
 
             File.WriteAllText(fileName, builder.ToString());
-        }
-    }
-
-    public class DijkstraPathGenerator : DijkstraMapBase
-    {
-        /// <summary>
-        /// Callback that allows setting properties of the embedded path cells
-        /// </summary>
-        public delegate void DijkstraEmbedPathCallback(GridCellInfo pathCell);
-
-        readonly GridCellInfo[,] _grid;
-
-        public DijkstraPathGenerator(GridCellInfo[,] grid, 
-                                     IEnumerable<Region<GridCellInfo>> avoidRegions, 
-                                     GridCellInfo sourceLocation, 
-                                     IEnumerable<GridCellInfo> targetLocations, 
-                                     bool obeyCardinalMovement)
-             : base(grid.GetLength(0), 
-                    grid.GetLength(1), 
-                    obeyCardinalMovement, 
-                    sourceLocation, 
-                    targetLocations, 
-                    new DijkstraMapCostCallback((column1, row1, column2, row2) =>
-             {
-                 // MOVEMENT COST BASED ON THE DESTINATION CELL
-                 //
-                 if (avoidRegions.Any(region => region[column2, row2] != null))
-                     return DijkstraMapBase.MapCostAvoid;
-
-                 else
-                     return 0;
-
-             }), new DijkstraMapLocatorCallback((column, row) =>
-             {
-                 // ALLOCATE NEW GRID CELLS FOR CREATING NEW PATHS
-                 return grid[column, row] ?? new GridCellInfo(column, row);
-             }))
-        {
-            _grid = grid;
-        }
-
-        public void EmbedPaths(DijkstraEmbedPathCallback callback)
-        {
-            Run();
-
-            // Create paths for each target
-            foreach (var targetLocation in this.TargetLocations)
-            {
-                foreach (var cell in GeneratePath(targetLocation))
-                {
-                    // Allow setting properties on cells from the new path
-                    callback(cell as GridCellInfo);
-
-                    // Embed the cell
-                    _grid[cell.Column, cell.Row] = cell as GridCellInfo;
-                }
-            }
-        }
-    }
-
-    public class DijkstraPathFinder : DijkstraMapBase
-    {
-        readonly Level _level;
-
-        // NOTE*** Source / Target are swapped during the scan. Multiple "targets" are traced back to a single "source"
-        public DijkstraPathFinder(Level level, 
-                                  IGridLocator goalLocation, 
-                                  IEnumerable<IGridLocator> sourceLocations, 
-                                  bool obeyCardinalMovement)
-             : base(level.Grid.Bounds.Width, 
-                    level.Grid.Bounds.Height, 
-                    obeyCardinalMovement, 
-                    goalLocation, 
-                    sourceLocations, 
-                    new DijkstraMapCostCallback((column1, row1, column2, row2) =>
-             {
-                 var cell1 = level.Grid[column1, row1];
-                 var cell2 = level.Grid[column2, row2];
-
-                 if (cell1 == null ||
-                     cell2 == null)
-                     return DijkstraMapBase.MapCostInfinity;
-
-                 if (level.Grid.WalkableMap[column2, row2] != null &&
-                    !level.IsPathToAdjacentLocationBlocked(cell1.Location, 
-                                                           cell2.Location, false))
-                     return 0;
-
-                 else
-                     return DijkstraMapBase.MapCostInfinity;
-
-             }), new DijkstraMapLocatorCallback((column, row) =>
-             {
-                 return level.Grid[column, row].Location;
-             }))
-        {
-            _level = level;
-
-            Run();
-        }
-
-        /// <summary>
-        /// Gets the next step in the path from the specified 
-        /// </summary>
-        public GridLocation GetNextPathLocation(IGridLocator sourceLocation)
-        {
-            if (!this.TargetLocations.Any(location => location.Column == sourceLocation.Column &&
-                                                      location.Row == sourceLocation.Row))
-                throw new Exception("Trying to get Dijkstra path for non-routed location");
-
-            // NOTE*** Source / Target locations swapped in the constructor
-            var output = this.OutputMap[sourceLocation.Column, sourceLocation.Row];
-
-            // Get the next lowest cost output from the Dijkstra output map - select this location
-            if (this.ObeyCardinalMovement)
-            {
-                var nextLocation = this.OutputMap
-                                       .GetCardinalAdjacentValueLocators(sourceLocation.Column, sourceLocation.Row)
-                                       .Where(location => this.OutputMap[location.Column, location.Row] < output)
-                                       .MinBy(location => Metric.RoguianDistance(location, sourceLocation));
-
-                return _level.Grid[nextLocation].Location;
-            }
-            else
-            {
-                var nextLocation = this.OutputMap
-                                       .GetAdjacentValueLocators(sourceLocation.Column, sourceLocation.Row)
-                                       .Where(location => this.OutputMap[location.Column, location.Row] < output)
-                                       .MinBy(location => Metric.RoguianDistance(location, sourceLocation));
-
-                return _level.Grid[nextLocation].Location;
-            }
-        }
-
-        /// <summary>
-        /// Gets the next step in the path from the GOAL to the specified SOURCE
-        /// </summary>
-        public GridLocation GetReverseNextPathLocation(IGridLocator sourceLocation)
-        {
-            if (!this.TargetLocations.Any(location => location.Column == sourceLocation.Column &&
-                                                      location.Row == sourceLocation.Row))
-                throw new Exception("Trying to get Dijkstra path for non-routed location");
-
-            // NOTE*** Source / Target locations swapped in the constructor
-            var output = this.OutputMap[this.SourceLocation.Column, this.SourceLocation.Row];
-
-            // Get the next highest cost output from the Dijkstra output map - select this location
-            if (this.ObeyCardinalMovement)
-            {
-                var nextLocation = this.OutputMap
-                                       .GetCardinalAdjacentValueLocators(this.SourceLocation.Column, this.SourceLocation.Row)
-                                       .Where(location => this.OutputMap[location.Column, location.Row] > output)
-                                       .MinBy(location => this.OutputMap[location.Column, location.Row]);
-
-                return _level.Grid[nextLocation].Location;
-            }
-            else
-            {
-                var nextLocation = this.OutputMap
-                                       .GetAdjacentValueLocators(this.SourceLocation.Column, this.SourceLocation.Row)
-                                       .Where(location => this.OutputMap[location.Column, location.Row] > output)
-                                       .MinBy(location => this.OutputMap[location.Column, location.Row]);
-
-                return _level.Grid[nextLocation].Location;
-            }
         }
     }
 }
