@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
     /// </summary>
     public class AuraGrid
     {
-        readonly VisibilityGrid _visibilityGrid;
+        readonly CharacterVisibility _visibilityGrid;
 
         // Primary 2D array - stores aura identifier
         List<string>[,] _playerAlignedAuraGrid;
@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         // Dictionary lookup - stores affected locations per aura
         Dictionary<string, IEnumerable<GridLocation>> _auraDict;
 
-        public AuraGrid(VisibilityGrid visibilityGrid)
+        public AuraGrid(CharacterVisibility visibilityGrid)
         {
             _visibilityGrid = visibilityGrid;
 
@@ -41,9 +41,9 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // Update all auras for this character
             foreach (var aura in character.Alteration.GetAuras())
             {
-                var auraLocations = _visibilityGrid.GetVisibleLocations(character)
-                                                   .Where(location => Metric.EuclideanDistance(characterLocation, location) <= aura.Item2.AuraRange)
-                                                   .Actualize();
+                var auraLocations = _visibilityGrid[character].VisibleLocations
+                                                              .Where(location => Metric.EuclideanDistance(characterLocation, location) <= aura.Item2.AuraRange)
+                                                              .Actualize();
 
                 UpdateAura(aura.Item1.Id, auraLocations, playerAligned ? CharacterAlignmentType.PlayerAligned : CharacterAlignmentType.EnemyAligned);
             }

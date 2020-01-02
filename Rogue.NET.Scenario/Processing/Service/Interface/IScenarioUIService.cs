@@ -32,7 +32,7 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
                                   DrawingImage[,] exploredLayer,
                                   DrawingImage[,] revealedLayer);
 
-        Geometry CreateGeometry(IEnumerable<GridLocation> locations);
+        Geometry CreateOutlineGeometry(IEnumerable<GridLocation> locations);
 
         void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject, bool isMemorized);
         void UpdateLightRadius(LevelCanvasShape canvasShape, CharacterBase character, Rect levelUIBounds);

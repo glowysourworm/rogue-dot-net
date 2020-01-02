@@ -789,7 +789,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             IEnumerable<CharacterBase> charactersInRange = null;
 
-            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(character);
+            var visibleLocations = _modelService.Level.Visibility[character].VisibleLocations;
 
             var playerAligned = (character.AlignmentType == CharacterAlignmentType.PlayerAligned && !opposingAlignment) ||
                                 (character.AlignmentType == CharacterAlignmentType.EnemyAligned && opposingAlignment);
@@ -998,7 +998,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Fetch locations visible to the player
-            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(_modelService.Player);
+            var visibleLocations = _modelService.Level.Visibility.GetVisibleLocations();
 
             // Create enemy from template
             var template = _randomSequenceGenerator.GetWeightedRandom(enemyTemplates, x => x.GenerationWeight);

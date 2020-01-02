@@ -40,7 +40,7 @@ namespace Rogue.NET.Core.Model.Scenario
             this.Encyclopedia = new ScenarioEncyclopedia();
             this.SaveLocation = PlayerStartLocation.StairsUp;
             this.Statistics = new ScenarioStatistics();
-            this.ZoomFactor = 1.0D;
+            this.ZoomFactor = 2.0D;
         }
     }
 }

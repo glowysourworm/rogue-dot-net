@@ -214,14 +214,14 @@ namespace Rogue.NET.Core.Processing.Service
 
             // Apply blanket update for layout visibiltiy
             foreach (var character in this.Level.Content.NonPlayerCharacters)
-                this.Level.VisibilityGrid.Update(character, this.Level.Content[character]);
+                this.Level.Visibility.Update(character, this.Level.Content[character]);
 
-            this.Level.VisibilityGrid.Update(this.Player, this.Level.Content[this.Player]);
+            this.Level.Visibility.Update(this.Player, this.Level.Content[this.Player]);
 
             // TODO: COMPONENTIZE THIS NICELY
 
             // Calculate visible contents
-            var visibleLocations = this.Level.VisibilityGrid.GetVisibleLocations(this.Player);
+            var visibleLocations = this.Level.Visibility.GetVisibleLocations();
             var visibleContent = this.Level.Content.GetManyAt<ScenarioObject>(visibleLocations);
 
             // Update Memorized Contents

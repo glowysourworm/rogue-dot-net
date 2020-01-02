@@ -275,7 +275,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return LevelContinuationAction.DoNothing;
             }
 
-            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(player);
+            var visibleLocations = _modelService.Level.Visibility.GetVisibleLocations();
             var visibleCharacters = _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations);
 
             // Check for targeting

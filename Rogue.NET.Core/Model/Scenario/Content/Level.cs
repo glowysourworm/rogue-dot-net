@@ -39,9 +39,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public ContentGrid MemorizedContent { get; private set; }
 
         /// <summary>
-        /// Calculated visibility data for the level (NON-SERIALIZED)
+        /// Calculated visibility data for the level (NON-SERIALIZED) (CONSIDER SERIALIZING TO
+        /// PRESERVE CHARACTER BEHAVIOR STATE)
         /// </summary>
-        public VisibilityGrid VisibilityGrid { get; private set; }
+        public CharacterVisibility Visibility { get; private set; }
 
         /// <summary>
         /// Calculated path finding data for the level (NON-SERIALIZED)
@@ -66,9 +67,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.Grid = grid;
             this.Content = new ContentGrid(grid);
             this.MemorizedContent = new ContentGrid(grid);
-            this.VisibilityGrid = new VisibilityGrid(grid);
+            this.Visibility = new CharacterVisibility(grid, this.Content);
             this.PathGrid = new PathGrid(grid, this.Content);
-            this.AuraGrid = new AuraGrid(this.VisibilityGrid);
+            this.AuraGrid = new AuraGrid(this.Visibility);
 
             this.Parameters = new LevelParameters()
             {
@@ -90,9 +91,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             // Instantiate the level content and memorized content
             this.Content = new ContentGrid(this.Grid);
             this.MemorizedContent = new ContentGrid(this.Grid);
-            this.VisibilityGrid = new VisibilityGrid(this.Grid);
+            this.Visibility = new CharacterVisibility(this.Grid, this.Content);
             this.PathGrid = new PathGrid(this.Grid, this.Content);
-            this.VisibilityGrid = new VisibilityGrid(this.Grid);
+            this.Visibility = new CharacterVisibility(this.Grid, this.Content);
 
             // Deserialize the content
             for (int i = 0; i < count; i++)
@@ -513,7 +514,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             var locationsNear = this.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, this.Content[character], range);
 
             // Cross reference this collection with the visibility grid
-            return locationsNear.Where(location => this.VisibilityGrid.IsVisibleTo(location, character))
+            return locationsNear.Where(location => this.Visibility.IsVisibleTo(location, character))
                                 .Actualize();
         }
         

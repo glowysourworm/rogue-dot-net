@@ -264,9 +264,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                                            IEnumerable<GridLocation> visibleLocations,
                                            IEnumerable<GridLocation> revealedLocations)
         {
-            var exploredGeometry = _scenarioUIService.CreateGeometry(exploredLocations);
-            var visibleGeometry = _scenarioUIService.CreateGeometry(visibleLocations);
-            var revealedGeometry = _scenarioUIService.CreateGeometry(revealedLocations);
+            var exploredGeometry = _scenarioUIService.CreateOutlineGeometry(exploredLocations);
+            var visibleGeometry = _scenarioUIService.CreateOutlineGeometry(visibleLocations);
+            var revealedGeometry = _scenarioUIService.CreateOutlineGeometry(revealedLocations);
+
+            // FREEZE TO BOOST RENDERING PERFORMANCE
+            exploredGeometry.Freeze();
+            visibleGeometry.Freeze();
+            revealedGeometry.Freeze();
 
             // Top Layer = Visible Mask ^ Explored Mask ^ Revealed Mask
             this.VisibleOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,

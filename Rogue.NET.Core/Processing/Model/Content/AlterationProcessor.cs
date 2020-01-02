@@ -355,13 +355,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     return (actor is Player) ? new CharacterBase[] { targetedCharacter } : new CharacterBase[] { _modelService.Player };
                 case AlterationTargetType.AllInRange:
                     {
-                        var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(actor);
+                        var visibleLocations = _modelService.Level.Visibility[actor].VisibleLocations;
 
                         return _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations);
                     }
                 case AlterationTargetType.AllInRangeExceptSource:
                     {
-                        var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(actor);
+                        var visibleLocations = _modelService.Level.Visibility[actor].VisibleLocations;
 
                         return _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations).Except(new CharacterBase[] { actor });
                     }

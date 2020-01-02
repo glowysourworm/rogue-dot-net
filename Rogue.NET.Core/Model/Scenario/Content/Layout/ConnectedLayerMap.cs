@@ -19,17 +19,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         public new IEnumerable<Region<GridLocation>> Regions
         {
-            get { return this.Regions.Cast<Region<GridLocation>>(); }
+            get { return base.Regions.Cast<Region<GridLocation>>(); }
         }
 
         public new Region<GridLocation> this[int column, int row]
         {
-            get { return this[column, row] as Region<GridLocation>; }
+            get { return base[column, row] as Region<GridLocation>; }
         }
 
         public new Region<GridLocation> this[IGridLocator location]
         {
-            get { return this[location] as Region<GridLocation>; }
+            get { return base[location] as Region<GridLocation>; }
         }
 
         public IEnumerable<ConnectedRegion<GridLocation>> Connections(int column, int row)

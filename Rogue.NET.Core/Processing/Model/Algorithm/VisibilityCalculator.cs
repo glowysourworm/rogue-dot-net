@@ -3,7 +3,6 @@ using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
 
 using System;
@@ -18,6 +17,11 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
     /// </summary>
     public static class VisibilityCalculator
     {
+        /// <summary>
+        /// Callback from the visibility calculation to allow setting of data in the primary grid (prevents allocation)
+        /// </summary>
+        public delegate void VisibilityCalculatorCallback(int column, int row, bool isVisible);
+
         const int MAX_RADIUS = 20;
 
         protected enum Octant
@@ -111,9 +115,9 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             }
         }
 
-        public static IEnumerable<DistanceLocation> CalculateVisibility(LayoutGrid grid, GridLocation location)
+        public static void CalculateVisibility(LayoutGrid grid, GridLocation location, VisibilityCalculatorCallback callback)
         {
-            return CalculateVisibilityImpl((column, row) =>
+            CalculateVisibilityImpl((column, row) =>
             {
                 return grid[column, row]?.Location;
             },
@@ -122,12 +126,12 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 return grid[gridLocation.Column, gridLocation.Row] == null ||
                        grid[gridLocation.Column, gridLocation.Row].IsWall ||
                        grid[gridLocation.Column, gridLocation.Row].IsDoor;
-            }, location);
+            }, location, callback);
         }
 
-        public static IEnumerable<DistanceLocation> CalculateVisibility(GridCellInfo[,] grid, GridLocation location)
+        public static void CalculateVisibility(GridCellInfo[,] grid, GridLocation location, VisibilityCalculatorCallback callback)
         {
-            return CalculateVisibilityImpl((column, row) =>
+            CalculateVisibilityImpl((column, row) =>
             {
                 return grid.Get(column, row)?.Location;
             },
@@ -136,18 +140,14 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 return grid[gridLocation.Column, gridLocation.Row] == null ||
                        grid[gridLocation.Column, gridLocation.Row].IsWall ||
                        grid[gridLocation.Column, gridLocation.Row].IsDoor;
-            }, location);
+            }, location, callback);
         }
 
-        private static IEnumerable<DistanceLocation> CalculateVisibilityImpl(Func<int, int, GridLocation> getter, Func<GridLocation, bool> getterIsLightBlocking, GridLocation center)
+        private static void CalculateVisibilityImpl(Func<int, int, GridLocation> getter, Func<GridLocation, bool> getterIsLightBlocking, GridLocation center, VisibilityCalculatorCallback callback)
         {
             // Implementing Shadow Casting - by Björn Bergström [bjorn.bergstrom@roguelikedevelopment.org] 
             //
             // http://www.roguebasin.com/index.php?title=FOV_using_recursive_shadowcasting
-
-            // NOTE*** HAD TO USE A HASH TO SEE WHAT'S INCLUDED IN THE RESULTS BECAUSE OF THE OCTANT
-            //         OVERLAP AT THE EDGES (NECESSARY FOR CORRECT PROCESSING)
-            var result = new Dictionary<string, DistanceLocation>();
 
             // Scan all octants
             foreach (Octant octant in Enum.GetValues(typeof(Octant)))
@@ -186,6 +186,9 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         // First, check whether location is null
                         var isNull = location == null;
 
+                        // NOTE*** ALLOCATING THIS MEMORY IS NOT LIKED BECAUSE OF GC PERFORMANCE. BEST TO 
+                        //         INSTANTIATE ALL GRID LOCATIONS IN THE PRIMARY GRID INSTEAD OF HAVING NULLS.
+                        //
                         // Next, set location to a new grid location if it is null
                         if (location == null)
                             location = new GridLocation(column, row);
@@ -221,9 +224,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                             // Check for final iteration
                             finalIteration &= (isDark || isLightBlocking);
 
-                            // ContainsKey is ~ O(1)
-                            if (!isDark && !result.ContainsKey(location.ToString()))
-                                result.Add(location.ToString(), new DistanceLocation(center, location));
+                            // Callback to notify visibility calculated for this location
+                            callback(location.Column, location.Row, !isDark);
                         }
                         // If Null, then it is also light blocking
                         else
@@ -254,8 +256,6 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     iterate = !finalIteration;
                 }
             }
-
-            return result.Values;
         }
 
         private static void CalculateIterationLocations(GridLocation center, int radius, Octant octant, out int location1Column, out int location1Row, out int location2Column, out int location2Row, out bool yDirection)

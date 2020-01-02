@@ -175,7 +175,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             var minimumRadius = ((1 - template.FillRatio) * WALL_LIGHT_SPACE_PARAMETER) + WALL_LIGHT_SPACE_MINIMUM;
 
             // Collect the combined FOV for all wall lights
-            var wallLightFOV = new Dictionary<GridCellInfo, IEnumerable<DistanceLocation>>();
+            var wallLightFOV = new Dictionary<GridCellInfo, List<DistanceLocation>>();
 
             // Combine color with existing lighting for the cell
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -202,8 +202,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         grid[i, j].BaseLight = ColorFilter.AddLight(grid[i, j].BaseLight,
                                                                     new Light(light.Red, light.Green, light.Blue, wallLightIntensity));
 
+                        wallLightFOV.Add(grid[i, j], new List<DistanceLocation>());
+
                         // Add to field of view
-                        wallLightFOV.Add(grid[i, j], VisibilityCalculator.CalculateVisibility(grid, grid[i, j].Location));
+                        VisibilityCalculator.CalculateVisibility(grid, grid[i, j].Location, (column, row, isVisible) =>
+                        {
+                            if (isVisible)
+                            {
+                                wallLightFOV[grid[i, j]].Add(new DistanceLocation(grid[i, j].Location, grid[column, row].Location));
+                            }
+                        });
                     }
                 }
             }

@@ -122,14 +122,15 @@ namespace Rogue.NET.Scenario.Processing.Service
             }
         }
 
-        public Geometry CreateGeometry(IEnumerable<GridLocation> locations)
+        public Geometry CreateOutlineGeometry(IEnumerable<GridLocation> locations)
         {
             var result = new StreamGeometry();
 
             using (var stream = result.Open())
             {
+                // Create an outline of the region by finding the edges
                 foreach (var location in locations)
-                {
+                { 
                     var rect = _scenarioUIGeometryService.Cell2UIRect(location, false);
                     stream.BeginFigure(rect.TopLeft, true, true);
                     stream.LineTo(rect.TopRight, true, false);
@@ -139,18 +140,15 @@ namespace Rogue.NET.Scenario.Processing.Service
                 }
             }
 
-            return result;
+            return result.GetOutlinedPathGeometry();
         }
 
         public void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject, bool isMemorized)
         {
             // Calculate visible-to-player
             //
-            var visibleLocations = _modelService.Level.VisibilityGrid.GetVisibleLocations(_modelService.Player);
-            var visibleCharacters = _modelService.Level.Content.GetManyAt<ScenarioObject>(visibleLocations);
-
             // Content object is within player's sight radius 
-            var lineOfSightVisible = scenarioObject == _modelService.Player || visibleCharacters.Contains(scenarioObject);
+            var lineOfSightVisible = scenarioObject == _modelService.Player || _modelService.Level.Visibility.IsVisible(scenarioObject);
 
             // Content object is visible on the map (Explored, Detected, Revealed)
             var visibleToPlayer = lineOfSightVisible ||
@@ -172,7 +170,7 @@ namespace Rogue.NET.Scenario.Processing.Service
 
             // Calculate effective symbol
             var effectiveSymbol = (scenarioObject is CharacterBase) ? _alterationCalculator.CalculateEffectiveSymbol(scenarioObject as CharacterBase) :
-                                                                  scenarioObject;
+                                                                      scenarioObject;
 
             // Non-Player Characters
             if (scenarioObject is NonPlayerCharacter)
