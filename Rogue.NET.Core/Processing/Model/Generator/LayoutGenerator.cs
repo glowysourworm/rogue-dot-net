@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
@@ -43,8 +44,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         public LayoutGrid CreateLayout(LayoutTemplate template)
         {
             GridCellInfo[,] grid;
-            IEnumerable<Region<GridCellInfo>> regions;
-            IEnumerable<Region<GridCellInfo>> modifiedRegions;
+            IEnumerable<ConnectedRegion<GridCellInfo>> regions;
+            IEnumerable<ConnectedRegion<GridCellInfo>> modifiedRegions;
             IEnumerable<LayerInfo> terrainLayers;
             Graph regionGraph;
             Graph modifiedRegionGraph;
@@ -79,7 +80,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <summary>
         /// 1st pass - creates the primary regions and corridors for the template
         /// </summary>
-        private bool CreateRegionsAndCorridors(LayoutTemplate template, out GridCellInfo[,] grid, out IEnumerable<Region<GridCellInfo>> regions, out Graph regionGraph)
+        private bool CreateRegionsAndCorridors(LayoutTemplate template, out GridCellInfo[,] grid, out IEnumerable<ConnectedRegion<GridCellInfo>> regions, out Graph regionGraph)
         {
             regionGraph = null;
 
@@ -117,8 +118,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// </summary>
         private bool CreateTerrain(LayoutTemplate template,
                                    GridCellInfo[,] grid,
-                                   IEnumerable<Region<GridCellInfo>> regions,
-                                   out IEnumerable<Region<GridCellInfo>> modifiedRegions,
+                                   IEnumerable<ConnectedRegion<GridCellInfo>> regions,
+                                   out IEnumerable<ConnectedRegion<GridCellInfo>> modifiedRegions,
                                    out Graph modifiedRegionGraph,
                                    out IEnumerable<LayerInfo> terrainLayers)
         {
@@ -174,9 +175,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var connectionGraph = modifiedRegionGraph ?? baseRegionGraph;
 
             // Re-calculate the room regions
-            var roomRegions = grid.IdentifyRegions(cell => !cell.IsWall &&
-                                                           // !cell.IsCorridor &&  *** NOT SURE ABOUT THESE CORRIDORS - THEY INVADE THE ORIGINAL ROOMS
-                                                           !terrainLayers.Any(layer => !layer.IsPassable && layer[cell.Column, cell.Row] != null) &&
+            var roomRegions = grid.ConstructRegions(cell => !cell.IsWall &&
+                                                            // !cell.IsCorridor &&  *** NOT SURE ABOUT THESE CORRIDORS - THEY INVADE THE ORIGINAL ROOMS
+                                                            !terrainLayers.Any(layer => !layer.IsPassable && layer[cell.Column, cell.Row] != null) &&
                                                             baseRegions.Any(region => region[cell.Column, cell.Row] != null));
             // *** Layout Finishing
 
@@ -190,27 +191,27 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _lightingFinisher.CreateLighting(grid, template);
 
             // Identify final layout regions - INCLUDES ALL NON-EMPTY CELLS
-            var regions = grid.IdentifyRegions(cell => true);
+            var regions = grid.ConstructRegions(cell => true);
 
             // Identify final walkable regions (1) Not a wall, 2) Not impassable terrain)
-            var walkableRegions = grid.IdentifyRegions(cell => !cell.IsWall &&
+            var walkableRegions = grid.ConstructRegions(cell => !cell.IsWall &&
                                                                !terrainLayers.Any(layer => layer[cell.Column, cell.Row] != null && !layer.IsPassable));
 
             // Identify placement layer (1) Not a wall, 2) Not a door, 3) Not impassable terrain)
-            var placementRegions = grid.IdentifyRegions(cell => !cell.IsWall &&
+            var placementRegions = grid.ConstructRegions(cell => !cell.IsWall &&
                                                                 !cell.IsDoor &&
                                                                 !terrainLayers.Any(layer => layer[cell.Column, cell.Row] != null && !layer.IsPassable));
 
             // Identify final corridor regions (1) Not a wall, 2) Marked a corridor)
-            var corridorRegions = grid.IdentifyRegions(cell => !cell.IsWall &&
+            var corridorRegions = grid.ConstructRegions(cell => !cell.IsWall &&
                                                                 cell.IsCorridor);
 
             // Identify final wall regions
-            var wallRegions = grid.IdentifyRegions(cell => cell.IsWall);
+            var wallRegions = grid.ConstructRegions(cell => cell.IsWall);
 
             // *** Iterate regions to re-create using GridLocation (ONLY SUPPORTED SERIALIZED TYPE FOR REGIONS)
             var finalRegions = regions.Select(region => ConvertRegion(grid, region)).Actualize();
-            var finalConnectionRegions = connectionRegions.Select(region => ConvertRegion(grid, region)).Actualize();
+            var finalConnectionRegions = connectionRegions.Select(region => ConvertConnectedRegion(grid, region)).Actualize();
             var finalWalkableRegions = walkableRegions.Select(region => ConvertRegion(grid, region)).Actualize();
             var finalPlacementRegions = placementRegions.Select(region => ConvertRegion(grid, region)).Actualize();
             var finalRoomRegions = roomRegions.Select(region => ConvertRegion(grid, region)).Actualize();
@@ -233,9 +234,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <summary>
         /// Identifies regions - removing invalid ones. Returns false if there are no valid regions.
         /// </summary>
-        private bool IdentifyValidRegions(GridCellInfo[,] grid, out IEnumerable<Region<GridCellInfo>> validRegions)
+        private bool IdentifyValidRegions(GridCellInfo[,] grid, out IEnumerable<ConnectedRegion<GridCellInfo>> validRegions)
         {
-            var regions = grid.IdentifyRegions(cell => !cell.IsWall);
+            var regions = grid.ConstructConnectedRegions(cell => !cell.IsWall);
 
             // Check for default room size constraints
             var invalidRegions = regions.Where(region => !RegionValidator.ValidateRoomRegion(region));
@@ -270,6 +271,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                             region.EdgeLocations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
                                             region.Boundary,
                                             new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
+        }
+
+        private ConnectedRegion<GridLocation> ConvertConnectedRegion(GridCellInfo[,] grid, Region<GridCellInfo> region)
+        {
+            return new ConnectedRegion<GridLocation>(region.Locations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
+                                                     region.EdgeLocations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
+                                                     region.Boundary,
+                                                     new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
         }
 
         private void MakeSymmetric(GridCellInfo[,] grid, LayoutSymmetryType symmetryType)

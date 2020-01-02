@@ -207,7 +207,11 @@
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
     <Compile Include="IO\Compressed.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\ConnectedRegion.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\Construction\RegionConstructorInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Grid.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\Interface\ILayerMap.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\LayerMap.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\AuraGrid.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\PathGrid.cs" />
     <Compile Include="Processing\Model\Algorithm\Component\DijkstraPathFinder.cs" />
@@ -258,11 +262,12 @@
     <Compile Include="Model\Scenario\Content\Layout\Interface\IGridLocator.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Construction\LayerInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Light.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\LayerMap.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\LayerMapBase.cs" />
     <Compile Include="Model\Scenario\Content\Layout\RegionConnection.cs" />
     <Compile Include="Model\Scenario\Content\Level.cs" />
     <Compile Include="Model\Scenario\Content\LevelParameters.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\VisibilityGrid.cs" />
+    <Compile Include="Processing\Model\Algorithm\GridAlgorithm.cs" />
     <Compile Include="Processing\Model\Content\Calculator\GridCalculator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ILightGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\ConnectionBuilder.cs" />

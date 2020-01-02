@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// Serializable data structure to store calculated room information
     /// </summary>
     [Serializable]
-    public class Region<T> : ISerializable, IDeserializationCallback, IRegionGraphWeightProvider<T> where T : class, IGridLocator
+    public class Region<T> : ISerializable, IDeserializationCallback where T : class, IGridLocator
     {
         public string Id { get; private set; }
         public T[] Locations { get; private set; }
@@ -26,9 +26,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         // Occupied Location Collections
         List<T> _occupiedLocations;
         List<T> _nonOccupiedLocations;
-
-        // Used during layout generation to store calculated nearest neighbors (STORED BY HASH CODE)
-        Dictionary<string, RegionConnection<T>> _regionConnections;
 
         // 2D Arrays for region locations and edges - NOT SERIALIZED
         Grid<T> _gridLocations;
@@ -81,14 +78,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         #endregion
 
-        /// <summary>
-        /// Returns id's for the nearest neighbor connected regions
-        /// </summary>
-        public IEnumerable<string> GetConnectionIds()
-        {
-            return _regionConnections.Keys;
-        }
-
         public Region(T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
         {
             this.Id = Guid.NewGuid().ToString();
@@ -97,7 +86,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Boundary = boundary;
             this.ParentBoundary = parentBoundary;
 
-            _regionConnections = new Dictionary<string, RegionConnection<T>>();
             _gridLocations = new Grid<T>(parentBoundary, boundary);
             _edgeLocations = new Grid<bool>(parentBoundary, boundary);
             _occupiedLocationGrid = new Grid<bool>(parentBoundary, boundary);
@@ -132,8 +120,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.EdgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
             this.Boundary = (RegionBoundary)info.GetValue("Boundary", typeof(RegionBoundary));
             this.ParentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
-
-            _regionConnections = (Dictionary<string, RegionConnection<T>>)info.GetValue("RegionConnections", typeof(Dictionary<string, RegionConnection<T>>));
 
             _gridLocations = new Grid<T>(this.ParentBoundary, this.Boundary);
             _edgeLocations = new Grid<bool>(this.ParentBoundary, this.Boundary);
@@ -211,14 +197,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Id", this.Id);
             info.AddValue("LocationsLength", this.Locations.Length);
             info.AddValue("EdgeLocationsLength", this.EdgeLocations.Length);
             info.AddValue("Boundary", this.Boundary);
             info.AddValue("ParentBoundary", this.ParentBoundary);
-            info.AddValue("RegionConnections", _regionConnections);
 
             var counter = 0;
 
@@ -281,96 +266,5 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             return string.Format("Locations[{0}], EdgeLocations[{1}], Boundary=[{2}]", this.Locations.Length, this.EdgeLocations.Length, this.Boundary.ToString());
         }
-
-        #region IRegionGraphWeightProvider
-
-        public void CalculateConnection(Region<T> adjacentRegion, IRandomSequenceGenerator randomSequenceGenerator)
-        {
-            // Return previously calculated weight
-            if (_regionConnections.ContainsKey(adjacentRegion.Id))
-                return;
-
-            // Use a brute force O(n x m) search
-            var candidateLocations = new Dictionary<T, List<T>>();
-            var distance = double.MaxValue;
-
-            foreach (var edgeLocation1 in this.EdgeLocations)
-            {
-                foreach (var edgeLocation2 in adjacentRegion.EdgeLocations)
-                {
-                    var nextDistance = Metric.EuclideanDistance(edgeLocation1, edgeLocation2);
-
-                    // Reset candidates
-                    if (nextDistance < distance)
-                    {
-                        // Clear out more distant locations
-                        candidateLocations.Clear();
-
-                        distance = nextDistance;
-
-                        // Keep track of locations with this distance
-                        candidateLocations.Add(edgeLocation1, new List<T>() { edgeLocation2 });
-                    }
-                    else if (nextDistance == distance)
-                    {
-                        if (!candidateLocations.ContainsKey(edgeLocation1))
-                            candidateLocations.Add(edgeLocation1, new List<T>() { edgeLocation2 });
-
-                        else
-                            candidateLocations[edgeLocation1].Add(edgeLocation2);
-                    }
-
-                }
-            }
-
-            if (distance == double.MaxValue)
-                throw new Exception("No adjacent node connection found Region.CalculateWeight");
-
-            // Choose edge locations randomly
-            var element = randomSequenceGenerator.GetRandomElement(candidateLocations);
-            var location = element.Key;
-            var adjacentLocation = randomSequenceGenerator.GetRandomElement(element.Value);
-
-            _regionConnections.Add(adjacentRegion.Id, new RegionConnection<T>()
-            {
-                AdjacentRegionId = adjacentRegion.Id,
-                AdjacentLocation = adjacentLocation,
-                Location = location,
-                Distance = distance
-            });
-
-            // Set adjacent region's connection
-            adjacentRegion.SetConnection(this, adjacentLocation, location, distance);
-        }
-
-        public void SetConnection(Region<T> adjacentRegion, T location, T adjacentLocation, double distance)
-        {
-            if (!_regionConnections.ContainsKey(adjacentRegion.Id))
-            {
-                _regionConnections.Add(adjacentRegion.Id, new RegionConnection<T>()
-                {
-                    AdjacentRegionId = adjacentRegion.Id,
-                    AdjacentLocation = adjacentLocation,
-                    Location = location,
-                    Distance = distance
-                });
-            }
-            else
-            {
-                _regionConnections[adjacentRegion.Id].AdjacentLocation = adjacentLocation;
-                _regionConnections[adjacentRegion.Id].Location = location;
-                _regionConnections[adjacentRegion.Id].Distance = distance;
-            }
-        }
-
-        public RegionConnection<T> GetConnection(Region<T> adjacentRegion)
-        {
-            if (!_regionConnections.ContainsKey(adjacentRegion.Id))
-                throw new Exception("Trying to get connection point for adjacent region that hasn't been calculated (in the graph)");
-
-            return _regionConnections[adjacentRegion.Id];
-        }
-
-        #endregion
     }
 }

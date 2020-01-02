@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public Graph CreateTriangulation<T>(IEnumerable<Region<T>> regions, LayoutTemplate template) where T : class, IGridLocator
+        public Graph CreateTriangulation<T>(IEnumerable<ConnectedRegion<T>> regions, LayoutTemplate template) where T : class, IGridLocator
         {
             // Procedure
             //
@@ -93,7 +93,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                 return CreateMinimumSpanningTree(regions);
         }
 
-        private Graph CreateFullGraph<T>(IEnumerable<Region<T>> regions) where T : class, IGridLocator
+        private Graph CreateFullGraph<T>(IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
         {
             var graph = new Graph();
 
@@ -105,7 +105,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                 return graph;
             }
 
-            var regionList = new List<Region<T>>(regions);
+            var regionList = new List<ConnectedRegion<T>>(regions);
 
             // Create connection points
             for (int i = 0; i < regionList.Count; i++)
@@ -148,7 +148,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         /// <summary>
         /// Creates MST using Prim's Algorithm - which takes O(n log n)
         /// </summary>
-        private Graph CreateMinimumSpanningTree<T>(IEnumerable<Region<T>> regions) where T : class, IGridLocator
+        private Graph CreateMinimumSpanningTree<T>(IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
         {
             if (regions.Count() < 1)
                 throw new Exception("Trying to build MST with zero points");
@@ -161,8 +161,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // 3) Choose the least distant edge and add that edge to the tree
             //
 
-            var unusedRegions = new List<Region<T>>(regions);
-            var usedRegions = new List<Region<T>>();
+            var unusedRegions = new List<ConnectedRegion<T>>(regions);
+            var usedRegions = new List<ConnectedRegion<T>>();
             var tree = new Graph();
 
             while (usedRegions.Count < regions.Count())
@@ -179,7 +179,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                 else
                 {
-                    Region<T> nextRegion = null;
+                    ConnectedRegion<T> nextRegion = null;
                     GraphEdge nextEdge = null;
                     double minDistance = double.MaxValue;
 
@@ -229,7 +229,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         /// Creates Delaunay triangulation using the Bowyer-Watson algorithm O(n log n). Returns the single edge list (one
         /// edge maximum between points in the mesh)
         /// </summary>
-        private Graph CreateDelaunayTriangulation<T>(Graph fullGraph, IEnumerable<Region<T>> regions) where T : class, IGridLocator
+        private Graph CreateDelaunayTriangulation<T>(Graph fullGraph, IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
         {
             if (fullGraph.Vertices.Count() < 3)
             {

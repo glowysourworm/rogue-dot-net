@@ -14,9 +14,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
         /// happens typically when there's no unblocked regions of the grid left to create rooms from.
         /// </summary>
         bool BuildTerrain(GridCellInfo[,] grid, 
-                          IEnumerable<Region<GridCellInfo>> baseRegions, 
+                          IEnumerable<ConnectedRegion<GridCellInfo>> baseRegions, 
                           LayoutTemplate template, 
-                          out IEnumerable<Region<GridCellInfo>> modifiedRegions,
+                          out IEnumerable<ConnectedRegion<GridCellInfo>> modifiedRegions,
                           out Graph modifiedRegionGraph, 
                           out IEnumerable<LayerInfo> terrainLayers);
     }

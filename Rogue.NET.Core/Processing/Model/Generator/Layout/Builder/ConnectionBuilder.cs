@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Algorithm.Component;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
@@ -37,12 +38,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             _regionTriangulationCreator = regionTriangulationCreator;
         }
 
-        public Graph BuildConnections(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, LayoutTemplate template)
+        public Graph BuildConnections(GridCellInfo[,] grid, IEnumerable<ConnectedRegion<GridCellInfo>> regions, LayoutTemplate template)
         {
             return BuildConnectionsWithAvoidRegions(grid, regions, new Region<GridCellInfo>[] { }, template);
         }
 
-        public Graph BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
+        public Graph BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<ConnectedRegion<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
         {
             if (!PreValidateRegions(regions))
                 throw new Exception("Invalid region layout in the grid - ConnectionBuilder.BuildCorridorsWithAvoidRegions");
@@ -84,7 +85,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        private Graph CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, MazeType mazeType, LayoutTemplate template)
+        private Graph CreateMazeCorridors(GridCellInfo[,] grid, IEnumerable<ConnectedRegion<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, MazeType mazeType, LayoutTemplate template)
         {
             // Procedure
             //
@@ -153,13 +154,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             }
 
             // Re-identify regions to connect
-            var newRegions = grid.IdentifyRegions(cell => !cell.IsWall);
+            var newRegions = grid.ConstructConnectedRegions(cell => !cell.IsWall);
 
             // Finally, connect the regions using shortest path
             return ConnectUsingShortestPath(grid, newRegions, avoidRegions, template);
         }
 
-        private Graph ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
+        private Graph ConnectUsingShortestPath(GridCellInfo[,] grid, IEnumerable<ConnectedRegion<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template)
         {
             // Procedure
             //

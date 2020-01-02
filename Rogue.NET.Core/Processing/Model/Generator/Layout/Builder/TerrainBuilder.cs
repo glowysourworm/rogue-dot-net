@@ -5,6 +5,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
@@ -35,9 +36,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         }
 
         public bool BuildTerrain(GridCellInfo[,] grid, 
-                                 IEnumerable<Region<GridCellInfo>> baseRegions, 
+                                 IEnumerable<ConnectedRegion<GridCellInfo>> baseRegions, 
                                  LayoutTemplate template, 
-                                 out IEnumerable<Region<GridCellInfo>> modifiedRegions,
+                                 out IEnumerable<ConnectedRegion<GridCellInfo>> modifiedRegions,
                                  out Graph modifiedRegionGraph, 
                                  out IEnumerable<LayerInfo> terrainLayers)
         {
@@ -63,14 +64,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Create combined terrain-blocked grid. This will have null cells where impassible terrain exists.
             var terrainMaskedGrid = CreateTerrainMaskedGrid(grid, terrainDict);
 
-            // Check for invalid regions and expand them as needed - MODIFIES TERRAIN MASKED GRID AND TERRAIN GRID(S)
-            // ExpandInvalidRegions(grid, terrainMaskedGrid, terrainDict);
-
             // Check for invalid regions and remove them - put null cells in to be filled with walls or paths
             RemoveInvalidRegions(grid, terrainMaskedGrid, terrainDict);
 
             // Create masked regions - THESE CONTAIN ORIGINAL REGION AND / OR CORRIDOR CELLS
-            modifiedRegions = terrainMaskedGrid.IdentifyRegions(cell => !cell.IsWall);
+            modifiedRegions = terrainMaskedGrid.ConstructConnectedRegions(cell => !cell.IsWall);
 
             // Check that there are valid regions
             if (!modifiedRegions.Any(region => RegionValidator.ValidateRoomRegion(region)))
@@ -87,7 +85,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 // Calculate avoid regions for the connection builder
                 var avoidRegions = terrainDict.Where(element => !element.Key.IsPassable &&
                                                                  element.Key.ConnectionType == TerrainConnectionType.Avoid)
-                                              .SelectMany(element => element.Value.IdentifyRegions(cell => true))
+                                              .SelectMany(element => element.Value.ConstructRegions(cell => true))
                                               .Actualize();
 
                 // Create corridors and new regions
@@ -106,7 +104,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             terrainLayers = terrainDict.Select(element =>
             {
                 // First, identify terrain regions for this layer
-                var regionsCellInfo = element.Value.IdentifyRegions(cell => true);
+                var regionsCellInfo = element.Value.ConstructRegions(cell => true);
 
                 // Next, convert to regions of grid locations
                 var terrainRegions = regionsCellInfo.Select(cellInfoRegion =>
@@ -249,7 +247,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             foreach (var element in terrainDict)
             {
                 var terrainGrid = element.Value;
-                var regions = terrainGrid.IdentifyRegions(cell => true);
+                var regions = terrainGrid.ConstructRegions(cell => true);
 
                 foreach (var region in regions)
                 {
@@ -319,59 +317,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         }
 
         /// <summary>
-        /// Expands regions of the terrain blocked grid using the base grid. Re-creates terrain layers accordingly.
-        /// </summary>
-        /// <param name="grid">Cell grid before terrain cells were removed</param>
-        /// <param name="terrainMaskedGrid">Cell grid with cells removed where there is impassible terrain</param>
-        /// <param name="baseRegions">Regions calculated before laying the terrain</param>
-        private void ExpandInvalidRegions(GridCellInfo[,] grid,
-                                          GridCellInfo[,] terrainMaskedGrid,
-                                          Dictionary<TerrainLayerTemplate, GridCellInfo[,]> terrainDict)
-        {
-            var regions = terrainMaskedGrid.IdentifyRegions(cell => !cell.IsWall);
-
-            // Look for invalid regions and modify them using the base regions
-            foreach (var invalidRegion in regions.Where(region => !RegionValidator.ValidateRoomRegion(region)))
-            {
-                var regionCells = new List<GridCellInfo>(invalidRegion.Locations);
-
-                // Expand region randomly until minimum size is reached
-                while (regionCells.Count < RegionValidator.MinimumRoomSize)
-                {
-                    // Get cells in the specified direction for all the region cells - checking the base region to see where it was so that
-                    // it doesn't grow into a corridor.
-                    var expandedLocations = regionCells.SelectMany(location => grid.GetAdjacentElementsWithCardinalConnection(location.Column, location.Row))
-                                                       .Where(cell => !cell.IsWall)
-                                                       .Actualize();
-
-                    if (expandedLocations.Count() == 0)
-                        throw new Exception("Trying to expand region of terrian masked grid without any free adjacent cells");
-
-                    // Select those that aren't part of the region cells already. Add these to the region cells
-                    foreach (var cell in expandedLocations)
-                    {
-                        if (!regionCells.Contains(cell))
-                        {
-                            // Add to the list of expanded cells for the invalid region
-                            regionCells.Add(cell);
-
-                            // This cell is no longer going to be impassible - go ahead and mark terrain accordingly
-                            terrainMaskedGrid[cell.Location.Column, cell.Location.Row] = grid[cell.Location.Column, cell.Location.Row];
-
-                            // Check each terrain layer grid
-                            foreach (var element in terrainDict)
-                            {
-                                // Remove cells for any impassible layers
-                                if (!element.Key.IsPassable)
-                                    element.Value[cell.Location.Column, cell.Location.Row] = null;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Removes regions of the terrain blocked grid and the base grid that are no longer big enough.
         /// </summary>
         /// <param name="grid">Cell grid before terrain cells were removed</param>
@@ -381,7 +326,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                           GridCellInfo[,] terrainMaskedGrid,
                                           Dictionary<TerrainLayerTemplate, GridCellInfo[,]> terrainDict)
         {
-            var regions = terrainMaskedGrid.IdentifyRegions(cell => !cell.IsWall);
+            var regions = terrainMaskedGrid.ConstructRegions(cell => !cell.IsWall);
 
             // Look for invalid regions and remove them
             foreach (var invalidRegion in regions.Where(region => !RegionValidator.ValidateRoomRegion(region)))

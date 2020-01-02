@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
@@ -258,7 +259,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         private void FillRegionsWithMazes(GridCellInfo[,] grid, double wallRemovalRatio, double horizontalVerticalBias)
         {
             // Identify regions
-            var regions = grid.IdentifyRegions(cell => !cell.IsWall);
+            var regions = grid.ConstructRegions(cell => !cell.IsWall);
 
             if (regions.Count() == 0)
                 throw new Exception("Trying to fill regions with mazes; but no regions were generated");

@@ -12,12 +12,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
         /// <summary>
         /// Generates connections between the specified regions - returns the region triangulation graph
         /// </summary>
-        Graph BuildConnections(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, LayoutTemplate template);
+        Graph BuildConnections(GridCellInfo[,] grid, IEnumerable<ConnectedRegion<GridCellInfo>> regions, LayoutTemplate template);
 
         /// <summary>
         /// Generates connections avoiding the provided regions. This is typically used for connecting regions separated
         /// by terrain. Returns the region triangulation graph.
         /// </summary>
-        Graph BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template);
+        Graph BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<ConnectedRegion<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template);
     }
 }

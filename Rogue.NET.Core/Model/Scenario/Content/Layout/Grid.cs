@@ -25,7 +25,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Indexer to the 2D array based on the PARENT COLUMN AND ROW. Allows indexing over 
         /// full parent index space - but returns default(T) for indices out of bounds of the
-        /// grid. For setting, falls through; and doens't throw an exception.
+        /// grid. For setting, throws an exception if the parent indexer is outside the bounds
+        /// of the grid.
         /// </summary>
         public T this[int parentColumn, int parentRow]
         {
@@ -51,7 +52,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     column >= _width ||
                     row < 0 ||
                     row >= _height)
-                    return;
+                    throw new Exception("Trying to set Grid<> outside of its bounds");
 
                 _grid[column, row] = value;
             }

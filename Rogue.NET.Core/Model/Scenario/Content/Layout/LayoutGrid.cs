@@ -4,6 +4,7 @@ using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
@@ -164,7 +165,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                                                         .SelectMany(layer => layer.Regions);
 
             // Connected Layers
-            this.ConnectionMap = new ConnectedLayerMap(connectionLayer.LayerName, connectionLayer.RegionGraph, connectionLayer.Regions, this.Bounds.Width, this.Bounds.Height);
+            this.ConnectionMap = new ConnectedLayerMap(connectionLayer.LayerName, 
+                                                       connectionLayer.RegionGraph, 
+                                                       (IEnumerable<ConnectedRegion<GridLocation>>)connectionLayer.Regions, 
+                                                       this.Bounds.Width, 
+                                                       this.Bounds.Height);
 
             // Non-connected Layers
             this.FullMap = new LayerMap(fullLayer.LayerName, fullLayer.Regions, this.Bounds.Width, this.Bounds.Height);
@@ -464,7 +469,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Selects the proper layer for the specified enumeration
         /// </summary>
-        private LayerMap SelectLayer(LayoutLayer layer)
+        private ILayerMap SelectLayer(LayoutLayer layer)
         {
             switch (layer)
             {
@@ -479,7 +484,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 case LayoutLayer.Room:
                     return this.RoomMap;
                 case LayoutLayer.Corridor:
-                    return this.ConnectionMap;
+                    return this.CorridorMap;
                 case LayoutLayer.Wall:
                     return this.WallMap;
                 case LayoutLayer.ImpassableTerrain:

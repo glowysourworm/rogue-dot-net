@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Geometry;
-
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,35 +13,54 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// connections associated with adjacent rooms or regions. These must be pre-calculated as a graph.
     /// </summary>
     [Serializable]
-    public class ConnectedLayerMap : LayerMap, ISerializable
+    public class ConnectedLayerMap : LayerMapBase<GridLocation, ConnectedRegion<GridLocation>>, ISerializable, ILayerMap
     {
         readonly Graph _graph;
 
-        public IEnumerable<Region<GridLocation>> Connections(int column, int row)
+        public new IEnumerable<Region<GridLocation>> Regions
         {
-            var region = this[column, row];
-
-            if (region == null)
-                return new Region<GridLocation>[] { };
-
-            return this.Regions.Where(otherRegion => region.GetConnectionIds().Contains(otherRegion.Id))
-                               .Actualize();
+            get { return this.Regions.Cast<Region<GridLocation>>(); }
         }
 
-        public IEnumerable<Region<GridLocation>> Connections(string regionId)
+        public new Region<GridLocation> this[int column, int row]
         {
-            var region = this.Regions.FirstOrDefault(region => region.Id == regionId);
+            get { return this[column, row] as Region<GridLocation>; }
+        }
+
+        public new Region<GridLocation> this[IGridLocator location]
+        {
+            get { return this[location] as Region<GridLocation>; }
+        }
+
+        public IEnumerable<ConnectedRegion<GridLocation>> Connections(int column, int row)
+        {
+            var region = this[column, row] as ConnectedRegion<GridLocation>;
 
             if (region == null)
-                return new Region<GridLocation>[] { };
+                return new ConnectedRegion<GridLocation>[] { };
 
-            return this.Regions.Where(otherRegion => region.GetConnectionIds().Contains(otherRegion.Id))
-                               .Actualize();
+            return this.Regions
+                       .Cast<ConnectedRegion<GridLocation>>()
+                       .Where(otherRegion => region.Connections.ContainsKey(otherRegion.Id))
+                       .Actualize();
+        }
+
+        public IEnumerable<ConnectedRegion<GridLocation>> Connections(string regionId)
+        {
+            var region = this.Regions.FirstOrDefault(region => region.Id == regionId) as ConnectedRegion<GridLocation>;
+
+            if (region == null)
+                return new ConnectedRegion<GridLocation>[] { };
+
+            return this.Regions
+                       .Cast<ConnectedRegion<GridLocation>>()
+                       .Where(otherRegion => region.Connections.ContainsKey(otherRegion.Id))
+                       .Actualize();
         }
 
         public ConnectedLayerMap(string layerName,
                                  Graph graph,
-                                 IEnumerable<Region<GridLocation>> regions,
+                                 IEnumerable<ConnectedRegion<GridLocation>> regions,
                                  int width,
                                  int height)
                 : base(layerName, regions, width, height)
@@ -49,7 +68,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _graph = graph;
         }
 
-        public ConnectedLayerMap(SerializationInfo info, StreamingContext context)
+        public ConnectedLayerMap(SerializationInfo info, StreamingContext context) 
                 : base(info, context)
         {
             _graph = (Graph)info.GetValue("Graph", typeof(Graph));

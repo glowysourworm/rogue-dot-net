@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Construction
     {
         public Graph RegionGraph { get; private set; }
 
-        public ConnectedLayerInfo(string layerName, Graph regionGraph, IEnumerable<Region<GridLocation>> regions, bool isPassable)
+        public ConnectedLayerInfo(string layerName, Graph regionGraph, IEnumerable<ConnectedRegion<GridLocation>> regions, bool isPassable)
                 : base(layerName, regions, isPassable)
         {
             // this.RegionGraph = new DijkstraGraph(regionGraph);
