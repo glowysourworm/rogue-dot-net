@@ -3365,4 +3365,10 @@ IMMEDIATE TODO'S:
 	.NET SERIALIZATION:
 	
 		Try using the IDeserializationCallback - seems to be how they connect object references (!!!)
+		
+	PERFORMANCE TUNING:
+	
+		Make Region<> 2D arrays based on its boundary instead of the parent boundary - using index offset math.
+		
+		IDEA:  Create a 2D array class that has offsets calculated so that you can index it using the parent dimensions.
 			

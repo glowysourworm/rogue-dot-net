@@ -441,14 +441,14 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             var result = new IGridLocator[count];
             var index = 0;
 
-            if (n != null) result[index++] = new GridLocator(column, row - 1);
-            if (s != null) result[index++] = new GridLocator(column, row + 1);
-            if (e != null) result[index++] = new GridLocator(column + 1, row);
-            if (w != null) result[index++] = new GridLocator(column - 1, row);
-            if (ne != null) result[index++] = new GridLocator(column + 1, row - 1);
-            if (nw != null) result[index++] = new GridLocator(column - 1, row - 1);
-            if (se != null) result[index++] = new GridLocator(column + 1, row + 1);
-            if (sw != null) result[index++] = new GridLocator(column - 1, row + 1);
+            if (n != null) result[index++] = new GridLocation(column, row - 1);
+            if (s != null) result[index++] = new GridLocation(column, row + 1);
+            if (e != null) result[index++] = new GridLocation(column + 1, row);
+            if (w != null) result[index++] = new GridLocation(column - 1, row);
+            if (ne != null) result[index++] = new GridLocation(column + 1, row - 1);
+            if (nw != null) result[index++] = new GridLocation(column - 1, row - 1);
+            if (se != null) result[index++] = new GridLocation(column + 1, row + 1);
+            if (sw != null) result[index++] = new GridLocation(column - 1, row + 1);
 
             return result;
         }
@@ -473,10 +473,10 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             var result = new IGridLocator[count];
             var index = 0;
 
-            if (n != null) result[index++] = new GridLocator(column, row - 1);
-            if (s != null) result[index++] = new GridLocator(column, row + 1);
-            if (e != null) result[index++] = new GridLocator(column + 1, row);
-            if (w != null) result[index++] = new GridLocator(column - 1, row);
+            if (n != null) result[index++] = new GridLocation(column, row - 1);
+            if (s != null) result[index++] = new GridLocation(column, row + 1);
+            if (e != null) result[index++] = new GridLocation(column + 1, row);
+            if (w != null) result[index++] = new GridLocation(column - 1, row);
 
             return result;
         }

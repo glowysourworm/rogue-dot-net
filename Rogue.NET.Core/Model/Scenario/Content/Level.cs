@@ -407,7 +407,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
                 // Query any contents from the level content grid
                 var levelContent = this.Content[location].Where(scenarioObject => scenarioObject is ItemBase ||
-                                                                              scenarioObject is DoodadBase).Actualize();
+                                                                                  scenarioObject is DoodadBase).Actualize();
 
                 // Add these to the memorized content
                 foreach (var content in levelContent)

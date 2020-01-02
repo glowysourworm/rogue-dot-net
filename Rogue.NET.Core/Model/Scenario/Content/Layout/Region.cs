@@ -21,6 +21,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public IEnumerable<T> OccupiedLocations { get { return _occupiedLocations; } }
         public IEnumerable<T> NonOccupiedLocations { get { return _nonOccupiedLocations; } }
         public RegionBoundary Boundary { get; private set; }
+        public RegionBoundary ParentBoundary { get; private set; }
 
         // Occupied Location Collections
         List<T> _occupiedLocations;
@@ -30,9 +31,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         Dictionary<string, RegionConnection<T>> _regionConnections;
 
         // 2D Arrays for region locations and edges - NOT SERIALIZED
-        T[,] _gridLocations;
-        bool[,] _edgeLocations;
-        bool[,] _occupiedLocationGrid;
+        Grid<T> _gridLocations;
+        Grid<bool> _edgeLocations;
+        Grid<bool> _occupiedLocationGrid;
 
         #region (public) Indexers for grid locations and edges
         public T this[int column, int row]
@@ -94,11 +95,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Locations = locations;
             this.EdgeLocations = edgeLocations;
             this.Boundary = boundary;
+            this.ParentBoundary = parentBoundary;
 
             _regionConnections = new Dictionary<string, RegionConnection<T>>();
-            _gridLocations = new T[parentBoundary.Width, parentBoundary.Height];
-            _edgeLocations = new bool[parentBoundary.Width, parentBoundary.Height];
-            _occupiedLocationGrid = new bool[parentBoundary.Width, parentBoundary.Height];
+            _gridLocations = new Grid<T>(parentBoundary, boundary);
+            _edgeLocations = new Grid<bool>(parentBoundary, boundary);
+            _occupiedLocationGrid = new Grid<bool>(parentBoundary, boundary);
 
             _occupiedLocations = new List<T>();
             _nonOccupiedLocations = new List<T>(locations);
@@ -129,14 +131,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Locations = new T[info.GetInt32("LocationsLength")];
             this.EdgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
             this.Boundary = (RegionBoundary)info.GetValue("Boundary", typeof(RegionBoundary));
-
-            var parentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
+            this.ParentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
 
             _regionConnections = (Dictionary<string, RegionConnection<T>>)info.GetValue("RegionConnections", typeof(Dictionary<string, RegionConnection<T>>));
 
-            _gridLocations = new T[parentBoundary.Width, parentBoundary.Height];
-            _edgeLocations = new bool[parentBoundary.Width, parentBoundary.Height];
-            _occupiedLocationGrid = new bool[parentBoundary.Width, parentBoundary.Height];
+            _gridLocations = new Grid<T>(this.ParentBoundary, this.Boundary);
+            _edgeLocations = new Grid<bool>(this.ParentBoundary, this.Boundary);
+            _occupiedLocationGrid = new Grid<bool>(this.ParentBoundary, this.Boundary);
 
             // Initialize occupied collections - NOT SERIALIZED
             _occupiedLocations = new List<T>();
@@ -216,7 +217,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("LocationsLength", this.Locations.Length);
             info.AddValue("EdgeLocationsLength", this.EdgeLocations.Length);
             info.AddValue("Boundary", this.Boundary);
-            info.AddValue("ParentBoundary", new RegionBoundary(0, 0, _gridLocations.GetLength(0), _gridLocations.GetLength(1)));
+            info.AddValue("ParentBoundary", this.ParentBoundary);
             info.AddValue("RegionConnections", _regionConnections);
 
             var counter = 0;
