@@ -65,7 +65,7 @@ namespace Rogue.NET.Core.Processing.Service
         public void CycleTarget(Compass direction)
         {
             // Query for player visible locations
-            var visibleLocations = _modelService.Level.Visibility.GetVisibleLocations();
+            var visibleLocations = _modelService.Level.Movement.GetVisibleLocations();
 
             // Calculate enemies in range that are visible
             var enemiesInRange = _modelService.Level.Content.GetManyAt<Enemy>(visibleLocations).ToList();
@@ -183,7 +183,7 @@ namespace Rogue.NET.Core.Processing.Service
 
             // Must be a visible location
             if (!_modelService.Level
-                              .Visibility
+                              .Movement
                               .GetVisibleLocations()
                               .Contains(location))
                 return false;

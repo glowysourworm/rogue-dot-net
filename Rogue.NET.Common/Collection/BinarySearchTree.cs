@@ -73,6 +73,12 @@ namespace Rogue.NET.Common.Collection
             _valueDict = new Dictionary<K, T>();
         }
 
+        public void Clear()
+        {
+            _valueDict.Clear();
+            _root = null;
+        }
+
         public void Insert(K key, T value)
         {
             // Insert value into the tree -> Rebalance the tree

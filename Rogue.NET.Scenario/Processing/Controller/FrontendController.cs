@@ -225,13 +225,13 @@ namespace Rogue.NET.Scenario.Processing.Controller
         private void OnUpdateLayoutVisibility()
         {
             _levelCanvasViewModel.UpdateLayoutVisibility(_modelService.Level
-                                                                      .Visibility
+                                                                      .Movement
                                                                       .GetExploredLocations(),
                                                          _modelService.Level
-                                                                      .Visibility
+                                                                      .Movement
                                                                       .GetVisibleLocations(),
                                                          _modelService.Level
-                                                                      .Visibility
+                                                                      .Movement
                                                                       .GetRevealedLocations());
         }
         private void OnRemoveContent(IEnumerable<string> contentIds)

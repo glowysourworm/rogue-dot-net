@@ -115,6 +115,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             if (!_visibleLocations.ContainsKey(location))
                 _visibleLocations.Add(location, location);
 
+            // Remove / Insert are fall-through methods
+
             // 2 x O(Log n) + O(1)
             Remove(_unSearchedLocations, location);
 
@@ -125,6 +127,21 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         public bool IsVisible(T location)
         {
             return _visibleLocations.ContainsKey(location);
+        }
+
+        public T GetNextSearchLocation()
+        {
+            if (_unSearchedLocations.Count == 0)
+                return null;
+
+            // Fetch Min-by-angle (O(Log n))
+            var distanceSubTree = _unSearchedLocations.Min();
+
+            if (distanceSubTree == null)
+                return null;
+
+            // Return Min-by-distance (O(Log n))
+            return distanceSubTree.Min() ?? null;
         }
     }
 }

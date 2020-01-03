@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
     /// </summary>
     public class AuraGrid
     {
-        readonly CharacterVisibility _visibilityGrid;
+        readonly CharacterMovement _movement;
 
         // Primary 2D array - stores aura identifier
         List<string>[,] _playerAlignedAuraGrid;
@@ -23,29 +23,39 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         // Dictionary lookup - stores affected locations per aura
         Dictionary<string, IEnumerable<GridLocation>> _auraDict;
 
-        public AuraGrid(CharacterVisibility visibilityGrid)
+        public AuraGrid(CharacterMovement movement)
         {
-            _visibilityGrid = visibilityGrid;
+            _movement = movement;
 
             // Initialize private collections
-            _playerAlignedAuraGrid = new List<string>[visibilityGrid.Boundary.Width, visibilityGrid.Boundary.Height];
-            _enemyAlignedAuraGrid = new List<string>[visibilityGrid.Boundary.Width, visibilityGrid.Boundary.Height];
+            _playerAlignedAuraGrid = new List<string>[movement.Boundary.Width, movement.Boundary.Height];
+            _enemyAlignedAuraGrid = new List<string>[movement.Boundary.Width, movement.Boundary.Height];
             _auraDict = new Dictionary<string, IEnumerable<GridLocation>>();
         }
 
-        public void Update(CharacterBase character, GridLocation characterLocation)
+        public void Update(Player player, GridLocation playerLocation)
         {
-            var playerAligned = (character is Player) ||
-                                (character as NonPlayerCharacter).AlignmentType == CharacterAlignmentType.PlayerAligned;
+            // Update all auras for this character
+            foreach (var aura in player.Alteration.GetAuras())
+            {
+                var auraLocations = _movement.GetVisibleLocations()
+                                             .Where(location => Metric.EuclideanDistance(playerLocation, location) <= aura.Item2.AuraRange)
+                                             .Actualize();
 
+                UpdateAura(aura.Item1.Id, auraLocations, CharacterAlignmentType.PlayerAligned);
+            }
+        }
+
+        public void Update(NonPlayerCharacter character, GridLocation characterLocation)
+        {
             // Update all auras for this character
             foreach (var aura in character.Alteration.GetAuras())
             {
-                var auraLocations = _visibilityGrid[character].VisibleLocations
-                                                              .Where(location => Metric.EuclideanDistance(characterLocation, location) <= aura.Item2.AuraRange)
-                                                              .Actualize();
+                var auraLocations = _movement.GetVisibleLocations(character)
+                                             .Where(location => Metric.EuclideanDistance(characterLocation, location) <= aura.Item2.AuraRange)
+                                             .Actualize();
 
-                UpdateAura(aura.Item1.Id, auraLocations, playerAligned ? CharacterAlignmentType.PlayerAligned : CharacterAlignmentType.EnemyAligned);
+                UpdateAura(aura.Item1.Id, auraLocations, character.AlignmentType);
             }
         }
 

@@ -148,7 +148,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             // Calculate visible-to-player
             //
             // Content object is within player's sight radius 
-            var lineOfSightVisible = scenarioObject == _modelService.Player || _modelService.Level.Visibility.IsVisible(scenarioObject);
+            var lineOfSightVisible = scenarioObject == _modelService.Player || _modelService.Level.Movement.IsVisible(scenarioObject);
 
             // Content object is visible on the map (Explored, Detected, Revealed)
             var visibleToPlayer = lineOfSightVisible ||

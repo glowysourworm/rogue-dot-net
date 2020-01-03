@@ -623,11 +623,18 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 // If no attack taken calculate a move instead
                 else
                 {
-                    var moveLocation = _modelService.Level.PathGrid.CalculateNextLocation(character);
+                    var moveLocation = _modelService.Level.Movement.CalculateNextLocation(character);
 
+                    // Double-check for the character to try an adjacent location - this seems to happen
+                    // because the visibility calculation isn't returning anything visible (maybe the character
+                    // is in a single-celled room or has no visibility)
                     if (moveLocation != null &&
                        !moveLocation.Equals(_modelService.Level.Content[character]) &&
-                       !moveLocation.Equals(_modelService.PlayerLocation))
+                       !moveLocation.Equals(_modelService.PlayerLocation) &&
+                       _modelService.Level
+                                     .Grid
+                                     .GetAdjacentLocations(_modelService.Level.Content[character])
+                                     .Contains(moveLocation))
                     {
                         ProcessCharacterMove(character, moveLocation);
                         actionTaken = true;
@@ -753,7 +760,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var moveDirection = GridCalculator.GetDirectionOfAdjacentLocation(characterLocation, moveLocation);
 
             // Include check for character swap
-            if (!_modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(characterLocation, moveLocation, true, character.AlignmentType))
+            if (!_modelService.Level.Movement.IsPathToAdjacentLocationBlocked(characterLocation, moveLocation, true, character.AlignmentType))
             {
                 // Check for character swaps
                 var swapCharacter = _modelService.Level.Content.GetAt<NonPlayerCharacter>(moveLocation);
@@ -789,7 +796,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             IEnumerable<CharacterBase> charactersInRange = null;
 
-            var visibleLocations = _modelService.Level.Visibility[character].VisibleLocations;
+            var visibleLocations = _modelService.Level.Movement.GetVisibleLocations(character);
 
             var playerAligned = (character.AlignmentType == CharacterAlignmentType.PlayerAligned && !opposingAlignment) ||
                                 (character.AlignmentType == CharacterAlignmentType.EnemyAligned && opposingAlignment);
@@ -998,7 +1005,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Fetch locations visible to the player
-            var visibleLocations = _modelService.Level.Visibility.GetVisibleLocations();
+            var visibleLocations = _modelService.Level.Movement.GetVisibleLocations();
 
             // Create enemy from template
             var template = _randomSequenceGenerator.GetWeightedRandom(enemyTemplates, x => x.GenerationWeight);

@@ -66,6 +66,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         // Cell movement cost
         const int CELL_MOVEMENT_COST = 1;
 
+        bool _initialized = false;
+
         protected DijkstraMapBase(int width,
                                   int height,
                                   bool obeyCardinalMovement,
@@ -89,8 +91,14 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             _frontier = new BinarySearchTree<float, List<IGridLocator>>();
         }
 
-        protected void Run()
+        protected void Initialize(IGridLocator sourceLocation, IEnumerable<IGridLocator> targetLocations)
         {
+            this.SourceLocation = sourceLocation;
+            this.TargetLocations = targetLocations;
+
+            // Clear out the frontier
+            _frontier.Clear();
+
             // Initialize the private maps
             for (int i = 0; i < _width; i++)
             {
@@ -103,6 +111,14 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     _visitedMap[i, j] = false;
                 }
             }
+
+            _initialized = true;
+        }
+
+        protected void Run()
+        {
+            if (!_initialized)
+                throw new Exception("Must call Initialize() before Run() DijkstraMapBase");
 
             // Track goal progress
             var goalDict = this.TargetLocations

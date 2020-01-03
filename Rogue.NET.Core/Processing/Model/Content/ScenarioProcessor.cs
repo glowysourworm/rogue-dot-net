@@ -114,7 +114,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return null;
 
             //Look for road blocks - move player
-            if (!_modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(_modelService.PlayerLocation, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
+            if (!_modelService.Level.Movement.IsPathToAdjacentLocationBlocked(_modelService.PlayerLocation, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
             {
                 // Check for character swaps
                 var swapCharacter = _modelService.Level.Content.GetAt<NonPlayerCharacter>(desiredLocation);
@@ -204,7 +204,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Check to see whether path is clear to attack
-            var blocked = _modelService.Level.PathGrid.IsPathToAdjacentLocationBlocked(location, attackLocation, false);
+            var blocked = _modelService.Level.Movement.IsPathToAdjacentLocationBlocked(location, attackLocation, false);
 
             // Get target for attack
             var character = _modelService.Level.Content.GetAt<NonPlayerCharacter>(attackLocation);
@@ -275,7 +275,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return LevelContinuationAction.DoNothing;
             }
 
-            var visibleLocations = _modelService.Level.Visibility.GetVisibleLocations();
+            var visibleLocations = _modelService.Level.Movement.GetVisibleLocations();
             var visibleCharacters = _modelService.Level.Content.GetManyAt<CharacterBase>(visibleLocations);
 
             // Check for targeting

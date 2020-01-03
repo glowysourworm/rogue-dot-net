@@ -212,9 +212,9 @@
     <Compile Include="Model\Scenario\Content\Layout\Grid.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Interface\ILayerMap.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LayerMap.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Layout\CharacterMovement.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\SearchGrid.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\AuraGrid.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Layout\PathGrid.cs" />
     <Compile Include="Processing\Model\Algorithm\Component\DijkstraPathFinder.cs" />
     <Compile Include="Processing\Model\Algorithm\Component\DijkstraPathGenerator.cs" />
     <Compile Include="Processing\Model\Algorithm\DijkstrasAlgorithm.cs" />
@@ -267,7 +267,6 @@
     <Compile Include="Model\Scenario\Content\Layout\RegionConnection.cs" />
     <Compile Include="Model\Scenario\Content\Level.cs" />
     <Compile Include="Model\Scenario\Content\LevelParameters.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Layout\CharacterVisibility.cs" />
     <Compile Include="Processing\Model\Algorithm\GridAlgorithm.cs" />
     <Compile Include="Processing\Model\Content\Calculator\GridCalculator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ILightGenerator.cs" />

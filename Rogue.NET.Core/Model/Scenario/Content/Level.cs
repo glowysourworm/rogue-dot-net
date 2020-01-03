@@ -39,15 +39,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public ContentGrid MemorizedContent { get; private set; }
 
         /// <summary>
-        /// Calculated visibility data for the level (NON-SERIALIZED) (CONSIDER SERIALIZING TO
+        /// Calculated visibility and path finding data for the level (NON-SERIALIZED) (CONSIDER SERIALIZING TO
         /// PRESERVE CHARACTER BEHAVIOR STATE)
         /// </summary>
-        public CharacterVisibility Visibility { get; private set; }
-
-        /// <summary>
-        /// Calculated path finding data for the level (NON-SERIALIZED)
-        /// </summary>
-        public PathGrid PathGrid { get; private set; }
+        public CharacterMovement Movement { get; private set; }
 
         /// <summary>
         /// Calculated aura data for the level (NON-SERIALIZED)
@@ -67,9 +62,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.Grid = grid;
             this.Content = new ContentGrid(grid);
             this.MemorizedContent = new ContentGrid(grid);
-            this.Visibility = new CharacterVisibility(grid, this.Content);
-            this.PathGrid = new PathGrid(grid, this.Content);
-            this.AuraGrid = new AuraGrid(this.Visibility);
+            this.Movement = new CharacterMovement(grid, this.Content);
+            this.AuraGrid = new AuraGrid(this.Movement);
 
             this.Parameters = new LevelParameters()
             {
@@ -91,9 +85,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             // Instantiate the level content and memorized content
             this.Content = new ContentGrid(this.Grid);
             this.MemorizedContent = new ContentGrid(this.Grid);
-            this.Visibility = new CharacterVisibility(this.Grid, this.Content);
-            this.PathGrid = new PathGrid(this.Grid, this.Content);
-            this.Visibility = new CharacterVisibility(this.Grid, this.Content);
+            this.Movement = new CharacterMovement(this.Grid, this.Content);
 
             // Deserialize the content
             for (int i = 0; i < count; i++)
@@ -495,7 +487,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             var alignmentType = character is Player ? CharacterAlignmentType.PlayerAligned : CharacterAlignmentType.EnemyAligned;
 
             // Check for path blocking
-            var openLocations = freeLocations.Where(location => this.PathGrid
+            var openLocations = freeLocations.Where(location => this.Movement
                                                                     .IsPathToAdjacentLocationBlocked(this.Content[character], location, true, alignmentType))
                                              .Actualize();
 
@@ -508,13 +500,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             return this.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, location, range);
         }
 
-        public IEnumerable<GridLocation> GetVisibleLocationsInRange(CharacterBase character, int range)
+        public IEnumerable<GridLocation> GetVisibleLocationsInRange(NonPlayerCharacter character, int range)
         {
             // Query for locations near the character from the walkable layer
             var locationsNear = this.Grid.GetNonOccupiedLocationsNear(LayoutGrid.LayoutLayer.Walkable, this.Content[character], range);
 
             // Cross reference this collection with the visibility grid
-            return locationsNear.Where(location => this.Visibility.IsVisibleTo(location, character))
+            return locationsNear.Where(location => this.Movement.IsVisibleTo(location, character))
                                 .Actualize();
         }
         

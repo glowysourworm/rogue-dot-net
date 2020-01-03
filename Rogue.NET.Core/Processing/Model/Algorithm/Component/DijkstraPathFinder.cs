@@ -35,17 +35,35 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     }),
                     new DijkstraMapLocatorCallback((column, row) =>
                     {
+                        if (layoutGrid[column, row] == null)
+                        {
+                            int foo = 43;
+                        }
+
                         return layoutGrid[column, row].Location;
                     }))
         {
             _layoutGrid = layoutGrid;
             _blockedCallback = blockedCallback;
-
-            Run();
-
-            // OutputCSV(ResourceConstants.DijkstraOutputDirectory, "dijkstraPathFinder");
         }
 
+        /// <summary>
+        /// Resets / re-runs the algorithm to calculate a new output
+        /// </summary>
+        public void Reset(GridLocation sourceLocation, IEnumerable<GridLocation> targetLocations)
+        {
+            base.Initialize(sourceLocation, targetLocations);
+        }
+
+        public new void Run()
+        {
+            base.Run();
+        }
+
+        /// <summary>
+        /// Returns the total cost of movement from the source to the specified target calculated by
+        /// Dijkstra's algorithm.
+        /// </summary>
         public float GetMovementCost(IGridLocator targetLocation)
         {
             if (!this.TargetLocations.Any(location => location.Column == targetLocation.Column &&

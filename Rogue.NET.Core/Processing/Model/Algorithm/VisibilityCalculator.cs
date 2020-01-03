@@ -22,7 +22,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         /// </summary>
         public delegate void VisibilityCalculatorCallback(int column, int row, bool isVisible);
 
-        const int MAX_RADIUS = 20;
+        const int MAX_RADIUS = 10;
 
         protected enum Octant
         {

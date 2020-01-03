@@ -42,6 +42,9 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     }))
         {
             _grid = grid;
+
+            // Initializes the map to run
+            Initialize(sourceLocation, targetLocations);
         }
 
         public void EmbedPaths(DijkstraEmbedPathCallback callback)
