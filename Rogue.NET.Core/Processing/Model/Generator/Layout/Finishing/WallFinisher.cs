@@ -1,8 +1,8 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 
 using System;
@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
         }
 
-        public void CreateDoors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<LayerInfo> terrainLayers)
+        public void CreateDoors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<LayerInfo<GridCellInfo>> terrainLayers)
         {
             foreach (var region in regions)
             {

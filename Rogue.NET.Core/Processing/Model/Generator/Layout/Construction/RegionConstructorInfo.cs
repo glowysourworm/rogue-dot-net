@@ -1,6 +1,7 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
-namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Construction
+namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
 {
     public class RegionConstructorInfo<T> where T : class, IGridLocator
     {

@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             get { return ROOM_MIN_SIZE; }
         }
 
-        public static bool ValidateRoomRegion<T>(Region<T> region) where T : class, IGridLocator
+        public static bool ValidateBaseRegion<T>(Region<T> region) where T : class, IGridLocator
         {
             return region.Locations.Length >= ROOM_MIN_SIZE;
         }

@@ -1,18 +1,20 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
 {
     public interface IRegionBuilder
     {
         /// <summary>
-        /// Sets up regions of cells in the grid based on the template and returns the 2D cell array for the layout
+        /// Sets up regions of cells in the BASE layer, creates a triangulation of the layer to build
+        /// the initial CONNECTION layer. Returns the layout container with the results.
         /// </summary>
-        public GridCellInfo[,] BuildRegions(LayoutTemplate template);
+        public LayoutContainer BuildRegions(LayoutTemplate template);
 
         /// <summary>
-        /// Sets up a default region of cells in the grid for creating a default layout
+        /// Sets up regions of cells in the BASE layer, creates a triangulation of the layer to build
+        /// the initial CONNECTION layer. Returns the layout container with the results.
         /// </summary>
-        public GridCellInfo[,] BuildDefaultRegion();
+        public LayoutContainer BuildDefaultLayout();
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using System.Runtime.Serialization;
 
-namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Construction
+namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
 {
     /// <summary>
     /// Component used for creating the LevelGrid during the generation phase.

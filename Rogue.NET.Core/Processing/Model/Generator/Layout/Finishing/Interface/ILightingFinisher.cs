@@ -1,8 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-
-using System.Collections.Generic;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface
 {

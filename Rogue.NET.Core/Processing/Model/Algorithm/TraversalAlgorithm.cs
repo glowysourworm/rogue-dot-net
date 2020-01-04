@@ -40,11 +40,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     discoveredRegions.Add(region, region);
 
                 // Find all connections and add them to the frontier
-                foreach (var connectedRegion in connectedLayer.Connections(startingRegion.Id))
+                foreach (var connectedRegion in connectedLayer.Connections(region.Id))
                 {
-                    if (connectedRegion == startingRegion)
-                        throw new Exception("Improperly initialized connections TraversalAlgorithm.FindNextSearchRegion");
-
                     if (!searchedRegions.Contains(connectedRegion))
                         return connectedRegion;
 

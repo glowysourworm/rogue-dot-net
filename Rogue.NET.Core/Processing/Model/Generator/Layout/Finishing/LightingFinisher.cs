@@ -3,11 +3,11 @@ using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 
 using System;

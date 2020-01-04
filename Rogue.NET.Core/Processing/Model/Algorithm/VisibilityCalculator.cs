@@ -2,8 +2,8 @@
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System;
 using System.Collections.Generic;

@@ -1,14 +1,14 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Algorithm.Interface;
-using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System;
 using System.Collections.Generic;
@@ -25,22 +25,21 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
     {
         readonly INoiseGenerator _noiseGenerator;
         readonly IConnectionBuilder _connectionBuilder;
+        readonly IRegionTriangulationCreator _triangulationCreator;
 
         const int TERRAIN_PADDING = 2;
 
         [ImportingConstructor]
-        public TerrainBuilder(INoiseGenerator noiseGenerator, IConnectionBuilder connectionBuilder)
+        public TerrainBuilder(INoiseGenerator noiseGenerator,
+                              IConnectionBuilder connectionBuilder,
+                              IRegionTriangulationCreator triangulationCreator)
         {
             _noiseGenerator = noiseGenerator;
             _connectionBuilder = connectionBuilder;
+            _triangulationCreator = triangulationCreator;
         }
 
-        public bool BuildTerrain(GridCellInfo[,] grid, 
-                                 IEnumerable<ConnectedRegion<GridCellInfo>> baseRegions, 
-                                 LayoutTemplate template, 
-                                 out IEnumerable<ConnectedRegion<GridCellInfo>> modifiedRegions,
-                                 out Graph modifiedRegionGraph, 
-                                 out IEnumerable<LayerInfo> terrainLayers)
+        public bool BuildTerrain(LayoutContainer container, LayoutTemplate template)
         {
             // Procedure
             //
@@ -56,71 +55,63 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             //
 
             // Create all terrain layers in order and separate them by logical layers (see LayoutTerrainLayer enum)
-            var terrainDict = CreateTerrain(grid, baseRegions, template);
+            var terrainDict = CreateTerrain(container.Grid, container.BaseRegions, template);
 
             // (Terrain Initial Clean-up) Remove non-overlapping terrain
-            RemoveTerrainIslands(grid, terrainDict, baseRegions);
+            RemoveTerrainIslands(container.Grid, terrainDict, container.BaseRegions);
 
             // Create combined terrain-blocked grid. This will have null cells where impassible terrain exists.
-            var terrainMaskedGrid = CreateTerrainMaskedGrid(grid, terrainDict);
+            var terrainMaskedGrid = CreateTerrainMaskedGrid(container.Grid, terrainDict);
 
             // Check for invalid regions and remove them - put null cells in to be filled with walls or paths
-            RemoveInvalidRegions(grid, terrainMaskedGrid, terrainDict);
+            RemoveInvalidRegions(container.Grid, terrainMaskedGrid, terrainDict);
 
             // Create masked regions - THESE CONTAIN ORIGINAL REGION AND / OR CORRIDOR CELLS
-            modifiedRegions = terrainMaskedGrid.ConstructConnectedRegions(cell => !cell.IsWall);
+            var modifiedRegions = terrainMaskedGrid.ConstructConnectedRegions(cell => !cell.IsWall);
 
-            // Check that there are valid regions
-            if (!modifiedRegions.Any(region => RegionValidator.ValidateRoomRegion(region)))
+            // Check that there are valid regions -> DEFAULT RETURNS FAILED
+            if (!modifiedRegions.Any(region => RegionValidator.ValidateBaseRegion(region)))
             {
-                modifiedRegions = null;
-                modifiedRegionGraph = null;
-                terrainLayers = new LayerInfo[] { };
                 return false;
             }
 
-            // CONNECTION POINTS - CREATE NEW TRIANGULATION
-            if (template.ConnectionType != LayoutConnectionType.ConnectionPoints)
+            // If any Impassable terrain - CREATE NEW CONNECTION LAYER 
+            if (terrainDict.Keys.Any(layer => !layer.IsPassable))
             {
-                // Calculate avoid regions for the connection builder
-                var avoidRegions = terrainDict.Where(element => !element.Key.IsPassable &&
-                                                                 element.Key.ConnectionType == TerrainConnectionType.Avoid)
-                                              .SelectMany(element => element.Value.ConstructRegions(cell => true))
-                                              .Actualize();
+                var modifiedGraph = _triangulationCreator.CreateTriangulation(modifiedRegions, template);
 
-                // Create corridors and new regions
-                modifiedRegionGraph = _connectionBuilder.BuildConnectionsWithAvoidRegions(terrainMaskedGrid, modifiedRegions, avoidRegions, template);
+                // Set the modified connection layer
+                container.SetConnectionLayer(modifiedRegions, modifiedGraph);
 
-                // Transfer the corridor cells back to the primary and terrain grids
-                TransferCorridors(terrainMaskedGrid, grid, terrainDict);
+                // Calculate new connections (Connection points don't require any more work)
+                if (template.ConnectionType != LayoutConnectionType.ConnectionPoints)
+                {
+                    // Calculate avoid regions for the connection builder
+                    var avoidRegions = terrainDict.Where(element => !element.Key.IsPassable &&
+                                                                     element.Key.ConnectionType == TerrainConnectionType.Avoid)
+                                                  .SelectMany(element => element.Value.ConstructRegions(cell => true))
+                                                  .Actualize();
+
+                    _connectionBuilder.BuildConnectionsWithAvoidRegions(container, template, avoidRegions);
+
+                    // Transfer the corridor cells back to the primary and terrain grids
+                    TransferCorridors(terrainMaskedGrid, container.Grid, terrainDict);
+                }
             }
-            else
-            {
-                // Create connection points and new triangulation
-                modifiedRegionGraph = _connectionBuilder.BuildConnections(grid, modifiedRegions, template);
-            }
 
-            // Create the terrain layers
-            terrainLayers = terrainDict.Select(element =>
+            // Finally, Create the terrain layers
+            var terrainLayers = terrainDict.Select(element =>
             {
                 // First, identify terrain regions for this layer
-                var regionsCellInfo = element.Value.ConstructRegions(cell => true);
+                var regions = element.Value.ConstructRegions(cell => true);
 
-                // Next, convert to regions of grid locations
-                var terrainRegions = regionsCellInfo.Select(cellInfoRegion =>
-                {
-                    var locations = cellInfoRegion.Locations.Select(cell => cell.Location).ToArray();
-                    var edgeLocations = cellInfoRegion.EdgeLocations.Select(cell => cell.Location).ToArray();
-
-                    return new Region<GridLocation>(locations,
-                                                    edgeLocations,
-                                                    cellInfoRegion.Boundary,
-                                                    new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
-                }).Actualize();
-
-                return new LayerInfo(element.Key.Name, terrainRegions, element.Key.IsPassable);
+                // Return new layer info
+                return new LayerInfo<GridCellInfo>(element.Key.Name, regions, element.Key.IsPassable);
 
             }).Actualize();
+
+            // SETUP TERRAIN LAYERS IN THE CONTAINER
+            container.SetTerrainLayers(terrainLayers);
 
             return true;
         }
@@ -329,7 +320,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var regions = terrainMaskedGrid.ConstructRegions(cell => !cell.IsWall);
 
             // Look for invalid regions and remove them
-            foreach (var invalidRegion in regions.Where(region => !RegionValidator.ValidateRoomRegion(region)))
+            foreach (var invalidRegion in regions.Where(region => !RegionValidator.ValidateBaseRegion(region)))
             {
                 // REMOVE ALL CELLS FROM THE BASE GRID, TERRAIN MASKED GRID, AND ALL TERRAIN GRIDS
                 foreach (var location in invalidRegion.Locations)

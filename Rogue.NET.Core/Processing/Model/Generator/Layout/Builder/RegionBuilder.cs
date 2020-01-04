@@ -2,13 +2,14 @@
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System;
 using System.ComponentModel.Composition;
@@ -29,6 +30,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         readonly IMazeRegionCreator _mazeRegionCreator;
         readonly INoiseGenerator _noiseGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IRegionTriangulationCreator _triangulationCreator;
 
         const int LAYOUT_WIDTH_MAX = 100;
         const int LAYOUT_WIDTH_MIN = 20;
@@ -41,7 +43,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                              ICellularAutomataRegionCreator cellularAutomataRegionCreator,
                              IMazeRegionCreator mazeRegionCreator,
                              INoiseGenerator noiseGenerator,
-                             IRandomSequenceGenerator randomSequenceGenerator)
+                             IRandomSequenceGenerator randomSequenceGenerator,
+                             IRegionTriangulationCreator triangulationCreator)
         {
             _regionGeometryCreator = regionGeometryCreator;
             _rectangularRegionCreator = rectangularRegionCreator;
@@ -49,34 +52,47 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             _mazeRegionCreator = mazeRegionCreator;
             _noiseGenerator = noiseGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _triangulationCreator = triangulationCreator;
         }
 
-        public GridCellInfo[,] BuildRegions(LayoutTemplate template)
+        public LayoutContainer BuildRegions(LayoutTemplate template)
         {
+            GridCellInfo[,] grid;
+
             switch (template.Type)
             {
                 case LayoutType.RectangularRegion:
-                    return CreateRectangularGridRegions(template);
+                    grid = CreateRectangularGridRegions(template);
+                    break;
                 case LayoutType.RandomRectangularRegion:
-                    return CreateRandomRectangularRegions(template, false);
+                    grid = CreateRandomRectangularRegions(template, false);
+                    break;
                 case LayoutType.RandomSmoothedRegion:
-                    return CreateRandomRectangularRegions(template, true);
+                    grid = CreateRandomRectangularRegions(template, true);
+                    break;
                 case LayoutType.MazeMap:
-                    return CreateMazeMap(template);
+                    grid = CreateMazeMap(template);
+                    break;
                 case LayoutType.ElevationMap:
-                    return CreateElevationMap(template);
+                    grid = CreateElevationMap(template);
+                    break;
                 case LayoutType.CellularAutomataMap:
-                    return CreateCellularAutomataMap(template);
+                    grid = CreateCellularAutomataMap(template);
+                    break;
                 case LayoutType.CellularAutomataMazeMap:
-                    return CreateCellularAutomataMazeMap(template);
+                    grid = CreateCellularAutomataMazeMap(template);
+                    break;
                 case LayoutType.ElevationMazeMap:
-                    return CreateElevationMazeMap(template);
+                    grid = CreateElevationMazeMap(template);
+                    break;
                 default:
                     throw new Exception("Unhandled Layout Type RegionBuilder");
             }
+
+            return CompleteBaseLayout(grid, template);
         }
 
-        public GridCellInfo[,] BuildDefaultRegion()
+        public LayoutContainer BuildDefaultLayout()
         {
             var grid = new GridCellInfo[20, 15];
 
@@ -84,7 +100,28 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 for (int j = 1; j < grid.GetLength(1) - 1; j++)
                     grid[i, j] = new GridCellInfo(i, j);
 
-            return grid;
+            return CompleteBaseLayout(grid, null);
+        }
+
+        private LayoutContainer CompleteBaseLayout(GridCellInfo[,] grid, LayoutTemplate template)
+        {
+            // Remove invalid regions
+            grid.RemoveInvalidRegions(cell => !cell.IsWall, region => !RegionValidator.ValidateBaseRegion(region));
+
+            // Create container for the layout
+            var container = new LayoutContainer(grid, template == null);
+
+            // Identify the region
+            var baseRegions = grid.ConstructConnectedRegions(cell => !cell.IsWall);
+
+            // Create triangulation to complete the connection layer
+            var graph = template == null ? _triangulationCreator.CreateDefaultTriangulation(baseRegions)
+                                         : _triangulationCreator.CreateTriangulation(baseRegions, template);
+
+            container.SetBaseLayer(baseRegions);
+            container.SetConnectionLayer(baseRegions, graph);
+
+            return container;
         }
 
         private GridCellInfo[,] CreateGrid(LayoutTemplate template)

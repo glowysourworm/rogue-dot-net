@@ -2,11 +2,12 @@
 using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -144,15 +145,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         ///         all data prepared. Also, create the terrain array with all data prepared. Corridors 
         ///         may be created afterwards using the public indexer.
         /// </summary>
-        public LayoutGrid(GridCellInfo[,] grid, 
-                          LayerInfo fullLayer,
-                          ConnectedLayerInfo connectionLayer,
-                          LayerInfo walkableLayer,
-                          LayerInfo placementLayer,
-                          LayerInfo roomLayer,
-                          LayerInfo corridorLayer,
-                          LayerInfo wallLayer,
-                          IEnumerable<LayerInfo> terrainLayers)
+        public LayoutGrid(GridCellInfo[,] grid,
+                          LayerInfo<GridLocation> fullLayer,
+                          ConnectedLayerInfo<GridLocation> connectionLayer,
+                          LayerInfo<GridLocation> walkableLayer,
+                          LayerInfo<GridLocation> placementLayer,
+                          LayerInfo<GridLocation> roomLayer,
+                          LayerInfo<GridLocation> corridorLayer,
+                          LayerInfo<GridLocation> wallLayer,
+                          IEnumerable<LayerInfo<GridLocation>> terrainLayers)
         {
             // Primary 2D array
             _grid = new GridCell[grid.GetLength(0), grid.GetLength(1)];
@@ -165,10 +166,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                                                         .SelectMany(layer => layer.Regions);
 
             // Connected Layers
-            this.ConnectionMap = new ConnectedLayerMap(connectionLayer.LayerName, 
-                                                       connectionLayer.RegionGraph, 
-                                                       (IEnumerable<ConnectedRegion<GridLocation>>)connectionLayer.Regions, 
-                                                       this.Bounds.Width, 
+            this.ConnectionMap = new ConnectedLayerMap(connectionLayer.LayerName,
+                                                       connectionLayer.RegionGraph,
+                                                       connectionLayer.ConnectionRegions,
+                                                       this.Bounds.Width,
                                                        this.Bounds.Height);
 
             // Non-connected Layers
@@ -237,7 +238,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
 
             this.ConnectionMap = connectionMap;
-            
+
             this.FullMap = fullMap;
             this.WalkableMap = walkableMap;
             this.PlacementMap = placementMap;

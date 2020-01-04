@@ -1,7 +1,6 @@
-﻿using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System.Collections.Generic;
 
@@ -10,14 +9,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
     public interface IConnectionBuilder
     {
         /// <summary>
-        /// Generates connections between the specified regions - returns the region triangulation graph
+        /// Generates connections between the specified regions - returns the region triangulation graph along with
+        /// modified regions (in the case that the grid is modified)
         /// </summary>
-        Graph BuildConnections(GridCellInfo[,] grid, IEnumerable<ConnectedRegion<GridCellInfo>> regions, LayoutTemplate template);
+        void BuildConnections(LayoutContainer container,
+                              LayoutTemplate template);
 
         /// <summary>
         /// Generates connections avoiding the provided regions. This is typically used for connecting regions separated
         /// by terrain. Returns the region triangulation graph.
         /// </summary>
-        Graph BuildConnectionsWithAvoidRegions(GridCellInfo[,] grid, IEnumerable<ConnectedRegion<GridCellInfo>> regions, IEnumerable<Region<GridCellInfo>> avoidRegions, LayoutTemplate template);
+        void BuildConnectionsWithAvoidRegions(LayoutContainer container,
+                                               LayoutTemplate template,
+                                               IEnumerable<Region<GridCellInfo>> avoidRegions);
     }
 }

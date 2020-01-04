@@ -93,6 +93,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                 return CreateMinimumSpanningTree(regions);
         }
 
+        public Graph CreateDefaultTriangulation<T>(IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
+        {
+            if (regions.Count() != 1)
+                throw new Exception("Trying to create default triangulation for non-default regions");
+
+            return CreateFullGraph(regions);
+        }
+
         private Graph CreateFullGraph<T>(IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
         {
             var graph = new Graph();

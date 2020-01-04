@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
+
 using System;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface

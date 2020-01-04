@@ -1,7 +1,4 @@
-﻿using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Math.Geometry.Interface;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Interface;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
@@ -177,7 +174,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 throw new Exception("Improper use of OnDeserialization()  LayerMap");
 
             // Setup grid locations
-            for (int i=0;i<this.Locations.Length;i++)
+            for (int i = 0; i < this.Locations.Length; i++)
             {
                 var location = this.Locations[i] as GridLocation;
 

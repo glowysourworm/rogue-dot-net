@@ -208,7 +208,10 @@
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
     <Compile Include="IO\Compressed.cs" />
     <Compile Include="Model\Scenario\Content\Layout\ConnectedRegion.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\Construction\RegionConstructorInfo.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Builder\Interface\ISymmetricBuilder.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Builder\SymmetricBuilder.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Construction\LayoutContainer.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Construction\RegionConstructorInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Grid.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Interface\ILayerMap.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LayerMap.cs" />
@@ -258,10 +261,10 @@
     <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerGenerationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\TerrainLayerTemplate.cs" />
     <Compile Include="Model\Scenario\Content\Layout\ConnectedLayerMap.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\Construction\ConnectedLayerInfo.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\Construction\GridCellInfo.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Construction\ConnectedLayerInfo.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Construction\GridCellInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Interface\IGridLocator.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\Construction\LayerInfo.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Construction\LayerInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Light.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LayerMapBase.cs" />
     <Compile Include="Model\Scenario\Content\Layout\RegionConnection.cs" />

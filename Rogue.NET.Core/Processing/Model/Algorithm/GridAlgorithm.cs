@@ -1,8 +1,8 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,31 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 {
     public static class GridAlgorithm
     {
+        /// <summary>
+        /// Removes regions of elements that PASS the provided invalidPredicate by setting them to null.
+        /// </summary>
+        public static void RemoveInvalidRegions<T>(this T[,] grid,
+                                                   Func<T, bool> regionIdentifier,
+                                                   Func<Region<T>, bool> invalidPredicate) where T : class, IGridLocator
+        {
+            // Identify regions in the grid
+            var regions = grid.ConstructRegions(regionIdentifier);
+
+            // Select invalid regions
+            var invalidRegions = regions.Where(region => invalidPredicate(region));
+
+            // Remove elements for this region
+            foreach (var region in invalidRegions)
+            {
+                // Nullify the invalid region elements
+                foreach (var location in region.Locations)
+                    grid[location.Column, location.Row] = null;
+            }
+        }
+
+        /// <summary>
+        /// Constructs 4-way contiguous regions of the grid where the elements pass the provided predicate. 
+        /// </summary>
         public static IEnumerable<Region<T>> ConstructRegions<T>(this T[,] grid, Func<T, bool> predicate) where T : class, IGridLocator
         {
             var regionConstructors = IdentifyRegions(grid, predicate);
@@ -20,6 +45,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                                      .Actualize();
         }
 
+        /// <summary>
+        /// Constructs 4-way contiguous regions of the grid where the elements pass the provided predicate. These "CONNECTED" regions
+        /// have extra data storage for their graph connections; but that data is not calculated here.
+        /// </summary>
         public static IEnumerable<ConnectedRegion<T>> ConstructConnectedRegions<T>(this T[,] grid, Func<T, bool> predicate) where T : class, IGridLocator
         {
             var regionConstructors = IdentifyRegions(grid, predicate);

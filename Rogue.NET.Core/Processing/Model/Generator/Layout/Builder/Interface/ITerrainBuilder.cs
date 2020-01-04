@@ -1,9 +1,5 @@
-﻿using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Construction;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-
-using System.Collections.Generic;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
 {
@@ -13,11 +9,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
         /// Builds set of terrain layers based on the layout template and the provided grid. Returns true if terrain layout was successful. Failure
         /// happens typically when there's no unblocked regions of the grid left to create rooms from.
         /// </summary>
-        bool BuildTerrain(GridCellInfo[,] grid, 
-                          IEnumerable<ConnectedRegion<GridCellInfo>> baseRegions, 
-                          LayoutTemplate template, 
-                          out IEnumerable<ConnectedRegion<GridCellInfo>> modifiedRegions,
-                          out Graph modifiedRegionGraph, 
-                          out IEnumerable<LayerInfo> terrainLayers);
+        bool BuildTerrain(LayoutContainer container, LayoutTemplate template);
     }
 }

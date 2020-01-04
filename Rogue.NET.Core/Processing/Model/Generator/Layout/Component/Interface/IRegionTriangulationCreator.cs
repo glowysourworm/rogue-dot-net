@@ -13,5 +13,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
     public interface IRegionTriangulationCreator
     {
         Graph CreateTriangulation<T>(IEnumerable<ConnectedRegion<T>> regions, LayoutTemplate template) where T : class, IGridLocator;
+
+        Graph CreateDefaultTriangulation<T>(IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator;
     }
 }
