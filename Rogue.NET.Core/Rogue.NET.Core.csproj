@@ -215,14 +215,14 @@
     <Compile Include="Model\Scenario\Dynamic\Layout\CharacterMovement.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\SearchGrid.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\AuraGrid.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Layout\CharacterMovementPlanner.cs" />
     <Compile Include="Processing\Model\Algorithm\Component\DijkstraPathFinder.cs" />
     <Compile Include="Processing\Model\Algorithm\Component\DijkstraPathGenerator.cs" />
-    <Compile Include="Processing\Model\Algorithm\DijkstrasAlgorithm.cs" />
+    <Compile Include="Math\Algorithm\DijkstrasAlgorithm.cs" />
     <Compile Include="Math\Algorithm\Factorial.cs" />
     <Compile Include="Math\Algorithm\Interface\INoiseGenerator.cs" />
     <Compile Include="Processing\Model\Algorithm\Component\DijkstraMapBase.cs" />
     <Compile Include="Math\Geometry\Graph.cs" />
-    <Compile Include="Processing\Model\Algorithm\Component\DijkstraGraph.cs" />
     <Compile Include="Math\Geometry\GraphEdgeCollection.cs" />
     <Compile Include="Math\Geometry\GraphTraversal.cs" />
     <Compile Include="Math\Geometry\Triangle.cs" />
@@ -268,6 +268,7 @@
     <Compile Include="Model\Scenario\Content\Level.cs" />
     <Compile Include="Model\Scenario\Content\LevelParameters.cs" />
     <Compile Include="Processing\Model\Algorithm\GridAlgorithm.cs" />
+    <Compile Include="Processing\Model\Algorithm\TraversalAlgorithm.cs" />
     <Compile Include="Processing\Model\Content\Calculator\GridCalculator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\ILightGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\ConnectionBuilder.cs" />

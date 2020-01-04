@@ -78,9 +78,19 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         #endregion
 
+        public Region(string regionId, T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
+        {
+            Initialize(regionId, locations, edgeLocations, boundary, parentBoundary);
+        }
+
         public Region(T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
         {
-            this.Id = Guid.NewGuid().ToString();
+            Initialize(Guid.NewGuid().ToString(), locations, edgeLocations, boundary, parentBoundary);
+        }
+
+        private void Initialize(string regionId, T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
+        {
+            this.Id = regionId;
             this.Locations = locations;
             this.EdgeLocations = edgeLocations;
             this.Boundary = boundary;
@@ -113,6 +123,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 _edgeLocations[location.Column, location.Row] = true;
             }
         }
+
         public Region(SerializationInfo info, StreamingContext context)
         {
             this.Id = info.GetString("Id");
@@ -125,7 +136,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _edgeLocations = new Grid<bool>(this.ParentBoundary, this.Boundary);
             _occupiedLocationGrid = new Grid<bool>(this.ParentBoundary, this.Boundary);
 
-            // Initialize occupied collections - NOT SERIALIZED
+            // Initialize occupied collections - NOT SERIALIZED (INITIALIZE TO NON-OCCUPIED)
             _occupiedLocations = new List<T>();
             _nonOccupiedLocations = new List<T>();
 
@@ -135,6 +146,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
                 // Add to cell array
                 this.Locations[i] = location;
+
+                // Add to non-occupied locations to initialize
+                _nonOccupiedLocations.Add(location);
 
                 // Add to 2D array 
                 _gridLocations[location.Column, location.Row] = location;
@@ -174,6 +188,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
                 // SET REFERENCES FROM THE PRIMARY GRID
                 this.Locations[i] = referenceLocation;
+
+                // INITIALIZED IN PARALLEL TO LOCATIONS
+                _nonOccupiedLocations[i] = referenceLocation;
 
                 // SET REFERENCES FROM THE PRIMARY GRID
                 _gridLocations[location.Column, location.Row] = referenceLocation;

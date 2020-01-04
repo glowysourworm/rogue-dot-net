@@ -467,6 +467,24 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
 
         /// <summary>
+        /// Returns closest non-occupied location to the specified location - using the specified layer map
+        /// </summary>
+        public GridLocation GetClosestNonOccupiedLocation(LayoutLayer layer, GridLocation location, IEnumerable<GridLocation> excludedLocations = null)
+        {
+            var map = SelectLayer(layer);
+
+            if (excludedLocations == null)
+                return map.GetNonOccupiedLocations()
+                          .Except(new GridLocation[] { location })
+                          .MinBy(otherLocation => Metric.EuclideanDistance(location, otherLocation));
+            else
+                return map.GetNonOccupiedLocations()
+                          .Except(excludedLocations)
+                          .Except(new GridLocation[] { location })
+                          .MinBy(otherLocation => Metric.EuclideanDistance(location, otherLocation));
+        }
+
+        /// <summary>
         /// Selects the proper layer for the specified enumeration
         /// </summary>
         private ILayerMap SelectLayer(LayoutLayer layer)

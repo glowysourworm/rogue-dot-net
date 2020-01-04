@@ -3371,4 +3371,43 @@ IMMEDIATE TODO'S:
 		Make Region<> 2D arrays based on its boundary instead of the parent boundary - using index offset math.
 		
 		IDEA:  Create a 2D array class that has offsets calculated so that you can index it using the parent dimensions.
+		
+		PATHFINDING:  Issue with pathfinding in a maze:
+		
+			Example:  SearchGrid says to search the bottom left maze cell. It's 2000 moves away. Must iterate through
+				      the entire map to find it using a Dijkstra scan.
+					  
+			Solution: Use the SearchGrid to do checking to prevent extra iterating when doing pathfinding. For example,
+					  we're still looking for the bottom left cell; but after we reach ANY UNSEARCHED CELL, we COULD 
+					  choose to terminate the Dijkstra scan and use the final path cells as a NEW GOAL. 
+					  
+					  This could easily be used for siutaitons when it's not critical to reach our original goal; but 
+					  we CAN easily reach any un-searched cell before terminating the search. 
+					  
+					  Issue with re-calculation:
+					  
+			Example:  I calculate a route for a certain character. The route needs to be updated each turn; but the work
+					  from the previous turn is lost.
+					  
+			Idea:	  Store character position data by Alignment type { Player Aligned, Enemy Aligned } along with the
+					  route that was calculated.
+					  
+					  So long as the positions of the opposing faction don't overlap any of the path cells - the route
+					  CAN BE REUSED.
+					  
+					  So, a route cache could be implemented to store this data by some kind of a key that is also the
+					  query against this data:
+					  
+					  Cache Key Example:  {Source, Locations[], Opposing Faction[]} 
+					  
+					  The cache would be hashed by each cache key data element so that you could easily look up the ROUTE or
+					  SUB-ROUTE for any cell. 
+					  
+					  The SUB-ROUTE would be any calculated cell as a "goal" of the Dijkstra scan. So, fetching a pre-planned
+					  route would be ~O(1).. so long as the opposing faction could be looked up by index each time - (so some
+					  minimal extra overhead). 
+					  
+			Problem:  This cache would grow FAST; and need to be maintained so that something like the "maximally routed map" is
+					  kept (maybe).. so that all sub-routes could be picked from it. OR, possibly, kept so that TWO Dijkstra outputs
+					  could be somehow COMBINED. (??)
 			

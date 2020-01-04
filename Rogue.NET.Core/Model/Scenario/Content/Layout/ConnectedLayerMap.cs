@@ -32,6 +32,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             get { return base[location] as Region<GridLocation>; }
         }
 
+        public Graph ConnectionGraph
+        {
+            get { return _graph; }
+        }
+
         public IEnumerable<ConnectedRegion<GridLocation>> Connections(int column, int row)
         {
             var region = this[column, row] as ConnectedRegion<GridLocation>;

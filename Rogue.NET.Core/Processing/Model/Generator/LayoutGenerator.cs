@@ -146,8 +146,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// </summary>
         private LayoutGrid FinishLayout(LayoutTemplate template,
                                         GridCellInfo[,] grid,
-                                        IEnumerable<Region<GridCellInfo>> baseRegions,
-                                        IEnumerable<Region<GridCellInfo>> modifiedRegions,
+                                        IEnumerable<ConnectedRegion<GridCellInfo>> baseRegions,
+                                        IEnumerable<ConnectedRegion<GridCellInfo>> modifiedRegions,
                                         Graph baseRegionGraph,
                                         Graph modifiedRegionGraph,
                                         IEnumerable<LayerInfo> terrainLayers)
@@ -218,6 +218,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(grid, region)).Actualize();
             var finalWallRegions = wallRegions.Select(region => ConvertRegion(grid, region)).Actualize();
 
+            // Set connections from the connection regions to the finalized set
+            foreach (var region in connectionRegions)
+            {
+                var finalizedRegion = finalConnectionRegions.First(otherRegion => otherRegion.Id == region.Id);
+
+                // Set connections from all other connected instances
+                foreach (var connectedFinalizedRegion in finalConnectionRegions.Where(x => region.Connections.ContainsKey(x.Id)))
+                {
+                    // Connection data from the non-converted region
+                    var connection = region.Connections[connectedFinalizedRegion.Id];
+
+                    finalizedRegion.SetConnection(connectedFinalizedRegion, 
+                                                  connection.Location.Location, 
+                                                  connection.AdjacentLocation.Location, 
+                                                  connection.Distance);
+                }
+            }
+
             // Build layers
             var fullLayer = new LayerInfo("Full Layer", finalRegions, false);
             var connectionLayer = new ConnectedLayerInfo("Connection Layer", connectionGraph, finalConnectionRegions, true);
@@ -267,15 +285,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// </summary>
         private Region<GridLocation> ConvertRegion(GridCellInfo[,] grid, Region<GridCellInfo> region)
         {
-            return new Region<GridLocation>(region.Locations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
+            return new Region<GridLocation>(region.Id, 
+                                            region.Locations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
                                             region.EdgeLocations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
                                             region.Boundary,
                                             new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
         }
 
-        private ConnectedRegion<GridLocation> ConvertConnectedRegion(GridCellInfo[,] grid, Region<GridCellInfo> region)
+        private ConnectedRegion<GridLocation> ConvertConnectedRegion(GridCellInfo[,] grid, ConnectedRegion<GridCellInfo> region)
         {
-            return new ConnectedRegion<GridLocation>(region.Locations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
+            return new ConnectedRegion<GridLocation>(region.Id, 
+                                                     region.Locations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
                                                      region.EdgeLocations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
                                                      region.Boundary,
                                                      new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));

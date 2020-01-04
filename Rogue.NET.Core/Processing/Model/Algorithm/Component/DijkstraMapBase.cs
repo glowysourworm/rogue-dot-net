@@ -61,7 +61,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         private bool[,] _visitedMap;
 
         // Frontier BST for the map
-        BinarySearchTree<float, List<IGridLocator>> _frontier;
+        BinarySearchTree<float, Dictionary<IGridLocator, IGridLocator>> _frontier;
         
         // Cell movement cost
         const int CELL_MOVEMENT_COST = 1;
@@ -88,7 +88,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             this.TargetLocations = targetLocations;
 
             _visitedMap = new bool[width, height];
-            _frontier = new BinarySearchTree<float, List<IGridLocator>>();
+            _frontier = new BinarySearchTree<float, Dictionary<IGridLocator, IGridLocator>>();
         }
 
         protected void Initialize(IGridLocator sourceLocation, IEnumerable<IGridLocator> targetLocations)
@@ -207,21 +207,21 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                 if (_frontier.Count > 0)
                 {
                     // Lists in the frontier must have an entry
-                    var nextCostList = _frontier.Min();
+                    var nextCostDict = _frontier.Min();
                     var nextCost = _frontier.MinKey();
 
-                    // Get the first from the list
-                    var nextNode = nextCostList.First();
+                    // Get the first from the dictionary
+                    var nextNode = nextCostDict.First();
 
-                    // Maintain frontier list
-                    nextCostList.RemoveAt(0);
+                    // Maintain frontier hash
+                    nextCostDict.Remove(nextNode.Key);
 
-                    if (nextCostList.Count == 0)
+                    if (nextCostDict.Count == 0)
                         _frontier.Remove(nextCost);
 
                     // Move to next location
-                    column = nextNode.Column;
-                    row = nextNode.Row;
+                    column = nextNode.Key.Column;
+                    row = nextNode.Key.Row;
                 }
             }
         }
@@ -262,14 +262,14 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             // Both weights are absent from the frontier
             if (oldWeightList == null &&
                 newWeightList == null)
-                _frontier.Insert(newWeight, new List<IGridLocator>() { locator });
+                _frontier.Insert(newWeight, new Dictionary<IGridLocator, IGridLocator>() { { locator, locator } });
 
             // Old weight list exists; New weight list is absent
             else if (oldWeightList != null &&
                      newWeightList == null)
             {
                 // Check for existing locator
-                if (oldWeightList.Contains(locator))
+                if (oldWeightList.ContainsKey(locator))
                     oldWeightList.Remove(locator);
 
                 // Remove unused node
@@ -277,7 +277,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     _frontier.Remove(oldWeight);
 
                 // Insert new node in the frontier
-                _frontier.Insert(newWeight, new List<IGridLocator>() { locator });
+                _frontier.Insert(newWeight, new Dictionary<IGridLocator, IGridLocator>() { { locator, locator } });
             }
 
             // Old weight is absent; New weight exists
@@ -285,8 +285,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                      newWeightList != null)
             {
                 // Locator doesn't exist in list
-                if (!newWeightList.Contains(locator))
-                    newWeightList.Add(locator);
+                if (!newWeightList.ContainsKey(locator))
+                    newWeightList.Add(locator, locator);
             }
 
             // Both old and new weight lists exist
@@ -296,12 +296,12 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                 if (oldWeightList != newWeightList)
                 {
                     // Check that old weight list has element removed
-                    if (oldWeightList.Contains(locator))
+                    if (oldWeightList.ContainsKey(locator))
                         oldWeightList.Remove(locator);
 
                     // Check that new weight list has element added
-                    if (!newWeightList.Contains(locator))
-                        newWeightList.Add(locator);
+                    if (!newWeightList.ContainsKey(locator))
+                        newWeightList.Add(locator, locator);
                 }
             }
         }

@@ -9,30 +9,20 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 {
     public class SearchGrid<T> where T : class, IGridLocator
     {
-        // NOTE*** REFERENCES SET BY THE PRIMARY LAYOUT GRID. NO ADDITIONAL MEMORY ALLOCATION
-        //
-        Dictionary<T, T> _visibleLocations;
-
         // Store searched / un-searched locations by:  Angle -> Distance (w.r.t. the center of the region)
         BinarySearchTree<double, BinarySearchTree<int, T>> _searchedLocations;
         BinarySearchTree<double, BinarySearchTree<int, T>> _unSearchedLocations;
 
-        readonly Region<T> _region;
+        readonly ConnectedRegion<T> _region;
         readonly GridLocation _regionCenter;
 
         /// <summary>
         /// Returns the id of the current region
         /// </summary>
-        public Region<T> Region { get { return _region; } }
+        public ConnectedRegion<T> Region { get { return _region; } }
 
-        /// <summary>
-        /// Returns visible locations for the grid
-        /// </summary>
-        public IEnumerable<T> VisibleLocations { get { return _visibleLocations.Values; } }
-
-        public SearchGrid(Region<T> region)
+        public SearchGrid(ConnectedRegion<T> region)
         {
-            _visibleLocations = new Dictionary<T, T>();
             _searchedLocations = new BinarySearchTree<double, BinarySearchTree<int, T>>();
             _unSearchedLocations = new BinarySearchTree<double, BinarySearchTree<int, T>>();
 
@@ -101,21 +91,26 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             }
         }
 
-        /// <summary>
-        /// Clears visibility data; but maintains search data
-        /// </summary>
-        public void ClearVisible()
+        public void Clear()
         {
-            _visibleLocations.Clear();
+            _unSearchedLocations.Clear();
+            _searchedLocations.Clear();
+
+            Initialize();
         }
 
-        public void SetVisible(T location)
-        {
-            // ~ O(1)
-            if (!_visibleLocations.ContainsKey(location))
-                _visibleLocations.Add(location, location);
-
+        /// <summary>
+        /// Sets visibility and updates searched locations in the region
+        /// </summary>
+        public void SetSearched(T location)
+        { 
             // Remove / Insert are fall-through methods
+
+            // MAINTAIN ONLY LOCATIONS IN THE REGION FOR SEARCHING. VISIBILITY IS KEPT
+            // ALSO FOR LOCATIONS OUTSIDE THE REGION.
+
+            if (_region[location] == null)
+                return;
 
             // 2 x O(Log n) + O(1)
             Remove(_unSearchedLocations, location);
@@ -124,9 +119,9 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             Insert(_searchedLocations, location);
         }
 
-        public bool IsVisible(T location)
+        public bool IsFullySearched()
         {
-            return _visibleLocations.ContainsKey(location);
+            return _unSearchedLocations.Count == 0;
         }
 
         public T GetNextSearchLocation()

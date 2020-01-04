@@ -22,6 +22,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             get { return _connections; }
         }
 
+        public ConnectedRegion(string connectedRegionId, T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
+                : base(connectedRegionId, locations, edgeLocations, boundary, parentBoundary)
+        {
+            _connections = new Dictionary<string, RegionConnection<T>>();
+        }
+
         public ConnectedRegion(T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
                 : base(locations, edgeLocations, boundary, parentBoundary)
         {

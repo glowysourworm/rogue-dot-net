@@ -323,7 +323,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Don't process monster generation
 
 #else
-            ProcessMonsterGeneration();
+            //ProcessMonsterGeneration();
 #endif
         }
         #endregion

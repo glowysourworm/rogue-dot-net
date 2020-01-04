@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -22,9 +23,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
     {
         readonly LayoutGrid _layoutGrid;
         readonly ContentGrid _contentGrid;
+        
 
         // Character visibility calculations PER REGION (RE-CREATED EACH TIME CHARACTER ENTERS NEW REGION)
-        Dictionary<NonPlayerCharacter, SearchGrid<GridLocation>> _searchDict;
+        Dictionary<NonPlayerCharacter, CharacterMovementPlanner> _searchDict;
 
         // Player - Content Visibility
         Dictionary<ScenarioObject, ScenarioObject> _contentVisibilityDict;
@@ -49,7 +51,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _layoutGrid = layoutGrid;
             _contentGrid = contentGrid;
 
-            _searchDict = new Dictionary<NonPlayerCharacter, SearchGrid<GridLocation>>();
+            _searchDict = new Dictionary<NonPlayerCharacter, CharacterMovementPlanner>();
             _contentVisibilityDict = new Dictionary<ScenarioObject, ScenarioObject>();
 
             _pathFinderDict = new Dictionary<NonPlayerCharacter, DijkstraPathFinder>();
@@ -123,47 +125,15 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         public void Update(NonPlayerCharacter nonPlayerCharacter, GridLocation nonPlayerCharacterLocation)
         {
-            // Check to see if the current entry is for the current region
-            //
-            // 1) Check first for a connected region to use for route planning
-            // 2) If that doesn't work, fall back to the walkable layer
-            var connectedRegion = _layoutGrid.ConnectionMap[nonPlayerCharacterLocation];
-            var walkableRegion = _layoutGrid.WalkableMap[nonPlayerCharacterLocation];
-
-            var currentRegion = connectedRegion ?? walkableRegion;
-
             // Add a new entry for this character
             if (!_searchDict.ContainsKey(nonPlayerCharacter))
-                _searchDict.Add(nonPlayerCharacter, new SearchGrid<GridLocation>(currentRegion));
+                _searchDict.Add(nonPlayerCharacter, new CharacterMovementPlanner(_layoutGrid));
 
-            else
-            {
-                // Have to re-initialize the search grid
-                if (_searchDict[nonPlayerCharacter].Region != currentRegion)
-                    _searchDict[nonPlayerCharacter] = new SearchGrid<GridLocation>(currentRegion);
-            }
+            // Fetch the current search planner
+            var planner = _searchDict[nonPlayerCharacter];
 
-            // Fetch the current search grid
-            var searchGrid = _searchDict[nonPlayerCharacter];
-
-            // Clear visibility
-            searchGrid.ClearVisible();
-
-            // Calculate visible locations -> MUST PREVENT NON-WALKABLE LOCATIONS FROM BEING SET ON THE SEARCH GRID
-            VisibilityCalculator.CalculateVisibility(_layoutGrid, nonPlayerCharacterLocation, (column, row, isVisible) =>
-            {
-                if (isVisible && _layoutGrid.WalkableMap[column, row] != null)
-                {
-                    // Fetch the location from the primary layout grid
-                    var cell = _layoutGrid[column, row];
-
-                    // Set visibility for this location
-                    searchGrid.SetVisible(cell.Location);
-                }
-            });
-
-            // MUST ADD CHARACTER'S POSITION TO THE SEARCH GRID VISIBILITY
-            searchGrid.SetVisible(nonPlayerCharacterLocation);
+            // Update visibility for the character
+            planner.UpdateVisibility(nonPlayerCharacterLocation);
         }
 
         public bool IsPathToAdjacentLocationBlocked(GridLocation location1,
@@ -340,7 +310,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         private GridLocation CalculateSearchLocation(NonPlayerCharacter character)
         {
             // Fetch the next search location
-            var goalLocation = _searchDict[character].GetNextSearchLocation();
+            var goalLocation = _searchDict[character].GetNextSearchLocation(_contentGrid[character]);
 
             // Check to see if there is any more locations to search
             //
