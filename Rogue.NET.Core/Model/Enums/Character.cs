@@ -84,6 +84,17 @@ namespace Rogue.NET.Core.Model.Enums
         /// </summary>
         None = 2
     }
+    public enum CharacterRestBehaviorType
+    {
+        [Display(Name = "Home Location",
+                 Description = "Character rests at its initial location")]
+        HomeLocation = 0,
+
+        [Display(Name = "Current Location",
+                 Description = "Character rests at current location after it performs its search sweep")]
+        CurrentLocation = 1
+    }
+    
     [Flags]
     public enum BehaviorCondition : int
     {

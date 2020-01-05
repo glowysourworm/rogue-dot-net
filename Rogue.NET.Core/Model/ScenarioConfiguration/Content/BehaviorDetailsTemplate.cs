@@ -15,7 +15,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private int _randomizerTurnCount;
 
         private double _searchRadiusRatio;
-        private double _searchRestBias;
+
+        private CharacterRestBehaviorType _restBehaviorType;
+        private double _restCoefficient;
 
         public List<BehaviorTemplate> Behaviors
         {
@@ -78,15 +80,28 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public double SearchRestBias
+
+        public double RestCoefficient
         {
-            get { return _searchRestBias; }
+            get { return _restCoefficient; }
             set
             {
-                if (_searchRestBias != value)
+                if (_restCoefficient != value)
                 {
-                    _searchRestBias = value;
-                    OnPropertyChanged("SearchRestBias");
+                    _restCoefficient = value;
+                    OnPropertyChanged("RestCoefficient");
+                }
+            }
+        }
+        public CharacterRestBehaviorType RestBehaviorType
+        {
+            get { return _restBehaviorType; }
+            set
+            {
+                if (_restBehaviorType != value)
+                {
+                    _restBehaviorType = value;
+                    OnPropertyChanged("RestBehaviorType");
                 }
             }
         }
@@ -98,7 +113,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.RandomizerTurnCount = 1;   // Set to prevent % arithmatic issues
 
             this.SearchRadiusRatio = 1;
-            this.SearchRestBias = 0.80;
+
+            this.RestCoefficient = 0.5;
+            this.RestBehaviorType = CharacterRestBehaviorType.HomeLocation;
         }
     }
 }
