@@ -13,8 +13,8 @@
     </UserControl.Resources>
     <StackPanel>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hp" />
-            <toolkit:DoubleUpDown Value="{Binding Hp, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
+            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Health" />
+            <toolkit:DoubleUpDown Value="{Binding Health, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" VerticalAlignment="Center" Text="Stamina" />

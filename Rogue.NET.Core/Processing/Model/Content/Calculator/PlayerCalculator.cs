@@ -94,11 +94,11 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             var appliedToHp = (malignAttackAttributeHit - player.Stamina).LowLimit(0);
 
             player.Stamina -= malignAttackAttributeHit;
-            player.Hp -= appliedToHp;
+            player.Health -= appliedToHp;
 
             // Apply Regeneration
             var staminaRegenerationAlteration = player.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
-            var hpRegenerationAlteration = player.Alteration.GetAttribute(CharacterAttribute.HpRegen);
+            var hpRegenerationAlteration = player.Alteration.GetAttribute(CharacterAttribute.HealthRegen);
 
             // Penalized for action taken - no natural regeneration
             if (!regenerate)
@@ -108,7 +108,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
 
                 // Then, allow Hp regeneration
                 if (player.Stamina >= player.StaminaMax)
-                    player.Hp += hpRegenerationAlteration;
+                    player.Health += hpRegenerationAlteration;
             }
             else
             {
@@ -117,15 +117,15 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
 
                 // Then, allow Hp regeneration
                 if (player.Stamina >= player.StaminaMax)
-                    player.Hp += player.GetTotalHpRegen();
+                    player.Health += player.GetTotalHealthRegen();
 
                 // Override if character has any alterations present
                 else if (hpRegenerationAlteration > 0)
-                    player.Hp += hpRegenerationAlteration;
+                    player.Health += hpRegenerationAlteration;
             }
 
             // Set Killed By if malign attribute hit is great enough
-            if (player.Hp <= 0)
+            if (player.Health <= 0)
             {
                 var malignAlterationName = player.Alteration
                                                  .GetKilledBy();
@@ -158,7 +158,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                 CalculateLevelGains(player);
 
                 // Refill HP and MP as a bonus
-                player.Hp = player.HpMax;
+                player.Health = player.HealthMax;
                 player.Stamina = player.StaminaMax;
 
                 // Mark player advancement
@@ -206,7 +206,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             //Apply per step alteration costs
             foreach (var alterationCost in player.Alteration.GetAlterationCosts())
             {
-                player.Hp -= alterationCost.Value.Hp;
+                player.Health -= alterationCost.Value.Health;
                 player.Stamina -= alterationCost.Value.Stamina;
                 player.Hunger += alterationCost.Value.Hunger;
                 player.Experience -= alterationCost.Value.Experience;

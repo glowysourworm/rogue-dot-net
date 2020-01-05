@@ -138,11 +138,11 @@ namespace Rogue.NET.Core.Processing.Service
             return _configuration.LayoutTemplates.First(layout => layout.Name == this.Level.Parameters.LayoutName);
         }
 
-        public void GetPlayerAdvancementParameters(ref double hpPerPoint, ref double staminaPerPoint,
+        public void GetPlayerAdvancementParameters(ref double healthPerPoint, ref double staminaPerPoint,
                                                    ref double strengthPerPoint, ref double agilityPerPoint,
                                                    ref double intelligencePerPoint, ref int skillPointsPerPoint)
         {
-            hpPerPoint = _configuration.ScenarioDesign.HpPerCharacterPoint;
+            healthPerPoint = _configuration.ScenarioDesign.HealthPerCharacterPoint;
             staminaPerPoint = _configuration.ScenarioDesign.StaminaPerCharacterPoint;
             strengthPerPoint = _configuration.ScenarioDesign.StrengthPerCharacterPoint;
             agilityPerPoint = _configuration.ScenarioDesign.AgilityPerCharacterPoint;

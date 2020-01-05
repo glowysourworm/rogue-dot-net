@@ -122,17 +122,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             character.RogueName = template.Name;
 
-            character.Hp = _randomSequenceGenerator.GetRandomValue(template.Hp);
+            character.Health = _randomSequenceGenerator.GetRandomValue(template.Health);
             character.Stamina = _randomSequenceGenerator.GetRandomValue(template.Stamina);
-            character.HpRegenBase = _randomSequenceGenerator.GetRandomValue(template.HpRegen);
+            character.HealthRegenBase = _randomSequenceGenerator.GetRandomValue(template.HealthRegen);
             character.StaminaRegenBase = _randomSequenceGenerator.GetRandomValue(template.StaminaRegen);
             character.StaminaMax = character.Stamina;
-            character.HpMax = character.Hp;
+            character.HealthMax = character.Health;
             character.AgilityBase = _randomSequenceGenerator.GetRandomValue(template.Agility);
             character.StrengthBase = _randomSequenceGenerator.GetRandomValue(template.Strength);
             character.IntelligenceBase = _randomSequenceGenerator.GetRandomValue(template.Intelligence);
             character.SpeedBase = _randomSequenceGenerator.GetRandomValue(template.Speed);
-            character.LightRadiusBase = _randomSequenceGenerator.GetRandomValue(template.LightRadius);
+            character.VisionBase = template.Vision;
 
             // Map Symbol Details
             _symbolDetailsGenerator.MapSymbolDetails(template.SymbolDetails, character);

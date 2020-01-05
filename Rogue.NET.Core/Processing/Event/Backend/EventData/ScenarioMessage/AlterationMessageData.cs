@@ -20,7 +20,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage
         public string AlterationDisplayName { get; set; }
 
         /// <summary>
-        /// The display name for the effected player attribute (Example: HP)
+        /// The display name for the effected player attribute (Example: Health)
         /// </summary>
         public string EffectedAttributeName { get; set; }
 

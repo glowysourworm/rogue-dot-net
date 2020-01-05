@@ -273,7 +273,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             {
                 var character = _modelService.Level.Content.NonPlayerCharacters.ElementAt(i);
 
-                if (character.Hp <= 0)
+                if (character.Health <= 0)
                     CharacterDeath(character);
                 else
                     OnLevelProcessingEvent(new LevelProcessingAction()
@@ -297,7 +297,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (character.TurnCounter >= 1)
                 OnNonPlayerCharacterReaction(character);
 
-            if (character.Hp <= 0)
+            if (character.Health <= 0)
             {
                 CharacterDeath(character);
                 return;
@@ -568,7 +568,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             int turns = (int)character.TurnCounter;
             character.TurnCounter = character.TurnCounter % 1;
 
-            for (int j = 0; j < turns && character.Hp > 0; j++)
+            for (int j = 0; j < turns && character.Health > 0; j++)
             {
                 // Procedure
                 //
@@ -582,7 +582,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 // Apply Beginning of Turn
                 _nonPlayerCharacterCalculator.ApplyBeginningOfTurn(character);
 
-                if (character.Hp < 0)
+                if (character.Health < 0)
                     break;
 
                 //Check altered states

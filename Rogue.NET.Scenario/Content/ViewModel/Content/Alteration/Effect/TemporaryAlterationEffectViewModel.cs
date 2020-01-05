@@ -66,8 +66,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (effect.FoodUsagePerTurn != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Food Usage (per turn)", effect.FoodUsagePerTurn.ToString("F1")));
 
-            if (effect.HpPerStep != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", effect.HpPerStep.ToString("F1")));
+            if (effect.HealthPerStep != 0)
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", effect.HealthPerStep.ToString("F1")));
 
             if (effect.StaminaPerStep != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina Regen", effect.StaminaPerStep.ToString("F1")));

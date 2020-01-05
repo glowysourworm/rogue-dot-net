@@ -94,7 +94,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new AlterationCost()
             {
                 Experience = template.Experience,
-                Hp = template.Hp,
+                Health = template.Hp,
                 Hunger = template.Hunger,
                 Stamina = template.Stamina
             };
@@ -627,7 +627,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 Agility = _randomSequenceGenerator.GetRandomValue(template.AgilityRange),
                 Attack = _randomSequenceGenerator.GetRandomValue(template.AttackRange),
                 Defense = _randomSequenceGenerator.GetRandomValue(template.DefenseRange),
-                HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
+                HealthPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 StaminaPerStep = _randomSequenceGenerator.GetRandomValue(template.StaminaPerStepRange),
                 RogueName = template.Name,
@@ -711,7 +711,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             return new DrainMeleeAlterationEffect()
             {
-                Hp = _randomSequenceGenerator.GetRandomValue(template.Hp),
+                Health = _randomSequenceGenerator.GetRandomValue(template.Hp),
                 Stamina = _randomSequenceGenerator.GetRandomValue(template.Stamina)
             };
         }
@@ -768,9 +768,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 CanSeeInvisibleCharacters = template.CanSeeInvisibleCharacters,
                 Defense = _randomSequenceGenerator.GetRandomValue(template.DefenseRange),
                 FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(template.FoodUsagePerTurnRange),
-                HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
+                HealthPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
-                LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
+                Vision = _randomSequenceGenerator.GetRandomValue(template.VisionRange),
                 StaminaPerStep = _randomSequenceGenerator.GetRandomValue(template.StaminaPerStepRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
@@ -785,10 +785,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 Agility = _randomSequenceGenerator.GetRandomValue(template.AgilityRange),
                 Experience = _randomSequenceGenerator.GetRandomValue(template.ExperienceRange),
-                Hp = _randomSequenceGenerator.GetRandomValue(template.HpRange),
+                Health = _randomSequenceGenerator.GetRandomValue(template.HpRange),
                 Hunger = _randomSequenceGenerator.GetRandomValue(template.HungerRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
-                LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
+                Vision = _randomSequenceGenerator.GetRandomValue(template.VisionRange),
                 Stamina = _randomSequenceGenerator.GetRandomValue(template.StaminaRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
@@ -851,7 +851,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 Defense = _randomSequenceGenerator.GetRandomValue(template.DefenseRange),
                 EventTime = _randomSequenceGenerator.GetRandomValue(template.EventTime),
                 FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(template.FoodUsagePerTurnRange),
-                HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
+                HealthPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 IsStackable = template.IsStackable,
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),

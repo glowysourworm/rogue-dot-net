@@ -37,14 +37,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (effect.Speed != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", effect.Speed.ToString("F1")));
 
-            if (effect.LightRadius != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Light Radius", effect.LightRadius.ToString("N0")));
+            if (effect.Vision != 0)
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Vision", effect.Vision.ToString("N0")));
 
             if (effect.FoodUsagePerTurn != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Food Usage (per turn)", effect.FoodUsagePerTurn.ToString("F1")));
 
-            if (effect.HpPerStep != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", effect.HpPerStep.ToString("F1")));
+            if (effect.HealthPerStep != 0)
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", effect.HealthPerStep.ToString("F1")));
 
             if (effect.StaminaPerStep != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina Regen", effect.StaminaPerStep.ToString("F1")));

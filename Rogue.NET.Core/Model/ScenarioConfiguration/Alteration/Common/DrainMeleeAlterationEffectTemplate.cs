@@ -13,6 +13,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
     public class DrainMeleeAlterationEffectTemplate : Template, IEquipmentAttackAlterationEffectTemplate
     {
         Range<double> _hp;
+        Range<double> _health;
         Range<double> _stamina;
 
         public Range<double> Hp
@@ -24,6 +25,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _hp = value;
                     OnPropertyChanged("Hp");
+                }
+            }
+        }
+        public Range<double> Health
+        {
+            get { return _health; }
+            set
+            {
+                if (_health != value)
+                {
+                    _health = value;
+                    OnPropertyChanged("Health");
                 }
             }
         }
@@ -43,6 +56,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         public DrainMeleeAlterationEffectTemplate()
         {
             this.Hp = new Range<double>(0, 0);
+            this.Health = new Range<double>(0, 0);
             this.Stamina = new Range<double>(0, 0);
         }
     }

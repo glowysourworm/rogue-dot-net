@@ -184,7 +184,7 @@
 
         <!-- Hp Regen -->
         <Grid Margin="3">
-            <TextBlock Text="Hp Regen" FontSize="20" Foreground="{Binding Source={x:Static coreModel:ModelConstants+FrontEnd.HpRegenForeground}}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <TextBlock Text="Hp Regen" FontSize="20" Foreground="{Binding Source={x:Static coreModel:ModelConstants+FrontEnd.HealthRegenForeground}}" HorizontalAlignment="Left" VerticalAlignment="Center" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
                 <TextBlock Text="{Binding HpRegen, StringFormat=F1}" Foreground="White" FontSize="20"  VerticalAlignment="Center"/>
                 <TextBlock FontSize="20" VerticalAlignment="Center">

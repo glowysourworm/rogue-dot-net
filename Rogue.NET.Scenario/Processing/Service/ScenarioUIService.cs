@@ -244,33 +244,6 @@ namespace Rogue.NET.Scenario.Processing.Service
             content.Location = _scenarioUIGeometryService.Cell2UI(location);
         }
 
-        public void UpdateLightRadius(LevelCanvasShape canvasShape, CharacterBase character, Rect levelUIBounds)
-        {
-            if (character.SymbolType != SymbolType.Smiley)
-                throw new Exception("Trying to create light radius for non-smiley symbol");
-
-            var location = _modelService.Level.Content[character];
-            var point = _scenarioUIGeometryService.Cell2UI(location, true);
-            var lightRadiusUI = character.GetLightRadius() * ModelConstants.CellHeight;
-
-            // Effective Character Symbol
-            var effectiveSymbol = _alterationCalculator.CalculateEffectiveSymbol(character);
-
-            // Make the full size of the level - then apply the level opacity mask drawing
-            (canvasShape.RenderedGeometry as RectangleGeometry).Rect = levelUIBounds;
-
-            // Create Brush
-            var brush = new RadialGradientBrush(ColorFilter.Convert(effectiveSymbol.SmileyLightRadiusColor), Colors.Transparent);
-            brush.RadiusX = 0.7 * (lightRadiusUI / levelUIBounds.Width);
-            brush.RadiusY = 0.7 * (lightRadiusUI / levelUIBounds.Height);
-            brush.Center = new Point(point.X / levelUIBounds.Width, point.Y / levelUIBounds.Height);
-            brush.GradientOrigin = new Point(point.X / levelUIBounds.Width, point.Y / levelUIBounds.Height);
-            brush.Opacity = 0.3;
-
-            canvasShape.Fill = brush;
-            canvasShape.Stroke = null;
-        }
-
         public void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, CharacterBase character, Rect levelUIBounds)
         {
             (aura.RenderedGeometry as RectangleGeometry).Rect = levelUIBounds;

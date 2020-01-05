@@ -15,12 +15,18 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                     : TemplateViewModel, IEquipmentAttackAlterationEffectTemplateViewModel
     {
         RangeViewModel<double> _hp;
+        RangeViewModel<double> _health;
         RangeViewModel<double> _stamina;
 
         public RangeViewModel<double> Hp
         {
             get { return _hp; }
             set { this.RaiseAndSetIfChanged(ref _hp, value); }
+        }
+        public RangeViewModel<double> Health
+        {
+            get { return _health; }
+            set { this.RaiseAndSetIfChanged(ref _health, value); }
         }
         public RangeViewModel<double> Stamina
         {
@@ -31,6 +37,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         public DrainMeleeAlterationEffectTemplateViewModel()
         {
             this.Hp = new RangeViewModel<double>(0, 0);
+            this.Health = new RangeViewModel<double>(0, 0);
             this.Stamina = new RangeViewModel<double>(0, 0);
         }
     }

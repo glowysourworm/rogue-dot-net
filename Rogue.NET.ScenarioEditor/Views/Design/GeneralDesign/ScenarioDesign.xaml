@@ -20,8 +20,8 @@
             <extension:UpdatingTextBox Text="{Binding ObjectiveDescription, Mode=TwoWay}"  HorizontalAlignment="Left" VerticalAlignment="Stretch" TextWrapping="Wrap" Width="600" AcceptsReturn="True" FontSize="18" Foreground="White" />
         </StackPanel>
         <Grid Margin="10, 10, 10, 5">
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Hp Per Character Point (On Level Up)" FontSize="18" />
-            <toolkit:IntegerUpDown Value="{Binding HpPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="1" Maximum="20" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Health Per Character Point (On Level Up)" FontSize="18" />
+            <toolkit:IntegerUpDown Value="{Binding HealthPerCharacterPoint, Mode=TwoWay}" VerticalAlignment="Center" Minimum="1" Maximum="20" Foreground="White" FontSize="18" HorizontalAlignment="Right" Width="180" />
         </Grid>
         <Grid Margin="10, 5">
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Stamina Per Character Point (On Level Up)" FontSize="18" />

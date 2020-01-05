@@ -28,8 +28,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (effect.Speed != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", effect.Speed.ToString("F1")));
 
-            if (effect.LightRadius != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Light Radius", effect.LightRadius.ToString("N0")));
+            if (effect.Vision != 0)
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Vision", effect.Vision.ToString("N0")));
 
             if (effect.Experience != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Experience", effect.Experience.ToString("N0")));
@@ -37,8 +37,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (effect.Hunger != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hunger", effect.Hunger.ToString("F1")));
 
-            if (effect.Hp != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp", effect.Hp.ToString("F1")));
+            if (effect.Health != 0)
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health", effect.Health.ToString("F1")));
 
             if (effect.Stamina != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina", effect.Stamina.ToString("F1")));
@@ -60,17 +60,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (template.SpeedRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", template.SpeedRange.ToString()));
 
-            if (template.LightRadiusRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Light Radius", template.SpeedRange.ToString()));
+            if (template.VisionRange.IsSet())
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Vision", template.VisionRange.ToString()));
 
             if (template.ExperienceRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Experience", template.SpeedRange.ToString()));
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Experience", template.ExperienceRange.ToString()));
 
             if (template.HungerRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hunger", template.HungerRange.ToString()));
 
             if (template.HpRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp", template.HpRange.ToString()));
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health", template.HealthRange.ToString()));
 
             if (template.StaminaRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina", template.StaminaRange.ToString()));

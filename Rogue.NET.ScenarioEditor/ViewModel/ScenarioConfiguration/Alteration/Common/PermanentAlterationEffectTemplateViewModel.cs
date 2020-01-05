@@ -13,22 +13,24 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             BaseType = UITypeAttributeBaseType.Alteration)]
     public class PermanentAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
-                    IConsumableProjectileAlterationEffectTemplateViewModel,
-                    IDoodadAlterationEffectTemplateViewModel,
-                    IEnemyAlterationEffectTemplateViewModel,
-                    IFriendlyAlterationEffectTemplateViewModel,
-                    ITemporaryCharacterAlterationEffectTemplateViewModel,
-                    IEquipmentAttackAlterationEffectTemplateViewModel,
-                    ISkillAlterationEffectTemplateViewModel
+                             IConsumableProjectileAlterationEffectTemplateViewModel,
+                             IDoodadAlterationEffectTemplateViewModel,
+                             IEnemyAlterationEffectTemplateViewModel,
+                             IFriendlyAlterationEffectTemplateViewModel,
+                             ITemporaryCharacterAlterationEffectTemplateViewModel,
+                             IEquipmentAttackAlterationEffectTemplateViewModel,
+                             ISkillAlterationEffectTemplateViewModel
     {
         private RangeViewModel<double> _strengthRange;
         private RangeViewModel<double> _intelligenceRange;
         private RangeViewModel<double> _agilityRange;
         private RangeViewModel<double> _speedRange;
         private RangeViewModel<double> _lightRadiusRange;
+        private RangeViewModel<double> _visionRange;
         private RangeViewModel<double> _experienceRange;
         private RangeViewModel<double> _hungerRange;
         private RangeViewModel<double> _hpRange;
+        private RangeViewModel<double> _healthRange;
         private RangeViewModel<double> _staminaRange;
 
         public RangeViewModel<double> StrengthRange
@@ -56,6 +58,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _lightRadiusRange; }
             set { this.RaiseAndSetIfChanged(ref _lightRadiusRange, value); }
         }
+        public RangeViewModel<double> VisionRange
+        {
+            get { return _visionRange; }
+            set { this.RaiseAndSetIfChanged(ref _visionRange, value); }
+        }
         public RangeViewModel<double> ExperienceRange
         {
             get { return _experienceRange; }
@@ -71,6 +78,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _hpRange; }
             set { this.RaiseAndSetIfChanged(ref _hpRange, value); }
         }
+        public RangeViewModel<double> HealthRange
+        {
+            get { return _healthRange; }
+            set { this.RaiseAndSetIfChanged(ref _healthRange, value); }
+        }
         public RangeViewModel<double> StaminaRange
         {
             get { return _staminaRange; }
@@ -82,8 +94,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.AgilityRange = new RangeViewModel<double>(0, 0);
             this.SpeedRange = new RangeViewModel<double>(0, 0);
             this.LightRadiusRange = new RangeViewModel<double>(0, 0);
+            this.VisionRange = new RangeViewModel<double>(0, 0);
             this.ExperienceRange = new RangeViewModel<double>(0, 0);
             this.HpRange = new RangeViewModel<double>(0, 0);
+            this.HealthRange = new RangeViewModel<double>(0, 0);
             this.HungerRange = new RangeViewModel<double>(0, 0);
             this.IntelligenceRange = new RangeViewModel<double>(0, 0);
             this.StaminaRange = new RangeViewModel<double>(0, 0);

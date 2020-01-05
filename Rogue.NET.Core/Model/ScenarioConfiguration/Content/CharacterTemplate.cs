@@ -20,6 +20,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _health;
         private Range<double> _stamina;
         private Range<double> _hpRegen;
+        private Range<double> _healthRegen;
         private Range<double> _staminaRegen;
         private Range<int> _lightRadius;
 
@@ -121,6 +122,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public Range<double> HealthRegen
+        {
+            get { return _healthRegen; }
+            set
+            {
+                if (_healthRegen != value)
+                {
+                    _healthRegen = value;
+                    OnPropertyChanged("HealthRegen");
+                }
+            }
+        }
         public Range<double> StaminaRegen
         {
             get { return _staminaRegen; }
@@ -162,6 +175,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Health = new Range<double>(10, 20);
             this.Stamina = new Range<double>(2, 5);
             this.HpRegen = new Range<double>(0, 0);
+            this.HealthRegen = new Range<double>(0, 0);
             this.StaminaRegen = new Range<double>(0, 0);
             this.LightRadius = new Range<int>(5, 5);
 

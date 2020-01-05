@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage
         public int PlayerLevel { get; set; }
 
         /// <summary>
-        /// Set of changes to player attributes (Example: HPMax, 0.5)
+        /// Set of changes to player attributes (Example: HealthMax, 0.5)
         /// </summary>
         public IList<Tuple<string, double, Color>> AttributeChanges { get; set; }
     }

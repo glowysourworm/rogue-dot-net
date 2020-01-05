@@ -39,9 +39,9 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 if (viewModel != null)
                 {
                     // Subtract a point and add it to the player points
-                    if (viewModel.NewHp > viewModel.Hp)
+                    if (viewModel.NewHealth > viewModel.Health)
                     {
-                        viewModel.NewHp -= viewModel.HpPerPoint;
+                        viewModel.NewHealth -= viewModel.HealthPerPoint;
                         viewModel.PlayerPoints++;
 
                         OnPointsChanged(viewModel);
@@ -130,7 +130,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 if (viewModel != null &&
                     viewModel.PlayerPoints > 0)
                 {
-                    viewModel.NewHp += viewModel.HpPerPoint;
+                    viewModel.NewHealth += viewModel.HealthPerPoint;
                     viewModel.PlayerPoints--;
 
                     OnPointsChanged(viewModel);

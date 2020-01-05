@@ -167,7 +167,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerStats, _modelService.Player.Id));
 
             //I'm Not DEEEAD!
-            if (player.Hunger >= 100 || player.Hp <= 0.1)
+            if (player.Hunger >= 100 || player.Health <= 0.1)
             {
                 var killedBy = _modelService.GetKilledBy();
                 if (killedBy != null)
@@ -864,11 +864,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             var attributeList = new List<Tuple<string, double, Color>>();
 
-            if (player.HpMax != hp)
+            if (player.HealthMax != hp)
             {
                 attributeList.Add(new Tuple<string, double, Color>("Hp", hp, Colors.Red));
 
-                player.HpMax = hp;
+                player.HealthMax = hp;
             }
 
             if (player.StaminaMax != stamina)
@@ -915,7 +915,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 _scenarioMessageService.PublishPlayerAdvancement(ScenarioMessagePriority.Good, player.RogueName, player.Level, attributeList);
 
             // Set Hp, Stamina to max and reset Hunger
-            player.Hp = player.HpMax;
+            player.Health = player.HealthMax;
             player.Stamina = player.StaminaMax;
             player.Hunger = 0;
 

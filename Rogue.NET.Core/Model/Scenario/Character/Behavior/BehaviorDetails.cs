@@ -56,9 +56,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
                    !alterationCalculator.CalculateCharacterMeetsAlterationCost(character, behavior.Alteration.Cost))
                     entryConditionsFail = true;
 
-                // Enemy must have Low (<= 10%) HP for this behavior
-                if (behavior.BehaviorCondition.Has(BehaviorCondition.HpLow) &&
-                   ((character.Hp / character.HpMax) > ModelConstants.HpLowFraction))
+                // Enemy must have Low (<= 10%) Health for this behavior
+                if (behavior.BehaviorCondition.Has(BehaviorCondition.HealthLow) &&
+                   ((character.Health / character.HealthMax) > ModelConstants.HealthLowFraction))
                     entryConditionsFail = true;
 
                 // Behavior turn counter exit condition
@@ -67,9 +67,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
                     behavior == _currentBehavior) // Counter can ONLY apply to current behavior
                     exitConditionMet = true;
 
-                // Enemy has Low (<= 10%) HP exit condition
-                if (behavior.BehaviorExitCondition.Has(BehaviorExitCondition.HpLow) &&
-                    ((character.Hp / character.HpMax) <= ModelConstants.HpLowFraction))
+                // Enemy has Low (<= 10%) Health exit condition
+                if (behavior.BehaviorExitCondition.Has(BehaviorExitCondition.HealthLow) &&
+                    ((character.Health / character.HealthMax) <= ModelConstants.HealthLowFraction))
                     exitConditionMet = true;
 
                 // Must have ALL Entry conditions met AND NO Exit conditions

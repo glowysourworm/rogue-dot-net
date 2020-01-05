@@ -30,16 +30,16 @@ namespace Rogue.NET.Core.Model.Scenario.Character
             }
         }
 
-        public double HpMax { get; set; }
+        public double HealthMax { get; set; }
         public double StaminaMax { get; set; }
         public double StrengthBase { get; set; }
         public double IntelligenceBase { get; set; }
         public double AgilityBase { get; set; }
         public double SpeedBase { get; set; }
-        public double HpRegenBase { get; set; }
+        public double HealthRegenBase { get; set; }
         public double StaminaRegenBase { get; set; }
-        public double LightRadiusBase { get; set; }
-        public double Hp { get; set; }
+        public double VisionBase { get; set; }
+        public double Health { get; set; }
         public double Stamina { get; set; }
 
         public CharacterAlteration Alteration { get; set; }

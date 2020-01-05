@@ -8,6 +8,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private double _experience;
         private double _hunger;
         private double _hp;
+        private double _health;
         private double _stamina;
 
         public double Experience
@@ -24,6 +25,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _hp; }
             set { this.RaiseAndSetIfChanged(ref _hp, value); }
+        }
+        public double Health
+        {
+            get { return _health; }
+            set { this.RaiseAndSetIfChanged(ref _health, value); }
         }
         public double Stamina
         {

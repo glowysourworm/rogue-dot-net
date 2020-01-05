@@ -178,7 +178,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
                 PlayerName = player.RogueName,
                 PlayerLevel = player.Level,
                 Type = DialogEventType.PlayerAdvancement,
-                Hp = player.HpMax,
+                Health = player.HealthMax,
                 Stamina = player.StaminaMax,
                 Agility = player.AgilityBase,
                 Intelligence = player.IntelligenceBase,
@@ -195,7 +195,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
 
             _modelService.GetPlayerAdvancementParameters(ref hp, ref stamina, ref strength, ref agility, ref intelligence, ref skillPoints);
 
-            eventData.HpPerPoint = hp;
+            eventData.HealthPerPoint = hp;
             eventData.StaminaPerPoint = stamina;
             eventData.StrengthPerPoint = strength;
             eventData.AgilityPerPoint = agility;

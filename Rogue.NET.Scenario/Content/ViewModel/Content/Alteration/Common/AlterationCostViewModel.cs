@@ -18,8 +18,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             if (cost.Experience != 0)
                 this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Experience", cost.Experience.ToString("F1")));
 
-            if (cost.Hp != 0)
-                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Hp", cost.Hp.ToString("F1")));
+            if (cost.Health != 0)
+                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Hp", cost.Health.ToString("F1")));
 
             if (cost.Stamina != 0)
                 this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Stamina", cost.Stamina.ToString("F1")));

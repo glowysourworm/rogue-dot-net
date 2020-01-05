@@ -13,21 +13,21 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Dialog
         int _playerLevel;
 
         int _playerPoints;
-        double _hp;
+        double _health;
         double _stamina;
         double _strength;
         double _agility;
         double _intelligence;
         int _skillPoints;
 
-        double _newHp;
+        double _newHealth;
         double _newStamina;
         double _newStrength;
         double _newAgility;
         double _newIntelligence;
         int _newSkillPoints;
 
-        double _hpPerPoint;
+        double _healthPerPoint;
         double _staminaPerPoint;
         double _strengthPerPoint;
         double _agilityPerPoint;
@@ -65,10 +65,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Dialog
             get { return _playerPoints; }
             set { this.RaiseAndSetIfChanged(ref _playerPoints, value); }
         }
-        public double Hp
+        public double Health
         {
-            get { return _hp; }
-            set { this.RaiseAndSetIfChanged(ref _hp, value); }
+            get { return _health; }
+            set { this.RaiseAndSetIfChanged(ref _health, value); }
         }
         public double Stamina
         {
@@ -96,10 +96,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Dialog
             set { this.RaiseAndSetIfChanged(ref _skillPoints, value); }
         }
 
-        public double NewHp
+        public double NewHealth
         {
-            get { return _newHp; }
-            set { this.RaiseAndSetIfChanged(ref _newHp, value); }
+            get { return _newHealth; }
+            set { this.RaiseAndSetIfChanged(ref _newHealth, value); }
         }
         public double NewStamina
         {
@@ -127,10 +127,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Dialog
             set { this.RaiseAndSetIfChanged(ref _newSkillPoints, value); }
         }
 
-        public double HpPerPoint
+        public double HealthPerPoint
         {
-            get { return _hpPerPoint; }
-            set { this.RaiseAndSetIfChanged(ref _hpPerPoint, value); }
+            get { return _healthPerPoint; }
+            set { this.RaiseAndSetIfChanged(ref _healthPerPoint, value); }
         }
         public double StaminaPerPoint
         {

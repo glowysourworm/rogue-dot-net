@@ -23,8 +23,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _agilityRange;
         private Range<double> _speedRange;
         private Range<double> _lightRadiusRange;
+        private Range<double> _visionRange;
         private Range<double> _foodUsagePerTurnRange;
         private Range<double> _hpPerStepRange;
+        private Range<double> _healthPerStepRange;
         private Range<double> _staminaPerStepRange;
         private Range<double> _attackRange;
         private Range<double> _defenseRange;
@@ -139,6 +141,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
+        public Range<double> VisionRange
+        {
+            get { return _visionRange; }
+            set
+            {
+                if (_visionRange != value)
+                {
+                    _visionRange = value;
+                    OnPropertyChanged("VisionRange");
+                }
+            }
+        }
         public Range<double> FoodUsagePerTurnRange
         {
             get { return _foodUsagePerTurnRange; }
@@ -160,6 +174,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _hpPerStepRange = value;
                     OnPropertyChanged("HpPerStepRange");
+                }
+            }
+        }
+        public Range<double> HealthPerStepRange
+        {
+            get { return _healthPerStepRange; }
+            set
+            {
+                if (_healthPerStepRange != value)
+                {
+                    _healthPerStepRange = value;
+                    OnPropertyChanged("HealthPerStepRange");
                 }
             }
         }
@@ -234,9 +260,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.SpeedRange = new Range<double>(0, 0);
             this.AttackRange = new Range<double>(0, 0);
             this.LightRadiusRange = new Range<double>(0, 0);
+            this.VisionRange = new Range<double>(0, 0);
             this.DefenseRange = new Range<double>(0, 0);
             this.FoodUsagePerTurnRange = new Range<double>(0, 0);
             this.HpPerStepRange = new Range<double>(0, 0);
+            this.HealthPerStepRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);
             this.StaminaPerStepRange = new Range<double>(0, 0);
             this.StrengthRange = new Range<double>(0, 0);

@@ -17,10 +17,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
         public double Intelligence { get; set; }
         public double Agility { get; set; }
         public double Speed { get; set; }
-        public double LightRadius { get; set; }
+        public double Vision { get; set; }
         public double Experience { get; set; }
         public double Hunger { get; set; }
-        public double Hp { get; set; }
+        public double Health { get; set; }
         public double Stamina { get; set; }
 
         public PermanentAlterationEffect()

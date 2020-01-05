@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Model
         public const double MinSpeed = 0.1;
         public const double MaxSpeed = 1;
         public const double MinFiringDistance = 2.0D;
-        public const double HpLowFraction = 0.1D;
+        public const double HealthLowFraction = 0.1D;
 
         public const string DoodadSavePointRogueName = "Save Point";
         public const string DoodadStairsUpRogueName = "Stairs Up";
@@ -47,7 +47,7 @@ namespace Rogue.NET.Core.Model
             public static readonly Brush AgilityForeground = Brushes.YellowGreen;
             public static readonly Brush IntelligenceForeground = Brushes.Blue;
             public static readonly Brush SpeedForeground = Brushes.Magenta;
-            public static readonly Brush HpRegenForeground = Brushes.DarkRed;
+            public static readonly Brush HealthRegenForeground = Brushes.DarkRed;
             public static readonly Brush StaminaRegenForeground = Brushes.RosyBrown;
             public static readonly Brush FoodUsageForeground = Brushes.Green;
             public static readonly Brush LightRadiusForeground = Brushes.Yellow;

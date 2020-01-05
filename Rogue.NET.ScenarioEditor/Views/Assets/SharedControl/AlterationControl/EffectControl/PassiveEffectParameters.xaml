@@ -46,16 +46,16 @@
                     <controls:Range DataContext="{Binding SpeedRange}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Light Radius" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding LightRadiusRange}" LowLimit="-20" HighLimit="20" Increment="1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
+                    <TextBlock Foreground="White" Text="Vision" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding VisionRange}" LowLimit="-1" HighLimit="1" Increment="0.1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Food Usage (Per Turn)" FontSize="16" HorizontalAlignment="Left" />
                     <controls:Range DataContext="{Binding FoodUsagePerTurnRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>                
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Hp Per Step" FontSize="16" HorizontalAlignment="Left" />
-                    <controls:Range DataContext="{Binding HpPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
+                    <TextBlock Foreground="White" Text="Health Per Step" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding HealthPerStepRange}" LowLimit="-5" HighLimit="5" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Stamina Per Step" FontSize="16" HorizontalAlignment="Left" />

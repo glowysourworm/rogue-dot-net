@@ -20,9 +20,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _agilityRange;
         private Range<double> _speedRange;
         private Range<double> _lightRadiusRange;
+        private Range<double> _visionRange;
         private Range<double> _experienceRange;
         private Range<double> _hungerRange;
         private Range<double> _hpRange;
+        private Range<double> _healthRange;
         private Range<double> _staminaRange;
 
         public Range<double> StrengthRange
@@ -85,6 +87,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
+        public Range<double> VisionRange
+        {
+            get { return _visionRange; }
+            set
+            {
+                if (_visionRange != value)
+                {
+                    _visionRange = value;
+                    OnPropertyChanged("VisionRange");
+                }
+            }
+        }
         public Range<double> ExperienceRange
         {
             get { return _experienceRange; }
@@ -121,6 +135,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
+        public Range<double> HealthRange
+        {
+            get { return _healthRange; }
+            set
+            {
+                if (_healthRange != value)
+                {
+                    _healthRange = value;
+                    OnPropertyChanged("HealthRange");
+                }
+            }
+        }
         public Range<double> StaminaRange
         {
             get { return _staminaRange; }
@@ -141,10 +167,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.LightRadiusRange = new Range<double>(0, 0);
             this.ExperienceRange = new Range<double>(0, 0);
             this.HpRange = new Range<double>(0, 0);
+            this.HealthRange = new Range<double>(0, 0);
             this.HungerRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);
             this.StaminaRange = new Range<double>(0, 0);
             this.StrengthRange = new Range<double>(0, 0);
+            this.VisionRange = new Range<double>(0, 0);
         }
     }
 }

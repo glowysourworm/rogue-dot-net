@@ -17,14 +17,14 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
         public static void ApplyLimits(this Player player)
         {
-            if (player.Hp < 0)
-                player.Hp = 0;
+            if (player.Health < 0)
+                player.Health = 0;
 
             if (player.Stamina < 0)
                 player.Stamina = 0;
 
-            if (player.Hp > player.HpMax)
-                player.Hp = player.HpMax;
+            if (player.Health > player.HealthMax)
+                player.Health = player.HealthMax;
 
             if (player.Stamina > player.StaminaMax)
                 player.Stamina = player.StaminaMax;
@@ -47,8 +47,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             if (player.IntelligenceBase < 0)
                 player.IntelligenceBase = 0;
 
-            if (player.LightRadiusBase < 0)
-                player.LightRadiusBase = 0;
+            if (player.VisionBase < 0)
+                player.VisionBase = 0;
 
             if (player.FoodUsagePerTurnBase < 0)
                 player.FoodUsagePerTurnBase = 0;
@@ -64,8 +64,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             switch (attribute)
             {
-                case CharacterAttribute.Hp:
-                    return player.Hp;
+                case CharacterAttribute.Health:
+                    return player.Health;
                 case CharacterAttribute.Stamina:
                     return player.Stamina;
                 case CharacterAttribute.Strength:
@@ -76,12 +76,12 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                     return player.GetIntelligence();
                 case CharacterAttribute.Speed:
                     return player.GetSpeed();
-                case CharacterAttribute.HpRegen:
-                    return player.GetTotalHpRegen();
+                case CharacterAttribute.HealthRegen:
+                    return player.GetTotalHealthRegen();
                 case CharacterAttribute.StaminaRegen:
                     return player.GetTotalStaminaRegen();
-                case CharacterAttribute.LightRadius:
-                    return player.GetLightRadius();
+                case CharacterAttribute.Vision:
+                    return player.GetVision();
                 case CharacterAttribute.Attack:
                     return player.GetAttack();
                 case CharacterAttribute.Defense:

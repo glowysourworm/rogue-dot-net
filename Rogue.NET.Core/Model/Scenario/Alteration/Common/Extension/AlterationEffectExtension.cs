@@ -43,10 +43,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
 
             switch (attribute)
             {
-                case CharacterAttribute.Hp:
+                case CharacterAttribute.Health:
                     {
                         if (effect is PermanentAlterationEffect)
-                            return (effect as PermanentAlterationEffect).Hp;
+                            return (effect as PermanentAlterationEffect).Health;
 
                         return 0D;
                     }
@@ -121,16 +121,16 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
 
                         return 0D;
                     }
-                case CharacterAttribute.HpRegen:
+                case CharacterAttribute.HealthRegen:
                     {
                         if (effect is AuraAlterationEffect)
-                            return (effect as AuraAlterationEffect).HpPerStep;
+                            return (effect as AuraAlterationEffect).HealthPerStep;
 
                         else if (effect is PassiveAlterationEffect)
-                            return (effect as PassiveAlterationEffect).HpPerStep;
+                            return (effect as PassiveAlterationEffect).HealthPerStep;
 
                         else if (effect is TemporaryAlterationEffect)
-                            return (effect as TemporaryAlterationEffect).HpPerStep;
+                            return (effect as TemporaryAlterationEffect).HealthPerStep;
 
                         return 0D;
                     }
@@ -147,16 +147,17 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension
 
                         return 0D;
                     }
-                case CharacterAttribute.LightRadius:
+                case CharacterAttribute.Vision:
                     {
+                        // TODO: REMOVE LIGHT RADIUS
                         if (effect is PassiveAlterationEffect)
-                            return (effect as PassiveAlterationEffect).LightRadius;
+                            return (effect as PassiveAlterationEffect).Vision;
 
                         else if (effect is PermanentAlterationEffect)
-                            return (effect as PermanentAlterationEffect).LightRadius;
+                            return (effect as PermanentAlterationEffect).Vision;
 
                         else if (effect is TemporaryAlterationEffect)
-                            return (effect as TemporaryAlterationEffect).LightRadius;
+                            return (effect as TemporaryAlterationEffect).Vision;
 
                         return 0D;
                     }

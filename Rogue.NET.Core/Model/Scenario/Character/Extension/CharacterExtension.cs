@@ -38,9 +38,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             return character.StaminaRegenBase + character.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
         }
-        public static double GetTotalHpRegen(this CharacterBase character)
+        public static double GetTotalHealthRegen(this CharacterBase character)
         {
-            return character.HpRegenBase + character.Alteration.GetAttribute(CharacterAttribute.HpRegen);
+            return character.HealthRegenBase + character.Alteration.GetAttribute(CharacterAttribute.HealthRegen);
         }
         public static double GetStrength(this CharacterBase character)
         {
@@ -69,14 +69,14 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return System.Math.Max(0.1, result);
         }
-        public static double GetLightRadius(this CharacterBase character)
+        public static double GetVision(this CharacterBase character)
         {
-            var result = character.LightRadiusBase;
+            var result = character.VisionBase;
 
             // Alteration
-            result += character.Alteration.GetAttribute(CharacterAttribute.LightRadius);
+            result += character.Alteration.GetAttribute(CharacterAttribute.Vision);
 
-            return System.Math.Max(0.1, result);
+            return result.Clip(0.1, 1);
         }
         public static double GetSpeed(this CharacterBase character)
         {

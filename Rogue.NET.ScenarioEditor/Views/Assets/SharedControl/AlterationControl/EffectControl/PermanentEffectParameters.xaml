@@ -20,8 +20,8 @@
             <controls:Range DataContext="{Binding SpeedRange}" LowLimit="-1" HighLimit="1" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" Text="Light Radius" FontSize="16" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding LightRadiusRange}" LowLimit="-20" HighLimit="20" Increment="1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
+            <TextBlock Foreground="White" Text="Vision" FontSize="16" HorizontalAlignment="Left" />
+            <controls:Range DataContext="{Binding VisionRange}"  LowLimit="-1" HighLimit="1" Increment="0.1" StringFormat="N0" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Experience" FontSize="16" HorizontalAlignment="Left" />
@@ -32,8 +32,8 @@
             <controls:Range DataContext="{Binding HungerRange}" LowLimit="-100" HighLimit="100" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" Text="Hp" FontSize="16" HorizontalAlignment="Left" />
-            <controls:Range DataContext="{Binding HpRange}" LowLimit="-5000" HighLimit="5000" Width="300" HorizontalAlignment="Right" />
+            <TextBlock Foreground="White" Text="Health" FontSize="16" HorizontalAlignment="Left" />
+            <controls:Range DataContext="{Binding HealthRange}" LowLimit="-5000" HighLimit="5000" Width="300" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Stamina" FontSize="16" HorizontalAlignment="Left" />

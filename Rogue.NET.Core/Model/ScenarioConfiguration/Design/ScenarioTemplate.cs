@@ -13,6 +13,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
         private string _objectiveDescription;
         private int _skillPointsPerCharacterPoint;
         private int _hpPerCharacterPoint;
+        private int _healthPerCharacterPoint;
         private int _staminaPerCharacterPoint;
         private double _strengthPerCharacterPoint;
         private double _agilityPerCharacterPoint;
@@ -51,6 +52,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
                 {
                     _hpPerCharacterPoint = value;
                     OnPropertyChanged("HpPerCharacterPoint");
+                }
+            }
+        }
+        public int HealthPerCharacterPoint
+        {
+            get { return _healthPerCharacterPoint; }
+            set
+            {
+                if (_healthPerCharacterPoint != value)
+                {
+                    _healthPerCharacterPoint = value;
+                    OnPropertyChanged("HealthPerCharacterPoint");
                 }
             }
         }
@@ -113,6 +126,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
             this.ObjectiveDescription = "Objective Description (Goes Here)";
 
             this.HpPerCharacterPoint = 5;
+            this.HealthPerCharacterPoint = 5;
             this.StaminaPerCharacterPoint = 2;
 
             this.SkillPointsPerCharacterPoint = 1;

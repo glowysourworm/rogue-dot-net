@@ -40,9 +40,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         double _hunger;
         double _haul;
         double _haulMax;
-        double _hpMax;
+        double _healthMax;
         double _staminaMax;
-        double _hp;
+        double _health;
         double _stamina;
         double _attack;
         double _attackBase;
@@ -110,20 +110,20 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _hunger; }
             set { this.RaiseAndSetIfChanged(ref _hunger, value); }
         }
-        public double HpMax
+        public double HealthMax
         {
-            get { return _hpMax; }
-            set { this.RaiseAndSetIfChanged(ref _hpMax, value); }
+            get { return _healthMax; }
+            set { this.RaiseAndSetIfChanged(ref _healthMax, value); }
         }
         public double StaminaMax
         {
             get { return _staminaMax; }
             set { this.RaiseAndSetIfChanged(ref _staminaMax, value); }
         }
-        public double Hp
+        public double Health
         {
-            get { return _hp; }
-            set { this.RaiseAndSetIfChanged(ref _hp, value); }
+            get { return _health; }
+            set { this.RaiseAndSetIfChanged(ref _health, value); }
         }
         public double Stamina
         {
@@ -220,12 +220,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _intelligenceBase; }
             set { this.RaiseAndSetIfChanged(ref _intelligenceBase, value); }
         }
-        public double LightRadius
+        public double Vision
         {
             get { return _lightRadius; }
             set { this.RaiseAndSetIfChanged(ref _lightRadius, value); }
         }
-        public double LightRadiusBase
+        public double VisionBase
         {
             get { return _lightRadiusBase; }
             set { this.RaiseAndSetIfChanged(ref _lightRadiusBase, value); }
@@ -445,8 +445,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.ExperienceNext = deltaExperienceNext;
             this.Haul = player.GetHaul();
             this.HaulMax = player.GetHaulMax();
-            this.Hp = player.Hp;
-            this.HpMax = player.HpMax;
+            this.Health = player.Health;
+            this.HealthMax = player.HealthMax;
             this.Hunger = player.Hunger;
             this.Stamina = player.Stamina;
             this.StaminaMax = player.StaminaMax;
@@ -511,14 +511,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.AgilityBase = player.AgilityBase;
             this.Attack = player.GetAttack();
             this.AttackBase = player.GetAttackBase();
-            this.LightRadius = player.GetLightRadius();
-            this.LightRadiusBase = player.LightRadiusBase;
+            this.Vision = player.GetVision();
+            this.VisionBase = player.VisionBase;
             this.Defense = player.GetDefense();
             this.DefenseBase = player.GetDefenseBase();
             this.FoodUsagePerTurn = player.GetFoodUsagePerTurn();
             this.FoodUsagePerTurnBase = player.FoodUsagePerTurnBase;
-            this.HpRegen = player.GetTotalHpRegen();
-            this.HpRegenBase = player.HpRegenBase;
+            this.HpRegen = player.GetTotalHealthRegen();
+            this.HpRegenBase = player.HealthRegenBase;
             this.Intelligence = player.GetIntelligence();
             this.IntelligenceBase = player.IntelligenceBase;
             this.StaminaRegen = player.GetTotalStaminaRegen();

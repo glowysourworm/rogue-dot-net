@@ -281,7 +281,7 @@ namespace Rogue.NET.Core.Processing.Service
                     {
                         var advancementCommand = command as PlayerAdvancementCommandData;
 
-                        _scenarioProcessor.PlayerAdvancement(advancementCommand.Hp,
+                        _scenarioProcessor.PlayerAdvancement(advancementCommand.Health,
                                                           advancementCommand.Stamina,
                                                           advancementCommand.Strength, 
                                                           advancementCommand.Agility,

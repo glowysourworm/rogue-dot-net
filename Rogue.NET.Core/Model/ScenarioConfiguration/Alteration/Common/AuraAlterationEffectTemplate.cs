@@ -16,6 +16,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _agilityRange;
         private Range<double> _speedRange;
         private Range<double> _hpPerStepRange;
+        private Range<double> _healthPerStepRange;
         private Range<double> _staminaPerStepRange;
         private Range<double> _attackRange;
         private Range<double> _defenseRange;
@@ -92,6 +93,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
+        public Range<double> HealthPerStepRange
+        {
+            get { return _healthPerStepRange; }
+            set
+            {
+                if (_healthPerStepRange != value)
+                {
+                    _healthPerStepRange = value;
+                    OnPropertyChanged("HealthPerStepRange");
+                }
+            }
+        }
         public Range<double> StaminaPerStepRange
         {
             get { return _staminaPerStepRange; }
@@ -139,6 +152,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.AttackRange = new Range<double>(0, 0);
             this.DefenseRange = new Range<double>(0, 0);
             this.HpPerStepRange = new Range<double>(0, 0);
+            this.HealthPerStepRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);
             this.StaminaPerStepRange = new Range<double>(0, 0);
             this.StrengthRange = new Range<double>(0, 0);

@@ -19,6 +19,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _health;
         private RangeViewModel<double> _stamina;
         private RangeViewModel<double> _hpRegen;
+        private RangeViewModel<double> _healthRegen;
         private RangeViewModel<double> _staminaRegen;
         private RangeViewModel<int> _lightRadius;
 
@@ -64,6 +65,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hpRegen; }
             set { this.RaiseAndSetIfChanged(ref _hpRegen, value); }
         }
+        public RangeViewModel<double> HealthRegen
+        {
+            get { return _healthRegen; }
+            set { this.RaiseAndSetIfChanged(ref _healthRegen, value); }
+        }
         public RangeViewModel<double> StaminaRegen
         {
             get { return _staminaRegen; }
@@ -92,6 +98,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Health = new RangeViewModel<double>(10, 20);
             this.Stamina = new RangeViewModel<double>(2, 5);
             this.HpRegen = new RangeViewModel<double>(0, 0);
+            this.HealthRegen = new RangeViewModel<double>(0, 0);
             this.StaminaRegen = new RangeViewModel<double>(0, 0);
             this.LightRadius = new RangeViewModel<int>(5, 5);
 

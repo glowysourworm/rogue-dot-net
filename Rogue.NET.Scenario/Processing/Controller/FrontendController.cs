@@ -240,7 +240,6 @@ namespace Rogue.NET.Scenario.Processing.Controller
             _levelCanvasViewModel.Doodads.Filter(x => contentIds.Contains(x.ScenarioObjectId));
             _levelCanvasViewModel.Items.Filter(x => contentIds.Contains(x.ScenarioObjectId));
             _levelCanvasViewModel.Characters.Filter(x => contentIds.Contains(x.ScenarioObjectId));
-            _levelCanvasViewModel.LightRadii.Filter(x => contentIds.Contains(x.ScenarioObjectId));
             _levelCanvasViewModel.Auras.Filter(x => contentIds.Contains(x.ScenarioObjectId));
         }
         #endregion

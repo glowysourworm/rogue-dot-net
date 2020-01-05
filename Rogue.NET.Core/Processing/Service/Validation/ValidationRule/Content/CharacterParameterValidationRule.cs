@@ -17,7 +17,7 @@ namespace Rogue.NET.Core.Processing.Service.Validation.ValidationRule.Content
                                 .Cast<CharacterTemplate>()
                                 .Union(configuration.FriendlyTemplates)
                                 .Union(configuration.PlayerTemplates)
-                                .Where(x => !x.Hp.IsSet() ||
+                                .Where(x => !x.Health.IsSet() ||
                                             !x.Agility.IsSet() ||
                                             !x.Intelligence.IsSet() ||
                                             !x.LightRadius.IsSet() ||
@@ -30,7 +30,7 @@ namespace Rogue.NET.Core.Processing.Service.Validation.ValidationRule.Content
                     Message = "Characters Must Have Certain Parameters Set to Non-Zero Value",
                     Passed = false,
                     Severity = ValidationSeverity.Error,
-                    InnerMessage = x.Name + " must have parameters greater than zero for Hp, Agility, Intelligence, Light Radius, Speed, and Strength"
+                    InnerMessage = x.Name + " must have parameters greater than zero for Health, Agility, Intelligence, Light Radius, Speed, and Strength"
 
                 });
         }

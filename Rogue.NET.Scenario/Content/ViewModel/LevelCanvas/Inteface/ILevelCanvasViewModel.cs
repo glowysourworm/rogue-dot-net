@@ -27,11 +27,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
         DrawingBrush VisibleOpacityMask { get; set; }
 
         /// <summary>
-        /// Layer of Visuals for the Light Radii
-        /// </summary>
-        ObservableCollection<LevelCanvasShape> LightRadii { get; set; }
-
-        /// <summary>
         /// Layer of Visuals for the Auras
         /// </summary>
         ObservableCollection<LevelCanvasShape> Auras { get; set; }

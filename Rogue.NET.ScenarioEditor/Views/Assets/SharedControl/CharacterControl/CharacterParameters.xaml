@@ -46,25 +46,25 @@
             <controls:Range DataContext="{Binding Speed}" LowLimit="0.1" HighLimit="1" />
         </Grid>
         <Grid>
-            <TextBlock Foreground="White" Text="Light Radius" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding LightRadius}" LowLimit="1" HighLimit="20" Increment="1" StringFormat="N0" />
-        </Grid>        
-        <Grid>
-            <TextBlock Foreground="White" Text="Hp" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding Hp}" LowLimit="1" HighLimit="10000" />
+            <TextBlock Foreground="White" Text="Health" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding Health}" LowLimit="1" HighLimit="10000" />
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Stamina" VerticalAlignment="Center" />
             <controls:Range DataContext="{Binding Stamina}" LowLimit="1" HighLimit="10000" />
         </Grid>
         <Grid>
-            <TextBlock Foreground="White" Text="Hp Regen" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding HpRegen}" LowLimit="0.01" HighLimit="10" />
+            <TextBlock Foreground="White" Text="Health Regen" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding HealthRegen}" LowLimit="0.01" HighLimit="10" />
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Stamina Regen" VerticalAlignment="Center" />
             <controls:Range DataContext="{Binding StaminaRegen}" LowLimit="0.01" HighLimit="10" />
-        </Grid>        
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Vision" VerticalAlignment="Center" />
+            <Slider Value="{Binding Vision, Delay=300}" Width="250" HorizontalAlignment="Center" Minimum="0.1" Maximum="1" />
+        </Grid>
     </StackPanel>
 </UserControl>
 

@@ -76,7 +76,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         /// <summary>
         /// Method to populate player advancement parameters
         /// </summary>
-        void GetPlayerAdvancementParameters(ref double hpPerPoint, ref double staminaPerPoint,
+        void GetPlayerAdvancementParameters(ref double healthPerPoint, ref double staminaPerPoint,
                                             ref double strengthPerPoint, ref double agilityPerPoint, ref double intelligencePerPoint,
                                             ref int skillPointsPerPoint);
 

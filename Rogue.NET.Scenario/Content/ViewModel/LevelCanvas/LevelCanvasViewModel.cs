@@ -57,7 +57,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.Doodads = new ObservableCollection<LevelCanvasImage>();
             this.Items = new ObservableCollection<LevelCanvasImage>();
             this.Characters = new ObservableCollection<LevelCanvasImage>();
-            this.LightRadii = new ObservableCollection<LevelCanvasShape>();
 
             this.ExploredOpacityMask = new DrawingBrush();
             this.RevealedOpacityMask = new DrawingBrush();
@@ -111,7 +110,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             get { return _visibleDrawingBrush; }
             set { this.RaiseAndSetIfChanged(ref _visibleDrawingBrush, value); }
         }
-        public ObservableCollection<LevelCanvasShape> LightRadii { get; set; }
         public ObservableCollection<LevelCanvasShape> Auras { get; set; }
         public ObservableCollection<LevelCanvasImage> Doodads { get; set; }
         public ObservableCollection<LevelCanvasImage> Items { get; set; }
@@ -165,8 +163,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.Items.Filter(x => content.None(z => z.Id == x.ScenarioObjectId) &&
                                    memorizedContent.None(z => z.Id == x.ScenarioObjectId));
 
-            this.LightRadii.Filter(x => content.None(z => z.Id == x.ScenarioObjectId));
-
             this.Auras.Filter(x => content.None(z => z.Id == x.ScenarioObjectId));
 
             // Create content dictionary with unique references - showing memorized content
@@ -219,20 +215,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 // SET PLAYER REFERENCE
                 if (scenarioObject is Player)
                     this.Player = this.Characters.First(character => character.ScenarioObjectId == player.Id);
-
-                // Check for Character Light Radius
-                if (character.SymbolType == SymbolType.Smiley)
-                {
-                    var characterLightRadius = this.LightRadii.FirstOrDefault(x => x.ScenarioObjectId == character.Id);
-
-                    // Update Light Radius
-                    if (characterLightRadius != null)
-                        _scenarioUIService.UpdateLightRadius(characterLightRadius, character, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
-
-                    // Add Light Radius
-                    else
-                        this.LightRadii.Add(CreateLightRadius(character));
-                }
 
                 // Auras
                 var characterAuras = character.Alteration.GetAuraSourceParameters();
@@ -311,15 +293,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             _scenarioUIService.UpdateContent(image, scenarioObject, isMemorized);
 
             return image;
-        }
-
-        private LevelCanvasShape CreateLightRadius(CharacterBase character)
-        {
-            var canvasShape = new LevelCanvasShape(character.Id, character.Id, new RectangleGeometry());
-
-            _scenarioUIService.UpdateLightRadius(canvasShape, character, new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight));
-
-            return canvasShape;
         }
 
         private LevelCanvasShape CreateAura(CharacterBase character, string alterationEffectId, string auraColor, int auraRange)

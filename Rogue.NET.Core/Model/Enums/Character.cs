@@ -91,9 +91,9 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Can attack using the prescribed behavior attack method (skill costs met)")]
         AttackConditionsMet = 0,
 
-        [Display(Name = "Hp Low",
-                 Description = "Behavior ONLY available when Hp is below 10%")]
-        HpLow = 1
+        [Display(Name = "Health Low",
+                 Description = "Behavior ONLY available when Health is below 10%")]
+        HealthLow = 1
     }
     [Flags]
     public enum BehaviorExitCondition : int
@@ -102,31 +102,87 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Behavior has a sub-counter that acts to change selected behavior in the state machine (of behaviors)")]
         BehaviorCounterExpired = 0,
 
-        [Display(Name = "Hp Low",
-                 Description = "Behavior will not be available when Hp is below 10%")]
-        HpLow = 1
+        [Display(Name = "Health Low",
+                 Description = "Behavior will not be available when Health is below 10%")]
+        HealthLow = 1
     }
 
     public enum SmileyExpression
-    { 
+    {
+        [Display(Name = "Happy",
+                 Description = "Happy smiley face expression")]
         Happy = 0,
+
+        [Display(Name = "Blind",
+                 Description = "Blind smiley face expression")]
         Blind = 1,
+
+        [Display(Name = "Dead",
+                 Description = "Dead smiley face expression")]
         Dead = 2,
+
+        [Display(Name = "Disgruntled",
+                 Description = "Unhappy smiley face expression")]
         Disgruntled = 3,
+
+        [Display(Name = "Emoji",
+                 Description = "Very happy smiley face expression")]
         Emoji = 4,
+
+        [Display(Name = "Freaked Out",
+                 Description = "Scared smiley face expression")]
         FreakedOut = 5,
+
+        [Display(Name = "Frustrated",
+                 Description = "Frustrated or exasporated smiley face expression")]
         Frustrated = 6,
+
+        [Display(Name = "Insane",
+                 Description = "Insane smiley face expression")]
         Insane = 7,
+
+        [Display(Name = "Left Wink",
+                 Description = "Winking smiley face expression")]
         LeftWink = 8,
+
+        [Display(Name = "Mean",
+                 Description = "Mean smiley face expression")]
         MeanPumpkinFace = 9,
+
+        [Display(Name = "Mischievous",
+                 Description = "Mischievous smiley face expression")]
         Mischievous = 10,
+
+        [Display(Name = "Right Wink",
+                 Description = "Winking smiley face expression")]
         RightWink = 11,
+
+        [Display(Name = "Sad",
+                 Description = "Sad smiley face expression")]
         Sad = 12,
+
+        [Display(Name = "Scared",
+                 Description = "Scared smiley face expression")]
         Scared = 13,
+
+        [Display(Name = "Shocked",
+                 Description = "Shocked smiley face expression")]
         Shocked = 14,
+
+        [Display(Name = "Sleeping",
+                 Description = "Sleeping smiley face expression")]
         Sleeping = 15,
+
+        [Display(Name = "Sour",
+                 Description = "Angry smiley face expression")]
         Sour = 16,
+
+        [Display(Name = "Unsure",
+                 Description = "Unsure smiley face expression")]
         Unsure = 17,
+
+        [Display(Name = "Weird",
+                 Description = "Strange smiley face expression")]
         WeirdWhistler = 18
     }
 
@@ -135,17 +191,52 @@ namespace Rogue.NET.Core.Model.Enums
     /// </summary>
     public enum CharacterAttribute
     {
-        Hp,
+        [Display(Name = "Health",
+                 Description = "Health character attribute")]
+        Health,
+
+        [Display(Name = "Stamina",
+                 Description = "Stamina character attribute")]
         Stamina,
+
+        [Display(Name = "Strength",
+                 Description = "Strength character attribute")]
         Strength,
+
+        [Display(Name = "Agility",
+                 Description = "Agility character attribute")]
         Agility,
+
+        [Display(Name = "Intelligence",
+                 Description = "Intelligence character attribute")]
         Intelligence,
+
+        [Display(Name = "Speed",
+                 Description = "Speed character attribute")]
         Speed,
-        HpRegen,
+
+        [Display(Name = "Health Regen",
+                 Description = "Health regeneration character attribute")]
+        HealthRegen,
+
+        [Display(Name = "Stamina Regen",
+                 Description = "Stamina regeneration character attribute")]
         StaminaRegen,
-        LightRadius,
+
+        [Display(Name = "Vision",
+                 Description = "Vision character attribute")]
+        Vision,
+
+        [Display(Name = "Attack",
+                 Description = "Attack character attribute")]
         Attack,
+
+        [Display(Name = "Defense",
+                 Description = "Defense character attribute")]
         Defense,
+
+        [Display(Name = "Food Usage",
+                 Description = "Food usage (per turn) character attribute")]
         FoodUsagePerTurn
     }
 
@@ -154,8 +245,16 @@ namespace Rogue.NET.Core.Model.Enums
     /// </summary>
     public enum CharacterBaseAttribute
     {
+        [Display(Name = "Strength",
+                 Description = "Strength character base attribute")]
         Strength,
+
+        [Display(Name = "Agility",
+                 Description = "Agility character base attribute")]
         Agility,
+
+        [Display(Name = "Intelligence",
+                 Description = "Intelligence character base attribute")]
         Intelligence
     }
 

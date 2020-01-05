@@ -35,8 +35,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             if (character.Stamina < 0)
                 character.Stamina = 0;
 
-            if (character.Hp > character.HpMax)
-                character.Hp = character.HpMax;
+            if (character.Health > character.HealthMax)
+                character.Health = character.HealthMax;
 
             if (character.Stamina > character.StaminaMax)
                 character.Stamina = character.StaminaMax;

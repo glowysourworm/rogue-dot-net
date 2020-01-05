@@ -100,7 +100,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
         {
             var isPlayer = character is Player;
 
-            if (character.Hp - cost.Hp < 0)
+            if (character.Health - cost.Health < 0)
             {
                 if (isPlayer)
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough HP");
@@ -138,12 +138,12 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
         }
         public bool CalculateCharacterMeetsAlterationCost(CharacterBase character, AlterationCostTemplate cost)
         {
-            return (character.Hp - cost.Hp) >= 0 &&
+            return (character.Health - cost.Hp) >= 0 &&
                    (character.Stamina - cost.Stamina) >= 0;
         }
         public bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost)
         {
-            if (player.Hp - cost.Hp < 0)
+            if (player.Health - cost.Hp < 0)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough HP");
                 return false;
@@ -183,8 +183,8 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             character.IntelligenceBase += alterationEffect.Intelligence;
             character.AgilityBase += alterationEffect.Agility;
             character.SpeedBase += alterationEffect.Speed;
-            character.LightRadiusBase += alterationEffect.LightRadius;
-            character.Hp += alterationEffect.Hp;
+            character.VisionBase += alterationEffect.Vision;
+            character.Health += alterationEffect.Health;
             character.Stamina += alterationEffect.Stamina;
 
             // Player Specific - (Also Publish Messages)
@@ -224,11 +224,11 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Speed has changed by " + alterationEffect.Speed.ToString("F2"));
 
                 // LightRadius
-                if (alterationEffect.LightRadius > 0)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Light Radius has changed by " + alterationEffect.LightRadius.ToString("F2"));
+                if (alterationEffect.Vision > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Vision has changed by " + alterationEffect.Vision.ToString("F2"));
 
-                else if (alterationEffect.LightRadius < 0)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Light Radius has changed by " + alterationEffect.LightRadius.ToString("F2"));
+                else if (alterationEffect.Vision < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Vision has changed by " + alterationEffect.Vision.ToString("F2"));
 
                 // Experience
                 if (alterationEffect.Experience > 0)
@@ -245,11 +245,11 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hunger has changed by " + alterationEffect.Hunger.ToString("N0"));
 
                 // Hp
-                if (alterationEffect.Hp > 0)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hp has changed by " + alterationEffect.Hp.ToString("F2"));
+                if (alterationEffect.Health > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hp has changed by " + alterationEffect.Health.ToString("F2"));
 
-                else if (alterationEffect.Hp < 0)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hp has changed by " + alterationEffect.Hp.ToString("F2"));
+                else if (alterationEffect.Health < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hp has changed by " + alterationEffect.Health.ToString("F2"));
 
                 // Mp
                 if (alterationEffect.Stamina > 0)
@@ -434,8 +434,8 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
 
         public void ApplyDrainMeleeEffect(CharacterBase actor, CharacterBase affectedCharacter, DrainMeleeAlterationEffect effect)
         {
-            actor.Hp += effect.Hp;
-            affectedCharacter.Hp -= effect.Hp;
+            actor.Health += effect.Health;
+            affectedCharacter.Health -= effect.Health;
 
             actor.Stamina += effect.Stamina;
             affectedCharacter.Stamina -= effect.Stamina;
@@ -454,13 +454,13 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                 (affectedCharacter as Enemy).ApplyLimits();
 
             // TODO: Clean up this message
-            if (effect.Hp > 0)
+            if (effect.Health > 0)
             {
                 _scenarioMessageService
                     .Publish(ScenarioMessagePriority.Normal,
-                             "{0} has drained {1} Hp from {2}",
+                             "{0} has drained {1} Health from {2}",
                              _modelService.GetDisplayName(actor),
-                             effect.Hp.ToString("F1"),
+                             effect.Health.ToString("F1"),
                              _modelService.GetDisplayName(affectedCharacter));
             }
 
@@ -478,13 +478,13 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
         protected void ApplyOneTimeAlterationCost(Player player, AlterationCost alterationCost)
         {
             player.Experience -= alterationCost.Experience;
-            player.Hp -= alterationCost.Hp;
+            player.Health -= alterationCost.Health;
             player.Hunger += alterationCost.Hunger;
             player.Stamina -= alterationCost.Stamina;
         }
         protected void ApplyOneTimeAlterationCost(NonPlayerCharacter character, AlterationCost alterationCost)
         {
-            character.Hp -= alterationCost.Hp;
+            character.Health -= alterationCost.Health;
             character.Stamina -= alterationCost.Stamina;
         }
     }

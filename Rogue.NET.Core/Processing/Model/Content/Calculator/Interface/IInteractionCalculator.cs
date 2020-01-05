@@ -24,7 +24,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator.Interface
         /// <summary>
         /// Calculates a combat interaction between an attacker and defender. This could be any type described
         /// by interactionType (Range, Melee, etc...). Returns true if an attack landed on the defender. Attack
-        /// HP is deducted from the defending character.
+        /// Health is deducted from the defending character.
         /// </summary>
         bool CalculateInteraction(CharacterBase attacker, CharacterBase defender, PhysicalAttackType interactionType);
 

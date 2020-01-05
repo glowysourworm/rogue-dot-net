@@ -37,13 +37,13 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             var appliedToHp = (malignAttackAttributeHit - character.Stamina).LowLimit(0);
 
             character.Stamina -= malignAttackAttributeHit;
-            character.Hp -= appliedToHp;
+            character.Health -= appliedToHp;
         }
 
         public void ApplyEndOfTurn(NonPlayerCharacter character, Player player, bool actionTaken)
         {
             var staminaRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.StaminaRegen);
-            var hpRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.HpRegen);
+            var hpRegenerationAlteration = character.Alteration.GetAttribute(CharacterAttribute.HealthRegen);
 
             var characterLocation = _modelService.GetContentLocation(character);
             var playerLocation = _modelService.PlayerLocation;
@@ -56,7 +56,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
 
                 // Then, allow Hp regeneration
                 if (character.Stamina >= character.StaminaMax)
-                    character.Hp += hpRegenerationAlteration;
+                    character.Health += hpRegenerationAlteration;
             }
             else
             {
@@ -65,11 +65,11 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
 
                 // Then, allow Hp regeneration
                 if (character.Stamina >= character.StaminaMax)
-                    character.Hp += character.GetTotalHpRegen();
+                    character.Health += character.GetTotalHealthRegen();
 
                 // Override if character has any alterations present
                 else if (hpRegenerationAlteration > 0)
-                    character.Hp += hpRegenerationAlteration;
+                    character.Health += hpRegenerationAlteration;
             }
 
             // Increment event times - ignore messages to publish
