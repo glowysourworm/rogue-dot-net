@@ -32,6 +32,10 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
         /// </summary>
         protected int RandomizerTurnCounter { get; set; }
 
+        public double SearchRadiusRatio { get; set; }
+        public double RestCoefficient { get; set; }
+        public CharacterRestBehaviorType RestBehaviorType { get; set; }
+
         public BehaviorDetails()
         {
             this.Behaviors = new List<Behavior>();

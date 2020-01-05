@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -127,13 +128,30 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         {
             // Add a new entry for this character
             if (!_searchDict.ContainsKey(nonPlayerCharacter))
-                _searchDict.Add(nonPlayerCharacter, new CharacterMovementPlanner(_layoutGrid));
+            {
+                // TODO:BEHAVIOR - Create linear scale mapping [0, 1] -> [Min, Max] search radius
+                // TODO:BEHAVIOR - Move these calculations; and centralize rest period constant (X number of turns) globally
+                var searchRadius = (int)(nonPlayerCharacter.BehaviorDetails.SearchRadiusRatio * MathFunctions.Max(_layoutGrid.Bounds.Width, _layoutGrid.Bounds.Height));
+                var restPeriod = (int)(nonPlayerCharacter.BehaviorDetails.RestCoefficient * 30);
+
+                switch (nonPlayerCharacter.BehaviorDetails.RestBehaviorType)
+                {
+                    case CharacterRestBehaviorType.HomeLocation:
+                        _searchDict.Add(nonPlayerCharacter, new CharacterMovementPlanner(_layoutGrid, _contentGrid.GetHomeLocation(nonPlayerCharacter), searchRadius, restPeriod));
+                        break;
+                    case CharacterRestBehaviorType.CurrentLocation:
+                        _searchDict.Add(nonPlayerCharacter, new CharacterMovementPlanner(_layoutGrid, searchRadius, restPeriod));
+                        break;
+                    default:
+                        throw new Exception("Unhandled CharacterRestBehaviorType CharacterMovement.Update");
+                }
+            }
 
             // Fetch the current search planner
             var planner = _searchDict[nonPlayerCharacter];
 
             // Update visibility for the character
-            planner.UpdateVisibility(nonPlayerCharacterLocation);
+            planner.Update(nonPlayerCharacterLocation);
         }
 
         public bool IsPathToAdjacentLocationBlocked(GridLocation location1,
@@ -309,6 +327,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         private GridLocation CalculateSearchLocation(NonPlayerCharacter character)
         {
+            // Return current (rest) position if resting
+            if (_searchDict[character].IsResting())
+                return _contentGrid[character];
+
             // Fetch the next search location
             var goalLocation = _searchDict[character].GetNextSearchLocation(_contentGrid[character]);
 

@@ -3,8 +3,6 @@ using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
-using System.Collections.Generic;
-
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 {
     public class SearchGrid<T> where T : class, IGridLocator
@@ -21,7 +19,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         /// </summary>
         public ConnectedRegion<T> Region { get { return _region; } }
 
-        public SearchGrid(ConnectedRegion<T> region)
+        /// <summary>
+        /// Initializes a new instance of the SearchGrid with a rest location and search radius - which
+        /// is the maximum Euclidean distance (in terms of cells) that the character can search away 
+        /// from their rest location.
+        /// </summary>
+        public SearchGrid(ConnectedRegion<T> region, GridLocation restLocation, int searchRadius)
         {
             _searchedLocations = new BinarySearchTree<double, BinarySearchTree<int, T>>();
             _unSearchedLocations = new BinarySearchTree<double, BinarySearchTree<int, T>>();
@@ -29,14 +32,18 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _region = region;
             _regionCenter = region.Boundary.GetCenter();
 
-            Initialize();
+            Initialize(restLocation, searchRadius);
         }
 
-        private void Initialize()
+        private void Initialize(GridLocation restLocation, int searchRadius)
         {
             // Initialize un-searched locations
             foreach (var location in _region.Locations)
-                Insert(_unSearchedLocations, location);
+            {
+                // Check to see that the search location is within the search radius
+                if (Metric.EuclideanDistance(location, restLocation) <= searchRadius)
+                    Insert(_unSearchedLocations, location);
+            }
         }
 
         private void Insert(BinarySearchTree<double, BinarySearchTree<int, T>> tree, T location)
@@ -91,19 +98,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             }
         }
 
-        public void Clear()
-        {
-            _unSearchedLocations.Clear();
-            _searchedLocations.Clear();
-
-            Initialize();
-        }
-
         /// <summary>
         /// Sets visibility and updates searched locations in the region
         /// </summary>
         public void SetSearched(T location)
-        { 
+        {
             // Remove / Insert are fall-through methods
 
             // MAINTAIN ONLY LOCATIONS IN THE REGION FOR SEARCHING. VISIBILITY IS KEPT

@@ -204,6 +204,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             character.BehaviorDetails.CanOpenDoors = template.BehaviorDetails.CanOpenDoors;
             character.BehaviorDetails.RandomizerTurnCount = template.BehaviorDetails.RandomizerTurnCount;
             character.BehaviorDetails.UseRandomizer = template.BehaviorDetails.UseRandomizer;
+            character.BehaviorDetails.RestBehaviorType = template.BehaviorDetails.RestBehaviorType;
+            character.BehaviorDetails.RestCoefficient = template.BehaviorDetails.RestCoefficient;
+            character.BehaviorDetails.SearchRadiusRatio = template.BehaviorDetails.SearchRadiusRatio;
 
             character.DeathAnimation = _animationGenerator.GenerateAnimation(template.DeathAnimation);
         }

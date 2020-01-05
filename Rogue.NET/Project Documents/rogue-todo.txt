@@ -3411,4 +3411,50 @@ IMMEDIATE TODO'S:
 					  kept (maybe).. so that all sub-routes could be picked from it. OR, possibly, kept so that TWO Dijkstra outputs
 					  could be somehow COMBINED. (??)
 					  
+	IMPROVED CHARACTER BEHAVIOR:
+	
+		Main Idea:  Character will have a "Home" location; and a search radius (typically the whole level). The character's 
+					primary behavior "states" will be { Resting, Searching, Attacking }. The character will typically perform
+					some kind of search sweep; and then either rest at their final destination; or return "Home". 
+					
+				    The attack behaviors are simply going to be built on decision making during an engagement - something like
+					{ Aggressive, Guard, Coward, Commander } - with additional group behaviors.
+					
+					Then, grouping behaviors will add some variation to these. The basic one would be flocking - which would 
+					have them "flock" with other group members of certain types. Another would be to look for a "Commander" - 
+					which would lead a group. So, this commander could gather enemies as they went; and the group would dissolve
+					when the commander dies.
+					
+					During rest - flocked enemies will have performed their search and rest together (not sure about the mechanism)
+					
+					Movement of the character can still be done with some variation - { Random, Heat Seeker, Path Finder, Standoffish }
+					
+					Random variation of movement can easily be injected to the path finding routine to force the character off
+					route every X (random) turns. Heat seeking would be a type of behavior that forces a character off of its
+					rest cycle only when there's a target in range that it can "seek". Standoffish behavior could be either
+					for movement or attack; and would be accompanied by a number equal to it's Dijkstra map value. 
+					
+					Finally, special goals for the characters and some decision making in the AI can really bring things to life. 
+					
+					Special goals will include anything that can be used in the level:  Doodads, Hiding spots (out of Player / Friendly
+					visual range), Ambush spots, and terrain. 
+					
+					Decision making will involve solving rewards for various goals - so a reward will be given for using inventory; and
+					for using doodads that are in range of the character. 
+					
+					Decision = Reward - Movement cost.
+					
+					So, plenty to do for the AI!! But, some seriously great stuff to try!
+					
+	IMPROVED DIJKSTRA PATH FINDING / VISIBILITY CALCULATING:
+	
+		Optimizing all of the AI / decision making requires some dual-purpose calculation of the surrounding level. For example, finding
+		a hiding spot or ambush location will be part of the visibility calculation - using the Player / friendly visibility to index into
+		while doing the visibility scan.
+		
+		Also, optimizing the Dijkstra scan will be a must; and there will need to be cutoffs for searches - primarily for mundane character
+		search perids. (i.e. just find the NEXT unsearched cell; and don't bother finding a path to the one in the bottom-left of the maze)
+		
+		Reusing Dijsktra paths will be investigated also - as well as Garbage collector behavior. It may be better to prevent small object
+		collections during the same level (unless memory pressure is too great).
 			
