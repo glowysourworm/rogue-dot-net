@@ -14,6 +14,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _useRandomizer;
         private int _randomizerTurnCount;
 
+        private double _searchRadiusRatio;
+        private double _searchRestBias;
+
         public List<BehaviorTemplate> Behaviors
         {
             get { return _behaviors; }
@@ -63,11 +66,39 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             }
         }
 
+        public double SearchRadiusRatio
+        {
+            get { return _searchRadiusRatio; }
+            set
+            {
+                if (_searchRadiusRatio != value)
+                {
+                    _searchRadiusRatio = value;
+                    OnPropertyChanged("SearchRadiusRatio");
+                }
+            }
+        }
+        public double SearchRestBias
+        {
+            get { return _searchRestBias; }
+            set
+            {
+                if (_searchRestBias != value)
+                {
+                    _searchRestBias = value;
+                    OnPropertyChanged("SearchRestBias");
+                }
+            }
+        }
+
         public BehaviorDetailsTemplate()
         {
             this.Behaviors = new List<BehaviorTemplate>();
             this.UseRandomizer = false;
             this.RandomizerTurnCount = 1;   // Set to prevent % arithmatic issues
+
+            this.SearchRadiusRatio = 1;
+            this.SearchRestBias = 0.80;
         }
     }
 }

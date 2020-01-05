@@ -17,10 +17,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _intelligence;
         private Range<double> _speed;
         private Range<double> _hp;
+        private Range<double> _health;
         private Range<double> _stamina;
         private Range<double> _hpRegen;
         private Range<double> _staminaRegen;
         private Range<int> _lightRadius;
+
+        private double _vision;
 
         public Range<double> Strength
         {
@@ -82,6 +85,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public Range<double> Health
+        {
+            get { return _health; }
+            set
+            {
+                if (_health != value)
+                {
+                    _health = value;
+                    OnPropertyChanged("Health");
+                }
+            }
+        }
         public Range<double> Stamina
         {
             get { return _stamina; }
@@ -131,6 +146,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             }
         }
 
+        public double Vision
+        {
+            get { return _vision; }
+            set { this.RaiseAndSetIfChanged(ref _vision, value); }
+        }
+
         public CharacterTemplate()
         {
             this.Strength = new Range<double>(3, 5);
@@ -138,10 +159,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Intelligence = new Range<double>(2, 3);
             this.Speed = new Range<double>(0.5, 0.5);       // Exclude 0 because Paralyzed altered state
             this.Hp = new Range<double>(10, 20);
+            this.Health = new Range<double>(10, 20);
             this.Stamina = new Range<double>(2, 5);
             this.HpRegen = new Range<double>(0, 0);
             this.StaminaRegen = new Range<double>(0, 0);
             this.LightRadius = new Range<int>(5, 5);
+
+            this.Vision = 0.8;
 
             this.StartingConsumables = new List<ProbabilityConsumableTemplate>();
             this.StartingEquipment = new List<ProbabilityEquipmentTemplate>();

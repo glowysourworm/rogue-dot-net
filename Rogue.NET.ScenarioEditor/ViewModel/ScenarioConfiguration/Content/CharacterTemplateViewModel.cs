@@ -16,10 +16,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _intelligence;
         private RangeViewModel<double> _speed;
         private RangeViewModel<double> _hp;
+        private RangeViewModel<double> _health;
         private RangeViewModel<double> _stamina;
         private RangeViewModel<double> _hpRegen;
         private RangeViewModel<double> _staminaRegen;
         private RangeViewModel<int> _lightRadius;
+
+        private double _vision;
 
         public RangeViewModel<double> Strength
         {
@@ -46,6 +49,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hp; }
             set { this.RaiseAndSetIfChanged(ref _hp, value); }
         }
+        public RangeViewModel<double> Health
+        {
+            get { return _health; }
+            set { this.RaiseAndSetIfChanged(ref _health, value); }
+        }
         public RangeViewModel<double> Stamina
         {
             get { return _stamina; }
@@ -67,6 +75,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             set { this.RaiseAndSetIfChanged(ref _lightRadius, value); }
         }
 
+        public double Vision
+        {
+            get { return _vision; }
+            set { this.RaiseAndSetIfChanged(ref _vision, value); }
+        }
+
+
         public CharacterTemplateViewModel()
         {
             this.Strength = new RangeViewModel<double>(3, 5);
@@ -74,10 +89,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Intelligence = new RangeViewModel<double>(2, 3);
             this.Speed = new RangeViewModel<double>(0.5, 0.5);
             this.Hp = new RangeViewModel<double>(10, 20);
+            this.Health = new RangeViewModel<double>(10, 20);
             this.Stamina = new RangeViewModel<double>(2, 5);
             this.HpRegen = new RangeViewModel<double>(0, 0);
             this.StaminaRegen = new RangeViewModel<double>(0, 0);
             this.LightRadius = new RangeViewModel<int>(5, 5);
+
+            this.Vision = 0.8;
 
             this.StartingConsumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>();
             this.StartingEquipment = new ObservableCollection<ProbabilityEquipmentTemplateViewModel>();

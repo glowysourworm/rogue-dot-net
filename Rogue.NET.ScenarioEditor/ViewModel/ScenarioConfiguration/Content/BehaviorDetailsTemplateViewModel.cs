@@ -10,6 +10,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _useRandomizer;
         private int _randomizerTurnCount;
 
+        private double _searchRadiusRatio;
+        private double _searchRestBias;
+
         public bool CanOpenDoors
         {
             get { return _canOpenDoors; }
@@ -26,6 +29,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             set { this.RaiseAndSetIfChanged(ref _randomizerTurnCount, value); }
         }
 
+        public double SearchRadiusRatio
+        {
+            get { return _searchRadiusRatio; }
+            set { this.RaiseAndSetIfChanged(ref _searchRadiusRatio, value); }
+        }
+        public double SearchRestBias
+        {
+            get { return _searchRestBias; }
+            set { this.RaiseAndSetIfChanged(ref _searchRestBias, value); }
+        }
+
         public ObservableCollection<BehaviorTemplateViewModel> Behaviors { get; set; }
 
         public BehaviorDetailsTemplateViewModel()
@@ -33,6 +47,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Behaviors = new ObservableCollection<BehaviorTemplateViewModel>();
             this.UseRandomizer = false;
             this.RandomizerTurnCount = 1;   // Set to prevent % arithmatic issues
+
+            this.SearchRadiusRatio = 1;
+            this.SearchRestBias = 0.80;
         }
     }
 }
