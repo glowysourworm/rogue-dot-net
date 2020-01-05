@@ -138,14 +138,14 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
         }
         public bool CalculateCharacterMeetsAlterationCost(CharacterBase character, AlterationCostTemplate cost)
         {
-            return (character.Health - cost.Hp) >= 0 &&
+            return (character.Health - cost.Health) >= 0 &&
                    (character.Stamina - cost.Stamina) >= 0;
         }
         public bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost)
         {
-            if (player.Health - cost.Hp < 0)
+            if (player.Health - cost.Health < 0)
             {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough HP");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Health");
                 return false;
             }
 

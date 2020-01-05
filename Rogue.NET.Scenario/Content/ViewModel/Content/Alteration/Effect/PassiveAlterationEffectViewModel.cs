@@ -73,14 +73,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (template.SpeedRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", template.SpeedRange.ToString()));
 
-            if (template.LightRadiusRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Light Radius", template.SpeedRange.ToString()));
+            if (template.VisionRange.IsSet())
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Vision", template.VisionRange.ToString()));
 
             if (template.FoodUsagePerTurnRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Food Usage (per turn)", template.SpeedRange.ToString()));
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Food Usage (per turn)", template.FoodUsagePerTurnRange.ToString()));
 
-            if (template.HpPerStepRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", template.HpPerStepRange.ToString()));
+            if (template.HealthPerStepRange.IsSet())
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health Regen", template.HealthPerStepRange.ToString()));
 
             if (template.StaminaPerStepRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina Regen", template.StaminaPerStepRange.ToString()));

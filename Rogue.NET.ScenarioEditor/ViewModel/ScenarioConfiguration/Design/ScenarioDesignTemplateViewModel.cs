@@ -7,7 +7,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
     {
         private string _objectiveDescription;
         private int _skillPointsPerCharacterPoint;
-        private int _hpPerCharacterPoint;
         private int _healthPerCharacterPoint;
         private int _staminaPerCharacterPoint;
         private double _strengthPerCharacterPoint;
@@ -23,11 +22,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
         {
             get { return _skillPointsPerCharacterPoint; }
             set { this.RaiseAndSetIfChanged(ref _skillPointsPerCharacterPoint, value); }
-        }
-        public int HpPerCharacterPoint
-        {
-            get { return _hpPerCharacterPoint; }
-            set { this.RaiseAndSetIfChanged(ref _hpPerCharacterPoint, value); }
         }
         public int HealthPerCharacterPoint
         {
@@ -62,7 +56,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
             this.LevelDesigns = new ObservableCollection<LevelTemplateViewModel>();
             this.ObjectiveDescription = "Objective Description (Goes Here)";
 
-            this.HpPerCharacterPoint = 5;
             this.HealthPerCharacterPoint = 5;
             this.StaminaPerCharacterPoint = 2;
 

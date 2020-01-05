@@ -20,7 +20,7 @@ namespace Rogue.NET.Core.Processing.Service.Validation.ValidationRule.Content
                                 .Where(x => !x.Health.IsSet() ||
                                             !x.Agility.IsSet() ||
                                             !x.Intelligence.IsSet() ||
-                                            !x.LightRadius.IsSet() ||
+                                             x.Vision == 0 ||
                                             !x.Speed.IsSet() ||
                                             !x.Strength.IsSet())
                                 .Select(x =>

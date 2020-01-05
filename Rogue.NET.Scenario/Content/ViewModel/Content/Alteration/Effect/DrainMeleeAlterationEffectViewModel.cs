@@ -17,7 +17,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             this.AlterationEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>();
 
             if (effect.Health != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp", effect.Health.ToString("F1")));
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health", effect.Health.ToString("F1")));
 
             if (effect.Stamina != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina", effect.Stamina.ToString("F1")));
@@ -26,8 +26,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
         {
             this.AlterationEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>();
 
-            if (template.Hp.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp", template.Hp.ToString()));
+            if (template.Health.IsSet())
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health", template.Health.ToString()));
 
             if (template.Stamina.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina", template.Stamina.ToString()));

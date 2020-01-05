@@ -15,13 +15,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _agility;
         private RangeViewModel<double> _intelligence;
         private RangeViewModel<double> _speed;
-        private RangeViewModel<double> _hp;
         private RangeViewModel<double> _health;
         private RangeViewModel<double> _stamina;
-        private RangeViewModel<double> _hpRegen;
         private RangeViewModel<double> _healthRegen;
         private RangeViewModel<double> _staminaRegen;
-        private RangeViewModel<int> _lightRadius;
 
         private double _vision;
 
@@ -45,11 +42,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _speed; }
             set { this.RaiseAndSetIfChanged(ref _speed, value); }
         }
-        public RangeViewModel<double> Hp
-        {
-            get { return _hp; }
-            set { this.RaiseAndSetIfChanged(ref _hp, value); }
-        }
         public RangeViewModel<double> Health
         {
             get { return _health; }
@@ -60,11 +52,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _stamina; }
             set { this.RaiseAndSetIfChanged(ref _stamina, value); }
         }
-        public RangeViewModel<double> HpRegen
-        {
-            get { return _hpRegen; }
-            set { this.RaiseAndSetIfChanged(ref _hpRegen, value); }
-        }
         public RangeViewModel<double> HealthRegen
         {
             get { return _healthRegen; }
@@ -74,11 +61,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _staminaRegen; }
             set { this.RaiseAndSetIfChanged(ref _staminaRegen, value); }
-        }
-        public RangeViewModel<int> LightRadius
-        {
-            get { return _lightRadius; }
-            set { this.RaiseAndSetIfChanged(ref _lightRadius, value); }
         }
 
         public double Vision
@@ -94,13 +76,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Agility = new RangeViewModel<double>(4, 5);
             this.Intelligence = new RangeViewModel<double>(2, 3);
             this.Speed = new RangeViewModel<double>(0.5, 0.5);
-            this.Hp = new RangeViewModel<double>(10, 20);
             this.Health = new RangeViewModel<double>(10, 20);
             this.Stamina = new RangeViewModel<double>(2, 5);
-            this.HpRegen = new RangeViewModel<double>(0, 0);
-            this.HealthRegen = new RangeViewModel<double>(0, 0);
-            this.StaminaRegen = new RangeViewModel<double>(0, 0);
-            this.LightRadius = new RangeViewModel<int>(5, 5);
+            this.HealthRegen = new RangeViewModel<double>(0.1, 0.2);
+            this.StaminaRegen = new RangeViewModel<double>(0.1, 0.2);
 
             this.Vision = 0.8;
 

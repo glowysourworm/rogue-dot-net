@@ -19,7 +19,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
                 this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Experience", cost.Experience.ToString("F1")));
 
             if (cost.Health != 0)
-                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Hp", cost.Health.ToString("F1")));
+                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Health", cost.Health.ToString("F1")));
 
             if (cost.Stamina != 0)
                 this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Stamina", cost.Stamina.ToString("F1")));
@@ -35,8 +35,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             if (template.Experience != 0)
                 this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Experience", template.Experience.ToString("F1")));
 
-            if (template.Hp != 0)
-                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Hp", template.Hp.ToString("F1")));
+            if (template.Health != 0)
+                this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Health", template.Health.ToString("F1")));
 
             if (template.Stamina != 0)
                 this.AlterationCostAttributes.Add(new AlterationAttributeViewModel("Stamina", template.Stamina.ToString("F1")));

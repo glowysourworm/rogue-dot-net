@@ -22,10 +22,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _intelligenceRange;
         private RangeViewModel<double> _agilityRange;
         private RangeViewModel<double> _speedRange;
-        private RangeViewModel<double> _lightRadiusRange;
         private RangeViewModel<double> _visionRange;
         private RangeViewModel<double> _foodUsagePerTurnRange;
-        private RangeViewModel<double> _hpPerStepRange;
         private RangeViewModel<double> _healthPerStepRange;
         private RangeViewModel<double> _staminaPerStepRange;
         private RangeViewModel<double> _attackRange;
@@ -61,11 +59,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _speedRange; }
             set { this.RaiseAndSetIfChanged(ref _speedRange, value); }
         }
-        public RangeViewModel<double> LightRadiusRange
-        {
-            get { return _lightRadiusRange; }
-            set { this.RaiseAndSetIfChanged(ref _lightRadiusRange, value); }
-        }
         public RangeViewModel<double> VisionRange
         {
             get { return _visionRange; }
@@ -75,11 +68,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _foodUsagePerTurnRange; }
             set { this.RaiseAndSetIfChanged(ref _foodUsagePerTurnRange, value); }
-        }
-        public RangeViewModel<double> HpPerStepRange
-        {
-            get { return _hpPerStepRange; }
-            set { this.RaiseAndSetIfChanged(ref _hpPerStepRange, value); }
         }
         public RangeViewModel<double> HealthPerStepRange
         {
@@ -109,11 +97,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.AgilityRange = new RangeViewModel<double>(0, 0);
             this.SpeedRange = new RangeViewModel<double>(0, 0);
             this.AttackRange = new RangeViewModel<double>(0, 0);
-            this.LightRadiusRange = new RangeViewModel<double>(0, 0);
             this.VisionRange = new RangeViewModel<double>(0, 0);
             this.DefenseRange = new RangeViewModel<double>(0, 0);
             this.FoodUsagePerTurnRange = new RangeViewModel<double>(0, 0);
-            this.HpPerStepRange = new RangeViewModel<double>(0, 0);
             this.HealthPerStepRange = new RangeViewModel<double>(0, 0);
             this.IntelligenceRange = new RangeViewModel<double>(0, 0);
             this.StaminaPerStepRange = new RangeViewModel<double>(0, 0);

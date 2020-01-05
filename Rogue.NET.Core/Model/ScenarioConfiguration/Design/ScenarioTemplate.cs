@@ -43,18 +43,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
                 }
             }
         }
-        public int HpPerCharacterPoint
-        {
-            get { return _hpPerCharacterPoint; }
-            set
-            {
-                if (_hpPerCharacterPoint != value)
-                {
-                    _hpPerCharacterPoint = value;
-                    OnPropertyChanged("HpPerCharacterPoint");
-                }
-            }
-        }
         public int HealthPerCharacterPoint
         {
             get { return _healthPerCharacterPoint; }
@@ -125,7 +113,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
             this.LevelDesigns = new List<LevelTemplate>();
             this.ObjectiveDescription = "Objective Description (Goes Here)";
 
-            this.HpPerCharacterPoint = 5;
             this.HealthPerCharacterPoint = 5;
             this.StaminaPerCharacterPoint = 2;
 

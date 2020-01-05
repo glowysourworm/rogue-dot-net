@@ -29,7 +29,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", effect.Speed.ToString("F1")));
 
             if (effect.HealthPerStep != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", effect.HealthPerStep.ToString("F1")));
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health Regen", effect.HealthPerStep.ToString("F1")));
 
             if (effect.StaminaPerStep != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina Regen", effect.StaminaPerStep.ToString("F1")));
@@ -57,8 +57,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (template.SpeedRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", template.SpeedRange.ToString()));
 
-            if (template.HpPerStepRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", template.HpPerStepRange.ToString()));
+            if (template.HealthPerStepRange.IsSet())
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health Regen", template.HealthPerStepRange.ToString()));
 
             if (template.StaminaPerStepRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina Regen", template.StaminaPerStepRange.ToString()));

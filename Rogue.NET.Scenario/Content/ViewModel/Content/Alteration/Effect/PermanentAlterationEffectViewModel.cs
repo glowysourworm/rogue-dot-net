@@ -69,7 +69,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (template.HungerRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hunger", template.HungerRange.ToString()));
 
-            if (template.HpRange.IsSet())
+            if (template.HealthRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health", template.HealthRange.ToString()));
 
             if (template.StaminaRange.IsSet())

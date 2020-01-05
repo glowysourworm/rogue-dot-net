@@ -19,11 +19,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _intelligenceRange;
         private Range<double> _agilityRange;
         private Range<double> _speedRange;
-        private Range<double> _lightRadiusRange;
         private Range<double> _visionRange;
         private Range<double> _experienceRange;
         private Range<double> _hungerRange;
-        private Range<double> _hpRange;
         private Range<double> _healthRange;
         private Range<double> _staminaRange;
 
@@ -75,18 +73,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> LightRadiusRange
-        {
-            get { return _lightRadiusRange; }
-            set
-            {
-                if (_lightRadiusRange != value)
-                {
-                    _lightRadiusRange = value;
-                    OnPropertyChanged("AuraRadiusRange");
-                }
-            }
-        }
         public Range<double> VisionRange
         {
             get { return _visionRange; }
@@ -123,18 +109,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> HpRange
-        {
-            get { return _hpRange; }
-            set
-            {
-                if (_hpRange != value)
-                {
-                    _hpRange = value;
-                    OnPropertyChanged("HpRange");
-                }
-            }
-        }
         public Range<double> HealthRange
         {
             get { return _healthRange; }
@@ -164,9 +138,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         {
             this.AgilityRange = new Range<double>(0, 0);
             this.SpeedRange = new Range<double>(0, 0);
-            this.LightRadiusRange = new Range<double>(0, 0);
             this.ExperienceRange = new Range<double>(0, 0);
-            this.HpRange = new Range<double>(0, 0);
             this.HealthRange = new Range<double>(0, 0);
             this.HungerRange = new Range<double>(0, 0);
             this.IntelligenceRange = new Range<double>(0, 0);

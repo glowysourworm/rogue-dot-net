@@ -78,8 +78,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (effect.Defense != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Defense", effect.Defense.ToString("F1")));
 
-            if (effect.LightRadius != 0)
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Light Radius", effect.LightRadius.ToString("F1")));
+            if (effect.Vision != 0)
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Vision", effect.Vision.ToString("F1")));
 
             if (effect.Speed != 0)
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", effect.Speed.ToString("F1")));
@@ -109,8 +109,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (template.FoodUsagePerTurnRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Food Usage (per turn)", template.FoodUsagePerTurnRange.ToString()));
 
-            if (template.HpPerStepRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Hp Regen", template.HpPerStepRange.ToString()));
+            if (template.HealthPerStepRange.IsSet())
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Health Regen", template.HealthPerStepRange.ToString()));
 
             if (template.StaminaPerStepRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Stamina Regen", template.StaminaPerStepRange.ToString()));
@@ -121,8 +121,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             if (template.DefenseRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Defense", template.DefenseRange.ToString()));
 
-            if (template.LightRadiusRange.IsSet())
-                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Light Radius", template.LightRadiusRange.ToString()));
+            if (template.VisionRange.IsSet())
+                this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Vision", template.VisionRange.ToString()));
 
             if (template.SpeedRange.IsSet())
                 this.AlterationEffectAttributes.Add(new AlterationAttributeViewModel("Speed", template.SpeedRange.ToString()));

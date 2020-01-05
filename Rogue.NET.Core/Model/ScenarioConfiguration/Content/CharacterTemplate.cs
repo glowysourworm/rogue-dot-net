@@ -16,13 +16,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _agility;
         private Range<double> _intelligence;
         private Range<double> _speed;
-        private Range<double> _hp;
         private Range<double> _health;
         private Range<double> _stamina;
-        private Range<double> _hpRegen;
         private Range<double> _healthRegen;
         private Range<double> _staminaRegen;
-        private Range<int> _lightRadius;
 
         private double _vision;
 
@@ -74,18 +71,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public Range<double> Hp
-        {
-            get { return _hp; }
-            set
-            {
-                if (_hp != value)
-                {
-                    _hp = value;
-                    OnPropertyChanged("Hp");
-                }
-            }
-        }
         public Range<double> Health
         {
             get { return _health; }
@@ -107,18 +92,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _stamina = value;
                     OnPropertyChanged("Stamina");
-                }
-            }
-        }
-        public Range<double> HpRegen
-        {
-            get { return _hpRegen; }
-            set
-            {
-                if (_hpRegen != value)
-                {
-                    _hpRegen = value;
-                    OnPropertyChanged("HpRegen");
                 }
             }
         }
@@ -146,18 +119,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public Range<int> LightRadius
-        {
-            get { return _lightRadius; }
-            set
-            {
-                if (_lightRadius != value)
-                {
-                    _lightRadius = value;
-                    OnPropertyChanged("LightRadius");
-                }
-            }
-        }
 
         public double Vision
         {
@@ -171,13 +132,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Agility = new Range<double>(4, 5);
             this.Intelligence = new Range<double>(2, 3);
             this.Speed = new Range<double>(0.5, 0.5);       // Exclude 0 because Paralyzed altered state
-            this.Hp = new Range<double>(10, 20);
             this.Health = new Range<double>(10, 20);
             this.Stamina = new Range<double>(2, 5);
-            this.HpRegen = new Range<double>(0, 0);
             this.HealthRegen = new Range<double>(0, 0);
             this.StaminaRegen = new Range<double>(0, 0);
-            this.LightRadius = new Range<int>(5, 5);
 
             this.Vision = 0.8;
 

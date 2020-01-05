@@ -9,7 +9,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     {
         private double _experience;
         private double _hunger;
-        private double _hp;
         private double _heatlh;
         private double _stamina;
 
@@ -34,18 +33,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _hunger = value;
                     OnPropertyChanged("Hunger");
-                }
-            }
-        }
-        public double Hp
-        {
-            get { return _hp; }
-            set
-            {
-                if (_hp != value)
-                {
-                    _hp = value;
-                    OnPropertyChanged("Hp");
                 }
             }
         }
