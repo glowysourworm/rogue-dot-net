@@ -80,6 +80,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.Parameters = (LevelParameters)info.GetValue("Parameters", typeof(LevelParameters));
 
             var count = info.GetInt32("ContentCount");
+            var homeLocationCount = info.GetInt32("HomeLocationCount");
             var memorizedCount = info.GetInt32("MemorizedContentCount");
 
             // Instantiate the level content and memorized content
@@ -98,6 +99,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
                 // Grid does NOT SERIALIZE OCCUPIED DATA. THIS IS SET HERE MANUALLY.
                 this.Grid.SetOccupied(location, true);
+            }
+
+            // Deserialize the home locations
+            for (int i = 0; i < homeLocationCount; i++)
+            {
+                // Store this character's Id along with its home location
+                var contentId = info.GetString("HomeLocationCharacterId" + i.ToString());
+                var location = (GridLocation)info.GetValue("HomeLocation" + i.ToString(), typeof(GridLocation));
+                var character = this.Content.Get(contentId) as NonPlayerCharacter;
+
+                // OVERWRITE THE HOME LOCATION SET BY AddContent(...)
+                this.Content.SetHomeLocation(character, location);
             }
 
             // Deserialize the memorized content
@@ -122,6 +135,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
             // Serialize the number of content entries
             info.AddValue("ContentCount", this.Content.AllContent.Where(content => !(content is Player)).Count());
+            info.AddValue("HomeLocationCount", this.Content.NonPlayerCharacters.Count());
             info.AddValue("MemorizedContentCount", this.MemorizedContent.AllContent.Count());
 
             var counter = 0;
@@ -136,6 +150,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 // Store the object and its location
                 info.AddValue("Content" + counter, content);
                 info.AddValue("Location" + counter++, this.Content[content.Id]);
+            }
+
+            counter = 0;
+
+            // Serialize the home locations of non-player characters
+            foreach (var content in this.Content.NonPlayerCharacters)
+            {
+                // Store this character's Id along with its home location
+                info.AddValue("HomeLocationCharacterId" + counter, content.Id);
+                info.AddValue("HomeLocation" + counter++, this.Content.GetHomeLocation(content));
             }
 
             counter = 0;

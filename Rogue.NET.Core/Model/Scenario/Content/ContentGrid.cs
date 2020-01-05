@@ -21,6 +21,7 @@ namespace Rogue.NET.Core.Model.Scenario
         // Gives the contents as a dictionary
         Dictionary<string, ScenarioObject> _levelContentDict;
         Dictionary<string, GridLocation> _levelLocationDict;
+        Dictionary<string, GridLocation> _homeLocationDict;
 
         IList<CharacterBase> _characters;
         IList<NonPlayerCharacter> _nonPlayerCharacters;
@@ -108,6 +109,18 @@ namespace Rogue.NET.Core.Model.Scenario
         {
             return _levelContentDict[scenarioObjectId];
         }
+        public GridLocation GetHomeLocation(NonPlayerCharacter character)
+        {
+            return _homeLocationDict[character.Id];
+        }
+
+        /// <summary>
+        /// Overwrites the original home location of this character
+        /// </summary>
+        public void SetHomeLocation(NonPlayerCharacter character, GridLocation location)
+        {
+            _homeLocationDict[character.Id] = location;
+        }
 
         /// <summary>
         /// Returns the First-Or-Default object of type T located at the cellPoint
@@ -145,6 +158,7 @@ namespace Rogue.NET.Core.Model.Scenario
             _levelContentGrid = new List<ScenarioObject>[width, height];
             _levelContentDict = new Dictionary<string, ScenarioObject>();
             _levelLocationDict = new Dictionary<string, GridLocation>();
+            _homeLocationDict = new Dictionary<string, GridLocation>();
 
             this.Characters = new List<CharacterBase>();
             this.NonPlayerCharacters = new List<NonPlayerCharacter>();
@@ -181,7 +195,12 @@ namespace Rogue.NET.Core.Model.Scenario
                 _characters.Add(scenarioObject as CharacterBase);
 
             if (scenarioObject is NonPlayerCharacter)
+            {
                 _nonPlayerCharacters.Add(scenarioObject as NonPlayerCharacter);
+
+                // ADD HOME LOCATION
+                _homeLocationDict.Add(scenarioObject.Id, location);
+            }
 
             if (scenarioObject is Enemy)
                 _enemies.Add(scenarioObject as Enemy);
@@ -222,7 +241,12 @@ namespace Rogue.NET.Core.Model.Scenario
                 _characters.Remove(scenarioObject as CharacterBase);
 
             if (scenarioObject is NonPlayerCharacter)
+            {
                 _nonPlayerCharacters.Remove(scenarioObject as NonPlayerCharacter);
+
+                // REMOVE HOME LOCATION
+                _homeLocationDict.Remove(scenarioObject.Id);
+            }
 
             if (scenarioObject is Enemy)
                 _enemies.Remove(scenarioObject as Enemy);
