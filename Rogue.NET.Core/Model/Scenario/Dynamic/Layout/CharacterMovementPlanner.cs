@@ -14,6 +14,16 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
     /// </summary>
     public class CharacterMovementPlanner
     {
+        protected enum SearchState
+        {
+            // Initial state
+            WakingUp,
+            BeginningSearch,
+            Searching,
+            HeadedForRest,
+            Resting
+        }
+
         // Primary layout grid
         readonly LayoutGrid _layoutGrid;
 
@@ -40,6 +50,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         // Current rest clock - keeps track of rest period
         int _restClock;
+        SearchState _state;
 
         /// <summary>
         /// Constructs a movement planner for characters that rest at the location where they finish their search
@@ -51,6 +62,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
             _restPeriod = restPeriod;
             _searchRadius = searchRadius;
+            _state = SearchState.WakingUp;
 
             _searchedRegions = new List<ConnectedRegion<GridLocation>>();
             _searchableRegions = new List<ConnectedRegion<GridLocation>>();
@@ -67,6 +79,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _restLocation = restLocation;
             _restPeriod = restPeriod;
             _searchRadius = searchRadius;
+            _state = SearchState.WakingUp;
 
             _searchedRegions = new List<ConnectedRegion<GridLocation>>();
             _searchableRegions = new List<ConnectedRegion<GridLocation>>();
@@ -91,7 +104,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         public bool IsResting()
         {
-            return _restClock > 0;
+            return _state == SearchState.Resting;
         }
 
         /// <summary>
@@ -101,7 +114,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         {
             // Decrement rest clock
             if (_restClock > 0)
+            {
                 _restClock--;
+
+                if (_restClock == 0)
+                    _state = SearchState.WakingUp;
+            }
 
             _visibleLocations.Clear();
 
@@ -145,106 +163,56 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         public GridLocation GetNextSearchLocation(GridLocation currentLocation)
         {
-            if (_restClock > 0)
-                throw new Exception("Character is currently resting - must check before calling CharacterMovementPlanner.GetNextSearchLocation");
-
-            // INITIALIZE SEARCH SWEEP - SET SEARCHABLE REGIONS
-            if (_searchGrid == null &&
-                _nextRegion == null)
-                _searchableRegions = _layoutGrid.ConnectionMap
-                                                .Regions
-                                                .Cast<ConnectedRegion<GridLocation>>()
-                                                .Where(region =>
-                {
-                    return region.Locations
-                                 .Any(location => Metric.EuclideanDistance(location, currentLocation) <= _searchRadius);
-
-                }).ToList();
-
-            // Search is fully exhausted -> character heads to rest location -> set rest clock
-            if (_searchedRegions.Count == _searchableRegions.Count)
+            switch (_state)
             {
-                // Character is at the rest location
-                if (_restLocation == null ||
-                    _restLocation.Equals(currentLocation))
-                {
-                    // SET THE REST CLOCK
-                    _restClock = _restPeriod;
-
-                    // Clear out search history
-                    _searchedRegions.Clear();
-
-                    // Rest at this location for the rest period
-                    return currentLocation;
-                }
-
-                else
-                    return _restLocation;
+                case SearchState.Resting:
+                    throw new Exception("Character is currently resting - must check before calling CharacterMovementPlanner.GetNextSearchLocation");
+                case SearchState.WakingUp:
+                    return WakingUp(currentLocation);
+                case SearchState.BeginningSearch:
+                    return BeginningSearch(currentLocation);
+                case SearchState.Searching:
+                    return Searching(currentLocation);
+                case SearchState.HeadedForRest:
+                    return HeadedForRest(currentLocation);
+                default:
+                    throw new Exception("Unhandled SearchState case CharacterMovementPlanner.GetNextSearchLocation");
             }
+        }
 
-            // Search not begun
-            else if (_searchGrid == null)
-            {
-                // Case 1: Character's FIRST search sweep
-                // Case 2: Character en-route to new region
-
-                // NOTE*** Connection map isn't actually connected. It just STORES region
-                //         connections (like a graph) that HAVE been connected by the layout builder.
-                //
-                var currentRegion = _layoutGrid.ConnectionMap[currentLocation];
-
-                // Case 1 (VERY FIRST SWEEP ONLY)
-                if (_nextRegion == null)
-                    _nextRegion = GetNextRegion(currentLocation);
-
-                // Case 2 (OR) Case 1 -> Case 2
-                if (_nextRegion != currentRegion)
-                {
-                    // NOTE*** Just need to get the character to the region to let the search grid take
-                    //         over and begin a sweep.
-                    //
-                    //         So, going to use the closest vertex to the current location as a destination
-                    //
-                    var vertex = _layoutGrid.ConnectionMap
-                                            .ConnectionGraph
-                                            .Find(_nextRegion.Id)
-                                            .MinBy(vertex => Metric.EuclideanDistance(vertex, currentLocation));
-
-                    return _layoutGrid[vertex].Location;
-                }
-
-                // CHARACTER HAS ARRIVED! BEGIN A NEW SWEEP
-                else
-                {
-                    // Begin next search sweep
-                    _searchGrid = new SearchGrid<GridLocation>(_nextRegion, _restLocation ?? currentLocation, _searchRadius);
-
-                    // Nullify region reference to signal that character has begun a sweep
-                    _nextRegion = null;
-
-                    // Initialize the new visibility
-                    Update(currentLocation);
-
-                    // Recursively return next search location - in case there are no locations here to search
-                    return GetNextSearchLocation(currentLocation);
-                }
-            }
-
-            // Search just completed -> Mark the region and recurse
-            else if (_searchGrid.IsFullySearched())
+        private GridLocation Searching(GridLocation currentLocation)
+        {
+            // Search just completed
+            if (_searchGrid.IsFullySearched())
             {
                 // Mark the current region as searched
                 _searchedRegions.Add(_searchGrid.Region);
 
-                // Calculate the next region
-                if (_searchedRegions.Count == _layoutGrid.ConnectionMap.Regions.Count())
+                // Search is fully exhausted -> character heads to rest location -> set rest clock
+                if (_searchedRegions.Count == _searchableRegions.Count)
+                {
+                    // Search sweep is finished
+                    _searchGrid = null;
                     _nextRegion = null;
 
+                    // Signal that the sweep is finished
+                    _state = SearchState.HeadedForRest;
+                }
+
+                // Calculate the next region
                 else
+                {
+                    // Search grid is finished
+                    _searchGrid = null;
+
+                    // Find the next region in the search
                     _nextRegion = GetNextRegion(currentLocation);
 
-                // NULLIFY THE SEARCH GRID
-                _searchGrid = null;
+                    if (_nextRegion == null)
+                        throw new Exception("No region found to search CharacterMovementPlanner.GetNextSearchLocation");
+
+                    _state = SearchState.BeginningSearch;
+                }
 
                 return GetNextSearchLocation(currentLocation);
             }
@@ -252,6 +220,106 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // Continue search...
             else
                 return _searchGrid.GetNextSearchLocation();
+        }
+
+        private GridLocation HeadedForRest(GridLocation currentLocation)
+        {
+            // Character begins rest period -> set rest clock
+            if (_restLocation == null ||
+                _restLocation.Equals(currentLocation))
+            {
+                // Set the clock
+                _restClock = _restPeriod;
+
+                _state = SearchState.Resting;
+
+                return currentLocation;
+            }
+            else
+            {
+                return _restLocation ?? currentLocation;
+            }
+        }
+
+        private GridLocation WakingUp(GridLocation currentLocation)
+        {
+            if (_searchGrid != null ||
+                _nextRegion != null)
+                throw new Exception("Trying to re-initialize already initialized search sweep");
+
+            // Set searchable regions -> use rest location if it is available for the search radius
+            _searchableRegions = _layoutGrid.ConnectionMap
+                                            .Regions
+                                            .Cast<ConnectedRegion<GridLocation>>()
+                                            .Where(region =>
+                                            {
+                                                return region.Locations
+                                                                .Any(location => Metric.EuclideanDistance(location, _restLocation ?? currentLocation) <= _searchRadius);
+
+                                            }).ToList();
+
+            // Clear out searched regions
+            _searchedRegions.Clear();
+
+            _state = SearchState.BeginningSearch;
+
+            return GetNextSearchLocation(currentLocation);
+        }
+
+        private GridLocation BeginningSearch(GridLocation currentLocation)
+        {
+            if (_searchGrid != null)
+                throw new Exception("Improperly handled search grid CharacterMovementPlanner.BeginningSearch");
+
+            // No searchable regions detected - just return this location
+            if (!_searchableRegions.Any())
+                return currentLocation;
+
+            // Case 1: Character is initializing new sweep
+            // Case 2: Character en-route to new region (same sweep)
+
+            // NOTE*** Connection map isn't actually connected. It just STORES region
+            //         connections (like a graph) that HAVE been connected by the layout builder.
+            //
+            var currentRegion = _layoutGrid.ConnectionMap[currentLocation];
+
+            // Case 1
+            if (_nextRegion == null)
+                _nextRegion = GetNextRegion(currentLocation);
+
+            // Case 2 (OR) Case 1 -> Case 2
+            if (_nextRegion != currentRegion)
+            {
+                // NOTE*** Just need to get the character to the region to let the search grid take
+                //         over and begin a sweep.
+                //
+                //         So, going to use the closest vertex to the current location as a destination
+                //
+                var vertex = _layoutGrid.ConnectionMap
+                                        .ConnectionGraph
+                                        .Find(_nextRegion.Id)
+                                        .MinBy(vertex => Metric.EuclideanDistance(vertex, currentLocation));
+
+                return _layoutGrid[vertex].Location;
+            }
+
+            // CHARACTER HAS ARRIVED! BEGIN A NEW SWEEP
+            else
+            {
+                // Begin next search sweep
+                _searchGrid = new SearchGrid<GridLocation>(_nextRegion, _restLocation ?? currentLocation, _searchRadius);
+
+                // Nullify region reference to signal that character has begun a sweep
+                _nextRegion = null;
+
+                // Initialize the new visibility
+                Update(currentLocation);
+
+                _state = SearchState.Searching;
+
+                // Recursively return next search location - in case there are no locations here to search
+                return GetNextSearchLocation(currentLocation);
+            }
         }
 
         private ConnectedRegion<GridLocation> GetNextRegion(GridLocation currentLocation)

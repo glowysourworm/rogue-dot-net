@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
     public static class TraversalAlgorithm
     {
         /// <summary>
-        /// Finds next connected region that hasn't been searched - using Breadth first search.
+        /// Finds next connected region that hasn't been searched - using Breadth first search. Returns null if nothing is found.
         /// </summary>
         public static ConnectedRegion<GridLocation> FindNextSearchRegion(ConnectedLayerMap connectedLayer,
                                                                          IEnumerable<ConnectedRegion<GridLocation>> searchableRegions, 
@@ -23,7 +23,12 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             if (searchedRegions.Count() == searchableRegions.Count())
                 return null;
 
+            // Just a single region in the layout
             if (searchableRegions.Count() == 1)
+                return startingRegion;
+
+            // Starting region has not yet been searched
+            if (!searchedRegions.Contains(startingRegion))
                 return startingRegion;
 
             // Use Breadth First Search to scan the graph
@@ -59,7 +64,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 }
             }
 
-            return startingRegion;
+            return null;
         }
     }
 }
