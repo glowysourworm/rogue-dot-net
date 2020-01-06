@@ -22,7 +22,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         /// </summary>
         public delegate void VisibilityCalculatorCallback(int column, int row, bool isVisible);
 
-        const int MAX_RADIUS = 10;
+        const int MAX_RADIUS = 15;
 
         protected enum Octant
         {
@@ -176,9 +176,9 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         var column = yDirection ? location1Column : location1Column + (index - startIndex);
                         var row = yDirection ? location1Row + (index - startIndex) : location1Row;
 
-                        // CHECK MAX RADIUS FOR THIS OCTANT
-                        if (Metric.EuclideanDistance(column, row, center.Column, center.Row) > MAX_RADIUS)
-                            break;
+                        //// CHECK MAX RADIUS FOR THIS OCTANT
+                        //if (Metric.EuclideanDistance(column, row, center.Column, center.Row) > MAX_RADIUS)
+                        //    break;
 
                         // Current location
                         var location = getter(column, row);
@@ -253,19 +253,25 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     radius++;
 
                     // Re-evaluate loop condition
-                    iterate = !finalIteration;
+                    iterate = !finalIteration && (radius <= MAX_RADIUS);
                 }
             }
         }
 
         private static void CalculateIterationLocations(GridLocation center, int radius, Octant octant, out int location1Column, out int location1Row, out int location2Column, out int location2Row, out bool yDirection)
         {
+            // Calculate a max iterating distance based on the radius and MAX_RADIUS. Solve the right triangle 
+            // inside a circle of MAX_RADIUS - this will show the below solution.
+            //
+            var circleCoordinate = System.Math.Sqrt((MAX_RADIUS * MAX_RADIUS) - (radius * radius));
+            var circleIteratingDistance = (int)System.Math.Min(radius, circleCoordinate);
+
             // NOTE*** MUST ITERATE CLOCKWISE AROUND THE CIRCLE
             switch (octant)
             {
                 case Octant.NNW:
                     {
-                        location1Column = center.Column - radius;
+                        location1Column = center.Column - circleIteratingDistance;
                         location1Row = center.Row - radius;
                         location2Column = center.Column;
                         location2Row = center.Row - radius;
@@ -276,7 +282,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     {
                         location1Column = center.Column;
                         location1Row = center.Row - radius;
-                        location2Column = center.Column + radius;
+                        location2Column = center.Column + circleIteratingDistance;
                         location2Row = center.Row - radius;
                         yDirection = false;
                     }
@@ -284,7 +290,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 case Octant.ENE:
                     {
                         location1Column = center.Column + radius;
-                        location1Row = center.Row - radius;
+                        location1Row = center.Row - circleIteratingDistance;
                         location2Column = center.Column + radius;
                         location2Row = center.Row;
                         yDirection = true;
@@ -295,13 +301,13 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         location1Column = center.Column + radius;
                         location1Row = center.Row;
                         location2Column = center.Column + radius;
-                        location2Row = center.Row + radius;
+                        location2Row = center.Row + circleIteratingDistance;
                         yDirection = true;
                     }
                     break;
                 case Octant.SSE:
                     {
-                        location1Column = center.Column + radius;
+                        location1Column = center.Column + circleIteratingDistance;
                         location1Row = center.Row + radius;
                         location2Column = center.Column;
                         location2Row = center.Row + radius;
@@ -312,7 +318,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     {
                         location1Column = center.Column;
                         location1Row = center.Row + radius;
-                        location2Column = center.Column - radius;
+                        location2Column = center.Column - circleIteratingDistance;
                         location2Row = center.Row + radius;
                         yDirection = false;
                     }
@@ -320,7 +326,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 case Octant.WSW:
                     {
                         location1Column = center.Column - radius;
-                        location1Row = center.Row + radius;
+                        location1Row = center.Row + circleIteratingDistance;
                         location2Column = center.Column - radius;
                         location2Row = center.Row;
                         yDirection = true;
@@ -331,7 +337,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         location1Column = center.Column - radius;
                         location1Row = center.Row;
                         location2Column = center.Column - radius;
-                        location2Row = center.Row - radius;
+                        location2Row = center.Row - circleIteratingDistance;
                         yDirection = true;
                     }
                     break;
