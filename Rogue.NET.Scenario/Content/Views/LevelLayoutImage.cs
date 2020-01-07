@@ -1,6 +1,9 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
@@ -91,6 +94,12 @@ namespace Rogue.NET.Scenario.Content.Views
                                                    _scenarioUIService.CreateRevealedLight(cell.BaseLight) :
                                                    _scenarioUIService.CreateExploredLight(cell.BaseLight);
 
+                        // Apply decreased intensity around the player
+                        if (isVisible)
+                        {
+                            lighting = CalculateVisibleIntensity(lighting, cell.Location, _modelService.PlayerLocation);
+                        }
+
                         DrawingImage cellImage = null;
                         IEnumerable<DrawingImage> terrainImages = null;
 
@@ -158,6 +167,19 @@ namespace Rogue.NET.Scenario.Content.Views
             }
 
             this.Source = layoutBitmap;
+        }
+
+        private Light CalculateVisibleIntensity(Light effectiveLighting, GridLocation location, GridLocation playerLocation)
+        {
+            // Intensity falls off linearly as the vision
+            var distance = Metric.EuclideanDistance(location, playerLocation);
+            var distanceRatio = distance / ModelConstants.MaxVisibileRadius;
+
+            // USE ROUNDING TO PREVENT CACHE OVERLOAD
+            var intensity = System.Math.Round(((1 - distanceRatio) * effectiveLighting.Intensity)
+                                       .Clip(ModelConstants.MinLightIntensity, 1), 1);
+
+            return new Light(effectiveLighting, intensity);
         }
     }
 }

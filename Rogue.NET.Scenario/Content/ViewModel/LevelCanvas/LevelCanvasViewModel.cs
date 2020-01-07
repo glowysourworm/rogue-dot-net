@@ -96,10 +96,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             // Re-draw the layout layers
             this.VisibleLayer = new DrawingImage[_scenarioUIService.LevelWidth, _scenarioUIService.LevelHeight];
 
-            // Create DrawingImage instances from the resource cache
-            //
-            _scenarioUIService.CreateLayoutDrawings(this.VisibleLayer, /*this.ExploredLayer*/ null, /*this.RevealedLayer*/ null);
-
             OnPropertyChanged(() => this.VisibleLayer);
 
             OnLevelDimensionChange();

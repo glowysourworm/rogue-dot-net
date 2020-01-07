@@ -61,76 +61,6 @@ namespace Rogue.NET.Scenario.Processing.Service
             _modelService = modelService;
         }
 
-        public void CreateLayoutDrawings(DrawingImage[,] visibleLayer,
-                                         DrawingImage[,] exploredLayer,
-                                         DrawingImage[,] revealedLayer)
-        {
-            var layoutTemplate = _modelService.GetLayoutTemplate();
-
-            foreach (var location in _modelService.Level.Grid.FullMap.GetLocations())
-            {
-                var cell = _modelService.Level.Grid[location.Column, location.Row];
-
-                var visibleLight = cell.BaseLight;
-                //var exploredLight = CreateExploredLight(cell.BaseLight);
-                //var revealedLight = CreateRevealedLight(cell.BaseLight);
-
-                var isCorridor = _modelService.Level.Grid.CorridorMap[cell.Location.Column, cell.Location.Row] != null;
-                var terrainNames = _modelService.Level.Grid.TerrainMaps.Where(terrainMap => terrainMap[cell.Location.Column, cell.Location.Row] != null)
-                                                                       .Select(terrainMap => terrainMap.Name);
-
-                DrawingImage cellImage = null;
-
-                // Terrain - Render using the terrain template
-                if (terrainNames.Any())
-                {
-                    // TODO:TERRAIN - HANDLE MULTIPLE LAYERS
-                    var layer = layoutTemplate.TerrainLayers.First(terrain => terrain.Name == terrainNames.First());
-
-                    cellImage = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, visibleLight);
-                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, exploredLight);
-                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, revealedLight);
-                }
-
-                // Doors
-                else if (cell.IsDoor)
-                {
-                    cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, visibleLight);
-                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
-                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
-                }
-
-                // Wall Lights
-                else if (cell.IsWallLight)
-                {
-                    cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, visibleLight);
-                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
-                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
-                }
-
-                // Walls
-                else if (cell.IsWall)
-                {
-                    cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, visibleLight);
-                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, exploredLight);
-                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, revealedLight);
-                }
-
-                // Walkable Cells
-                else
-                {
-                    cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, visibleLight);
-                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, exploredLight);
-                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, revealedLight);
-                }
-
-                //if (cellImage != null)
-                //{
-                    visibleLayer[cell.Column, cell.Row] = cellImage;
-                //}
-            }
-        }
-
         public void CreateRenderingMask(GeometryDrawing[,] renderingMask)
         {
             var pen = new Pen(Brushes.Transparent, 0.0);
@@ -377,7 +307,7 @@ namespace Rogue.NET.Scenario.Processing.Service
 
         public Light CreateExploredLight(Light lighting)
         {
-            return new Light(lighting, 0.3);
+            return new Light(lighting, ModelConstants.MinLightIntensity);
         }
 
         public Light CreateRevealedLight(Light lighting)

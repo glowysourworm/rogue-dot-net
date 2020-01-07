@@ -22,8 +22,6 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         /// </summary>
         public delegate void VisibilityCalculatorCallback(int column, int row, bool isVisible);
 
-        const int MAX_RADIUS = 15;
-
         protected enum Octant
         {
             NNW,
@@ -253,7 +251,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     radius++;
 
                     // Re-evaluate loop condition
-                    iterate = !finalIteration && (radius <= MAX_RADIUS);
+                    iterate = !finalIteration && (radius <= ModelConstants.MaxVisibileRadius);
                 }
             }
         }
@@ -263,7 +261,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             // Calculate a max iterating distance based on the radius and MAX_RADIUS. Solve the right triangle 
             // inside a circle of MAX_RADIUS - this will show the below solution.
             //
-            var circleCoordinate = System.Math.Sqrt((MAX_RADIUS * MAX_RADIUS) - (radius * radius));
+            var circleCoordinate = System.Math.Sqrt((ModelConstants.MaxVisibileRadius * ModelConstants.MaxVisibileRadius) - (radius * radius));
             var circleIteratingDistance = (int)System.Math.Min(radius, circleCoordinate);
 
             // NOTE*** MUST ITERATE CLOCKWISE AROUND THE CIRCLE
