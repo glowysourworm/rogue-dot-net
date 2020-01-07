@@ -301,6 +301,16 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             return _visibleLocations.ContainsKey(location);
         }
 
+        public bool IsVisible(int column, int row)
+        {
+            var cell = _layoutGrid[column, row];
+
+            if (cell == null)
+                return false;
+
+            return _visibleLocations.ContainsKey(cell.Location);
+        }
+
         public IEnumerable<GridLocation> GetVisibleLocations(CharacterBase character)
         {
             if (character is Player)

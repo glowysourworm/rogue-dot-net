@@ -32,15 +32,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         IAnimationPlayer _targetAnimationPlayer;
 
         // Layers
-        DrawingImage[,] _visibleLayer;
-        //DrawingImage[,] _exploredLayer;
-        //DrawingImage[,] _revealedLayer;
+        DrawingImage[,] _layoutLayer;
 
-        // Opacity Masks
-        GeometryDrawing[,] _renderingMask;
-        //DrawingBrush _exploredDrawingBrush;
-        //DrawingBrush _revealedDrawingBrush;
-        //DrawingBrush _visibleDrawingBrush;
+        // Opacity Mask for masking UI layers with respect to the player's visual range
+        DrawingBrush _visibileOpacityMask;
 
         // Player (separate from contents)
         LevelCanvasImage _player;
@@ -59,63 +54,27 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.Items = new ObservableCollection<LevelCanvasImage>();
             this.Characters = new ObservableCollection<LevelCanvasImage>();
 
-            //this.ExploredOpacityMask = new DrawingBrush();
-            //this.RevealedOpacityMask = new DrawingBrush();
-            //this.VisibleOpacityMask = new DrawingBrush();
+            this.VisibileOpacityMask = new DrawingBrush();
 
-            //RenderOptions.SetBitmapScalingMode(this.ExploredOpacityMask, BitmapScalingMode.LowQuality);
-            //RenderOptions.SetBitmapScalingMode(this.RevealedOpacityMask, BitmapScalingMode.LowQuality);
-            //RenderOptions.SetBitmapScalingMode(this.VisibleOpacityMask, BitmapScalingMode.LowQuality);
+            RenderOptions.SetBitmapScalingMode(this.VisibileOpacityMask, BitmapScalingMode.LowQuality);
+            RenderOptions.SetCachingHint(this.VisibileOpacityMask, CachingHint.Cache);
 
-            //RenderOptions.SetCachingHint(this.ExploredOpacityMask, CachingHint.Cache);
-            //RenderOptions.SetCachingHint(this.RevealedOpacityMask, CachingHint.Cache);
-            //RenderOptions.SetCachingHint(this.VisibleOpacityMask, CachingHint.Cache);
-
-            //this.ExploredOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
-            //this.RevealedOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
-            //this.VisibleOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
-
-            //this.ExploredOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
-            //this.RevealedOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
-            //this.VisibleOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
+            this.VisibileOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
+            this.VisibileOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
         }
 
         #region (public) Properties
         public DrawingImage[,] VisibleLayer
         {
-            get { return _visibleLayer; }
-            set { this.RaiseAndSetIfChanged(ref _visibleLayer, value); }
+            get { return _layoutLayer; }
+            set { this.RaiseAndSetIfChanged(ref _layoutLayer, value); }
         }
-        public GeometryDrawing[,] RenderingMask
+        public DrawingBrush VisibileOpacityMask
         {
-            get { return _renderingMask; }
-            set { this.RaiseAndSetIfChanged(ref _renderingMask, value); }
+            get { return _visibileOpacityMask; }
+            set { this.RaiseAndSetIfChanged(ref _visibileOpacityMask, value); }
         }
-        //public DrawingImage[,] ExploredLayer
-        //{
-        //    get { return _exploredLayer; }
-        //    set { this.RaiseAndSetIfChanged(ref _exploredLayer, value); }
-        //}
-        //public DrawingImage[,] RevealedLayer
-        //{
-        //    get { return _revealedLayer; }
-        //    set { this.RaiseAndSetIfChanged(ref _revealedLayer, value); }
-        //}
-        //public DrawingBrush ExploredOpacityMask
-        //{
-        //    get { return _exploredDrawingBrush; }
-        //    set { this.RaiseAndSetIfChanged(ref _exploredDrawingBrush, value); }
-        //}
-        //public DrawingBrush RevealedOpacityMask
-        //{
-        //    get { return _revealedDrawingBrush; }
-        //    set { this.RaiseAndSetIfChanged(ref _revealedDrawingBrush, value); }
-        //}
-        //public DrawingBrush VisibleOpacityMask
-        //{
-        //    get { return _visibleDrawingBrush; }
-        //    set { this.RaiseAndSetIfChanged(ref _visibleDrawingBrush, value); }
-        //}
+        
         public ObservableCollection<LevelCanvasShape> Auras { get; set; }
         public ObservableCollection<LevelCanvasImage> Doodads { get; set; }
         public ObservableCollection<LevelCanvasImage> Items { get; set; }
@@ -136,17 +95,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             // Re-draw the layout layers
             this.VisibleLayer = new DrawingImage[_scenarioUIService.LevelWidth, _scenarioUIService.LevelHeight];
-            this.RenderingMask = new GeometryDrawing[_scenarioUIService.LevelWidth, _scenarioUIService.LevelHeight];
-            //this.ExploredLayer = new DrawingImage[_scenarioUIService.LevelWidth, _scenarioUIService.LevelHeight];
-            //this.RevealedLayer = new DrawingImage[_scenarioUIService.LevelWidth, _scenarioUIService.LevelHeight];
 
             // Create DrawingImage instances from the resource cache
             //
             _scenarioUIService.CreateLayoutDrawings(this.VisibleLayer, /*this.ExploredLayer*/ null, /*this.RevealedLayer*/ null);
 
             OnPropertyChanged(() => this.VisibleLayer);
-            //OnPropertyChanged(() => this.ExploredLayer);
-            //OnPropertyChanged(() => this.RevealedLayer);
 
             OnLevelDimensionChange();
 
@@ -253,38 +207,20 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                                            IEnumerable<GridLocation> visibleLocations,
                                            IEnumerable<GridLocation> revealedLocations)
         {
-            _scenarioUIService.CreateRenderingMask(this.RenderingMask);
+            var visibleGeometry = _scenarioUIService.CreateOutlineGeometry(visibleLocations);
+
+            // FREEZE TO BOOST RENDERING PERFORMANCE
+            visibleGeometry.Freeze();
+
+            // Top Layer = Visible Mask ^ Explored Mask ^ Revealed Mask
+            this.VisibileOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
+                                                                     new Pen(Brushes.Transparent, 0),
+                                                                     visibleGeometry);
+
+            OnPropertyChanged(() => this.VisibileOpacityMask);
 
             if (this.VisibilityUpdated != null)
                 this.VisibilityUpdated();
-
-            //var exploredGeometry = _scenarioUIService.CreateOutlineGeometry(exploredLocations);
-            //var visibleGeometry = _scenarioUIService.CreateOutlineGeometry(visibleLocations);
-            //var revealedGeometry = _scenarioUIService.CreateOutlineGeometry(revealedLocations);
-
-            //// FREEZE TO BOOST RENDERING PERFORMANCE
-            //exploredGeometry.Freeze();
-            //visibleGeometry.Freeze();
-            //revealedGeometry.Freeze();
-
-            //// Top Layer = Visible Mask ^ Explored Mask ^ Revealed Mask
-            //this.VisibleOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
-            //                                                      new Pen(Brushes.Transparent, 0),
-            //                                                      visibleGeometry);
-
-            //// Middle Layer = Explored Geometry
-            //this.ExploredOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
-            //                                                       new Pen(Brushes.Transparent, 0),
-            //                                                       exploredGeometry);
-
-            //// Bottom Layer = Revealed Mask
-            //this.RevealedOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
-            //                                                       new Pen(Brushes.Transparent, 0),
-            //                                                       revealedGeometry);
-
-            //OnPropertyChanged(() => this.ExploredOpacityMask);
-            //OnPropertyChanged(() => this.VisibleOpacityMask);
-            //OnPropertyChanged(() => this.RevealedOpacityMask);
         }
         #endregion
 
@@ -320,13 +256,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             // Fix Drawing Brush Properties
             //
-            //this.ExploredOpacityMask.Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
-            //this.RevealedOpacityMask.Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
-            //this.VisibleOpacityMask.Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
-
-            //this.ExploredOpacityMask.Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
-            //this.RevealedOpacityMask.Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
-            //this.VisibleOpacityMask.Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+            this.VisibileOpacityMask.Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+            this.VisibileOpacityMask.Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
         }
         #endregion
 

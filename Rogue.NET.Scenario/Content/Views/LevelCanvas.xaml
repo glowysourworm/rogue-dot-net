@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
              xmlns:coreModel="clr-namespace:Rogue.NET.Core.Model;assembly=Rogue.NET.Core"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              Background="LightCoral">
     <UserControl.Resources>
@@ -31,12 +32,12 @@
                 <Grid>
                                       
                     <!-- Layout Layer -->
-                    <Image x:Name="LayoutImage"            
-                           HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch"     
-                           Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
-                           Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
-                    </Image>
+                    <region:RogueRegion HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"     
+                                        region:RogueRegionManager.DefaultViewType="{x:Type local:LevelLayoutImage}"
+                                        Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
+                                        Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
+                    </region:RogueRegion>
 
                     <!-- Auras -->
                     <ItemsControl x:Name="AuraItemsControl"
@@ -44,7 +45,7 @@
                                   DisplayMemberPath="Symbol"
                                   BorderBrush="Transparent" 
                                   BorderThickness="0"
-                                  OpacityMask="{Binding VisibleOpacityMask}"                                    
+                                  OpacityMask="{Binding VisibileOpacityMask}"                                    
                                   Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
                                   Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
                         <ItemsControl.ItemsPanel>
@@ -124,6 +125,7 @@
                     <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->
                     <ItemsControl x:Name="AnimationItemsControl"
                                   ItemsSource="{Binding Animations}" 
+                                  OpacityMask="{Binding VisibileOpacityMask}" 
                                   BorderBrush="Transparent" 
                                   BorderThickness="0"
                                   Width="{Binding LevelWidth}"

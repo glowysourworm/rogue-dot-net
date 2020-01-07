@@ -52,7 +52,6 @@ namespace Rogue.NET.Scenario.Content.Views
         ScaleTransform _scaleXform = new ScaleTransform(1, 1);
 
         const int SHIFT_AMOUNT = 60;
-        const int LAYOUT_BITMAP_DPI = 96;
         
 
         // Grid Location for storing and tracking mouse cursor
@@ -111,13 +110,6 @@ namespace Rogue.NET.Scenario.Content.Views
             {
                 this.LevelWidth = scenarioUIService.LevelUIWidth;
                 this.LevelHeight = scenarioUIService.LevelUIHeight;
-
-                RenderLayout();
-            };
-
-            _viewModel.VisibilityUpdated += () =>
-            {
-                RenderLayout();
             };
 
             // subscribe to event to center screen when level loaded
@@ -195,7 +187,6 @@ namespace Rogue.NET.Scenario.Content.Views
             _scaleXform.ScaleY = zoomFactor.Clip(1.0, 3.0);
 
             CenterOnLocation(_viewModel.Player.Location);
-            RenderLayout();
         }
 
         private void UpdateCursorLocation(GridLocation gridLocation)
@@ -243,45 +234,6 @@ namespace Rogue.NET.Scenario.Content.Views
             //this.MousePath.Visibility = Visibility.Visible;
         }
 
-        private void RenderLayout()
-        {
-            // Render layout layer to writeable bitmap
-            var layoutBitmap = new WriteableBitmap((int)(this.LevelWidth * _modelService.ZoomFactor),
-                                                   (int)(this.LevelHeight * _modelService.ZoomFactor),
-                                                   LAYOUT_BITMAP_DPI,
-                                                   LAYOUT_BITMAP_DPI,
-                                                   PixelFormats.Pbgra32, null);
-
-            using (var bitmapContext = layoutBitmap.GetBitmapContext())
-            {
-                _viewModel.VisibleLayer.Iterate((column, row) =>
-                {
-                    if (_viewModel.VisibleLayer[column, row] == null)
-                        return;
-
-                    // TODO: Only render the layout layer if nothing is on top
-                    //if (_modelService.Level.Content[column, row].Any())
-                    //    return;
-
-                    // Fetch bitmap from cache
-                    var bitmap = _scenarioBitmapSourceFactory.GetImageSource(_viewModel.VisibleLayer[column, row], _modelService.ZoomFactor);
-
-                    // Calculate the rectangle in which to render the image
-                    var renderRect = new Rect(column * ModelConstants.CellWidth * _modelService.ZoomFactor,
-                                              row * ModelConstants.CellHeight * _modelService.ZoomFactor,
-                                              ModelConstants.CellWidth * _modelService.ZoomFactor,
-                                              ModelConstants.CellHeight * _modelService.ZoomFactor);
-
-                    // Use WriteableBitmapEx extension method to overwrite pixels on the target
-                    bitmapContext.WriteableBitmap.Blit(renderRect,
-                                                       bitmap,
-                                                       new Rect(new Size(bitmap.Width, bitmap.Height)));
-                });
-            }
-
-            this.LayoutImage.Source = layoutBitmap;
-        }
-
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
@@ -289,8 +241,6 @@ namespace Rogue.NET.Scenario.Content.Views
             if (_viewModel != null)
             {
                 CenterOnLocation(_viewModel.Player.Location);
-
-                RenderLayout();
             }
         }
     }

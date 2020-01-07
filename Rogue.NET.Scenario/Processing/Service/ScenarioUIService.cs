@@ -375,12 +375,12 @@ namespace Rogue.NET.Scenario.Processing.Service
             return _animationSequenceCreator.CreateTargetingAnimation(_scenarioUIGeometryService.Cell2UI(location), fillColor, strokeColor);
         }
 
-        private Light CreateExploredLight(Light lighting)
+        public Light CreateExploredLight(Light lighting)
         {
             return new Light(lighting, 0.3);
         }
 
-        private Light CreateRevealedLight(Light lighting)
+        public Light CreateRevealedLight(Light lighting)
         {
             return new Light(lighting, 1.0);
         }
