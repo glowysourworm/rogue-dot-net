@@ -32,7 +32,10 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
                                   DrawingImage[,] exploredLayer,
                                   DrawingImage[,] revealedLayer);
 
+        void CreateRenderingMask(GeometryDrawing[,] renderingMask);
+
         Geometry CreateOutlineGeometry(IEnumerable<GridLocation> locations);
+        
 
         void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject, bool isMemorized);
         void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, CharacterBase character, Rect levelUIBounds);

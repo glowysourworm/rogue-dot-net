@@ -281,7 +281,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             return CalculateSearchLocation(character);
         }
 
-        public bool IsVisibleTo(IGridLocator location, NonPlayerCharacter character)
+        public bool IsVisibleTo(GridLocation location, NonPlayerCharacter character)
         {
             // ~ O(1)
             return _searchDict[character].IsVisible(_layoutGrid[location].Location);
@@ -294,6 +294,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         {
             // ~ O(1)
             return _contentVisibilityDict.ContainsKey(scenarioObject);
+        }
+
+        public bool IsVisible(GridLocation location)
+        {
+            return _visibleLocations.ContainsKey(location);
         }
 
         public IEnumerable<GridLocation> GetVisibleLocations(CharacterBase character)

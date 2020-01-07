@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Common.Constant;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
@@ -10,11 +9,11 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Model.Content.Calculator.Interface;
+using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
 using Rogue.NET.Scenario.Processing.Service.Interface;
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -28,6 +27,7 @@ namespace Rogue.NET.Scenario.Processing.Service
     public class ScenarioUIService : IScenarioUIService
     {
         readonly IScenarioUIGeometryService _scenarioUIGeometryService;
+        readonly IScenarioBitmapSourceFactory _scenarioBitmapSourceFactory;
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IAlterationCalculator _alterationCalculator;
         readonly IAnimationSequenceCreator _animationSequenceCreator;
@@ -47,12 +47,14 @@ namespace Rogue.NET.Scenario.Processing.Service
         [ImportingConstructor]
         public ScenarioUIService(
                 IScenarioUIGeometryService scenarioUIGeometryService,
+                IScenarioBitmapSourceFactory scenarioBitmapSourceFactory,
                 IScenarioResourceService scenarioResourceService,
                 IAlterationCalculator alterationCalculator,
                 IAnimationSequenceCreator animationSequenceCreator,
                 IModelService modelService)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
+            _scenarioBitmapSourceFactory = scenarioBitmapSourceFactory;
             _scenarioResourceService = scenarioResourceService;
             _alterationCalculator = alterationCalculator;
             _animationSequenceCreator = animationSequenceCreator;
@@ -70,12 +72,14 @@ namespace Rogue.NET.Scenario.Processing.Service
                 var cell = _modelService.Level.Grid[location.Column, location.Row];
 
                 var visibleLight = cell.BaseLight;
-                var exploredLight = CreateExploredLight(cell.BaseLight);
-                var revealedLight = CreateRevealedLight(cell.BaseLight);
+                //var exploredLight = CreateExploredLight(cell.BaseLight);
+                //var revealedLight = CreateRevealedLight(cell.BaseLight);
 
                 var isCorridor = _modelService.Level.Grid.CorridorMap[cell.Location.Column, cell.Location.Row] != null;
                 var terrainNames = _modelService.Level.Grid.TerrainMaps.Where(terrainMap => terrainMap[cell.Location.Column, cell.Location.Row] != null)
                                                                        .Select(terrainMap => terrainMap.Name);
+
+                DrawingImage cellImage = null;
 
                 // Terrain - Render using the terrain template
                 if (terrainNames.Any())
@@ -83,41 +87,114 @@ namespace Rogue.NET.Scenario.Processing.Service
                     // TODO:TERRAIN - HANDLE MULTIPLE LAYERS
                     var layer = layoutTemplate.TerrainLayers.First(terrain => terrain.Name == terrainNames.First());
 
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, visibleLight);
-                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, exploredLight);
-                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, revealedLight);
+                    cellImage = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, visibleLight);
+                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, exploredLight);
+                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layer.TerrainLayer.SymbolDetails, 1.0, revealedLight);
                 }
 
                 // Doors
                 else if (cell.IsDoor)
                 {
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, visibleLight);
-                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
-                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
+                    cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, visibleLight);
+                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
+                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
                 }
 
                 // Wall Lights
                 else if (cell.IsWallLight)
                 {
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, visibleLight);
-                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
-                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
+                    cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, visibleLight);
+                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, exploredLight);
+                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, revealedLight);
                 }
 
                 // Walls
                 else if (cell.IsWall)
                 {
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, visibleLight);
-                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, exploredLight);
-                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, revealedLight);
+                    cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, visibleLight);
+                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, exploredLight);
+                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, revealedLight);
                 }
 
                 // Walkable Cells
                 else
                 {
-                    visibleLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, visibleLight);
-                    exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, exploredLight);
-                    revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, revealedLight);
+                    cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, visibleLight);
+                    //exploredLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, exploredLight);
+                    //revealedLayer[cell.Column, cell.Row] = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, revealedLight);
+                }
+
+                //if (cellImage != null)
+                //{
+                    visibleLayer[cell.Column, cell.Row] = cellImage;
+                //}
+            }
+        }
+
+        public void CreateRenderingMask(GeometryDrawing[,] renderingMask)
+        {
+            var pen = new Pen(Brushes.Transparent, 0.0);
+            pen.Freeze();
+
+            var visibleBrush = new SolidColorBrush(Color.FromArgb(0x00, 0x00, 0x00, 0x00));
+            visibleBrush.Freeze();
+
+            var exploredBrush = new SolidColorBrush(Color.FromArgb(0x3F, 0x00, 0x00, 0x00));
+            exploredBrush.Freeze();
+
+            var revealedBrush = new SolidColorBrush(Color.FromArgb(0x3F, 0x0F, 0x03, 0x03));
+            revealedBrush.Freeze();
+
+            var opaqueBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
+            opaqueBrush.Freeze();
+
+            for (int i = 0; i < this.LevelWidth; i++)
+            {
+                for (int j = 0; j < this.LevelHeight; j++)
+                {
+                    if (_modelService.Level.Grid[i, j] == null)
+                        continue;
+
+                    var cell = _modelService.Level.Grid[i, j];
+
+                    var rectangle = new RectangleGeometry(_scenarioUIGeometryService.Cell2UIRect(cell.Location, false));
+                    rectangle.Freeze();
+
+                    // Visible
+                    if (_modelService.Level.Movement.IsVisible(cell.Location))
+                    {
+                        var drawing = new GeometryDrawing(visibleBrush, pen, rectangle);
+                        drawing.Freeze();
+
+                        renderingMask[i, j] = drawing;
+                    }
+
+                    // Explored
+                    else if (cell.IsExplored)
+                    {
+                        var drawing = new GeometryDrawing(exploredBrush, pen, rectangle);
+                        drawing.Freeze();
+
+                        renderingMask[i, j] = drawing;
+                    }
+
+                    // Revealed
+                    else if (cell.IsRevealed)
+                    {
+                        var drawing = new GeometryDrawing(revealedBrush, pen, rectangle);
+                        drawing.Freeze();
+
+                        renderingMask[i, j] = drawing;
+                    }
+
+                    // Unknown
+                    else
+                    {
+                        var drawing = new GeometryDrawing(opaqueBrush, pen, rectangle);
+                        drawing.Freeze();
+
+                        renderingMask[i, j] = drawing;
+                    }
                 }
             }
         }
@@ -130,7 +207,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             {
                 // Create an outline of the region by finding the edges
                 foreach (var location in locations)
-                { 
+                {
                     var rect = _scenarioUIGeometryService.Cell2UIRect(location, false);
                     stream.BeginFigure(rect.TopLeft, true, true);
                     stream.LineTo(rect.TopRight, true, false);

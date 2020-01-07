@@ -19,12 +19,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
     public interface ILevelCanvasViewModel : INotifyPropertyChanged
     {
         DrawingImage[,] VisibleLayer { get; set; }
-        DrawingImage[,] ExploredLayer { get; set; }
-        DrawingImage[,] RevealedLayer { get; set; }
+        GeometryDrawing[,] RenderingMask { get; set; }
+        //DrawingImage[,] ExploredLayer { get; set; }
+        //DrawingImage[,] RevealedLayer { get; set; }
 
-        DrawingBrush ExploredOpacityMask { get; set; }
-        DrawingBrush RevealedOpacityMask { get; set; }
-        DrawingBrush VisibleOpacityMask { get; set; }
+        //DrawingBrush ExploredOpacityMask { get; set; }
+        //DrawingBrush RevealedOpacityMask { get; set; }
+        //DrawingBrush VisibleOpacityMask { get; set; }
 
         /// <summary>
         /// Layer of Visuals for the Auras
@@ -57,6 +58,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
         LevelCanvasImage Player { get; set; }
 
         event SimpleEventHandler LayoutUpdated;
+        event SimpleEventHandler VisibilityUpdated;
 
         void UpdateLayout();
         void UpdateContent(IEnumerable<ScenarioObject> content, IEnumerable<ScenarioObject> memorizedContent, Player player);

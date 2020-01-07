@@ -30,63 +30,23 @@
 
                 <Grid>
                                       
-                    <!-- Revealed Layer -->
-                    <local:LevelCanvasGridLayer
-                              x:Name="RevealedCanvas"
-                              Background="Transparent"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"                              
-                              OpacityMask="{Binding RevealedOpacityMask}"
-                              RenderOptions.BitmapScalingMode="LowQuality"
-                              SnapsToDevicePixels="False"
-                              Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
-                              Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
-                        <Canvas.CacheMode>
-                            <BitmapCache RenderOptions.BitmapScalingMode="LowQuality" EnableClearType="False" SnapsToDevicePixels="False" RenderAtScale="3" />
-                        </Canvas.CacheMode>
-                    </local:LevelCanvasGridLayer>
-
-                    <!-- Explored Layer -->
-                    <local:LevelCanvasGridLayer   
-                              x:Name="ExploredCanvas"            
-                              Background="Transparent"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              OpacityMask="{Binding ExploredOpacityMask}"  
-                              RenderOptions.BitmapScalingMode="LowQuality"
-                              SnapsToDevicePixels="False"
-                              Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
-                              Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
-                        <Canvas.CacheMode>
-                            <BitmapCache RenderOptions.BitmapScalingMode="LowQuality" EnableClearType="False" SnapsToDevicePixels="False" RenderAtScale="3" />
-                        </Canvas.CacheMode>                        
-                    </local:LevelCanvasGridLayer>
-
-                    <!-- Visible Layer -->
-                    <local:LevelCanvasGridLayer   
-                              x:Name="VisibleCanvas"            
-                              Background="Transparent"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              OpacityMask="{Binding VisibleOpacityMask}"      
-                              RenderOptions.BitmapScalingMode="LowQuality"
-                              SnapsToDevicePixels="False"
-                              Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
-                              Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
-                        <Canvas.CacheMode>
-                            <BitmapCache RenderOptions.BitmapScalingMode="LowQuality" EnableClearType="False" SnapsToDevicePixels="False" RenderAtScale="3" />
-                        </Canvas.CacheMode>
-                    </local:LevelCanvasGridLayer>
+                    <!-- Layout Layer -->
+                    <Image x:Name="LayoutImage"            
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"     
+                           Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
+                           Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
+                    </Image>
 
                     <!-- Auras -->
                     <ItemsControl x:Name="AuraItemsControl"
-                              ItemsSource="{Binding Auras}" 
-                              DisplayMemberPath="Symbol"
-                              BorderBrush="Transparent" 
-                              BorderThickness="0"
-                              OpacityMask="{Binding VisibleOpacityMask}"                                    
-                              Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
-                              Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
+                                  ItemsSource="{Binding Auras}" 
+                                  DisplayMemberPath="Symbol"
+                                  BorderBrush="Transparent" 
+                                  BorderThickness="0"
+                                  OpacityMask="{Binding VisibleOpacityMask}"                                    
+                                  Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
+                                  Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas ClipToBounds="False" />
@@ -96,11 +56,11 @@
 
                     <!-- Doodads -->
                     <ItemsControl x:Name="DoodadItemsControl"
-                              ItemsSource="{Binding Doodads}" 
-                              BorderBrush="Transparent" 
-                              BorderThickness="0"
-                              Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
-                              Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
+                                  ItemsSource="{Binding Doodads}" 
+                                  BorderBrush="Transparent" 
+                                  BorderThickness="0"
+                                  Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
+                                  Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas ClipToBounds="False" />
@@ -110,11 +70,11 @@
 
                     <!-- Items -->
                     <ItemsControl x:Name="ItemItemsControl"
-                      ItemsSource="{Binding Items}" 
-                      BorderBrush="Transparent" 
-                      BorderThickness="0"
-                      Width="{Binding LevelWidth}"
-                      Height="{Binding LevelHeight}">
+                                  ItemsSource="{Binding Items}" 
+                                  BorderBrush="Transparent" 
+                                  BorderThickness="0"
+                                  Width="{Binding LevelWidth}"
+                                  Height="{Binding LevelHeight}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas ClipToBounds="False" />
@@ -124,11 +84,11 @@
 
                     <!-- Characters (Except Player) -->
                     <ItemsControl x:Name="CharacterItemsControl"
-                      ItemsSource="{Binding Characters}" 
-                      BorderBrush="Transparent" 
-                      BorderThickness="0"
-                      Width="{Binding LevelWidth}"
-                      Height="{Binding LevelHeight}">
+                                  ItemsSource="{Binding Characters}" 
+                                  BorderBrush="Transparent" 
+                                  BorderThickness="0"
+                                  Width="{Binding LevelWidth}"
+                                  Height="{Binding LevelHeight}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas ClipToBounds="False" />
@@ -136,17 +96,6 @@
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
 
-                    <!-- Player -->
-                    <!--Canvas   x:Name="PlayerCanvas"           
-                              ClipToBounds="False"
-                              Background="Transparent"
-                              Width="{Binding LevelWidth}"
-                              Height="{Binding LevelHeight}">
-                        <ContentPresenter Canvas.Left="{Binding Player.Location.X}"
-                                      Canvas.Top="{Binding Player.Location.Y}"
-                                      Content="{Binding Player}" />
-                    </-->
-                    
                     <!-- Mouse-Grid Interaction -->
                     <Canvas x:Name="MouseCanvas"
                             ClipToBounds="False"
@@ -174,11 +123,11 @@
                     <!-- Animations -->
                     <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->
                     <ItemsControl x:Name="AnimationItemsControl"
-                      ItemsSource="{Binding Animations}" 
-                      BorderBrush="Transparent" 
-                      BorderThickness="0"
-                      Width="{Binding LevelWidth}"
-                      Height="{Binding LevelHeight}">
+                                  ItemsSource="{Binding Animations}" 
+                                  BorderBrush="Transparent" 
+                                  BorderThickness="0"
+                                  Width="{Binding LevelWidth}"
+                                  Height="{Binding LevelHeight}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Canvas ClipToBounds="False" />

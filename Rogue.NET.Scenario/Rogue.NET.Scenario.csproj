@@ -131,6 +131,9 @@
       <HintPath>..\packages\Wpg.1.0.20150225.1\lib\Net\WPG.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WriteableBitmapEx.Wpf, Version=1.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WriteableBitmapEx.1.6.3\lib\net40\WriteableBitmapEx.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock, Version=3.0.16174.17450, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
       <HintPath>..\packages\Xceed.Wpf.AvalonDock.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
       <Private>True</Private>
@@ -410,7 +413,7 @@
     <Compile Include="Content\Views\LevelCanvas.xaml.cs">
       <DependentUpon>LevelCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Views\LevelCanvasGridLayer.cs" />
+    <Compile Include="Content\Views\LevelCanvasGridMaskLayer.cs" />
     <Compile Include="Content\Views\LevelView.xaml.cs">
       <DependentUpon>LevelView.xaml</DependentUpon>
     </Compile>

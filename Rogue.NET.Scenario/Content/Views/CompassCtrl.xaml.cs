@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
@@ -28,7 +29,6 @@ namespace Rogue.NET.Scenario.Content.Views
     [Export]
     public partial class CompassCtrl : UserControl
     {
-        double ZOOM_INCREMENT = 0.25;
         double MARKER_SIZE = 6.0D;
 
         List<Rectangle> _canvasPoints = new List<Rectangle>();
@@ -78,7 +78,8 @@ namespace Rogue.NET.Scenario.Content.Views
             this.ZoomInButton.Click += (sender, e) =>
             {
                 var oldFactor = modelService.ZoomFactor;
-                var newFactor = (modelService.ZoomFactor + ZOOM_INCREMENT).Clip(1.0, 3.0);
+                var newFactor = (modelService.ZoomFactor + ModelConstants.Settings.ZoomIncrement).Clip(ModelConstants.Settings.ZoomMin, 
+                                                                                                       ModelConstants.Settings.ZoomMax);
 
                 // SET MODEL SERVICE VALUE
                 modelService.ZoomFactor = newFactor;
@@ -92,7 +93,8 @@ namespace Rogue.NET.Scenario.Content.Views
             this.ZoomOutButton.Click += (sender, e) =>
             {
                 var oldFactor = modelService.ZoomFactor;
-                var newFactor = (modelService.ZoomFactor - ZOOM_INCREMENT).Clip(1.0, 3.0);
+                var newFactor = (modelService.ZoomFactor - ModelConstants.Settings.ZoomIncrement).Clip(ModelConstants.Settings.ZoomMin,
+                                                                                                       ModelConstants.Settings.ZoomMax);
 
                 // SET MODEL SERVICE VALUE
                 modelService.ZoomFactor = newFactor;

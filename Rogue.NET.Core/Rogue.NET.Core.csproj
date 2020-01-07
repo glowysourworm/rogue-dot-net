@@ -151,6 +151,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WriteableBitmapEx.Wpf, Version=1.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WriteableBitmapEx.1.6.3\lib\net40\WriteableBitmapEx.Wpf.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter\AttackAttribute\AttackAttributeNonZeroConverter.cs" />
@@ -297,8 +300,10 @@
     <Compile Include="Math\Algorithm\NoiseGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Finishing\WallFinisher.cs" />
     <Compile Include="Processing\Model\Generator\LightGenerator.cs" />
+    <Compile Include="Processing\Service\Cache\Interface\IScenarioBitmapSourceFactory.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioCache.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioConfigurationCache.cs" />
+    <Compile Include="Processing\Service\Cache\ScenarioBitmapSourceFactory.cs" />
     <Compile Include="Processing\Service\Cache\ScenarioCache.cs" />
     <Compile Include="Processing\Service\Cache\ScenarioConfigurationCache.cs" />
     <Compile Include="Model\ScenarioConfiguration\Abstract\SymbolPoolItemTemplate.cs" />

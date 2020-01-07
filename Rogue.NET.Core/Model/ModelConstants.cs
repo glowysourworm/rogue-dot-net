@@ -37,6 +37,13 @@ namespace Rogue.NET.Core.Model
             public const int EquipmentGenerationDefault = 2;
             public const int DoodadGenerationDefault = 2;
         }
+        public static class Settings
+        {
+            public const double ZoomMax = 3.0;
+            public const double ZoomMin = 1.0;
+            public const double ZoomDefault = 2.0;
+            public const double ZoomIncrement = 0.25;
+        }
         public static class FrontEnd
         {
             public static readonly Brush LevelBackground = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0x0F));
