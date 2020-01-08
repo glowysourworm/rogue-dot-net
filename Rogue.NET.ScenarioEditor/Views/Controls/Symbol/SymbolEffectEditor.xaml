@@ -5,6 +5,7 @@
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -48,7 +49,7 @@
                             </MultiBinding>
                         </Grid.Visibility>
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Preview" />
-                        <symbol:SymbolPreviewControl x:Name="SmileyPreviewControl" HorizontalAlignment="Right" />
+                        <coreView:SymbolPreviewControl x:Name="SmileyPreviewControl" HorizontalAlignment="Right" />
                     </Grid>
 
                     <!-- Smiley Expression Change -->
@@ -105,7 +106,7 @@
                             </MultiBinding>
                         </Grid.Visibility>
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Preview" />
-                        <symbol:SymbolPreviewControl x:Name="CharacterPreviewControl" HorizontalAlignment="Right"  />
+                        <coreView:SymbolPreviewControl x:Name="CharacterPreviewControl" HorizontalAlignment="Right"  />
                     </Grid>
 
                     <!-- Character Change -->

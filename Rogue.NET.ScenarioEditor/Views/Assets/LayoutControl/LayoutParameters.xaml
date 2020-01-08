@@ -5,7 +5,7 @@
              xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
-             xmlns:control="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -77,14 +77,14 @@
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Cell Symbol" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <symbol:SymbolPreviewControl DataContext="{Binding CellSymbol}" />
+                            <coreView:SymbolPreviewControl DataContext="{Binding CellSymbol}" />
                             <Button x:Name="EditCellSymbolButton" Click="EditCellSymbolButton_Click" Content="Edit Symbol" Padding="6" FontSize="18" Margin="8,0,0,0" VerticalAlignment="Center" Cursor="Hand" />
                         </StackPanel>
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" Text="Wall Symbol" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <symbol:SymbolPreviewControl DataContext="{Binding WallSymbol}" />
+                            <coreView:SymbolPreviewControl DataContext="{Binding WallSymbol}" />
                             <Button x:Name="EditWallSymbolButton" Click="EditWallSymbolButton_Click" Content="Edit Symbol" Padding="6" FontSize="18" Margin="8,0,0,0" VerticalAlignment="Center" Cursor="Hand" />
                         </StackPanel>
                     </Grid>
@@ -97,7 +97,7 @@
                         </Grid.Visibility>
                         <TextBlock HorizontalAlignment="Left" FontSize="18" VerticalAlignment="Center" Foreground="White" Text="Door Symbol" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <symbol:SymbolPreviewControl DataContext="{Binding DoorSymbol}" />
+                            <coreView:SymbolPreviewControl DataContext="{Binding DoorSymbol}" />
                             <Button x:Name="EditDoorSymbolButton" Click="EditDoorSymbolButton_Click" Content="Edit Symbol" Padding="6" FontSize="18" Margin="8,0,0,0" Cursor="Hand" VerticalAlignment="Center" />
                         </StackPanel>
                     </Grid>

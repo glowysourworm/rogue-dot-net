@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.Symbol.SymbolControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:system="clr-namespace:System;assembly=mscorlib">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -10,33 +11,5 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Image  VerticalAlignment="Center" 
-            HorizontalAlignment="Center"
-            Height="30"
-            Width="20"
-            Stretch="None">
-        <Image.Source>
-            <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                <MultiBinding.ConverterParameter>
-                    <system:Double>2.0</system:Double>
-                </MultiBinding.ConverterParameter>
-                <Binding Path="CharacterColor" />
-                <Binding Path="CharacterSymbol" />
-                <Binding Path="CharacterSymbolCategory" />
-                <Binding Path="CharacterScale" />
-                <Binding Path="Symbol" />
-                <Binding Path="SymbolHue" />
-                <Binding Path="SymbolSaturation" />
-                <Binding Path="SymbolLightness" />
-                <Binding Path="SymbolScale" />
-                <Binding Path="SymbolUseColorMask" />
-                <Binding Path="SmileyExpression" />
-                <Binding Path="SmileyAuraColor" />
-                <Binding Path="SmileyBodyColor" />
-                <Binding Path="SmileyLineColor" />
-                <Binding Path="GameSymbol" />
-                <Binding Path="SymbolType" />
-            </MultiBinding>
-        </Image.Source>
-    </Image>
+    <coreView:SymbolPreviewControl Scale="2" VerticalAlignment="Center" HorizontalAlignment="Center" />
 </UserControl>

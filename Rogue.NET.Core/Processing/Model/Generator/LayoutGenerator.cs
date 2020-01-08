@@ -158,7 +158,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _wallFinisher.CreateDoors(container.Grid, container.BaseRegions, container.TerrainLayers);
 
             // Create Lighting
-            _lightingFinisher.CreateLighting(container.Grid, template);
+            _lightingFinisher.CreateLighting(container, template);
 
             // Identify final layout regions - INCLUDES ALL NON-EMPTY CELLS
             var regions = container.Grid.ConstructRegions(cell => true);

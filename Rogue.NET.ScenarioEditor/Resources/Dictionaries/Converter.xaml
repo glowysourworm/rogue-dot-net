@@ -10,7 +10,6 @@
     <scenarioEditorConverter:LightColorConverter x:Key="LightColorConverter" />
     <scenarioEditorConverter:LightColorStringConverter x:Key="LightColorStringConverter" />
     <scenarioEditorConverter:ScenarioAssetBrowserSelectionBackgroundConverter x:Key="ScenarioAssetBrowserSelectionBackgroundConverter" />
-    <scenarioEditorConverter:SymbolDetailsTemplateAuraToColorConverter x:Key="SymbolDetailsTemplateAuraToColorConverter" />
     <scenarioEditorConverter:SymbolEditorVisibilityConverter x:Key="SymbolEditorVisibilityConverter" />
     <scenarioEditorConverter:ValidationPassedConverter x:Key="ValidationPassedConverter" />
     <scenarioEditorConverter:ValidationPassedForegroundConverter x:Key="ValidationPassedForegroundConverter" />

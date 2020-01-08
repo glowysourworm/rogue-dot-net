@@ -192,8 +192,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     {
                         // Create the grid cell
                         _grid[i, j] = new GridCell(grid[i, j].Location, grid[i, j].IsWall, grid[i, j].IsWallLight,
-                                                   grid[i, j].IsDoor, grid[i, j].DoorSearchCounter, grid[i, j].BaseLight,
-                                                   grid[i, j].WallLight);
+                                                   grid[i, j].IsDoor, grid[i, j].DoorSearchCounter, grid[i, j].AmbientLight,
+                                                   grid[i, j].WallLight, grid[i, j].AccentLight, grid[i, j].TerrainLights);
                     }
                 }
             }

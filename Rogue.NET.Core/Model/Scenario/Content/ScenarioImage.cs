@@ -14,7 +14,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public SmileyExpression SmileyExpression { get; set; }
         public string SmileyBodyColor { get; set; }
         public string SmileyLineColor { get; set; }
-        public string SmileyLightRadiusColor { get; set; }
 
         //Character Details
         public string CharacterSymbol { get; set; }
@@ -97,7 +96,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 CharacterScale = characterScale
             };
         }
-        public static ScenarioImage CreateSmiley(string name, SmileyExpression expression, string smileyBodyColor, string smileyLineColor, string smileyLightRadiusColor)
+        public static ScenarioImage CreateSmiley(string name, SmileyExpression expression, string smileyBodyColor, string smileyLineColor)
         {
             return new ScenarioImage()
             {
@@ -105,7 +104,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 SymbolType = SymbolType.Smiley,
                 SmileyExpression = expression,
                 SmileyBodyColor= smileyBodyColor,
-                SmileyLightRadiusColor = smileyLightRadiusColor,
                 SmileyLineColor = smileyLineColor
             };
         }
@@ -121,7 +119,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.GameSymbol = template.GameSymbol;
             this.SmileyBodyColor = template.SmileyBodyColor;
             this.SmileyExpression = template.SmileyExpression;
-            this.SmileyLightRadiusColor = template.SmileyAuraColor;
             this.SmileyLineColor = template.SmileyLineColor;
             this.Symbol = template.Symbol;
             this.SymbolHue = template.SymbolHue;
@@ -146,7 +143,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             dest.GameSymbol = source.GameSymbol;
             dest.SmileyBodyColor = source.SmileyBodyColor;
             dest.SmileyExpression = source.SmileyExpression;
-            dest.SmileyLightRadiusColor = source.SmileyLightRadiusColor;
             dest.SmileyLineColor = source.SmileyLineColor;
             dest.Symbol = source.Symbol;
             dest.SymbolHue = source.SymbolHue;

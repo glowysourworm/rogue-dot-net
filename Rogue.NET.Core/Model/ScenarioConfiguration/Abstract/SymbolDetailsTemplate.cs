@@ -14,7 +14,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
-        private string _smileyAuraColor;
         private string _characterSymbol;
         private string _characterSymbolCategory;
         private string _characterColor;
@@ -96,18 +95,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 {
                     _smileyLineColor = value;
                     OnPropertyChanged("SmileyLineColor");
-                }
-            }
-        }
-        public string SmileyAuraColor
-        {
-            get { return _smileyAuraColor; }
-            set
-            {
-                if (_smileyAuraColor != value)
-                {
-                    _smileyAuraColor = value;
-                    OnPropertyChanged("SmileyAuraColor");
                 }
             }
         }
@@ -249,7 +236,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 
             this.SmileyExpression = SmileyExpression.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
-            this.SmileyAuraColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
 
             this.CharacterColor = Colors.White.ToString();

@@ -67,28 +67,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     
                     <!-- Symbol -->
-                    <Image HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Width="20">
-                        <Image.Source>
-                            <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                                <Binding Path="ActiveSkillSet.CharacterColor" />
-                                <Binding Path="ActiveSkillSet.CharacterSymbol" />
-                                <Binding Path="ActiveSkillSet.CharacterSymbolCategory" />
-                                <Binding Path="ActiveSkillSet.CharacterScale" />
-                                <Binding Path="ActiveSkillSet.Symbol" />
-                                <Binding Path="ActiveSkillSet.SymbolHue" />
-                                <Binding Path="ActiveSkillSet.SymbolSaturation" />
-                                <Binding Path="ActiveSkillSet.SymbolLightness" />
-                                <Binding Path="ActiveSkillSet.SymbolScale" />
-                                <Binding Path="ActiveSkillSet.SymbolUseColorMask" />
-                                <Binding Path="ActiveSkillSet.SmileyExpression" />
-                                <Binding Path="ActiveSkillSet.SmileyAuraColor" />
-                                <Binding Path="ActiveSkillSet.SmileyBodyColor" />
-                                <Binding Path="ActiveSkillSet.SmileyLineColor" />
-                                <Binding Path="ActiveSkillSet.GameSymbol" />
-                                <Binding Path="ActiveSkillSet.SymbolType" />
-                            </MultiBinding>
-                        </Image.Source>
-                    </Image>
+                    <coreView:SymbolPreviewControl DataContext="{Binding ActiveSkillSet}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Scale="1" />
 
                     <!-- Name / Selected Skill Name -->
                     <TextBlock FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,0,0,0" Foreground="White"

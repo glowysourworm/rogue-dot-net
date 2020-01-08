@@ -70,13 +70,16 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             };
         }
 
-        public static Light AddLight(Light light1, Light light2)
+        public static Light CombineLight(Light light1, Light light2)
         {
             return new Light()
             {
-                Red = (byte)(int)((light1.Red * light1.Intensity) + (light2.Red * light2.Intensity)).Clip(0, 255),
-                Green = (byte)(int)((light1.Green * light1.Intensity) + (light2.Green * light2.Intensity)).Clip(0, 255),
-                Blue = (byte)(int)((light1.Blue * light1.Intensity) + (light2.Blue * light2.Intensity)).Clip(0, 255),
+                // Color channels are weighted average of both lights
+                Red = (byte)(int)(((light1.Red * light1.Intensity) + (light2.Red * light2.Intensity)) / (light1.Intensity + light2.Intensity)).Clip(0, 255),
+                Green = (byte)(int)(((light1.Green * light1.Intensity) + (light2.Green * light2.Intensity)) / (light1.Intensity + light2.Intensity)).Clip(0, 255),
+                Blue = (byte)(int)(((light1.Blue * light1.Intensity) + (light2.Blue * light2.Intensity)) / (light1.Intensity + light2.Intensity)).Clip(0, 255),
+
+                // Intensity is addition of both - clipped at the ceiling
                 Intensity = (light1.Intensity + light2.Intensity).Clip(0, 1)
             };
         }
@@ -92,10 +95,20 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             //var green = baseColor.G + (((0xFF - baseColor.G) * (light.Green * light.Intensity)) / 255.0);
             //var blue = baseColor.B + (((0xFF - baseColor.B) * (light.Blue * light.Intensity)) / 255.0);
 
+            // Screening
+            //var red = 0xFF - (0xFF - baseColor.R) * (0xFF - light.Red);
+            //var green = 0xFF - (0xFF - baseColor.G) * (0xFF - light.Green);
+            //var blue = 0xFF - (0xFF - baseColor.B) * (0xFF - light.Blue);
+
             // Multiply (Shade)
-            var red = (baseColor.R * light.Red) / 255.0;
-            var green = (baseColor.G * light.Green) / 255.0;
-            var blue = (baseColor.B * light.Blue) / 255.0;
+            var red = (baseColor.R * (light.Red * light.Intensity)) / (255.0 * light.Intensity);
+            var green = (baseColor.G * (light.Green * light.Intensity)) / (255.0 * light.Intensity);
+            var blue = (baseColor.B * (light.Blue * light.Intensity)) / (255.0 * light.Intensity);
+
+            // Weighted Average
+            //var red = (baseColor.R + (light.Red * light.Intensity)) / (1 + light.Intensity);
+            //var green = (baseColor.G + (light.Green * light.Intensity)) / (1 + light.Intensity);
+            //var blue = (baseColor.B + (light.Blue * light.Intensity)) / (1 + light.Intensity);
 
             // Invent a "darkness" value that subtracts light to simulate darkening (NOTE*** Darkness scale is [-0.5, 0.5])
             var darkness = (1 - light.Intensity) / 2.0;
@@ -103,8 +116,10 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             // Create the color from the tinted value
             var color = Color.FromArgb(baseColor.A, (byte)(int)red, (byte)(int)green, (byte)(int)blue);
 
+            return color;
+
             // Create a darkened color from the tinted color
-            return ColorOperations.ShiftHSL(color, 0, 0, -1 * darkness);
+            // return ColorOperations.ShiftHSL(color, 0, 0, -1 * darkness);
         }
     }
 }

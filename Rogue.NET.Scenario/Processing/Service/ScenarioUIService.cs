@@ -169,8 +169,10 @@ namespace Rogue.NET.Scenario.Processing.Service
             var location = isMemorized ? _modelService.Level.MemorizedContent[scenarioObject] :
                                          _modelService.Level.Content[scenarioObject];
 
-            // Effective Lighting
-            var lighting = _modelService.Level.Grid[location].EffectiveLighting;
+            // Effective Lighting - TODO: SET UP EFFECTS PIPELINE FOR LIGHTING
+            //var lighting = _modelService.Level.Grid[location].EffectiveLighting;
+
+            var lighting = Light.White;
 
             // "Invisible" status
             var isCharacterInVisibleToPlayer = false;

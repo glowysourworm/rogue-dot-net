@@ -195,7 +195,6 @@ namespace Rogue.NET.Scenario.Content.Views
             scenarioImage.CharacterSymbolCategory = scenarioMetaData.CharacterSymbolCategory;
             scenarioImage.SmileyBodyColor = scenarioMetaData.SmileyBodyColor;
             scenarioImage.SmileyLineColor = scenarioMetaData.SmileyLineColor;
-            scenarioImage.SmileyAuraColor = scenarioMetaData.SmileyLightRadiusColor;
             scenarioImage.SmileyExpression = scenarioMetaData.SmileyExpression;
             scenarioImage.SymbolType = scenarioMetaData.SymbolType;
 

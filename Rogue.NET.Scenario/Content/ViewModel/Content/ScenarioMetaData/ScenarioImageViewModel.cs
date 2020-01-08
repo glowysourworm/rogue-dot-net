@@ -20,7 +20,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         SmileyExpression _smileyExpression;
         string _smileyBodyColor;
         string _smileyLineColor;
-        string _smileyAuraColor;
         string _symbol;
         double _symbolHue;
         double _symbolSaturation;
@@ -70,11 +69,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         {
             get { return _smileyLineColor; }
             set { this.RaiseAndSetIfChanged(ref _smileyLineColor, value); }
-        }
-        public string SmileyAuraColor
-        {
-            get { return _smileyAuraColor; }
-            set { this.RaiseAndSetIfChanged(ref _smileyAuraColor, value); }
         }
         public string Symbol
         {
@@ -126,7 +120,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.CharacterSymbolCategory = scenarioImage.CharacterSymbolCategory;
             this.CharacterScale = scenarioImage.CharacterScale;
 
-            this.SmileyAuraColor = scenarioImage.SmileyLightRadiusColor;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
             this.SmileyExpression = scenarioImage.SmileyExpression;
@@ -160,7 +153,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.CharacterSymbolCategory = symbolDetailsTemplate.CharacterSymbolCategory;
             this.CharacterScale = symbolDetailsTemplate.CharacterScale;
             
-            this.SmileyAuraColor = symbolDetailsTemplate.SmileyAuraColor;
             this.SmileyBodyColor = symbolDetailsTemplate.SmileyBodyColor;
             this.SmileyLineColor = symbolDetailsTemplate.SmileyLineColor;
             this.SmileyExpression = symbolDetailsTemplate.SmileyExpression;

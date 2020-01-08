@@ -41,7 +41,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 var characterPreviewSymbolDetails = new SymbolDetailsTemplateViewModel();
 
                 smileyPreviewSymbolDetails.SymbolType = SymbolType.Smiley;
-                smileyPreviewSymbolDetails.SmileyAuraColor = viewModel.SmileyLightRadiusColor ?? Colors.Yellow.ToString();
                 smileyPreviewSymbolDetails.SmileyBodyColor = viewModel.SmileyBodyColor ?? Colors.Yellow.ToString();
                 smileyPreviewSymbolDetails.SmileyExpression = viewModel.SmileyExpression;
                 smileyPreviewSymbolDetails.SmileyLineColor = viewModel.SmileyLineColor ?? Colors.Black.ToString();

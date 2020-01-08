@@ -56,12 +56,6 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                     return symbol;
                 }
 
-                //Aura
-                if (symbolChange.IsSmileyLightRadiusColorChange)
-                    symbol.SmileyLightRadiusColor = firstAlteration ?
-                                                symbolChange.SmileyLightRadiusColor :
-                                                ColorOperations.Add(symbol.SmileyLightRadiusColor, symbolChange.SmileyLightRadiusColor);
-
                 //Body
                 if (symbolChange.IsSmileyBodyColorChange)
                     symbol.SmileyBodyColor = firstAlteration ?

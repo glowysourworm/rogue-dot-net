@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign.SymbolRandomization"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:viewsControlsSymbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -62,7 +63,7 @@
                          Margin="0, 3">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <viewsControlsSymbol:SymbolPreviewControl />
+                            <coreView:SymbolPreviewControl />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.ItemsPanel>
@@ -90,7 +91,7 @@
                              Margin="0, 3">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <viewsControlsSymbol:SymbolPreviewControl />
+                                <coreView:SymbolPreviewControl />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                         <ListBox.ItemsPanel>

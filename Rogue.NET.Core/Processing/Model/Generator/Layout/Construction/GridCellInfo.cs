@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
@@ -28,20 +29,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         public bool IsWallLight { get; set; }
         public bool IsCorridor { get; set; }
         public int DoorSearchCounter { get; set; }
-        public Light BaseLight { get; set; }
+        public double AmbientLight { get; set; }
         public Light WallLight { get; set; }
+        public Light AccentLight { get; set; }
+        public List<Light> TerrainLights { get; set; }
 
         public GridCellInfo(GridLocation location)
         {
             this.Location = location;
-            this.BaseLight = new Light();
-            this.WallLight = new Light();
+            this.AccentLight = Light.None;
+            this.WallLight = Light.None;
+            this.TerrainLights = new List<Light>();
         }
         public GridCellInfo(int column, int row)
         {
             this.Location = new GridLocation(column, row);
-            this.BaseLight = new Light();
-            this.WallLight = new Light();
+            this.AccentLight = Light.None;
+            this.WallLight = Light.None;
+            this.TerrainLights = new List<Light>();
         }
 
         public override string ToString()

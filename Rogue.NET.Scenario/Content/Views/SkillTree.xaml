@@ -30,28 +30,7 @@
                         </Grid.ColumnDefinitions>
                         
                         <!-- Symbol -->
-                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Stretch="None">
-                            <Image.Source>
-                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                                    <Binding Path="CharacterColor" />
-                                    <Binding Path="CharacterSymbol" />
-                                    <Binding Path="CharacterSymbolCategory" />
-                                    <Binding Path="CharacterScale" />
-                                    <Binding Path="Symbol" />
-                                    <Binding Path="SymbolHue" />
-                                    <Binding Path="SymbolSaturation" />
-                                    <Binding Path="SymbolLightness" />
-                                    <Binding Path="SymbolScale" />
-                                    <Binding Path="SymbolUseColorMask" />
-                                    <Binding Path="SmileyExpression" />
-                                    <Binding Path="SmileyAuraColor" />
-                                    <Binding Path="SmileyBodyColor" />
-                                    <Binding Path="SmileyLineColor" />
-                                    <Binding Path="GameSymbol" />
-                                    <Binding Path="SymbolType" />
-                                </MultiBinding>
-                            </Image.Source>
-                        </Image>
+                        <coreView:SymbolPreviewControl HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Scale="2" />
 
                         <!-- Name / Selected Skill Name -->
                         <TextBlock Grid.Column="1" FontSize="18" Foreground="Tan" 
@@ -107,28 +86,8 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Symbol -->
-                        <Image HorizontalAlignment="Left" VerticalAlignment="Center" Stretch="None" Margin="4" DataContext="{Binding ElementName=SkillSetLB, Path=SelectedItem}">
-                            <Image.Source>
-                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                                    <Binding Path="CharacterColor" />
-                                    <Binding Path="CharacterSymbol" />
-                                    <Binding Path="CharacterSymbolCategory" />
-                                    <Binding Path="CharacterScale" />
-                                    <Binding Path="Symbol" />
-                                    <Binding Path="SymbolHue" />
-                                    <Binding Path="SymbolSaturation" />
-                                    <Binding Path="SymbolLightness" />
-                                    <Binding Path="SymbolScale" />
-                                    <Binding Path="SymbolUseColorMask" />
-                                    <Binding Path="SmileyExpression" />
-                                    <Binding Path="SmileyAuraColor" />
-                                    <Binding Path="SmileyBodyColor" />
-                                    <Binding Path="SmileyLineColor" />
-                                    <Binding Path="GameSymbol" />
-                                    <Binding Path="SymbolType" />
-                                </MultiBinding>
-                            </Image.Source>
-                        </Image>
+                        <coreView:SymbolPreviewControl HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Scale="2" 
+                                                       DataContext="{Binding ElementName=SkillSetLB, Path=SelectedItem}" />
 
                         <!-- Name / Selected Skill Name -->
                         <TextBlock Grid.Column="1" FontSize="18" Foreground="Tan" HorizontalAlignment="Left" 
@@ -415,28 +374,8 @@
                         </TextBlock>
                         <TextBlock FontSize="18" Visibility="{Binding HasCharacterClassRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                             <Run Text="Character Class Requirement: " Foreground="Tan" />
-                            <Image HorizontalAlignment="Left" VerticalAlignment="Center" Stretch="None" Margin="2">
-                                <Image.Source>
-                                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                                            <Binding Path="CharacterClass.CharacterColor" />
-                                            <Binding Path="CharacterClass.CharacterSymbol" />
-                                            <Binding Path="CharacterClass.CharacterSymbolCategory" />
-                                            <Binding Path="CharacterClass.CharacterScale" />
-                                            <Binding Path="CharacterClass.Symbol" />
-                                            <Binding Path="CharacterClass.SymbolHue" />
-                                            <Binding Path="CharacterClass.SymbolSaturation" />
-                                            <Binding Path="CharacterClass.SymbolLightness" />
-                                            <Binding Path="CharacterClass.SymbolScale" />
-                                            <Binding Path="CharacterClass.SymbolUseColorMask" />
-                                            <Binding Path="CharacterClass.SmileyExpression" />
-                                            <Binding Path="CharacterClass.SmileyAuraColor" />
-                                            <Binding Path="CharacterClass.SmileyBodyColor" />
-                                            <Binding Path="CharacterClass.SmileyLineColor" />
-                                            <Binding Path="CharacterClass.GameSymbol" />
-                                            <Binding Path="CharacterClass.SymbolType" />
-                                    </MultiBinding>
-                                </Image.Source>
-                            </Image>                            
+                            <coreView:SymbolPreviewControl HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Scale="1" 
+                                                           DataContext="{Binding CharacterClass}" />                            
                             <Run Text="{Binding CharacterClass.DisplayName}" Foreground="{Binding IsCharacterClassRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                         </TextBlock>                        
                     </StackPanel>

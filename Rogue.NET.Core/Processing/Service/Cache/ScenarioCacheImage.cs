@@ -15,7 +15,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         public SmileyExpression SmileyExpression { get; set; }
         public string SmileyBodyColor { get; set; }
         public string SmileyLineColor { get; set; }
-        public string SmileyAuraColor { get; set; }
         public string CharacterSymbol { get; set; }
         public string CharacterSymbolCategory { get; set; }
         public string CharacterColor { get; set; }
@@ -54,7 +53,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                        image.LightIntensity == this.LightIntensity &&
                        image.LightRed == this.LightRed &&
                        image.Scale == this.Scale &&
-                       image.SmileyAuraColor == this.SmileyAuraColor &&
                        image.SmileyBodyColor == this.SmileyBodyColor &&
                        image.SmileyExpression == this.SmileyExpression &&
                        image.SmileyLineColor == this.SmileyLineColor &&
@@ -77,7 +75,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                    this.SmileyExpression.GetHashCode() +
                    this.SmileyBodyColor?.GetHashCode() ?? 0 +
                    this.SmileyLineColor?.GetHashCode() ?? 0 +
-                   this.SmileyAuraColor?.GetHashCode() ?? 0 +
                    this.CharacterSymbol?.GetHashCode() ?? 0 +
                    this.CharacterSymbolCategory?.GetHashCode() ?? 0+
                    this.CharacterColor?.GetHashCode() ?? 0 +
@@ -104,7 +101,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SmileyExpression = scenarioImage.SmileyExpression;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
-            this.SmileyAuraColor = scenarioImage.SmileyLightRadiusColor;
             this.CharacterColor = scenarioImage.CharacterColor;
             this.CharacterSymbol = scenarioImage.CharacterSymbol;
             this.CharacterSymbolCategory = scenarioImage.CharacterSymbolCategory;
@@ -136,7 +132,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SmileyExpression = symbolDetails.SmileyExpression;
             this.SmileyBodyColor = symbolDetails.SmileyBodyColor;
             this.SmileyLineColor = symbolDetails.SmileyLineColor;
-            this.SmileyAuraColor = symbolDetails.SmileyAuraColor;
             this.CharacterColor = symbolDetails.CharacterColor;
             this.CharacterSymbol = symbolDetails.CharacterSymbol;
             this.CharacterSymbolCategory = symbolDetails.CharacterSymbolCategory;

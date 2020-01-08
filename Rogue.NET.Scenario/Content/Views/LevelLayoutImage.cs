@@ -92,10 +92,13 @@ namespace Rogue.NET.Scenario.Content.Views
                             !cell.IsRevealed)
                             continue;
 
-                        var lighting = isVisible ? cell.EffectiveLighting :
-                                                   cell.IsRevealed ?
-                                                   _scenarioUIService.CreateRevealedLight(cell.BaseLight) :
-                                                   _scenarioUIService.CreateExploredLight(cell.BaseLight);
+                        // TODO: SET UP EFFECTS PIPELINE FOR LIGHTING
+                        //var lighting = isVisible ? cell.EffectiveLighting :
+                        //                           cell.IsRevealed ?
+                        //                           _scenarioUIService.CreateRevealedLight(cell.BaseLight) :
+                        //                           _scenarioUIService.CreateExploredLight(cell.BaseLight);
+
+                        var lighting = Light.White;
 
                         // Apply decreased intensity around the player
                         if (isVisible)

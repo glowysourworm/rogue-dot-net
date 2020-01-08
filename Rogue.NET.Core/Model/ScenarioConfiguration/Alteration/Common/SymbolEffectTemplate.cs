@@ -11,7 +11,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
-        private string _smileyLightRadiusColor;
         private string _characterSymbol;
         private string _characterSymbolCategory;
         private string _characterColor;
@@ -20,7 +19,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private bool _isSmileyExpressionChange;
         private bool _isSmileyBodyColorChange;
         private bool _isSmileyLineColorChange;
-        private bool _isSmileyLightRadiusColorChange;
         private bool _isCharacterSymbolChange;
         private bool _isCharacterColorChange;
         public SmileyExpression SmileyExpression
@@ -56,18 +54,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _smileyLineColor = value;
                     OnPropertyChanged("SmileyLineColor");
-                }
-            }
-        }
-        public string SmileyLightRadiusColor
-        {
-            get { return _smileyLightRadiusColor; }
-            set
-            {
-                if (_smileyLightRadiusColor != value)
-                {
-                    _smileyLightRadiusColor = value;
-                    OnPropertyChanged("SmileyLightRadiusColor");
                 }
             }
         }
@@ -155,18 +141,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public bool IsSmileyLightRadiusColorChange
-        {
-            get { return _isSmileyLightRadiusColorChange; }
-            set
-            {
-                if (_isSmileyLightRadiusColorChange != value)
-                {
-                    _isSmileyLightRadiusColorChange = value;
-                    OnPropertyChanged("IsSmileyLightRadiusColorChange");
-                }
-            }
-        }
         public bool IsCharacterSymbolChange
         {
             get { return _isCharacterSymbolChange; }
@@ -210,7 +184,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                    this.IsFullSymbolChange ||
                    this.IsSmileyBodyColorChange ||
                    this.IsSmileyExpressionChange ||
-                   this.IsSmileyLightRadiusColorChange ||
                    this.IsSmileyLineColorChange;
         }
         public SymbolEffectTemplate()
@@ -219,7 +192,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
             this.SmileyExpression = SmileyExpression.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
-            this.SmileyLightRadiusColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
 
             this.CharacterColor = Colors.White.ToString();

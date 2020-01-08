@@ -60,53 +60,11 @@
                                      Background="Black" BorderBrush="#AFFFFFFF">
 
                                 <!-- Activate Button Symbol -->
-                                <Image HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Width="20">
-                                    <Image.Source>
-                                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                                            <Binding Path="CharacterColor" />
-                                            <Binding Path="CharacterSymbol" />
-                                            <Binding Path="CharacterSymbolCategory" />
-                                            <Binding Path="CharacterScale" />
-                                            <Binding Path="Symbol" />
-                                            <Binding Path="SymbolHue" />
-                                            <Binding Path="SymbolSaturation" />
-                                            <Binding Path="SymbolLightness" />
-                                            <Binding Path="SymbolScale" />
-                                            <Binding Path="SymbolUseColorMask" />
-                                            <Binding Path="SmileyExpression" />
-                                            <Binding Path="SmileyAuraColor" />
-                                            <Binding Path="SmileyBodyColor" />
-                                            <Binding Path="SmileyLineColor" />
-                                            <Binding Path="GameSymbol" />
-                                            <Binding Path="SymbolType" />
-                                        </MultiBinding>
-                                    </Image.Source>
-                                </Image>
+                                <coreView:SymbolPreviewControl Scale="1" />
                             </RadioButton>
 
                             <!-- Skill Symbol (FOR SKILL WARNING) -->
-                            <Image x:Name="symbolImage" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="30">
-                                <Image.Source>
-                                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                                        <Binding Path="CharacterColor" />
-                                        <Binding Path="CharacterSymbol" />
-                                        <Binding Path="CharacterSymbolCategory" />
-                                        <Binding Path="CharacterScale" />
-                                        <Binding Path="Symbol" />
-                                        <Binding Path="SymbolHue" />
-                                        <Binding Path="SymbolSaturation" />
-                                        <Binding Path="SymbolLightness" />
-                                        <Binding Path="SymbolScale" />
-                                        <Binding Path="SymbolUseColorMask" />
-                                        <Binding Path="SmileyExpression" />
-                                        <Binding Path="SmileyAuraColor" />
-                                        <Binding Path="SmileyBodyColor" />
-                                        <Binding Path="SmileyLineColor" />
-                                        <Binding Path="GameSymbol" />
-                                        <Binding Path="SymbolType" />
-                                    </MultiBinding>
-                                </Image.Source>
-                            </Image>
+                            <coreView:SymbolPreviewControl x:Name="symbolImage" HorizontalAlignment="Left" VerticalAlignment="Center" Scale="2" />
 
                             <!-- Name / Selected Skill Name -->
                             <TextBlock x:Name="nameTextBlock" Grid.Column="1" FontSize="20"

@@ -42,7 +42,7 @@ namespace Rogue.NET.Core.Converter
         public ScenarioImage GetScenarioImage(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values == null ||
-                values.Length != 16 ||
+                values.Length != 15 ||
                 values.Any(x => x == DependencyProperty.UnsetValue))
                 return null;
 
@@ -58,7 +58,6 @@ namespace Rogue.NET.Core.Converter
                 <Binding Path="SymbolScale" />
                 <Binding Path="SymbolUseColorMask" />
                 <Binding Path="SmileyExpression" />
-                <Binding Path="SmileyAuraColor" />
                 <Binding Path="SmileyBodyColor" />
                 <Binding Path="SmileyLineColor" />
                 <Binding Path="GameSymbol" />
@@ -79,11 +78,10 @@ namespace Rogue.NET.Core.Converter
                 SymbolScale = (double)values[8],
                 SymbolUseColorMask = (bool)values[9],
                 SmileyExpression = (SmileyExpression)values[10],
-                SmileyLightRadiusColor = (string)values[11],
-                SmileyBodyColor = (string)values[12],
-                SmileyLineColor = (string)values[13],
-                GameSymbol = (string)values[14],
-                SymbolType = (SymbolType)values[15]
+                SmileyBodyColor = (string)values[11],
+                SmileyLineColor = (string)values[12],
+                GameSymbol = (string)values[13],
+                SymbolType = (SymbolType)values[14]
             };
 
             // Have to validate the symbol data per type (These should be set in the constructor; but there's too many 
@@ -94,7 +92,6 @@ namespace Rogue.NET.Core.Converter
             {
                 case SymbolType.Smiley:
                     if (string.IsNullOrEmpty(scenarioImage.SmileyBodyColor) ||
-                        string.IsNullOrEmpty(scenarioImage.SmileyLightRadiusColor) ||
                         string.IsNullOrEmpty(scenarioImage.SmileyLineColor))
                         return null;
                     break;

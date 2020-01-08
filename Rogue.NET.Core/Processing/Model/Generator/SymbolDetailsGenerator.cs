@@ -17,7 +17,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             dest.CharacterSymbol = source.CharacterSymbol;
             dest.CharacterSymbolCategory = source.CharacterSymbolCategory;
             dest.CharacterScale = source.CharacterScale;
-            dest.SmileyLightRadiusColor = source.SmileyAuraColor;
             dest.SmileyBodyColor = source.SmileyBodyColor;
             dest.SmileyLineColor = source.SmileyLineColor;
             dest.SmileyExpression = source.SmileyExpression;

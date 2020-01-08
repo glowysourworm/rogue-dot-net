@@ -497,7 +497,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.CharacterSymbol = symbol.CharacterSymbol;
             this.CharacterSymbolCategory = symbol.CharacterSymbolCategory;
             this.SmileyExpression = symbol.SmileyExpression;
-            this.SmileyAuraColor = symbol.SmileyLightRadiusColor;
             this.SmileyBodyColor = symbol.SmileyBodyColor;
             this.SmileyLineColor = symbol.SmileyLineColor;
             this.Symbol = symbol.Symbol;

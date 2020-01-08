@@ -166,10 +166,6 @@ namespace Rogue.NET.Core.Model.Enums
 
         [Display(Name = "Speckeled Natural Lighting",
                  Description = "Natural lighting generated using white noise")]
-        WhiteNoise = 2,
-
-        [Display(Name = "Wall Lighting",
-                 Description = "Point source lights emanating from random wall tiles")]
-        WallLighting = 3
+        WhiteNoise = 2
     }
 }

@@ -5,7 +5,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface
 {
     public interface ILightingFinisher
     {
-        void CreateLighting(GridCellInfo[,] grid, LayoutTemplate template);
+        void CreateLighting(LayoutContainer container, LayoutTemplate template);
 
         void CreateDefaultLighting(GridCellInfo[,] grid);
     }

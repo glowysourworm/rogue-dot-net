@@ -9,7 +9,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
-        private string _smileyLightRadiusColor;
         private string _characterSymbol;
         private string _characterSymbolCategory;
         private string _characterColor;
@@ -18,7 +17,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private bool _isSmileyExpressionChange;
         private bool _isSmileyBodyColorChange;
         private bool _isSmileyLineColorChange;
-        private bool _isSmileyLightRadiusColorChange;
         private bool _isCharacterSymbolChange;
         private bool _isCharacterColorChange;
         public SmileyExpression SmileyExpression
@@ -35,11 +33,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _smileyLineColor; }
             set { this.RaiseAndSetIfChanged(ref _smileyLineColor, value); }
-        }
-        public string SmileyLightRadiusColor
-        {
-            get { return _smileyLightRadiusColor; }
-            set { this.RaiseAndSetIfChanged(ref _smileyLightRadiusColor, value); }
         }
         public string CharacterSymbol
         {
@@ -76,11 +69,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _isSmileyLineColorChange; }
             set { this.RaiseAndSetIfChanged(ref _isSmileyLineColorChange, value); }
         }
-        public bool IsSmileyLightRadiusColorChange
-        {
-            get { return _isSmileyLightRadiusColorChange; }
-            set { this.RaiseAndSetIfChanged(ref _isSmileyLightRadiusColorChange, value); }
-        }
         public bool IsCharacterSymbolChange
         {
             get { return _isCharacterSymbolChange; }
@@ -102,7 +90,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
             this.SmileyExpression = SmileyExpression.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
-            this.SmileyLightRadiusColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
 
             this.CharacterColor = Colors.White.ToString();

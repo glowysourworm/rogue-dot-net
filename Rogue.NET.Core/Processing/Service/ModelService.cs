@@ -209,9 +209,6 @@ namespace Rogue.NET.Core.Processing.Service
 
         public void UpdateVisibility()
         {
-            // Calculate effective lighting for each cell
-            this.Level.CalculateEffectiveLighting();
-
             // Apply blanket update for layout visibiltiy
             foreach (var character in this.Level.Content.NonPlayerCharacters)
                 this.Level.Movement.Update(character, this.Level.Content[character]);

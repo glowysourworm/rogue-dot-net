@@ -3460,5 +3460,9 @@ IMMEDIATE TODO'S:
 		
 	SYMBOLS REFACTORED:
 	
+		1) Remove "Smiley Light Radius" -> Create "Player Accent Color" (or something like that) in the Player Template - Use for special UI (like the equipment screen!!!)
 		
+		2) Create "Alert Color" for Altered state. Something like "Red (for) Burning" - use to color the entire UI when something bad happens !!!
+		
+		3) Make sure that equipment items have a purpose - i.e. Orbs, Amulets, Rings all have DIFFERENT alteration support. Specific purposes (types of purposes).
 			

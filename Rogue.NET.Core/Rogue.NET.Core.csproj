@@ -722,6 +722,9 @@
     <Compile Include="View\Smiley.xaml.cs">
       <DependentUpon>Smiley.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SymbolPreviewControl.xaml.cs">
+      <DependentUpon>SymbolPreviewControl.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -747,6 +750,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Smiley.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SymbolPreviewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -533,15 +533,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             return locationsNear.Where(location => this.Movement.IsVisibleTo(location, character))
                                 .Actualize();
         }
-        
-        public void CalculateEffectiveLighting()
-        {
-            // For now, this calculation just copies the cell's lighting value to the effective value. This will
-            // soon be using all light sources in the calculation.
-            //
-            foreach (var location in this.Grid.FullMap.GetLocations())
-                this.Grid[location].EffectiveLighting = this.Grid[location].BaseLight;
-        }
         #endregion
     }
 }

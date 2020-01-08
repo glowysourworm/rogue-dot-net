@@ -33,8 +33,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private SymbolDetailsTemplate _wallSymbol;
         private SymbolDetailsTemplate _doorSymbol;
         private SymbolDetailsTemplate _cellSymbol;
-        private LightAmbientTemplate _lightingAmbient1;
-        private LightAmbientTemplate _lightingAmbient2;
+        private LightAmbientTemplate _accentLighting;
+        private LightTemplate _wallLight;
+        private double _wallLightIntensity;
+        private double _wallLightFillRatio;
+        private bool _hasWallLights;
         private double _lightingThreshold;
 
         public double WidthRatio
@@ -325,29 +328,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public LightAmbientTemplate LightingAmbient1
+        public LightAmbientTemplate AccentLighting
         {
-            get { return _lightingAmbient1; }
-            set
-            {
-                if (_lightingAmbient1 != value)
-                {
-                    _lightingAmbient1 = value;
-                    OnPropertyChanged("LightingAmbient1");
-                }
-            }
+            get { return _accentLighting; }
+            set { this.RaiseAndSetIfChanged(ref _accentLighting, value); }
         }
-        public LightAmbientTemplate LightingAmbient2
+        public LightTemplate WallLight
         {
-            get { return _lightingAmbient2; }
-            set
-            {
-                if (_lightingAmbient2 != value)
-                {
-                    _lightingAmbient2 = value;
-                    OnPropertyChanged("LightingAmbient2");
-                }
-            }
+            get { return _wallLight; }
+            set { this.RaiseAndSetIfChanged(ref _wallLight, value); }
+        }
+        public double WallLightIntensity
+        {
+            get { return _wallLightIntensity; }
+            set { this.RaiseAndSetIfChanged(ref _wallLightIntensity, value); }
+        }
+        public double WallLightFillRatio
+        {
+            get { return _wallLightFillRatio; }
+            set { this.RaiseAndSetIfChanged(ref _wallLightFillRatio, value); }
+        }
+        public bool HasWallLights
+        {
+            get { return _hasWallLights; }
+            set { this.RaiseAndSetIfChanged(ref _hasWallLights, value); }
         }
         public double LightingThreshold
         {
@@ -377,9 +381,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.DoorSymbol = new SymbolDetailsTemplate();
             this.CellSymbol = new SymbolDetailsTemplate();
 
-            this.LightingAmbient1 = new LightAmbientTemplate();
-            this.LightingAmbient2 = new LightAmbientTemplate();
             this.LightingThreshold = 1.0;
+            this.AccentLighting = new LightAmbientTemplate();
+            this.WallLight = new LightTemplate();
+            this.HasWallLights = false;
 
             this.TerrainLayers = new List<TerrainLayerGenerationTemplate>();
         }
