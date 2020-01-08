@@ -185,8 +185,8 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
                 Strength = player.StrengthBase,
                 PlayerPoints = playerPoints,
                 SkillPoints = player.SkillPoints,
-                SmileyColor = ColorFilter.Convert(player.SmileyBodyColor),
-                SmileyLineColor = ColorFilter.Convert(player.SmileyLineColor),
+                SmileyColor = ColorOperations.Convert(player.SmileyBodyColor),
+                SmileyLineColor = ColorOperations.Convert(player.SmileyLineColor),
                 SmileyExpression = player.SmileyExpression
             };
 

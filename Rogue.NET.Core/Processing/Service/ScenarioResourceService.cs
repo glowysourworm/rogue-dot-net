@@ -30,9 +30,6 @@ namespace Rogue.NET.Core.Processing.Service
         readonly ISvgCache _svgCache;
         readonly IScenarioImageSourceFactory _scenarioImageSourceFactory;
 
-        // Basic color cache
-        IEnumerable<ColorViewModel> _colors;
-
         public IEnumerable<string> EmbeddedConfigurations
         {
             get { return _scenarioConfigurationCache.EmbeddedConfigurations; }
@@ -53,12 +50,6 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioCache = scenarioCache;
             _svgCache = svgCache;
             _scenarioImageSourceFactory = scenarioImageSourceFactory;
-            _colors = ColorFilter.CreateColors();
-        }
-
-        public IEnumerable<ColorViewModel> GetColors()
-        {
-            return _colors;
         }
 
         public IEnumerable<string> GetScenarioNames()

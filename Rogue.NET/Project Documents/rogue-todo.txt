@@ -3457,4 +3457,8 @@ IMMEDIATE TODO'S:
 		
 		Reusing Dijsktra paths will be investigated also - as well as Garbage collector behavior. It may be better to prevent small object
 		collections during the same level (unless memory pressure is too great).
+		
+	SYMBOLS REFACTORED:
+	
+		
 			

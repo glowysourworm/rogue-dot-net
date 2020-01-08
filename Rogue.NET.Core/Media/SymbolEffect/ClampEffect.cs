@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect
 
         public ClampEffect(string color)
         {
-            this.Color = ColorFilter.Convert(color);
+            this.Color = Utility.ColorOperations.Convert(color);
         }
 
         public override Color ApplyFilter(Color inputColor)

@@ -296,10 +296,11 @@
     <Compile Include="Converter\AlterationEffectAuraVisibilityConverter.cs" />
     <Compile Include="Converter\BehaviorHeaderConverter.cs" />
     <Compile Include="Converter\BrushViewModelToBrushConverter.cs" />
+    <Compile Include="Converter\LightColorStringConverter.cs" />
+    <Compile Include="Converter\LightColorConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeMeleeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeSkillVisibilityConverter.cs" />
     <Compile Include="Converter\LayoutConnectionGeometryVisibilityConverter.cs" />
-    <Compile Include="Converter\LightColorStringConverter.cs" />
     <Compile Include="Converter\ScenarioAssetBrowserSelectionBackgroundConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
@@ -740,6 +741,9 @@
     </Compile>
     <Compile Include="Views\Constants\DesignMode.cs" />
     <Compile Include="Views\Constants\RegionNames.cs" />
+    <Compile Include="Views\Controls\LightComboBox.xaml.cs">
+      <DependentUpon>LightComboBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\NameControl.xaml.cs">
       <DependentUpon>NameControl.xaml</DependentUpon>
     </Compile>
@@ -806,9 +810,6 @@
     </Compile>
     <Compile Include="Views\Controls\Symbol\CharacterMap.xaml.cs">
       <DependentUpon>CharacterMap.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Controls\ColorComboBox.xaml.cs">
-      <DependentUpon>ColorComboBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
@@ -1210,6 +1211,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\LightComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Controls\NameControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1295,10 +1300,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Symbol\CharacterMap.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\ColorComboBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

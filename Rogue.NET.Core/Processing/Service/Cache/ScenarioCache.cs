@@ -97,8 +97,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             {
                 Name = scenario.Player.RogueName,
                 SmileyExpression = scenario.Player.SmileyExpression,
-                SmileyBodyColor = ColorFilter.Convert(scenario.Player.SmileyBodyColor),
-                SmileyLineColor = ColorFilter.Convert(scenario.Player.SmileyLineColor)
+                SmileyBodyColor = ColorOperations.Convert(scenario.Player.SmileyBodyColor),
+                SmileyLineColor = ColorOperations.Convert(scenario.Player.SmileyLineColor)
             });
         }
 

@@ -125,7 +125,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         light.Intensity = ScaleIntensity(_randomSequenceGenerator.GetRandomValue(template.IntensityRange));
 
                         // Blend the current light value with the new light
-                        grid[i, j].BaseLight = ColorFilter.AddLight(grid[i, j].BaseLight, light);
+                        grid[i, j].BaseLight = LightOperations.AddLight(grid[i, j].BaseLight, light);
                     }
                 }
             }
@@ -156,7 +156,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         light.Intensity = ScaleIntensity((subScaledValue * (template.IntensityRange.High - template.IntensityRange.Low)) + template.IntensityRange.Low);
 
                         // Add light to the grid
-                        grid[column, row].BaseLight = ColorFilter.AddLight(grid[column, row].BaseLight, light);
+                        grid[column, row].BaseLight = LightOperations.AddLight(grid[column, row].BaseLight, light);
                     }
                 }
 
@@ -199,7 +199,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         // Blend in the resulting light 
                         grid[i, j].WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
                         grid[i, j].IsWallLight = true;
-                        grid[i, j].BaseLight = ColorFilter.AddLight(grid[i, j].BaseLight,
+                        grid[i, j].BaseLight = LightOperations.AddLight(grid[i, j].BaseLight,
                                                                     new Light(light.Red, light.Green, light.Blue, wallLightIntensity));
 
                         wallLightFOV.Add(grid[i, j], new List<DistanceLocation>());
@@ -231,7 +231,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         continue;
 
                     // Add contribution to the effective lighting
-                    grid[cell.Location.Column, cell.Location.Row].BaseLight = ColorFilter.AddLight(grid[cell.Location.Column, cell.Location.Row].BaseLight,
+                    grid[cell.Location.Column, cell.Location.Row].BaseLight = LightOperations.AddLight(grid[cell.Location.Column, cell.Location.Row].BaseLight,
                                                                                                    new Light(wallLight.Red, wallLight.Green, wallLight.Blue, intensity));
                 }
             }

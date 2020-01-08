@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media.SymbolEffect;
+using Rogue.NET.Core.Media.SymbolEffect.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
@@ -26,13 +27,15 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         // the smiley control.
         //
         readonly ISvgCache _svgCache;
+        readonly ISymbolEffectFilter _symbolEffectFilter;
 
         IDictionary<ScenarioCacheImage, DrawingImage> _imageSourceCache;
 
         [ImportingConstructor]
-        public ScenarioImageSourceFactory(ISvgCache svgCache)
+        public ScenarioImageSourceFactory(ISvgCache svgCache, ISymbolEffectFilter symbolEffectFilter)
         {
             _svgCache = svgCache;
+            _symbolEffectFilter = symbolEffectFilter;
 
             _imageSourceCache = new Dictionary<ScenarioCacheImage, DrawingImage>();
         }
@@ -85,7 +88,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             if (source is DrawingImage)
             {
                 // Recurse drawing to desaturate colors
-                DrawingFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new HSLEffect(0, -1, 0, false));
+                _symbolEffectFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new HSLEffect(0, -1, 0, false));
 
                 // Cache the gray-scale image
                 _imageSourceCache[cacheImage] = source;
@@ -186,13 +189,13 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             var ctrl = new Smiley();
             ctrl.Width = ModelConstants.CellWidth * cacheImage.Scale;
             ctrl.Height = ModelConstants.CellHeight * cacheImage.Scale;
-            ctrl.SmileyColor = ColorFilter.AddLightingEffect((Color)ColorConverter.ConvertFromString(cacheImage.SmileyBodyColor), 
+            ctrl.SmileyColor = LightOperations.ApplyLightingEffect((Color)System.Windows.Media.ColorConverter.ConvertFromString(cacheImage.SmileyBodyColor), 
                                                                     new Light(cacheImage.LightRed,
                                                                               cacheImage.LightGreen,
                                                                               cacheImage.LightBlue,
                                                                               cacheImage.LightIntensity));
 
-            ctrl.SmileyLineColor = ColorFilter.AddLightingEffect((Color)ColorConverter.ConvertFromString(cacheImage.SmileyLineColor), 
+            ctrl.SmileyLineColor = LightOperations.ApplyLightingEffect((Color)System.Windows.Media.ColorConverter.ConvertFromString(cacheImage.SmileyLineColor), 
                                                                         new Light(cacheImage.LightRed,
                                                                                   cacheImage.LightGreen,
                                                                                   cacheImage.LightBlue,
@@ -246,7 +249,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
 
                         // Apply Coloring
-                        DrawingFilter.ApplyEffect(drawing, new ClampEffect(cacheImage.CharacterColor));
+                        _symbolEffectFilter.ApplyEffect(drawing, new ClampEffect(cacheImage.CharacterColor));
                     }
                     break;
                 case SymbolType.Symbol:
@@ -257,7 +260,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
 
                         // Apply HSL transform
-                        DrawingFilter.ApplyEffect(drawing, new HSLEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, cacheImage.SymbolUseColorMask));
+                        _symbolEffectFilter.ApplyEffect(drawing, new HSLEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, cacheImage.SymbolUseColorMask));
                     }
                     break;
             }
@@ -265,7 +268,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         private void ApplyLighting(DrawingGroup drawing, Light lighting)
         {
             // Apply alpha-blend lighting based on the provided color - for the whole drawing
-            DrawingFilter.ApplyEffect(drawing, new LightingEffect(lighting));
+            _symbolEffectFilter.ApplyEffect(drawing, new LightingEffect(lighting));
         }
         private Image CreateScaledImage(ImageSource source, double scale)
         {

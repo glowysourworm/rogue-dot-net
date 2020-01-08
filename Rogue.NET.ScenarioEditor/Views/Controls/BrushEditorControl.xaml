@@ -44,10 +44,7 @@
 
             <Grid Margin="8" Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static brushEnum:BrushType.Solid}}">
                 <TextBlock Text="Solid Color" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" />
-                <controls:ColorComboBox SelectedValue="{Binding SolidColor}"
-                                        SelectedValuePath="ColorString"
-                                        HorizontalAlignment="Right"
-                                        Width="200" />
+                <toolkit:ColorPicker Width="200" HorizontalAlignment="Right" SelectedColor="{Binding SolidColor, Delay=300, Converter={StaticResource StringColorConverter}, Mode=TwoWay}" />
             </Grid>
              
             <Grid Margin="8" Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityVisibleConverter}, ConverterParameter={x:Static brushEnum:BrushType.Solid}}">

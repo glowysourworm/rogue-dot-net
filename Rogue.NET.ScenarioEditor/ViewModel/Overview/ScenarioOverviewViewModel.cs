@@ -57,7 +57,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
                 return;
             }
 
-            var hueLimit = Math.PI * 2.0;
+            //var hueLimit = Math.PI * 2.0;
 
             for (int i=0;i<projectionSet.Count;i++)
             {
@@ -72,7 +72,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
                 var projection = projectionSet.GetProjection(i).Value;
                 var points = projection.Select(x => new ObservablePoint(x.Level, x.Mean));
 
-                lineSeries.Stroke = BrushFilter.ApplyFilter(Brushes.Red, new HSLEffect(i * (hueLimit / projectionSet.Count), 0, 0, false));
+                lineSeries.Stroke = Brushes.Red;
                 lineSeries.Values = new ChartValues<ObservablePoint>(points);
 
                 this.Series.Add(lineSeries);

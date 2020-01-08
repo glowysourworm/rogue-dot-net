@@ -22,7 +22,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
             switch (viewModel.Type)
             {
                 case BrushType.Solid:
-                    return new SolidColorBrush(ColorFilter.Convert(viewModel.SolidColor));
+                    return new SolidColorBrush(ColorOperations.Convert(viewModel.SolidColor));
                 case BrushType.Linear:
                     {
                         var brush = new LinearGradientBrush();
@@ -30,7 +30,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
                         brush.EndPoint = new Point(viewModel.GradientEndX, viewModel.GradientEndY);
 
                         foreach (var gradientStop in viewModel.GradientStops)
-                            brush.GradientStops.Add(new GradientStop(ColorFilter.Convert(gradientStop.GradientColor), 
+                            brush.GradientStops.Add(new GradientStop(ColorOperations.Convert(gradientStop.GradientColor), 
                                                                      gradientStop.GradientOffset));
 
                         return brush;
@@ -46,7 +46,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
                         brush.RadiusY = Math.Abs(radiusY);
 
                         foreach (var gradientStop in viewModel.GradientStops)
-                            brush.GradientStops.Add(new GradientStop(ColorFilter.Convert(gradientStop.GradientColor),
+                            brush.GradientStops.Add(new GradientStop(Core.Media.SymbolEffect.Utility.ColorOperations.Convert(gradientStop.GradientColor),
                                                                      gradientStop.GradientOffset));
 
                         return brush;

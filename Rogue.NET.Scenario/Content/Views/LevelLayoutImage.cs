@@ -2,7 +2,6 @@
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
@@ -10,12 +9,10 @@ using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
 using Rogue.NET.Scenario.Processing.Event.Content;
 using Rogue.NET.Scenario.Processing.Service.Interface;
-using System;
+
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -35,11 +32,11 @@ namespace Rogue.NET.Scenario.Content.Views
         const int LAYOUT_BITMAP_DPI = 96;
 
         [ImportingConstructor]
-        public LevelLayoutImage(IModelService modelService,                 
+        public LevelLayoutImage(IModelService modelService,
                                 ILevelCanvasViewModel levelCanvasViewModel,
                                 IScenarioUIService scenarioUIService,
                                 IRogueEventAggregator eventAggregator,
-                                IScenarioResourceService scenarioResourceService, 
+                                IScenarioResourceService scenarioResourceService,
                                 IScenarioBitmapSourceFactory scenarioBitmapSourceFactory)
         {
             _modelService = modelService;
@@ -87,6 +84,12 @@ namespace Rogue.NET.Scenario.Content.Views
 
                         // For visible cells - don't render the layout if there is anything on top
                         if (isVisible && _modelService.Level.Content[column, row].Any())
+                            continue;
+
+                        // Skip cells that aren't rendered
+                        if (!isVisible &&
+                            !cell.IsExplored &&
+                            !cell.IsRevealed)
                             continue;
 
                         var lighting = isVisible ? cell.EffectiveLighting :
@@ -141,7 +144,7 @@ namespace Rogue.NET.Scenario.Content.Views
                         // Render the DrawingImage to a bitmap (from cache) and copy pixels to the rendering target
                         var cellImages = terrainImages ?? new DrawingImage[] { cellImage };
 
-                        if (terrainImages != null || 
+                        if (terrainImages != null ||
                             cellImage != null)
                         {
                             // USE ALPHA BLENDING TO RENDER ALL LAYERS OF THE LAYOUT TOGETHER

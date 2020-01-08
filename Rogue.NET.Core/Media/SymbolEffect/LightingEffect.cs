@@ -20,7 +20,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect
 
         public override Color ApplyFilter(Color inputColor)
         {
-            return ColorFilter.AddLightingEffect(inputColor, this.Lighting);
+            return LightOperations.ApplyLightingEffect(inputColor, this.Lighting);
         }
     }
 }

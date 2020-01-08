@@ -210,6 +210,9 @@
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
     <Compile Include="IO\Compressed.cs" />
+    <Compile Include="Media\SymbolEffect\Interface\ISymbolEffectFilter.cs" />
+    <Compile Include="Media\SymbolEffect\SymbolEffectFilter.cs" />
+    <Compile Include="Media\SymbolEffect\Utility\LightOperations.cs" />
     <Compile Include="Model\Scenario\Content\Layout\ConnectedRegion.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\Interface\ISymmetricBuilder.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\SymmetricBuilder.cs" />
@@ -252,10 +255,8 @@
     <Compile Include="Media\SymbolEffect\LightingEffect.cs" />
     <Compile Include="Media\SymbolEffect\ClampEffect.cs" />
     <Compile Include="Media\SymbolEffect\HSLEffect.cs" />
-    <Compile Include="Media\SymbolEffect\Utility\DrawingFilter.cs" />
     <Compile Include="Media\SymbolEffect\SymbolEffectBase.cs" />
-    <Compile Include="Media\SymbolEffect\Utility\BrushFilter.cs" />
-    <Compile Include="Media\SymbolEffect\Utility\ColorFilter.cs" />
+    <Compile Include="Media\SymbolEffect\Utility\ColorOperations.cs" />
     <Compile Include="Math\Geometry\GraphEdge.cs" />
     <Compile Include="Math\Geometry\GridVector.cs" />
     <Compile Include="Model\Enums\Layout.cs" />

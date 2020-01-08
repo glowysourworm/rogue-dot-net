@@ -17,8 +17,6 @@ namespace Rogue.NET.Core.Processing.Service.Interface
     /// </summary>
     public interface IScenarioResourceService
     {
-        IEnumerable<ColorViewModel> GetColors();
-
         // IScenarioCache
         IEnumerable<string> GetScenarioNames();
         IEnumerable<ScenarioInfo> GetScenarioInfos();

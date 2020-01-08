@@ -47,7 +47,7 @@
                 <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Three layers of ambient lighting are provided to illuminate the layout and contents." />
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Light Color" />
-                    <controls:ColorComboBox SelectedValue="{Binding LightingAmbient1.Light, Converter={StaticResource LightColorStringConverter}}" Width="300" HorizontalAlignment="Right" />
+                    <controls:LightComboBox SelectedValue="{Binding LightingAmbient1.Light, Mode=TwoWay}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Fill Ratio" />
@@ -67,7 +67,7 @@
                 <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Three layers of ambient lighting are provided to illuminate the layout and contents." />
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Light Color" />
-                    <controls:ColorComboBox SelectedValue="{Binding LightingAmbient2.Light, Converter={StaticResource LightColorStringConverter}}" Width="300" HorizontalAlignment="Right" />
+                    <controls:LightComboBox SelectedValue="{Binding LightingAmbient2.Light, Mode=TwoWay}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Fill Ratio" />

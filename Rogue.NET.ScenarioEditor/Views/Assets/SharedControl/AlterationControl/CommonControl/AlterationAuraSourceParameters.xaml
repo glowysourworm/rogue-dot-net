@@ -6,7 +6,7 @@
     <StackPanel>
         <Grid Margin="10">
             <TextBlock Text="Aura Color" Foreground="White" FontSize="16" VerticalAlignment="Center" />
-            <controls:ColorComboBox SelectedValue="{Binding AuraColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+            <controls:LightComboBox SelectedValue="{Binding AuraColor, Mode=TwoWay, Converter={StaticResource LightColorStringConverter}}" Width="200" HorizontalAlignment="Right" />
         </Grid>
         <Grid Margin="10">
             <TextBlock Text="Aura Range" Foreground="White" FontSize="16" VerticalAlignment="Center" />

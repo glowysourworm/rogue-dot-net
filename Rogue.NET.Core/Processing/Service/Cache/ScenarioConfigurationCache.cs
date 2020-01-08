@@ -182,8 +182,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 // later; but have to handle auras / light radii / AND SYMBOL EFFECTS / etc.. for all symbol types
                 //
                 SmileyExpression = configuration.PlayerTemplates.First().SymbolDetails.SmileyExpression,
-                SmileyBodyColor = ColorFilter.Convert(configuration.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
-                SmileyLineColor = ColorFilter.Convert(configuration.PlayerTemplates.First().SymbolDetails.SmileyLineColor)
+                SmileyBodyColor = Media.SymbolEffect.Utility.ColorOperations.Convert(configuration.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
+                SmileyLineColor = Media.SymbolEffect.Utility.ColorOperations.Convert(configuration.PlayerTemplates.First().SymbolDetails.SmileyLineColor)
             });
         }
 
@@ -203,8 +203,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 // later; but have to handle auras / light radii / AND SYMBOL EFFECTS / etc.. for all symbol types
                 //
                 SmileyExpression = configuration.PlayerTemplates.First().SymbolDetails.SmileyExpression,
-                SmileyBodyColor = ColorFilter.Convert(configuration.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
-                SmileyLineColor = ColorFilter.Convert(configuration.PlayerTemplates.First().SymbolDetails.SmileyLineColor)
+                SmileyBodyColor = Media.SymbolEffect.Utility.ColorOperations.Convert(configuration.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
+                SmileyLineColor = Media.SymbolEffect.Utility.ColorOperations.Convert(configuration.PlayerTemplates.First().SymbolDetails.SmileyLineColor)
             });
         }
 

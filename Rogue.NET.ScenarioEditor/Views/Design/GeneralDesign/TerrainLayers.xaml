@@ -102,7 +102,7 @@
                     <Grid Margin="5"
                           Visibility="{Binding EmitsLight, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                         <TextBlock FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Emitted Light Color" />
-                        <controls:ColorComboBox SelectedValue="{Binding EmittedLight, Converter={StaticResource LightColorStringConverter}}" Width="300" HorizontalAlignment="Right" />
+                        <controls:LightComboBox SelectedValue="{Binding EmittedLight, Mode=TwoWay}" Width="300" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="5">
                         <controls:EnumFlagsControl Header="Terrain Masking Type" EnumType="{x:Type coreModelEnums:TerrainMaskingType}" EnumValue="{Binding MaskingType, Mode=TwoWay}" />

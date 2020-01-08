@@ -38,12 +38,12 @@ namespace Rogue.NET.Core.Media.SymbolEffect
         public override Color ApplyFilter(Color inputColor)
         {
             if (!this.UseColorMask)
-                return ColorFilter.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
+                return Utility.ColorOperations.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
 
             else
             {
                 if (inputColor == ColorMask)
-                    return ColorFilter.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
+                    return Utility.ColorOperations.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
 
                 else
                     return inputColor;

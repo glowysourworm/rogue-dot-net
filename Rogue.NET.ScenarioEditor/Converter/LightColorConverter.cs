@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 
 using System;
 using System.Globalization;
@@ -9,7 +8,7 @@ using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Converter
 {
-    public class LightColorStringConverter : IValueConverter
+    public class LightColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -19,7 +18,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
 
             var light = (LightTemplateViewModel)value;
 
-            return Color.FromArgb(1, light.Red, light.Green, light.Blue).ToString();
+            return Color.FromArgb(0xFF, light.Red, light.Green, light.Blue);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -28,7 +27,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
                 value == DependencyProperty.UnsetValue)
                 return Binding.DoNothing;
 
-            var color = ColorOperations.Convert(value.ToString());
+            var color = (Color)value;
 
             return new LightTemplateViewModel()
             {

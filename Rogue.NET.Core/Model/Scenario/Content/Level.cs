@@ -540,7 +540,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             // soon be using all light sources in the calculation.
             //
             foreach (var location in this.Grid.FullMap.GetLocations())
-                this.Grid[location].EffectiveLighting = ColorFilter.Discretize(this.Grid[location].BaseLight, ModelConstants.ColorChannelDiscretization);
+                this.Grid[location].EffectiveLighting = this.Grid[location].BaseLight;
         }
         #endregion
     }

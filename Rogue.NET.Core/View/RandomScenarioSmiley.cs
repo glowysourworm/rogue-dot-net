@@ -12,8 +12,8 @@ namespace Rogue.NET.Core.View
             var chosenSmileyFace = resourceService.GetRandomSmileyCharacter(true);
 
             // Set Traits from randomly picked character class
-            this.SmileyColor = ColorFilter.Convert(chosenSmileyFace.SmileyBodyColor);
-            this.SmileyLineColor = ColorFilter.Convert(chosenSmileyFace.SmileyLineColor);
+            this.SmileyColor = ColorOperations.Convert(chosenSmileyFace.SmileyBodyColor);
+            this.SmileyLineColor = ColorOperations.Convert(chosenSmileyFace.SmileyLineColor);
             this.SmileyExpression = chosenSmileyFace.SmileyExpression;
         }
     }

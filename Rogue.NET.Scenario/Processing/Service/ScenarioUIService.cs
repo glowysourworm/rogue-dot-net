@@ -263,8 +263,8 @@ namespace Rogue.NET.Scenario.Processing.Service
             var brush = new RadialGradientBrush(new GradientStopCollection(new GradientStop[]
             {
                 new GradientStop(Colors.Transparent, 0),
-                new GradientStop(ColorFilter.Convert(auraColor), .8),
-                new GradientStop(ColorFilter.Convert(auraColor), .9),
+                new GradientStop(ColorOperations.Convert(auraColor), .8),
+                new GradientStop(ColorOperations.Convert(auraColor), .9),
                 new GradientStop(Colors.Transparent, 1)
             }));
 

@@ -60,19 +60,19 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                 if (symbolChange.IsSmileyLightRadiusColorChange)
                     symbol.SmileyLightRadiusColor = firstAlteration ?
                                                 symbolChange.SmileyLightRadiusColor :
-                                                ColorFilter.Add(symbol.SmileyLightRadiusColor, symbolChange.SmileyLightRadiusColor);
+                                                ColorOperations.Add(symbol.SmileyLightRadiusColor, symbolChange.SmileyLightRadiusColor);
 
                 //Body
                 if (symbolChange.IsSmileyBodyColorChange)
                     symbol.SmileyBodyColor = firstAlteration ?
                                                 symbolChange.SmileyBodyColor :
-                                                ColorFilter.Add(symbol.SmileyBodyColor, symbolChange.SmileyBodyColor);
+                                                ColorOperations.Add(symbol.SmileyBodyColor, symbolChange.SmileyBodyColor);
 
                 //Line
                 if (symbolChange.IsSmileyLineColorChange)
                     symbol.SmileyLineColor = firstAlteration ?
                                                 symbolChange.SmileyLineColor :
-                                                ColorFilter.Add(symbol.SmileyLineColor, symbolChange.SmileyLineColor);
+                                                ColorOperations.Add(symbol.SmileyLineColor, symbolChange.SmileyLineColor);
 
                 //Expression
                 if (symbolChange.IsSmileyExpressionChange)
@@ -89,7 +89,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                 if (symbolChange.IsCharacterColorChange)
                     symbol.CharacterColor = firstAlteration ?
                                                 symbolChange.CharacterColor :
-                                                ColorFilter.Add(symbol.CharacterColor, symbolChange.CharacterColor);
+                                                ColorOperations.Add(symbol.CharacterColor, symbolChange.CharacterColor);
 
                 firstAlteration = false;
             }
