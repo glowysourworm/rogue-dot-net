@@ -56,9 +56,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
 
         void UpdateLayout();
         void UpdateContent(IEnumerable<ScenarioObject> content, IEnumerable<ScenarioObject> memorizedContent, Player player);
-        void UpdateLayoutVisibility(IEnumerable<GridLocation> exploredLocations,
-                                    IEnumerable<GridLocation> visibleLocations,
-                                    IEnumerable<GridLocation> revealedLocations);
+        void UpdateLayoutVisibility(IEnumerable<GridLocation> visibleLocations);
 
         Task PlayAnimationSeries(IAnimationPlayer animationPlayer);
         void PlayTargetAnimation(IAnimationPlayer targetAnimationPlayer);

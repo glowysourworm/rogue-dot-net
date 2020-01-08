@@ -24,7 +24,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
     {
         readonly LayoutGrid _layoutGrid;
         readonly ContentGrid _contentGrid;
-        
 
         // Character visibility calculations PER REGION (RE-CREATED EACH TIME CHARACTER ENTERS NEW REGION)
         Dictionary<NonPlayerCharacter, CharacterMovementPlanner> _searchDict;
@@ -37,8 +36,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         // Primary visibility information for the Player
         Dictionary<GridLocation, GridLocation> _visibleLocations;
-        Dictionary<GridLocation, GridLocation> _exploredLocations;
-        Dictionary<GridLocation, GridLocation> _revealedLocations;
 
         // Expose the primary grid boundary
         public RegionBoundary Boundary { get { return _layoutGrid.Bounds; } }
@@ -58,19 +55,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _pathFinderDict = new Dictionary<NonPlayerCharacter, DijkstraPathFinder>();
 
             _visibleLocations = new Dictionary<GridLocation, GridLocation>();
-            _exploredLocations = new Dictionary<GridLocation, GridLocation>();
-            _revealedLocations = new Dictionary<GridLocation, GridLocation>();
-
-            // Initialize Explored / Revealed locations
-            _exploredLocations = _layoutGrid.FullMap
-                                            .GetLocations()
-                                            .Where(x => _layoutGrid[x].IsExplored)
-                                            .ToDictionary(x => x, x => x);
-
-            _revealedLocations = _layoutGrid.FullMap
-                                            .GetLocations()
-                                            .Where(x => _layoutGrid[x].IsRevealed)
-                                            .ToDictionary(x => x, x => x);
         }
 
         public void Update(Player player, GridLocation playerLocation)
@@ -100,14 +84,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                     if (!_visibleLocations.ContainsKey(cell.Location))
                         _visibleLocations.Add(cell.Location, cell.Location);
 
-                    // Explored
-                    if (!_exploredLocations.ContainsKey(cell.Location))
-                        _exploredLocations.Add(cell.Location, cell.Location);
-
-                    // Revealed
-                    if (_revealedLocations.ContainsKey(cell.Location))
-                        _revealedLocations.Remove(cell.Location);
-
                     // Set content visibility
                     foreach (var content in _contentGrid[column, row])
                     {
@@ -116,12 +92,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                     }
                 }
             });
-
-            // TODO: REMOVE THIS 
-            _revealedLocations = _layoutGrid.FullMap
-                                            .GetLocations()
-                                            .Where(location => _layoutGrid[location].IsRevealed)
-                                            .ToDictionary(x => x, x => x);
         }
 
         public void Update(NonPlayerCharacter nonPlayerCharacter, GridLocation nonPlayerCharacterLocation)
@@ -328,16 +298,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         public IEnumerable<GridLocation> GetVisibleLocations()
         {
             return _visibleLocations.Values;
-        }
-
-        public IEnumerable<GridLocation> GetExploredLocations()
-        {
-            return _exploredLocations.Values;
-        }
-
-        public IEnumerable<GridLocation> GetRevealedLocations()
-        {
-            return _revealedLocations.Values;
         }
 
         private GridLocation CalculateSearchLocation(NonPlayerCharacter character)

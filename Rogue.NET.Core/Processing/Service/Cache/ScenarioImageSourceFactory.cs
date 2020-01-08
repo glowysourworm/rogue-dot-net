@@ -12,6 +12,7 @@ using Rogue.NET.Core.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -173,6 +174,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         foreach (var light in cacheImage.Lighting)
                             ApplyLighting(drawing, light);
 
+                        ApplyIntensity(drawing, cacheImage.Lighting.Max(light => light.Intensity));
+
                         // Create the image source
                         return new DrawingImage(drawing);
                     }
@@ -209,6 +212,9 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 smileyColor = LightOperations.ApplyLightingEffect(smileyColor, light);
                 smileyLineColor = LightOperations.ApplyLightingEffect(smileyLineColor, light);
             }
+
+            smileyColor = LightOperations.ApplyLightIntensity(smileyColor, cacheImage.Lighting.Max(light => light.Intensity));
+            smileyLineColor = LightOperations.ApplyLightIntensity(smileyLineColor, cacheImage.Lighting.Max(light => light.Intensity));
 
             ctrl.SmileyColor = smileyColor;
             ctrl.SmileyLineColor = smileyLineColor;
@@ -277,11 +283,17 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     break;
             }
         }
+
         private void ApplyLighting(DrawingGroup drawing, Light lighting)
         {
-            // Apply alpha-blend lighting based on the provided color - for the whole drawing
             _symbolEffectFilter.ApplyEffect(drawing, new LightingEffect(lighting));
         }
+
+        private void ApplyIntensity(DrawingGroup drawing, double intensity)
+        {
+            _symbolEffectFilter.ApplyEffect(drawing, new LightIntensityEffect(intensity));
+        }
+        
         private Image CreateScaledImage(ImageSource source, double scale)
         {
             // Return scaled image

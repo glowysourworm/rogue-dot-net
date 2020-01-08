@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -24,6 +25,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public byte Blue { get; set; }
         public double Intensity { get; set; }
 
+        public Color ToColor()
+        {
+            return Color.FromArgb(0xFF, this.Red, this.Green, this.Blue);
+        }
+
         public override int GetHashCode()
         {
             var hash = 17;
@@ -42,6 +48,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Green = 0x00;
             this.Blue = 0x00;
             this.Intensity = 0.0;
+        }
+        public Light(Color color, double intensity)
+        {
+            this.Red = color.R;
+            this.Green = color.G;
+            this.Blue = color.B;
+            this.Intensity = intensity;
         }
         public Light(Light light, double newIntensity)
         {

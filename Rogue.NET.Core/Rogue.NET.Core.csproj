@@ -210,7 +210,9 @@
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
     <Compile Include="IO\Compressed.cs" />
+    <Compile Include="Media\SymbolEffect\HslColor.cs" />
     <Compile Include="Media\SymbolEffect\Interface\ISymbolEffectFilter.cs" />
+    <Compile Include="Media\SymbolEffect\LightIntensityEffect.cs" />
     <Compile Include="Media\SymbolEffect\SymbolEffectFilter.cs" />
     <Compile Include="Media\SymbolEffect\Utility\LightOperations.cs" />
     <Compile Include="Model\Scenario\Content\Layout\ConnectedRegion.cs" />

@@ -199,9 +199,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// <summary>
         /// Draws visibility visual used as an opacity mask for the level
         /// </summary>
-        public void UpdateLayoutVisibility(IEnumerable<GridLocation> exploredLocations,
-                                           IEnumerable<GridLocation> visibleLocations,
-                                           IEnumerable<GridLocation> revealedLocations)
+        public void UpdateLayoutVisibility(IEnumerable<GridLocation> visibleLocations)
         {
             var visibleGeometry = _scenarioUIService.CreateOutlineGeometry(visibleLocations);
 

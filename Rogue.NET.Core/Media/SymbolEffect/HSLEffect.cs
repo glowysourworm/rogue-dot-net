@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+
 using System.Windows.Media;
 
 namespace Rogue.NET.Core.Media.SymbolEffect
@@ -38,12 +39,12 @@ namespace Rogue.NET.Core.Media.SymbolEffect
         public override Color ApplyFilter(Color inputColor)
         {
             if (!this.UseColorMask)
-                return Utility.ColorOperations.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
+                return ColorOperations.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
 
             else
             {
                 if (inputColor == ColorMask)
-                    return Utility.ColorOperations.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
+                    return ColorOperations.ShiftHSL(inputColor, this.Hue, this.Saturation, this.Lightness);
 
                 else
                     return inputColor;

@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
@@ -34,7 +35,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         const int WALL_LIGHT_SPACE_MINIMUM = 5;
 
         // Lighting constants
-        const double LIGHT_INTENSITY_THRESHOLD = 0.35;
         const double LIGHT_POWER_LAW = 0.75;
         const double LIGHT_FALLOFF_RADIUS = 2.0;
         const double LIGHT_PERLIN_FREQUENCY = 0.08;
@@ -196,24 +196,28 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
         private void CreateTerrainLighting(LayoutContainer container, LayoutTemplate template)
         {
-            container.Grid.Iterate((column, row) =>
+            foreach (var terrainLayer in template.TerrainLayers
+                                 .Where(layer => layer.TerrainLayer.EmitsLight)
+                                 .Select(layer => layer.TerrainLayer)
+                                 .Actualize())
             {
-                foreach (var terrainLayer in template.TerrainLayers
-                                     .Where(layer => layer.TerrainLayer.EmitsLight)
-                                     .Select(layer => layer.TerrainLayer)
-                                     .Actualize())
+
+                var light = _lightGenerator.GenerateLight(terrainLayer.EmittedLight);
+
+                container.Grid.Iterate((column, row) =>
                 {
-                    var layerInfo = container.TerrainLayers.FirstOrDefault(layer => layer[column, row] != null && 
-                                                                                    layer.LayerName == terrainLayer.Name);
+                    var layerInfo = container.TerrainLayers.FirstOrDefault(layer => layer[column, row] != null &&
+                                                                    layer.LayerName == terrainLayer.Name);
 
                     // Create point source light at this location
                     if (layerInfo != null)
-                        CreatePointSourceLighting(container.Grid, column, row, _lightGenerator.GenerateLight(terrainLayer.EmittedLight));
-                }
-            });
+                        CreatePointSourceLighting(container.Grid, column, row, light, true, layerInfo.LayerName);
+
+                });
+            }
         }
 
-        private void CreatePointSourceLighting(GridCellInfo[,] grid, int column, int row, Light light, bool terrainLight = false)
+        private void CreatePointSourceLighting(GridCellInfo[,] grid, int column, int row, Light light, bool terrainLight = false, string terrainName = null)
         {
             // Add to field of view
             VisibilityCalculator.CalculateVisibility(grid, grid[column, row].Location, (columnCallback, rowCallback, isVisible) =>
@@ -227,20 +231,34 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     var intensity = distance > LIGHT_FALLOFF_RADIUS ? (light.Intensity / System.Math.Pow(distance - LIGHT_FALLOFF_RADIUS, LIGHT_POWER_LAW))
                                                                     : light.Intensity;
 
+                    // Clip intensity to 1 for small distances
+                    intensity = intensity.Clip(0, 1);
+
+                    // var intensity = light.Intensity / System.Math.Pow(distance, LIGHT_POWER_LAW);
+
                     // Don't modify base lighting if the intensity is too low
-                    if (intensity < LIGHT_INTENSITY_THRESHOLD)
+                    if (intensity < ModelConstants.MinLightIntensity)
                         return;
 
                     var existingWallLight = grid[columnCallback, rowCallback].WallLight;
 
                     // Add contribution to the lighting
                     if (!terrainLight)
-                        grid[columnCallback, rowCallback].WallLight = existingWallLight == Light.None ? new Light(light, intensity) :
-                                                                                                        LightOperations.CombineLight(existingWallLight, light);
+                    {
+                        // Take the max of combined intensities for the cell
+                        grid[columnCallback, rowCallback].WallLight.Intensity = System.Math.Max(intensity, existingWallLight.Intensity);
+                    }
 
                     else
                     {
-                        grid[columnCallback, rowCallback].TerrainLights.Add(new Light(light, intensity));
+                        if (!cell.TerrainLights.ContainsKey(terrainName))
+                            cell.TerrainLights.Add(terrainName, new Light(light, intensity));
+
+                        else
+                        {
+                            // Take the max of combined intensities for the cell
+                            cell.TerrainLights[terrainName].Intensity = System.Math.Max(intensity, cell.TerrainLights[terrainName].Intensity);
+                        }
                     }
                 }
             });
@@ -266,7 +284,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         /// </summary>
         private double ScaleIntensity(double unitIntensity)
         {
-            return ((1 - LIGHT_INTENSITY_THRESHOLD) * unitIntensity) + LIGHT_INTENSITY_THRESHOLD;
+            return ((1 - ModelConstants.MinLightIntensity) * unitIntensity) + ModelConstants.MinLightIntensity;
         }
     }
 }

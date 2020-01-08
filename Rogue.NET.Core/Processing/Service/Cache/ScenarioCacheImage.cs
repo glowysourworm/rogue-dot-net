@@ -34,34 +34,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
 
-        //public override int GetHashCode()
-        //{
-        //    var hash = 17;
-
-        //    hash = (hash * 397) + this.Scale.GetHashCode();
-        //    hash = (hash * 397) + this.Type.GetHashCode();
-        //    hash = (hash * 397) + this.SmileyExpression.GetHashCode();
-        //    hash = (hash * 397) + this.SmileyBodyColor?.GetHashCode() ?? 0;
-        //    hash = (hash * 397) + this.SmileyLineColor?.GetHashCode() ?? 0;
-        //    hash = (hash * 397) + this.CharacterSymbol?.GetHashCode() ?? 0;
-        //    hash = (hash * 397) + this.CharacterSymbolCategory?.GetHashCode() ?? 0;
-        //    hash = (hash * 397) + this.CharacterColor?.GetHashCode() ?? 0;
-        //    hash = (hash * 397) + this.CharacterScale.GetHashCode();
-        //    hash = (hash * 397) + this.Symbol?.GetHashCode() ?? 0;
-        //    hash = (hash * 397) + this.SymbolHue.GetHashCode();
-        //    hash = (hash * 397) + this.SymbolSaturation.GetHashCode();
-        //    hash = (hash * 397) + this.SymbolLightness.GetHashCode();
-        //    hash = (hash * 397) + this.SymbolScale.GetHashCode();
-        //    hash = (hash * 397) + this.SymbolUseColorMask.GetHashCode();
-        //    hash = (hash * 397) + this.GameSymbol?.GetHashCode() ?? 0;
-        //    hash = (hash * 397) + this.IsGrayScale.GetHashCode();
-
-        //    for (int i=0;i<this.Lighting.Length;i++)
-        //        hash = (hash * 397) + this.Lighting[i].GetHashCode();
-                
-        //    return hash;
-        //}
-
         /// <summary>
         /// Creates a static hash key for the cache image properties
         /// </summary>

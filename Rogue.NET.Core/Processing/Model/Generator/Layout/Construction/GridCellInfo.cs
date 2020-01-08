@@ -32,7 +32,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         public Light AmbientLight { get; set; }
         public Light WallLight { get; set; }
         public Light AccentLight { get; set; }
-        public List<Light> TerrainLights { get; set; }
+        public Dictionary<string, Light> TerrainLights { get; set; }
 
         public GridCellInfo(GridLocation location)
         {
@@ -40,7 +40,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             this.AmbientLight = Light.White;
             this.AccentLight = Light.None;
             this.WallLight = Light.None;
-            this.TerrainLights = new List<Light>();
+            this.TerrainLights = new Dictionary<string, Light>();
         }
         public GridCellInfo(int column, int row)
         {
@@ -48,7 +48,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             this.AmbientLight = Light.White;
             this.AccentLight = Light.None;
             this.WallLight = Light.None;
-            this.TerrainLights = new List<Light>();
+            this.TerrainLights = new Dictionary<string, Light>();
         }
 
         public override string ToString()
