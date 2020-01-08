@@ -90,7 +90,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         continue;
 
                     // Set a white light threshold (to simulate white light)
-                    grid[i, j].AmbientLight = ScaleIntensity(template.LightingThreshold);
+                    grid[i, j].AmbientLight = new Light(Light.White, ScaleIntensity(template.LightingThreshold));
                 }
             }
         }
@@ -213,7 +213,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             });
         }
 
-        private void CreatePointSourceLighting(GridCellInfo[,] grid, int column, int row, Light light)
+        private void CreatePointSourceLighting(GridCellInfo[,] grid, int column, int row, Light light, bool terrainLight = false)
         {
             // Add to field of view
             VisibilityCalculator.CalculateVisibility(grid, grid[column, row].Location, (columnCallback, rowCallback, isVisible) =>
@@ -233,9 +233,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
                     var existingWallLight = grid[columnCallback, rowCallback].WallLight;
 
-                    // Add contribution to the effective lighting
-                    grid[columnCallback, rowCallback].WallLight = existingWallLight == Light.None ? new Light(light, intensity) :
-                                                                                                    LightOperations.CombineLight(existingWallLight, light);
+                    // Add contribution to the lighting
+                    if (!terrainLight)
+                        grid[columnCallback, rowCallback].WallLight = existingWallLight == Light.None ? new Light(light, intensity) :
+                                                                                                        LightOperations.CombineLight(existingWallLight, light);
+
+                    else
+                    {
+                        grid[columnCallback, rowCallback].TerrainLights.Add(new Light(light, intensity));
+                    }
                 }
             });
         }
@@ -250,7 +256,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         continue;
 
                     // Set a white light threshold (to simulate white light)
-                    grid[i, j].AmbientLight = 1;
+                    grid[i, j].AmbientLight = Light.White;
                 }
             }
         }

@@ -98,13 +98,12 @@ namespace Rogue.NET.Scenario.Content.Views
                         //                           _scenarioUIService.CreateRevealedLight(cell.BaseLight) :
                         //                           _scenarioUIService.CreateExploredLight(cell.BaseLight);
 
-                        var lighting = Light.White;
-
+                        // TODO
                         // Apply decreased intensity around the player
-                        if (isVisible)
-                        {
-                            lighting = CalculateVisibleIntensity(lighting, cell.Location, _modelService.PlayerLocation);
-                        }
+                        //if (isVisible)
+                        //{
+                        //    lighting = CalculateVisibleIntensity(lighting, cell.Location, _modelService.PlayerLocation);
+                        //}
 
                         DrawingImage cellImage = null;
                         IEnumerable<DrawingImage> terrainImages = null;
@@ -125,24 +124,24 @@ namespace Rogue.NET.Scenario.Content.Views
                                                                .Actualize();
 
                             // Fetch images for the terrain
-                            terrainImages = terrainSymbols.Select(symbol => _scenarioResourceService.GetImageSource(symbol, 1.0, lighting));
+                            terrainImages = terrainSymbols.Select(symbol => _scenarioResourceService.GetImageSource(symbol, 1.0, cell.Lights));
                         }
 
                         // Doors
                         else if (cell.IsDoor)
-                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, lighting);
+                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, cell.Lights);
 
                         // Wall Lights
                         else if (cell.IsWallLight)
-                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, lighting);
+                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, cell.Lights);
 
                         // Walls
                         else if (cell.IsWall)
-                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, lighting);
+                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, cell.Lights);
 
                         // Walkable Cells
                         else
-                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, lighting);
+                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, cell.Lights);
 
                         // Render the DrawingImage to a bitmap (from cache) and copy pixels to the rendering target
                         var cellImages = terrainImages ?? new DrawingImage[] { cellImage };

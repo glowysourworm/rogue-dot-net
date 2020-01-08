@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Service.Cache
 {
@@ -28,72 +29,88 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         public string GameSymbol { get; set; }
 
         // Lighting
-        public byte LightRed { get; set; }
-        public byte LightGreen { get; set; }
-        public byte LightBlue { get; set; }
-        public double LightIntensity { get; set; }
+        public Light[] Lighting { get; set; }
 
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
 
-        public override bool Equals(object obj)
+        //public override int GetHashCode()
+        //{
+        //    var hash = 17;
+
+        //    hash = (hash * 397) + this.Scale.GetHashCode();
+        //    hash = (hash * 397) + this.Type.GetHashCode();
+        //    hash = (hash * 397) + this.SmileyExpression.GetHashCode();
+        //    hash = (hash * 397) + this.SmileyBodyColor?.GetHashCode() ?? 0;
+        //    hash = (hash * 397) + this.SmileyLineColor?.GetHashCode() ?? 0;
+        //    hash = (hash * 397) + this.CharacterSymbol?.GetHashCode() ?? 0;
+        //    hash = (hash * 397) + this.CharacterSymbolCategory?.GetHashCode() ?? 0;
+        //    hash = (hash * 397) + this.CharacterColor?.GetHashCode() ?? 0;
+        //    hash = (hash * 397) + this.CharacterScale.GetHashCode();
+        //    hash = (hash * 397) + this.Symbol?.GetHashCode() ?? 0;
+        //    hash = (hash * 397) + this.SymbolHue.GetHashCode();
+        //    hash = (hash * 397) + this.SymbolSaturation.GetHashCode();
+        //    hash = (hash * 397) + this.SymbolLightness.GetHashCode();
+        //    hash = (hash * 397) + this.SymbolScale.GetHashCode();
+        //    hash = (hash * 397) + this.SymbolUseColorMask.GetHashCode();
+        //    hash = (hash * 397) + this.GameSymbol?.GetHashCode() ?? 0;
+        //    hash = (hash * 397) + this.IsGrayScale.GetHashCode();
+
+        //    for (int i=0;i<this.Lighting.Length;i++)
+        //        hash = (hash * 397) + this.Lighting[i].GetHashCode();
+                
+        //    return hash;
+        //}
+
+        /// <summary>
+        /// Creates a static hash key for the cache image properties
+        /// </summary>
+        public static int CreateHash(double scale, 
+                                     SymbolType type, 
+                                     SmileyExpression smileyExpression, 
+                                     string smileyBodyColor,
+                                     string smileyLineColor,
+                                     string characterSymbol,
+                                     string characterSymbolCategory,
+                                     string characterColor,
+                                     double characterScale,
+                                     string symbol,
+                                     double symbolHue,
+                                     double symbolSaturation,
+                                     double symbolLightness,
+                                     double symbolScale,
+                                     bool symbolUseColorMask,
+                                     string gameSymbol,
+                                     bool isGrayScale,
+                                     Light[] lighting)
         {
-            if (obj is ScenarioCacheImage)
-            {
-                var image = (ScenarioCacheImage)obj;
+            var hash = 17;
 
-                return image.CharacterColor == this.CharacterColor &&
-                       image.CharacterScale == this.CharacterScale &&
-                       image.CharacterSymbol == this.CharacterSymbol &&
-                       image.CharacterSymbolCategory == this.CharacterSymbolCategory &&
-                       image.GameSymbol == this.GameSymbol &&
-                       image.IsGrayScale == this.IsGrayScale &&
-                       image.LightBlue == this.LightBlue &&
-                       image.LightGreen == this.LightGreen &&
-                       image.LightIntensity == this.LightIntensity &&
-                       image.LightRed == this.LightRed &&
-                       image.Scale == this.Scale &&
-                       image.SmileyBodyColor == this.SmileyBodyColor &&
-                       image.SmileyExpression == this.SmileyExpression &&
-                       image.SmileyLineColor == this.SmileyLineColor &&
-                       image.Symbol == this.Symbol &&
-                       image.SymbolHue == this.SymbolHue &&
-                       image.SymbolLightness == this.SymbolLightness &&
-                       image.SymbolSaturation == this.SymbolSaturation &&
-                       image.SymbolScale == this.SymbolScale &&
-                       image.SymbolUseColorMask == this.SymbolUseColorMask &&
-                       image.Type == this.Type;
-            }
+            hash = (hash * 397) + scale.GetHashCode();
+            hash = (hash * 397) + type.GetHashCode();
+            hash = (hash * 397) + smileyExpression.GetHashCode();
+            hash = (hash * 397) + smileyBodyColor?.GetHashCode() ?? 0;
+            hash = (hash * 397) + smileyLineColor?.GetHashCode() ?? 0;
+            hash = (hash * 397) + characterSymbol?.GetHashCode() ?? 0;
+            hash = (hash * 397) + characterSymbolCategory?.GetHashCode() ?? 0;
+            hash = (hash * 397) + characterColor?.GetHashCode() ?? 0;
+            hash = (hash * 397) + characterScale.GetHashCode();
+            hash = (hash * 397) + symbol?.GetHashCode() ?? 0;
+            hash = (hash * 397) + symbolHue.GetHashCode();
+            hash = (hash * 397) + symbolSaturation.GetHashCode();
+            hash = (hash * 397) + symbolLightness.GetHashCode();
+            hash = (hash * 397) + symbolScale.GetHashCode();
+            hash = (hash * 397) + symbolUseColorMask.GetHashCode();
+            hash = (hash * 397) + gameSymbol?.GetHashCode() ?? 0;
+            hash = (hash * 397) + isGrayScale.GetHashCode();
 
-            return false;
+            for (int i = 0; i < lighting.Length; i++)
+                hash = (hash * 397) + lighting[i].GetHashCode();
+
+            return hash;
         }
 
-        public override int GetHashCode()
-        {
-            return this.Scale.GetHashCode() +
-                   this.Type.GetHashCode() +
-                   this.SmileyExpression.GetHashCode() +
-                   this.SmileyBodyColor?.GetHashCode() ?? 0 +
-                   this.SmileyLineColor?.GetHashCode() ?? 0 +
-                   this.CharacterSymbol?.GetHashCode() ?? 0 +
-                   this.CharacterSymbolCategory?.GetHashCode() ?? 0+
-                   this.CharacterColor?.GetHashCode() ?? 0 +
-                   this.CharacterScale.GetHashCode() +
-                   this.Symbol?.GetHashCode() ?? 0 +
-                   this.SymbolHue.GetHashCode() +
-                   this.SymbolSaturation.GetHashCode() +
-                   this.SymbolLightness.GetHashCode() +
-                   this.SymbolScale.GetHashCode() +
-                   this.SymbolUseColorMask.GetHashCode() +
-                   this.GameSymbol?.GetHashCode() ?? 0 +
-                   this.LightRed.GetHashCode() +
-                   this.LightGreen.GetHashCode() +
-                   this.LightBlue.GetHashCode() +
-                   this.LightIntensity.GetHashCode() +
-                   this.IsGrayScale.GetHashCode();
-        }
-
-        public ScenarioCacheImage(ScenarioImage scenarioImage, bool isGrayScale, double scale, Light lighting)
+        public ScenarioCacheImage(ScenarioImage scenarioImage, bool isGrayScale, double scale, Light[] lighting)
         {
             this.Scale = scale;
 
@@ -112,19 +129,14 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SymbolScale = scenarioImage.SymbolScale;
             this.SymbolUseColorMask = scenarioImage.SymbolUseColorMask;
             this.GameSymbol = scenarioImage.GameSymbol;
-
-            this.LightRed = lighting.Red;
-            this.LightGreen = lighting.Green;
-            this.LightBlue = lighting.Blue;
-            this.LightIntensity = lighting.Intensity;
-
+            this.Lighting = lighting;
             this.IsGrayScale = isGrayScale;
         }
 
         /// <summary>
         /// Constructor that supports image sources only - no option for black background
         /// </summary>
-        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale, double scale, Light lighting)
+        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale, double scale, Light[] lighting)
         {
             this.Scale = scale;
 
@@ -143,12 +155,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SymbolScale = symbolDetails.SymbolScale;
             this.SymbolUseColorMask = symbolDetails.SymbolUseColorMask;
             this.GameSymbol = symbolDetails.GameSymbol;
-
-            this.LightRed = lighting.Red;
-            this.LightGreen = lighting.Green;
-            this.LightBlue = lighting.Blue;
-            this.LightIntensity = lighting.Intensity;
-
+            this.Lighting = lighting;
             this.IsGrayScale = grayScale;
         }
     }

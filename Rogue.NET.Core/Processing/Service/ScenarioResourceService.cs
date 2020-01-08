@@ -104,22 +104,22 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioConfigurationCache.EmbedConfiguration(configuration);
         }
 
-        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Light lighting)
+        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, params Light[] lighting)
         {
             return _scenarioImageSourceFactory.GetImageSource(symbolDetails, scale, lighting);
         }
 
-        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Light lighting)
+        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, params Light[] lighting)
         {
             return _scenarioImageSourceFactory.GetImageSource(scenarioImage, scale, lighting);
         }
 
-        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Light lighting)
+        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Light[] lighting)
         {
             return _scenarioImageSourceFactory.GetDesaturatedImageSource(scenarioImage, scale, lighting);
         }
 
-        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Light lighting)
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Light[] lighting)
         {
             return _scenarioImageSourceFactory.GetFrameworkElement(scenarioImage, scale, lighting);
         }

@@ -172,8 +172,6 @@ namespace Rogue.NET.Scenario.Processing.Service
             // Effective Lighting - TODO: SET UP EFFECTS PIPELINE FOR LIGHTING
             //var lighting = _modelService.Level.Grid[location].EffectiveLighting;
 
-            var lighting = Light.White;
-
             // "Invisible" status
             var isCharacterInVisibleToPlayer = false;
 
@@ -205,7 +203,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             // Normal -> Detected -> Revealed -> Memorized
             if (lineOfSightVisible)
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, lighting);
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, _modelService.Level.Grid[location].Lights);
             }
             else if (scenarioObject.IsDetectedAlignment)
             {
@@ -214,13 +212,13 @@ namespace Rogue.NET.Scenario.Processing.Service
                 switch (scenarioObject.DetectedAlignmentType)
                 {
                     case AlterationAlignmentType.Neutral:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), 1.0, lighting);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), 1.0, _modelService.Level.Grid[location].Lights);
                         break;
                     case AlterationAlignmentType.Good:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), 1.0, lighting);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), 1.0, _modelService.Level.Grid[location].Lights);
                         break;
                     case AlterationAlignmentType.Bad:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), 1.0, lighting);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), 1.0, _modelService.Level.Grid[location].Lights);
                         break;
                     default:
                         break;
@@ -228,19 +226,19 @@ namespace Rogue.NET.Scenario.Processing.Service
             }
             else if (scenarioObject.IsDetectedCategory)
             {
-                content.Source = _scenarioResourceService.GetImageSource(scenarioObject.DetectedAlignmentCategory, 1.0, lighting);
+                content.Source = _scenarioResourceService.GetImageSource(scenarioObject.DetectedAlignmentCategory, 1.0, _modelService.Level.Grid[location].Lights);
             }
             else if (scenarioObject.IsRevealed)
             {
-                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, CreateRevealedLight(lighting));
+                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, _modelService.Level.Grid[location].Lights);
             }
             else if (isMemorized)
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, CreateExploredLight(lighting));
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, _modelService.Level.Grid[location].Lights);
             }
             else
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, lighting);
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, _modelService.Level.Grid[location].Lights);
             }
 
             // TODO: Design Content Tooltip
@@ -305,16 +303,6 @@ namespace Rogue.NET.Scenario.Processing.Service
         public IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor)
         {
             return _animationSequenceCreator.CreateTargetingAnimation(_scenarioUIGeometryService.Cell2UI(location), fillColor, strokeColor);
-        }
-
-        public Light CreateExploredLight(Light lighting)
-        {
-            return new Light(lighting, ModelConstants.MinLightIntensity);
-        }
-
-        public Light CreateRevealedLight(Light lighting)
-        {
-            return new Light(lighting, 1.0);
         }
     }
 }

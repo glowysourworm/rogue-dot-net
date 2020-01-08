@@ -33,8 +33,5 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
         IAnimationPlayer CreateAnimation(AnimationEventData eventData, Rect levelUIBounds);
         IAnimationPlayer CreateAnimation(ProjectileAnimationEventData eventData, Rect levelUIBounds);
         IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor);
-
-        Light CreateExploredLight(Light lighting);
-        Light CreateRevealedLight(Light lighting);
     }
 }

@@ -32,10 +32,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public bool IsWall { get; private set; }
         public bool IsWallLight { get; private set; }
         public int DoorSearchCounter { get; private set; }
-        public double AmbientLight { get; private set; }
-        public Light WallLight { get; private set; }
-        public Light AccentLight { get; private set; }
-        public IEnumerable<Light> TerrainLights { get; private set; }
+        public Light[] Lights { get; private set; }
         #endregion
 
         public void Search()
@@ -53,17 +50,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsRevealed = false;
             this.IsWall = false;
             this.IsDoor = false;
-            this.AmbientLight = 1;
-            this.AccentLight = Light.None;
-            this.WallLight = Light.None;
-            this.TerrainLights = new List<Light>();
+            this.Lights = new Light[] { Light.White };
         }
         public GridCell(GridLocation location, 
                         bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter, 
-                        double ambientLight, Light wallLight, Light accentLight, IEnumerable<Light> terrainLights)
+                        Light ambientLight, Light wallLight, Light accentLight, IEnumerable<Light> terrainLights)
         {
             if (doorSearchCounter > 0 && !isDoor)
                 throw new ArgumentException("Trying to initialize door with improper parameters");
+
+            if (ambientLight == null)
+                throw new ArgumentException("Ambient Lighting cannot be un-set! GridCell");
 
             this.Location = location;
             this.IsWall = isWall;
@@ -72,14 +69,25 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.DoorSearchCounter = doorSearchCounter;
             this.IsExplored = false;
             this.IsRevealed = false;
-            this.AmbientLight = ambientLight;
-            this.AccentLight = accentLight;
-            this.WallLight = wallLight;
-            this.TerrainLights = terrainLights;
+
+            // Initialize Lighting
+            var lights = new List<Light>();
+
+            lights.Add(ambientLight);
+
+            if (wallLight != Light.None)
+                lights.Add(wallLight);
+
+            if (accentLight != Light.None)
+                lights.Add(accentLight);
+
+            lights.AddRange(terrainLights);
+
+            this.Lights = lights.ToArray();
         }
 
         public GridCell(int column, int row, bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter,
-                        double ambientLight, Light wallLight, Light accentLight, IEnumerable<Light> terrainLights)
+                        Light ambientLight, Light wallLight, Light accentLight, IEnumerable<Light> terrainLights)
                 : this(new GridLocation(column, row), isWall, isWallLight, isDoor, doorSearchCounter, ambientLight, 
                        wallLight, accentLight, terrainLights)
         {
@@ -100,15 +108,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsWallLight = info.GetBoolean("IsWallLight");
             this.Location = (GridLocation)info.GetValue("Location", typeof(GridLocation));
             this.DoorSearchCounter = info.GetInt32("DoorSearchCounter");
-            this.AmbientLight = info.GetDouble("AmbientLight");
-            this.AccentLight = (Light)info.GetValue("AccentLight", typeof(Light));
-            this.WallLight = (Light)info.GetValue("WallLight", typeof(Light));
-
-            var terrainLights = new List<Light>();
-            var terrainLightCount = info.GetInt32("TerrainLightCount");
-
-            for (int i = 0; i < terrainLightCount; i++)
-                terrainLights.Add((Light)info.GetValue("TerrainLight" + i.ToString(), typeof(Light)));
+            this.Lights = (Light[])info.GetValue("Lights", typeof(Light[]));
 
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -120,15 +120,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("IsWallLight", this.IsWallLight);
             info.AddValue("Location", this.Location);
             info.AddValue("DoorSearchCounter", this.DoorSearchCounter);
-            info.AddValue("AmbientLight", this.AmbientLight);
-            info.AddValue("AccentLight", this.AccentLight);
-            info.AddValue("WallLight", this.WallLight);
-
-            info.AddValue("TerrainLightCount", this.TerrainLights.Count());
-
-            var counter = 0;
-            foreach (var light in this.TerrainLights)
-                info.AddValue("TerrainLight" + counter++, light);
+            info.AddValue("Lights", this.Lights);
         }
         #endregion
     }
