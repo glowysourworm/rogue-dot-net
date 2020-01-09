@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Model
         public const int CellWidth = 10;
 
         public const int MaxVisibileRadius = 15;
-        public const double MinLightIntensity = 0.3;
+        public const double MinLightIntensity = 0.2;
         public const double MaxLightIntensity = 1.0;
 
         public const string UnIdentifiedDisplayName = "???";

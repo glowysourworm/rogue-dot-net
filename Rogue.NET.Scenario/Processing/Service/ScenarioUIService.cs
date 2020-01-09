@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Media.Animation.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
@@ -13,7 +14,7 @@ using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
 using Rogue.NET.Scenario.Processing.Service.Interface;
-
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -179,6 +180,9 @@ namespace Rogue.NET.Scenario.Processing.Service
             var effectiveSymbol = (scenarioObject is CharacterBase) ? _alterationCalculator.CalculateEffectiveSymbol(scenarioObject as CharacterBase) :
                                                                       scenarioObject;
 
+            // Calculate effective vision
+            var effectiveVision = _modelService.Level.Movement.GetEffectiveVision(location.Column, location.Row);
+
             // Non-Player Characters
             if (scenarioObject is NonPlayerCharacter)
             {
@@ -203,7 +207,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             // Normal -> Detected -> Revealed -> Memorized
             if (lineOfSightVisible)
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = GetSymbol(effectiveSymbol, lineOfSightVisible, false, false, effectiveVision, _modelService.Level.Grid[location].Lights);
             }
             else if (scenarioObject.IsDetectedAlignment)
             {
@@ -212,13 +216,13 @@ namespace Rogue.NET.Scenario.Processing.Service
                 switch (scenarioObject.DetectedAlignmentType)
                 {
                     case AlterationAlignmentType.Neutral:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), 1.0, 1.0, _modelService.Level.Grid[location].Lights);
+                        content.Source = GetSymbol(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), lineOfSightVisible, false, false, 1.0, Light.White);
                         break;
                     case AlterationAlignmentType.Good:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), 1.0, 1.0, _modelService.Level.Grid[location].Lights);
+                        content.Source = GetSymbol(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), lineOfSightVisible, false, false, 1.0, Light.White);
                         break;
                     case AlterationAlignmentType.Bad:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), 1.0, 1.0, _modelService.Level.Grid[location].Lights);
+                        content.Source = GetSymbol(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), lineOfSightVisible, false, false, 1.0, Light.White);
                         break;
                     default:
                         break;
@@ -226,19 +230,20 @@ namespace Rogue.NET.Scenario.Processing.Service
             }
             else if (scenarioObject.IsDetectedCategory)
             {
-                content.Source = _scenarioResourceService.GetImageSource(scenarioObject.DetectedAlignmentCategory, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = GetSymbol(scenarioObject.DetectedAlignmentCategory, lineOfSightVisible, false, false, 1.0, Light.White);
             }
             else if (scenarioObject.IsRevealed)
             {
-                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = GetSymbol(effectiveSymbol, lineOfSightVisible, false, true, 1.0, Light.White);
             }
             else if (isMemorized)
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = GetSymbol(effectiveSymbol, lineOfSightVisible, true, false, 1.0, Light.WhiteExplored);
             }
             else
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
+                // Default to "Visible" - but will be hidden on the map
+                content.Source = GetSymbol(effectiveSymbol, true, false, false, effectiveVision, _modelService.Level.Grid[location].Lights);
             }
 
             // TODO: Design Content Tooltip
@@ -303,6 +308,24 @@ namespace Rogue.NET.Scenario.Processing.Service
         public IAnimationPlayer CreateTargetAnimation(GridLocation location, Color fillColor, Color strokeColor)
         {
             return _animationSequenceCreator.CreateTargetingAnimation(_scenarioUIGeometryService.Cell2UI(location), fillColor, strokeColor);
+        }
+
+        private DrawingImage GetSymbol(ScenarioImage scenarioImage, bool isVisible, bool isExplored, bool isRevealed, double effectiveVision, params Light[] lighting)
+        {
+            // Visible
+            if (isVisible)
+                return _scenarioResourceService.GetImageSource(scenarioImage, 1.0, effectiveVision, lighting);
+
+            // Revealed
+            else if (isRevealed)
+                return _scenarioResourceService.GetDesaturatedImageSource(scenarioImage, 1.0, 1.0, Light.WhiteRevealed);
+
+            // Explored
+            else if (isExplored)
+                return _scenarioResourceService.GetImageSource(scenarioImage, 1.0, 1.0, Light.WhiteExplored);
+
+            else
+                throw new Exception("Unhandled Exception LevelLayoutImage.GetSymbol");
         }
     }
 }

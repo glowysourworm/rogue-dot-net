@@ -4,13 +4,14 @@ using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
 using Rogue.NET.Scenario.Processing.Event.Content;
 using Rogue.NET.Scenario.Processing.Service.Interface;
-
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -70,9 +71,6 @@ namespace Rogue.NET.Scenario.Content.Views
                                                    LAYOUT_BITMAP_DPI,
                                                    PixelFormats.Pbgra32, null);
 
-            // Max visible radius
-            var visionRadius = _modelService.Player.GetVision() * ModelConstants.MaxVisibileRadius;
-
             using (var bitmapContext = layoutBitmap.GetBitmapContext())
             {
                 for (int column = 0; column < _modelService.Level.Grid.Bounds.Width; column++)
@@ -96,10 +94,8 @@ namespace Rogue.NET.Scenario.Content.Views
                             !cell.IsRevealed)
                             continue;
 
-                        // VISION COEFFICIENT:  Scaled intensity multiplier that maps from [0, visible radius] -> [0, 1], falling off linearly
-                        //
-                        var playerDistance = Metric.EuclideanDistance(_modelService.PlayerLocation.Column, _modelService.PlayerLocation.Row, column, row);
-                        var effectiveVision = System.Math.Round(playerDistance > visionRadius ? 0 : (1 - (playerDistance / visionRadius)), 1);
+                        // Calculate effective vision
+                        var effectiveVision = _modelService.Level.Movement.GetEffectiveVision(column, row);
 
                         DrawingImage cellImage = null;
                         IEnumerable<DrawingImage> terrainImages = null;
@@ -120,24 +116,25 @@ namespace Rogue.NET.Scenario.Content.Views
                                                                .Actualize();
 
                             // Fetch images for the terrain
-                            terrainImages = terrainSymbols.Select(symbol => _scenarioResourceService.GetImageSource(symbol, 1.0, effectiveVision, cell.Lights));
+                            terrainImages = terrainSymbols.Select(symbol => GetSymbol(symbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights))
+                                                          .Actualize();
                         }
 
                         // Doors
                         else if (cell.IsDoor)
-                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, effectiveVision, cell.Lights);
+                            cellImage = GetSymbol(layoutTemplate.DoorSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
 
                         // Wall Lights
                         else if (cell.IsWallLight)
-                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.DoorSymbol, 1.0, effectiveVision, cell.Lights);
+                            cellImage = GetSymbol(layoutTemplate.DoorSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
 
                         // Walls
                         else if (cell.IsWall)
-                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.WallSymbol, 1.0, effectiveVision, cell.Lights);
+                            cellImage = GetSymbol(layoutTemplate.WallSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
 
                         // Walkable Cells
                         else
-                            cellImage = _scenarioResourceService.GetImageSource(layoutTemplate.CellSymbol, 1.0, effectiveVision, cell.Lights);
+                            cellImage = GetSymbol(layoutTemplate.CellSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
 
                         // Render the DrawingImage to a bitmap (from cache) and copy pixels to the rendering target
                         var cellImages = terrainImages ?? new DrawingImage[] { cellImage };
@@ -168,6 +165,24 @@ namespace Rogue.NET.Scenario.Content.Views
             }
 
             this.Source = layoutBitmap;
+        }
+
+        private DrawingImage GetSymbol(SymbolDetailsTemplate symbol, bool isVisible, bool isExplored, bool isRevealed, double effectiveVision, params Light[] lighting)
+        {
+            // Visible
+            if (isVisible)
+                return _scenarioResourceService.GetImageSource(symbol, 1.0, effectiveVision, lighting);
+
+            // Revealed
+            else if (isRevealed)
+                return _scenarioResourceService.GetDesaturatedImageSource(symbol, 1.0, 1.0, Light.WhiteRevealed);
+
+            // Explored
+            else if (isExplored)
+                return _scenarioResourceService.GetImageSource(symbol, 1.0, 1.0, Light.WhiteExplored);
+
+            else
+                throw new Exception("Unhandled Exception LevelLayoutImage.GetSymbol");
         }
 
         private Light CalculateVisibleIntensity(Light effectiveLighting, GridLocation location, GridLocation playerLocation)

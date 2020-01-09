@@ -14,6 +14,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache.Interface
     {
         DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, Light[] lighting);
         DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting);
+        DrawingImage GetDesaturatedImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, Light[] lighting);
         DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting);
         FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting);
     }

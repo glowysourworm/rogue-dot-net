@@ -30,52 +30,51 @@
                     <toolkit:DoubleUpDown Value="{Binding LightingThreshold}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Ambient Light Layer 1" />
-                    <views:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainAmbientLightingType}" EnumValue="{Binding LightingAmbient1.Type, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Accent Lighting" />
+                    <views:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainAmbientLightingType}" EnumValue="{Binding AccentLighting.Type, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Ambient Light Layer 2" />
-                    <views:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainAmbientLightingType}" EnumValue="{Binding LightingAmbient2.Type, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
-                </Grid>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Has Wall Lighting" />
+                    <CheckBox IsChecked="{Binding HasWallLights, Mode=TwoWay}" HorizontalAlignment="Right" />
+                </Grid>                
             </StackPanel>
         </GroupBox>
 
-        <!-- Lighting Ambient 1 -->
-        <GroupBox Margin="10" Header="Ambient Light Layer 1"
-                      Visibility="{Binding LightingAmbient1.Type, Converter={StaticResource ParameterVisibilityCollapsedInverseConverter}, ConverterParameter={x:Static coreModelEnums:TerrainAmbientLightingType.None}}">
+        <!-- Accent Lighting -->
+        <GroupBox Margin="10" Header="Accent Lighting"
+                      Visibility="{Binding AccentLighting.Type, Converter={StaticResource ParameterVisibilityCollapsedInverseConverter}, ConverterParameter={x:Static coreModelEnums:TerrainAmbientLightingType.None}}">
             <StackPanel>
                 <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Three layers of ambient lighting are provided to illuminate the layout and contents." />
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Light Color" />
-                    <controls:LightComboBox SelectedValue="{Binding LightingAmbient1.Light, Mode=TwoWay}" Width="300" HorizontalAlignment="Right" />
+                    <controls:LightComboBox SelectedValue="{Binding AccentLighting.Light, Mode=TwoWay}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Fill Ratio" />
-                    <toolkit:DoubleUpDown Value="{Binding LightingAmbient1.FillRatio}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
+                    <toolkit:DoubleUpDown Value="{Binding AccentLighting.FillRatio}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Intensity Range" />
-                    <controls:Range LowLimit="0" HighLimit="1" Increment="0.05" StringFormat="F2" DataContext="{Binding LightingAmbient1.IntensityRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range LowLimit="0" HighLimit="1" Increment="0.05" StringFormat="F2" DataContext="{Binding AccentLighting.IntensityRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
             </StackPanel>
         </GroupBox>
 
-        <!-- Lighting Ambient 2 -->
-        <GroupBox Margin="10" Header="Ambient Light Layer 2"
-                      Visibility="{Binding LightingAmbient2.Type, Converter={StaticResource ParameterVisibilityCollapsedInverseConverter}, ConverterParameter={x:Static coreModelEnums:TerrainAmbientLightingType.None}}">
+        <!-- Wall Lighting -->
+        <GroupBox Margin="10" Header="Wall Lights" Visibility="{Binding HasWallLights, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <StackPanel>
                 <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Three layers of ambient lighting are provided to illuminate the layout and contents." />
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Light Color" />
-                    <controls:LightComboBox SelectedValue="{Binding LightingAmbient2.Light, Mode=TwoWay}" Width="300" HorizontalAlignment="Right" />
+                    <controls:LightComboBox SelectedValue="{Binding WallLight, Mode=TwoWay}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Fill Ratio" />
-                    <toolkit:DoubleUpDown Value="{Binding LightingAmbient2.FillRatio}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
+                    <toolkit:DoubleUpDown Value="{Binding WallLightFillRatio}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Intensity Range" />
-                    <controls:Range LowLimit="0" HighLimit="1" Increment="0.05" StringFormat="F2" DataContext="{Binding LightingAmbient2.IntensityRange}" Width="300" HorizontalAlignment="Right" />
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Intensity" />
+                    <toolkit:DoubleUpDown Value="{Binding WallLightIntensity}" Minimum="0" Maximum="1" Increment="0.05" Width="300" HorizontalAlignment="Right" />
                 </Grid>
             </StackPanel>
         </GroupBox>

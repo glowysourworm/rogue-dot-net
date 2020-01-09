@@ -96,7 +96,33 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             if (source is DrawingImage)
             {
                 // Recurse drawing to desaturate colors
-                _symbolEffectFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new HSLEffect(0, -1, 0, false));
+                _symbolEffectFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new HslEffect(0, -1, 0, false));
+
+                // Cache the gray-scale image
+                _imageSourceCache[hash] = source;
+
+                return source;
+            }
+            else
+                throw new Exception("Unhandled ImageSource type");
+        }
+        public DrawingImage GetDesaturatedImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, Light[] lighting)
+        {
+            // PERFORMANCE - HASH CODE ONLY
+            var hash = CreateCacheHash(symbolDetails, true, scale, effectiveVision, lighting);
+
+            // Check for cached image
+            if (_imageSourceCache.ContainsKey(hash))
+                return _imageSourceCache[hash];
+
+            var cacheImage = CreateCacheImage(symbolDetails, true, scale, effectiveVision, lighting);
+
+            var source = GetImageSource(cacheImage);
+
+            if (source is DrawingImage)
+            {
+                // Recurse drawing to desaturate colors
+                _symbolEffectFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new HslEffect(0, -1, 0, false));
 
                 // Cache the gray-scale image
                 _imageSourceCache[hash] = source;
@@ -174,7 +200,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         foreach (var light in cacheImage.Lighting)
                             ApplyLighting(drawing, light);
 
-                        ApplyIntensity(drawing, cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity));
+                        ApplyIntensity(drawing, (cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity)).LowLimit(ModelConstants.MinLightIntensity));
 
                         // Create the image source
                         return new DrawingImage(drawing);
@@ -213,8 +239,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 smileyLineColor = LightOperations.ApplyLightingEffect(smileyLineColor, light);
             }
 
-            smileyColor = LightOperations.ApplyLightIntensity(smileyColor, cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity));
-            smileyLineColor = LightOperations.ApplyLightIntensity(smileyLineColor, cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity));
+            smileyColor = LightOperations.ApplyLightIntensity(smileyColor, (cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity)).LowLimit(ModelConstants.MinLightIntensity));
+            smileyLineColor = LightOperations.ApplyLightIntensity(smileyLineColor, (cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity)).LowLimit(ModelConstants.MinLightIntensity));
 
             ctrl.SmileyColor = smileyColor;
             ctrl.SmileyLineColor = smileyLineColor;
@@ -278,7 +304,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
 
                         // Apply HSL transform
-                        _symbolEffectFilter.ApplyEffect(drawing, new HSLEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, cacheImage.SymbolUseColorMask));
+                        _symbolEffectFilter.ApplyEffect(drawing, new HslEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, cacheImage.SymbolUseColorMask));
                     }
                     break;
             }

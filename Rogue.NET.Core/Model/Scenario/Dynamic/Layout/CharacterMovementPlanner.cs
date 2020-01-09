@@ -110,7 +110,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         /// <summary>
         /// Updates character visibility and route planning
         /// </summary>
-        public void Update(GridLocation location)
+        public void Update(GridLocation location, double effectiveVision)
         {
             // Decrement rest clock
             if (_restClock > 0)
@@ -124,7 +124,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _visibleLocations.Clear();
 
             // Calculate visible locations -> MUST PREVENT NON-WALKABLE LOCATIONS FROM BEING SET ON THE SEARCH GRID
-            VisibilityCalculator.CalculateVisibility(_layoutGrid, location, (column, row, isVisible) =>
+            VisibilityCalculator.CalculateVisibility(_layoutGrid, location, (int)(effectiveVision * ModelConstants.MaxVisibileRadius), 
+            (column, row, isVisible) =>
             {
                 if (isVisible && _layoutGrid.WalkableMap[column, row] != null)
                 {
@@ -161,18 +162,18 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             }
         }
 
-        public GridLocation GetNextSearchLocation(GridLocation currentLocation)
+        public GridLocation GetNextSearchLocation(GridLocation currentLocation, double effectiveVision)
         {
             switch (_state)
             {
                 case SearchState.Resting:
                     throw new Exception("Character is currently resting - must check before calling CharacterMovementPlanner.GetNextSearchLocation");
                 case SearchState.WakingUp:
-                    return WakingUp(currentLocation);
+                    return WakingUp(currentLocation, effectiveVision);
                 case SearchState.BeginningSearch:
-                    return BeginningSearch(currentLocation);
+                    return BeginningSearch(currentLocation, effectiveVision);
                 case SearchState.Searching:
-                    return Searching(currentLocation);
+                    return Searching(currentLocation, effectiveVision);
                 case SearchState.HeadedForRest:
                     return HeadedForRest(currentLocation);
                 default:
@@ -180,7 +181,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             }
         }
 
-        private GridLocation Searching(GridLocation currentLocation)
+        private GridLocation Searching(GridLocation currentLocation, double effectiveVision)
         {
             // Search just completed
             if (_searchGrid.IsFullySearched())
@@ -214,7 +215,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                     _state = SearchState.BeginningSearch;
                 }
 
-                return GetNextSearchLocation(currentLocation);
+                return GetNextSearchLocation(currentLocation, effectiveVision);
             }
 
             // Continue search...
@@ -241,7 +242,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             }
         }
 
-        private GridLocation WakingUp(GridLocation currentLocation)
+        private GridLocation WakingUp(GridLocation currentLocation, double effectiveVision)
         {
             if (_searchGrid != null ||
                 _nextRegion != null)
@@ -263,10 +264,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
             _state = SearchState.BeginningSearch;
 
-            return GetNextSearchLocation(currentLocation);
+            return GetNextSearchLocation(currentLocation, effectiveVision);
         }
 
-        private GridLocation BeginningSearch(GridLocation currentLocation)
+        private GridLocation BeginningSearch(GridLocation currentLocation, double effectiveVision)
         {
             if (_searchGrid != null)
                 throw new Exception("Improperly handled search grid CharacterMovementPlanner.BeginningSearch");
@@ -313,12 +314,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                 _nextRegion = null;
 
                 // Initialize the new visibility
-                Update(currentLocation);
+                Update(currentLocation, effectiveVision);
 
                 _state = SearchState.Searching;
 
                 // Recursively return next search location - in case there are no locations here to search
-                return GetNextSearchLocation(currentLocation);
+                return GetNextSearchLocation(currentLocation, effectiveVision);
             }
         }
 

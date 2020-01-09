@@ -113,7 +113,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             }
         }
 
-        public static void CalculateVisibility(LayoutGrid grid, GridLocation location, VisibilityCalculatorCallback callback)
+        public static void CalculateVisibility(LayoutGrid grid, GridLocation location, int radius, VisibilityCalculatorCallback callback)
         {
             CalculateVisibilityImpl((column, row) =>
             {
@@ -124,10 +124,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 return grid[gridLocation.Column, gridLocation.Row] == null ||
                        grid[gridLocation.Column, gridLocation.Row].IsWall ||
                        grid[gridLocation.Column, gridLocation.Row].IsDoor;
-            }, location, callback);
+            }, location, radius, callback);
         }
 
-        public static void CalculateVisibility(GridCellInfo[,] grid, GridLocation location, VisibilityCalculatorCallback callback)
+        public static void CalculateVisibility(GridCellInfo[,] grid, GridLocation location, int radius, VisibilityCalculatorCallback callback)
         {
             CalculateVisibilityImpl((column, row) =>
             {
@@ -138,10 +138,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 return grid[gridLocation.Column, gridLocation.Row] == null ||
                        grid[gridLocation.Column, gridLocation.Row].IsWall ||
                        grid[gridLocation.Column, gridLocation.Row].IsDoor;
-            }, location, callback);
+            }, location, radius, callback);
         }
 
-        private static void CalculateVisibilityImpl(Func<int, int, GridLocation> getter, Func<GridLocation, bool> getterIsLightBlocking, GridLocation center, VisibilityCalculatorCallback callback)
+        private static void CalculateVisibilityImpl(Func<int, int, GridLocation> getter, Func<GridLocation, bool> getterIsLightBlocking, GridLocation center, int maxRadius, VisibilityCalculatorCallback callback)
         {
             // Implementing Shadow Casting - by Björn Bergström [bjorn.bergstrom@roguelikedevelopment.org] 
             //
@@ -152,14 +152,14 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             {
                 var lightBlockingFeatures = new List<ShadowCastingFeature>();
                 var iterate = true;
-                var radius = 1;
+                var currentRadius = 1;
 
                 while (iterate)
                 {
                     int location1Column, location1Row, location2Column, location2Row;
                     bool yDirection = false;
 
-                    CalculateIterationLocations(center, radius, octant, out location1Column, out location1Row, out location2Column, out location2Row, out yDirection);
+                    CalculateIterationLocations(center, currentRadius, maxRadius, octant, out location1Column, out location1Row, out location2Column, out location2Row, out yDirection);
 
                     var negative = yDirection ? location2Row - location1Row < 0 : location2Column - location1Column < 0;
                     var startIndex = yDirection ? location1Row : location1Column;
@@ -248,20 +248,20 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                             lightBlockingFeatures.Add(new ShadowCastingFeature(firstLightBlockingLocation, lastLightBlockingLocation, center, octant));
                     }
 
-                    radius++;
+                    currentRadius++;
 
                     // Re-evaluate loop condition
-                    iterate = !finalIteration && (radius <= ModelConstants.MaxVisibileRadius);
+                    iterate = !finalIteration && (currentRadius <= maxRadius);
                 }
             }
         }
 
-        private static void CalculateIterationLocations(GridLocation center, int radius, Octant octant, out int location1Column, out int location1Row, out int location2Column, out int location2Row, out bool yDirection)
+        private static void CalculateIterationLocations(GridLocation center, int radius, int maxRadius, Octant octant, out int location1Column, out int location1Row, out int location2Column, out int location2Row, out bool yDirection)
         {
             // Calculate a max iterating distance based on the radius and MAX_RADIUS. Solve the right triangle 
             // inside a circle of MAX_RADIUS - this will show the below solution.
             //
-            var circleCoordinate = System.Math.Sqrt((ModelConstants.MaxVisibileRadius * ModelConstants.MaxVisibileRadius) - (radius * radius));
+            var circleCoordinate = System.Math.Sqrt((maxRadius * maxRadius) - (radius * radius));
             var circleIteratingDistance = (int)System.Math.Min(radius, circleCoordinate);
 
             // NOTE*** MUST ITERATE CLOCKWISE AROUND THE CIRCLE

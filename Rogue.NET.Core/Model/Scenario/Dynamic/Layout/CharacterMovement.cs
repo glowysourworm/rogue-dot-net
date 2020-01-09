@@ -3,6 +3,7 @@ using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
@@ -50,10 +51,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _contentGrid = contentGrid;
 
             _searchDict = new Dictionary<NonPlayerCharacter, CharacterMovementPlanner>();
-            _contentVisibilityDict = new Dictionary<ScenarioObject, ScenarioObject>();
-
             _pathFinderDict = new Dictionary<NonPlayerCharacter, DijkstraPathFinder>();
-
+            _contentVisibilityDict = new Dictionary<ScenarioObject, ScenarioObject>();
             _visibleLocations = new Dictionary<GridLocation, GridLocation>();
         }
 
@@ -67,7 +66,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _contentVisibilityDict.Clear();
 
             // Calculate visible locations
-            VisibilityCalculator.CalculateVisibility(_layoutGrid, playerLocation, (column, row, isVisible) =>
+            VisibilityCalculator.CalculateVisibility(_layoutGrid, playerLocation, (int)(player.GetVision() * ModelConstants.MaxVisibileRadius), 
+            (column, row, isVisible) =>
             {
                 // Visible Cells -> Explored / No Longer Revealed
                 if (isVisible)
@@ -121,7 +121,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             var planner = _searchDict[nonPlayerCharacter];
 
             // Update visibility for the character
-            planner.Update(nonPlayerCharacterLocation);
+            planner.Update(nonPlayerCharacterLocation, nonPlayerCharacter.GetVision());
         }
 
         public bool IsPathToAdjacentLocationBlocked(GridLocation location1,
@@ -281,6 +281,23 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             return _visibleLocations.ContainsKey(cell.Location);
         }
 
+        public double GetEffectiveVision(int column, int row)
+        {
+            var player = _contentGrid.Characters.First(character => character is Player);
+
+            // Max visible radius
+            var visionRadius = player.GetVision() * ModelConstants.MaxVisibileRadius;
+
+            // VISION COEFFICIENT:  Scaled intensity multiplier that maps from [0, visible radius] -> [0, 1], falling off linearly
+            //
+            var playerDistance = Metric.EuclideanDistance(_contentGrid[player].Column, _contentGrid[player].Row, column, row);
+
+            // Vision falls off linearly towards the vision max radius
+            var effectiveVision = System.Math.Round(playerDistance > visionRadius ? 0 : (1 - (playerDistance / visionRadius)), 1);
+
+            return effectiveVision;
+        }
+
         public IEnumerable<GridLocation> GetVisibleLocations(CharacterBase character)
         {
             if (character is Player)
@@ -307,7 +324,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                 return _contentGrid[character];
 
             // Fetch the next search location
-            var goalLocation = _searchDict[character].GetNextSearchLocation(_contentGrid[character]);
+            var goalLocation = _searchDict[character].GetNextSearchLocation(_contentGrid[character], character.GetVision());
 
             // Check to see if there is any more locations to search
             //

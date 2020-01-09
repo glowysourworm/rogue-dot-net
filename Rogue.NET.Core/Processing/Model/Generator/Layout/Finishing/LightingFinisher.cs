@@ -1,7 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -110,10 +109,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     if (_randomSequenceGenerator.Get() < template.FillRatio)
                     {
                         // Go ahead and adjust light intensity here since the light instance is only local
-                        light.Intensity = ScaleIntensity(_randomSequenceGenerator.GetRandomValue(template.IntensityRange));
+                        var intensity = ScaleIntensity(_randomSequenceGenerator.GetRandomValue(template.IntensityRange));
 
                         // Blend the current light value with the new light
-                        grid[i, j].AccentLight = light;
+                        grid[i, j].AccentLight = new Light(light, intensity);
                     }
                 }
             }
@@ -141,10 +140,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         var subScaledValue = peakMeasuredValue / template.FillRatio;
 
                         // Create light intensity value by scaling the sub-scaled value from the min -> max intensity
-                        light.Intensity = ScaleIntensity((subScaledValue * (template.IntensityRange.High - template.IntensityRange.Low)) + template.IntensityRange.Low);
+                        var intensity = ScaleIntensity((subScaledValue * (template.IntensityRange.High - template.IntensityRange.Low)) + template.IntensityRange.Low);
 
                         // Add light to the grid
-                        grid[column, row].AccentLight = light;
+                        grid[column, row].AccentLight = new Light(light, intensity);
                     }
                 }
 
@@ -220,7 +219,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         private void CreatePointSourceLighting(GridCellInfo[,] grid, int column, int row, Light light, bool terrainLight = false, string terrainName = null)
         {
             // Add to field of view
-            VisibilityCalculator.CalculateVisibility(grid, grid[column, row].Location, (columnCallback, rowCallback, isVisible) =>
+            VisibilityCalculator.CalculateVisibility(grid, grid[column, row].Location, ModelConstants.MaxVisibileRadius,
+            (columnCallback, rowCallback, isVisible) =>
             {
                 if (isVisible)
                 {
@@ -246,7 +246,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     if (!terrainLight)
                     {
                         // Take the max of combined intensities for the cell
-                        grid[columnCallback, rowCallback].WallLight.Intensity = System.Math.Max(intensity, existingWallLight.Intensity);
+                        if (existingWallLight != null &&
+                            existingWallLight != Light.None)
+                            cell.WallLight.Intensity = System.Math.Max(intensity, existingWallLight.Intensity);
+
+                        else
+                            cell.WallLight = new Light(light, intensity);
                     }
 
                     else

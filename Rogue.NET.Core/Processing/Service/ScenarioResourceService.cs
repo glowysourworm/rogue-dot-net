@@ -114,6 +114,11 @@ namespace Rogue.NET.Core.Processing.Service
             return _scenarioImageSourceFactory.GetImageSource(scenarioImage, scale, effectiveVision, lighting);
         }
 
+        public DrawingImage GetDesaturatedImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, params Light[] lighting)
+        {
+            return _scenarioImageSourceFactory.GetDesaturatedImageSource(symbolDetails, scale, effectiveVision, lighting);
+        }
+
         public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting)
         {
             return _scenarioImageSourceFactory.GetDesaturatedImageSource(scenarioImage, scale, effectiveVision, lighting);

@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace Rogue.NET.Core.Media.SymbolEffect
 {
-    public class HSLEffect : SymbolEffectBase
+    public class HslEffect : SymbolEffectBase
     {
         private static Color ColorMask = Colors.Red;
 
@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect
         /// </summary>
         public bool UseColorMask { get; private set; }
 
-        public HSLEffect(double hue, double saturation, double lightness, bool useColorMask)
+        public HslEffect(double hue, double saturation, double lightness, bool useColorMask)
         {
             this.Hue = hue;
             this.Saturation = saturation;

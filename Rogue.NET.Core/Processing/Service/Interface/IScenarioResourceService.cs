@@ -36,6 +36,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         // IScenarioImageSourceFactory
         DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, params Light[] lighting);
         DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, params Light[] lighting);
+        DrawingImage GetDesaturatedImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, params Light[] lighting);
         DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, params Light[] lighting);
         FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, double effectiveVision, params Light[] lighting);
 

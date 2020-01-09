@@ -256,7 +256,7 @@
     <Compile Include="Media\Animation\Interface\IAnimationSequenceCreator.cs" />
     <Compile Include="Media\SymbolEffect\LightingEffect.cs" />
     <Compile Include="Media\SymbolEffect\ClampEffect.cs" />
-    <Compile Include="Media\SymbolEffect\HSLEffect.cs" />
+    <Compile Include="Media\SymbolEffect\HslEffect.cs" />
     <Compile Include="Media\SymbolEffect\SymbolEffectBase.cs" />
     <Compile Include="Media\SymbolEffect\Utility\ColorOperations.cs" />
     <Compile Include="Math\Geometry\GraphEdge.cs" />
