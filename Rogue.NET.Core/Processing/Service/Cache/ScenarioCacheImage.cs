@@ -2,7 +2,6 @@
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Service.Cache
 {
@@ -31,15 +30,18 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         // Lighting
         public Light[] Lighting { get; set; }
 
+        // Vision
+        public double EffectiveVision { get; set; }
+
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
 
         /// <summary>
         /// Creates a static hash key for the cache image properties
         /// </summary>
-        public static int CreateHash(double scale, 
-                                     SymbolType type, 
-                                     SmileyExpression smileyExpression, 
+        public static int CreateHash(double scale,
+                                     SymbolType type,
+                                     SmileyExpression smileyExpression,
                                      string smileyBodyColor,
                                      string smileyLineColor,
                                      string characterSymbol,
@@ -54,6 +56,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                                      bool symbolUseColorMask,
                                      string gameSymbol,
                                      bool isGrayScale,
+                                     double effectiveVision,
                                      Light[] lighting)
         {
             var hash = 17;
@@ -75,6 +78,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             hash = (hash * 397) + symbolUseColorMask.GetHashCode();
             hash = (hash * 397) + gameSymbol?.GetHashCode() ?? 0;
             hash = (hash * 397) + isGrayScale.GetHashCode();
+            hash = (hash * 397) + effectiveVision.GetHashCode();
 
             for (int i = 0; i < lighting.Length; i++)
                 hash = (hash * 397) + lighting[i].GetHashCode();
@@ -82,7 +86,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             return hash;
         }
 
-        public ScenarioCacheImage(ScenarioImage scenarioImage, bool isGrayScale, double scale, Light[] lighting)
+        public ScenarioCacheImage(ScenarioImage scenarioImage, bool isGrayScale, double scale, double effectiveVision, Light[] lighting)
         {
             this.Scale = scale;
 
@@ -102,13 +106,14 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SymbolUseColorMask = scenarioImage.SymbolUseColorMask;
             this.GameSymbol = scenarioImage.GameSymbol;
             this.Lighting = lighting;
+            this.EffectiveVision = effectiveVision;
             this.IsGrayScale = isGrayScale;
         }
 
         /// <summary>
         /// Constructor that supports image sources only - no option for black background
         /// </summary>
-        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale, double scale, Light[] lighting)
+        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale, double scale, double effectiveVision, Light[] lighting)
         {
             this.Scale = scale;
 
@@ -128,6 +133,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             this.SymbolUseColorMask = symbolDetails.SymbolUseColorMask;
             this.GameSymbol = symbolDetails.GameSymbol;
             this.Lighting = lighting;
+            this.EffectiveVision = effectiveVision;
             this.IsGrayScale = grayScale;
         }
     }

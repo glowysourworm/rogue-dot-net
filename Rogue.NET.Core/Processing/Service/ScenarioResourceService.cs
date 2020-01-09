@@ -104,24 +104,24 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioConfigurationCache.EmbedConfiguration(configuration);
         }
 
-        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, params Light[] lighting)
+        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, params Light[] lighting)
         {
-            return _scenarioImageSourceFactory.GetImageSource(symbolDetails, scale, lighting);
+            return _scenarioImageSourceFactory.GetImageSource(symbolDetails, scale, effectiveVision, lighting);
         }
 
-        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, params Light[] lighting)
+        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, params Light[] lighting)
         {
-            return _scenarioImageSourceFactory.GetImageSource(scenarioImage, scale, lighting);
+            return _scenarioImageSourceFactory.GetImageSource(scenarioImage, scale, effectiveVision, lighting);
         }
 
-        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Light[] lighting)
+        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting)
         {
-            return _scenarioImageSourceFactory.GetDesaturatedImageSource(scenarioImage, scale, lighting);
+            return _scenarioImageSourceFactory.GetDesaturatedImageSource(scenarioImage, scale, effectiveVision, lighting);
         }
 
-        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Light[] lighting)
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting)
         {
-            return _scenarioImageSourceFactory.GetFrameworkElement(scenarioImage, scale, lighting);
+            return _scenarioImageSourceFactory.GetFrameworkElement(scenarioImage, scale, effectiveVision, lighting);
         }
 
         public DrawingGroup GetDrawing(ScenarioCacheImage scenarioCacheImage)

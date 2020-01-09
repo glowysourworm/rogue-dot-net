@@ -203,7 +203,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             // Normal -> Detected -> Revealed -> Memorized
             if (lineOfSightVisible)
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
             }
             else if (scenarioObject.IsDetectedAlignment)
             {
@@ -212,13 +212,13 @@ namespace Rogue.NET.Scenario.Processing.Service
                 switch (scenarioObject.DetectedAlignmentType)
                 {
                     case AlterationAlignmentType.Neutral:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), 1.0, _modelService.Level.Grid[location].Lights);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicNeutral), 1.0, 1.0, _modelService.Level.Grid[location].Lights);
                         break;
                     case AlterationAlignmentType.Good:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), 1.0, _modelService.Level.Grid[location].Lights);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicGood), 1.0, 1.0, _modelService.Level.Grid[location].Lights);
                         break;
                     case AlterationAlignmentType.Bad:
-                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), 1.0, _modelService.Level.Grid[location].Lights);
+                        content.Source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), 1.0, 1.0, _modelService.Level.Grid[location].Lights);
                         break;
                     default:
                         break;
@@ -226,19 +226,19 @@ namespace Rogue.NET.Scenario.Processing.Service
             }
             else if (scenarioObject.IsDetectedCategory)
             {
-                content.Source = _scenarioResourceService.GetImageSource(scenarioObject.DetectedAlignmentCategory, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = _scenarioResourceService.GetImageSource(scenarioObject.DetectedAlignmentCategory, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
             }
             else if (scenarioObject.IsRevealed)
             {
-                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = _scenarioResourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
             }
             else if (isMemorized)
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
             }
             else
             {
-                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, _modelService.Level.Grid[location].Lights);
+                content.Source = _scenarioResourceService.GetImageSource(effectiveSymbol, 1.0, 1.0, _modelService.Level.Grid[location].Lights);
             }
 
             // TODO: Design Content Tooltip

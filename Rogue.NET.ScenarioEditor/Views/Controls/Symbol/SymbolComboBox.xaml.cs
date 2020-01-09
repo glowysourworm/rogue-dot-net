@@ -43,7 +43,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         {
             this.TheCB.ItemsSource = _scenarioResourceService.GetResourceNames(SymbolType.Game).Select(symbol =>
             {
-                var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0, Light.White);
+                var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0, 1.0, Light.White);
                 return SvgSymbolViewModel.CreateGameSymbol(source, symbol);
             });
         }

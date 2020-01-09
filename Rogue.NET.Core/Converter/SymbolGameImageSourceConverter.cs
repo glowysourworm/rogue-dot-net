@@ -36,7 +36,7 @@ namespace Rogue.NET.Core.Converter
                 SymbolType = SymbolType.Game,
                 GameSymbol = gameSymbol
 
-            }, scale, new Light[] { Light.White });
+            }, scale, 1.0, Light.White);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

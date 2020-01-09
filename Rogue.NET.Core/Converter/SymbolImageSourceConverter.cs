@@ -31,7 +31,7 @@ namespace Rogue.NET.Core.Converter
             // Read scale from the converter parameter
             var scale = parameter == null ? 1.0D : (double)parameter;
 
-            return _scenarioResourceService.GetImageSource(scenarioImage, scale, new Light[] { Light.White });
+            return _scenarioResourceService.GetImageSource(scenarioImage, scale, 1.0, Light.White);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

@@ -40,10 +40,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
             _imageSourceCache = new Dictionary<int, DrawingImage>();
         }
-        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, Light[] lighting)
+        public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, Light[] lighting)
         {
             // PERFORMANCE - HASH CODE ONLY
-            var hash = CreateCacheHash(symbolDetails, false, scale, lighting);
+            var hash = CreateCacheHash(symbolDetails, false, scale, effectiveVision, lighting);
 
             // Check for cached image
             if (_imageSourceCache.ContainsKey(hash))
@@ -52,7 +52,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // Cache the result
             else
             {
-                var cacheImage = CreateCacheImage(symbolDetails, false, scale, lighting);
+                var cacheImage = CreateCacheImage(symbolDetails, false, scale, effectiveVision, lighting);
                 var result = GetImageSource(cacheImage);
 
                 _imageSourceCache[hash] = result;
@@ -60,10 +60,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 return result;
             }
         }
-        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, Light[] lighting)
+        public DrawingImage GetImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting)
         {
             // PERFORMANCE - HASH CODE ONLY
-            var hash = CreateCacheHash(scenarioImage, false, scale, lighting);
+            var hash = CreateCacheHash(scenarioImage, false, scale, effectiveVision, lighting);
 
             // Check for cached image
             if (_imageSourceCache.ContainsKey(hash))
@@ -72,7 +72,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // Cache the result
             else
             {
-                var cacheImage = CreateCacheImage(scenarioImage, false, scale, lighting);
+                var cacheImage = CreateCacheImage(scenarioImage, false, scale, effectiveVision, lighting);
                 var result = GetImageSource(cacheImage);
 
                 _imageSourceCache[hash] = result;
@@ -80,16 +80,16 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 return result;
             }
         }
-        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, Light[] lighting)
+        public DrawingImage GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting)
         {
             // PERFORMANCE - HASH CODE ONLY
-            var hash = CreateCacheHash(scenarioImage, true, scale, lighting);
+            var hash = CreateCacheHash(scenarioImage, true, scale, effectiveVision, lighting);
 
             // Check for cached image
             if (_imageSourceCache.ContainsKey(hash))
                 return _imageSourceCache[hash];
 
-            var cacheImage = CreateCacheImage(scenarioImage, true, scale, lighting);
+            var cacheImage = CreateCacheImage(scenarioImage, true, scale, effectiveVision, lighting);
 
             var source = GetImageSource(cacheImage);
 
@@ -106,10 +106,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             else
                 throw new Exception("Unhandled ImageSource type");
         }
-        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, Light[] lighting)
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, double effectiveVision, Light[] lighting)
         {
             // PERFORMANCE - HASH CODE ONLY
-            var hash = CreateCacheHash(scenarioImage, false, scale, lighting);
+            var hash = CreateCacheHash(scenarioImage, false, scale, effectiveVision, lighting);
 
             // Check for cached FrameworkElement
             if (_imageSourceCache.ContainsKey(hash))
@@ -120,7 +120,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 return CreateScaledImage(source, scale);
             }
 
-            var cacheImage = CreateCacheImage(scenarioImage, false, scale, lighting);
+            var cacheImage = CreateCacheImage(scenarioImage, false, scale, effectiveVision, lighting);
 
 
             switch (scenarioImage.SymbolType)
@@ -174,7 +174,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         foreach (var light in cacheImage.Lighting)
                             ApplyLighting(drawing, light);
 
-                        ApplyIntensity(drawing, cacheImage.Lighting.Max(light => light.Intensity));
+                        ApplyIntensity(drawing, cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity));
 
                         // Create the image source
                         return new DrawingImage(drawing);
@@ -213,8 +213,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 smileyLineColor = LightOperations.ApplyLightingEffect(smileyLineColor, light);
             }
 
-            smileyColor = LightOperations.ApplyLightIntensity(smileyColor, cacheImage.Lighting.Max(light => light.Intensity));
-            smileyLineColor = LightOperations.ApplyLightIntensity(smileyLineColor, cacheImage.Lighting.Max(light => light.Intensity));
+            smileyColor = LightOperations.ApplyLightIntensity(smileyColor, cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity));
+            smileyLineColor = LightOperations.ApplyLightIntensity(smileyLineColor, cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity));
 
             ctrl.SmileyColor = smileyColor;
             ctrl.SmileyLineColor = smileyLineColor;
@@ -304,7 +304,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
             return image;
         }
-        private int CreateCacheHash(SymbolDetailsTemplate template, bool grayScale, double scale, Light[] lighting)
+        private int CreateCacheHash(SymbolDetailsTemplate template, bool grayScale, double scale, double effectiveVision, Light[] lighting)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -316,9 +316,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                                                  template.CharacterScale, template.Symbol, 
                                                  template.SymbolHue, template.SymbolSaturation, 
                                                  template.SymbolLightness, template.SymbolScale, 
-                                                 template.SymbolUseColorMask, template.GameSymbol, grayScale, lighting);
+                                                 template.SymbolUseColorMask, template.GameSymbol, grayScale, 
+                                                 effectiveVision, lighting);
         }
-        private int CreateCacheHash(ScenarioImage scenarioImage, bool grayScale, double scale, Light[] lighting)
+        private int CreateCacheHash(ScenarioImage scenarioImage, bool grayScale, double scale, double effectiveVision, Light[] lighting)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -330,23 +331,24 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                                                  scenarioImage.CharacterScale, scenarioImage.Symbol,
                                                  scenarioImage.SymbolHue, scenarioImage.SymbolSaturation,
                                                  scenarioImage.SymbolLightness, scenarioImage.SymbolScale,
-                                                 scenarioImage.SymbolUseColorMask, scenarioImage.GameSymbol, grayScale, lighting);
+                                                 scenarioImage.SymbolUseColorMask, scenarioImage.GameSymbol, grayScale, 
+                                                 effectiveVision, lighting);
         }
-        private ScenarioCacheImage CreateCacheImage(SymbolDetailsTemplate template, bool grayScale, double scale, Light[] lighting)
+        private ScenarioCacheImage CreateCacheImage(SymbolDetailsTemplate template, bool grayScale, double scale, double effectiveVision, Light[] lighting)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
 
             // Create cache image to retrieve cached ImageSource or to store it
-            return new ScenarioCacheImage(template, grayScale, safeScale, lighting);
+            return new ScenarioCacheImage(template, grayScale, safeScale, effectiveVision, lighting);
         }
-        private ScenarioCacheImage CreateCacheImage(ScenarioImage scenarioImage, bool grayScale, double scale, Light[] lighting)
+        private ScenarioCacheImage CreateCacheImage(ScenarioImage scenarioImage, bool grayScale, double scale, double effectiveVision, Light[] lighting)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
 
             // Create cache image to retrieve cached ImageSource or to store it
-            return new ScenarioCacheImage(scenarioImage, grayScale, safeScale, lighting);
+            return new ScenarioCacheImage(scenarioImage, grayScale, safeScale, effectiveVision, lighting);
         }
         #endregion
     }
