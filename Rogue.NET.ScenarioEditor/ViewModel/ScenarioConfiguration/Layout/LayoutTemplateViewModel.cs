@@ -35,6 +35,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private LayoutConnectionType _connectionType;
         private LayoutSymmetryType _symmetryType;
         private SymbolDetailsTemplateViewModel _wallSymbol;
+        private SymbolDetailsTemplateViewModel _wallLightSymbol;
         private SymbolDetailsTemplateViewModel _doorSymbol;
         private SymbolDetailsTemplateViewModel _cellSymbol;
         private LightAmbientTemplateViewModel _accentLighting;
@@ -42,160 +43,165 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private double _wallLightIntensity;
         private double _wallLightFillRatio;
         private bool _hasWallLights;
-        private double _lightingThreshold;        
+        private double _lightingThreshold;
 
-        public double WidthRatio
-        {
-            get { return _widthRatio; }
-            set { this.RaiseAndSetIfChanged(ref _widthRatio, value); }
-        }
-        public double HeightRatio
-        {
-            get { return _heightRatio; }
-            set { this.RaiseAndSetIfChanged(ref _heightRatio, value); }
-        }
-        public double RoomColumnRatio
-        {
-            get { return _roomColumnRatio; }
-            set { this.RaiseAndSetIfChanged(ref _roomColumnRatio, value); }
-        }
-        public double RoomRowRatio
-        {
-            get { return _roomRowRatio; }
-            set { this.RaiseAndSetIfChanged(ref _roomRowRatio, value); }
-        }
-        public double FillRatioRooms
-        {
-            get { return _fillRatioRooms; }
-            set { this.RaiseAndSetIfChanged(ref _fillRatioRooms, value); }
-        }
-        public double FillRatioCorridors
-        {
-            get { return _fillRatioCorridors; }
-            set { this.RaiseAndSetIfChanged(ref _fillRatioCorridors, value); }
-        }
-        public double RoomSize
-        {
-            get { return _roomSize; }
-            set { this.RaiseAndSetIfChanged(ref _roomSize, value); }
-        }
-        public double RoomSizeErradicity
-        {
-            get { return _roomSizeErradicity; }
-            set { this.RaiseAndSetIfChanged(ref _roomSizeErradicity, value); }
-        }
-        public double RandomRoomSpacing
-        {
-            get { return _randomRoomSpacing; }
-            set { this.RaiseAndSetIfChanged(ref _randomRoomSpacing, value); }
-        }
-        public double RandomRoomSeparationRatio
-        {
-            get { return _randomRoomSeparationRatio; }
-            set { this.RaiseAndSetIfChanged(ref _randomRoomSeparationRatio, value); }
-        }
-        public double HiddenDoorProbability
-        {
-            get { return _hiddenDoorProbability; }
-            set { this.RaiseAndSetIfChanged(ref _hiddenDoorProbability, value); }
-        }
-        public double CellularAutomataFillRatio
-        {
-            get { return _cellularAutomataFillRatio; }
-            set { this.RaiseAndSetIfChanged(ref _cellularAutomataFillRatio, value); }
-        }
-        public double MazeHorizontalVerticalBias
-        {
-            get { return _mazeHorizontalVerticalBias; }
-            set { this.RaiseAndSetIfChanged(ref _mazeHorizontalVerticalBias, value); }
-        }
-        public double MazeWallRemovalRatio
-        {
-            get { return _mazeWallRemovalRatio; }
-            set { this.RaiseAndSetIfChanged(ref _mazeWallRemovalRatio, value); }
-        }
-        public double ElevationFrequency
-        {
-            get { return _elevationFrequency; }
-            set { this.RaiseAndSetIfChanged(ref _elevationFrequency, value); }
-        }
-        public double ElevationSelector
-        {
-            get { return _elevationSelector; }
-            set { this.RaiseAndSetIfChanged(ref _elevationSelector, value); }
-        }
-        public bool MakeSymmetric
-        {
-            get { return _makeSymmetric; }
-            set { this.RaiseAndSetIfChanged(ref _makeSymmetric, value); }
-        }
-        public LayoutType Type
-        {
-            get { return _type; }
-            set { this.RaiseAndSetIfChanged(ref _type, value); }
-        }
-        public LayoutCellularAutomataType CellularAutomataType
-        {
-            get { return _cellularAutomataType; }
-            set { this.RaiseAndSetIfChanged(ref _cellularAutomataType, value); }
-        }
-        public LayoutConnectionType ConnectionType
-        {
-            get { return _connectionType; }
-            set { this.RaiseAndSetIfChanged(ref _connectionType, value); }
-        }
-        public LayoutSymmetryType SymmetryType
-        {
-            get { return _symmetryType; }
-            set { this.RaiseAndSetIfChanged(ref _symmetryType, value); }
-        }
-        public SymbolDetailsTemplateViewModel WallSymbol
-        {
-            get { return _wallSymbol; }
-            set { this.RaiseAndSetIfChanged(ref _wallSymbol, value); }
-        }
-        public SymbolDetailsTemplateViewModel DoorSymbol
-        {
-            get { return _doorSymbol; }
-            set { this.RaiseAndSetIfChanged(ref _doorSymbol, value); }
-        }
-        public SymbolDetailsTemplateViewModel CellSymbol
-        {
-            get { return _cellSymbol; }
-            set { this.RaiseAndSetIfChanged(ref _cellSymbol, value); }
-        }
-        public LightAmbientTemplateViewModel AccentLighting
-        {
-            get { return _accentLighting; }
-            set { this.RaiseAndSetIfChanged(ref _accentLighting, value); }
-        }
-        public LightTemplateViewModel WallLight
-        {
-            get { return _wallLight; }
-            set { this.RaiseAndSetIfChanged(ref _wallLight, value); }
-        }
-        public double WallLightIntensity
-        {
-            get { return _wallLightIntensity; }
-            set { this.RaiseAndSetIfChanged(ref _wallLightIntensity, value); }
-        }
-        public double WallLightFillRatio
-        {
-            get { return _wallLightFillRatio; }
-            set { this.RaiseAndSetIfChanged(ref _wallLightFillRatio, value); }
-        }
-        public bool HasWallLights
-        {
-            get { return _hasWallLights; }
-            set { this.RaiseAndSetIfChanged(ref _hasWallLights, value); }
-        }
-        public double LightingThreshold
-        {
-            get { return _lightingThreshold; }
-            set { this.RaiseAndSetIfChanged(ref _lightingThreshold, value); }
-        }
+		public double WidthRatio
+		{
+			get { return _widthRatio; }
+			set { this.RaiseAndSetIfChanged(ref _widthRatio, value); }
+		}
+		public double HeightRatio
+		{
+			get { return _heightRatio; }
+			set { this.RaiseAndSetIfChanged(ref _heightRatio, value); }
+		}
+		public double RoomColumnRatio
+		{
+			get { return _roomColumnRatio; }
+			set { this.RaiseAndSetIfChanged(ref _roomColumnRatio, value); }
+		}
+		public double RoomRowRatio
+		{
+			get { return _roomRowRatio; }
+			set { this.RaiseAndSetIfChanged(ref _roomRowRatio, value); }
+		}
+		public double FillRatioRooms
+		{
+			get { return _fillRatioRooms; }
+			set { this.RaiseAndSetIfChanged(ref _fillRatioRooms, value); }
+		}
+		public double FillRatioCorridors
+		{
+			get { return _fillRatioCorridors; }
+			set { this.RaiseAndSetIfChanged(ref _fillRatioCorridors, value); }
+		}
+		public double RoomSize
+		{
+			get { return _roomSize; }
+			set { this.RaiseAndSetIfChanged(ref _roomSize, value); }
+		}
+		public double RoomSizeErradicity
+		{
+			get { return _roomSizeErradicity; }
+			set { this.RaiseAndSetIfChanged(ref _roomSizeErradicity, value); }
+		}
+		public double RandomRoomSpacing
+		{
+			get { return _randomRoomSpacing; }
+			set { this.RaiseAndSetIfChanged(ref _randomRoomSpacing, value); }
+		}
+		public double RandomRoomSeparationRatio
+		{
+			get { return _randomRoomSeparationRatio; }
+			set { this.RaiseAndSetIfChanged(ref _randomRoomSeparationRatio, value); }
+		}
+		public double MazeHorizontalVerticalBias
+		{
+			get { return _mazeHorizontalVerticalBias; }
+			set { this.RaiseAndSetIfChanged(ref _mazeHorizontalVerticalBias, value); }
+		}
+		public double MazeWallRemovalRatio
+		{
+			get { return _mazeWallRemovalRatio; }
+			set { this.RaiseAndSetIfChanged(ref _mazeWallRemovalRatio, value); }
+		}
+		public double ElevationFrequency
+		{
+			get { return _elevationFrequency; }
+			set { this.RaiseAndSetIfChanged(ref _elevationFrequency, value); }
+		}
+		public double ElevationSelector
+		{
+			get { return _elevationSelector; }
+			set { this.RaiseAndSetIfChanged(ref _elevationSelector, value); }
+		}
+		public double HiddenDoorProbability
+		{
+			get { return _hiddenDoorProbability; }
+			set { this.RaiseAndSetIfChanged(ref _hiddenDoorProbability, value); }
+		}
+		public double CellularAutomataFillRatio
+		{
+			get { return _cellularAutomataFillRatio; }
+			set { this.RaiseAndSetIfChanged(ref _cellularAutomataFillRatio, value); }
+		}
+		public bool MakeSymmetric
+		{
+			get { return _makeSymmetric; }
+			set { this.RaiseAndSetIfChanged(ref _makeSymmetric, value); }
+		}
+		public LayoutType Type
+		{
+			get { return _type; }
+			set { this.RaiseAndSetIfChanged(ref _type, value); }
+		}
+		public LayoutCellularAutomataType CellularAutomataType
+		{
+			get { return _cellularAutomataType; }
+			set { this.RaiseAndSetIfChanged(ref _cellularAutomataType, value); }
+		}
+		public LayoutConnectionType ConnectionType
+		{
+			get { return _connectionType; }
+			set { this.RaiseAndSetIfChanged(ref _connectionType, value); }
+		}
+		public LayoutSymmetryType SymmetryType
+		{
+			get { return _symmetryType; }
+			set { this.RaiseAndSetIfChanged(ref _symmetryType, value); }
+		}
+		public SymbolDetailsTemplateViewModel WallSymbol
+		{
+			get { return _wallSymbol; }
+			set { this.RaiseAndSetIfChanged(ref _wallSymbol, value); }
+		}
+		public SymbolDetailsTemplateViewModel WallLightSymbol
+		{
+			get { return _wallLightSymbol; }
+			set { this.RaiseAndSetIfChanged(ref _wallLightSymbol, value); }
+		}
+		public SymbolDetailsTemplateViewModel DoorSymbol
+		{
+			get { return _doorSymbol; }
+			set { this.RaiseAndSetIfChanged(ref _doorSymbol, value); }
+		}
+		public SymbolDetailsTemplateViewModel CellSymbol
+		{
+			get { return _cellSymbol; }
+			set { this.RaiseAndSetIfChanged(ref _cellSymbol, value); }
+		}
+		public LightAmbientTemplateViewModel AccentLighting
+		{
+			get { return _accentLighting; }
+			set { this.RaiseAndSetIfChanged(ref _accentLighting, value); }
+		}
+		public LightTemplateViewModel WallLight
+		{
+			get { return _wallLight; }
+			set { this.RaiseAndSetIfChanged(ref _wallLight, value); }
+		}
+		public double WallLightIntensity
+		{
+			get { return _wallLightIntensity; }
+			set { this.RaiseAndSetIfChanged(ref _wallLightIntensity, value); }
+		}
+		public double WallLightFillRatio
+		{
+			get { return _wallLightFillRatio; }
+			set { this.RaiseAndSetIfChanged(ref _wallLightFillRatio, value); }
+		}
+		public bool HasWallLights
+		{
+			get { return _hasWallLights; }
+			set { this.RaiseAndSetIfChanged(ref _hasWallLights, value); }
+		}
+		public double LightingThreshold
+		{
+			get { return _lightingThreshold; }
+			set { this.RaiseAndSetIfChanged(ref _lightingThreshold, value); }
+		}
 
-        public ObservableCollection<TerrainLayerGenerationTemplateViewModel> TerrainLayers { get; set; }
+		public ObservableCollection<TerrainLayerGenerationTemplateViewModel> TerrainLayers { get; set; }
 
         public LayoutTemplateViewModel() : base()
         {
@@ -208,6 +214,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.MazeWallRemovalRatio = 0.5;
 
             this.WallSymbol = new SymbolDetailsTemplateViewModel();
+			this.WallLightSymbol = new SymbolDetailsTemplateViewModel();
             this.DoorSymbol = new SymbolDetailsTemplateViewModel();
             this.CellSymbol = new SymbolDetailsTemplateViewModel();
 

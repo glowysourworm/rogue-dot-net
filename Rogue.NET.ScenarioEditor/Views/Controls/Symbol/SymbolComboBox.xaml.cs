@@ -7,6 +7,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
@@ -45,7 +46,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 return new SymbolDetailsTemplateViewModel()
                 {
                     SymbolPath = symbol,
-                    SymbolType = SymbolType.Game
+                    SymbolType = SymbolType.Game,
+                    BackgroundColor = Colors.Transparent.ToString(),
+                    SymbolSize = CharacterSymbolSize.Large
                 };
             });
         }

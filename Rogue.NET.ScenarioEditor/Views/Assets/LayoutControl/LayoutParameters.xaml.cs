@@ -76,5 +76,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.LayoutControl
         {
             DialogWindowFactory.ShowSymbolEditor((this.DataContext as LayoutTemplateViewModel).CellSymbol);
         }
+
+        private void EditWallLightSymbolButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogWindowFactory.ShowSymbolEditor((this.DataContext as LayoutTemplateViewModel).WallLightSymbol);
+        }
     }
 }

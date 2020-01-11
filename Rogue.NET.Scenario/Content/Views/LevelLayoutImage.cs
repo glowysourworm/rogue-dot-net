@@ -126,7 +126,7 @@ namespace Rogue.NET.Scenario.Content.Views
 
                         // Wall Lights
                         else if (cell.IsWallLight)
-                            cellImage = GetSymbol(layoutTemplate.DoorSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
+                            cellImage = GetSymbol(layoutTemplate.WallLightSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
 
                         // Walls
                         else if (cell.IsWall)
