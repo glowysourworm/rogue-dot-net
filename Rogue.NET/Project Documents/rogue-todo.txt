@@ -3465,4 +3465,30 @@ IMMEDIATE TODO'S:
 		2) Create "Alert Color" for Altered state. Something like "Red (for) Burning" - use to color the entire UI when something bad happens !!!
 		
 		3) Make sure that equipment items have a purpose - i.e. Orbs, Amulets, Rings all have DIFFERENT alteration support. Specific purposes (types of purposes).
+		
+	MORE PERFORMANCE:
+	
+		THE LATEST RENDERING CODE HAS LOTS OF HEADROOM FOR GREATER VISIBILITY RADIUS:
+		
+			- Can basically open up to around 20 WITHOUT ANY NOTICABLE IMPACT.
+			
+			I'm thinking this could be basically removed entirely IF the enemies had a way to limit their visibility search:
+			
+				- Search until primary goal is found
+				- Search until decision number becomes determined:
+				
+					DECISION = REWARD - MOVEMENT COST
+				
+				- As soon as this becomes clear (highest number) - iterating can cease; and the best goal will
+				  be pursued.
+				  
+			MAIN PROBLEM:  VISIILITY & PATH FINDING DON'T WORK AS ONE. 
+			
+				If there was a way to use Dijkstra's algorithm to ALSO calculate visibility - then it would be basically a 
+				one-time run for all non-player character turn-based AI calculating.
+
+			OPTION:  LIMIT VISIBILITY SEARCH RADIUS FOR NON-PLAYER CHARACTERS.
+			
+				What does this search provide? It provides visible GOALS for the character. So, if it had to happen - this
+				radius could be kept small (maybe 10 at the max)
 			

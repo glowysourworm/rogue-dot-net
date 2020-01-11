@@ -122,11 +122,48 @@ namespace Rogue.NET.Scenario.Content.Views
                         DrawingImage cellImage = null;
                         IEnumerable<DrawingImage> terrainImages = null;
 
-                        // Terrain - Render using the terrain template
-                        if (layoutGrid.TerrainMaps.Any(map => map[column, row] != null))
+                        // TERRAIN:  Check current cell and adjacent cells to see whether it is fill / edge terrain cell
+                        var terrainMaps = layoutGrid.TerrainMaps.Where(map => map[column, row] != null);
+                        var isWalkable = layoutGrid.WalkableMap[column, row] != null;
+
+                        // Terrain Edge - If walkable - may be on the EDGE of terrain
+                        if (isWalkable && !terrainMaps.Any())
+                        {
+                            var adjacentTerrainMaps = layoutGrid.GetAdjacentCells(column, row)
+                                                                .Where(cell => layoutGrid.TerrainMaps.Any(map => map[cell] != null))
+                                                                .SelectMany(cell =>
+                                                                {
+                                                                    // Adjacent terrain layers
+                                                                    return layoutGrid.TerrainMaps.Where(map => map[cell] != null);
+                                                                })
+                                                                .Actualize();
+
+                            var adjacentLayerNames = adjacentTerrainMaps.Select(map => map.Name);
+
+                            // Select the layer templates from the configuration data
+                            var adjacentLayerTemplates = layoutTemplate.TerrainLayers.Where(layer => layer.TerrainLayer.HasEdgeSymbol &&
+                                                                                                     adjacentLayerNames.Contains(layer.TerrainLayer.Name));
+
+                            // ORDER LAYERS BY Z-INDEX (see TerrainLayer enum) (USING DESCENDING TO CHOOSE THE TOP-MOST LAYER)
+                            var adjacentTerrainLayer = adjacentLayerTemplates.OrderByDescending(x => x.TerrainLayer.Layer)
+                                                                             .FirstOrDefault();
+
+                            // Fetch images for the terrain
+                            if (adjacentTerrainLayer != null)
+                            {
+                                terrainImages = new DrawingImage[] { GetSymbol(adjacentTerrainLayer.TerrainLayer.EdgeSymbolDetails,
+                                                                               isVisible,
+                                                                               cell.IsExplored,
+                                                                               cell.IsRevealed,
+                                                                               effectiveVision,
+                                                                               cell.Lights) };
+                            }
+                        }
+
+                        // Terrain Fill - Render using the terrain template
+                        else if (terrainMaps.Any())
                         {
                             // Get the terrain layer names
-                            var terrainMaps = layoutGrid.TerrainMaps.Where(map => map[column, row] != null);
                             var layerNames = terrainMaps.Select(map => map.Name);
 
                             // Select the layer templates from the configuration data
@@ -138,35 +175,43 @@ namespace Rogue.NET.Scenario.Content.Views
                                                                {
                                                                    var map = terrainMaps.First(map => map.Name == layer.Name);
 
-                                                                   // Check for region edge
-                                                                   if (map[column, row].IsEdge(column, row))
-                                                                       return layer.TerrainLayer.EdgeSymbolDetails;
+                                                                   //// Check for region edge
+                                                                   //if (map[column, row].IsEdge(column, row))
+                                                                   //    return layer.TerrainLayer.EdgeSymbolDetails;
 
-                                                                   else
+                                                                   //else
                                                                        return layer.TerrainLayer.FillSymbolDetails;
                                                                })
                                                                .Actualize();
 
                             // Fetch images for the terrain
-                            terrainImages = terrainSymbols.Select(symbol => GetSymbol(symbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights))
-                                                          .Actualize();
+                            if (terrainSymbols.Any())
+                            {
+                                terrainImages = terrainSymbols.Select(symbol => GetSymbol(symbol, isVisible, 
+                                                                                          cell.IsExplored, cell.IsRevealed, 
+                                                                                          effectiveVision, cell.Lights)).Actualize();
+                            }
                         }
 
-                        // Doors
-                        else if (cell.IsDoor)
-                            cellImage = GetSymbol(layoutTemplate.DoorSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
+                        // NO TERRAIN - RENDER LAYOUT
+                        if (terrainImages == null)
+                        {
+                            // Doors
+                            if (cell.IsDoor)
+                                cellImage = GetSymbol(layoutTemplate.DoorSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
 
-                        // Wall Lights
-                        else if (cell.IsWallLight)
-                            cellImage = GetSymbol(layoutTemplate.WallLightSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
+                            // Wall Lights
+                            else if (cell.IsWallLight)
+                                cellImage = GetSymbol(layoutTemplate.WallLightSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
 
-                        // Walls
-                        else if (cell.IsWall)
-                            cellImage = GetSymbol(layoutTemplate.WallSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
+                            // Walls
+                            else if (cell.IsWall)
+                                cellImage = GetSymbol(layoutTemplate.WallSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
 
-                        // Walkable Cells
-                        else
-                            cellImage = GetSymbol(layoutTemplate.CellSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
+                            // Walkable Cells
+                            else
+                                cellImage = GetSymbol(layoutTemplate.CellSymbol, isVisible, cell.IsExplored, cell.IsRevealed, effectiveVision, cell.Lights);
+                        }
 
                         // Render the DrawingImage to a bitmap (from cache) and copy pixels to the rendering target
                         var cellImages = terrainImages ?? new DrawingImage[] { cellImage };

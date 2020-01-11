@@ -11,8 +11,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         TerrainLayoutType _layoutType;
         TerrainConnectionType _connectionType;
         TerrainMaskingType _maskingType;
-        bool _isPassable;
+        bool _isPassable;        
         bool _emitsLight;
+        bool _hasEdgeSymbol;
         TerrainLayer _layer;
         SymbolDetailsTemplate _edgeSymbolDetails;
         SymbolDetailsTemplate _fillSymbolDetails;
@@ -27,6 +28,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         {
             get { return _emitsLight; }
             set { this.RaiseAndSetIfChanged(ref _emitsLight, value); }
+        }
+        public bool HasEdgeSymbol
+        {
+            get { return _hasEdgeSymbol; }
+            set { this.RaiseAndSetIfChanged(ref _hasEdgeSymbol, value); }
         }
         public TerrainLayer Layer
         {
@@ -74,6 +80,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.EdgeSymbolDetails = new SymbolDetailsTemplate();
             this.FillSymbolDetails = new SymbolDetailsTemplate();
             this.EmittedLight = new LightTemplate();
+
+            this.HasEdgeSymbol = false;
         }
     }
 }

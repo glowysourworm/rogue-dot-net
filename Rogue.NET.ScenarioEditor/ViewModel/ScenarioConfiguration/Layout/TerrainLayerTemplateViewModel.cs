@@ -11,6 +11,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         TerrainMaskingType _maskingType;
         bool _isPassable;
         bool _emitsLight;
+        bool _hasEdgeSymbol;
         TerrainLayer _layer;
         SymbolDetailsTemplateViewModel _edgeSymbolDetails;
         SymbolDetailsTemplateViewModel _fillSymbolDetails;
@@ -25,6 +26,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         {
             get { return _emitsLight; }
             set { this.RaiseAndSetIfChanged(ref _emitsLight, value); }
+        }
+        public bool HasEdgeSymbol
+        {
+            get { return _hasEdgeSymbol; }
+            set { this.RaiseAndSetIfChanged(ref _hasEdgeSymbol, value); }
         }
         public TerrainLayer Layer
         {
@@ -72,6 +78,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.EdgeSymbolDetails = new SymbolDetailsTemplateViewModel();
             this.FillSymbolDetails = new SymbolDetailsTemplateViewModel();
             this.EmittedLight = new LightTemplateViewModel();
+            this.HasEdgeSymbol = false;
         }
     }
 }

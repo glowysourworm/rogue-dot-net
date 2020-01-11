@@ -87,7 +87,8 @@
                             </StackPanel>
                         </Button>
                     </Grid>
-                    <Grid Margin="5">
+                    <Grid Margin="5"
+                          Visibility="{Binding HasEdgeSymbol, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                         <TextBlock Text="Edge Symbol" Foreground="White" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                         <Button x:Name="EditEdgeSymbolButton" Click="EditEdgeSymbolButton_Click" Padding="6" Cursor="Hand" HorizontalAlignment="Right">
                             <StackPanel Orientation="Horizontal">
@@ -96,6 +97,10 @@
                             </StackPanel>
                         </Button>
                     </Grid>
+                    <Grid Margin="5">
+                        <TextBlock Text="Has Edge (Symbol)" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding HasEdgeSymbol}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>                    
                     <Grid Margin="5">
                         <TextBlock Text="Is Passable" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <CheckBox IsChecked="{Binding IsPassable}" HorizontalAlignment="Right" VerticalAlignment="Center" />

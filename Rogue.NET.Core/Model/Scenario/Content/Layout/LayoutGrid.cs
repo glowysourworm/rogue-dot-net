@@ -299,17 +299,33 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             return _grid.GetAdjacentElements(location.Column, location.Row).Select(cell => cell.Location);
         }
+        public IEnumerable<GridLocation> GetAdjacentLocations(int column, int row)
+        {
+            return _grid.GetAdjacentElements(column, row).Select(cell => cell.Location);
+        }
         public IEnumerable<GridLocation> GetCardinarlAdjacentLocations(GridLocation location)
         {
             return _grid.GetCardinalAdjacentElements(location.Column, location.Row).Select(cell => cell.Location);
+        }
+        public IEnumerable<GridLocation> GetCardinarlAdjacentLocations(int column, int row)
+        {
+            return _grid.GetCardinalAdjacentElements(column, row).Select(cell => cell.Location);
         }
         public IEnumerable<GridCell> GetAdjacentCells(GridCell cell)
         {
             return _grid.GetAdjacentElements(cell.Location.Column, cell.Location.Row);
         }
+        public IEnumerable<GridCell> GetAdjacentCells(int column, int row)
+        {
+            return _grid.GetAdjacentElements(column, row);
+        }
         public IEnumerable<GridCell> GetCardinarlAdjacentCells(GridCell cell)
         {
             return _grid.GetCardinalAdjacentElements(cell.Location.Column, cell.Location.Row);
+        }
+        public IEnumerable<GridCell> GetCardinarlAdjacentCells(int column, int row)
+        {
+            return _grid.GetCardinalAdjacentElements(column, row);
         }
         public GridCell GetOffDiagonalCell1(GridLocation location, Compass direction, out Compass cardinalDirection1)
         {
