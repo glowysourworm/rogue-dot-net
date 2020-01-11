@@ -20,6 +20,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Rogue.NET.Scenario.Processing.Service
 {
@@ -62,72 +63,42 @@ namespace Rogue.NET.Scenario.Processing.Service
             _modelService = modelService;
         }
 
-        public void CreateRenderingMask(GeometryDrawing[,] renderingMask)
+        public Brush CreateRenderingMask()
         {
-            var pen = new Pen(Brushes.Transparent, 0.0);
-            pen.Freeze();
+            var bounds = new Rect(new Size(this.LevelUIWidth, this.LevelUIHeight));
+            var bitmap = new WriteableBitmap(this.LevelUIWidth, this.LevelUIHeight, 96, 96, PixelFormats.Pbgra32, null);
 
-            var visibleBrush = new SolidColorBrush(Color.FromArgb(0x00, 0x00, 0x00, 0x00));
-            visibleBrush.Freeze();
-
-            var exploredBrush = new SolidColorBrush(Color.FromArgb(0x3F, 0x00, 0x00, 0x00));
-            exploredBrush.Freeze();
-
-            var revealedBrush = new SolidColorBrush(Color.FromArgb(0x3F, 0x0F, 0x03, 0x03));
-            revealedBrush.Freeze();
-
-            var opaqueBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
-            opaqueBrush.Freeze();
-
-            for (int i = 0; i < this.LevelWidth; i++)
+            using (var context = bitmap.GetBitmapContext())
             {
-                for (int j = 0; j < this.LevelHeight; j++)
+                for (int i = 0; i < this.LevelWidth; i++)
                 {
-                    if (_modelService.Level.Grid[i, j] == null)
-                        continue;
-
-                    var cell = _modelService.Level.Grid[i, j];
-
-                    var rectangle = new RectangleGeometry(_scenarioUIGeometryService.Cell2UIRect(cell.Location, false));
-                    rectangle.Freeze();
-
-                    // Visible
-                    if (_modelService.Level.Movement.IsVisible(cell.Location))
+                    for (int j = 0; j < this.LevelHeight; j++)
                     {
-                        var drawing = new GeometryDrawing(visibleBrush, pen, rectangle);
-                        drawing.Freeze();
+                        if (_modelService.Level.Grid[i, j] == null)
+                            continue;
 
-                        renderingMask[i, j] = drawing;
-                    }
+                        var cell = _modelService.Level.Grid[i, j];
+                        var rect = _scenarioUIGeometryService.Cell2UIRect(i, j);
 
-                    // Explored
-                    else if (cell.IsExplored)
-                    {
-                        var drawing = new GeometryDrawing(exploredBrush, pen, rectangle);
-                        drawing.Freeze();
+                        // Visible
+                        if (_modelService.Level.Movement.IsVisible(cell.Location))
+                            context.WriteableBitmap.FillRectangle((int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom, Colors.White);
 
-                        renderingMask[i, j] = drawing;
-                    }
-
-                    // Revealed
-                    else if (cell.IsRevealed)
-                    {
-                        var drawing = new GeometryDrawing(revealedBrush, pen, rectangle);
-                        drawing.Freeze();
-
-                        renderingMask[i, j] = drawing;
-                    }
-
-                    // Unknown
-                    else
-                    {
-                        var drawing = new GeometryDrawing(opaqueBrush, pen, rectangle);
-                        drawing.Freeze();
-
-                        renderingMask[i, j] = drawing;
+                        else
+                            context.WriteableBitmap.DrawRectangle((int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom, Colors.Transparent);
                     }
                 }
             }
+
+            var mask = new ImageBrush(bitmap);
+
+            mask.Stretch = Stretch.None;
+            mask.Viewbox = bounds;
+            mask.Viewport = bounds;
+            mask.ViewboxUnits = BrushMappingMode.Absolute;
+            mask.ViewportUnits = BrushMappingMode.Absolute;
+
+            return mask;
         }
 
         public Geometry CreateOutlineGeometry(IEnumerable<GridLocation> locations)

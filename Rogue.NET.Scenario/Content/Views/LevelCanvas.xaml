@@ -33,7 +33,7 @@
                                       
                     <!-- Layout Layer -->
                     <region:RogueRegion HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"     
+                                        VerticalAlignment="Stretch"                                        
                                         region:RogueRegionManager.DefaultViewType="{x:Type local:LevelLayoutImage}"
                                         Width="{Binding LevelWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}"
                                         Height="{Binding LevelHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:LevelCanvas}}}">
@@ -85,7 +85,7 @@
 
                     <!-- Characters (Except Player) -->
                     <ItemsControl x:Name="CharacterItemsControl"
-                                  ItemsSource="{Binding Characters}" 
+                                  ItemsSource="{Binding Characters}"                                   
                                   BorderBrush="Transparent" 
                                   BorderThickness="0"
                                   Width="{Binding LevelWidth}"
@@ -125,7 +125,7 @@
                     <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->
                     <ItemsControl x:Name="AnimationItemsControl"
                                   ItemsSource="{Binding Animations}" 
-                                  OpacityMask="{Binding VisibileOpacityMask}" 
+                                  OpacityMask="{Binding VisibleOpacityMask}"
                                   BorderBrush="Transparent" 
                                   BorderThickness="0"
                                   Width="{Binding LevelWidth}"

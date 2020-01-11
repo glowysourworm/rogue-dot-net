@@ -19,7 +19,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
     public interface ILevelCanvasViewModel : INotifyPropertyChanged
     {
         DrawingImage[,] VisibleLayer { get; set; }
-        DrawingBrush VisibileOpacityMask { get; set; }
+        Brush VisibleOpacityMask { get; set; }
 
         /// <summary>
         /// Layer of Visuals for the Auras

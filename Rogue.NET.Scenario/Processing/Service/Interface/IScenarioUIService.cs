@@ -22,7 +22,7 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
         int LevelUIWidth { get; }
         int LevelUIHeight { get; }
 
-        void CreateRenderingMask(GeometryDrawing[,] renderingMask);
+        Brush CreateRenderingMask();
 
         Geometry CreateOutlineGeometry(IEnumerable<GridLocation> locations);
         

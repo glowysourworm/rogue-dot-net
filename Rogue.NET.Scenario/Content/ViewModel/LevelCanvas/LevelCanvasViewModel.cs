@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -35,7 +36,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         DrawingImage[,] _layoutLayer;
 
         // Opacity Mask for masking UI layers with respect to the player's visual range
-        DrawingBrush _visibileOpacityMask;
+        Brush _visibileOpacityMask;
 
         // Player (separate from contents)
         LevelCanvasImage _player;
@@ -54,13 +55,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.Items = new ObservableCollection<LevelCanvasImage>();
             this.Characters = new ObservableCollection<LevelCanvasImage>();
 
-            this.VisibileOpacityMask = new DrawingBrush();
+            this.VisibleOpacityMask = new ImageBrush();
 
-            RenderOptions.SetBitmapScalingMode(this.VisibileOpacityMask, BitmapScalingMode.LowQuality);
-            RenderOptions.SetCachingHint(this.VisibileOpacityMask, CachingHint.Cache);
-
-            this.VisibileOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
-            this.VisibileOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
+            RenderOptions.SetBitmapScalingMode(this.VisibleOpacityMask, BitmapScalingMode.LowQuality);
+            RenderOptions.SetCachingHint(this.VisibleOpacityMask, CachingHint.Cache);
         }
 
         #region (public) Properties
@@ -69,7 +67,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             get { return _layoutLayer; }
             set { this.RaiseAndSetIfChanged(ref _layoutLayer, value); }
         }
-        public DrawingBrush VisibileOpacityMask
+        public Brush VisibleOpacityMask
         {
             get { return _visibileOpacityMask; }
             set { this.RaiseAndSetIfChanged(ref _visibileOpacityMask, value); }
@@ -201,17 +199,18 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// </summary>
         public void UpdateLayoutVisibility(IEnumerable<GridLocation> visibleLocations)
         {
-            var visibleGeometry = _scenarioUIService.CreateOutlineGeometry(visibleLocations);
 
-            // FREEZE TO BOOST RENDERING PERFORMANCE
-            visibleGeometry.Freeze();
+            //// FREEZE TO BOOST RENDERING PERFORMANCE
+            //visibleGeometry.Freeze();
 
-            // Top Layer = Visible Mask ^ Explored Mask ^ Revealed Mask
-            this.VisibileOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
-                                                                     new Pen(Brushes.Transparent, 0),
-                                                                     visibleGeometry);
+            //// Top Layer = Visible Mask ^ Explored Mask ^ Revealed Mask
+            //this.VisibileOpacityMask.Drawing = new GeometryDrawing(ModelConstants.FrontEnd.LevelBackground,
+            //                                                         new Pen(Brushes.Transparent, 0),
+            //                                                         visibleGeometry);
 
-            OnPropertyChanged(() => this.VisibileOpacityMask);
+            this.VisibleOpacityMask = _scenarioUIService.CreateRenderingMask();
+
+            OnPropertyChanged(() => this.VisibleOpacityMask);
 
             if (this.VisibilityUpdated != null)
                 this.VisibilityUpdated();
@@ -250,8 +249,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             // Fix Drawing Brush Properties
             //
-            this.VisibileOpacityMask.Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
-            this.VisibileOpacityMask.Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+            if (this.VisibleOpacityMask != null)
+            {
+                (this.VisibleOpacityMask as ImageBrush).Viewport = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+                (this.VisibleOpacityMask as ImageBrush).Viewbox = new Rect(0, 0, _scenarioUIService.LevelUIWidth, _scenarioUIService.LevelUIHeight);
+            }
         }
         #endregion
 

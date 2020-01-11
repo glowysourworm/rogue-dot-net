@@ -3491,4 +3491,17 @@ IMMEDIATE TODO'S:
 			
 				What does this search provide? It provides visible GOALS for the character. So, if it had to happen - this
 				radius could be kept small (maybe 10 at the max)
+				
+		VISIBILITY:
+		
+			May want to base Player visibility calculation on AMBIENT lighting - problem with "Light Radius", "Vision", and "Effective Light Intensity"
+			all coming together:
+			
+				- How to create "Torch"? ... "Adds light source near the player".. but this won't open up new visible range unless the calculation for
+				  effective range depends on the "Lighting"... .. So, how to calculate this range? Maybe base it on the Ambient light (?) But this won'tab
+				  work because if you're close to a light source you'll want to see it from farther away. 
+				  
+				- So, it will have to be taken into account when calculating visibility. "IsDark" won't necessarily end the scan. There may be Light cells
+				  out further. However, the effective intensity calculation should show these light sources to "Pop" more. So, probably will want to 
+				  weight them more heavily. 
 			

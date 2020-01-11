@@ -21,10 +21,10 @@
                          />
 
         <TextBlock Foreground="Red" FontSize="16" Margin="4">
-                    <Run Text="HP: " />
-                    <Run Text="{Binding Hp, StringFormat=F1}" />
+                    <Run Text="Health: " />
+                    <Run Text="{Binding Health, StringFormat=F1}" />
                     <Run Text=" / " />
-                    <Run Text="{Binding HpMax, StringFormat=F1}" />
+                    <Run Text="{Binding HealthMax, StringFormat=F1}" />
         </TextBlock>
 
         <TextBlock Foreground="CornflowerBlue" FontSize="16" Margin="4">

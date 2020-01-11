@@ -50,7 +50,7 @@
 
         </Grid>
 
-        <commonView:ProgressBar Height="20" BarColor1="Red" ValueMax="{Binding HpMax}" Value="{Binding Hp}" Margin="0,2" x:Name="HPBar" VerticalAlignment="Stretch" ValueTextBrush="#FFFFFFAA" Value2="{Binding Hp}" />
+        <commonView:ProgressBar Height="20" BarColor1="Red" ValueMax="{Binding HealthMax}" Value="{Binding Health}" Margin="0,2" x:Name="HPBar" VerticalAlignment="Stretch" ValueTextBrush="#FFFFFFAA" Value2="{Binding Health}" />
         <commonView:ProgressBar Height="20" BarColor1="CornflowerBlue" ValueMax="{Binding StaminaMax}" Value="{Binding Stamina}" Margin="0,2" x:Name="StaminaBar" VerticalAlignment="Stretch" Header="Stamina" ValueTextBrush="Blue" Value2="{Binding Stamina}"/>
         <commonView:ProgressBar Height="20" BarColor1="DarkGreen" ValueMax="100" Value="{Binding Hunger}" Margin="0,2" x:Name="HungerBar" VerticalAlignment="Stretch" Header="Hunger" ValueTextBrush="#FF9AFFA0" Value2="{Binding Hunger}"/>
         <commonView:ProgressBar Height="20" BarColor1="Cyan" ValueMax="{Binding ExperienceNext}" Value="{Binding Experience}" Margin="0,2" x:Name="ExperienceBar" VerticalAlignment="Stretch" Header="Exp" ValueTextBrush="#FF00838E" Value2="{Binding Experience}"/>

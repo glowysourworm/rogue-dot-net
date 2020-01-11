@@ -31,6 +31,8 @@ namespace Rogue.NET.Scenario.Content.Views
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioBitmapSourceFactory _scenarioBitmapSourceFactory;
 
+        List<DrawingImage>[,] _renderingGrid;
+
         WriteableBitmap _rendering;
         bool _firstRendering = true;
 
@@ -54,6 +56,7 @@ namespace Rogue.NET.Scenario.Content.Views
                 // Reset the writeable bitmap
                 _rendering = null;
                 _firstRendering = true;
+                _renderingGrid = null;
 
                 RenderLayout();
             });
@@ -79,6 +82,8 @@ namespace Rogue.NET.Scenario.Content.Views
                                                  LAYOUT_BITMAP_DPI,
                                                  LAYOUT_BITMAP_DPI,
                                                  PixelFormats.Pbgra32, null);
+
+                _renderingGrid = new List<DrawingImage>[_modelService.Level.Grid.Bounds.Width, _modelService.Level.Grid.Bounds.Height];
 
                 this.Source = _rendering;
             }
@@ -219,6 +224,31 @@ namespace Rogue.NET.Scenario.Content.Views
                         if (terrainImages != null ||
                             cellImage != null)
                         {
+                            // CHECK CURRENT LIST OF RENDERED IMAGES FOR THIS LOCATION - DON'T RE-RENDER ANYTHING THAT'S ALREADY RENDERED.
+                            // 
+                            // NOTE*** This check works by reference due to the image cache.
+                            //
+                            if (_renderingGrid[column, row] != null)
+                            {
+                                var rerender = false;
+
+                                foreach (var image in cellImages)
+                                    rerender |= !_renderingGrid[column, row].Contains(image);
+
+                                if (!rerender)
+                                    continue;
+                            }
+
+                            // Try not to allocate memory
+                            if (_renderingGrid[column, row] == null)
+                                _renderingGrid[column, row] = new List<DrawingImage>(cellImages);
+
+                            else
+                            {
+                                _renderingGrid[column, row].Clear();
+                                _renderingGrid[column, row].AddRange(cellImages);
+                            }
+
                             // USE ALPHA BLENDING TO RENDER ALL LAYERS OF THE LAYOUT TOGETHER
                             foreach (var image in cellImages)
                             {
@@ -231,10 +261,18 @@ namespace Rogue.NET.Scenario.Content.Views
                                                           ModelConstants.CellWidth * _modelService.ZoomFactor,
                                                           ModelConstants.CellHeight * _modelService.ZoomFactor);
 
-                                // Use WriteableBitmapEx extension method to overwrite pixels on the target
-                                bitmapContext.WriteableBitmap.Blit(renderRect,
-                                                                   bitmap,
-                                                                   new Rect(new Size(bitmap.Width, bitmap.Height)), WriteableBitmapExtensions.BlendMode.Alpha);
+                                // Select "None" blend mode for optimal performance
+                                var blendMode = cellImages.Count() > 1 ? WriteableBitmapExtensions.BlendMode.Alpha : WriteableBitmapExtensions.BlendMode.None;
+
+                                // https://stackoverflow.com/questions/15540996/performance-of-writeablebitmapex
+                                using (bitmap.GetBitmapContext())
+                                {
+
+                                    // Use WriteableBitmapEx extension method to overwrite pixels on the target
+                                    bitmapContext.WriteableBitmap.Blit(renderRect,
+                                                                       bitmap,
+                                                                       new Rect(new Size(bitmap.Width, bitmap.Height)), blendMode);
+                                }
                             }
                         }
                     }

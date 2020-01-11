@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
@@ -36,23 +35,51 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
         protected struct OctantSlope
         {
-            public double DeltaX { get; private set; }
-            public double DeltaY { get; private set; }
+            private double _deltaX;
+            private double _deltaY;
+            private double _magnitude;
 
-            public double Magnitude
-            {
-                get
-                {
-                    return this.DeltaX == 0 ? (this.DeltaY > 0 ? double.PositiveInfinity :
-                                               this.DeltaY < 0 ? double.NegativeInfinity :
-                                               double.NaN) : this.DeltaY / this.DeltaX;
-                }
-            }
+            public double Magnitude { get { return _magnitude; } }
 
             public OctantSlope(Point point, Point center)
             {
-                this.DeltaX = point.X - center.X;
-                this.DeltaY = point.Y - center.Y;
+                _deltaX = point.X - center.X;
+                _deltaY = point.Y - center.Y;
+
+                if (_deltaX != 0)
+                    _magnitude =  _deltaY / _deltaX;
+
+                else
+                {
+                    if (_deltaY > 0)
+                        _magnitude = double.PositiveInfinity;
+
+                    else if (_deltaY < 0)
+                        _magnitude = double.NegativeInfinity;
+
+                    else
+                        _magnitude = double.NaN;
+                }
+            }
+            public OctantSlope(double deltaX, double deltaY)
+            {
+                _deltaX = deltaX;
+                _deltaY = deltaY;
+
+                if (_deltaX != 0)
+                    _magnitude = _deltaY / _deltaX;
+
+                else
+                {
+                    if (_deltaY > 0)
+                        _magnitude = double.PositiveInfinity;
+
+                    else if (_deltaY < 0)
+                        _magnitude = double.NegativeInfinity;
+
+                    else
+                        _magnitude = double.NaN;
+                }
             }
 
             public static OctantSlope CreateLeadingSlope(GridLocation location, GridLocation center)
@@ -61,11 +88,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
                 CalculateLeadingSlope(location, center, out deltaX, out deltaY);
 
-                return new OctantSlope()
-                {
-                    DeltaX = deltaX,
-                    DeltaY = deltaY
-                };
+                return new OctantSlope(deltaX, deltaY);
             }
 
             public static OctantSlope CreateTrailingSlope(GridLocation location, GridLocation center)
@@ -74,11 +97,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
                 CalculateTrailingSlope(location, center, out deltaX, out deltaY);
 
-                return new OctantSlope()
-                {
-                    DeltaX = deltaX,
-                    DeltaY = deltaY
-                };
+                return new OctantSlope(deltaX, deltaY);
             }
 
             public static OctantSlope CreateCenterSlope(GridLocation location, GridLocation center)
@@ -87,11 +106,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
                 CalculateCenterSlope(location, center, out deltaX, out deltaY);
 
-                return new OctantSlope()
-                {
-                    DeltaX = deltaX,
-                    DeltaY = deltaY
-                };
+                return new OctantSlope(deltaX, deltaY);
             }
         }
 
@@ -490,7 +505,9 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             var slopeLeading = OctantSlope.CreateLeadingSlope(location, center);
             var slopeTrailing = OctantSlope.CreateTrailingSlope(location, center);
 
-            return lightBlockingFeatures.Any(feature =>
+            var featureFound = false;
+
+            foreach (var feature in lightBlockingFeatures)
             {
                 // Need to detect features that cross over the cardinal axes
 
@@ -499,8 +516,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 {
                     // Case 1:  Location is also crossing over the cardinal axis
                     if (slopeLeading.Magnitude.Sign() != slopeTrailing.Magnitude.Sign())
-                        return slopeLeading.Magnitude.Abs() >= feature.LeadingSlope.Magnitude.Abs() &&
-                               slopeTrailing.Magnitude.Abs() >= feature.TrailingSlope.Magnitude.Abs();
+                        featureFound |= slopeLeading.Magnitude.Abs() >= feature.LeadingSlope.Magnitude.Abs() &&
+                                        slopeTrailing.Magnitude.Abs() >= feature.TrailingSlope.Magnitude.Abs();
 
                     // Case 2:  Location is in the quadrant; but the feature is crossing the axis
                     else
@@ -509,23 +526,29 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         {
                             case Octant.NNW:
                             case Octant.SSE:
-                                return slopeCenter.Magnitude >= feature.LeadingSlope.Magnitude;
+                                featureFound |= slopeCenter.Magnitude >= feature.LeadingSlope.Magnitude;
+                                break;
                             case Octant.NNE:
                             case Octant.SSW:
-                                return slopeCenter.Magnitude <= feature.TrailingSlope.Magnitude;
+                                featureFound |= slopeCenter.Magnitude <= feature.TrailingSlope.Magnitude;
+                                break;
                             default:
                                 throw new Exception("Unhandled octant IsLightBlocking");
                         }
                     }
                 }
 
+                // PERFORMANCE OPTIMIZATION
+                if (featureFound)
+                    return featureFound;
+
                 // E | W -> Magnitude (Abs()) of location slopes must be LESS than the feature's magnitudes (Abs())
                 if (feature.LeadingSlope.Magnitude < 0 && feature.TrailingSlope.Magnitude > 0)
                 {
                     // Case 1:  Location is also crossing over the cardinal axis
                     if (slopeLeading.Magnitude.Sign() != slopeTrailing.Magnitude.Sign())
-                        return slopeLeading.Magnitude.Abs() <= feature.LeadingSlope.Magnitude.Abs() &&
-                               slopeTrailing.Magnitude.Abs() <= feature.TrailingSlope.Magnitude.Abs();
+                        featureFound |= slopeLeading.Magnitude.Abs() <= feature.LeadingSlope.Magnitude.Abs() &&
+                                        slopeTrailing.Magnitude.Abs() <= feature.TrailingSlope.Magnitude.Abs();
 
                     // Case 2:  Location is in the quadrant; but the feature is crossing the axis
                     else
@@ -534,20 +557,31 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                         {
                             case Octant.ENE:
                             case Octant.WSW:
-                                return slopeCenter.Magnitude >= feature.LeadingSlope.Magnitude;
+                                featureFound |= slopeCenter.Magnitude >= feature.LeadingSlope.Magnitude;
+                                break;
                             case Octant.ESE:
                             case Octant.WNW:
-                                return slopeCenter.Magnitude <= feature.TrailingSlope.Magnitude;
+                                featureFound |= slopeCenter.Magnitude <= feature.TrailingSlope.Magnitude;
+                                break;
                             default:
                                 throw new Exception("Unhandled octant IsLightBlocking");
                         }
                     }
                 }
 
+                // PERFORMANCE OPTIMIZATION
+                if (featureFound)
+                    return featureFound;
+
                 // Default Case:  All features within the same quadrant - the slope magnitude is always increasing
-                return (slopeLeading.Magnitude.Between(feature.LeadingSlope.Magnitude, feature.TrailingSlope.Magnitude, true) &&
-                        slopeTrailing.Magnitude.Between(feature.LeadingSlope.Magnitude, feature.TrailingSlope.Magnitude, true));
-            });
+                featureFound |= (slopeLeading.Magnitude.Between(feature.LeadingSlope.Magnitude, feature.TrailingSlope.Magnitude, true) &&
+                                slopeTrailing.Magnitude.Between(feature.LeadingSlope.Magnitude, feature.TrailingSlope.Magnitude, true));
+
+                if (featureFound)
+                    return true;
+            }
+
+            return false;
         }
 
         private static Point CalculateCellCenter(GridLocation location)
