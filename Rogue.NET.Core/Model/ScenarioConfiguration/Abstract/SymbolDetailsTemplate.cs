@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Model.Enums;
 
 using System;
 using System.Windows.Media;
@@ -8,249 +9,127 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
     [Serializable]
     public class SymbolDetailsTemplate : Template
     {
+        // REFACTORED SYMBOL EFFECT
+        //
+        // Goals:
+        //
+        //  - Combine Symbol Details "Effect" with this effect data
+        //  - Create a "Filter-like" effect for any circumstance
+        //  - Allow flexability:
+        //      - Color change (Clamp or HSL)
+        //      - Smiley color / expression change
+        //      - Full symbol change (PREVENT CIRCULAR REFERENCE)
+        //      - Size change
+        //  - Minimize parameter space and overlap
+        //  - SHOW INPUT -> OUTPUT SYMBOLS ON THE UI
+        //  - ALLOW BACKGROUND FOR SYMBOL DETAILS
+
         private string _symbolPoolCategory;
         private bool _randomize;
         private SymbolType _symbolType;
+        private CharacterSymbolSize _symbolSize;
+
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
-        private string _characterSymbol;
-        private string _characterSymbolCategory;
-        private string _characterColor;
-        private double _characterScale;
-        private string _symbol;
+
+        private CharacterSymbolEffectType _symbolEffectType;
+        private string _symbolPath;
         private double _symbolHue;
         private double _symbolSaturation;
         private double _symbolLightness;
-        private double _symbolScale;
-        private bool _symbolUseColorMask;
-        private string _gameSymbol;
+        private string _symbolClampColor;
+        private string _backgroundColor;
 
         public string SymbolPoolCategory
         {
             get { return _symbolPoolCategory; }
-            set
-            {
-                if (_symbolPoolCategory != value)
-                {
-                    _symbolPoolCategory = value;
-                    OnPropertyChanged("SymbolPoolCategory");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _symbolPoolCategory, value); }
         }
         public bool Randomize
         {
             get { return _randomize; }
-            set
-            {
-                if (_randomize != value)
-                {
-                    _randomize = value;
-                    OnPropertyChanged("Randomize");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _randomize, value); }
         }
         public SymbolType SymbolType
         {
             get { return _symbolType; }
-            set
-            {
-                if (_symbolType != value)
-                {
-                    _symbolType = value;
-                    OnPropertyChanged("SymbolType");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _symbolType, value); }
+        }
+        public CharacterSymbolSize SymbolSize
+        {
+            get { return _symbolSize; }
+            set { this.RaiseAndSetIfChanged(ref _symbolSize, value); }
         }
         public SmileyExpression SmileyExpression
         {
             get { return _smileyExpression; }
-            set
-            {
-                if (_smileyExpression != value)
-                {
-                    _smileyExpression = value;
-                    OnPropertyChanged("SmileyExpression");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _smileyExpression, value); }
         }
         public string SmileyBodyColor
         {
             get { return _smileyBodyColor; }
-            set
-            {
-                if (_smileyBodyColor != value)
-                {
-                    _smileyBodyColor = value;
-                    OnPropertyChanged("SmileyBodyColor");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _smileyBodyColor, value); }
         }
         public string SmileyLineColor
         {
             get { return _smileyLineColor; }
-            set
-            {
-                if (_smileyLineColor != value)
-                {
-                    _smileyLineColor = value;
-                    OnPropertyChanged("SmileyLineColor");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _smileyLineColor, value); }
         }
-        public string CharacterSymbol
+        public CharacterSymbolEffectType SymbolEffectType
         {
-            get { return _characterSymbol; }
-            set
-            {
-                if (_characterSymbol != value)
-                {
-                    _characterSymbol = value;
-                    OnPropertyChanged("CharacterSymbol");
-                }
-            }
+            get { return _symbolEffectType; }
+            set { this.RaiseAndSetIfChanged(ref _symbolEffectType, value); }
         }
-        public string CharacterSymbolCategory
+        public string SymbolPath
         {
-            get { return _characterSymbolCategory; }
-            set
-            {
-                if (_characterSymbolCategory != value)
-                {
-                    _characterSymbolCategory = value;
-                    OnPropertyChanged("CharacterSymbolCategory");
-                }
-            }
-        }
-        public string CharacterColor
-        {
-            get { return _characterColor; }
-            set
-            {
-                if (_characterColor != value)
-                {
-                    _characterColor = value;
-                    OnPropertyChanged("CharacterColor");
-                }
-            }
-        }
-        public double CharacterScale
-        {
-            get { return _characterScale; }
-            set
-            {
-                if (_characterScale != value)
-                {
-                    _characterScale = value;
-                    OnPropertyChanged("CharacterScale");
-                }
-            }
-        }
-        public string Symbol
-        {
-            get { return _symbol; }
-            set
-            {
-                if (_symbol != value)
-                {
-                    _symbol = value;
-                    OnPropertyChanged("Symbol");
-                }
-            }
+            get { return _symbolPath; }
+            set { this.RaiseAndSetIfChanged(ref _symbolPath, value); }
         }
         public double SymbolHue
         {
             get { return _symbolHue; }
-            set
-            {
-                if (_symbolHue != value)
-                {
-                    _symbolHue = value;
-                    OnPropertyChanged("SymbolHue");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _symbolHue, value); }
         }
         public double SymbolSaturation
         {
             get { return _symbolSaturation; }
-            set
-            {
-                if (_symbolSaturation != value)
-                {
-                    _symbolSaturation = value;
-                    OnPropertyChanged("SymbolSaturation");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _symbolSaturation, value); }
         }
         public double SymbolLightness
         {
             get { return _symbolLightness; }
-            set
-            {
-                if (_symbolLightness != value)
-                {
-                    _symbolLightness = value;
-                    OnPropertyChanged("SymbolLightness");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _symbolLightness, value); }
         }
-        public double SymbolScale
+        public string SymbolClampColor
         {
-            get { return _symbolScale; }
-            set
-            {
-                if (_symbolScale != value)
-                {
-                    _symbolScale = value;
-                    OnPropertyChanged("SymbolScale");
-                }
-            }
+            get { return _symbolClampColor; }
+            set { this.RaiseAndSetIfChanged(ref _symbolClampColor, value); }
         }
-        public bool SymbolUseColorMask
+        public string BackgroundColor
         {
-            get { return _symbolUseColorMask; }
-            set
-            {
-                if (_symbolUseColorMask != value)
-                {
-                    _symbolUseColorMask = value;
-                    OnPropertyChanged("SymbolUseColorMask");
-                }
-            }
+            get { return _backgroundColor; }
+            set { this.RaiseAndSetIfChanged(ref _backgroundColor, value); }
         }
-        public string GameSymbol
-        {
-            get { return _gameSymbol; }
-            set
-            {
-                if (_gameSymbol != value)
-                {
-                    _gameSymbol = value;
-                    OnPropertyChanged("GameSymbol");
-                }
-            }
-        }
+
+
         public SymbolDetailsTemplate()
         {
             this.SymbolType = SymbolType.Smiley;
+            this.SymbolSize = CharacterSymbolSize.Medium;
+            this.SymbolEffectType = CharacterSymbolEffectType.None;
+
+            this.BackgroundColor = Colors.Transparent.ToString();
+            this.SymbolClampColor = Colors.White.ToString();
+            this.SymbolPath = GameSymbol.Identify;
 
             this.SmileyExpression = SmileyExpression.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
 
-            this.CharacterColor = Colors.White.ToString();
-            this.CharacterSymbol = Rogue.NET.Common.Constant.CharacterSymbol.DefaultCharacterSymbol;
-            this.CharacterSymbolCategory = Rogue.NET.Common.Constant.CharacterSymbol.DefaultCharacterCategory;
-            this.CharacterScale = 1;
-
-            this.GameSymbol = Rogue.NET.Common.Constant.GameSymbol.Identify;
-
-            this.Symbol = Rogue.NET.Common.Constant.Symbol.DefaultSymbol;
-            this.SymbolScale = 1;
             this.SymbolHue = 0;
             this.SymbolLightness = 0;
             this.SymbolSaturation = 0;
-            this.SymbolUseColorMask = false;
         }
     }
 }

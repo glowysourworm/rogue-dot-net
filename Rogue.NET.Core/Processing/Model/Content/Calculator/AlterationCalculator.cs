@@ -43,50 +43,51 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
 
             bool firstAlteration = true;
 
-            foreach (var symbolChange in character.Alteration
-                                                  .GetSymbolChanges())
-            {
-                //Full symbol
-                if (symbolChange.IsFullSymbolChange)
-                {
-                    // Map details onto symbol
-                    _symbolDetailsGenerator.MapSymbolDetails(symbolChange.FullSymbolChangeDetails, symbol);
+            // TODO:SYMBOL
+            //foreach (var symbolChange in character.Alteration
+            //                                      .GetSymbolChanges())
+            //{
+            //    //Full symbol
+            //    if (symbolChange.IsFullSymbolChange)
+            //    {
+            //        // Map details onto symbol
+            //        _symbolDetailsGenerator.MapSymbolDetails(symbolChange.FullSymbolChangeDetails, symbol);
 
-                    // Return symbol
-                    return symbol;
-                }
+            //        // Return symbol
+            //        return symbol;
+            //    }
 
-                //Body
-                if (symbolChange.IsSmileyBodyColorChange)
-                    symbol.SmileyBodyColor = firstAlteration ?
-                                                symbolChange.SmileyBodyColor :
-                                                ColorOperations.Add(symbol.SmileyBodyColor, symbolChange.SmileyBodyColor);
+            //    //Body
+            //    if (symbolChange.IsSmileyBodyColorChange)
+            //        symbol.SmileyBodyColor = firstAlteration ?
+            //                                    symbolChange.SmileyBodyColor :
+            //                                    ColorOperations.Add(symbol.SmileyBodyColor, symbolChange.SmileyBodyColor);
 
-                //Line
-                if (symbolChange.IsSmileyLineColorChange)
-                    symbol.SmileyLineColor = firstAlteration ?
-                                                symbolChange.SmileyLineColor :
-                                                ColorOperations.Add(symbol.SmileyLineColor, symbolChange.SmileyLineColor);
+            //    //Line
+            //    if (symbolChange.IsSmileyLineColorChange)
+            //        symbol.SmileyLineColor = firstAlteration ?
+            //                                    symbolChange.SmileyLineColor :
+            //                                    ColorOperations.Add(symbol.SmileyLineColor, symbolChange.SmileyLineColor);
 
-                //Expression
-                if (symbolChange.IsSmileyExpressionChange)
-                    symbol.SmileyExpression = symbolChange.SmileyExpression;
+            //    //Expression
+            //    if (symbolChange.IsSmileyExpressionChange)
+            //        symbol.SmileyExpression = symbolChange.SmileyExpression;
 
-                //Character symbol
-                if (symbolChange.IsCharacterSymbolChange)
-                {
-                    symbol.CharacterSymbol = symbolChange.CharacterSymbol;
-                    symbol.CharacterSymbolCategory = symbolChange.CharacterSymbolCategory;
-                }
+            //    //Character symbol
+            //    if (symbolChange.IsCharacterSymbolChange)
+            //    {
+            //        symbol.CharacterSymbol = symbolChange.CharacterSymbol;
+            //        symbol.CharacterSymbolCategory = symbolChange.CharacterSymbolCategory;
+            //    }
 
-                //Character delta
-                if (symbolChange.IsCharacterColorChange)
-                    symbol.CharacterColor = firstAlteration ?
-                                                symbolChange.CharacterColor :
-                                                ColorOperations.Add(symbol.CharacterColor, symbolChange.CharacterColor);
+            //    //Character delta
+            //    if (symbolChange.IsCharacterColorChange)
+            //        symbol.CharacterColor = firstAlteration ?
+            //                                    symbolChange.CharacterColor :
+            //                                    ColorOperations.Add(symbol.CharacterColor, symbolChange.CharacterColor);
 
-                firstAlteration = false;
-            }
+            //    firstAlteration = false;
+            //}
             return symbol;
         }
 

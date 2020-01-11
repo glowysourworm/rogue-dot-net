@@ -48,20 +48,17 @@ namespace Rogue.NET.Core.View
                     ConverterParameter = ((double)e.NewValue).Clip(ModelConstants.Settings.ZoomMin, ModelConstants.Settings.ZoomMax),
                 };
 
-                multiBinding.Bindings.Add(new Binding("CharacterColor"));
-                multiBinding.Bindings.Add(new Binding("CharacterSymbol"));
-                multiBinding.Bindings.Add(new Binding("CharacterSymbolCategory"));
-                multiBinding.Bindings.Add(new Binding("CharacterScale"));
-                multiBinding.Bindings.Add(new Binding("Symbol"));
-                multiBinding.Bindings.Add(new Binding("SymbolHue"));
-                multiBinding.Bindings.Add(new Binding("SymbolSaturation"));
-                multiBinding.Bindings.Add(new Binding("SymbolLightness"));
-                multiBinding.Bindings.Add(new Binding("SymbolScale"));
-                multiBinding.Bindings.Add(new Binding("SymbolUseColorMask"));
+                multiBinding.Bindings.Add(new Binding("BackgroundColor"));
                 multiBinding.Bindings.Add(new Binding("SmileyExpression"));
                 multiBinding.Bindings.Add(new Binding("SmileyBodyColor"));
                 multiBinding.Bindings.Add(new Binding("SmileyLineColor"));
-                multiBinding.Bindings.Add(new Binding("GameSymbol"));
+                multiBinding.Bindings.Add(new Binding("SymbolClampColor"));
+                multiBinding.Bindings.Add(new Binding("SymbolEffectType"));
+                multiBinding.Bindings.Add(new Binding("SymbolHue"));
+                multiBinding.Bindings.Add(new Binding("SymbolLightness"));
+                multiBinding.Bindings.Add(new Binding("SymbolPath"));
+                multiBinding.Bindings.Add(new Binding("SymbolSaturation"));
+                multiBinding.Bindings.Add(new Binding("SymbolSize"));
                 multiBinding.Bindings.Add(new Binding("SymbolType"));
 
                 control.Image.SetBinding(Image.SourceProperty, multiBinding);

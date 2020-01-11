@@ -83,6 +83,11 @@ namespace Rogue.NET.ScenarioEditor.Utility
                                                   .Select(x => x as BrushTemplateViewModel)
                                                   .ToList();
 
+            var symbols = _forwardReferenceMap.Values
+                                              .Where(x => x is SymbolDetailsTemplateViewModel)
+                                              .Select(x => x as SymbolDetailsTemplateViewModel)
+                                              .ToList();
+
             return configuration;
         }
         public ScenarioConfigurationContainer MapBack(ScenarioConfigurationContainerViewModel viewModel)

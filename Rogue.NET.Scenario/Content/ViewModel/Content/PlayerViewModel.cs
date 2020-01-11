@@ -493,16 +493,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             // Update Effective Symbol
             var symbol = _alterationCalculator.CalculateEffectiveSymbol(player);
 
-            this.CharacterColor = symbol.CharacterColor;
-            this.CharacterSymbol = symbol.CharacterSymbol;
-            this.CharacterSymbolCategory = symbol.CharacterSymbolCategory;
-            this.SmileyExpression = symbol.SmileyExpression;
+            this.BackgroundColor = symbol.BackgroundColor;
             this.SmileyBodyColor = symbol.SmileyBodyColor;
             this.SmileyLineColor = symbol.SmileyLineColor;
-            this.Symbol = symbol.Symbol;
+            this.SmileyExpression = symbol.SmileyExpression;
+            this.SymbolClampColor = symbol.SymbolClampColor;
+            this.SymbolEffectType = symbol.SymbolEffectType;
             this.SymbolHue = symbol.SymbolHue;
             this.SymbolLightness = symbol.SymbolLightness;
+            this.SymbolPath = symbol.SymbolPath;
             this.SymbolSaturation = symbol.SymbolSaturation;
+            this.SymbolSize = symbol.SymbolSize;
             this.SymbolType = symbol.SymbolType;
 
             // Stats

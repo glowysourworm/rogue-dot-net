@@ -22,20 +22,17 @@
                     <MultiBinding.ConverterParameter>
                         <system:Double>2.0</system:Double>
                     </MultiBinding.ConverterParameter>
-                    <Binding Path="CharacterColor" />
-                    <Binding Path="CharacterSymbol" />
-                    <Binding Path="CharacterSymbolCategory" />
-                    <Binding Path="CharacterScale" />
-                    <Binding Path="Symbol" />
-                    <Binding Path="SymbolHue" />
-                    <Binding Path="SymbolSaturation" />
-                    <Binding Path="SymbolLightness" />
-                    <Binding Path="SymbolScale" />
-                    <Binding Path="SymbolUseColorMask" />
+                    <Binding Path="BackgroundColor" />
                     <Binding Path="SmileyExpression" />
                     <Binding Path="SmileyBodyColor" />
                     <Binding Path="SmileyLineColor" />
-                    <Binding Path="GameSymbol" />
+                    <Binding Path="SymbolClampColor" />
+                    <Binding Path="SymbolEffectType" />
+                    <Binding Path="SymbolHue" />
+                    <Binding Path="SymbolLightness" />
+                    <Binding Path="SymbolPath" />
+                    <Binding Path="SymbolSaturation" />
+                    <Binding Path="SymbolSize" />
                     <Binding Path="SymbolType" />
                 </MultiBinding>
             </Image.Source>

@@ -7,53 +7,37 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
     public class ScenarioImageViewModel : RogueBaseViewModel
     {
-        #region (private) Backing Fields
-        // Base Data
-        string _displayName;
+        private string _displayName;
 
-        // Symbol Data
-        SymbolType _symbolType;
-        string _characterSymbol;
-        string _characterSymbolCategory;
-        string _characterColor;
-        double _characterScale;
-        SmileyExpression _smileyExpression;
-        string _smileyBodyColor;
-        string _smileyLineColor;
-        string _symbol;
-        double _symbolHue;
-        double _symbolSaturation;
-        double _symbolLightness;
-        double _symbolScale;
-        bool _symbolUseColorMask;
-        string _gameSymbol;
-        #endregion
+        private SymbolType _symbolType;
+        private CharacterSymbolSize _symbolSize;
 
-        #region (public) Properties
+        private SmileyExpression _smileyExpression;
+        private string _smileyBodyColor;
+        private string _smileyLineColor;
+
+        private CharacterSymbolEffectType _symbolEffectType;
+        private string _symbolPath;
+        private double _symbolHue;
+        private double _symbolSaturation;
+        private double _symbolLightness;
+        private string _symbolClampColor;
+        private string _backgroundColor;
+
         public string DisplayName
         {
             get { return _displayName; }
             set { this.RaiseAndSetIfChanged(ref _displayName, value); }
         }
-        public string CharacterSymbol
+        public SymbolType SymbolType
         {
-            get { return _characterSymbol; }
-            set { this.RaiseAndSetIfChanged(ref _characterSymbol, value); }
+            get { return _symbolType; }
+            set { this.RaiseAndSetIfChanged(ref _symbolType, value); }
         }
-        public string CharacterSymbolCategory
+        public CharacterSymbolSize SymbolSize
         {
-            get { return _characterSymbolCategory; }
-            set { this.RaiseAndSetIfChanged(ref _characterSymbolCategory, value); }
-        }
-        public string CharacterColor
-        {
-            get { return _characterColor; }
-            set { this.RaiseAndSetIfChanged(ref _characterColor, value); }
-        }
-        public double CharacterScale
-        {
-            get { return _characterScale; }
-            set { this.RaiseAndSetIfChanged(ref _characterScale, value); }
+            get { return _symbolSize; }
+            set { this.RaiseAndSetIfChanged(ref _symbolSize, value); }
         }
         public SmileyExpression SmileyExpression
         {
@@ -70,69 +54,56 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             get { return _smileyLineColor; }
             set { this.RaiseAndSetIfChanged(ref _smileyLineColor, value); }
         }
-        public string Symbol
+        public CharacterSymbolEffectType SymbolEffectType
         {
-            get { return _symbol; }
-            set { this.RaiseAndSetIfChanged(ref _symbol, value); }
+            get { return _symbolEffectType; }
+            set { this.RaiseAndSetIfChanged(ref _symbolEffectType, value); }
+        }
+        public string SymbolPath
+        {
+            get { return _symbolPath; }
+            set { this.RaiseAndSetIfChanged(ref _symbolPath, value); }
         }
         public double SymbolHue
         {
             get { return _symbolHue; }
             set { this.RaiseAndSetIfChanged(ref _symbolHue, value); }
         }
-        public double SymbolLightness
-        {
-            get { return _symbolLightness; }
-            set { this.RaiseAndSetIfChanged(ref _symbolLightness, value); }
-        }
         public double SymbolSaturation
         {
             get { return _symbolSaturation; }
             set { this.RaiseAndSetIfChanged(ref _symbolSaturation, value); }
         }
-        public double SymbolScale
+        public double SymbolLightness
         {
-            get { return _symbolScale; }
-            set { this.RaiseAndSetIfChanged(ref _symbolScale, value); }
+            get { return _symbolLightness; }
+            set { this.RaiseAndSetIfChanged(ref _symbolLightness, value); }
         }
-        public bool SymbolUseColorMask
+        public string SymbolClampColor
         {
-            get { return _symbolUseColorMask; }
-            set { this.RaiseAndSetIfChanged(ref _symbolUseColorMask, value); }
+            get { return _symbolClampColor; }
+            set { this.RaiseAndSetIfChanged(ref _symbolClampColor, value); }
         }
-        public string GameSymbol
+        public string BackgroundColor
         {
-            get { return _gameSymbol; }
-            set { this.RaiseAndSetIfChanged(ref _gameSymbol, value); }
+            get { return _backgroundColor; }
+            set { this.RaiseAndSetIfChanged(ref _backgroundColor, value); }
         }
-        public SymbolType SymbolType
-        {
-            get { return _symbolType; }
-            set { this.RaiseAndSetIfChanged(ref _symbolType, value); }
-        }
-        #endregion
+
 
         public void UpdateSymbol(ScenarioImage scenarioImage)
         {
-
-            this.CharacterColor = scenarioImage.CharacterColor;
-            this.CharacterSymbol = scenarioImage.CharacterSymbol;
-            this.CharacterSymbolCategory = scenarioImage.CharacterSymbolCategory;
-            this.CharacterScale = scenarioImage.CharacterScale;
-
+            this.BackgroundColor = scenarioImage.BackgroundColor;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
             this.SmileyExpression = scenarioImage.SmileyExpression;
-
-            this.Symbol = scenarioImage.Symbol;
+            this.SymbolClampColor = scenarioImage.SymbolClampColor;
+            this.SymbolEffectType = scenarioImage.SymbolEffectType;
             this.SymbolHue = scenarioImage.SymbolHue;
             this.SymbolLightness = scenarioImage.SymbolLightness;
+            this.SymbolPath = scenarioImage.SymbolPath;
             this.SymbolSaturation = scenarioImage.SymbolSaturation;
-            this.SymbolScale = scenarioImage.SymbolScale;
-            this.SymbolUseColorMask = scenarioImage.SymbolUseColorMask;
-
-            this.GameSymbol = scenarioImage.GameSymbol;
-
+            this.SymbolSize = scenarioImage.SymbolSize;
             this.SymbolType = scenarioImage.SymbolType;
         }
 
@@ -148,24 +119,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         {
             this.DisplayName = displayName;
 
-            this.CharacterColor = symbolDetailsTemplate.CharacterColor;
-            this.CharacterSymbol = symbolDetailsTemplate.CharacterSymbol;
-            this.CharacterSymbolCategory = symbolDetailsTemplate.CharacterSymbolCategory;
-            this.CharacterScale = symbolDetailsTemplate.CharacterScale;
-            
+            this.BackgroundColor = symbolDetailsTemplate.BackgroundColor;
             this.SmileyBodyColor = symbolDetailsTemplate.SmileyBodyColor;
             this.SmileyLineColor = symbolDetailsTemplate.SmileyLineColor;
             this.SmileyExpression = symbolDetailsTemplate.SmileyExpression;
-
-            this.Symbol = symbolDetailsTemplate.Symbol;
+            this.SymbolClampColor = symbolDetailsTemplate.SymbolClampColor;
+            this.SymbolEffectType = symbolDetailsTemplate.SymbolEffectType;
             this.SymbolHue = symbolDetailsTemplate.SymbolHue;
             this.SymbolLightness = symbolDetailsTemplate.SymbolLightness;
+            this.SymbolPath = symbolDetailsTemplate.SymbolPath;
             this.SymbolSaturation = symbolDetailsTemplate.SymbolSaturation;
-            this.SymbolScale = symbolDetailsTemplate.SymbolScale;
-            this.SymbolUseColorMask = symbolDetailsTemplate.SymbolUseColorMask;
-
-            this.GameSymbol = symbolDetailsTemplate.GameSymbol;
-
+            this.SymbolSize = symbolDetailsTemplate.SymbolSize;
             this.SymbolType = symbolDetailsTemplate.SymbolType;
         }
     }

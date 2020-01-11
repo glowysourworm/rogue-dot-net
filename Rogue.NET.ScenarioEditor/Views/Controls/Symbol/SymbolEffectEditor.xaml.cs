@@ -40,16 +40,17 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 var smileyPreviewSymbolDetails = new SymbolDetailsTemplateViewModel();
                 var characterPreviewSymbolDetails = new SymbolDetailsTemplateViewModel();
 
-                smileyPreviewSymbolDetails.SymbolType = SymbolType.Smiley;
-                smileyPreviewSymbolDetails.SmileyBodyColor = viewModel.SmileyBodyColor ?? Colors.Yellow.ToString();
-                smileyPreviewSymbolDetails.SmileyExpression = viewModel.SmileyExpression;
-                smileyPreviewSymbolDetails.SmileyLineColor = viewModel.SmileyLineColor ?? Colors.Black.ToString();
+                // TODO:SYMBOL
+                //smileyPreviewSymbolDetails.SymbolType = SymbolType.Smiley;
+                //smileyPreviewSymbolDetails.SmileyBodyColor = viewModel.SmileyBodyColor ?? Colors.Yellow.ToString();
+                //smileyPreviewSymbolDetails.SmileyExpression = viewModel.SmileyExpression;
+                //smileyPreviewSymbolDetails.SmileyLineColor = viewModel.SmileyLineColor ?? Colors.Black.ToString();
 
-                characterPreviewSymbolDetails.SymbolType = SymbolType.Character;
-                characterPreviewSymbolDetails.CharacterColor = viewModel.CharacterColor ?? Colors.White.ToString();
-                characterPreviewSymbolDetails.CharacterScale = 1;
-                characterPreviewSymbolDetails.CharacterSymbol = viewModel.CharacterSymbol ?? CharacterSymbol.DefaultCharacterSymbol;
-                characterPreviewSymbolDetails.CharacterSymbolCategory = viewModel.CharacterSymbolCategory ?? CharacterSymbol.DefaultCharacterCategory;
+                //characterPreviewSymbolDetails.SymbolType = SymbolType.Character;
+                //characterPreviewSymbolDetails.CharacterColor = viewModel.CharacterColor ?? Colors.White.ToString();
+                //characterPreviewSymbolDetails.CharacterScale = 1;
+                //characterPreviewSymbolDetails.CharacterSymbol = viewModel.CharacterSymbol ?? CharacterSymbol.DefaultCharacterSymbol;
+                //characterPreviewSymbolDetails.CharacterSymbolCategory = viewModel.CharacterSymbolCategory ?? CharacterSymbol.DefaultCharacterCategory;
 
                 this.SmileyPreviewControl.DataContext = smileyPreviewSymbolDetails;
                 this.CharacterPreviewControl.DataContext = characterPreviewSymbolDetails;
@@ -66,8 +67,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             // Can be shown as a dialog
             if (DialogWindowFactory.Show(view, "Rogue UTF-8 Character Map"))
             {
-                viewModel.CharacterSymbol = characterPreviewViewModel.CharacterSymbol;
-                viewModel.CharacterSymbolCategory = characterPreviewViewModel.CharacterSymbolCategory;
+                // TODO:SYMBOL
+                //viewModel.CharacterSymbol = characterPreviewViewModel.CharacterSymbol;
+                //viewModel.CharacterSymbolCategory = characterPreviewViewModel.CharacterSymbolCategory;
             }
         }
     }

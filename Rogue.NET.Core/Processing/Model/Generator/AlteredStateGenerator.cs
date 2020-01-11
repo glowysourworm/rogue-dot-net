@@ -9,24 +9,25 @@ namespace Rogue.NET.Core.Processing.Model.Generator
     [Export(typeof(IAlteredStateGenerator))]
     public class AlteredStateGenerator : IAlteredStateGenerator
     {
+        readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
+
+        [ImportingConstructor]
+        public AlteredStateGenerator(ISymbolDetailsGenerator symbolDetailsGenerator)
+        {
+            _symbolDetailsGenerator = symbolDetailsGenerator;                 
+        }
+
         public AlteredCharacterState GenerateAlteredState(AlteredCharacterStateTemplate template)
         {
-            return new AlteredCharacterState()
+            var alteredState = new AlteredCharacterState()
             {
                 RogueName = template.Name,
-                BaseType = template.BaseType,
-                CharacterColor = template.SymbolDetails.CharacterColor,
-                CharacterSymbol = template.SymbolDetails.CharacterSymbol,
-                CharacterSymbolCategory = template.SymbolDetails.CharacterSymbolCategory,
-                SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = template.SymbolDetails.SmileyLineColor,
-                SmileyExpression = template.SymbolDetails.SmileyExpression,
-                Symbol = template.SymbolDetails.Symbol,
-                SymbolHue = template.SymbolDetails.SymbolHue,
-                SymbolLightness = template.SymbolDetails.SymbolLightness,
-                SymbolSaturation = template.SymbolDetails.SymbolSaturation,
-                SymbolType = template.SymbolDetails.SymbolType
+                BaseType = template.BaseType
             };
+
+            _symbolDetailsGenerator.MapSymbolDetails(template.SymbolDetails, alteredState);
+
+            return alteredState;
         }
     }
 }

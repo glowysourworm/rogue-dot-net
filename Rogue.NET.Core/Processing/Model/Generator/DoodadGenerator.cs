@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+
 using System;
 using System.ComponentModel.Composition;
 
@@ -36,16 +37,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             switch (type)
             {
                 case DoodadNormalType.StairsUp:
-                    result.GameSymbol = GameSymbol.StairsUp;
+                    result.SymbolPath = GameSymbol.StairsUp;
                     break;
                 case DoodadNormalType.StairsDown:
-                    result.GameSymbol = GameSymbol.StairsDown;
+                    result.SymbolPath = GameSymbol.StairsDown;
                     break;
                 case DoodadNormalType.SavePoint:
-                    result.GameSymbol = GameSymbol.SavePoint;
+                    result.SymbolPath = GameSymbol.SavePoint;
                     break;
                 case DoodadNormalType.Transporter:
-                    result.GameSymbol = GameSymbol.Teleport1;
+                    result.SymbolPath = GameSymbol.Teleport1;
                     break;
                 default:
                     break;

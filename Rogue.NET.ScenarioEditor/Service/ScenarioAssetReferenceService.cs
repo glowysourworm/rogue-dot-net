@@ -1,15 +1,14 @@
-﻿using Rogue.NET.ScenarioEditor.Service.Interface;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.Common.Extension;
-using System.Linq;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
-using System;
+using System.Linq;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -189,7 +188,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Update terrain layers
             foreach (var layout in _scenarioCollectionProvider.Layouts)
             {
-                for (int i=layout.TerrainLayers.Count - 1;i >=0;i--)
+                for (int i = layout.TerrainLayers.Count - 1; i >= 0; i--)
                 {
                     if (!_scenarioCollectionProvider.TerrainLayers.Contains(layout.TerrainLayers[i].TerrainLayer))
                         layout.TerrainLayers.RemoveAt(i);
@@ -261,21 +260,18 @@ namespace Rogue.NET.ScenarioEditor.Service
 
                 if (existing != null)
                 {
-                    existing.SymbolDetails.CharacterColor = attrib.SymbolDetails.CharacterColor;
-                    existing.SymbolDetails.CharacterSymbol = attrib.SymbolDetails.CharacterSymbol;
-                    existing.SymbolDetails.CharacterSymbolCategory = attrib.SymbolDetails.CharacterSymbolCategory;
-                    existing.SymbolDetails.CharacterScale = attrib.SymbolDetails.CharacterScale;
-                    existing.SymbolDetails.Symbol = attrib.SymbolDetails.Symbol;
-                    existing.SymbolDetails.SymbolHue = attrib.SymbolDetails.SymbolHue;
-                    existing.SymbolDetails.SymbolLightness = attrib.SymbolDetails.SymbolLightness;
-                    existing.SymbolDetails.SymbolSaturation = attrib.SymbolDetails.SymbolSaturation;
-                    existing.SymbolDetails.SymbolScale = attrib.SymbolDetails.SymbolScale;
-                    existing.SymbolDetails.SymbolUseColorMask = attrib.SymbolDetails.SymbolUseColorMask;
+                    existing.SymbolDetails.BackgroundColor = attrib.SymbolDetails.BackgroundColor;
                     existing.SymbolDetails.SmileyBodyColor = attrib.SymbolDetails.SmileyBodyColor;
                     existing.SymbolDetails.SmileyLineColor = attrib.SymbolDetails.SmileyLineColor;
                     existing.SymbolDetails.SmileyExpression = attrib.SymbolDetails.SmileyExpression;
-                    existing.SymbolDetails.GameSymbol = attrib.SymbolDetails.GameSymbol;
+                    existing.SymbolDetails.SymbolHue = attrib.SymbolDetails.SymbolHue;
+                    existing.SymbolDetails.SymbolLightness = attrib.SymbolDetails.SymbolLightness;
+                    existing.SymbolDetails.SymbolSaturation = attrib.SymbolDetails.SymbolSaturation;
                     existing.SymbolDetails.SymbolType = attrib.SymbolDetails.SymbolType;
+                    existing.SymbolDetails.SymbolClampColor = attrib.SymbolDetails.SymbolClampColor;
+                    existing.SymbolDetails.SymbolEffectType = attrib.SymbolDetails.SymbolEffectType;
+                    existing.SymbolDetails.SymbolPath = attrib.SymbolDetails.SymbolPath;
+                    existing.SymbolDetails.SymbolSize = attrib.SymbolDetails.SymbolSize;
                 }
             }
 

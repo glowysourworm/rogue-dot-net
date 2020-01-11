@@ -1,10 +1,10 @@
 ﻿using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Processing.Service.Cache.Interface;
+
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
+
+using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
@@ -30,28 +30,21 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             this.CategoryLB.SelectionChanged += (sender, e) =>
             {
                 var category = e.AddedItems.Count > 0 ? (string)e.AddedItems[0] : null;
-                var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
 
-                if (category != null &&
-                    viewModel != null)
-                {
-                    viewModel.CharacterSymbolCategory = category;
-
+                if (category != null)
                     LoadCharacters(category);
-                }
             };
 
             this.SymbolLB.SelectionChanged += (sender, e) =>
             {
-                var symbol = e.AddedItems.Count > 0 ? (SvgSymbolViewModel)e.AddedItems[0] : null;
+                var symbol = e.AddedItems.Count > 0 ? (SymbolDetailsTemplateViewModel)e.AddedItems[0] : null;
                 var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
 
                 if (symbol != null &&
                     viewModel != null &&
                    !loading)
                 {
-                    viewModel.CharacterSymbolCategory = symbol.Category;
-                    viewModel.CharacterSymbol = symbol.Character;
+                    viewModel.SymbolPath = symbol.SymbolPath;
 
                     // Force Dialog Result to be set here
                     var window = Window.GetWindow(this);
@@ -69,18 +62,25 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
 
                 if (viewModel == null ||
-                    string.IsNullOrEmpty(viewModel.CharacterSymbolCategory))
+                    string.IsNullOrEmpty(viewModel.SymbolPath))
                     this.CategoryLB.Items.MoveCurrentToFirst();
 
                 else
                 {
-                    LoadCharacters(viewModel.CharacterSymbolCategory);
+                    var pathParts = viewModel.SymbolPath.Split(new char[] { '.' });
 
-                    this.CategoryLB.SelectedItem = viewModel.CharacterSymbolCategory ?? this.CategoryLB.Items[0];
+                    var category = (string)this.CategoryLB.Items[0];
 
-                    var items = this.SymbolLB.Items.Cast<SvgSymbolViewModel>();
+                    if (pathParts.Length == 2)
+                        category = pathParts[0];                       
 
-                    this.SymbolLB.SelectedItem = items.FirstOrDefault(x => x.Symbol == viewModel.CharacterSymbol);
+                    LoadCharacters(category);
+
+                    this.CategoryLB.SelectedItem = category;
+
+                    var items = this.SymbolLB.Items.Cast<SymbolDetailsTemplateViewModel>();
+
+                    this.SymbolLB.SelectedItem = items.FirstOrDefault(x => x.SymbolPath == viewModel.SymbolPath);
                 }
 
                 loading = false;
@@ -96,14 +96,15 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             // Create symbols for the specified category
             this.SymbolLB.ItemsSource = _scenarioResourceService.GetCharacterResourceNames(category).Select(characterName =>
             {
-                // Load Image Source
-                var imageSource = _scenarioResourceService.GetImageSource(ScenarioImage.CreateCharacterSymbol(characterName,
-                                                                                                            characterName,
-                                                                                                            category,
-                                                                                                            Colors.White.ToString(),
-                                                                                                            1.0), 1.0, 1.0, Light.White);
-
-                return SvgSymbolViewModel.CreateCharacterSymbol(imageSource, category, characterName, 1.0);
+                return new SymbolDetailsTemplateViewModel()
+                {
+                    SymbolType = SymbolType.Character,
+                    SymbolPath = string.Join(".", category, characterName),
+                    BackgroundColor = Colors.Transparent.ToString(),
+                    SymbolClampColor = Colors.White.ToString(),
+                    SymbolEffectType = CharacterSymbolEffectType.ColorClamp,
+                    SymbolSize = CharacterSymbolSize.Large
+                };
             });
         }
     }

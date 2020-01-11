@@ -1,5 +1,7 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+
 using System;
 using System.Windows.Media;
 
@@ -9,124 +11,81 @@ namespace Rogue.NET.Core.Model.Scenario.Content
     public class ScenarioImage : RogueBase
     {
         public SymbolType SymbolType { get; set; }
+        public CharacterSymbolSize SymbolSize { get; set; }
+        public CharacterSymbolEffectType SymbolEffectType { get; set; }
 
-        //Smiley Details
         public SmileyExpression SmileyExpression { get; set; }
         public string SmileyBodyColor { get; set; }
         public string SmileyLineColor { get; set; }
 
-        //Character Details
-        public string CharacterSymbol { get; set; }
-        public string CharacterSymbolCategory { get; set; }
-        public string CharacterColor { get; set; }
-        public double CharacterScale { get; set; }
+        public string SymbolPath { get; set; }
 
-        // Symbol Details
-        public string Symbol { get; set; }
         public double SymbolHue { get; set; }
         public double SymbolSaturation { get; set; }
         public double SymbolLightness { get; set; }
-        public double SymbolScale { get; set; }
-        public bool SymbolUseColorMask { get; set; }
+        public string SymbolClampColor { get; set; }
 
-        // Game Symbol Details
-        public string GameSymbol { get; set; }
+        public string BackgroundColor { get; set; }
 
-        // Static Constructors
-        public static ScenarioImage CreateSymbol(string name, string symbol, double hue, double saturation, double lightness, bool useColorMask)
+        public ScenarioImage() 
         {
-            return new ScenarioImage()
-            {
-                RogueName = name,
-                SymbolType = SymbolType.Symbol,
-                Symbol = symbol,
-                SymbolHue = hue,
-                SymbolSaturation = saturation,
-                SymbolLightness = lightness,
-                SymbolUseColorMask = useColorMask,
-                SymbolScale = 1.0D
-            };
-        }
-        public static ScenarioImage CreateOrientedSymbol(string name, string orientedSymbol, double hue, double saturation, double lightness, bool useColorMask)
-        {
-            return new ScenarioImage()
-            {
-                RogueName = name,
-                SymbolType = SymbolType.OrientedSymbol,
-                Symbol = orientedSymbol,
-                SymbolHue = hue,
-                SymbolSaturation = saturation,
-                SymbolLightness = lightness,
-                SymbolUseColorMask = useColorMask,
-                SymbolScale = 1.0D
-            };
-        }
-        public static ScenarioImage CreateTerrainSymbol(string name, string symbol, double hue, double saturation, double lightness, bool useColorMask)
-        {
-            return new ScenarioImage()
-            {
-                RogueName = name,
-                SymbolType = SymbolType.Terrain,
-                Symbol = symbol,
-                SymbolHue = hue,
-                SymbolSaturation = saturation,
-                SymbolLightness = lightness,
-                SymbolUseColorMask = useColorMask,
-                SymbolScale = 1.0D
-            };
-        }
-        public static ScenarioImage CreateGameSymbol(string name, string gameSymbol)
-        {
-            return new ScenarioImage()
-            {
-                RogueName = name,
-                SymbolType = SymbolType.Game,
-                GameSymbol = gameSymbol
-            };
-        }
-        public static ScenarioImage CreateCharacterSymbol(string name, string characterSymbol, string characterSymbolCategory, string characterColor, double characterScale)
-        {
-            return new ScenarioImage()
-            {
-                RogueName = name,
-                SymbolType = SymbolType.Character,
-                CharacterSymbol = characterSymbol,
-                CharacterSymbolCategory = characterSymbolCategory,
-                CharacterColor = characterColor,
-                CharacterScale = characterScale
-            };
-        }
-        public static ScenarioImage CreateSmiley(string name, SmileyExpression expression, string smileyBodyColor, string smileyLineColor)
-        {
-            return new ScenarioImage()
-            {
-                RogueName = name,
-                SymbolType = SymbolType.Smiley,
-                SmileyExpression = expression,
-                SmileyBodyColor= smileyBodyColor,
-                SmileyLineColor = smileyLineColor
-            };
+            this.SymbolType = SymbolType.Game;
+            this.SymbolSize = CharacterSymbolSize.Large;
+            this.SymbolEffectType = CharacterSymbolEffectType.None;
+
+            this.SmileyBodyColor = Colors.Yellow.ToString();
+            this.SmileyExpression = SmileyExpression.Happy;
+            this.SmileyLineColor = Colors.Black.ToString();
+
+            this.SymbolPath = GameSymbol.Identify;
+
+            this.SymbolHue = 0;
+            this.SymbolLightness = 0;
+            this.SymbolSaturation = 0;
+            this.SymbolClampColor = Colors.White.ToString();
+
+            this.BackgroundColor = Colors.Transparent.ToString();
         }
 
-        public ScenarioImage() { }
         public ScenarioImage(SymbolDetailsTemplate template)
             : base(template.Name)
         {
-            this.CharacterColor = template.CharacterColor;
-            this.CharacterSymbol = template.CharacterSymbol;
-            this.CharacterSymbolCategory = template.CharacterSymbolCategory;
-            this.CharacterScale = template.CharacterScale;
-            this.GameSymbol = template.GameSymbol;
+            this.SymbolType = template.SymbolType;
+            this.SymbolSize = template.SymbolSize;
+            this.SymbolEffectType = template.SymbolEffectType;
+
             this.SmileyBodyColor = template.SmileyBodyColor;
             this.SmileyExpression = template.SmileyExpression;
             this.SmileyLineColor = template.SmileyLineColor;
-            this.Symbol = template.Symbol;
+
+            this.SymbolPath = template.SymbolPath;
+
             this.SymbolHue = template.SymbolHue;
             this.SymbolLightness = template.SymbolLightness;
             this.SymbolSaturation = template.SymbolSaturation;
-            this.SymbolScale = template.SymbolScale;
-            this.SymbolType = template.SymbolType;
-            this.SymbolUseColorMask = template.SymbolUseColorMask;
+            this.SymbolClampColor = template.SymbolClampColor;
+
+            this.BackgroundColor = template.BackgroundColor;
+        }
+
+        public static ScenarioImage CreateGameSymbol(string rogueName, string symbolPath)
+        {
+            return new ScenarioImage()
+            {
+                RogueName = rogueName,
+                SmileyBodyColor = Colors.Yellow.ToString(),
+                SmileyExpression = SmileyExpression.Happy,
+                SmileyLineColor = Colors.Black.ToString(),
+                SymbolClampColor = Colors.White.ToString(),
+                SymbolHue = 0,
+                SymbolLightness = 0,
+                SymbolSaturation = 0,
+                SymbolType = SymbolType.Game,
+                SymbolPath = symbolPath,
+                SymbolSize = CharacterSymbolSize.Large,
+                SymbolEffectType = CharacterSymbolEffectType.None,
+                BackgroundColor = Colors.Transparent.ToString()
+            };
         }
 
         /// <summary>
@@ -136,21 +95,22 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         {
             var dest = new ScenarioImage();
 
-            dest.CharacterColor = source.CharacterColor;
-            dest.CharacterSymbol = source.CharacterSymbol;
-            dest.CharacterSymbolCategory = source.CharacterSymbolCategory;
-            dest.CharacterScale = source.CharacterScale;
-            dest.GameSymbol = source.GameSymbol;
+            dest.SymbolType = source.SymbolType;
+            dest.SymbolSize = source.SymbolSize;
+            dest.SymbolEffectType = source.SymbolEffectType;
+
             dest.SmileyBodyColor = source.SmileyBodyColor;
             dest.SmileyExpression = source.SmileyExpression;
             dest.SmileyLineColor = source.SmileyLineColor;
-            dest.Symbol = source.Symbol;
+
+            dest.SymbolPath = source.SymbolPath;
+
             dest.SymbolHue = source.SymbolHue;
             dest.SymbolLightness = source.SymbolLightness;
             dest.SymbolSaturation = source.SymbolSaturation;
-            dest.SymbolScale = source.SymbolScale;
-            dest.SymbolType = source.SymbolType;
-            dest.SymbolUseColorMask = source.SymbolUseColorMask;
+            dest.SymbolClampColor = source.SymbolClampColor;
+
+            dest.BackgroundColor = source.BackgroundColor;
 
             return dest;
         }

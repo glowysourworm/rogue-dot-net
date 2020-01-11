@@ -143,7 +143,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadStairsUpRogueName,
                         SymbolType = SymbolType.Game,
-                        GameSymbol = GameSymbol.StairsUp,
+                        SymbolPath = GameSymbol.StairsUp,
                         Type = DoodadType.Normal.ToString()
                     };
                 case DoodadNormalType.StairsDown:
@@ -158,7 +158,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadStairsDownRogueName,
                         SymbolType = SymbolType.Game,
-                        GameSymbol = GameSymbol.StairsDown,
+                        SymbolPath = GameSymbol.StairsDown,
                         Type = DoodadType.Normal.ToString()
                     };
                 case DoodadNormalType.SavePoint:
@@ -173,7 +173,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadSavePointRogueName,
                         SymbolType = SymbolType.Game,
-                        GameSymbol = GameSymbol.SavePoint,
+                        SymbolPath = GameSymbol.SavePoint,
                         Type = DoodadType.Normal.ToString()
                     };
                 case DoodadNormalType.Transporter:
@@ -188,7 +188,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadTransporterRogueName,
                         SymbolType = SymbolType.Game,
-                        GameSymbol = GameSymbol.Teleport1,
+                        SymbolPath = GameSymbol.Teleport1,
                         Type = DoodadType.Normal.ToString()
                     };
                 default:

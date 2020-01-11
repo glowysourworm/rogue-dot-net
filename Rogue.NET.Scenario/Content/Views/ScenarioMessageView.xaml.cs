@@ -190,13 +190,19 @@ namespace Rogue.NET.Scenario.Content.Views
 
         private ScenarioImageViewModel SetScenarioImageProperties(ScenarioImageViewModel scenarioImage, ScenarioImage scenarioMetaData)
         {
-            scenarioImage.CharacterColor = scenarioMetaData.CharacterColor;
-            scenarioImage.CharacterSymbol = scenarioMetaData.CharacterSymbol;
-            scenarioImage.CharacterSymbolCategory = scenarioMetaData.CharacterSymbolCategory;
             scenarioImage.SmileyBodyColor = scenarioMetaData.SmileyBodyColor;
             scenarioImage.SmileyLineColor = scenarioMetaData.SmileyLineColor;
             scenarioImage.SmileyExpression = scenarioMetaData.SmileyExpression;
             scenarioImage.SymbolType = scenarioMetaData.SymbolType;
+            scenarioImage.SymbolClampColor = scenarioMetaData.SymbolClampColor;
+            scenarioImage.SymbolEffectType = scenarioMetaData.SymbolEffectType;
+            scenarioImage.SymbolHue = scenarioMetaData.SymbolHue;
+            scenarioImage.SymbolLightness = scenarioMetaData.SymbolLightness;
+            scenarioImage.SymbolPath = scenarioMetaData.SymbolPath;
+            scenarioImage.SymbolSaturation = scenarioMetaData.SymbolSaturation;
+            scenarioImage.SymbolSize = scenarioMetaData.SymbolSize;
+            scenarioImage.SymbolType = scenarioMetaData.SymbolType;
+
 
             return scenarioImage;
         }

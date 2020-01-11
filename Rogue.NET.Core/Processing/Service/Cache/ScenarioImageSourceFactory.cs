@@ -161,10 +161,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         var drawing = _svgCache.GetDrawing(cacheImage);
 
                         // Apply Effects - Scale, ColorMap, HSL
-                        ApplyEffects(drawing, cacheImage);
+                        var completedDrawing = ApplyEffects(drawing, cacheImage);
 
                         // Create the image source
-                        var source = new DrawingImage(drawing);
+                        var source = new DrawingImage(completedDrawing);
 
                         // Cache the image source
                         _imageSourceCache[hash] = source;
@@ -182,7 +182,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         #region (private) Image Methods
         private DrawingImage GetImageSource(ScenarioCacheImage cacheImage)
         {
-            switch (cacheImage.Type)
+            switch (cacheImage.SymbolType)
             {
                 case SymbolType.Character:
                 case SymbolType.Symbol:
@@ -193,17 +193,17 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         // Fetch / Load the drawing from the cache
                         var drawing = _svgCache.GetDrawing(cacheImage);
 
-                        // Apply Effects - Scale, ColorMap, HSL
-                        ApplyEffects(drawing, cacheImage);
+                        // Apply Effects - Scale, ColorClamp, HSL
+                        var completedDrawing = ApplyEffects(drawing, cacheImage);
 
                         // Apply Lighting
                         foreach (var light in cacheImage.Lighting)
-                            ApplyLighting(drawing, light);
+                            ApplyLighting(completedDrawing, light);
 
-                        ApplyIntensity(drawing, (cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity)).LowLimit(ModelConstants.MinLightIntensity));
+                        ApplyIntensity(completedDrawing, (cacheImage.EffectiveVision * cacheImage.Lighting.Max(light => light.Intensity)).LowLimit(ModelConstants.MinLightIntensity));
 
                         // Create the image source
-                        return new DrawingImage(drawing);
+                        return new DrawingImage(completedDrawing);
                     }
                 case SymbolType.Smiley:
                     // GetSmileyElement() -> ApplyLighting()
@@ -251,62 +251,49 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
             return ctrl;
         }
-        private void ApplyEffects(DrawingGroup drawing, ScenarioCacheImage cacheImage)
+        private DrawingGroup ApplyEffects(DrawingGroup drawing, ScenarioCacheImage cacheImage)
         {
             // Apply Effects - Scale, Color Clamp / ColorMap, HSL
             //
 
-            switch (cacheImage.Type)
+            switch (cacheImage.SymbolType)
             {
                 // Smiley symbol scaling is handled else-where
                 case SymbolType.Smiley:
                 default:
-                    return;
+                    return drawing;
                 case SymbolType.Game:
-                    {
-                        // Apply base scale - requested by calling code
-                        drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
-                    }
-                    break;
+                case SymbolType.Terrain:
                 case SymbolType.Character:
-                    {
-                        // Additional user-input scale + additional offset
-                        if (cacheImage.CharacterScale < 1)
-                        {
-                            // Calculate total scale factor
-                            var scaleFactor = cacheImage.Scale * cacheImage.CharacterScale;
-
-                            // Calculate additional offset
-                            var offsetX = ((1.0 - cacheImage.CharacterScale) * ModelConstants.CellWidth) * 0.5;
-                            var offsetY = ((1.0 - cacheImage.CharacterScale) * ModelConstants.CellHeight) * 0.5;
-
-                            var transform = new TransformGroup();
-
-                            transform.Children.Add(new TranslateTransform(offsetX, offsetY));
-                            transform.Children.Add(new ScaleTransform(scaleFactor, scaleFactor));
-
-                            drawing.Transform = transform;
-                        }
-                        // Additional user-input scale
-                        else
-                            drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
-
-
-                        // Apply Coloring
-                        _symbolEffectFilter.ApplyEffect(drawing, new ClampEffect(cacheImage.CharacterColor));
-                    }
-                    break;
                 case SymbolType.Symbol:
                 case SymbolType.OrientedSymbol:
-                case SymbolType.Terrain:
                     {
-                        // Apply base scale - requested by calling code
-                        drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
+                        // Apply Coloring
+                        switch (cacheImage.SymbolEffectType)
+                        {
+                            case CharacterSymbolEffectType.None:
+                                break;
+                            case CharacterSymbolEffectType.ColorClamp:
+                                _symbolEffectFilter.ApplyEffect(drawing, new ClampEffect(cacheImage.SymbolClampColor));
+                                break;
+                            case CharacterSymbolEffectType.HslShift:
+                                _symbolEffectFilter.ApplyEffect(drawing, new HslEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, false));
+                                break;
+                            case CharacterSymbolEffectType.HslShiftColorMask:
+                                _symbolEffectFilter.ApplyEffect(drawing, new HslEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, true));
+                                break;
+                            default:
+                                throw new Exception("Unhandled Symbol Effect Type ScenarioImageSouceFactory");
+                        }
 
-                        // Apply HSL transform
-                        _symbolEffectFilter.ApplyEffect(drawing, new HslEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, cacheImage.SymbolUseColorMask));
+                        // Apply Background Coloring
+                        var fullDrawing = CreateBackground(drawing, cacheImage.BackgroundColor, cacheImage.Scale);
+
+                        // Create scaled / size transform JUST FOR THE PRIMARY DRAWING
+                        drawing.Transform = CreateSymbolSizeTransform(drawing, cacheImage.SymbolSize, cacheImage.Scale);
+
+                        return fullDrawing;
                     }
-                    break;
             }
         }
 
@@ -320,6 +307,93 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             _symbolEffectFilter.ApplyEffect(drawing, new LightIntensityEffect(intensity));
         }
         
+        private Transform CreateSymbolSizeTransform(DrawingGroup drawing, CharacterSymbolSize symbolSize, double scale)
+        {
+            // Scale the drawing relative to a margin specified by the symbol size enumeration. Create a sub-boundary
+            // within the larger bounding rectangle; and fit the drawing to this sub-boundary.
+            //
+            var boundsWidth = ModelConstants.CellWidth * scale;
+            var boundsHeight = ModelConstants.CellHeight * scale;
+            var margin = 0.0;
+
+            // SET DRAWING TRANSFORM TO IDENTITY TO ACCESS THE BOUNDS (DON'T KNOW HOW IT'S GETTING SET)
+            drawing.Transform = Transform.Identity;
+
+            // Calculate the margin
+            switch (symbolSize)
+            {
+                case CharacterSymbolSize.Small:
+                    margin = 2 * scale;
+                    break;
+                case CharacterSymbolSize.Medium:
+                    margin = 1 * scale;
+                    break;
+                case CharacterSymbolSize.Large:
+                    margin = 0;
+                    break;
+                default:
+                    throw new Exception("Unhandled Character Size ScenarioImageSourceFactory");
+            }
+
+            // Calculate the transform based on the content bounds - CENTER CONTENT
+
+            // Optimum dimensions
+            var width = boundsWidth - (2 * margin);
+            var height = boundsHeight - (2 * margin);
+
+            // Change from the drawing content
+            var relativeScaleX = width / drawing.Bounds.Width;
+            var relativeScaleY = height / drawing.Bounds.Height;
+
+            var relativeScale = 1.0;
+            var offsetX = 0.0;
+            var offsetY = 0.0;
+
+            // Select smallest change based on the dimension (SMALLER NEGATIVE ALSO TO SHRINK TO THE MARGIN)
+            if (relativeScaleX < relativeScaleY)
+            {
+                // Fit to the margin based on the width (largest dimension)
+                relativeScale = relativeScaleX;
+                offsetX = margin;
+                offsetY = margin + (0.5 * (height - (drawing.Bounds.Height * relativeScale)));
+            }
+
+            else
+            {
+                // Fit to the margin based on the height (largest dimension)
+                relativeScale = relativeScaleY;
+                offsetX = margin + (0.5 * (width - (drawing.Bounds.Width * relativeScale)));
+                offsetY = margin;
+            }
+            
+            var scaleTransform = new ScaleTransform(relativeScale, relativeScale);
+            var translateTransform = new TranslateTransform(offsetX, offsetY);
+            var transform = new TransformGroup();
+
+            transform.Children.Add(scaleTransform);
+            transform.Children.Add(translateTransform);
+
+            return transform;
+        }
+
+        private DrawingGroup CreateBackground(DrawingGroup drawing, string backgroundColor, double scale)
+        {
+            var cellBoundary = new Rect(new Size(ModelConstants.CellWidth * scale, ModelConstants.CellHeight * scale));
+
+            var brush = new SolidColorBrush(ColorOperations.Convert(backgroundColor));
+            var pen = new Pen(Brushes.Transparent, 0.0);
+
+            var background = new GeometryDrawing(brush, pen, new RectangleGeometry(cellBoundary));
+
+            // Re-draw the drawing with the background first
+            var fullDrawing = new DrawingGroup();
+
+            fullDrawing.Children.Add(background);
+            fullDrawing.Children.Add(drawing);
+
+            return fullDrawing;
+        }
+
         private Image CreateScaledImage(ImageSource source, double scale)
         {
             // Return scaled image
@@ -335,14 +409,13 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
 
-            return ScenarioCacheImage.CreateHash(safeScale, template.SymbolType, 
+            return ScenarioCacheImage.CreateHash(safeScale, template.SymbolType, template.SymbolSize,
+                                                 template.SymbolEffectType,
                                                  template.SmileyExpression, template.SmileyBodyColor, 
-                                                 template.SmileyLineColor, template.CharacterSymbol,
-                                                 template.CharacterSymbolCategory, template.CharacterColor, 
-                                                 template.CharacterScale, template.Symbol, 
+                                                 template.SmileyLineColor, template.SymbolPath,
                                                  template.SymbolHue, template.SymbolSaturation, 
-                                                 template.SymbolLightness, template.SymbolScale, 
-                                                 template.SymbolUseColorMask, template.GameSymbol, grayScale, 
+                                                 template.SymbolLightness, template.SymbolClampColor,
+                                                 template.BackgroundColor, grayScale,
                                                  effectiveVision, lighting);
         }
         private int CreateCacheHash(ScenarioImage scenarioImage, bool grayScale, double scale, double effectiveVision, Light[] lighting)
@@ -350,14 +423,13 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
 
-            return ScenarioCacheImage.CreateHash(safeScale, scenarioImage.SymbolType,
+            return ScenarioCacheImage.CreateHash(safeScale, scenarioImage.SymbolType, scenarioImage.SymbolSize,
+                                                 scenarioImage.SymbolEffectType,
                                                  scenarioImage.SmileyExpression, scenarioImage.SmileyBodyColor,
-                                                 scenarioImage.SmileyLineColor, scenarioImage.CharacterSymbol,
-                                                 scenarioImage.CharacterSymbolCategory, scenarioImage.CharacterColor,
-                                                 scenarioImage.CharacterScale, scenarioImage.Symbol,
+                                                 scenarioImage.SmileyLineColor, scenarioImage.SymbolPath,
                                                  scenarioImage.SymbolHue, scenarioImage.SymbolSaturation,
-                                                 scenarioImage.SymbolLightness, scenarioImage.SymbolScale,
-                                                 scenarioImage.SymbolUseColorMask, scenarioImage.GameSymbol, grayScale, 
+                                                 scenarioImage.SymbolLightness, scenarioImage.SymbolClampColor,
+                                                 scenarioImage.BackgroundColor, grayScale,
                                                  effectiveVision, lighting);
         }
         private ScenarioCacheImage CreateCacheImage(SymbolDetailsTemplate template, bool grayScale, double scale, double effectiveVision, Light[] lighting)

@@ -225,7 +225,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                         content.Source = GetSymbol(ScenarioImage.CreateGameSymbol(scenarioObject.RogueName, GameSymbol.DetectMagicBad), lineOfSightVisible, false, false, 1.0, Light.White);
                         break;
                     default:
-                        break;
+                        throw new Exception("Unhandled AlterationAlignmentType ScenarioUIService.UpdateContent");
                 }
             }
             else if (scenarioObject.IsDetectedCategory)

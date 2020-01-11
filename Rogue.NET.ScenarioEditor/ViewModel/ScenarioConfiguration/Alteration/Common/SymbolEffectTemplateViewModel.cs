@@ -6,19 +6,35 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 {
     public class SymbolEffectTemplateViewModel : TemplateViewModel
     {
+        private SymbolType _symbolType;
+        private CharacterSymbolEffectType _symbolEffectType;
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
-        private string _characterSymbol;
-        private string _characterSymbolCategory;
-        private string _characterColor;
-        private SymbolDetailsTemplateViewModel _fullSymbolChangeDetails;
-        private bool _isFullSymbolChange;
+        private string _symbolPath;
+        private double _symbolHue;
+        private double _symbolSaturation;
+        private double _symbolLightness;
+        private string _symbolClampColor;
+        private string _backgroundColor;
         private bool _isSmileyExpressionChange;
         private bool _isSmileyBodyColorChange;
         private bool _isSmileyLineColorChange;
-        private bool _isCharacterSymbolChange;
-        private bool _isCharacterColorChange;
+        private bool _isSymbolTypeChange;
+        private bool _isSymbolPathChange;
+        private bool _isBackgroundColorChange;
+
+
+        public SymbolType SymbolType
+        {
+            get { return _symbolType; }
+            set { this.RaiseAndSetIfChanged(ref _symbolType, value); }
+        }
+        public CharacterSymbolEffectType SymbolEffectType
+        {
+            get { return _symbolEffectType; }
+            set { this.RaiseAndSetIfChanged(ref _symbolEffectType, value); }
+        }
         public SmileyExpression SmileyExpression
         {
             get { return _smileyExpression; }
@@ -34,25 +50,35 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _smileyLineColor; }
             set { this.RaiseAndSetIfChanged(ref _smileyLineColor, value); }
         }
-        public string CharacterSymbol
+        public string SymbolPath
         {
-            get { return _characterSymbol; }
-            set { this.RaiseAndSetIfChanged(ref _characterSymbol, value); }
+            get { return _symbolPath; }
+            set { this.RaiseAndSetIfChanged(ref _symbolPath, value); }
         }
-        public string CharacterSymbolCategory
+        public double SymbolHue
         {
-            get { return _characterSymbolCategory; }
-            set { this.RaiseAndSetIfChanged(ref _characterSymbolCategory, value); }
+            get { return _symbolHue; }
+            set { this.RaiseAndSetIfChanged(ref _symbolHue, value); }
         }
-        public string CharacterColor
+        public double SymbolSaturation
         {
-            get { return _characterColor; }
-            set { this.RaiseAndSetIfChanged(ref _characterColor, value); }
+            get { return _symbolSaturation; }
+            set { this.RaiseAndSetIfChanged(ref _symbolSaturation, value); }
         }
-        public bool IsFullSymbolChange
+        public double SymbolLightness
         {
-            get { return _isFullSymbolChange; }
-            set { this.RaiseAndSetIfChanged(ref _isFullSymbolChange, value); }
+            get { return _symbolLightness; }
+            set { this.RaiseAndSetIfChanged(ref _symbolLightness, value); }
+        }
+        public string SymbolClampColor
+        {
+            get { return _symbolClampColor; }
+            set { this.RaiseAndSetIfChanged(ref _symbolClampColor, value); }
+        }
+        public string BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { this.RaiseAndSetIfChanged(ref _backgroundColor, value); }
         }
         public bool IsSmileyExpressionChange
         {
@@ -69,32 +95,41 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _isSmileyLineColorChange; }
             set { this.RaiseAndSetIfChanged(ref _isSmileyLineColorChange, value); }
         }
-        public bool IsCharacterSymbolChange
+        public bool IsSymbolTypeChange
         {
-            get { return _isCharacterSymbolChange; }
-            set { this.RaiseAndSetIfChanged(ref _isCharacterSymbolChange, value); }
+            get { return _isSymbolTypeChange; }
+            set { this.RaiseAndSetIfChanged(ref _isSymbolTypeChange, value); }
         }
-        public bool IsCharacterColorChange
+        public bool IsSymbolPathChange
         {
-            get { return _isCharacterColorChange; }
-            set { this.RaiseAndSetIfChanged(ref _isCharacterColorChange, value); }
+            get { return _isSymbolPathChange; }
+            set { this.RaiseAndSetIfChanged(ref _isSymbolPathChange, value); }
         }
-        public SymbolDetailsTemplateViewModel FullSymbolChangeDetails
+        public bool IsBackgroundColorChange
         {
-            get { return _fullSymbolChangeDetails; }
-            set { this.RaiseAndSetIfChanged(ref _fullSymbolChangeDetails, value); }
+            get { return _isBackgroundColorChange; }
+            set { this.RaiseAndSetIfChanged(ref _isBackgroundColorChange, value); }
         }
+
+        public bool HasSymbolChange()
+        {
+            return this.IsSymbolPathChange ||
+                   this.IsSymbolTypeChange ||
+                   this.IsBackgroundColorChange ||
+                   this.IsSmileyBodyColorChange ||
+                   this.IsSmileyExpressionChange ||
+                   this.IsSmileyLineColorChange ||
+                   this.SymbolEffectType != CharacterSymbolEffectType.None;
+        }
+
         public SymbolEffectTemplateViewModel()
         {
-            this.FullSymbolChangeDetails = new SymbolDetailsTemplateViewModel();
-
             this.SmileyExpression = SmileyExpression.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
 
-            this.CharacterColor = Colors.White.ToString();
-            this.CharacterSymbol = Rogue.NET.Common.Constant.CharacterSymbol.DefaultCharacterSymbol;
-            this.CharacterSymbolCategory = Rogue.NET.Common.Constant.CharacterSymbol.DefaultCharacterCategory;
+            this.SymbolType = SymbolType.Smiley;
+            this.BackgroundColor = Colors.Transparent.ToString();
         }
     }
 }

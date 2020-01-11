@@ -844,7 +844,6 @@
     <Compile Include="Views\Controls\Symbol\SymbolEffectEditor.xaml.cs">
       <DependentUpon>SymbolEffectEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\Symbol\ViewModel\SvgSymbolViewModel.cs" />
     <Compile Include="Views\Controls\TemplateSelector\ListBuilderTemplateSelector.cs" />
     <Compile Include="Views\Assets\AssetContainerControl.xaml.cs">
       <DependentUpon>AssetContainerControl.xaml</DependentUpon>

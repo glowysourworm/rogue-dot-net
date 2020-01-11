@@ -1,17 +1,14 @@
 ﻿using Microsoft.Practices.ServiceLocation;
+
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
+
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace Rogue.NET.Core.Converter
 {
@@ -23,7 +20,7 @@ namespace Rogue.NET.Core.Converter
             _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
         }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {           
+        {
             if (value == null ||
                 value == DependencyProperty.UnsetValue)
                 return Binding.DoNothing;
@@ -34,7 +31,7 @@ namespace Rogue.NET.Core.Converter
             return _scenarioResourceService.GetImageSource(new ScenarioImage()
             {
                 SymbolType = SymbolType.Game,
-                GameSymbol = gameSymbol
+                SymbolPath = gameSymbol
 
             }, scale, 1.0, Light.White);
         }

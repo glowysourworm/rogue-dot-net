@@ -1,13 +1,12 @@
 ﻿using Microsoft.Practices.ServiceLocation;
+
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
@@ -35,7 +34,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             this.TheCB.SelectionChanged += (sender, e) =>
             {
                 if (e.AddedItems.Count > 0)
-                    this.Value = (e.AddedItems[0] as SvgSymbolViewModel).Symbol;
+                    this.Value = (e.AddedItems[0] as SymbolDetailsTemplateViewModel).SymbolPath;
             };
         }
 
@@ -43,8 +42,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         {
             this.TheCB.ItemsSource = _scenarioResourceService.GetResourceNames(SymbolType.Game).Select(symbol =>
             {
-                var source = _scenarioResourceService.GetImageSource(ScenarioImage.CreateGameSymbol(symbol, symbol), 2.0, 1.0, Light.White);
-                return SvgSymbolViewModel.CreateGameSymbol(source, symbol);
+                return new SymbolDetailsTemplateViewModel()
+                {
+                    SymbolPath = symbol,
+                    SymbolType = SymbolType.Game
+                };
             });
         }
     }

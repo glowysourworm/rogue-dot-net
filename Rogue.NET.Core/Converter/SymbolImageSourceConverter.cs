@@ -1,14 +1,15 @@
 ﻿using Microsoft.Practices.ServiceLocation;
+
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Processing.Service.Interface;
-using System;
-using System.Linq;
-using System.Globalization;
-using System.Windows.Data;
-using System.Windows;
-using System.Windows.Media;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Service.Interface;
+
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
+using System.Windows.Data;
 
 namespace Rogue.NET.Core.Converter
 {
@@ -42,46 +43,40 @@ namespace Rogue.NET.Core.Converter
         public ScenarioImage GetScenarioImage(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values == null ||
-                values.Length != 15 ||
+                values.Length != 12 ||
                 values.Any(x => x == DependencyProperty.UnsetValue))
                 return null;
 
             /*
-                <Binding Path="CharacterColor" />
-                <Binding Path="CharacterSymbol" />
-                <Binding Path="CharacterSymbolCategory" />
-                <Binding Path="CharacterScale" />
-                <Binding Path="Symbol" />
-                <Binding Path="SymbolHue" />
-                <Binding Path="SymbolSaturation" />
-                <Binding Path="SymbolLightness" />
-                <Binding Path="SymbolScale" />
-                <Binding Path="SymbolUseColorMask" />
+                <Binding Path="BackgroundColor" />
                 <Binding Path="SmileyExpression" />
                 <Binding Path="SmileyBodyColor" />
                 <Binding Path="SmileyLineColor" />
-                <Binding Path="GameSymbol" />
+                <Binding Path="SymbolClampColor" />
+                <Binding Path="SymbolEffectType" />
+                <Binding Path="SymbolHue" />
+                <Binding Path="SymbolLightness" />
+                <Binding Path="SymbolPath" />
+                <Binding Path="SymbolSaturation" />
+                <Binding Path="SymbolSize" />
                 <Binding Path="SymbolType" />
             */
 
             // Copy data into a ScenarioImage object
             var scenarioImage = new ScenarioImage()
             {
-                CharacterColor = (string)values[0],
-                CharacterSymbol = (string)values[1],
-                CharacterSymbolCategory = (string)values[2],
-                CharacterScale = (double)values[3],
-                Symbol = (string)values[4],
-                SymbolHue = (double)values[5],
-                SymbolSaturation = (double)values[6],
+                BackgroundColor = (string)values[0],
+                SmileyExpression = (SmileyExpression)values[1],
+                SmileyBodyColor = (string)values[2],
+                SmileyLineColor = (string)values[3],
+                SymbolClampColor = (string)values[4],
+                SymbolEffectType = (CharacterSymbolEffectType)values[5],
+                SymbolHue = (double)values[6],
                 SymbolLightness = (double)values[7],
-                SymbolScale = (double)values[8],
-                SymbolUseColorMask = (bool)values[9],
-                SmileyExpression = (SmileyExpression)values[10],
-                SmileyBodyColor = (string)values[11],
-                SmileyLineColor = (string)values[12],
-                GameSymbol = (string)values[13],
-                SymbolType = (SymbolType)values[14]
+                SymbolPath = (string)values[8],
+                SymbolSaturation = (double)values[9],
+                SymbolSize = (CharacterSymbolSize)values[10],
+                SymbolType = (SymbolType)values[11]
             };
 
             // Have to validate the symbol data per type (These should be set in the constructor; but there's too many 
@@ -96,19 +91,11 @@ namespace Rogue.NET.Core.Converter
                         return null;
                     break;
                 case SymbolType.Character:
-                    if (string.IsNullOrEmpty(scenarioImage.CharacterColor) ||
-                        string.IsNullOrEmpty(scenarioImage.CharacterSymbol) ||
-                        string.IsNullOrEmpty(scenarioImage.CharacterSymbolCategory))
-                        return null;
-                    break;
                 case SymbolType.Symbol:
                 case SymbolType.OrientedSymbol:
                 case SymbolType.Terrain:
-                    if (string.IsNullOrEmpty(scenarioImage.Symbol))
-                        return null;
-                    break;
                 case SymbolType.Game:
-                    if (string.IsNullOrEmpty(scenarioImage.GameSymbol))
+                    if (string.IsNullOrEmpty(scenarioImage.SymbolPath))
                         return null;
                     break;
                 default:

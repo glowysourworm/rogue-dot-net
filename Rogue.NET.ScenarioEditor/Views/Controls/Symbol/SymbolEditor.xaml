@@ -23,7 +23,7 @@
             <!-- Symbol Preview -->
             <Grid Margin="10">
                 <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Preview" />
-                <coreView:SymbolPreviewControl HorizontalAlignment="Right" Height="60" Width="60" Border="White" />
+                <coreView:SymbolPreviewControl Scale="2" HorizontalAlignment="Right" Height="60" Width="60" Border="White" />
             </Grid>      
             
             <!-- Symbol Type -->
@@ -75,6 +75,31 @@
                 </StackPanel>
             </GroupBox>
             
+            <!-- Background Color -->
+            <GroupBox  Margin="10" Header="Symbol Parameters">
+                <GroupBox.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.Symbol}" />
+                        <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.OrientedSymbol}" />
+                        <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.Terrain}" />
+                        <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.Character}" />
+                        <Binding Path="SymbolType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:SymbolType.Game}" />
+                    </MultiBinding>
+                </GroupBox.Visibility>
+                <StackPanel>
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" FontSize="16" Text="Symbol Size" />
+                        <views:EnumComboBox EnumType="{x:Type coreModelEnums:CharacterSymbolSize}" EnumValue="{Binding SymbolSize, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" FontSize="16" Text="Background Color" />
+                        <toolkit:ColorPicker Width="200" 
+                                         HorizontalAlignment="Right" 
+                                         SelectedColor="{Binding BackgroundColor, Delay=300, Converter={StaticResource StringColorConverter}, Mode=TwoWay}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
             <!-- Character Editor -->
             <GroupBox Visibility="{Binding SymbolType, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolType.Character}}" Margin="10" Header="Unicode Character Parameters">
                 <StackPanel>
@@ -82,14 +107,10 @@
                         <Button x:Name="CharacterSymbolButton" Click="CharacterSymbolButton_Click" Content="View Symbol Map" HorizontalAlignment="Right" Padding="10,2,10,2" />
                     </Grid>
                     <Grid Margin="10">
-                        <TextBlock Text="Scale" HorizontalAlignment="Left" FontSize="16" Foreground="White" />
-                        <Slider x:Name="SaturationSlider" Value="{Binding CharacterScale, Delay=500, Mode=TwoWay}" Minimum="0" Maximum="1" Width="200" HorizontalAlignment="Right" />
-                    </Grid>                    
-                    <Grid Margin="10">
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" FontSize="16" Text="Symbol Color" />
                         <toolkit:ColorPicker Width="200" 
                                              HorizontalAlignment="Right" 
-                                             SelectedColor="{Binding CharacterColor, Delay=300, Converter={StaticResource StringColorConverter}, Mode=TwoWay}" />
+                                             SelectedColor="{Binding SymbolClampColor, Delay=300, Converter={StaticResource StringColorConverter}, Mode=TwoWay}" />
                     </Grid>
                 </StackPanel>
             </GroupBox>
@@ -112,7 +133,7 @@
             <GroupBox Visibility="{Binding SymbolType, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolType.Game}}" Margin="10" Header="Game Symbol Parameters">
                 <Grid Margin="10">
                     <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Game Symbol" />
-                    <symbol:SymbolComboBox Width="300" Value="{Binding GameSymbol, Mode=TwoWay}" HorizontalAlignment="Right" />
+                    <symbol:SymbolComboBox Width="300" Value="{Binding SymbolPath, Mode=TwoWay}" HorizontalAlignment="Right" />
                 </Grid>
             </GroupBox>
 

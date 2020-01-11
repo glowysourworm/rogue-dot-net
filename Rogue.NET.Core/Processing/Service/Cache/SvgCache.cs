@@ -34,10 +34,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         // These are paths relative to the Svg folder in Rogue.NET.Common
         const string SVG_FOLDER_GAME = "Game";
-        const string SVG_FOLDER_SCENARIO_CHARACTER = "Scenario.Character";
-        const string SVG_FOLDER_SCENARIO_SYMBOL = "Scenario.Symbol";
-        const string SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL = "Scenario.OrientedSymbol";
-        const string SVG_FOLDER_SCENARIO_TERRAIN = "Scenario.Terrain";
+        const string SVG_FOLDER_SCENARIO_CHARACTER = "Character";
+        const string SVG_FOLDER_SCENARIO_SYMBOL = "Symbol";
+        const string SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL = "OrientedSymbol";
+        const string SVG_FOLDER_SCENARIO_TERRAIN = "Terrain";
 
         static SvgCache()
         {
@@ -52,7 +52,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             _characterResourceNames = GetCharacterResourceNamesImpl();
 
             // Load default drawing
-            DEFAULT_DRAWING = LoadGameSVG(GameSymbol.Identify);
+            DEFAULT_DRAWING = LoadSVG(SVG_FOLDER_GAME, GameSymbol.Identify);
         }
 
         /// <summary>
@@ -62,19 +62,19 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         {
             // Load game symbols
             foreach (var gameSymbol in _gameResourceNames)
-                LoadGameSVG(gameSymbol);
+                LoadSVG(SVG_FOLDER_GAME, gameSymbol);
 
             // Load symbols
             foreach (var symbol in _symbolResourceNames)
-                LoadSymbolSVG(symbol);
+                LoadSVG(SVG_FOLDER_SCENARIO_SYMBOL, symbol);
 
             // Load oriented symbols
             foreach (var orientedSymbol in _orientedSymbolResourceNames)
-                LoadOrientedSymbolSVG(orientedSymbol);
+                LoadSVG(SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL, orientedSymbol);
 
             // Load terrain symbols
             foreach (var terrainSymbol in _terrainSymbolResourceNames)
-                LoadTerrainSymbolSVG(terrainSymbol);
+                LoadSVG(SVG_FOLDER_SCENARIO_TERRAIN, terrainSymbol);
         }
         public DrawingGroup GetDrawing(ScenarioCacheImage cacheImage)
         {
@@ -119,7 +119,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         }
         private string GetCacheKey(ScenarioCacheImage cacheImage)
         {
-            switch (cacheImage.Type)
+            switch (cacheImage.SymbolType)
             {
                 case SymbolType.Smiley:
                 default:
@@ -127,24 +127,23 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 case SymbolType.Character:
                     return string.Join(".", SVG_PATH_PREFIX,
                                             SVG_FOLDER_SCENARIO_CHARACTER,
-                                            cacheImage.CharacterSymbolCategory,
-                                            cacheImage.CharacterSymbol);
+                                            cacheImage.SymbolPath);
                 case SymbolType.Symbol:
                     return string.Join(".", SVG_PATH_PREFIX,
                                             SVG_FOLDER_SCENARIO_SYMBOL,
-                                            cacheImage.Symbol);
+                                            cacheImage.SymbolPath);
                 case SymbolType.Game:
                     return string.Join(".", SVG_PATH_PREFIX,
                                             SVG_FOLDER_GAME,
-                                            cacheImage.GameSymbol);
+                                            cacheImage.SymbolPath);
                 case SymbolType.OrientedSymbol:
                     return string.Join(".", SVG_PATH_PREFIX,
                                             SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL,
-                                            cacheImage.Symbol);
+                                            cacheImage.SymbolPath);
                 case SymbolType.Terrain:
                     return string.Join(".", SVG_PATH_PREFIX,
                                             SVG_FOLDER_SCENARIO_TERRAIN,
-                                            cacheImage.Symbol);
+                                            cacheImage.SymbolPath);
             }
         }
         private static IEnumerable<string> GetResourceNamesImpl(SymbolType type)
@@ -208,57 +207,33 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         }
         private DrawingGroup LoadSVG(ScenarioCacheImage cacheImage)
         {
-            switch (cacheImage.Type)
+            switch (cacheImage.SymbolType)
             {
                 case SymbolType.Smiley:
                 default:
                     throw new Exception("Unsupported symbol type in the ISvgCache");
                 case SymbolType.Character:
-                    return LoadCharacterSVG(cacheImage.CharacterSymbol, cacheImage.CharacterSymbolCategory);
+                    return LoadSVG(SVG_FOLDER_SCENARIO_CHARACTER, cacheImage.SymbolPath);
                 case SymbolType.Symbol:
-                    return LoadSymbolSVG(cacheImage.Symbol);
+                    return LoadSVG(SVG_FOLDER_SCENARIO_SYMBOL, cacheImage.SymbolPath);
                 case SymbolType.Game:
-                    return LoadGameSVG(cacheImage.GameSymbol);
+                    return LoadSVG(SVG_FOLDER_GAME, cacheImage.SymbolPath);
                 case SymbolType.OrientedSymbol:
-                    return LoadOrientedSymbolSVG(cacheImage.Symbol);
+                    return LoadSVG(SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL, cacheImage.SymbolPath);
                 case SymbolType.Terrain:
-                    return LoadTerrainSymbolSVG(cacheImage.Symbol);
+                    return LoadSVG(SVG_FOLDER_SCENARIO_TERRAIN, cacheImage.SymbolPath);
             }
-        }
-        private static DrawingGroup LoadGameSVG(string gameSymbol)
-        {
-            return LoadSVG(SVG_FOLDER_GAME, "", gameSymbol);
-        }
-        private static DrawingGroup LoadSymbolSVG(string symbol)
-        {
-            return LoadSVG(SVG_FOLDER_SCENARIO_SYMBOL, "", symbol);
-        }
-        private static DrawingGroup LoadOrientedSymbolSVG(string symbol)
-        {
-            return LoadSVG(SVG_FOLDER_SCENARIO_ORIENTEDSYMBOL, "", symbol);
-        }
-        private static DrawingGroup LoadTerrainSymbolSVG(string symbol)
-        {
-            return LoadSVG(SVG_FOLDER_SCENARIO_TERRAIN, "", symbol);
-        }
-        private static DrawingGroup LoadCharacterSVG(string character, string characterCategory)
-        {
-            return LoadSVG(SVG_FOLDER_SCENARIO_CHARACTER, characterCategory, character);
         }
 
         /// <summary>
-        /// SEE SVG_PATH_* ABOVE!!! SubPath is the symbol category (points to sub-folder for symbols)
+        /// SEE SVG_PATH_* ABOVE!!!
         /// </summary>
-        /// <param name="svgPath">Path to primary SVG folder (See SVG_PATH_*) { Game, Scenario -> Character, Scenario -> Symbol }</param>
-        /// <param name="subPath">This is the character category (</param>
-        /// <param name="svgName">This is the NAME of the svg file (WITHOUT THE EXTENSION)</param>
-        /// <returns></returns>
-        private static DrawingGroup LoadSVG(string svgPath, string subPath, string svgName)
+        /// <param name="svgFolder">Path to primary SVG folder (See SVG_PATH_*) { Game, Scenario -> Character, Scenario -> Symbol }</param>
+        /// <param name="svgPath">This is the path to the svg file AFTER the sub-folder:  .Svg.[Sub Folder].Path  (NO EXTENSION)</param>
+        private static DrawingGroup LoadSVG(string svgFolder, string svgPath)
         {
             // Calculate resource path
-            var basePath = "Rogue.NET.Common.Resource.Svg";
-            var path = !string.IsNullOrEmpty(subPath) ? string.Join(".", basePath, svgPath, subPath, svgName, "svg")
-                                                      : string.Join(".", basePath, svgPath, svgName, "svg");
+            var path = string.Join(".", SVG_PATH_PREFIX, svgFolder, svgPath) + ".svg";
 
             // Check the static SVG cache for loaded symbol
             if (_cache.ContainsKey(path))
@@ -280,13 +255,13 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                         var drawingGroup = reader.Read(stream);
 
                         // Apply transform to the base symbol
-                        ApplyDrawingTransform(drawingGroup);
+                        var finalDrawing = ApplyDrawingTransform(drawingGroup);
 
                         // Add SVG to static cache
-                        _cache.Add(path, drawingGroup);
+                        _cache.Add(path, finalDrawing);
 
                         // Return the drawing group
-                        return drawingGroup;
+                        return finalDrawing;
                     }
                 }
             }
@@ -302,7 +277,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         /// USED ONCE DURING SVG LOADING ONLY.  Applies a transform to the drawing group to fit it to a 
         /// bounding box with the supplied scale.
         /// </summary>
-        private static void ApplyDrawingTransform(DrawingGroup group)
+        private static DrawingGroup ApplyDrawingTransform(DrawingGroup group)
         {
             var transform = new TransformGroup();
 
@@ -312,10 +287,24 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             var scaleFactor = System.Math.Min((ModelConstants.CellWidth / group.Bounds.Width),
                                               (ModelConstants.CellHeight / group.Bounds.Height));
 
-            transform.Children.Add(new ScaleTransform(scaleFactor, scaleFactor));
             transform.Children.Add(new TranslateTransform(group.Bounds.X * -1, group.Bounds.Y * -1));
+            transform.Children.Add(new ScaleTransform(scaleFactor, scaleFactor));
 
-            RecurseTransformDrawing(group, transform);
+            var visual = new DrawingVisual();
+
+            using (var context = visual.RenderOpen())
+            {
+                context.PushTransform(transform);
+
+                context.DrawDrawing(group);
+            }
+
+            return visual.Drawing;
+
+            // TODO: REMOVE THIS AND RENDER  USING A TRANSFORM TO CREATE A NEW DRAWING
+            // RecurseTransformDrawing(group, transform);
+
+            // return group;
         }
 
         /// <summary>

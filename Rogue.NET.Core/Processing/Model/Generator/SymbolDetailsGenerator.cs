@@ -13,20 +13,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         public void MapSymbolDetails(SymbolDetailsTemplate source, ScenarioImage dest)
         {
-            dest.CharacterColor = source.CharacterColor;
-            dest.CharacterSymbol = source.CharacterSymbol;
-            dest.CharacterSymbolCategory = source.CharacterSymbolCategory;
-            dest.CharacterScale = source.CharacterScale;
+            dest.BackgroundColor = source.BackgroundColor;
             dest.SmileyBodyColor = source.SmileyBodyColor;
             dest.SmileyLineColor = source.SmileyLineColor;
             dest.SmileyExpression = source.SmileyExpression;
-            dest.Symbol = source.Symbol;
+            dest.SymbolClampColor = source.SymbolClampColor;
+            dest.SymbolEffectType = source.SymbolEffectType;
             dest.SymbolHue = source.SymbolHue;
             dest.SymbolLightness = source.SymbolLightness;
+            dest.SymbolPath = source.SymbolPath;
             dest.SymbolSaturation = source.SymbolSaturation;
-            dest.SymbolScale = source.SymbolScale;
-            dest.SymbolUseColorMask = source.SymbolUseColorMask;
-            dest.GameSymbol = source.GameSymbol;
+            dest.SymbolSize = source.SymbolSize;
             dest.SymbolType = source.SymbolType;
         }
     }

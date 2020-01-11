@@ -197,6 +197,32 @@ namespace Rogue.NET.Core.Model.Enums
         WeirdWhistler = 18
     }
 
+    public enum CharacterSymbolSize
+    {
+        Small = 0,
+        Medium = 1,
+        Large = 2
+    }
+
+    public enum CharacterSymbolEffectType
+    {
+        [Display(Name = "None",
+                 Description = "No character symbole effect applied")]
+        None = 0,
+
+        [Display(Name = "Color Shift (Full)",
+                 Description = "Changes the color of the image entirely to a single color")]
+        ColorClamp = 1,
+
+        [Display(Name = "HSL Shift",
+                 Description = "Changes the Hue, Saturation, and / or Lightness of the image")]
+        HslShift = 2,
+
+        [Display(Name = "HSL Shift (With Color Mask)",
+                 Description = "Changes the Hue, Saturation, and / or Lightness of the image - masking off color to prevent changing this portion")]
+        HslShiftColorMask = 3,
+    }
+
     /// <summary>
     /// Represents charater attributes
     /// </summary>
