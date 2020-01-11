@@ -14,7 +14,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         bool _isPassable;
         bool _emitsLight;
         TerrainLayer _layer;
-        SymbolDetailsTemplate _symbolDetails;
+        SymbolDetailsTemplate _edgeSymbolDetails;
+        SymbolDetailsTemplate _fillSymbolDetails;
         LightTemplate _emittedLight;
 
         public bool IsPassable
@@ -52,10 +53,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             get { return _maskingType; }
             set { this.RaiseAndSetIfChanged(ref _maskingType, value); }
         }
-        public SymbolDetailsTemplate SymbolDetails
+        public SymbolDetailsTemplate EdgeSymbolDetails
         {
-            get { return _symbolDetails; }
-            set { this.RaiseAndSetIfChanged(ref _symbolDetails, value); }
+            get { return _edgeSymbolDetails; }
+            set { this.RaiseAndSetIfChanged(ref _edgeSymbolDetails, value); }
+        }
+        public SymbolDetailsTemplate FillSymbolDetails
+        {
+            get { return _fillSymbolDetails; }
+            set { this.RaiseAndSetIfChanged(ref _fillSymbolDetails, value); }
         }
         public LightTemplate EmittedLight
         {
@@ -65,7 +71,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 
         public TerrainLayerTemplate()
         {
-            this.SymbolDetails = new SymbolDetailsTemplate();
+            this.EdgeSymbolDetails = new SymbolDetailsTemplate();
+            this.FillSymbolDetails = new SymbolDetailsTemplate();
             this.EmittedLight = new LightTemplate();
         }
     }

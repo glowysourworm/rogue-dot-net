@@ -43,33 +43,20 @@
             </Grid.ColumnDefinitions>
 
             <ListBox x:Name="TerrainLayerLB" 
-                     ItemsSource="{Binding}"          
+                     ItemsSource="{Binding}"
                      Foreground="White"
                      FontSize="18"
                      Margin="10"
                      Height="360" 
                      SelectionMode="Single"
                      VerticalAlignment="Top">
-
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid HorizontalAlignment="Stretch" Margin="3">
-
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-
-                                <!-- Symbol Preview -->
-                                <symbol:SymbolControl DataContext="{Binding SymbolDetails}" HorizontalAlignment="Left" Margin="3" />
-
-                                <!-- Terrain Layer Name -->
-                                <TextBlock Text="{Binding Name}" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="3" />
-                                
-                            </StackPanel>
-
-                            <Button x:Name="EditSymbolButton" Click="EditSymbolButton_Click" Content="Edit Symbol" Padding="6" Cursor="Hand" HorizontalAlignment="Right" Margin="3" />
+                        <Grid Background="Transparent" Cursor="Hand">
+                            <TextBlock Text="{Binding Name}" FontSize="20" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-
             </ListBox>
 
             <Grid Grid.Column="1" DataContext="{Binding ElementName=TerrainLayerLB, Path=SelectedItem}">
@@ -90,6 +77,24 @@
                           Visibility="{Binding IsPassable, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
                         <TextBlock Text="Terrain Connection Type" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <commonView:EnumComboBox EnumType="{x:Type coreModelEnums:TerrainConnectionType}" EnumValue="{Binding ConnectionType, Mode=TwoWay}" Width="250" HorizontalAlignment="Right" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <TextBlock Text="Fill Symbol" Foreground="White" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <Button x:Name="EditFillSymbolButton" Click="EditFillSymbolButton_Click" Padding="6" Cursor="Hand" HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Edit Symbol" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <symbol:SymbolControl DataContext="{Binding FillSymbolDetails}" HorizontalAlignment="Left" Margin="3, 0, 0, 0" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Grid Margin="5">
+                        <TextBlock Text="Edge Symbol" Foreground="White" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <Button x:Name="EditEdgeSymbolButton" Click="EditEdgeSymbolButton_Click" Padding="6" Cursor="Hand" HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Edit Symbol" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <symbol:SymbolControl DataContext="{Binding EdgeSymbolDetails}" HorizontalAlignment="Left" Margin="3, 0, 0, 0" />
+                            </StackPanel>
+                        </Button>
                     </Grid>
                     <Grid Margin="5">
                         <TextBlock Text="Is Passable" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />

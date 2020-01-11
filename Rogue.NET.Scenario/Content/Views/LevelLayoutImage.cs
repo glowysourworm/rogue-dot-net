@@ -112,7 +112,17 @@ namespace Rogue.NET.Scenario.Content.Views
 
                             // ORDER LAYERS BY Z-INDEX (see TerrainLayer enum)
                             var terrainSymbols = layerTemplates.OrderBy(x => x.TerrainLayer.Layer)
-                                                               .Select(layer => layer.TerrainLayer.SymbolDetails)
+                                                               .Select(layer =>
+                                                               {
+                                                                   var map = terrainMaps.First(map => map.Name == layer.Name);
+
+                                                                   // Check for region edge
+                                                                   if (map[column, row].IsEdge(column, row))
+                                                                       return layer.TerrainLayer.EdgeSymbolDetails;
+
+                                                                   else
+                                                                       return layer.TerrainLayer.FillSymbolDetails;
+                                                               })
                                                                .Actualize();
 
                             // Fetch images for the terrain

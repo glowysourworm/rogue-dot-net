@@ -50,7 +50,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign
             };
         }
 
-        private void EditSymbolButton_Click(object sender, RoutedEventArgs e)
+        private void EditFillSymbolButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
 
@@ -59,9 +59,23 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.GeneralDesign
                 var viewModel = button.DataContext as TerrainLayerTemplateViewModel;
                 if (viewModel != null)
                 {
-                    DialogWindowFactory.ShowSymbolEditor(viewModel.SymbolDetails);
+                    DialogWindowFactory.ShowSymbolEditor(viewModel.FillSymbolDetails);
                 }
             }
         }
+        private void EditEdgeSymbolButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+
+            if (button != null)
+            {
+                var viewModel = button.DataContext as TerrainLayerTemplateViewModel;
+                if (viewModel != null)
+                {
+                    DialogWindowFactory.ShowSymbolEditor(viewModel.EdgeSymbolDetails);
+                }
+            }
+        }
+
     }
 }
