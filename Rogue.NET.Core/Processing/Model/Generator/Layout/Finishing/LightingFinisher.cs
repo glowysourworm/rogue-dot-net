@@ -88,8 +88,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     if (grid[i, j] == null)
                         continue;
 
+                    var intensity = ScaleIntensity(template.LightingThreshold);
+
+                    intensity = intensity.Round(1);
+
                     // Set a white light threshold (to simulate white light)
-                    grid[i, j].AmbientLight = new Light(Light.White, ScaleIntensity(template.LightingThreshold));
+                    grid[i, j].AmbientLight = new Light(Light.White, intensity);
                 }
             }
         }
@@ -110,6 +114,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                     {
                         // Go ahead and adjust light intensity here since the light instance is only local
                         var intensity = ScaleIntensity(_randomSequenceGenerator.GetRandomValue(template.IntensityRange));
+
+                        intensity = intensity.Round(1);
 
                         // Blend the current light value with the new light
                         grid[i, j].AccentLight = new Light(light, intensity);
@@ -141,6 +147,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
                         // Create light intensity value by scaling the sub-scaled value from the min -> max intensity
                         var intensity = ScaleIntensity((subScaledValue * (template.IntensityRange.High - template.IntensityRange.Low)) + template.IntensityRange.Low);
+
+                        intensity = intensity.Round(1);
 
                         // Add light to the grid
                         grid[column, row].AccentLight = new Light(light, intensity);
@@ -181,7 +189,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         installedWallLights.Add(grid[i, j].Location);
 
                         // Go ahead and adjust light intensity here since the light instance is only local
-                        var wallLightIntensity = ScaleIntensity(template.WallLightIntensity);
+                        var wallLightIntensity = ScaleIntensity(template.WallLightIntensity).Round(1);
 
                         // Blend in the resulting light 
                         grid[i, j].WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
@@ -232,7 +240,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                                                                     : light.Intensity;
 
                     // Clip intensity to 1 for small distances
-                    intensity = intensity.Clip(0, 1);
+                    intensity = intensity.Clip(0, 1).Round(1);
 
                     // var intensity = light.Intensity / System.Math.Pow(distance, LIGHT_POWER_LAW);
 

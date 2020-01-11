@@ -80,6 +80,11 @@ namespace Rogue.NET.Common.Extension
                 return number > low && number < high;
         }
 
+        public static double Round(this double number, int digits)
+        {
+            return System.Math.Round(number, digits);
+        }
+
         public static double RoundOrderMagnitudeUp(this double number)
         {
             // Round up the log_10 of the number - which gives the inverse order-of-magnitude of

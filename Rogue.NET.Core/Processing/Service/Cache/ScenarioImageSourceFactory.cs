@@ -40,6 +40,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
             _imageSourceCache = new Dictionary<int, DrawingImage>();
         }
+
         public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, Light[] lighting)
         {
             // PERFORMANCE - HASH CODE ONLY
@@ -147,36 +148,43 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             }
 
             var cacheImage = CreateCacheImage(scenarioImage, false, scale, effectiveVision, lighting);
+            
+            var imageSource = GetImageSource(cacheImage);
+
+            // Cache the image source
+            _imageSourceCache[hash] = imageSource;
+
+            return CreateScaledImage(imageSource, scale);
 
 
-            switch (scenarioImage.SymbolType)
-            {
-                case SymbolType.Character:
-                case SymbolType.Symbol:
-                case SymbolType.OrientedSymbol:
-                case SymbolType.Game:
-                case SymbolType.Terrain:
-                    {
-                        // Fetch / Load the drawing from the cache
-                        var drawing = _svgCache.GetDrawing(cacheImage);
+            //switch (scenarioImage.SymbolType)
+            //{
+            //    case SymbolType.Character:
+            //    case SymbolType.Symbol:
+            //    case SymbolType.OrientedSymbol:
+            //    case SymbolType.Game:
+            //    case SymbolType.Terrain:
+            //        {
+            //            // Fetch / Load the drawing from the cache
+            //            var drawing = _svgCache.GetDrawing(cacheImage);
 
-                        // Apply Effects - Scale, ColorMap, HSL
-                        var completedDrawing = ApplyEffects(drawing, cacheImage);
+            //            // Apply Effects - Scale, ColorMap, HSL
+            //            var completedDrawing = ApplyEffects(drawing, cacheImage);
 
-                        // Create the image source
-                        var source = new DrawingImage(completedDrawing);
+            //            // Create the image source
+            //            var source = new DrawingImage(completedDrawing);
 
-                        // Cache the image source
-                        _imageSourceCache[hash] = source;
+            //            // Cache the image source
+            //            _imageSourceCache[hash] = source;
 
-                        return CreateScaledImage(source, cacheImage.Scale);
-                    }
-                case SymbolType.Smiley: // No Cache
-                    return GetSmileyElement(cacheImage);
+            //            return CreateScaledImage(source, cacheImage.Scale);
+            //        }
+            //    case SymbolType.Smiley: // No Cache
+            //        return GetSmileyElement(cacheImage);
 
-                default:
-                    throw new Exception("Unknown symbol type");
-            }
+            //    default:
+            //        throw new Exception("Unknown symbol type");
+            //}
         }
 
         #region (private) Image Methods
@@ -296,17 +304,14 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     }
             }
         }
-
         private void ApplyLighting(DrawingGroup drawing, Light lighting)
         {
             _symbolEffectFilter.ApplyEffect(drawing, new LightingEffect(lighting));
         }
-
         private void ApplyIntensity(DrawingGroup drawing, double intensity)
         {
             _symbolEffectFilter.ApplyEffect(drawing, new LightIntensityEffect(intensity));
         }
-        
         private Transform CreateSymbolSizeTransform(DrawingGroup drawing, CharacterSymbolSize symbolSize, double scale)
         {
             // Scale the drawing relative to a margin specified by the symbol size enumeration. Create a sub-boundary
@@ -375,7 +380,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
             return transform;
         }
-
         private DrawingGroup CreateBackground(DrawingGroup drawing, string backgroundColor, double scale)
         {
             var cellBoundary = new Rect(new Size(ModelConstants.CellWidth * scale, ModelConstants.CellHeight * scale));
@@ -393,7 +397,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
             return fullDrawing;
         }
-
         private Image CreateScaledImage(ImageSource source, double scale)
         {
             // Return scaled image
