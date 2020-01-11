@@ -37,6 +37,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         // Primary visibility information for the Player
         Dictionary<GridLocation, GridLocation> _visibleLocations;
+        Dictionary<GridLocation, GridLocation> _lastVisibleLocations;
 
         // Expose the primary grid boundary
         public RegionBoundary Boundary { get { return _layoutGrid.Bounds; } }
@@ -54,12 +55,19 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _pathFinderDict = new Dictionary<NonPlayerCharacter, DijkstraPathFinder>();
             _contentVisibilityDict = new Dictionary<ScenarioObject, ScenarioObject>();
             _visibleLocations = new Dictionary<GridLocation, GridLocation>();
+            _lastVisibleLocations = new Dictionary<GridLocation, GridLocation>();
         }
 
         public void Update(Player player, GridLocation playerLocation)
         {
             // Player - Calculate Revealed / Explored locations
             //
+
+            // PERFORMANCE HIT:  COPY OVER LAST VISIBLE LOCATIONS
+            _lastVisibleLocations.Clear();
+
+            foreach (var location in _visibleLocations.Keys)
+                _lastVisibleLocations.Add(location, location);
 
             // Clear current visibility
             _visibleLocations.Clear();
@@ -279,6 +287,27 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                 return false;
 
             return _visibleLocations.ContainsKey(cell.Location);
+        }
+
+        /// <summary>
+        /// Returns true if the location was visible last turn
+        /// </summary>
+        public bool WasVisible(GridLocation location)
+        {
+            return _lastVisibleLocations.ContainsKey(location);
+        }
+
+        /// <summary>
+        /// Returns true if the location was visible last turn
+        /// </summary>
+        public bool WasVisible(int column, int row)
+        {
+            var cell = _layoutGrid[column, row];
+
+            if (cell == null)
+                return false;
+
+            return _lastVisibleLocations.ContainsKey(cell.Location);
         }
 
         public double GetEffectiveVision(int column, int row)

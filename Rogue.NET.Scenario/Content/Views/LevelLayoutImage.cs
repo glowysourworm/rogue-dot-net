@@ -31,6 +31,9 @@ namespace Rogue.NET.Scenario.Content.Views
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioBitmapSourceFactory _scenarioBitmapSourceFactory;
 
+        WriteableBitmap _rendering;
+        bool _firstRendering = true;
+
         const int LAYOUT_BITMAP_DPI = 96;
 
         [ImportingConstructor]
@@ -48,6 +51,10 @@ namespace Rogue.NET.Scenario.Content.Views
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
+                // Reset the writeable bitmap
+                _rendering = null;
+                _firstRendering = true;
+
                 RenderLayout();
             });
 
@@ -65,13 +72,18 @@ namespace Rogue.NET.Scenario.Content.Views
             var layoutGrid = _modelService.Level.Grid;
 
             // Render layout layer to writeable bitmap
-            var layoutBitmap = new WriteableBitmap((int)(_modelService.Level.Grid.Bounds.Width * ModelConstants.CellWidth * _modelService.ZoomFactor),
-                                                   (int)(_modelService.Level.Grid.Bounds.Height * ModelConstants.CellHeight * _modelService.ZoomFactor),
-                                                   LAYOUT_BITMAP_DPI,
-                                                   LAYOUT_BITMAP_DPI,
-                                                   PixelFormats.Pbgra32, null);
+            if (_rendering == null)
+            {
+                _rendering = new WriteableBitmap((int)(_modelService.Level.Grid.Bounds.Width * ModelConstants.CellWidth * _modelService.ZoomFactor),
+                                                 (int)(_modelService.Level.Grid.Bounds.Height * ModelConstants.CellHeight * _modelService.ZoomFactor),
+                                                 LAYOUT_BITMAP_DPI,
+                                                 LAYOUT_BITMAP_DPI,
+                                                 PixelFormats.Pbgra32, null);
 
-            using (var bitmapContext = layoutBitmap.GetBitmapContext())
+                this.Source = _rendering;
+            }
+
+            using (var bitmapContext = _rendering.GetBitmapContext())
             {
                 for (int column = 0; column < _modelService.Level.Grid.Bounds.Width; column++)
                 {
@@ -83,12 +95,22 @@ namespace Rogue.NET.Scenario.Content.Views
 
                         var cell = layoutGrid[column, row];
                         var isVisible = _modelService.Level.Movement.IsVisible(column, row);
+                        var wasVisible = _modelService.Level.Movement.WasVisible(column, row);
 
                         // For visible cells - don't render the layout if there is anything on top
                         if (isVisible && _modelService.Level.Content[column, row].Any())
                             continue;
 
-                        // Skip cells that aren't rendered
+                        // Check to see that this location is either NEWLY VISIBLE or WAS VISIBLE LAST TURN
+                        //
+                        // TODO: STORE REVEALED-LAST-TURN TO IMPROVE PERFORMANCE
+                        //
+                        if (!isVisible &&
+                            !wasVisible &&
+                            !_firstRendering &&
+                            !cell.IsRevealed)
+                            continue;
+
                         if (!isVisible &&
                             !cell.IsExplored &&
                             !cell.IsRevealed)
@@ -174,7 +196,7 @@ namespace Rogue.NET.Scenario.Content.Views
                 }
             }
 
-            this.Source = layoutBitmap;
+            _firstRendering = false;
         }
 
         private DrawingImage GetSymbol(SymbolDetailsTemplate symbol, bool isVisible, bool isExplored, bool isRevealed, double effectiveVision, params Light[] lighting)

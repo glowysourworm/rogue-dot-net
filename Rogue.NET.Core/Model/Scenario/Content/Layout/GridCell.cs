@@ -108,7 +108,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsWallLight = info.GetBoolean("IsWallLight");
             this.Location = (GridLocation)info.GetValue("Location", typeof(GridLocation));
             this.DoorSearchCounter = info.GetInt32("DoorSearchCounter");
-            this.Lights = (Light[])info.GetValue("Lights", typeof(Light[]));
+
+            var lightCount = info.GetInt32("LightCount");
+
+            this.Lights = new Light[lightCount];
+
+            for (int i = 0; i < lightCount; i++)
+                this.Lights[i] = (Light)info.GetValue("Light" + i.ToString(), typeof(Light));
 
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -120,7 +126,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("IsWallLight", this.IsWallLight);
             info.AddValue("Location", this.Location);
             info.AddValue("DoorSearchCounter", this.DoorSearchCounter);
-            info.AddValue("Lights", this.Lights);
+            info.AddValue("LightCount", this.Lights.Length);
+
+            for (int i = 0; i < this.Lights.Length; i++)
+                info.AddValue("Light" + i.ToString(), this.Lights[i]);
         }
         #endregion
     }
