@@ -74,7 +74,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _contentVisibilityDict.Clear();
 
             // Calculate visible locations
-            VisibilityCalculator.CalculateVisibility(_layoutGrid, playerLocation, (int)(player.GetVision() * ModelConstants.MaxVisibileRadius), 
+            VisibilityCalculator.CalculateVisibility(_layoutGrid, playerLocation, (int)(player.GetVision() * ModelConstants.MaxVisibileRadiusPlayer), 
             (column, row, isVisible) =>
             {
                 // Visible Cells -> Explored / No Longer Revealed
@@ -315,7 +315,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             var player = _contentGrid.Characters.First(character => character is Player);
 
             // Max visible radius
-            var visionRadius = player.GetVision() * ModelConstants.MaxVisibileRadius;
+            var visionRadius = player.GetVision() * ModelConstants.MaxVisibileRadiusPlayer;
 
             // VISION COEFFICIENT:  Scaled intensity multiplier that maps from [0, visible radius] -> [0, 1], falling off linearly
             //

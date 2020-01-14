@@ -7,7 +7,8 @@ namespace Rogue.NET.Core.Model
         public const int CellHeight = 15;
         public const int CellWidth = 10;
 
-        public const int MaxVisibileRadius = 30;
+        public const int MaxVisibileRadiusPlayer = 100;
+        public const int MaxVisibileRadiusNPC = 20;
         public const double MinLightIntensity = 0.2;
         public const double MaxLightIntensity = 1.0;
 

@@ -227,7 +227,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
         private void CreatePointSourceLighting(GridCellInfo[,] grid, int column, int row, Light light, bool terrainLight = false, string terrainName = null)
         {
             // Add to field of view
-            VisibilityCalculator.CalculateVisibility(grid, grid[column, row].Location, ModelConstants.MaxVisibileRadius,
+            VisibilityCalculator.CalculateVisibility(grid, grid[column, row].Location, ModelConstants.MaxVisibileRadiusNPC,
             (columnCallback, rowCallback, isVisible) =>
             {
                 if (isVisible)

@@ -124,7 +124,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _visibleLocations.Clear();
 
             // Calculate visible locations -> MUST PREVENT NON-WALKABLE LOCATIONS FROM BEING SET ON THE SEARCH GRID
-            VisibilityCalculator.CalculateVisibility(_layoutGrid, location, (int)(effectiveVision * ModelConstants.MaxVisibileRadius), 
+            VisibilityCalculator.CalculateVisibility(_layoutGrid, location, (int)(effectiveVision * ModelConstants.MaxVisibileRadiusNPC), 
             (column, row, isVisible) =>
             {
                 if (isVisible && _layoutGrid.WalkableMap[column, row] != null)

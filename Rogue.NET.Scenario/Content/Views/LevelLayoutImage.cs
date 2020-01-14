@@ -304,7 +304,7 @@ namespace Rogue.NET.Scenario.Content.Views
         {
             // Intensity falls off linearly as the vision
             var distance = Metric.EuclideanDistance(location, playerLocation);
-            var distanceRatio = distance / ModelConstants.MaxVisibileRadius;
+            var distanceRatio = distance / ModelConstants.MaxVisibileRadiusPlayer;
 
             // USE ROUNDING TO PREVENT CACHE OVERLOAD
             var intensity = System.Math.Round(((1 - distanceRatio) * effectiveLighting.Intensity)
