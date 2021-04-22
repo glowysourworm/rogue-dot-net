@@ -1,5 +1,6 @@
 ﻿using Prism.Mef.Modularity;
 using Prism.Modularity;
+
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
@@ -14,24 +15,21 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.Browser.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using Rogue.NET.ScenarioEditor.Views;
-using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl;
 using Rogue.NET.ScenarioEditor.Views.Browser;
 using Rogue.NET.ScenarioEditor.Views.Constants;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.Views.Design;
 using Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
+
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
@@ -604,7 +602,7 @@ namespace Rogue.NET.ScenarioEditor
         /// asset references are shared.
         /// </summary>
         private LevelBranchGenerationTemplateViewModel CopyLevelBranch(
-                    LevelBranchGenerationTemplateViewModel source, 
+                    LevelBranchGenerationTemplateViewModel source,
                     string copyName)
         {
             // Create copy of the level branch
@@ -683,14 +681,15 @@ namespace Rogue.NET.ScenarioEditor
                         _scenarioOverviewCalculationService.CalculateOverview(viewModel);
                     }
                     break;
-                case DesignMode.Overview:
-                    {
-                        // For overview mode - calculate the asset overview
+                // TODO: Complete or remove overview mode
+                //case DesignMode.Overview:
+                //    {
+                //        // For overview mode - calculate the asset overview
 
-                        // Calculate an overview for the asset
-                        _scenarioOverviewCalculationService.CalculateOverview(viewModel);
-                    }
-                    break;
+                //        // Calculate an overview for the asset
+                //        _scenarioOverviewCalculationService.CalculateOverview(viewModel);
+                //    }
+                //    break;
             }
 
             // Unblock the undo service
@@ -724,10 +723,11 @@ namespace Rogue.NET.ScenarioEditor
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioLevelBrowser));
                     _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
                     break;
-                case DesignMode.Overview:
-                    _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
-                    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(Overview));
-                    break;
+                // TODO: Complete or remove overview mode
+                //case DesignMode.Overview:
+                //    _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
+                //    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(Overview));
+                //    break;
                 case DesignMode.Validation:
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
                     _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(Validation));

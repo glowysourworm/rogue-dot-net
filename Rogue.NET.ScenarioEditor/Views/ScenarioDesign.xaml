@@ -24,7 +24,8 @@
                   Grid.Row="1">
             <ListBoxItem x:Name="GeneralItem" Content="General" />
             <ListBoxItem x:Name="LevelDesign" Content="Level Design" />
-            <ListBoxItem x:Name="ScenarioDesignOverviewItem" Content="Overview" />
+            <!-- TODO: Complete or remove overview mode -->
+            <!--ListBoxItem x:Name="ScenarioDesignOverviewItem" Content="Overview" /-->
             <ListBoxItem x:Name="ValidationItem">
                 <Grid>
                     <TextBlock Text="Validation" HorizontalAlignment="Left" />

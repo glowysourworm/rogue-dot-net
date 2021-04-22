@@ -1,20 +1,14 @@
-﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.ScenarioEditor.Service.Interface;
-
-using System.Linq;
-using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
-
-using LiveCharts;
+﻿using LiveCharts;
+using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Common.ViewModel;
 using Rogue.NET.ScenarioEditor.ViewModel.Overview.Interface;
-using System.Windows.Media;
-using LiveCharts.Defaults;
-using Rogue.NET.Core.Media.SymbolEffect.Utility;
+
 using System;
-using Rogue.NET.Core.Media.SymbolEffect;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
 {
@@ -49,8 +43,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
             //       ADDED TRY / CATCH TO AVOID A CRASH.
             try
             {
-                if (this.Series.Any())
-                    this.Series.Clear();
+                // TODO: Complete or remove overview mode
+                // if (this.Series.Any())
+                //     this.Series.Clear();
             }
             catch (Exception)
             {
@@ -59,7 +54,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Overview
 
             //var hueLimit = Math.PI * 2.0;
 
-            for (int i=0;i<projectionSet.Count;i++)
+            for (int i = 0; i < projectionSet.Count; i++)
             {
                 var lineSeries = new LineSeries()
                 {

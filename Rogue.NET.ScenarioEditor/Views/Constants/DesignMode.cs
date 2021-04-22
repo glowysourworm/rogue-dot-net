@@ -21,7 +21,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Constants
         /// <summary>
         /// This is the scenario overview - which includes difficulty charts and must run validation to show
         /// </summary>
-        Overview,
+        // TODO: Overview,
 
         /// <summary>
         /// Shows the validation of the scenario

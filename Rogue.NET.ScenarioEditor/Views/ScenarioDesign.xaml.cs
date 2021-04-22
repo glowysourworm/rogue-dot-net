@@ -28,11 +28,12 @@ namespace Rogue.NET.ScenarioEditor.Views
                 eventAggregator.GetEvent<LoadDesignEvent>()
                                .Publish(DesignMode.Level);
             };
-            this.ScenarioDesignOverviewItem.PreviewMouseDown += (sender, e) =>
-            {
-                eventAggregator.GetEvent<LoadDesignEvent>()
-                               .Publish(DesignMode.Overview);
-            };
+            // TODO: Complete or remove overview mode
+            //this.ScenarioDesignOverviewItem.PreviewMouseDown += (sender, e) =>
+            //{
+            //    eventAggregator.GetEvent<LoadDesignEvent>()
+            //                   .Publish(DesignMode.Overview);
+            //};
             this.ValidationItem.PreviewMouseDown += (sender, e) =>
             {
                 eventAggregator.GetEvent<LoadDesignEvent>()
