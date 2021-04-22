@@ -1,37 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {
     public class RogueAsyncEvent<T> : RogueEventBase
     {
-        readonly IDictionary<string, Func<T, Task>> _functions;
+        readonly IDictionary<RogueEventKey, Func<T, Task>> _functions;
 
         public RogueAsyncEvent()
         {
-            _functions = new Dictionary<string, Func<T, Task>>();
+            _functions = new Dictionary<RogueEventKey, Func<T, Task>>();
         }
 
-        public string Subscribe(Func<T, Task> func)
+        public string Subscribe(Func<T, Task> func, RogueEventPriority priority = RogueEventPriority.None)
         {
-            var token = Guid.NewGuid().ToString();
+            var eventKey = new RogueEventKey(priority);
 
-            _functions.Add(token, func);
+            _functions.Add(eventKey, func);
 
-            return token;
+            return eventKey.Token;
         }
 
         public void UnSubscribe(string token)
         {
-            _functions.Remove(token);
+            var eventKey = _functions.Keys.FirstOrDefault(key => key.Token == token);
+
+            if (eventKey == null)
+                throw new Exception("Trying to unsubscribe from missing event token RogueAsyncEvent");
+
+            _functions.Remove(eventKey);
         }
 
         public async Task Publish(T payload)
         {
-            var functions = _functions.Values.Copy();
+            // Copying the collection because the functions may have subscriptions in them that modify the _functions
+            // collection
+            var functions = _functions.OrderBy(x => x.Key.Priority)
+                                      .Select(x => x.Value)
+                                      .Actualize();
 
             foreach (var function in functions)
                 await function(payload);

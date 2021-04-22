@@ -75,7 +75,9 @@ namespace Rogue.NET.Scenario.Processing.Controller
 
                 // Load Level Layout Visibility
                 OnUpdateLayoutVisibility();
-            });
+
+            // SET PRIORITY TO EXECUTE AFTER THE LEVEL IS INVALIDATED
+            }, RogueEventPriority.High);
 
             // ANIMATION EVENTS
             eventAggregator.GetEvent<AnimationStartEvent>().Subscribe(async eventData =>

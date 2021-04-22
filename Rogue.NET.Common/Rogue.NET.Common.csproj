@@ -235,6 +235,7 @@
     <Compile Include="Extension\Event\ISimpleAsyncCommand.cs" />
     <Compile Include="Extension\Event\EventHandler.cs" />
     <Compile Include="Extension\Event\SimpleCommand.cs" />
+    <Compile Include="Extension\Prism\EventAggregator\RogueEventKey.cs" />
     <Compile Include="Extension\Prism\RegionManager\BlurTransition.cs" />
     <Compile Include="Extension\Prism\EventAggregator\IRogueEventAggregator.cs" />
     <Compile Include="Extension\Prism\EventAggregator\RogueAsyncEvent.cs" />

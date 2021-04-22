@@ -59,13 +59,16 @@ namespace Rogue.NET.Scenario.Content.Views
                 _renderingGrid = null;
 
                 RenderLayout();
-            });
+
+            // SET PRIORITY TO EXECUTE BEFORE THE LEVEL IS INVALIDATED
+            }, RogueEventPriority.Critical);
 
             eventAggregator.GetEvent<ZoomEvent>().Subscribe(eventData =>
             {
                 RenderLayout();
             });
 
+            // PRIMARY INVALIDATION EVENT
             levelCanvasViewModel.VisibilityUpdated += RenderLayout;
         }
 
@@ -92,7 +95,7 @@ namespace Rogue.NET.Scenario.Content.Views
             {
                 for (int column = 0; column < _modelService.Level.Grid.Bounds.Width; column++)
                 {
-                    for (int row = 0; row < _modelService.Level.Grid.Bounds.Width; row++)
+                    for (int row = 0; row < _modelService.Level.Grid.Bounds.Height; row++)
                     {
                         // Skip empty cells
                         if (layoutGrid[column, row] == null)
