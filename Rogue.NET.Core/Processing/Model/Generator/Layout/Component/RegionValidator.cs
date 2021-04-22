@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
     public static class RegionValidator
     {
         // Constraints may depend on the layout parameters - but, for now, just make them "big enough"
-        const int ROOM_MIN_SIZE = 4;
+        const int ROOM_MIN_SIZE = 1;
         const int TERRAIN_MIN_SIZE = 4;
 
         public static int MinimumRoomSize

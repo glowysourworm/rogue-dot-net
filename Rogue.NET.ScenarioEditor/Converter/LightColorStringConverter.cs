@@ -11,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
 {
     public class LightColorStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null ||
                 value == DependencyProperty.UnsetValue)
@@ -22,7 +22,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
             return Color.FromArgb(1, light.Red, light.Green, light.Blue).ToString();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null ||
                 value == DependencyProperty.UnsetValue)
