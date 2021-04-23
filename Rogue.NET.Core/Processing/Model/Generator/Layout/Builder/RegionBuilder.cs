@@ -32,6 +32,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IRegionTriangulationCreator _triangulationCreator;
 
+        // TODO: Move to primary model constants
         const int LAYOUT_WIDTH_MAX = 100;
         const int LAYOUT_WIDTH_MIN = 20;
         const int LAYOUT_HEIGHT_MAX = 60;

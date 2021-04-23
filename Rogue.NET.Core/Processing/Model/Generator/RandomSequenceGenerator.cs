@@ -7,34 +7,71 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Math.Algorithm;
+using System.Threading;
+using System.Windows;
+using System.Collections.Concurrent;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
+    /// <summary>
+    /// MULTI-THREADING POLICY:  Assign sub-sequence to new thread based on the (int) Thread.Name property.  This should generate one random number sequence per
+    /// level.
+    /// </summary>
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IRandomSequenceGenerator))]
     public class RandomSequenceGenerator : IRandomSequenceGenerator
     {
-        private Random _random;
+        // Create these by spawning new Random instances each thread - starting with the first seed and incrementing by
+        // one each time.
+        private readonly ConcurrentDictionary<int, Random> _randomSequences;
+        private int _seed;
 
         [ImportingConstructor]
         public RandomSequenceGenerator()
         {
-            _random = new Random(1);
+            if (Thread.CurrentThread !=
+                Application.Current.Dispatcher.Thread)
+                throw new Exception("IRandomSequenceGenerator must be created on the main thread");
+
+            _randomSequences = new ConcurrentDictionary<int, Random>();
         }
 
         public void Reseed(int seed)
         {
-            _random = new Random(seed);
+            if (Thread.CurrentThread !=
+                Application.Current.Dispatcher.Thread)
+                throw new Exception("IRandomSequenceGenerator.Reseed(...) method must be called from the main thread");
+
+            _seed = seed;
+
+            _randomSequences.Clear();
+            _randomSequences.TryAdd(0, new Random(seed));
+        }
+
+        private Random GetOrAdd()
+        {
+            // ***MULTI-THREADING POLICY (Stores the primary sequence as the 0th entry, level sequences after that)
+            var index = 0;
+            var levelNumber = 0;
+
+            // Find existing sequence for this thread / or spawn a new one
+            if (int.TryParse(Thread.CurrentThread.Name, out levelNumber))
+                index = levelNumber;
+
+            if (!_randomSequences.ContainsKey(index))
+                _randomSequences.TryAdd(index, new Random(_seed + levelNumber));
+
+            return _randomSequences[index];
         }
 
         public double Get()
         {
-            return _random.NextDouble();
+            return GetOrAdd().NextDouble();
         }
 
         public int Get(int inclusiveLowerBound, int exclusiveUpperBound)
         {
-            return _random.Next(inclusiveLowerBound, exclusiveUpperBound);
+            return GetOrAdd().Next(inclusiveLowerBound, exclusiveUpperBound);
         }
 
         public double GetDouble(double inclusiveLowerBound, double exclusiveUpperBound)
@@ -42,12 +79,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var slope = exclusiveUpperBound - inclusiveLowerBound;
             var intercept = inclusiveLowerBound;
 
-            return (slope * _random.NextDouble()) + intercept;
+            return (slope * GetOrAdd().NextDouble()) + intercept;
         }
 
         public Compass GetRandomCardinalDirection()
         {
-            var random = _random.NextDouble();
+            var random = GetOrAdd().NextDouble();
 
             if (random < 0.25)
                 return Compass.N;
@@ -94,13 +131,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var low = Convert.ToDouble(range.Low);
             var high = Convert.ToDouble(range.High);
 
-            return (T)Convert.ChangeType((low + ((high - low) * _random.NextDouble())), typeof(T));
+            return (T)Convert.ChangeType((low + ((high - low) * GetOrAdd().NextDouble())), typeof(T));
         }
 
         public T GetRandomElement<T>(IEnumerable<T> collection)
         {
             // NOTE*** Random.NextDouble() is [1, 0) (exclusive upper bound)
-            return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * _random.NextDouble()));
+            return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * GetOrAdd().NextDouble()));
         }
 
         public IEnumerable<T> GetDistinctRandomElements<T>(IEnumerable<T> collection, int count)
@@ -139,7 +176,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var weightedItems = collection.Select(x => new { Item = x, Weight = weightSelector(x) });
 
             // Draw random number scaled by the sum of weights
-            var randomDraw = _random.NextDouble() * weightedItems.Sum(x => x.Weight);
+            var randomDraw = GetOrAdd().NextDouble() * weightedItems.Sum(x => x.Weight);
 
             // Figure out which item corresponds to the random draw - treating each 
             // like a "bucket" of size "weight"
@@ -188,8 +225,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             do
             {
                 // Generate U[-1, 1] Variables
-                v1 = (2.0 * _random.NextDouble()) - 1.0;
-                v2 = (2.0 * _random.NextDouble()) - 1.0;
+                v1 = (2.0 * GetOrAdd().NextDouble()) - 1.0;
+                v2 = (2.0 * GetOrAdd().NextDouble()) - 1.0;
 
                 // Calculate R^2
                 R = v1 * v1 + v2 * v2;
@@ -204,7 +241,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         // https://stats.stackexchange.com/questions/403201/wigner-semi-circle-distribution-random-numbers-generation
         public double GetWigner(double radius)
         {
-            return System.Math.Abs(radius * System.Math.Sqrt(_random.NextDouble()) * System.Math.Cos(System.Math.PI * _random.NextDouble()));
+            return System.Math.Abs(radius * System.Math.Sqrt(GetOrAdd().NextDouble()) * System.Math.Cos(System.Math.PI * GetOrAdd().NextDouble()));
         }
 
         // https://en.wikipedia.org/wiki/Triangular_distribution
@@ -212,7 +249,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             var cutoff = (peak - start) / (end - start);
 
-            var uniform = _random.NextDouble();
+            var uniform = GetOrAdd().NextDouble();
 
             if (uniform < cutoff)
                 return start + System.Math.Sqrt(uniform * (end - start) * (peak - start));

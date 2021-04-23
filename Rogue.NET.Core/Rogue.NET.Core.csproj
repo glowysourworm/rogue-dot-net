@@ -303,6 +303,8 @@
     <Compile Include="Math\Algorithm\NoiseGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Finishing\WallFinisher.cs" />
     <Compile Include="Processing\Model\Generator\LightGenerator.cs" />
+    <Compile Include="Processing\Model\Generator\RandomSequenceGeneratorContextProperty.cs" />
+    <Compile Include="Processing\Model\Generator\ScenarioGeneratorThreadData.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioBitmapSourceFactory.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioCache.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioConfigurationCache.cs" />

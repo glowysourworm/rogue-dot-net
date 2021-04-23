@@ -3505,3 +3505,5 @@ IMMEDIATE TODO'S:
 				  out further. However, the effective intensity calculation should show these light sources to "Pop" more. So, probably will want to 
 				  weight them more heavily. 
 			
+			
+NEW MOUSE / KEYBOARD!! ... :) ... : / ... :(

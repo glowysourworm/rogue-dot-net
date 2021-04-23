@@ -4,6 +4,7 @@ using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -15,13 +16,11 @@ namespace Rogue.NET.Core.Processing.Service.Cache
     [Export(typeof(IScenarioCache))]
     public class ScenarioCache : IScenarioCache
     {
-        static readonly List<ScenarioContainer> _scenarios;
         static readonly List<ScenarioInfo> _scenarioInfos;
 
 
         static ScenarioCache()
         {
-            _scenarios = new List<ScenarioContainer>();
             _scenarioInfos = new List<ScenarioInfo>();
         }
 
@@ -33,22 +32,21 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         public IEnumerable<string> GetScenarioNames()
         {
-            return _scenarios.Select(x => x.Player.RogueName);
+            return _scenarioInfos.Select(x => x.Name);
         }
 
         public ScenarioContainer GetScenario(string name)
         {
-            var scenario = _scenarios.FirstOrDefault(x => x.Player.RogueName == name);
+            var scenarioFile = Path.Combine(ResourceConstants.SavedGameDirectory, name + "." + ResourceConstants.ScenarioExtension);
 
-            // NOTE*** Creating clone of the scenario using binary copy
-            if (scenario != null)
+            foreach (var file in Directory.GetFiles(ResourceConstants.SavedGameDirectory)
+                                          .Where(x => x.EndsWith("." + ResourceConstants.ScenarioExtension)))
             {
-                var buffer = BinarySerializer.Serialize(scenario);
-
-                return (ScenarioContainer)BinarySerializer.Deserialize(buffer);
+                if (file == scenarioFile)
+                    return (ScenarioContainer)BinarySerializer.DeserializeFromFile(file);
             }
 
-            return null;
+            throw new Exception("Scenario file not found:  " + scenarioFile);
         }
         public IEnumerable<ScenarioInfo> GetScenarioInfos()
         {
@@ -56,7 +54,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         }
         public void SaveScenario(ScenarioContainer scenario)
         {
-            if (!_scenarios.Any(x => x.Player.RogueName == scenario.Player.RogueName))
+            if (!_scenarioInfos.Any(x => x.Name == scenario.Player.RogueName))
                 AddScenario(scenario);
 
             // Otherwise, evict the cache
@@ -81,7 +79,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         public static void Load()
         {
-            _scenarios.Clear();
+            _scenarioInfos.Clear();
 
             foreach (var file in Directory.GetFiles(ResourceConstants.SavedGameDirectory)
                                           .Where(x => x.EndsWith("." + ResourceConstants.ScenarioExtension)))
@@ -92,7 +90,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         private static void AddScenario(ScenarioContainer scenario)
         {
-            _scenarios.Add(scenario);
             _scenarioInfos.Add(new ScenarioInfo()
             {
                 Name = scenario.Player.RogueName,
@@ -104,7 +101,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         private void RemoveScenario(string scenarioName)
         {
-            _scenarios.Filter(x => x.Player.RogueName == scenarioName);
             _scenarioInfos.Filter(x => x.Name == scenarioName);
         }
     }

@@ -18,7 +18,6 @@ namespace Rogue.NET.Core.Processing.Service.Interface
     public interface IScenarioResourceService
     {
         // IScenarioCache
-        IEnumerable<string> GetScenarioNames();
         IEnumerable<ScenarioInfo> GetScenarioInfos();
         ScenarioContainer GetScenario(string scenarioName);
         void SaveScenario(ScenarioContainer scenario);

@@ -52,11 +52,6 @@ namespace Rogue.NET.Core.Processing.Service
             _scenarioImageSourceFactory = scenarioImageSourceFactory;
         }
 
-        public IEnumerable<string> GetScenarioNames()
-        {
-            return _scenarioCache.GetScenarioNames();
-        }
-
         public IEnumerable<ScenarioInfo> GetScenarioInfos()
         {
             return _scenarioCache.GetScenarioInfos();

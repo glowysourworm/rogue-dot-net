@@ -145,7 +145,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 SplashType = SplashEventType.Loading
             });
         }
-        public void Open(string playerName)
+        public void Open(string scenarioName)
         {
             // Show Splash
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
@@ -165,7 +165,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             }
 
             // Fetch scenario container from the cache
-            _scenarioContainer = _scenarioResourceService.GetScenario(playerName);
+            _scenarioContainer = _scenarioResourceService.GetScenario(scenarioName);
 
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {

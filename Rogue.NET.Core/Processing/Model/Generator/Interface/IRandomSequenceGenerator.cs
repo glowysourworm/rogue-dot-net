@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Processing.Model.Generator.Interface
 {
     /// <summary>
-    /// Component to provide singleton random sequence
+    /// Component to provide singleton random sequence - SHOULD SUPPORT MULTIPLE THREADS (see implementation)
     /// </summary>
     public interface IRandomSequenceGenerator
     {
