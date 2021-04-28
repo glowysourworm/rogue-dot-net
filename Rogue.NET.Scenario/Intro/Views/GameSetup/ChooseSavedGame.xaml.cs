@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Intro.ViewModel;
 using Rogue.NET.Scenario.Processing.Event;
@@ -36,9 +37,17 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 
             // Delete
             _eventAggregator.GetEvent<DeleteScenarioEvent>()
-                            .Publish(new DeleteScenarioEventData()
+                            .Publish(new ScenarioInfo()
                             {
-                                ScenarioName = viewModel.Name
+                                RogueName = viewModel.RogueName,
+                                ScenarioName = viewModel.ScenarioName,
+                                CharacterClass = viewModel.CharacterClass,
+                                CurrentLevel = viewModel.CurrentLevel,
+                                IsObjectiveAcheived = viewModel.ObjectiveAcheived,
+                                Seed = viewModel.Seed,
+                                SmileyExpression = viewModel.SmileyExpression,
+                                SmileyBodyColor = viewModel.SmileyBodyColor,
+                                SmileyLineColor = viewModel.SmileyLineColor
                             });
 
             // Back
@@ -54,9 +63,17 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
             var viewModel = (sender as Button).DataContext as SavedGameViewModel;
 
             _eventAggregator.GetEvent<OpenScenarioEvent>()
-                            .Publish(new OpenScenarioEventArgs()
+                            .Publish(new ScenarioInfo()
                             {
-                                ScenarioName = viewModel.Name
+                                RogueName = viewModel.RogueName,
+                                ScenarioName = viewModel.ScenarioName,
+                                CharacterClass = viewModel.CharacterClass,
+                                CurrentLevel = viewModel.CurrentLevel,
+                                IsObjectiveAcheived = viewModel.ObjectiveAcheived,
+                                Seed = viewModel.Seed,
+                                SmileyExpression = viewModel.SmileyExpression,
+                                SmileyBodyColor = viewModel.SmileyBodyColor,
+                                SmileyLineColor = viewModel.SmileyLineColor
                             });
         }
 

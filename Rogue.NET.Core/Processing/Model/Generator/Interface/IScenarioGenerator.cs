@@ -5,6 +5,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
 {
     public interface IScenarioGenerator
     {
-        ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, string characterClassName, int seed, bool survivorMode);
+        ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, string rogueName, string characterClassName, int seed, bool survivorMode);
     }
 }

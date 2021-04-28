@@ -209,7 +209,12 @@
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
-    <Compile Include="IO\Compressed.cs" />
+    <Compile Include="Processing\Service\FileDatabase\Interface\IRogueFileDatabaseSerializable.cs" />
+    <Compile Include="Processing\Service\FileDatabase\Interface\IRogueFileDatabaseSerializer.cs" />
+    <Compile Include="Processing\Service\FileDatabase\Interface\IRogueFileDatabase.cs" />
+    <Compile Include="Processing\Service\FileDatabase\RogueFileDatabase.cs" />
+    <Compile Include="Processing\Service\FileDatabase\RogueFileDatabaseEntry.cs" />
+    <Compile Include="Processing\Service\FileDatabase\RogueFileDatabaseRecord.cs" />
     <Compile Include="Media\SymbolEffect\HslColor.cs" />
     <Compile Include="Media\SymbolEffect\Interface\ISymbolEffectFilter.cs" />
     <Compile Include="Media\SymbolEffect\LightIntensityEffect.cs" />
@@ -303,7 +308,6 @@
     <Compile Include="Math\Algorithm\NoiseGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Finishing\WallFinisher.cs" />
     <Compile Include="Processing\Model\Generator\LightGenerator.cs" />
-    <Compile Include="Processing\Model\Generator\RandomSequenceGeneratorContextProperty.cs" />
     <Compile Include="Processing\Model\Generator\ScenarioGeneratorThreadData.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioBitmapSourceFactory.cs" />
     <Compile Include="Processing\Service\Cache\Interface\IScenarioCache.cs" />

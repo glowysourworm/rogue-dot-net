@@ -96,7 +96,12 @@ namespace Rogue.NET.Intro.ViewModel
             {
                 this.Scenarios.Add(new SavedGameViewModel()
                 {
-                    Name = scenarioInfo.Name,
+                    RogueName = scenarioInfo.RogueName,
+                    ScenarioName = scenarioInfo.ScenarioName,
+                    CharacterClass = scenarioInfo.CharacterClass,
+                    CurrentLevel = scenarioInfo.CurrentLevel,
+                    ObjectiveAcheived = scenarioInfo.IsObjectiveAcheived,
+                    Seed = scenarioInfo.Seed,
                     SmileyExpression = scenarioInfo.SmileyExpression,
                     SmileyBodyColor = scenarioInfo.SmileyBodyColor,
                     SmileyLineColor = scenarioInfo.SmileyLineColor

@@ -33,10 +33,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         readonly IRegionTriangulationCreator _triangulationCreator;
 
         // TODO: Move to primary model constants
-        const int LAYOUT_WIDTH_MAX = 100;
+        const int LAYOUT_WIDTH_MAX = 120;
         const int LAYOUT_WIDTH_MIN = 20;
         const int LAYOUT_HEIGHT_MAX = 60;
-        const int LAYOUT_HEIGHT_MIN = 16;
+        const int LAYOUT_HEIGHT_MIN = 10;
 
         [ImportingConstructor]
         public RegionBuilder(IRegionGeometryCreator regionGeometryCreator,
@@ -95,11 +95,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
         public LayoutContainer BuildDefaultLayout()
         {
-            var grid = new GridCellInfo[20, 15];
+            var grid = new GridCellInfo[LAYOUT_WIDTH_MIN, LAYOUT_HEIGHT_MIN];
 
-            for (int i = 1; i < grid.GetLength(0) - 1; i++)
-                for (int j = 1; j < grid.GetLength(1) - 1; j++)
-                    grid[i, j] = new GridCellInfo(i, j);
+            grid.Iterate((column, row) =>
+            {
+                if (column == 0 ||
+                    column == LAYOUT_WIDTH_MAX - 2 ||
+                    row == 0 ||
+                    row == LAYOUT_HEIGHT_MAX - 2)
+                    return;
+
+                grid[column, row] = new GridCellInfo(column, row);
+            });
 
             return CompleteBaseLayout(grid, null);
         }
@@ -109,11 +116,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Remove invalid regions
             grid.RemoveInvalidRegions(cell => !cell.IsWall, region => !RegionValidator.ValidateBaseRegion(region));
 
+            // Identify the regions
+            var baseRegions = grid.ConstructConnectedRegions(cell => !cell.IsWall);
+
+            // Validate region number
+            if (baseRegions.Count() == 0)
+                return BuildDefaultLayout();
+
             // Create container for the layout
             var container = new LayoutContainer(grid, template == null);
-
-            // Identify the region
-            var baseRegions = grid.ConstructConnectedRegions(cell => !cell.IsWall);
 
             // Create triangulation to complete the connection layer
             var graph = template == null ? _triangulationCreator.CreateDefaultTriangulation(baseRegions)

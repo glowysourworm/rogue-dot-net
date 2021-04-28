@@ -201,13 +201,13 @@ namespace Rogue.NET.Scenario
             });
 
             // Delete Scenario
-            _eventAggregator.GetEvent<DeleteScenarioEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<DeleteScenarioEvent>().Subscribe((scenarioInfo) =>
             {
-                var result = MessageBox.Show("Are you sure you want to delete this scenario?", "Delete " + e.ScenarioName, MessageBoxButton.YesNoCancel);
+                var result = MessageBox.Show("Are you sure you want to delete this scenario?", "Delete " + scenarioInfo.ScenarioName, MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes || result == MessageBoxResult.OK)
                 {
                     // Delete the scenario
-                    _scenarioResourceService.DeleteScenario(e.ScenarioName);
+                    _scenarioResourceService.DeleteScenario(scenarioInfo);
 
                     // Notify listeners
                     _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish();

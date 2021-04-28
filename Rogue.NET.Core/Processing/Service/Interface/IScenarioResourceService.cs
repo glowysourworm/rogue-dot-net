@@ -19,9 +19,12 @@ namespace Rogue.NET.Core.Processing.Service.Interface
     {
         // IScenarioCache
         IEnumerable<ScenarioInfo> GetScenarioInfos();
-        ScenarioContainer GetScenario(string scenarioName);
+        ScenarioContainer GetScenario(ScenarioInfo scenarioInfo);
         void SaveScenario(ScenarioContainer scenario);
-        void DeleteScenario(string scenarioName);
+        void DeleteScenario(ScenarioInfo scenarioInfo);
+        void LoadLevel(ScenarioContainer scenarioContainer, int levelNumber);
+        void SaveLevel(ScenarioContainer scenario, Level level);
+        RogueFileDatabaseEntry CreateScenarioEntry(string rogueName, string configurationName, int seed);
 
         // IScenarioConfigurationCache
         IEnumerable<string> EmbeddedConfigurations { get; }
@@ -44,5 +47,10 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         IEnumerable<string> GetResourceNames(SymbolType type);
         IEnumerable<string> GetCharacterCategories();
         IEnumerable<string> GetCharacterResourceNames(string category);
+
+        // TEMP FILES
+        public string SaveToTempFile<T>(T theObject, bool compress);
+        public T LoadFromTempFile<T>(string fileName, bool compressed);
+        public void DeleteTempFile(string fileName);
     }
 }

@@ -29,6 +29,17 @@ namespace Rogue.NET.Common.Extension
                                            bothSelector);
         }
 
+        public static IEnumerable<TResult> LeftJoin<T, TKey, TResult>(
+            this IEnumerable<T> collection,
+            IEnumerable<T> secondCollection,
+            Func<T, TKey> keySelector,
+            Func<T, TResult> firstSelector,
+            Func<T, T, TResult> bothSelector
+            )
+        {
+            return MoreEnumerable.LeftJoin(collection, secondCollection, keySelector, firstSelector, bothSelector);
+        }
+
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
             foreach (var element in collection)

@@ -2,6 +2,8 @@
 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace Rogue.NET.Common.Extension
@@ -24,6 +26,26 @@ namespace Rogue.NET.Common.Extension
         public static T DeepCopy<T>(this T value) where T : class
         {
             return value.DeepClone();
+        }
+
+        public static PropertyInfo GetPropertyInfo<T, V>(this T theObject, Expression<Func<T, V>> propertySelector)
+        {
+            var unaryExpression = propertySelector.Body as UnaryExpression;
+
+            if (unaryExpression == null)
+                throw new Exception("Invalid use of property selector ObjectExtension.GetPropertyInfo<T, V>");
+
+            var memberInfo = unaryExpression.Operand as MemberExpression;
+
+            if (memberInfo == null)
+                throw new Exception("Invalid use of property selector ObjectExtension.GetPropertyInfo<T, V>");
+
+            var propertyInfo = memberInfo.Member as PropertyInfo;
+
+            if (propertyInfo == null)
+                throw new Exception("Invalid use of property selector ObjectExtension.GetPropertyInfo<T, V>");
+
+            return propertyInfo;
         }
     }
 }

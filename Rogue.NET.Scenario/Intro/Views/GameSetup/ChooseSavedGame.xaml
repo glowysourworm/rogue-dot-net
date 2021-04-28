@@ -46,14 +46,25 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Background="Transparent" Margin="4">
-                            <coreView:Smiley Height="45"
-                                            Width="30"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            SmileyColor="{Binding SmileyBodyColor}"
-                                            SmileyLineColor="{Binding SmileyLineColor}"
-                                            SmileyExpression="{Binding SmileyExpression}" />
-                            <TextBlock Foreground="White" FontSize="28" Text="{Binding Name}" Margin="60,10,10,10" VerticalAlignment="Bottom" />
+                            <Grid HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0, 10, 0, 0">
+                                <StackPanel Orientation="Horizontal">
+                                    <coreView:Smiley Height="45"
+                                                     Width="30"
+                                                     HorizontalAlignment="Left"
+                                                     VerticalAlignment="Center"
+                                                     SmileyColor="{Binding SmileyBodyColor}"
+                                                     SmileyLineColor="{Binding SmileyLineColor}"
+                                                     SmileyExpression="{Binding SmileyExpression}" />
+                                    <TextBlock Foreground="White" FontSize="28" Margin="0,0,10,0" VerticalAlignment="Center">
+                                        <Run Text="{Binding RogueName}" />
+                                        <Run Text=" - " />
+                                        <Run Text="{Binding ScenarioName}" />
+                                        <Run Text=" / #" />
+                                        <Run Text="{Binding Seed}" />
+                                    </TextBlock>
+                                </StackPanel>                                
+                            </Grid>
+
                             <Grid HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
                                 <StackPanel Orientation="Horizontal">
                                     <Button x:Name="DeleteButton" Click="DeleteButton_Click" Height="24" Width="24" Cursor="Hand">

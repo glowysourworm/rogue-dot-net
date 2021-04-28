@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;
 using Rogue.NET.Scenario.Processing.Event;
@@ -36,20 +37,30 @@ namespace Rogue.NET.Scenario.Intro.Views
             var viewModel = this.DataContext as GameSetupViewModel;
             if (_new)
             {
-                _eventAggregator.GetEvent<NewScenarioEvent>().Publish(new NewScenarioEventArgs()
+                _eventAggregator.GetEvent<NewScenarioEvent>().Publish(new ScenarioInfo()
                 {
                     RogueName = viewModel.RogueName,
                     ScenarioName = viewModel.SelectedConfiguration.Name,
-                    CharacterClassName = viewModel.SelectedCharacterClass == null ? string.Empty : viewModel.SelectedCharacterClass.RogueName,
+                    CharacterClass = viewModel.SelectedCharacterClass == null ? string.Empty : viewModel.SelectedCharacterClass.RogueName,
+                    IsObjectiveAcheived = false,
                     Seed = viewModel.Seed,
                     SurvivorMode = viewModel.SurvivorMode
                 });
             }
             else
             {
-                _eventAggregator.GetEvent<OpenScenarioEvent>().Publish(new OpenScenarioEventArgs()
+                _eventAggregator.GetEvent<OpenScenarioEvent>().Publish(new ScenarioInfo()
                 {
-                    ScenarioName = viewModel.SelectedGame.Name
+                    CurrentLevel = viewModel.SelectedGame.CurrentLevel,
+                    ScenarioName = viewModel.SelectedGame.ScenarioName,
+                    CharacterClass = viewModel.SelectedGame.CharacterClass,
+                    SurvivorMode = viewModel.SelectedGame.SurvivorMode,
+                    IsObjectiveAcheived = viewModel.SelectedGame.ObjectiveAcheived,
+                    RogueName = viewModel.SelectedGame.RogueName,
+                    Seed = viewModel.SelectedGame.Seed,
+                    SmileyBodyColor = viewModel.SelectedGame.SmileyBodyColor,
+                    SmileyExpression = viewModel.SelectedGame.SmileyExpression,
+                    SmileyLineColor = viewModel.SelectedGame.SmileyLineColor
                 });
             }
         }

@@ -1,28 +1,25 @@
-﻿using Rogue.NET.Scenario;
-using Rogue.NET.View;
-using Rogue.NET.ScenarioEditor;
-using Rogue.NET.Core;
-using Rogue.NET.Common.ViewModel;
+﻿using Microsoft.Practices.ServiceLocation;
 
 using Prism.Mef;
+using Prism.Modularity;
 using Prism.Regions;
 
+using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
+using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core;
+using Rogue.NET.Scenario;
+using Rogue.NET.Scenario.Constant;
+using Rogue.NET.Scenario.Intro.Views;
+using Rogue.NET.ScenarioEditor;
+using Rogue.NET.View;
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Reflection;
-using System.ComponentModel.Composition.Hosting;
-using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
-using Rogue.NET.Scenario.Intro.Views;
-using Rogue.NET.Scenario.Constant;
-
-using Microsoft.Practices.ServiceLocation;
-
 using System.Windows.Threading;
-using System;
-using Prism.Modularity;
-using System.Collections.Generic;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Processing.Service.Interface;
 
 namespace Rogue.NET.PrismExtension
 {
@@ -59,7 +56,7 @@ namespace Rogue.NET.PrismExtension
                 regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(IntroView));
 
             }), DispatcherPriority.ApplicationIdle);
-            
+
         }
         protected override void ConfigureContainer()
         {

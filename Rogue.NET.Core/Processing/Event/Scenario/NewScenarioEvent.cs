@@ -1,16 +1,10 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Processing.Service.Cache;
 
 namespace Rogue.NET.Core.Processing.Event.Scenario
 {
-    public class NewScenarioEventArgs : System.EventArgs
+    public class NewScenarioEvent : RogueEvent<ScenarioInfo>
     {
-        public string ScenarioName { get; set; }
-        public string RogueName { get; set; }
-        public string CharacterClassName { get; set; }
-        public int Seed { get; set; }
-        public bool SurvivorMode { get; set; }
-    }
-    public class NewScenarioEvent : RogueEvent<NewScenarioEventArgs>
-    {
+        
     }
 }

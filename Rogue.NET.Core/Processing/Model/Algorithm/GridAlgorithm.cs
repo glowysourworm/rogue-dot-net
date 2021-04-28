@@ -13,7 +13,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
     public static class GridAlgorithm
     {
         /// <summary>
-        /// Removes regions of elements that PASS the provided invalidPredicate by setting them to null.
+        /// Removes regions of elements that PASS the provided invalidPredicate by setting them to null. Also, returns the
+        /// VALID regions.
         /// </summary>
         public static void RemoveInvalidRegions<T>(this T[,] grid,
                                                    Func<T, bool> regionIdentifier,

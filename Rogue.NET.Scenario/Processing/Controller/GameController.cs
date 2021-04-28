@@ -10,14 +10,15 @@ using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Core.Processing.Event.Scenario;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Processing.Controller.Interface;
 using Rogue.NET.Scenario.Processing.Event.Content;
 using Rogue.NET.Scenario.Processing.Service.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 
 namespace Rogue.NET.Scenario.Processing.Controller
 {
@@ -58,18 +59,18 @@ namespace Rogue.NET.Scenario.Processing.Controller
         public void Initialize()
         {
             // New
-            _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((scenarioInfo) =>
             {
-                var config = _scenarioResourceService.GetScenarioConfiguration(e.ScenarioName);
+                var scenarioConfiguration = _scenarioResourceService.GetScenarioConfiguration(scenarioInfo.ScenarioName);
 
-                if (config != null)
-                    New(config, e.RogueName, e.CharacterClassName, e.Seed, e.SurvivorMode);
+                if (scenarioConfiguration != null)
+                    New(scenarioConfiguration, scenarioInfo.RogueName, scenarioInfo.CharacterClass, scenarioInfo.Seed, scenarioInfo.SurvivorMode);
             });
 
             // Open
-            _eventAggregator.GetEvent<OpenScenarioEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<OpenScenarioEvent>().Subscribe((scenarioInfo) =>
             {
-                Open(e.ScenarioName);
+                Open(scenarioInfo);
             });
 
             // Level Change / Save Events / Statistics
@@ -127,14 +128,8 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 _scenarioContainer = null;
             }
 
-            //Create expanded dungeon contents in memory
-            _scenarioContainer = _scenarioGenerator.CreateScenario(configuration, characterClassName, seed, survivorMode);
-
-            _scenarioContainer.Seed = seed;
-            _scenarioContainer.Player.RogueName = characterName;
-            _scenarioContainer.Configuration = configuration;
-            _scenarioContainer.SurvivorMode = survivorMode;
-            _scenarioContainer.Statistics.StartTime = DateTime.Now;
+            //Create scenario contents and load container for first level
+            _scenarioContainer = _scenarioGenerator.CreateScenario(configuration, characterName, characterClassName, seed, survivorMode);
 
             // Loads level and fires event to listeners
             LoadCurrentLevel();
@@ -145,7 +140,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 SplashType = SplashEventType.Loading
             });
         }
-        public void Open(string scenarioName)
+        public void Open(ScenarioInfo scenarioInfo)
         {
             // Show Splash
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
@@ -165,7 +160,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             }
 
             // Fetch scenario container from the cache
-            _scenarioContainer = _scenarioResourceService.GetScenario(scenarioName);
+            _scenarioContainer = _scenarioResourceService.GetScenario(scenarioInfo);
 
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
@@ -184,20 +179,12 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 SplashType = SplashEventType.Loading
             });
 
-            // Update the compressed level from the loaded one
-            var loadedLevel = _modelService.Level;
-            var compressedLevel = _scenarioContainer.Levels.First(level => level.Key == loadedLevel.Parameters.Number);
+            // Update the Current Level Detail
+            _scenarioContainer.Detail.SaveLocation = PlayerStartLocation.SavePoint;
+            _scenarioContainer.Detail.SaveLevelNumber = _scenarioContainer.Detail.CurrentLevelNumber;
+            _scenarioContainer.Detail.ZoomFactor = _modelService.ZoomFactor;
 
-            compressedLevel.Checkin(loadedLevel);
-
-            // Update the Save Level
-            _scenarioContainer.SaveLevel = _scenarioContainer.CurrentLevel;
-            _scenarioContainer.SaveLocation = PlayerStartLocation.SavePoint;
-
-            // Update UI Parameters
-            _scenarioContainer.ZoomFactor = _modelService.ZoomFactor;
-
-            // Save scenario file to disk
+            // Save scenario container - with current level - to disk
             _scenarioResourceService.SaveScenario(_scenarioContainer);
 
             // Hide Splash
@@ -213,8 +200,8 @@ namespace Rogue.NET.Scenario.Processing.Controller
 
         public void LoadCurrentLevel()
         {
-            if (_scenarioContainer.SaveLevel != 0)
-                LoadLevel(_scenarioContainer.SaveLevel, _scenarioContainer.SaveLocation);
+            if (_scenarioContainer.Detail.SaveLevelNumber != 0)
+                LoadLevel(_scenarioContainer.Detail.SaveLevelNumber, _scenarioContainer.Detail.SaveLocation);
 
             else
                 LoadLevel(1, PlayerStartLocation.StairsUp);
@@ -247,44 +234,32 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 // First halt processing of messages
                 _gameRouter.Stop();
 
-                // Update the level number in the container
-                _scenarioContainer.CurrentLevel = levelNumber;
-
-                //If level is not loaded - must load it from the dungeon file
-                var nextLevel = _scenarioContainer.Levels.FirstOrDefault(level => level.Key == levelNumber);
-
-                if (nextLevel == null)
-                    throw new Exception("Level " + levelNumber.ToString() + " not found in the Scenario Container");
-
                 // Unload current model - pass extractable contents to next level with Player
                 IEnumerable<ScenarioObject> extractedContent = null;
 
                 // Propagate UI Parameters - Set default to saved zoom factor
-                double zoomFactor = _scenarioContainer.ZoomFactor;
+                var zoomFactor = _scenarioContainer.Detail.ZoomFactor;
 
                 if (_modelService.IsLoaded)
                 {
-                    // Get Level to Compress back to memory
-                    var loadedLevel = _modelService.Level;
-
-                    // Find compressed buffer to update
-                    var compressedLevel = _scenarioContainer.Levels.First(level => level.Key == loadedLevel.Parameters.Number);
-
-                    // UPDATE COMPRESSED BUFFER
-                    compressedLevel.Checkin(loadedLevel);
-
                     // Content moved to next level
                     extractedContent = _modelService.Unload();
 
                     // UI Parameters
                     zoomFactor = _modelService.ZoomFactor;
+
+                    // Save the current loaded level to disk using the IScenarioResourceService
+                    _scenarioResourceService.SaveLevel(_scenarioContainer, _scenarioContainer.CurrentLevel);
                 }
+
+                // Use IScenarioResourceService to load next level from disk
+                _scenarioResourceService.LoadLevel(_scenarioContainer, levelNumber);
 
                 // Register next level data with the model service
                 _modelService.Load(
                     _scenarioContainer.Player,
                     location,
-                    nextLevel.Checkout(),
+                    _scenarioContainer.CurrentLevel,
                     zoomFactor,
                     extractedContent ?? new ScenarioObject[] { },
                     _scenarioContainer.Encyclopedia,
@@ -305,10 +280,10 @@ namespace Rogue.NET.Scenario.Processing.Controller
             _eventAggregator.GetEvent<GameUpdateEvent>().Publish(new GameUpdateEventArgs()
             {
                 IsObjectiveAcheived = _scenarioObjectiveService.IsObjectiveAcheived(_scenarioContainer),
-                IsSurvivorMode = _scenarioContainer.SurvivorMode,
+                IsSurvivorMode = _scenarioContainer.Detail.SurvivorMode,
                 Statistics = _scenarioContainer.Statistics,
-                Seed = _scenarioContainer.Seed,
-                LevelNumber = _scenarioContainer.CurrentLevel,
+                Seed = _scenarioContainer.Detail.Seed,
+                LevelNumber = _scenarioContainer.Detail.CurrentLevelNumber,
                 ScenarioObjectiveUpdates = _scenarioObjectiveService.GetScenarioObjectiveUpdates(_scenarioContainer),
             });
         }

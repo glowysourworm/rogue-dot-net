@@ -1,7 +1,4 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Utility;
-using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Media.SymbolEffect.Utility;
+﻿using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -11,11 +8,10 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
-using System;
+
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -40,10 +36,12 @@ namespace Rogue.NET.Core.Processing.Service
             get { return _scenarioConfigurationCache.UserConfigurations; }
         }
 
+        protected IList<string> TempFiles = new List<string>();
+
         [ImportingConstructor]
-        public ScenarioResourceService(IScenarioConfigurationCache scenarioConfigurationCache, 
-                                       IScenarioCache scenarioCache, 
-                                       ISvgCache svgCache, 
+        public ScenarioResourceService(IScenarioConfigurationCache scenarioConfigurationCache,
+                                       IScenarioCache scenarioCache,
+                                       ISvgCache svgCache,
                                        IScenarioImageSourceFactory scenarioImageSourceFactory)
         {
             _scenarioConfigurationCache = scenarioConfigurationCache;
@@ -57,20 +55,34 @@ namespace Rogue.NET.Core.Processing.Service
             return _scenarioCache.GetScenarioInfos();
         }
 
-        // NOTE*** THIS WILL RETURN A CLONE OF THE SCENARIO
-        public ScenarioContainer GetScenario(string scenarioName)
+        public ScenarioContainer GetScenario(ScenarioInfo scenarioInfo)
         {
-            return _scenarioCache.GetScenario(scenarioName);
+            return _scenarioCache.Get(scenarioInfo);
         }
 
         public void SaveScenario(ScenarioContainer scenario)
         {
-            _scenarioCache.SaveScenario(scenario);
+            _scenarioCache.Save(scenario);
         }
 
-        public void DeleteScenario(string scenarioName)
+        public void DeleteScenario(ScenarioInfo scenarioInfo)
         {
-            _scenarioCache.DeleteScenario(scenarioName);
+            _scenarioCache.Delete(scenarioInfo);
+        }
+
+        public void LoadLevel(ScenarioContainer scenarioContainer, int levelNumber)
+        {
+            _scenarioCache.LoadLevel(scenarioContainer, levelNumber);
+        }
+
+        public void SaveLevel(ScenarioContainer scenario, Level level)
+        {
+            _scenarioCache.SaveLevel(scenario, level);
+        }
+
+        public RogueFileDatabaseEntry CreateScenarioEntry(string rogueName, string configurationName, int seed)
+        {
+            return _scenarioCache.CreateScenarioEntry(rogueName, configurationName, seed);
         }
 
         public ScenarioImage GetRandomSmileyCharacter(bool eliminateChoice)
@@ -142,6 +154,35 @@ namespace Rogue.NET.Core.Processing.Service
         public IEnumerable<string> GetCharacterResourceNames(string category)
         {
             return _svgCache.GetCharacterResourceNames(category);
+        }
+
+        // TEMP FILE STORAGE
+        public string SaveToTempFile<T>(T theObject, bool compress)
+        {
+            var buffer = BinarySerializer.Serialize(theObject);
+
+            if (compress)
+                buffer = ZipEncoder.Compress(buffer);
+
+            var fileName = Path.Combine(ResourceConstants.TempDirectory, System.Guid.NewGuid().ToString());
+
+            File.WriteAllBytes(fileName, buffer);
+
+            return fileName;
+        }
+        public T LoadFromTempFile<T>(string fileName, bool compressed)
+        {
+            var buffer = File.ReadAllBytes(fileName);
+
+            if (compressed)
+                buffer = ZipEncoder.Decompress(buffer);
+
+            return (T)BinarySerializer.Deserialize(buffer);
+        }
+        public void DeleteTempFile(string fileName)
+        {
+            if (File.Exists(fileName))
+                File.Delete(fileName);
         }
     }
 }

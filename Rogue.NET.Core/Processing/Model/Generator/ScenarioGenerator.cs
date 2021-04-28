@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
@@ -10,9 +9,8 @@ using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 
 using System;
 using System.Collections.Concurrent;
@@ -20,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -35,6 +32,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
         readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IScenarioResourceService _scenarioResourceService;
 
         [ImportingConstructor]
         public ScenarioGenerator(
@@ -44,7 +42,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             IAttackAttributeGenerator attackAttributeGenerator,
             IScenarioMetaDataGenerator scenarioMetaDataGenerator,
             ISymbolDetailsGenerator symbolDetailsGenerator,
-            IRandomSequenceGenerator randomSequenceGenerator)
+            IRandomSequenceGenerator randomSequenceGenerator,
+            IScenarioResourceService scenarioResourceService)
         {
             _layoutGenerator = layoutGenerator;
             _contentGenerator = contentGenerator;
@@ -53,12 +52,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
             _symbolDetailsGenerator = symbolDetailsGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _scenarioResourceService = scenarioResourceService;
         }
 
-        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, string characterClassName, int seed, bool survivorMode)
+        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, string rogueName, string characterClassName, int seed, bool survivorMode)
         {
-            ScenarioContainer scenario = new ScenarioContainer();
-
             // Reseed the Random number generator
             _randomSequenceGenerator.Reseed(seed);
 
@@ -85,9 +83,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Create static scenario data for generation
             var characterClasses = CreateCharacterClasses(configuration);
             var alterationCategories = CreateAlterationCategories(configuration);
-            var encyclopedia = CreateEncyclopedia(configuration);
+            var encyclopediaDict = CreateEncyclopediaData(configuration);
+            var encyclopedia = new ScenarioEncyclopedia(encyclopediaDict, characterClasses, alterationCategories);
 
-            scenario.Encyclopedia.Initialize(encyclopedia, characterClasses, alterationCategories);
+            // Generate Player
+            var player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplates.First(x => x.Name == characterClassName), encyclopedia);
+
+            // Set Player Name
+            player.RogueName = rogueName;
 
             // Select path through the scenario (level branch sequence)
             var levelBranches = configuration.ScenarioDesign
@@ -102,9 +105,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //          So, select several with distinct pointers to run in parallel. Repeat until complted.
             //
             //          Content generation WRITES to properties - so is NOT THREAD SAFE.
-            
-            var levels = new ConcurrentDictionary<int, Level>();
+
+            var useLevelCompression = true;
+            var maxThreadCount = 8;
+            var runningThreads = new List<Thread>();
             var threads = new Dictionary<ScenarioGeneratorThreadData, Thread>();
+            var completedThreadData = new ConcurrentDictionary<string, ScenarioGeneratorThreadData>();
 
             // NOTE*** IRandomSequenceGenerator is shared - but has a multi-threading policy that 
             //         helps guarantee repeatability.
@@ -114,7 +120,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 // Create worker thread method
                 var thread = new Thread(new ParameterizedThreadStart((threadData) =>
                 {
-                    var scenarioThreadData = (ScenarioGeneratorThreadData)threadData;                    
+                    var scenarioThreadData = (ScenarioGeneratorThreadData)threadData;
 
                     // Generate the level grid
                     var levelGrid = _layoutGenerator.CreateLayout(scenarioThreadData.Layout);
@@ -122,31 +128,37 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     // Create a new level object
                     var level = new Level(scenarioThreadData.Layout, scenarioThreadData.LevelBranch, levelGrid, scenarioThreadData.LevelNumber);
 
-                    levels.TryAdd(scenarioThreadData.LevelNumber, level);
+                    // Create temp file for the level
+                    var fileName = _scenarioResourceService.SaveToTempFile(level, useLevelCompression);
+
+                    completedThreadData.TryAdd(fileName, scenarioThreadData);
                 }));
 
-                // Set up thread start data
-                var branch = levelBranches[index];
+                // Set up thread start data (MAKE A COPY TO DECOUPLE)
+                var branchCopy = levelBranches[index].DeepCopy();
 
-                // Get weighted random layout template (SHARED DATA!!)
-                var generationTemplate = _randomSequenceGenerator.GetWeightedRandom(branch.Layouts, template => template.GenerationWeight);
+                // Get weighted random layout template (MAKE A COPY TO DECOUPLE)
+                var generationTemplateCopy = _randomSequenceGenerator.GetWeightedRandom(branchCopy.Layouts, template => template.GenerationWeight)
+                                                                 .DeepCopy();
 
                 // ***MULTI-THREADING POLICY IRandomSequenceGenerator
                 thread.Name = (index + 1).ToString();
 
+                // TODO: Figure out proper setting
+                thread.Priority = ThreadPriority.Highest;
+                // thread.IsBackground = true;
+
+                // COPY SHARED ASSETS TO DECOUPLE
                 threads.Add(new ScenarioGeneratorThreadData()
                 {
                     LevelNumber = index + 1,
                     HasStartedGeneration = false,
-                    Layout = generationTemplate.Asset,
-                    LayoutGeneration = generationTemplate,
-                    LevelBranch = branch
+                    Layout = generationTemplateCopy.Asset,
+                    LayoutGeneration = generationTemplateCopy,
+                    LevelBranch = branchCopy
 
                 }, thread);
             }
-
-            var maxThreadCount = 8;
-            var runningThreads = new List<Thread>();
 
             // Run until all threads have ceased
             while (threads.Count(thread => !thread.Key.HasStartedGeneration) > 0 ||
@@ -158,96 +170,80 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     var thread = runningThreads[index];
 
                     if (thread.ThreadState == ThreadState.Stopped)
+                    {
                         runningThreads.RemoveAt(index);
+
+                        // Perhaps don't need to join here (?)
+                        thread.Join();
+
+                        // GARBAGE COLLECTOR
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+                        GC.Collect();
+                    }
                 }
 
                 // Spawn new threads if there are any left that haven't started (AND)
                 // All the running threads have ceased.
                 //
-                if (runningThreads.Count == 0 &&
-                    threads.Count(thread => !thread.Key.HasStartedGeneration) > 0)
+                while (runningThreads.Count < maxThreadCount &&
+                       threads.Count(thread => !thread.Key.HasStartedGeneration) > 0)
                 {
-                    // Search for distinct keys by property
-                    var distinctKeys = threads.Keys
-                                              .DistinctBy(x => x.Layout)
-                                              .DistinctBy(x => x.LayoutGeneration)
-                                              .DistinctBy(x => x.LevelBranch)
-                                              .Where(x => !x.HasStartedGeneration)
-                                              .ToList();
-
                     // Need to join on ALL threads that haven't been started yet
-                    var todoKeys = threads.Keys
-                                          .Where(x => !x.HasStartedGeneration)
-                                          .ToList();
+                    var nextKey = threads.Keys
+                                         .First(x => !x.HasStartedGeneration);
 
-                    if (distinctKeys.Count > 0)
-                    {
-                        for (int index = 0; index < distinctKeys.Count && runningThreads.Count < maxThreadCount; index++)
-                        {
-                            var distinctKey = distinctKeys[index];
-                            var key = todoKeys.First(x => x.Layout == distinctKey.Layout &&
-                                                          x.LayoutGeneration == distinctKey.LayoutGeneration &&
-                                                          x.LevelBranch == distinctKey.LevelBranch);
-                            var thread = threads[key];
+                    var thread = threads[nextKey];
 
-                            // Add to running threads
-                            runningThreads.Add(thread);
+                    // Add to running threads
+                    runningThreads.Add(thread);
 
-                            // Mark the key as generated
-                            key.HasStartedGeneration = true;
+                    // Mark the key as generated
+                    nextKey.HasStartedGeneration = true;
 
-                            // Start layout generation
-                            thread.Start(key);
-                        }
-                    }
-
-                    // No distinct keys -> Run the first one only
-                    else
-                    {
-                        var key = todoKeys.First();
-                        var thread = threads[key];
-
-                        // Add to running threads
-                        runningThreads.Add(thread);
-
-                        // Mark the key as generated
-                        key.HasStartedGeneration = true;
-
-                        // Start layout generation
-                        thread.Start(key);
-                    }
+                    // Start layout generation
+                    thread.Start(nextKey);
                 }
-                else
-                    Thread.Sleep(300);
+
+                Thread.Sleep(100);
             }
 
-            // Create scenario contents -> Compress Level objects
-            var compressedLevels = new List<Compressed<int, Level>>();
+            // Use IScenarioResourceService to complete serialization -> Delete temp file for the level
+            var scenarioFileEntry = _scenarioResourceService.CreateScenarioEntry(rogueName, configuration.ScenarioDesign.Name, seed);
+
+            Level firstLevel = null;
 
             // Run content creation on main thread
-            foreach (var scenarioThreadData in threads)
+            foreach (var levelDataPair in completedThreadData.OrderBy(x => x.Value.LevelNumber))
             {
-                var level = levels[scenarioThreadData.Key.LevelNumber];
-                var lastLevel = (scenarioThreadData.Key.LevelNumber == levelBranches.Count);
+                var levelFileName = levelDataPair.Key;
+                var levelData = levelDataPair.Value;
 
-                // Complete un-compressed level content
-                var uncompressedLevel = _contentGenerator.CreateContents(level,
-                                                                         scenarioThreadData.Key.LevelBranch,
-                                                                         scenarioThreadData.Key.LayoutGeneration,
-                                                                         scenario.Encyclopedia,
-                                                                         lastLevel,
-                                                                         survivorMode);
-                // Create compressed storage
-                var compressedLevel = new Compressed<int, Level>(uncompressedLevel.Parameters.Number, uncompressedLevel);
+                // Load level from temp data storage
+                var level = _scenarioResourceService.LoadFromTempFile<Level>(levelFileName, useLevelCompression);
+                var lastLevel = (levelData.LevelNumber == levelBranches.Count);
 
-                compressedLevels.Add(compressedLevel);
+                // Complete level content
+                var completedLevel = _contentGenerator.CreateContents(level,
+                                                                      levelData.LevelBranch,
+                                                                      levelData.LayoutGeneration,
+                                                                      encyclopedia,
+                                                                      lastLevel,
+                                                                      survivorMode);
+
+                // SERIALIZING BY HAND - SEE ScenarioContainer METHODS
+                scenarioFileEntry.AddOrUpdate("Level " + level.Parameters.Number.ToString(), completedLevel);
+
+                // Delete Temp File
+                _scenarioResourceService.DeleteTempFile(levelFileName);
+
+                // Save first level
+                if (levelData.LevelNumber == 1)
+                    firstLevel = completedLevel;
             }
 
-            // Set scenario compressed levels
-            scenario.Levels = compressedLevels;
-
-            // Generate Player
-            scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplates.First(x => x.Name == characterClassName), scenario.Encyclopedia);
+            // PRIMARY SCENARIO CONTAINER
+            var scenario = new ScenarioContainer(configuration, encyclopedia, player, firstLevel, seed, survivorMode);
 
             // Identify player skills / equipment / consumables / and character classes
             foreach (var skillSet in scenario.Player.SkillSets)
@@ -290,6 +286,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }
             }
 
+            // Finally, save rest of scenario parametrs - SEE ScenarioContainer !!! (CurrentLevel is omitted)
+            scenarioFileEntry.AddOrUpdate("Detail", scenario.Detail);
+            scenarioFileEntry.AddOrUpdate("Player", scenario.Player);
+            scenarioFileEntry.AddOrUpdate("Configuration", scenario.Configuration);
+            scenarioFileEntry.AddOrUpdate("Encyclopedia", scenario.Encyclopedia);
+            scenarioFileEntry.AddOrUpdate("Statistics", scenario.Statistics);
+
             return scenario;
         }
 
@@ -298,7 +301,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// </summary>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        private IDictionary<string, ScenarioMetaData> CreateEncyclopedia(ScenarioConfigurationContainer configuration)
+        private IDictionary<string, ScenarioMetaData> CreateEncyclopediaData(ScenarioConfigurationContainer configuration)
         {
             Dictionary<string, ScenarioMetaData> encyclopedia = new Dictionary<string, ScenarioMetaData>();
 

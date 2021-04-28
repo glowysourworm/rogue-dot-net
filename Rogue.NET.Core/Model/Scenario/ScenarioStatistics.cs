@@ -32,6 +32,7 @@ namespace Rogue.NET.Core.Model.Scenario
 
         public ScenarioStatistics()
         {
+            this.StartTime = DateTime.Now;
             this.EnemyStatistics = new List<EnemyStatistic>();
             this.ItemStatistics = new List<ItemStatistic>();
             this.DoodadStatistics = new List<DoodadStatistic>();

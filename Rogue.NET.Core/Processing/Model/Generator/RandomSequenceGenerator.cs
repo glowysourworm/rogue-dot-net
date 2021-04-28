@@ -48,7 +48,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _randomSequences.TryAdd(0, new Random(seed));
         }
 
-        private Random GetOrAdd()
+        private Random GetRandom()
         {
             // ***MULTI-THREADING POLICY (Stores the primary sequence as the 0th entry, level sequences after that)
             var index = 0;
@@ -66,12 +66,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         public double Get()
         {
-            return GetOrAdd().NextDouble();
+            return GetRandom().NextDouble();
         }
 
         public int Get(int inclusiveLowerBound, int exclusiveUpperBound)
         {
-            return GetOrAdd().Next(inclusiveLowerBound, exclusiveUpperBound);
+            return GetRandom().Next(inclusiveLowerBound, exclusiveUpperBound);
         }
 
         public double GetDouble(double inclusiveLowerBound, double exclusiveUpperBound)
@@ -79,12 +79,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var slope = exclusiveUpperBound - inclusiveLowerBound;
             var intercept = inclusiveLowerBound;
 
-            return (slope * GetOrAdd().NextDouble()) + intercept;
+            return (slope * GetRandom().NextDouble()) + intercept;
         }
 
         public Compass GetRandomCardinalDirection()
         {
-            var random = GetOrAdd().NextDouble();
+            var random = GetRandom().NextDouble();
 
             if (random < 0.25)
                 return Compass.N;
@@ -131,13 +131,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var low = Convert.ToDouble(range.Low);
             var high = Convert.ToDouble(range.High);
 
-            return (T)Convert.ChangeType((low + ((high - low) * GetOrAdd().NextDouble())), typeof(T));
+            return (T)Convert.ChangeType((low + ((high - low) * GetRandom().NextDouble())), typeof(T));
         }
 
         public T GetRandomElement<T>(IEnumerable<T> collection)
         {
             // NOTE*** Random.NextDouble() is [1, 0) (exclusive upper bound)
-            return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * GetOrAdd().NextDouble()));
+            return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * GetRandom().NextDouble()));
         }
 
         public IEnumerable<T> GetDistinctRandomElements<T>(IEnumerable<T> collection, int count)
@@ -176,7 +176,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var weightedItems = collection.Select(x => new { Item = x, Weight = weightSelector(x) });
 
             // Draw random number scaled by the sum of weights
-            var randomDraw = GetOrAdd().NextDouble() * weightedItems.Sum(x => x.Weight);
+            var randomDraw = GetRandom().NextDouble() * weightedItems.Sum(x => x.Weight);
 
             // Figure out which item corresponds to the random draw - treating each 
             // like a "bucket" of size "weight"
@@ -225,8 +225,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             do
             {
                 // Generate U[-1, 1] Variables
-                v1 = (2.0 * GetOrAdd().NextDouble()) - 1.0;
-                v2 = (2.0 * GetOrAdd().NextDouble()) - 1.0;
+                v1 = (2.0 * GetRandom().NextDouble()) - 1.0;
+                v2 = (2.0 * GetRandom().NextDouble()) - 1.0;
 
                 // Calculate R^2
                 R = v1 * v1 + v2 * v2;
@@ -241,7 +241,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         // https://stats.stackexchange.com/questions/403201/wigner-semi-circle-distribution-random-numbers-generation
         public double GetWigner(double radius)
         {
-            return System.Math.Abs(radius * System.Math.Sqrt(GetOrAdd().NextDouble()) * System.Math.Cos(System.Math.PI * GetOrAdd().NextDouble()));
+            return System.Math.Abs(radius * System.Math.Sqrt(GetRandom().NextDouble()) * System.Math.Cos(System.Math.PI * GetRandom().NextDouble()));
         }
 
         // https://en.wikipedia.org/wiki/Triangular_distribution
@@ -249,7 +249,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             var cutoff = (peak - start) / (end - start);
 
-            var uniform = GetOrAdd().NextDouble();
+            var uniform = GetRandom().NextDouble();
 
             if (uniform < cutoff)
                 return start + System.Math.Sqrt(uniform * (end - start) * (peak - start));

@@ -28,6 +28,14 @@ namespace Rogue.NET.Core.Model.Scenario
         {
             _encyclopedia = new Dictionary<string, ScenarioMetaData>();
         }
+        public ScenarioEncyclopedia(IDictionary<string, ScenarioMetaData> encyclopedia, 
+                                    IEnumerable<ScenarioImage> characterClasses, 
+                                    IEnumerable<AlterationCategory> alterationCategories)
+        {
+            _encyclopedia = encyclopedia.ToDictionary(x => x.Key, x => x.Value);
+            _characterClasses = characterClasses.ToList();
+            _alterationCategories = alterationCategories.ToList();
+        }
         public ScenarioEncyclopedia(SerializationInfo info, StreamingContext context)
         {
             _encyclopedia = (Dictionary<string, ScenarioMetaData>)info.GetValue("Encyclopedia", typeof(Dictionary<string, ScenarioMetaData>));
@@ -39,13 +47,6 @@ namespace Rogue.NET.Core.Model.Scenario
             info.AddValue("Encyclopedia", _encyclopedia);
             info.AddValue("CharacterClasses", _characterClasses);
             info.AddValue("AlterationCategories", _alterationCategories);
-        }
-
-        public void Initialize(IDictionary<string, ScenarioMetaData> encyclopedia, IEnumerable<ScenarioImage> characterClasses, IEnumerable<AlterationCategory> alterationCategories)
-        {
-            _encyclopedia = encyclopedia.ToDictionary(x => x.Key, x => x.Value);
-            _characterClasses = characterClasses.ToList();
-            _alterationCategories = alterationCategories.ToList();
         }
 
         #region Linq Support

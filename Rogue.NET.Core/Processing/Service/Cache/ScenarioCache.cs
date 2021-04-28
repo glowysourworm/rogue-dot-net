@@ -1,13 +1,12 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
-using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
+using Rogue.NET.Core.Processing.Service.FileDatabase.Interface;
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Linq;
 
 namespace Rogue.NET.Core.Processing.Service.Cache
@@ -16,92 +15,144 @@ namespace Rogue.NET.Core.Processing.Service.Cache
     [Export(typeof(IScenarioCache))]
     public class ScenarioCache : IScenarioCache
     {
+        // ScenarioInfo objects loaded on startup
         static readonly List<ScenarioInfo> _scenarioInfos;
-
 
         static ScenarioCache()
         {
             _scenarioInfos = new List<ScenarioInfo>();
         }
 
+        [ImportingConstructor]
         public ScenarioCache()
         {
-
         }
 
-
-        public IEnumerable<string> GetScenarioNames()
-        {
-            return _scenarioInfos.Select(x => x.Name);
-        }
-
-        public ScenarioContainer GetScenario(string name)
-        {
-            var scenarioFile = Path.Combine(ResourceConstants.SavedGameDirectory, name + "." + ResourceConstants.ScenarioExtension);
-
-            foreach (var file in Directory.GetFiles(ResourceConstants.SavedGameDirectory)
-                                          .Where(x => x.EndsWith("." + ResourceConstants.ScenarioExtension)))
-            {
-                if (file == scenarioFile)
-                    return (ScenarioContainer)BinarySerializer.DeserializeFromFile(file);
-            }
-
-            throw new Exception("Scenario file not found:  " + scenarioFile);
-        }
         public IEnumerable<ScenarioInfo> GetScenarioInfos()
         {
             return _scenarioInfos;
         }
-        public void SaveScenario(ScenarioContainer scenario)
+
+        public RogueFileDatabaseEntry CreateScenarioEntry(string rogueName, string configurationName, int seed)
         {
-            if (!_scenarioInfos.Any(x => x.Name == scenario.Player.RogueName))
-                AddScenario(scenario);
-
-            // Otherwise, evict the cache
-            else
+            using (var rogueFileDatabase = new RogueFileDatabase())
             {
-                RemoveScenario(scenario.Player.RogueName);
-                AddScenario(scenario);
+                return rogueFileDatabase.Add(CreateUniqueName(rogueName, configurationName, seed), 
+                                             typeof(ScenarioContainer), 
+                                             ResourceConstants.SavedGameDirectory);
             }
-
-            BinarySerializer.SerializeToFile(ResourceConstants.SavedGameDirectory + "\\" + scenario.Player.RogueName + "." + ResourceConstants.ScenarioExtension, scenario);
         }
 
-        public void DeleteScenario(string scenarioName)
+        public ScenarioContainer Get(ScenarioInfo scenarioInfo)
         {
-            RemoveScenario(scenarioName);
+            using (var rogueFileDatabase = new RogueFileDatabase())
+            {
+                // Create a unique name for the scenario instance for the entry (directory name)
+                var entry = rogueFileDatabase.Get(CreateUniqueName(scenarioInfo.RogueName, scenarioInfo.ScenarioName, scenarioInfo.Seed));
 
-            var path = Path.Combine(ResourceConstants.SavedGameDirectory, scenarioName + "." + ResourceConstants.ScenarioExtension);
+                return new ScenarioContainer(entry);
+            }
+        }
+        public void Save(ScenarioContainer scenario)
+        {
+            RogueFileDatabaseEntry entry;
 
-            if (File.Exists(path))
-                File.Delete(path);
+            using (var rogueFileDatabase = new RogueFileDatabase())
+            {
+                // Look for existing entry
+                if (rogueFileDatabase.Contains(CreateUniqueName(scenario)))
+                    entry = rogueFileDatabase.Get(CreateUniqueName(scenario.Player.RogueName, scenario.Configuration.ScenarioDesign.Name, scenario.Detail.Seed));
+
+                else
+                    entry = rogueFileDatabase.Add(CreateUniqueName(scenario), typeof(ScenarioContainer));
+            }
+
+            // Saves all properties in the ScenarioContainer as separate file records. For more granularity, would make 
+            // a separate method to just save the Level object.
+            scenario.SaveRecords(entry);
+
+            var uniqueName = CreateUniqueName(scenario.Player.RogueName, scenario.Configuration.ScenarioDesign.Name, scenario.Detail.Seed);
+
+            // Add ScenarioInfo if none yet exists
+            if (!_scenarioInfos.Any(x => CreateUniqueName(x.RogueName, x.ScenarioName, x.Seed) == uniqueName))
+                _scenarioInfos.Add(scenario.CreateInfo());
+
+            // Otherwise, update the cache
+            else
+            {
+                // TODO: Save some details about the statistics (steps taken, last played time, etc...)
+                //var scenarioInfo = _scenarioInfos.Find(info => info.RogueName == scenario.Player.RogueName &&
+                //                                               info.ScenarioName == scenario.Configuration.ScenarioDesign.Name &&
+                //                                               info.Seed == scenario.Detail.Seed);
+            }
+        }
+
+        public void Delete(ScenarioInfo scenarioInfo)
+        {
+            using (var rogueFileDatabase = new RogueFileDatabase())
+            {
+                // First, delete files and directory for the scenario container
+                rogueFileDatabase.Delete(CreateUniqueName(scenarioInfo));
+
+                // Remove scenario from list of infos
+                _scenarioInfos.Remove(scenarioInfo);
+            }
         }
 
         public static void Load()
         {
             _scenarioInfos.Clear();
 
-            foreach (var file in Directory.GetFiles(ResourceConstants.SavedGameDirectory)
-                                          .Where(x => x.EndsWith("." + ResourceConstants.ScenarioExtension)))
+            // RogueFileDatabase can load statically. Using local instance - initialize
+            // the rogue file database.
+            using (var rogueFileDatabase = new RogueFileDatabase())
             {
-                AddScenario((ScenarioContainer)BinarySerializer.DeserializeFromFile(file));
+                // Search for records with type ScenarioContainer
+                var scenarioEntries = rogueFileDatabase.Search(entry => entry.EntryType.Name == typeof(ScenarioContainer).Name);
+
+                // Fetch just the entries for creating a ScenarioInfo
+                scenarioEntries.ForEach(entry =>
+                {
+                    _scenarioInfos.Add(ScenarioContainer.CreateInfo(entry));
+                });
             }
         }
 
-        private static void AddScenario(ScenarioContainer scenario)
+        public void LoadLevel(ScenarioContainer scenarioContainer, int levelNumber)
         {
-            _scenarioInfos.Add(new ScenarioInfo()
+            using (var rogueFileDatabase = new RogueFileDatabase())
             {
-                Name = scenario.Player.RogueName,
-                SmileyExpression = scenario.Player.SmileyExpression,
-                SmileyBodyColor = ColorOperations.Convert(scenario.Player.SmileyBodyColor),
-                SmileyLineColor = ColorOperations.Convert(scenario.Player.SmileyLineColor)
-            });
+                // Create a unique name for the scenario instance for the entry (directory name)
+                var entry = rogueFileDatabase.Get(CreateUniqueName(scenarioContainer));
+
+                scenarioContainer.LoadLevel(entry, levelNumber);
+            }
         }
 
-        private void RemoveScenario(string scenarioName)
+        public void SaveLevel(ScenarioContainer scenarioContainer, Level level)
         {
-            _scenarioInfos.Filter(x => x.Name == scenarioName);
+            using (var rogueFileDatabase = new RogueFileDatabase())
+            {
+                // Create a unique name for the scenario instance for the entry (directory name)
+                var entry = rogueFileDatabase.Get(CreateUniqueName(scenarioContainer));
+
+                scenarioContainer.SaveLevel(entry, level);
+            }
+        }
+
+        private string CreateUniqueName(ScenarioContainer scenarioContainer)
+        {
+            return CreateUniqueName(scenarioContainer.Player.RogueName, scenarioContainer.Configuration.ScenarioDesign.Name, scenarioContainer.Detail.Seed);
+        }
+
+        private string CreateUniqueName(ScenarioInfo scenarioInfo)
+        {
+            return CreateUniqueName(scenarioInfo.RogueName, scenarioInfo.ScenarioName, scenarioInfo.Seed);
+        }
+
+        private string CreateUniqueName(string rogueName, string scenarioName, int seed)
+        {
+            return string.Join(" - ", rogueName, scenarioName, seed);
         }
     }
 }

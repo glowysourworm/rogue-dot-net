@@ -1,8 +1,7 @@
 ﻿using Rogue.NET.Common.Utility;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.PrismExtension;
+
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 

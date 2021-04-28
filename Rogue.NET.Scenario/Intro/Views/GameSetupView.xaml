@@ -22,7 +22,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Text="Rogue.NET" Foreground="White" FontSize="36" Margin="10" />
-        <TextBlock Text="© 2019 - Rogue.NET Project"  Margin="10" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <TextBlock Text="© 2021 - Rogue Stories"  Margin="10" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
 
         <region:RogueRegion Grid.Row="1" 
                             HorizontalAlignment="Stretch"

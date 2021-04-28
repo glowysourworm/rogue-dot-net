@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters;
 using Rogue.NET.Scenario.Processing.Event;
@@ -101,11 +102,11 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
             }
             else
             {
-                _eventAggregator.GetEvent<NewScenarioEvent>().Publish(new NewScenarioEventArgs()
+                _eventAggregator.GetEvent<NewScenarioEvent>().Publish(new ScenarioInfo()
                 {
                     RogueName = viewModel.RogueName,
                     ScenarioName = viewModel.SelectedConfiguration.Name,
-                    CharacterClassName = viewModel.SelectedCharacterClass != null ? viewModel.SelectedCharacterClass.RogueName : string.Empty,
+                    CharacterClass = viewModel.SelectedCharacterClass != null ? viewModel.SelectedCharacterClass.RogueName : string.Empty,
                     Seed = viewModel.Seed,
                     SurvivorMode = viewModel.SurvivorMode
                 });

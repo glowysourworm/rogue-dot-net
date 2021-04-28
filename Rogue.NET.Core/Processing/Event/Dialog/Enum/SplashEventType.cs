@@ -2,6 +2,9 @@
 {
     public enum SplashEventType
     {
+        /// <summary>
+        /// Rogue smiley loading window
+        /// </summary>
         Loading
     }
 

@@ -1,6 +1,8 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Abstract;
+using Rogue.NET.Core.Processing.Service.Cache.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Processing.Service.Interface;
 using System;
 using System.Collections.Generic;

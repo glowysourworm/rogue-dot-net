@@ -4,6 +4,7 @@ using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.ModalDialog;
 using System;
 using System.IO;
+using System.Windows;
 
 namespace Rogue.NET
 {
@@ -19,6 +20,9 @@ namespace Rogue.NET
             if (!Directory.Exists(ResourceConstants.ScenarioDirectory))
                 Directory.CreateDirectory(ResourceConstants.ScenarioDirectory);
 
+            if (!Directory.Exists(ResourceConstants.TempDirectory))
+                Directory.CreateDirectory(ResourceConstants.TempDirectory);
+
             if (!Directory.Exists(ResourceConstants.DijkstraOutputDirectory))
                 Directory.CreateDirectory(ResourceConstants.DijkstraOutputDirectory);
 
@@ -28,12 +32,29 @@ namespace Rogue.NET
             loadingWindow.Show();
 
             // Load all configurations prior to running application
-            ScenarioConfigurationCache.Load();
+            try
+            {
+                ScenarioConfigurationCache.Load();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("There was an error loading Scenario Configurations!");
+                return;
+            }
 
             // Load all saved games
-            ScenarioCache.Load();
+            try
+            {
+                ScenarioCache.Load();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("There was an error loading saved games!");
+                return;
+            }
 
-            // Load SVG Resources
+
+            // Load SVG Resources - These are all embedded resources - Let it crash here if necessary
             SvgCache.Load();
 
             // Hide loading windowViewModel.Browser.ScenarioAssetViewModel
