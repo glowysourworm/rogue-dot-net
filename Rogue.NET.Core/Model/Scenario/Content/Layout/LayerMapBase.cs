@@ -29,6 +29,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// </summary>
         public RegionBoundary Boundary { get; private set; }
 
+        public T Get(int column, int row)
+        {
+            var region = _regionMap[column, row];
+
+            if (region != null)
+                return region[column, row];
+
+            return null;
+        }
+
         public TRegion this[int column, int row]
         {
             get { return _regionMap[column, row]; }

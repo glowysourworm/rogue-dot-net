@@ -275,6 +275,7 @@
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -307,6 +308,19 @@
                                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                             </TextBlock>
                         </Border>
+
+                        <Button Grid.Column="3"
+                                Width="Auto"
+                                FontSize="16"
+                                Padding="3"
+                                Background="Black"
+                                Foreground="White"
+                                Style="{StaticResource SmallFlatButtonStyle}"
+                                HorizontalAlignment="Right"
+                                VerticalContentAlignment="Center"
+                                Content="Preview"
+                                Command="{Binding PreviewLevelBranchCommand}">
+                        </Button>
 
                         <ItemsControl x:Name="ItemsHost"
                                           Grid.Row="1"

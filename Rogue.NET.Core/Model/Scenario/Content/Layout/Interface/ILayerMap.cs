@@ -11,6 +11,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Interface
 
         public RegionBoundary Boundary { get; }
 
+        // Avoids double-indexing the ILayerMap for the grid location. ALSO CHECKS FOR NULL
+        // REGION TO AVOID EXCEPTIONS. Returns null if there is no region at the specified indices.
+        public GridLocation Get(int column, int row);
+
         public Region<GridLocation> this[int column, int row] { get; }
 
         public Region<GridLocation> this[IGridLocator location] { get; }

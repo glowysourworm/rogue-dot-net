@@ -66,6 +66,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
         public ICommand LoadLevelBranchAssetsCommand { get; set; }
         public ICommand CopyLevelBranchCommand { get; set; }
         public ICommand RenameLevelBranchCommand { get; set; }
+        public ICommand PreviewLevelBranchCommand { get; set; }
 
         public ScenarioLevelBranchViewModel(
                 IRogueEventAggregator eventAggregator, 
@@ -127,6 +128,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser
             {
                 eventAggregator.GetEvent<RenameLevelBranchEvent>()
                                .Publish(this);
+            });
+            this.PreviewLevelBranchCommand = new SimpleCommand(() =>
+            {
+                eventAggregator.GetEvent<PreviewLevelBranchEvent>()
+                               .Publish(branchTemplateViewModel);
             });
 
             Rebuild(eventAggregator, branchTemplateViewModel);

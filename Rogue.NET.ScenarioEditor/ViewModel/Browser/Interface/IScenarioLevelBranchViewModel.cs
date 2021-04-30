@@ -28,5 +28,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Browser.Interface
         ICommand LoadLevelBranchAssetsCommand { get; set; }
         ICommand CopyLevelBranchCommand { get; set; }
         ICommand RenameLevelBranchCommand { get; set; }
+        ICommand PreviewLevelBranchCommand { get; set; }
     }
 }

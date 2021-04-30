@@ -1,0 +1,7 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign.LevelBranchDesigner"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Image x:Name="PreviewImage" />
+    </Grid>
+</UserControl>

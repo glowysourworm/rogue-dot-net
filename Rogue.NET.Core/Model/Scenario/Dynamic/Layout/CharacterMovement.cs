@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 {
     /// <summary>
-    /// Component used for storing and calculating 
+    /// Component used for storing and calculating character movement planning
     /// </summary>
     public class CharacterMovement
     {

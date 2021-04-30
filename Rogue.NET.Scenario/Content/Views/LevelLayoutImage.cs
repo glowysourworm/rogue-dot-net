@@ -2,6 +2,7 @@
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;

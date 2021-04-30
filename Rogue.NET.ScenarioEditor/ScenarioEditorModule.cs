@@ -4,7 +4,11 @@ using Prism.Modularity;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Rendering;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Events.Asset;
@@ -48,7 +52,12 @@ namespace Rogue.NET.ScenarioEditor
         readonly IScenarioConfigurationUndoService _undoService;
         readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
         readonly IScenarioCollectionProvider _scenarioCollectionProvider;
-        readonly IScenarioOverviewCalculationService _scenarioOverviewCalculationService;
+        readonly ILayoutGenerator _layoutGenerator;
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IScenarioRenderingService _scenarioRenderingService;
+
+        // TODO: Move to injection
+        readonly ScenarioConfigurationMapper _scenarioConfigurationMapper;
 
         DesignMode _designMode;
 
@@ -61,7 +70,9 @@ namespace Rogue.NET.ScenarioEditor
             IScenarioConfigurationUndoService scenarioConfigurationUndoService,
             IScenarioAssetReferenceService scenarioAssetReferenceService,
             IScenarioCollectionProvider scenarioCollectionProvider,
-            IScenarioOverviewCalculationService scenarioOverviewCalculationService)
+            ILayoutGenerator layoutGenerator,
+            IRandomSequenceGenerator randomSequenceGenerator, 
+            IScenarioRenderingService scenarioRenderingService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
@@ -70,7 +81,10 @@ namespace Rogue.NET.ScenarioEditor
             _undoService = scenarioConfigurationUndoService;
             _scenarioAssetReferenceService = scenarioAssetReferenceService;
             _scenarioCollectionProvider = scenarioCollectionProvider;
-            _scenarioOverviewCalculationService = scenarioOverviewCalculationService;
+            _layoutGenerator = layoutGenerator;
+            _randomSequenceGenerator = randomSequenceGenerator;
+            _scenarioConfigurationMapper = new ScenarioConfigurationMapper();
+            _scenarioRenderingService = scenarioRenderingService;
         }
 
         public void Initialize()
@@ -553,6 +567,61 @@ namespace Rogue.NET.ScenarioEditor
 
                 PublishScenarioUpdate();
             });
+
+            // Preview Level Branch
+            _eventAggregator.GetEvent<PreviewLevelBranchEvent>().Subscribe(eventData =>
+            {
+                // Procedure
+                //
+                // 1) Create a Level model from the branch template
+                // 2) Load design container with the view model instance
+                // 3) Load the level preview control into the design region
+                // 4) Fire event to load the preview control with the level data
+
+                // Get the layout generation view model
+                var layoutGenerationViewModel = _randomSequenceGenerator.GetWeightedRandom(eventData.Layouts, layoutGeneration => layoutGeneration.GenerationWeight);
+
+                // Map layout template view model -> layout template
+                var layoutTemplate = _scenarioConfigurationMapper.MapObject<LayoutTemplateViewModel, LayoutTemplate>(layoutGenerationViewModel.Asset, true);
+
+                // Create Layout! :)
+                var layout = _layoutGenerator.CreateLayout(layoutTemplate);
+
+                // Create a collection for the terrain maps / terrain symbols
+                var terrainMaps = layout.TerrainMaps.Join(layoutTemplate.TerrainLayers,
+                                                          leftTerrain => leftTerrain.Name,
+                                                          rightTerrain => rightTerrain.TerrainLayer.Name,
+                                                          (left, right) =>
+                                                          {
+                                                              return new
+                                                              {
+                                                                  LayerMap = left,
+                                                                  Symbol = right.TerrainLayer.FillSymbolDetails,
+                                                                  Edge = right.TerrainLayer.EdgeSymbolDetails,
+                                                                  HasEdge = right.TerrainLayer.HasEdgeSymbol
+                                                              };
+                                                          });
+
+                var renderingLayers = new List<RenderingLayer>();
+
+                renderingLayers.Add(new RenderingLayoutLayer(layout.WalkableMap, layoutTemplate.CellSymbol, null, false));
+                renderingLayers.Add(new RenderingLayoutLayer(layout.WallMap, layoutTemplate.WallSymbol, null, false));
+                renderingLayers.AddRange(terrainMaps.Select(map => new RenderingLayoutLayer(map.LayerMap, map.Symbol, map.Edge, map.HasEdge)));
+
+                // Create Rendering! :)
+                var image = _scenarioRenderingService.Render(new RenderingSpecification(renderingLayers,               
+                (column, row) => true,                        // Is Visibile Callback                
+                (column, row) => true,                        // Was Visible Callback                
+                (column, row) => 1.0,                         // Effective Vision Callback                
+                (column, row) => false,                       // Revealed Callback                
+                (column, row) => true,                        // Explored Callback                
+                (column, row) => layout[column, row].Lights,  // Lighting Callback
+                2.0D));
+
+                // Load Design Container
+                _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(DesignContainer)).DataContext = eventData;
+                _regionManager.LoadSingleInstance(RegionNames.DesignContainerRegion, typeof(LevelBranchDesigner)).DataContext = image;
+            });
         }
         private void RegisterAlterationEffectEvents()
         {
@@ -643,6 +712,7 @@ namespace Rogue.NET.ScenarioEditor
 
             return copy;
         }
+
         private void LoadAsset(IScenarioAssetReadonlyViewModel assetViewModel)
         {
             // KLUDGE:  This block is to prevent ComboBox Binding update issues. Events were firing when
@@ -674,22 +744,8 @@ namespace Rogue.NET.ScenarioEditor
                         // Set view data contexts
                         assetContainerView.DataContext = viewModel;
                         assetView.DataContext = viewModel;
-
-                        // GO AHEAD AND PRE-CALCULATE ASSET OVERVIEW
-
-                        // Calculate an overview for the asset
-                        _scenarioOverviewCalculationService.CalculateOverview(viewModel);
                     }
                     break;
-                // TODO: Complete or remove overview mode
-                //case DesignMode.Overview:
-                //    {
-                //        // For overview mode - calculate the asset overview
-
-                //        // Calculate an overview for the asset
-                //        _scenarioOverviewCalculationService.CalculateOverview(viewModel);
-                //    }
-                //    break;
             }
 
             // Unblock the undo service
@@ -723,11 +779,6 @@ namespace Rogue.NET.ScenarioEditor
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioLevelBrowser));
                     _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
                     break;
-                // TODO: Complete or remove overview mode
-                //case DesignMode.Overview:
-                //    _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
-                //    _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(Overview));
-                //    break;
                 case DesignMode.Validation:
                     _regionManager.LoadSingleInstance(RegionNames.BrowserRegion, typeof(ScenarioAssetBrowser));
                     _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(Validation));

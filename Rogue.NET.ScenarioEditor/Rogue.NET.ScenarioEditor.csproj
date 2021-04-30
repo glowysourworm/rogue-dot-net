@@ -77,12 +77,6 @@
     <Reference Include="DynamicData, Version=6.4.0.2419, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicData.6.4.0.2419\lib\net46\DynamicData.dll</HintPath>
     </Reference>
-    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
-    </Reference>
-    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -209,6 +203,9 @@
       <HintPath>..\packages\Wpg.1.0.20150225.1\lib\Net\WPG.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WriteableBitmapEx.Wpf, Version=1.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WriteableBitmapEx.1.6.3\lib\net40\WriteableBitmapEx.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock, Version=3.0.16174.17450, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
       <HintPath>..\packages\Xceed.Wpf.AvalonDock.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
       <Private>True</Private>
@@ -314,6 +311,7 @@
     <Compile Include="Events\Browser\CollapseLevelTreeEvent.cs" />
     <Compile Include="Events\Browser\CopyLevelBranchEvent.cs" />
     <Compile Include="Events\Browser\LoadLevelBranchAssetsEvent.cs" />
+    <Compile Include="Events\Browser\PreviewLevelBranchEvent.cs" />
     <Compile Include="Events\Browser\RemoveLevelBranchEvent.cs" />
     <Compile Include="Events\Browser\RenameLevelBranchEvent.cs" />
     <Compile Include="Events\BrushCopyEvent.cs" />
@@ -335,6 +333,7 @@
     <Compile Include="Events\Browser\RemoveAssetEvent.cs" />
     <Compile Include="Events\Asset\RemoveGeneralAssetEvent.cs" />
     <Compile Include="Events\Browser\RenameAssetEvent.cs" />
+    <Compile Include="Events\PreviewLevelEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
     <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
@@ -344,20 +343,14 @@
     <Compile Include="Controller\ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
     <Compile Include="Service\AlterationNameService.cs" />
-    <Compile Include="Service\CharacterCalculationService.cs" />
     <Compile Include="Service\Interface\IAlterationNameService.cs" />
-    <Compile Include="Service\Interface\ICharacterCalculationService.cs" />
     <Compile Include="Service\Interface\IScenarioAssetReferenceService.cs" />
     <Compile Include="Service\Interface\IScenarioCollectionProvider.cs" />
     <Compile Include="Service\Interface\IScenarioConfigurationUndoService.cs" />
-    <Compile Include="Service\Interface\IScenarioOverviewCalculationService.cs" />
-    <Compile Include="Service\Interface\IScenarioSimulationService.cs" />
     <Compile Include="Service\Interface\IUITypeAttributeProvider.cs" />
     <Compile Include="Service\ScenarioAssetReferenceService.cs" />
     <Compile Include="Service\ScenarioCollectionProvider.cs" />
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
-    <Compile Include="Service\ScenarioOverviewCalculationService.cs" />
-    <Compile Include="Service\ScenarioSimulationService.cs" />
     <Compile Include="Service\UITypeAttributeProvider.cs" />
     <Compile Include="Utility\DialogWindowFactory.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
@@ -370,9 +363,6 @@
     <Compile Include="ViewModel\Attribute\UITypeAttribute.cs" />
     <Compile Include="ViewModel\Attribute\UITypeAttributeBaseType.cs" />
     <Compile Include="ViewModel\Attribute\UITypeAttributeViewModel.cs" />
-    <Compile Include="ViewModel\Overview\Interface\IProjectionSetViewModel.cs" />
-    <Compile Include="ViewModel\Overview\Interface\IProjectedQuantityViewModel.cs" />
-    <Compile Include="ViewModel\Overview\ProjectedQuantityViewModel.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
     <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioAssetBrowserViewModel.cs" />
@@ -380,7 +370,6 @@
     <Compile Include="ViewModel\Browser\Interface\IScenarioAssetReadonlyViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioAssetViewModel.cs" />
     <Compile Include="ViewModel\Interface\IScenarioConstructionViewModel.cs" />
-    <Compile Include="ViewModel\Overview\Interface\IScenarioOverviewViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioLevelBranchViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioLevelBrowserViewModel.cs" />
     <Compile Include="ViewModel\Browser\Interface\IScenarioLevelViewModel.cs" />
@@ -388,7 +377,6 @@
     <Compile Include="ViewModel\Browser\ScenarioAssetGroupViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioAssetReadonlyViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioAssetViewModel.cs" />
-    <Compile Include="ViewModel\Overview\ProjectionSetViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\DungeonObjectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolDetailsTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolPoolItemTemplateViewModel.cs" />
@@ -501,7 +489,6 @@
       <LastGenOutput>ScenarioConfigurationContainer.Designer.cs</LastGenOutput>
     </Compile>
     <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationData.cs" />
-    <Compile Include="ViewModel\Overview\ScenarioOverviewViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioLevelBranchViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioLevelBrowserViewModel.cs" />
     <Compile Include="ViewModel\Browser\ScenarioLevelViewModel.cs" />
@@ -788,6 +775,9 @@
     <Compile Include="Views\Design\LevelBranchDesign\LayoutDesign.xaml.cs">
       <DependentUpon>LayoutDesign.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Design\LevelBranchDesign\LevelBranchDesigner.xaml.cs">
+      <DependentUpon>LevelBranchDesigner.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Design\LevelDesign.xaml.cs">
       <DependentUpon>LevelDesign.xaml</DependentUpon>
     </Compile>
@@ -828,9 +818,6 @@
     <Compile Include="Views\Controls\RenameControl.xaml.cs">
       <DependentUpon>RenameControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\ScenarioDifficultyChartTooltip.xaml.cs">
-      <DependentUpon>ScenarioDifficultyChartTooltip.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Controls\SelectionFreeListBox.cs" />
     <Compile Include="Views\Controls\Symbol\SymbolChooser.xaml.cs">
       <DependentUpon>SymbolChooser.xaml</DependentUpon>
@@ -867,9 +854,6 @@
     </Compile>
     <Compile Include="Views\ScenarioDesign.xaml.cs">
       <DependentUpon>ScenarioDesign.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Design\Overview.xaml.cs">
-      <DependentUpon>Overview.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Browser\ScenarioLevelBrowser.xaml.cs">
       <DependentUpon>ScenarioLevelBrowser.xaml</DependentUpon>
@@ -1270,6 +1254,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Design\LevelBranchDesign\LevelBranchDesigner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Design\LevelDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1322,10 +1310,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\ScenarioDifficultyChartTooltip.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Controls\Symbol\SymbolChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1367,10 +1351,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ScenarioDesign.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Design\Overview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

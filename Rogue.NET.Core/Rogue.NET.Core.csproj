@@ -687,6 +687,12 @@
     <Compile Include="Model\Scenario\Statistic\DoodadStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\EnemyStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\ItemStatistic.cs" />
+    <Compile Include="Processing\Service\Interface\IScenarioRenderingService.cs" />
+    <Compile Include="Processing\Service\Rendering\RenderingContentLayer.cs" />
+    <Compile Include="Processing\Service\Rendering\RenderingLayer.cs" />
+    <Compile Include="Processing\Service\Rendering\RenderingLayoutLayer.cs" />
+    <Compile Include="Processing\Service\Rendering\RenderingSpecification.cs" />
+    <Compile Include="Processing\Service\ScenarioRenderingService.cs" />
     <Compile Include="Processing\Service\Validation\Interface\IScenarioValidationResult.cs" />
     <Compile Include="Processing\Service\Validation\Interface\IScenarioValidationRule.cs" />
     <Compile Include="Processing\Service\Validation\ScenarioValidationResult.cs" />
