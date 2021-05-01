@@ -1,5 +1,7 @@
-﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
@@ -49,36 +51,61 @@ namespace Rogue.NET.Core.Processing.Service
 
             var renderingGrid = new List<DrawingImage>[cellWidth, cellHeight];
 
+            // Procedure
+            //
+            // 1) Order rendering layers by the specified enum 
+            // 2) Render all layers in order from bottom-to-top. No alpha blending is to be selected
+            // 
+
+            // Order layers
+            var orderedLayers = specification.Layers
+                                             .OrderBy(layer => layer.RenderingOrder)
+                                             .ToList();
+
+            // Create array of symbols to avoid memory allocation during procedure
+            var symbolArray = new SymbolDetailsTemplate[orderedLayers.Count];
+
+            // Use symbol count while iterating to know how many are present at the grid location
+            var symbolCount = 0;
+
             using (var bitmapContext = rendering.GetBitmapContext())
             {
                 for (int column = 0; column < cellWidth; column++)
                 {
                     for (int row = 0; row < cellHeight; row++)
                     {
-                        // Get topmost layer cell
-                        SymbolDetailsTemplate topMostSymbol = null;
+                        // Reset the symbol count
+                        symbolCount = 0;
 
-                        for (int index = specification.Layers.Count - 1;
-                             index >= 0 &&
-                             topMostSymbol == null;
-                             index--)
-                            topMostSymbol = specification.Layers[index].GetSymbol(column, row);
+                        for (int index = 0; index < orderedLayers.Count;index++)
+                        {
+                            // Retrieve the symbol for this layer
+                            var symbol = orderedLayers[index].GetSymbol(column, row);
+
+                            // If there is anything there - add it to the array
+                            if (symbol != null)
+                            {
+                                // Increment indexer / counter
+                                symbolArray[symbolCount++] = symbol;
+                            }
+                        }
 
                         // Skip empty cells
-                        if (topMostSymbol == null)
+                        if (symbolCount == 0)
                             continue;
 
                         var isVisible = specification.IsVisibileCallback(column, row);
-                        var wasVisible = specification.WasVisibileCallback(column, row);
+                        // var wasVisible = specification.WasVisibileCallback(column, row);
                         var isRevealed = specification.RevealedCallback(column, row);
                         var isExplored = specification.ExploredCallback(column, row);
 
-                        // Check to see that this location is either NEWLY VISIBLE or WAS VISIBLE LAST TURN
-                        //
-                        if (!isVisible &&
-                            !wasVisible &&
-                            !isRevealed)
-                            continue;
+                        // TODO: Figure out how to deal with invalidation
+                        //// Check to see that this location is either NEWLY VISIBLE or WAS VISIBLE LAST TURN
+                        ////
+                        //if (!isVisible &&
+                        //    // !wasVisible &&
+                        //    !isRevealed)
+                        //    continue;
 
                         if (!isVisible &&
                             !isExplored &&
@@ -88,31 +115,35 @@ namespace Rogue.NET.Core.Processing.Service
                         // Calculate effective vision
                         var effectiveVision = specification.EffectiveVisionCallback(column, row);
 
-                        // Create drawing image from symbol details
-                        var image = GetSymbol(topMostSymbol,
-                                                isVisible,
-                                                isExplored,
-                                                isRevealed,
-                                                effectiveVision,
-                                                specification.EffectiveLightingCallback(column, row));
-
-                        // Fetch bitmap from cache
-                        var bitmap = _scenarioBitmapSourceFactory.GetImageSource(image, specification.ZoomFactor);
-
-                        // Calculate the rectangle in which to render the image
-                        var renderRect = new Rect(column * ModelConstants.CellWidth * specification.ZoomFactor,
-                                                  row * ModelConstants.CellHeight * specification.ZoomFactor,
-                                                  ModelConstants.CellWidth * specification.ZoomFactor,
-                                                  ModelConstants.CellHeight * specification.ZoomFactor);
-
-                        // https://stackoverflow.com/questions/15540996/performance-of-writeablebitmapex
-                        using (bitmap.GetBitmapContext())
+                        // Render the contents of the symbol array
+                        for (int index = 0; index < symbolCount; index++)
                         {
-                            // Use WriteableBitmapEx extension method to overwrite pixels on the target
-                            bitmapContext.WriteableBitmap.Blit(renderRect,
-                                                               bitmap,
-                                                               new Rect(new Size(bitmap.Width, bitmap.Height)), 
-                                                               WriteableBitmapExtensions.BlendMode.None);
+                            // Create drawing image from symbol details
+                            var image = GetSymbol(symbolArray[index],
+                                                    isVisible,
+                                                    isExplored,
+                                                    isRevealed,
+                                                    effectiveVision,
+                                                    specification.EffectiveLightingCallback(column, row));
+
+                            // Fetch bitmap from cache
+                            var bitmap = _scenarioBitmapSourceFactory.GetImageSource(image, specification.ZoomFactor);
+
+                            // Calculate the rectangle in which to render the image
+                            var renderRect = new Rect(column * ModelConstants.CellWidth * specification.ZoomFactor,
+                                                      row * ModelConstants.CellHeight * specification.ZoomFactor,
+                                                      ModelConstants.CellWidth * specification.ZoomFactor,
+                                                      ModelConstants.CellHeight * specification.ZoomFactor);
+
+                            // https://stackoverflow.com/questions/15540996/performance-of-writeablebitmapex
+                            using (bitmap.GetBitmapContext())
+                            {
+                                // Use WriteableBitmapEx extension method to overwrite pixels on the target
+                                bitmapContext.WriteableBitmap.Blit(renderRect,
+                                                                   bitmap,
+                                                                   new Rect(new Size(bitmap.Width, bitmap.Height)),
+                                                                   WriteableBitmapExtensions.BlendMode.None);
+                            }
                         }
                     }
                 }
@@ -138,5 +169,19 @@ namespace Rogue.NET.Core.Processing.Service
             else
                 throw new Exception("Unhandled Exception LevelLayoutImage.GetSymbol");
         }
+        /*
+        private Light CalculateVisibleIntensity(Light effectiveLighting, GridLocation location, GridLocation playerLocation)
+        {
+            // Intensity falls off linearly as the vision
+            var distance = Metric.EuclideanDistance(location, playerLocation);
+            var distanceRatio = distance / ModelConstants.MaxVisibileRadiusPlayer;
+
+            // USE ROUNDING TO PREVENT CACHE OVERLOAD
+            var intensity = System.Math.Round(((1 - distanceRatio) * effectiveLighting.Intensity)
+                                       .Clip(ModelConstants.MinLightIntensity, 1), 1);
+
+            return new Light(effectiveLighting, intensity);
+        }
+        */
     }
 }

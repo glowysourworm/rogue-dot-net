@@ -4,6 +4,7 @@ using Prism.Modularity;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Event.Scenario;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
@@ -585,28 +586,56 @@ namespace Rogue.NET.ScenarioEditor
                 var layoutTemplate = _scenarioConfigurationMapper.MapObject<LayoutTemplateViewModel, LayoutTemplate>(layoutGenerationViewModel.Asset, true);
 
                 // Create Layout! :)
-                var layout = _layoutGenerator.CreateLayout(layoutTemplate);
+                var layoutGrid = _layoutGenerator.CreateLayout(layoutTemplate);
 
                 // Create a collection for the terrain maps / terrain symbols
-                var terrainMaps = layout.TerrainMaps.Join(layoutTemplate.TerrainLayers,
-                                                          leftTerrain => leftTerrain.Name,
-                                                          rightTerrain => rightTerrain.TerrainLayer.Name,
-                                                          (left, right) =>
-                                                          {
-                                                              return new
-                                                              {
-                                                                  LayerMap = left,
-                                                                  Symbol = right.TerrainLayer.FillSymbolDetails,
-                                                                  Edge = right.TerrainLayer.EdgeSymbolDetails,
-                                                                  HasEdge = right.TerrainLayer.HasEdgeSymbol
-                                                              };
-                                                          });
+                var terrainMaps = layoutGrid.TerrainMaps
+                                            .Join(layoutTemplate.TerrainLayers,
+                                                  leftTerrain => leftTerrain.Name,
+                                                  rightTerrain => rightTerrain.TerrainLayer.Name,
+                                                  (left, right) =>
+                                                  {
+                                                      return new
+                                                      {
+                                                          Layer = right,
+                                                          LayerMap = left,
+                                                          Symbol = right.TerrainLayer.FillSymbolDetails,
+                                                          Edge = right.TerrainLayer.EdgeSymbolDetails,
+                                                          HasEdge = right.TerrainLayer.HasEdgeSymbol
+                                                      };
+                                                  })
+
+                                            // Below Ground -> Ground -> Above Ground
+                                            .OrderBy(x => x.Layer.TerrainLayer.Layer)
+                                            .Actualize();
 
                 var renderingLayers = new List<RenderingLayer>();
 
-                renderingLayers.Add(new RenderingLayoutLayer(layout.WalkableMap, layoutTemplate.CellSymbol, null, false));
-                renderingLayers.Add(new RenderingLayoutLayer(layout.WallMap, layoutTemplate.WallSymbol, null, false));
-                renderingLayers.AddRange(terrainMaps.Select(map => new RenderingLayoutLayer(map.LayerMap, map.Symbol, map.Edge, map.HasEdge)));
+                // Floor -> Walls -> Wall Lights
+                renderingLayers.Add(new RenderingLayoutLayer(layoutGrid.WalkableMap, layoutTemplate.CellSymbol, TerrainLayer.BelowGround));
+                renderingLayers.Add(new RenderingLayoutLayer(layoutGrid.WallMap, layoutTemplate.WallSymbol, TerrainLayer.Ground));
+                renderingLayers.Add(new RenderingContentLayer(layoutGrid.Bounds.Width, 
+                                                              layoutGrid.Bounds.Height, 
+
+                                                              // Wall Lights
+                                                              (column, row) =>
+                                                              {
+                                                                  var cell = layoutGrid[column, row];
+
+                                                                  if (cell != null &&
+                                                                      cell.IsWallLight)
+                                                                      return layoutTemplate.WallLightSymbol;
+
+                                                                  return null;
+
+                                                              }, TerrainLayer.Ground));
+
+                // Terrain Layers
+                renderingLayers.AddRange(terrainMaps.Select(map => new RenderingLayoutLayer(map.LayerMap,
+                                                                                            map.Symbol,
+                                                                                            map.Edge,
+                                                                                            map.HasEdge,
+                                                                                            map.Layer.TerrainLayer.Layer)));
 
                 // Create Rendering! :)
                 var image = _scenarioRenderingService.Render(new RenderingSpecification(renderingLayers,               
@@ -615,7 +644,7 @@ namespace Rogue.NET.ScenarioEditor
                 (column, row) => 1.0,                         // Effective Vision Callback                
                 (column, row) => false,                       // Revealed Callback                
                 (column, row) => true,                        // Explored Callback                
-                (column, row) => layout[column, row].Lights,  // Lighting Callback
+                (column, row) => layoutGrid[column, row].Lights,  // Lighting Callback
                 2.0D));
 
                 // Load Design Container

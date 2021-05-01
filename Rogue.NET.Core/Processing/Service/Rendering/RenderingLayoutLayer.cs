@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
 namespace Rogue.NET.Core.Processing.Service.Rendering
@@ -18,12 +19,34 @@ namespace Rogue.NET.Core.Processing.Service.Rendering
         /// </summary>
         public bool IsEdged { get; private set; }
         
-        public RenderingLayoutLayer(ILayerMap layerMap, SymbolDetailsTemplate symbol, SymbolDetailsTemplate edgeSymbol, bool isEdged)
+        /// <summary>
+        /// Constructor used for layer with no edges
+        /// </summary>
+        public RenderingLayoutLayer(ILayerMap layerMap, 
+                                    SymbolDetailsTemplate symbol, 
+                                    TerrainLayer renderingOrder)
+        {
+            this.LayerMap = layerMap;
+            this.EdgeSymbol = null;
+            this.Symbol = symbol;
+            this.IsEdged = false;
+            this.RenderingOrder = renderingOrder;
+        }
+
+        /// <summary>
+        /// Constructor for a layout with edges
+        /// </summary>
+        public RenderingLayoutLayer(ILayerMap layerMap, 
+                                    SymbolDetailsTemplate symbol, 
+                                    SymbolDetailsTemplate edgeSymbol, 
+                                    bool isEdged,
+                                    TerrainLayer renderingOrder)
         {
             this.Symbol = symbol;
             this.EdgeSymbol = edgeSymbol;
             this.LayerMap = layerMap;
             this.IsEdged = isEdged;
+            this.RenderingOrder = renderingOrder;
         }
 
         public override int CellHeight

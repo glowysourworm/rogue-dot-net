@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
 namespace Rogue.NET.Core.Processing.Service.Rendering
 {
@@ -13,11 +14,13 @@ namespace Rogue.NET.Core.Processing.Service.Rendering
 
         public RenderingContentLayer(int width, 
                                      int height, 
-                                     SymbolDetailsCallback symbolCallback)
+                                     SymbolDetailsCallback symbolCallback,
+                                     TerrainLayer renderingOrder)
         {
             this.CellHeight = height;
             this.CellWidth = width;
             this.SymbolCallback = symbolCallback;
+            this.RenderingOrder = renderingOrder;
         }
 
         public override int CellHeight { get; protected set; }

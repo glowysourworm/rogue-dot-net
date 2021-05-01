@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
 using System;
 using System.Collections.Generic;
@@ -21,5 +22,10 @@ namespace Rogue.NET.Core.Processing.Service.Rendering
         /// The height of the layer
         /// </summary>
         public abstract int CellHeight { get; protected set; }
+
+        /// <summary>
+        /// Enumeration used for ordering the rendering layer (below ground should come first)
+        /// </summary>
+        public TerrainLayer RenderingOrder { get; set; }
     }
 }
