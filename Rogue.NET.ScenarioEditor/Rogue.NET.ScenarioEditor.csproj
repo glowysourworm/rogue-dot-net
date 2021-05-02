@@ -344,10 +344,12 @@
     <Compile Include="ScenarioEditorModule.cs" />
     <Compile Include="Service\AlterationNameService.cs" />
     <Compile Include="Service\Interface\IAlterationNameService.cs" />
+    <Compile Include="Service\Interface\IPreviewRenderingService.cs" />
     <Compile Include="Service\Interface\IScenarioAssetReferenceService.cs" />
     <Compile Include="Service\Interface\IScenarioCollectionProvider.cs" />
     <Compile Include="Service\Interface\IScenarioConfigurationUndoService.cs" />
     <Compile Include="Service\Interface\IUITypeAttributeProvider.cs" />
+    <Compile Include="Service\PreviewRenderingService.cs" />
     <Compile Include="Service\ScenarioAssetReferenceService.cs" />
     <Compile Include="Service\ScenarioCollectionProvider.cs" />
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />

@@ -8,7 +8,6 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Event.Scenario;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
-using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Service.Rendering;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
@@ -53,12 +52,6 @@ namespace Rogue.NET.ScenarioEditor
         readonly IScenarioConfigurationUndoService _undoService;
         readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
         readonly IScenarioCollectionProvider _scenarioCollectionProvider;
-        readonly ILayoutGenerator _layoutGenerator;
-        readonly IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly IScenarioRenderingService _scenarioRenderingService;
-
-        // TODO: Move to injection
-        readonly ScenarioConfigurationMapper _scenarioConfigurationMapper;
 
         DesignMode _designMode;
 
@@ -70,10 +63,7 @@ namespace Rogue.NET.ScenarioEditor
             IScenarioEditorController scenarioEditorController,
             IScenarioConfigurationUndoService scenarioConfigurationUndoService,
             IScenarioAssetReferenceService scenarioAssetReferenceService,
-            IScenarioCollectionProvider scenarioCollectionProvider,
-            ILayoutGenerator layoutGenerator,
-            IRandomSequenceGenerator randomSequenceGenerator, 
-            IScenarioRenderingService scenarioRenderingService)
+            IScenarioCollectionProvider scenarioCollectionProvider)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
@@ -82,10 +72,6 @@ namespace Rogue.NET.ScenarioEditor
             _undoService = scenarioConfigurationUndoService;
             _scenarioAssetReferenceService = scenarioAssetReferenceService;
             _scenarioCollectionProvider = scenarioCollectionProvider;
-            _layoutGenerator = layoutGenerator;
-            _randomSequenceGenerator = randomSequenceGenerator;
-            _scenarioConfigurationMapper = new ScenarioConfigurationMapper();
-            _scenarioRenderingService = scenarioRenderingService;
         }
 
         public void Initialize()
@@ -572,84 +558,9 @@ namespace Rogue.NET.ScenarioEditor
             // Preview Level Branch
             _eventAggregator.GetEvent<PreviewLevelBranchEvent>().Subscribe(eventData =>
             {
-                // Procedure
-                //
-                // 1) Create a Level model from the branch template
-                // 2) Load design container with the view model instance
-                // 3) Load the level preview control into the design region
-                // 4) Fire event to load the preview control with the level data
-
-                // Get the layout generation view model
-                var layoutGenerationViewModel = _randomSequenceGenerator.GetWeightedRandom(eventData.Layouts, layoutGeneration => layoutGeneration.GenerationWeight);
-
-                // Map layout template view model -> layout template
-                var layoutTemplate = _scenarioConfigurationMapper.MapObject<LayoutTemplateViewModel, LayoutTemplate>(layoutGenerationViewModel.Asset, true);
-
-                // Create Layout! :)
-                var layoutGrid = _layoutGenerator.CreateLayout(layoutTemplate);
-
-                // Create a collection for the terrain maps / terrain symbols
-                var terrainMaps = layoutGrid.TerrainMaps
-                                            .Join(layoutTemplate.TerrainLayers,
-                                                  leftTerrain => leftTerrain.Name,
-                                                  rightTerrain => rightTerrain.TerrainLayer.Name,
-                                                  (left, right) =>
-                                                  {
-                                                      return new
-                                                      {
-                                                          Layer = right,
-                                                          LayerMap = left,
-                                                          Symbol = right.TerrainLayer.FillSymbolDetails,
-                                                          Edge = right.TerrainLayer.EdgeSymbolDetails,
-                                                          HasEdge = right.TerrainLayer.HasEdgeSymbol
-                                                      };
-                                                  })
-
-                                            // Below Ground -> Ground -> Above Ground
-                                            .OrderBy(x => x.Layer.TerrainLayer.Layer)
-                                            .Actualize();
-
-                var renderingLayers = new List<RenderingLayer>();
-
-                // Floor -> Walls -> Wall Lights
-                renderingLayers.Add(new RenderingLayoutLayer(layoutGrid.WalkableMap, layoutTemplate.CellSymbol, TerrainLayer.BelowGround));
-                renderingLayers.Add(new RenderingLayoutLayer(layoutGrid.WallMap, layoutTemplate.WallSymbol, TerrainLayer.Ground));
-                renderingLayers.Add(new RenderingContentLayer(layoutGrid.Bounds.Width, 
-                                                              layoutGrid.Bounds.Height, 
-
-                                                              // Wall Lights
-                                                              (column, row) =>
-                                                              {
-                                                                  var cell = layoutGrid[column, row];
-
-                                                                  if (cell != null &&
-                                                                      cell.IsWallLight)
-                                                                      return layoutTemplate.WallLightSymbol;
-
-                                                                  return null;
-
-                                                              }, TerrainLayer.Ground));
-
-                // Terrain Layers
-                renderingLayers.AddRange(terrainMaps.Select(map => new RenderingLayoutLayer(map.LayerMap,
-                                                                                            map.Symbol,
-                                                                                            map.Edge,
-                                                                                            map.HasEdge,
-                                                                                            map.Layer.TerrainLayer.Layer)));
-
-                // Create Rendering! :)
-                var image = _scenarioRenderingService.Render(new RenderingSpecification(renderingLayers,               
-                (column, row) => true,                        // Is Visibile Callback                
-                (column, row) => true,                        // Was Visible Callback                
-                (column, row) => 1.0,                         // Effective Vision Callback                
-                (column, row) => false,                       // Revealed Callback                
-                (column, row) => true,                        // Explored Callback                
-                (column, row) => layoutGrid[column, row].Lights,  // Lighting Callback
-                2.0D));
-
                 // Load Design Container
+                _regionManager.LoadSingleInstance(RegionNames.DesignContainerRegion, typeof(LevelBranchDesigner));
                 _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(DesignContainer)).DataContext = eventData;
-                _regionManager.LoadSingleInstance(RegionNames.DesignContainerRegion, typeof(LevelBranchDesigner)).DataContext = image;
             });
         }
         private void RegisterAlterationEffectEvents()

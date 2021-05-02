@@ -1,7 +1,80 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign.LevelBranchDesigner"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Grid>
-        <Image x:Name="PreviewImage" />
-    </Grid>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModelAbstract="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract">
+    <Canvas>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <Border   BorderBrush="White"
+                      BorderThickness="1">
+                <Image x:Name="PreviewImage" Margin="30" />
+            </Border>
+        </ScrollViewer>
+
+        <Border BorderBrush="LightBlue" 
+                BorderThickness="1"
+                Background="Black"
+                Width="250"
+                Canvas.Right="10"
+                Canvas.Top="10">
+            <StackPanel Margin="5">
+
+                <RadioButton x:Name="LayoutRB" 
+                             Margin="5"
+                             FontSize="20"
+                             Checked="OnPreviewChanged" 
+                             Unchecked="OnPreviewChanged" 
+                             Content="Layout Preview Mode" />
+                
+                <RadioButton x:Name="PreviewRB" 
+                             Margin="5"
+                             FontSize="20"
+                             IsChecked="True" 
+                             Checked="OnPreviewChanged" 
+                             Unchecked="OnPreviewChanged" 
+                             Content="Level Preview Mode" />
+
+                <TextBlock Text="Layout Layers" Margin="5" Foreground="White" FontSize="24" />
+
+                <!-- Layout Layer Listbox -->
+                <StackPanel x:Name="LayoutLayerContainer" 
+                            Visibility="Collapsed"
+                            Margin="5">
+                    <ListBox BorderThickness="0" 
+                             FontSize="20">
+                        <CheckBox x:Name="FullLayerCB" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged" Content="Full Layer" Margin="5" />
+                        <CheckBox x:Name="ConnectionLayerCB" Checked="OnPreviewChanged"  Unchecked="OnPreviewChanged" Content="Connection Layer" Margin="5" />
+                        <CheckBox x:Name="WalkableLayerCB" Checked="OnPreviewChanged"  Unchecked="OnPreviewChanged" Content="Walkable Layer" Margin="5" />
+                        <CheckBox x:Name="PlacementLayerCB" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged"  Content="Placement Layer" Margin="5" />
+                        <CheckBox x:Name="RoomLayerCB" IsChecked="True" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged"  Content="Room Layer" Margin="5" />
+                        <CheckBox x:Name="CorridorLayerCB" IsChecked="True" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged"  Content="Corridor Layer" Margin="5" />
+                        <CheckBox x:Name="WallLayerCB" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged" Content="Wall Layer" Margin="5" />
+                        <CheckBox x:Name="ImpassableTerrainLayerCB" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged" Content="Impassable Terrain Layer" Margin="5" />
+                    </ListBox>
+                </StackPanel>
+
+                <!-- Preview Layer Listbox -->
+                <StackPanel x:Name="PreviewLayerContainer"
+                            Margin="5">
+
+                    <ListBox BorderThickness="0" 
+                             FontSize="20">
+                        <CheckBox x:Name="PreviewWalkableLayerCB" IsChecked="True" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged" Content="Walkable Layer" Margin="5" />
+                        <CheckBox x:Name="PreviewWallLayerCB" IsChecked="True" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged" Content="Wall Layer" Margin="5" />
+                    </ListBox>
+                    <ListBox x:Name="PreviewTerrainLayerLB" 
+                             FontSize="20"
+                             BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type viewModelAbstract:TemplateViewModel}">
+                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Checked="OnPreviewChanged" Unchecked="OnPreviewChanged" Margin="5" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+    </Canvas>
 </UserControl>

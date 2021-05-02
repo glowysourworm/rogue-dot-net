@@ -1,7 +1,4 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
@@ -12,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -25,9 +20,7 @@ namespace Rogue.NET.Core.Processing.Service
     public class ScenarioRenderingService : IScenarioRenderingService
     {
         readonly IScenarioResourceService _scenarioResourceService;
-        readonly IScenarioBitmapSourceFactory _scenarioBitmapSourceFactory;
-
-        const int LAYOUT_BITMAP_DPI = 96;
+        readonly IScenarioBitmapSourceFactory _scenarioBitmapSourceFactory;        
 
         [ImportingConstructor]
         public ScenarioRenderingService(IScenarioResourceService scenarioResourceService,
@@ -45,8 +38,8 @@ namespace Rogue.NET.Core.Processing.Service
             // Render layout layer to writeable bitmap
             var rendering = new WriteableBitmap((int)(cellWidth * ModelConstants.CellWidth * specification.ZoomFactor),
                                                 (int)(cellHeight * ModelConstants.CellHeight * specification.ZoomFactor),
-                                                LAYOUT_BITMAP_DPI,
-                                                LAYOUT_BITMAP_DPI,
+                                                ModelConstants.RenderingDPI,
+                                                ModelConstants.RenderingDPI,
                                                 PixelFormats.Pbgra32, null);
 
             var renderingGrid = new List<DrawingImage>[cellWidth, cellHeight];
@@ -77,7 +70,7 @@ namespace Rogue.NET.Core.Processing.Service
                         // Reset the symbol count
                         symbolCount = 0;
 
-                        for (int index = 0; index < orderedLayers.Count;index++)
+                        for (int index = 0; index < orderedLayers.Count; index++)
                         {
                             // Retrieve the symbol for this layer
                             var symbol = orderedLayers[index].GetSymbol(column, row);

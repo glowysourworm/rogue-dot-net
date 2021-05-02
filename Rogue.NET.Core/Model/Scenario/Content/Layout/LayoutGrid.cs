@@ -504,7 +504,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Selects the proper layer for the specified enumeration
         /// </summary>
-        private ILayerMap SelectLayer(LayoutLayer layer)
+        public ILayerMap SelectLayer(LayoutLayer layer)
         {
             switch (layer)
             {
