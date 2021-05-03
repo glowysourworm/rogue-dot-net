@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Algorithm.Interface;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
@@ -171,8 +172,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             var roomMinHeight = roomBoundaries.Min(region => region.Height);
             var roomMinWidth = roomBoundaries.Min(region => region.Width);
 
-            var paddingLimit = System.Math.Min(roomMinHeight / 2, roomMinWidth / 2);
-            var padding = (int)(paddingLimit * template.RandomRoomSpacing).Clip(0, paddingLimit);
+            var padding = (int)(ModelConstants.LayoutGeneration.RoomIntersectionPaddingLimit * template.RandomRoomSpacing);
 
             // Create contiguous regions - OVERWRITE EXISTING CELLS BECAUSE OF RANDOM LAYOUT
             foreach (var boundary in roomBoundaries)

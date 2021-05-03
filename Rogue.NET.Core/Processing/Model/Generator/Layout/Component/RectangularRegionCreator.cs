@@ -1,5 +1,9 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
@@ -14,9 +18,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
     [Export(typeof(IRectangularRegionCreator))]
     public class RectangularRegionCreator : IRectangularRegionCreator
     {
-        public RectangularRegionCreator()
-        {
+        readonly ICellularAutomataRegionCreator _cellularAutomataRegionCreator;
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
+        [ImportingConstructor]
+        public RectangularRegionCreator(ICellularAutomataRegionCreator cellularAutomataRegionCreator,
+                                        IRandomSequenceGenerator randomSequenceGenerator)
+        {
+            _cellularAutomataRegionCreator = cellularAutomataRegionCreator;
+            _randomSequenceGenerator = randomSequenceGenerator;
         }
 
         public void CreateCells(GridCellInfo[,] grid, RegionBoundary boundary, bool overwrite)
@@ -35,45 +45,52 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
         public void CreateCellsXOR(GridCellInfo[,] grid, RegionBoundary boundary, int padding, double separationRatio)
         {
-            var locations = new List<GridCellInfo>();
-            var allLocations = new List<GridCellInfo>();
-            var regionDetected = false;
+            // Cells within the intersection
+            var intersection = new List<GridCellInfo>();
+
+            // Cells within the intersection + the new region cells
+            var join = new List<GridCellInfo>();
+
+            // Procedure
+            //
+            // 1) Iterate grid within the boundary to find cells that have been CREATED
+            // 2) Separate into two collections: 
+            //      - One with all new cells for the boundary
+            //      - One with all new cells in the intersection OR previously created cells
+            // 3) Add padded tiles to the intersection collection RANDOMLY USING SEPARATION RATIO
+            // 4) Use Cellular Automata rule to fill in the intersection + padded region
+            // 5) Add cells created for the join
+            //
 
             for (int i = boundary.Left; i <= boundary.Right; i++)
             {
                 for (int j = boundary.Top; j <= boundary.Bottom; j++)
                 {
+                    // Intersection + Padding
                     if (grid[i, j] != null)
-                    {
-                        regionDetected = true;
-                        continue;
-                    }
+                        intersection.Add(grid[i, j]);
 
-                    var cell = new GridCellInfo(i, j);
-
-                    // Be sure that all adjacent elements are null (padding + 1 gives a minimum of one cell between boundaries)
-                    if (grid.GetElementsNearUnsafe(i, j, padding + 1).All(cell => cell == null))
-                        locations.Add(cell);
-
+                    // New Region -> ADD CELLS TO GRID
                     else
-                        regionDetected = true;
-
-                    // Keep a list of all cells in case the number doesn't exceed the threshold
-                    allLocations.Add(cell);
+                        grid[i, j] = new GridCellInfo(i, j);
                 }
             }
 
-            // Number of valid locations exceeds the threshold
-            if (locations.Count >= (allLocations.Count * (1 - separationRatio)))
+            // PROCESS INTERSECTION
+            if (intersection.Count > 0)
             {
-                // Now, safely add the cells to the grid
-                foreach (var cell in locations)
-                    grid[cell.Location.Column, cell.Location.Row] = cell;
-            }
-            else
-            {
-                foreach (var cell in allLocations)
-                    grid[cell.Location.Column, cell.Location.Row] = cell;
+                var paddedColumnLeft = (intersection.Min(cell => cell.Column) - padding).LowLimit(ModelConstants.LayoutGeneration.LayoutPadding);
+                var paddedColumnRight = (intersection.Max(cell => cell.Column) + padding).HighLimit(grid.GetLength(0) - ModelConstants.LayoutGeneration.LayoutPadding);
+
+                var paddedRowTop = (intersection.Min(cell => cell.Row) - padding).LowLimit(ModelConstants.LayoutGeneration.LayoutPadding);
+                var paddedRowBottom = (intersection.Max(cell => cell.Row) + padding).HighLimit(grid.GetLength(1) - ModelConstants.LayoutGeneration.LayoutPadding);
+
+                var paddedBoundary = new RegionBoundary(paddedColumnLeft,
+                                                         paddedRowTop,
+                                                         paddedColumnRight - paddedColumnLeft,
+                                                         paddedRowBottom - paddedRowTop);
+
+                _cellularAutomataRegionCreator.GenerateCells(grid, paddedBoundary, LayoutCellularAutomataType.FilledLess, 1 - separationRatio, true);
             }
         }
     }

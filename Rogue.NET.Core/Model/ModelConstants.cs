@@ -48,6 +48,18 @@ namespace Rogue.NET.Core.Model
             public const int EquipmentGenerationDefault = 2;
             public const int DoodadGenerationDefault = 2;
         }
+        public static class LayoutGeneration
+        {
+            /// <summary>
+            /// Used for the XOR intersection of the regions during generation
+            /// </summary>
+            public const int RoomIntersectionPaddingLimit = 3;
+
+            /// <summary>
+            /// Padding for the layout around the edge
+            /// </summary>
+            public const int LayoutPadding = 1;
+        }
         public static class Settings
         {
             public const double ZoomMax = 3.0;
