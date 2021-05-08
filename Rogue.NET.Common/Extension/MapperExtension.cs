@@ -22,7 +22,7 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
-        /// Creates a copy using the Agile Mapper
+        /// Creates a copy using NClone
         /// </summary>
         public static T DeepClone<T>(this T source)
         {

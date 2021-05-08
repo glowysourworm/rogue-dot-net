@@ -11,20 +11,20 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         BinarySearchTree<double, BinarySearchTree<int, T>> _searchedLocations;
         BinarySearchTree<double, BinarySearchTree<int, T>> _unSearchedLocations;
 
-        readonly ConnectedRegion<T> _region;
+        readonly Region<T> _region;
         readonly GridLocation _regionCenter;
 
         /// <summary>
         /// Returns the id of the current region
         /// </summary>
-        public ConnectedRegion<T> Region { get { return _region; } }
+        public Region<T> Region { get { return _region; } }
 
         /// <summary>
         /// Initializes a new instance of the SearchGrid with a rest location and search radius - which
         /// is the maximum Euclidean distance (in terms of cells) that the character can search away 
         /// from their rest location.
         /// </summary>
-        public SearchGrid(ConnectedRegion<T> region, GridLocation restLocation, int searchRadius)
+        public SearchGrid(Region<T> region, GridLocation restLocation, int searchRadius)
         {
             _searchedLocations = new BinarySearchTree<double, BinarySearchTree<int, T>>();
             _unSearchedLocations = new BinarySearchTree<double, BinarySearchTree<int, T>>();
@@ -41,7 +41,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             foreach (var location in _region.Locations)
             {
                 // Check to see that the search location is within the search radius
-                if (Metric.EuclideanDistance(location, restLocation) <= searchRadius)
+                if (Metric.ForceDistance(location, restLocation, Metric.MetricType.Euclidean) <= searchRadius)
                     Insert(_unSearchedLocations, location);
             }
         }
@@ -53,7 +53,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // ***NOTE: USING ROUNDING TO MAKE THE BST KEYS STABLE
             //
             var angle = System.Math.Atan2(_regionCenter.Row - location.Row, _regionCenter.Column - location.Column);
-            var distance = Metric.RoguianDistance(_regionCenter, location);
+            var distance = (int)Metric.Distance(_regionCenter, location);
 
             // O(1)
             var subTree = tree.Search(angle);
@@ -79,7 +79,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // ***NOTE: USING ROUNDING TO MAKE THE BST KEYS STABLE
             //
             var angle = System.Math.Atan2(_regionCenter.Row - location.Row, _regionCenter.Column - location.Column);
-            var distance = Metric.RoguianDistance(_regionCenter, location);
+            var distance = (int)Metric.Distance(_regionCenter, location);
 
             // O(1)
             var subTree = tree.Search(angle);

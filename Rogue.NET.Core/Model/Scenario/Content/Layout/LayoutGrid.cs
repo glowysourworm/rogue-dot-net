@@ -29,12 +29,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             Full,
 
             /// <summary>
-            /// Contains the connected walkable regions + the connection graph
-            /// </summary>
-            Connection,
-
-            /// <summary>
-            /// Contains the non-connected walkable cell regions for the entire map
+            /// Contains the walkable cell regions for the entire map (should be connected)
             /// </summary>
             Walkable,
 
@@ -44,8 +39,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             Placement,
 
             /// <summary>
-            /// Contains the original room locations - prior to terrain placement - with the
-            /// impassable terrain cells removed.
+            /// Contains the room regions - excludes corridors unless in a maze
             /// </summary>
             Room,
 
@@ -168,7 +162,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             // Connected Layers
             this.ConnectionMap = new ConnectedLayerMap(connectionLayer.LayerName,
                                                        connectionLayer.RegionGraph,
-                                                       connectionLayer.ConnectionRegions,
+                                                       connectionLayer.Regions,
                                                        this.Bounds.Width,
                                                        this.Bounds.Height);
 
@@ -368,8 +362,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             var map = SelectLayer(layer);
 
-            var qualifiedRegions = excludedLocations != null ? map.Regions.Where(region => region.NonOccupiedLocations.Except(excludedLocations).Count() >= locationCount)
-                                                             : map.Regions.Where(region => region.NonOccupiedLocations.Count() >= locationCount);
+            var qualifiedRegions = excludedLocations != null ? map.Regions.Values.Where(region => region.NonOccupiedLocations.Except(excludedLocations).Count() >= locationCount)
+                                                             : map.Regions.Values.Where(region => region.NonOccupiedLocations.Count() >= locationCount);
 
             if (qualifiedRegions.Count() == 0)
                 return new GridLocation[] { };
@@ -493,12 +487,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             if (excludedLocations == null)
                 return map.GetNonOccupiedLocations()
                           .Except(new GridLocation[] { location })
-                          .MinBy(otherLocation => Metric.EuclideanDistance(location, otherLocation));
+                          .MinBy(otherLocation => Metric.ForceDistance(location, otherLocation, Metric.MetricType.Euclidean));
             else
                 return map.GetNonOccupiedLocations()
                           .Except(excludedLocations)
                           .Except(new GridLocation[] { location })
-                          .MinBy(otherLocation => Metric.EuclideanDistance(location, otherLocation));
+                          .MinBy(otherLocation => Metric.ForceDistance(location, otherLocation, Metric.MetricType.Euclidean));
         }
 
         /// <summary>
@@ -510,8 +504,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             {
                 case LayoutLayer.Full:
                     return this.FullMap;
-                case LayoutLayer.Connection:
-                    return this.ConnectionMap;
                 case LayoutLayer.Walkable:
                     return this.WalkableMap;
                 case LayoutLayer.Placement:
@@ -575,12 +567,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             // Want a PDF based on max distance from the source location
             //
-            var maxDistance = locations.Max(location => sourceLocations.Max(source => Metric.EuclideanDistance(location, source)));
+            var maxDistance = locations.Max(location => sourceLocations.Max(source => Metric.ForceDistance(location, source, Metric.MetricType.Euclidean)));
 
             return locations.ToDictionary(location => location, location =>
             {
                 // Select the minimum distance between this location and each of the source locations as a weight
-                var minDistance = sourceLocations.Min(source => Metric.EuclideanDistance(location, source));
+                var minDistance = sourceLocations.Min(source => Metric.ForceDistance(location, source, Metric.MetricType.Euclidean));
 
                 return GetTriangleFunction(minDistance, 0, SIMULATION_DISTANT_PARAMETER * maxDistance, maxDistance);
             });

@@ -32,6 +32,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             get
             {
+                if (parentColumn < 0 ||
+                    parentColumn >= _parentWidth ||
+                    parentRow < 0 ||
+                    parentRow >= _parentHeight)
+                    throw new Exception("Trying to index outside the PARENT boundary:  Grid.this[]");
+
                 var column = parentColumn - _offsetColumn;
                 var row = parentRow - _offsetRow;
 
@@ -56,6 +62,29 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
                 _grid[column, row] = value;
             }
+        }
+
+        /// <summary>
+        /// Returns true if the grid is defined in the provided PARENT indices
+        /// </summary>
+        public bool IsDefined(int parentColumn, int parentRow)
+        {
+            if (parentColumn < 0 ||
+                parentColumn >= _parentWidth ||
+                parentRow < 0 ||
+                parentRow >= _parentHeight)
+                return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Sets value for the grid at the provided parent coordinates. Throws an exception if
+        /// the indicies are outside the bounds of the the grid's boundary.
+        /// </summary>
+        public void Set(int parentColumn, int parentRow, T value)
+        {
+            this[parentColumn, parentRow] = value;
         }
 
         public Grid(RegionBoundary parentBoundary, RegionBoundary boundary)

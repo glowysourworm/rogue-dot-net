@@ -11,10 +11,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         /// <summary>
         /// Finds next connected region that hasn't been searched - using Breadth first search. Returns null if nothing is found.
         /// </summary>
-        public static ConnectedRegion<GridLocation> FindNextSearchRegion(ConnectedLayerMap connectedLayer,
-                                                                         IEnumerable<ConnectedRegion<GridLocation>> searchableRegions, 
-                                                                         IEnumerable<ConnectedRegion<GridLocation>> searchedRegions,
-                                                                         ConnectedRegion<GridLocation> startingRegion)
+        public static Region<GridLocation> FindNextSearchRegion(ConnectedLayerMap connectedLayer,
+                                                                IEnumerable<Region<GridLocation>> searchableRegions, 
+                                                                IEnumerable<Region<GridLocation>> searchedRegions,
+                                                                Region<GridLocation> startingRegion)
         {
             if (!searchableRegions.Contains(startingRegion))
                 throw new Exception("Starting region not in the searchable region collection TraversalAlgorithm.FindNextSearchRegion(...)");
@@ -33,8 +33,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
             // Use Breadth First Search to scan the graph
             //
-            var frontierQueue = new Queue<ConnectedRegion<GridLocation>>();
-            var discoveredRegions = new Dictionary<ConnectedRegion<GridLocation>, ConnectedRegion<GridLocation>>();
+            var frontierQueue = new Queue<Region<GridLocation>>();
+            var discoveredRegions = new Dictionary<Region<GridLocation>, Region<GridLocation>>();
 
             // Initialize the queue
             frontierQueue.Enqueue(startingRegion);
@@ -49,8 +49,10 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     discoveredRegions.Add(region, region);
 
                 // Find all connections and add them to the frontier
-                foreach (var connectedRegion in connectedLayer.Connections(region.Id))
+                foreach (var regionConnection in connectedLayer.Connections(region.Id))
                 {
+                    var connectedRegion = connectedLayer.Regions[regionConnection.AdjacentRegionId];
+
                     // Exclude non-searchable regions
                     if (!searchableRegions.Contains(connectedRegion))
                         continue;

@@ -461,7 +461,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return LevelContinuationAction.DoNothing;
             }
 
-            else if (Metric.RoguianDistance(_modelService.PlayerLocation, targetedEnemyLocation) <= ModelConstants.MinFiringDistance)
+            else if (Metric.Distance(_modelService.PlayerLocation, targetedEnemyLocation) <= ModelConstants.MinFiringDistance)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Too close to fire your weapon");
 
             else

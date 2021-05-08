@@ -10,6 +10,13 @@ namespace Rogue.NET.Common.Utility
     /// </summary>
     public static class BinarySerializer
     {
+        public static object BinaryCopy(object obj)
+        {
+            var buffer = Serialize(obj);
+
+            return Deserialize(buffer);
+        }
+
         public static byte[] Serialize(object obj)
         {
             var formatter = new BinaryFormatter();

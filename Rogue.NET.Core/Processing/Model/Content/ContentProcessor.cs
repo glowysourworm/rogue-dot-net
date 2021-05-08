@@ -729,7 +729,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Move into attack position
             if (opposingCharacters.Any())
             {
-                var opposingCharacter = opposingCharacters.MinBy(x => Metric.RoguianDistance(characterLocation, _modelService.GetContentLocation(x)));
+                var opposingCharacter = opposingCharacters.MinBy(x => Metric.Distance(characterLocation, _modelService.GetContentLocation(x)));
 
                 return _modelService.GetContentLocation(opposingCharacter);
             }
@@ -845,7 +845,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             var characterLocation = _modelService.GetContentLocation(character);
             var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(characterLocation);
-            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Metric.RoguianDistance(_modelService.GetContentLocation(x), characterLocation));
+            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Metric.Distance(_modelService.GetContentLocation(x), characterLocation));
 
             // Set flag to notify any characters in sight range
             anyCharactersInVisibleRange = opposingCharactersInVisibleRange.Any();
@@ -913,7 +913,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (character.IsEquippedRangeCombat())
             {
                 // Check for line of sight and firing range
-                var range = Metric.RoguianDistance(characterLocation, targetLocation);
+                var range = Metric.Distance(characterLocation, targetLocation);
 
                 // These are guaranteed by the enemy check IsRangeMelee()
                 var rangeWeapon = character.Equipment.Values.First(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);

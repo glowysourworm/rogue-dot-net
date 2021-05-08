@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     {
         public T Location { get; set; }
         public T AdjacentLocation { get; set; }
+
         public string AdjacentRegionId { get; set; }
-        public double Distance { get; set; }
     }
 }

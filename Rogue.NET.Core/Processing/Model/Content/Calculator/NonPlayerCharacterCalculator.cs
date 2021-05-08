@@ -76,7 +76,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             character.Alteration.DecrementEventTimes();
 
             // Calculate Auras Affecting Enemy
-            var distance = Metric.EuclideanDistance(characterLocation, playerLocation);
+            var distance = Metric.ForceDistance(characterLocation, playerLocation, Metric.MetricType.Euclidean);
 
             // TODO:FRIENDLY - Check for alteration target type for affected characters
 

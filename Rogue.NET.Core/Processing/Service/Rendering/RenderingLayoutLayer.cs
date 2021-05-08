@@ -51,12 +51,12 @@ namespace Rogue.NET.Core.Processing.Service.Rendering
 
         public override int CellHeight
         {
-            get { return this.LayerMap.Boundary.Height; }
+            get { return this.LayerMap.ParentBoundary.Height; }
             protected set { }
         }
         public override int CellWidth
         {
-            get { return this.LayerMap.Boundary.Width; }
+            get { return this.LayerMap.ParentBoundary.Width; }
             protected set { }
         }
         public override SymbolDetailsTemplate GetSymbol(int column, int row)

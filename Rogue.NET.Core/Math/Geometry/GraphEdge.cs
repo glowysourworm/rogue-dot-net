@@ -1,5 +1,4 @@
 ﻿using System;
-using static Rogue.NET.Core.Math.Geometry.Metric;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
@@ -8,34 +7,17 @@ namespace Rogue.NET.Core.Math.Geometry
     {
         public GraphVertex Point1 { get; set; }
         public GraphVertex Point2 { get; set; }
-        public MetricType MetricType { get; set; }
 
         public double Distance
         {
-            get
-            {
-                switch (this.MetricType)
-                {
-                    case MetricType.Roguian:
-                        return Metric.RoguianDistance(this.Point1, this.Point2);
-                    case MetricType.Euclidean:
-                        return Metric.EuclideanDistance(this.Point1, this.Point2);
-                    case MetricType.TaxiCab:
-                        return Metric.TaxiCabDistance(this.Point1, this.Point2);
-                    default:
-                        throw new Exception("Unhandled metric type GraphEdge");
-                }
-            }
+            get { return Metric.Distance(this.Point1, this.Point2); }
         }
 
-        public GraphEdge(GraphVertex point1, GraphVertex point2, MetricType metricType)
+        public GraphEdge(GraphVertex point1, GraphVertex point2)
         {
             this.Point1 = point1;
             this.Point2 = point2;
-            this.MetricType = metricType;
         }
-
-
 
         public override bool Equals(object obj)
         {
@@ -43,18 +25,30 @@ namespace Rogue.NET.Core.Math.Geometry
             {
                 var edge = obj as GraphEdge;
 
-                return Equals(edge.Point1, edge.Point2) && edge.MetricType == this.MetricType;
+                return this.Point1.Equals(edge.Point1) &&
+                       this.Point2.Equals(edge.Point2);
             }
 
             return false;
         }
 
-        public bool Equals(GraphVertex point1, GraphVertex point2)
+        public bool IsEquivalent(GraphEdge edge)
         {
-            return (point1.Equals(this.Point1) &&
-                    point2.Equals(this.Point2)) ||
-                   (point1.Equals(this.Point2) &&
-                    point2.Equals(this.Point1));
+            return (this.Point1.Equals(edge.Point1) &&
+                    this.Point2.Equals(edge.Point2)) ||
+                   (this.Point1.Equals(edge.Point2) &&
+                    this.Point2.Equals(edge.Point1));
+        }
+
+        /// <summary>
+        /// Returns true if the edge is equivalent to the edge specified by two vertices IN EITHER DIRECTION
+        /// </summary>
+        public bool IsEquivalent(GraphVertex vertex1, GraphVertex vertex2)
+        {
+            return (this.Point1.Equals(vertex1) &&
+                    this.Point2.Equals(vertex2)) ||
+                   (this.Point1.Equals(vertex2) &&
+                    this.Point2.Equals(vertex1));
         }
 
         public override int GetHashCode()
@@ -63,7 +57,6 @@ namespace Rogue.NET.Core.Math.Geometry
 
             hash = (17 * hash) + this.Point1.GetHashCode();
             hash = (17 * hash) + this.Point2.GetHashCode();
-            hash = (17 * hash) + this.MetricType.GetHashCode();
 
             return hash;
         }

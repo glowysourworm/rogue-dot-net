@@ -23,9 +23,14 @@ namespace Rogue.NET.Common.Extension
         /// <summary>
         /// Returns a deep clone of the object using the Agile.Mapper
         /// </summary>
-        public static T DeepCopy<T>(this T value) where T : class
+        public static T Clone<T>(this T value) where T : class
         {
-            return value.DeepClone();
+            return MapperExtension.DeepClone(value);
+        }
+
+        public static T DeepCopy<T>(this T value)
+        {
+            return (T)BinarySerializer.BinaryCopy(value);
         }
 
         public static PropertyInfo GetPropertyInfo<T, V>(this T theObject, Expression<Func<T, V>> propertySelector)

@@ -14,14 +14,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         public bool IsPassable { get; private set; }
         public virtual IEnumerable<Region<T>> Regions { get; private set; }
 
-        public T this[int column, int row]
+        public bool IsDefined(int column, int row)
         {
-            get
-            {
-                var vertex = this.Regions.FirstOrDefault(vertex => vertex[column, row] != null);
-
-                return vertex != null ? vertex[column, row] : null;
-            }
+            return this.Regions.Any(region => region[column, row] != null);
         }
 
         public LayerInfo(string layerName, IEnumerable<Region<T>> regions, bool isPassable)

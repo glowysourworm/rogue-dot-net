@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
-using System.Windows;
+using System;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
@@ -14,82 +14,120 @@ namespace Rogue.NET.Core.Math.Geometry
             /// <summary>
             /// Diagonal movements equal cardinal movements
             /// </summary>
-            Roguian,
-            Euclidean,
+            Rogue,
 
             /// <summary>
-            /// Diagonal distance is equal to the sum of both legs
+            /// Euclidean distance
             /// </summary>
-            TaxiCab
+            Euclidean
         }
 
-        public static double EuclideanDistance(double x, double y)
+        public static double Length(IGridLocator locationFromOrigin)
         {
-            return System.Math.Sqrt((x * x) + (y * y));
+            switch (locationFromOrigin.Type)
+            {
+                case MetricType.Rogue:
+                    return System.Math.Max(locationFromOrigin.Column, locationFromOrigin.Row);
+                case MetricType.Euclidean:
+                    return System.Math.Sqrt(System.Math.Pow(locationFromOrigin.Column, 2) + System.Math.Pow(locationFromOrigin.Row, 2));
+                default:
+                    throw new Exception("Invalid MetricType Metric.cs");
+            }
         }
 
-        public static double EuclideanSquareDistance(double x, double y)
+        public static double Distance(IGridLocator location1, IGridLocator location2)
         {
-            return (x * x) + (y * y);
+            if (location1.Type != location2.Type)
+                throw new Exception("Trying to use mis-matching metric:  Metric.Distance");
+
+            switch (location1.Type)
+            {
+                case MetricType.Rogue:
+                    {
+                        var dx = System.Math.Abs(location2.Column - location1.Column);
+                        var dy = System.Math.Abs(location2.Row - location1.Row);
+                        return System.Math.Max(dx, dy);
+                    }
+                case MetricType.Euclidean:
+                    {
+                        var dx = System.Math.Abs(location2.Column - location1.Column);
+                        var dy = System.Math.Abs(location2.Row - location1.Row);
+                        return System.Math.Sqrt(System.Math.Pow(dx, 2) + System.Math.Pow(dy, 2));
+                    }
+                default:
+                    throw new Exception("Invalid MetricType Metric.cs");
+            }
         }
 
-        public static double EuclideanDistance(Point point1, Point point2)
+        /// <summary>
+        /// *** NOTE OVERRIDES IGridLocator METRIC!  Forces a distance calculation for the specified metric
+        /// </summary>
+        public static double ForceDistance(IGridLocator location1, IGridLocator location2, MetricType metric)
         {
-            return System.Math.Sqrt(System.Math.Pow((point2.X - point1.X), 2) + System.Math.Pow((point2.Y - point1.Y), 2));
+            if (location1.Type != location2.Type)
+                throw new Exception("WARNING*** Trying to use mis-matching metric:  Metric.ForceDistance");
+
+            switch (metric)
+            {
+                case MetricType.Rogue:
+                    {
+                        var dx = System.Math.Abs(location2.Column - location1.Column);
+                        var dy = System.Math.Abs(location2.Row - location1.Row);
+                        return System.Math.Max(dx, dy);
+                    }
+                case MetricType.Euclidean:
+                    {
+                        var dx = System.Math.Abs(location2.Column - location1.Column);
+                        var dy = System.Math.Abs(location2.Row - location1.Row);
+                        return System.Math.Sqrt(System.Math.Pow(dx, 2) + System.Math.Pow(dy, 2));
+                    }
+                default:
+                    throw new Exception("Invalid MetricType Metric.cs");
+            }
         }
 
-        public static double EuclideanSquareDistance(Point point1, Point point2)
+        /// <summary>
+        /// FORCES a distance calculation for the specified metric
+        /// </summary>
+        public static double ForceDistance(int column1, int row1, int column2, int row2, MetricType metric)
         {
-            return System.Math.Pow((point2.X - point1.X), 2) + System.Math.Pow((point2.Y - point1.Y), 2);
+            switch (metric)
+            {
+                case MetricType.Rogue:
+                    {
+                        var dx = System.Math.Abs(column2 - column1);
+                        var dy = System.Math.Abs(row2 - row1);
+                        return System.Math.Max(dx, dy);
+                    }
+                case MetricType.Euclidean:
+                    {
+                        var dx = System.Math.Abs(column2 - column1);
+                        var dy = System.Math.Abs(row2 - row1);
+                        return System.Math.Sqrt(System.Math.Pow(dx, 2) + System.Math.Pow(dy, 2));
+                    }
+                default:
+                    throw new Exception("Invalid MetricType Metric.cs");
+            }
         }
 
-        public static double EuclideanDistance(IGridLocator location1, IGridLocator location2)
+        public static double SquareDistance(IGridLocator location1, IGridLocator location2)
         {
-            return System.Math.Sqrt(System.Math.Pow((location2.Column - location1.Column), 2) + System.Math.Pow((location2.Row - location1.Row), 2));
-        }
+            if (location1.Type != location2.Type)
+                throw new Exception("Trying to use mis-matching metric:  Metric.SquareDistance");
 
-        public static double EuclideanDistance(int column1, int row1, int column2, int row2)
-        {
-            return System.Math.Sqrt(System.Math.Pow((column2 - column1), 2) + System.Math.Pow((row2 - row1), 2));
-        }
-
-        public static double EuclideanSquareDistance(IGridLocator location1, IGridLocator location2)
-        {
-            return System.Math.Pow((location2.Column - location1.Column), 2) + System.Math.Pow((location2.Row - location1.Row), 2);
-        }
-        
-        public static int RoguianDistance(int x, int y)
-        {
-            return System.Math.Abs(x - y);
-        }
-        public static int RoguianDistance(int x1, int y1, int x2, int y2)
-        {
-            var x = (int)System.Math.Abs(x2 - x1);
-            var y = (int)System.Math.Abs(y2 - y1);
-            return System.Math.Max(x, y);
-        }
-        public static int RoguianDistance(Point point1, Point point2)
-        {
-            var x = (int)System.Math.Abs(point2.X - point1.X);
-            var y = (int)System.Math.Abs(point2.Y - point1.Y);
-            return System.Math.Max(x, y);
-        }
-        public static int RoguianDistance(IGridLocator location1, IGridLocator location2)
-        {
-            var x = System.Math.Abs(location2.Column - location1.Column);
-            var y = System.Math.Abs(location2.Row - location1.Row);
-            return System.Math.Max(x, y);
-        }
-
-        public static int TaxiCabDistance(IGridLocator location1, IGridLocator location2)
-        {
-            return System.Math.Abs(location2.Column - location1.Column) +
-                   System.Math.Abs(location2.Row - location1.Row);
-        }
-
-        public static int TaxiCabDistance(int column, int row)
-        {
-            return column + row;
+            switch (location1.Type)
+            {
+                case MetricType.Rogue:
+                    throw new Exception("Trying to use Square Distance for Roguain Metric:  Metric.SquareDistance");
+                case MetricType.Euclidean:
+                    {
+                        var dx = System.Math.Abs(location2.Column - location1.Column);
+                        var dy = System.Math.Abs(location2.Row - location1.Row);
+                        return System.Math.Pow(dx, 2) + System.Math.Pow(dy, 2);
+                    }
+                default:
+                    throw new Exception("Invalid MetricType Metric.cs");
+            }
         }
     }
 }

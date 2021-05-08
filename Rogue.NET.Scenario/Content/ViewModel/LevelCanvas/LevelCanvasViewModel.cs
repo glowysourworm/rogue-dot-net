@@ -109,16 +109,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             // NOTE*** Memorized content includes ONLY Doodads and Items
             //
             // Remove (Filter out anything that isn't in the level)
-            this.Doodads.Filter(x => content.None(z => z.Id == x.ScenarioObjectId) &&
+            this.Doodads.Remove(x => content.None(z => z.Id == x.ScenarioObjectId) &&
                                      memorizedContent.None(z => z.Id == x.ScenarioObjectId));
 
-            this.Characters.Filter(x => content.None(z => z.Id == x.ScenarioObjectId) &&
+            this.Characters.Remove(x => content.None(z => z.Id == x.ScenarioObjectId) &&
                                         x.ScenarioObjectId != player.Id);
 
-            this.Items.Filter(x => content.None(z => z.Id == x.ScenarioObjectId) &&
+            this.Items.Remove(x => content.None(z => z.Id == x.ScenarioObjectId) &&
                                    memorizedContent.None(z => z.Id == x.ScenarioObjectId));
 
-            this.Auras.Filter(x => content.None(z => z.Id == x.ScenarioObjectId));
+            this.Auras.Remove(x => content.None(z => z.Id == x.ScenarioObjectId));
 
             // Create content dictionary with unique references - showing memorized content
             var allContent = content.Union(memorizedContent)
@@ -189,7 +189,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
                 // Remove Auras*** This has to be checked because there may be characters that have had their
                 //                 equipment removed
-                this.Auras.Filter(x => x.ScenarioObjectId == character.Id &&
+                this.Auras.Remove(x => x.ScenarioObjectId == character.Id &&
                                        !characterAuras.Any(z => z.Item1 == x.Id));
             }
         }

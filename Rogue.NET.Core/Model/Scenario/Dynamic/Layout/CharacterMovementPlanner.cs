@@ -37,16 +37,16 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         Dictionary<GridLocation, GridLocation> _visibleLocations;
 
         // Collection of regions that have been fully searched
-        List<ConnectedRegion<GridLocation>> _searchedRegions;
+        List<Region<GridLocation>> _searchedRegions;
 
         // Mark regions within search radius - BEFORE EACH NEW SWEEP
-        List<ConnectedRegion<GridLocation>> _searchableRegions;
+        List<Region<GridLocation>> _searchableRegions;
 
         // Search grid for the current region
         SearchGrid<GridLocation> _searchGrid;
 
         // Route to plan movement between two regions
-        ConnectedRegion<GridLocation> _nextRegion;
+        Region<GridLocation> _nextRegion;
 
         // Current rest clock - keeps track of rest period
         int _restClock;
@@ -64,8 +64,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _searchRadius = searchRadius;
             _state = SearchState.WakingUp;
 
-            _searchedRegions = new List<ConnectedRegion<GridLocation>>();
-            _searchableRegions = new List<ConnectedRegion<GridLocation>>();
+            _searchedRegions = new List<Region<GridLocation>>();
+            _searchableRegions = new List<Region<GridLocation>>();
             _visibleLocations = new Dictionary<GridLocation, GridLocation>();
         }
 
@@ -81,8 +81,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _searchRadius = searchRadius;
             _state = SearchState.WakingUp;
 
-            _searchedRegions = new List<ConnectedRegion<GridLocation>>();
-            _searchableRegions = new List<ConnectedRegion<GridLocation>>();
+            _searchedRegions = new List<Region<GridLocation>>();
+            _searchableRegions = new List<Region<GridLocation>>();
             _visibleLocations = new Dictionary<GridLocation, GridLocation>();
         }
 
@@ -251,11 +251,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // Set searchable regions -> use rest location if it is available for the search radius
             _searchableRegions = _layoutGrid.ConnectionMap
                                             .Regions
-                                            .Cast<ConnectedRegion<GridLocation>>()
+                                            .Values
                                             .Where(region =>
                                             {
-                                                return region.Locations
-                                                                .Any(location => Metric.EuclideanDistance(location, _restLocation ?? currentLocation) <= _searchRadius);
+                                                // USE REGION BOUNDARY TO MAKE THIS SIMPLE
+                                                return region.Boundary
+                                                             .GetCorners()
+                                                             .Any(corner => Metric.Distance(corner, _restLocation ?? currentLocation) <= _searchRadius);
 
                                             }).ToList();
 
@@ -294,14 +296,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                 // NOTE*** Just need to get the character to the region to let the search grid take
                 //         over and begin a sweep.
                 //
-                //         So, going to use the closest vertex to the current location as a destination
+                //         So, going to use the closest connection point to the current location as a destination
                 //
-                var vertex = _layoutGrid.ConnectionMap
-                                        .ConnectionGraph
-                                        .Find(_nextRegion.Id)
-                                        .MinBy(vertex => Metric.EuclideanDistance(vertex, currentLocation));
+                var connection = _layoutGrid.ConnectionMap
+                                            .Connections(_nextRegion.Id)
+                                            .MinBy(connection => Metric.Distance(currentLocation, connection.Location));
 
-                return _layoutGrid[vertex].Location;
+                return _layoutGrid[connection.Location].Location;
             }
 
             // CHARACTER HAS ARRIVED! BEGIN A NEW SWEEP
@@ -323,11 +324,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             }
         }
 
-        private ConnectedRegion<GridLocation> GetNextRegion(GridLocation currentLocation)
+        private Region<GridLocation> GetNextRegion(GridLocation currentLocation)
         {
             // CHECK FOR ONLY A SINGLE REGION IN THE LAYER
             if (_layoutGrid.ConnectionMap.Regions.Count() == 1)
-                return (ConnectedRegion<GridLocation>)_layoutGrid.ConnectionMap.Regions.First();
+                return _layoutGrid.ConnectionMap.Regions.First().Value;
 
             // Plan route to next region
             else
@@ -340,16 +341,16 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                     return TraversalAlgorithm.FindNextSearchRegion(_layoutGrid.ConnectionMap, 
                                                                    _searchableRegions, 
                                                                    _searchedRegions, 
-                                                                   currentRegion as ConnectedRegion<GridLocation>);
+                                                                   currentRegion as Region<GridLocation>);
 
                 // Starting search from the closest non-occupied connected region
                 else
                 {
                     // Query for the closest connection region location
-                    var connectedLocation = _layoutGrid.GetClosestNonOccupiedLocation(LayoutGrid.LayoutLayer.Connection, currentLocation);
+                    var connectedLocation = _layoutGrid.GetClosestNonOccupiedLocation(LayoutGrid.LayoutLayer.Walkable, currentLocation);
 
                     // Set the next region from this location
-                    return (ConnectedRegion<GridLocation>)_layoutGrid.ConnectionMap[connectedLocation];
+                    return _layoutGrid.ConnectionMap[connectedLocation];
                 }
             }
         }

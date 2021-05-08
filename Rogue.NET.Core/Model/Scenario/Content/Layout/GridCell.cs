@@ -1,8 +1,10 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
+
+using static Rogue.NET.Core.Math.Geometry.Metric;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -18,6 +20,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public int Row
         {
             get { return this.Location?.Row ?? -1; }
+        }
+        public MetricType Type
+        {
+            get { return MetricType.Rogue; }
         }
         #endregion
 
@@ -52,8 +58,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsDoor = false;
             this.Lights = new Light[] { Light.White };
         }
-        public GridCell(GridLocation location, 
-                        bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter, 
+        public GridCell(GridLocation location,
+                        bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter,
                         Light ambientLight, Light wallLight, Light accentLight, IEnumerable<Light> terrainLights)
         {
             if (doorSearchCounter > 0 && !isDoor)
@@ -88,7 +94,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         public GridCell(int column, int row, bool isWall, bool isWallLight, bool isDoor, int doorSearchCounter,
                         Light ambientLight, Light wallLight, Light accentLight, IEnumerable<Light> terrainLights)
-                : this(new GridLocation(column, row), isWall, isWallLight, isDoor, doorSearchCounter, ambientLight, 
+                : this(new GridLocation(column, row), isWall, isWallLight, isDoor, doorSearchCounter, ambientLight,
                        wallLight, accentLight, terrainLights)
         {
         }

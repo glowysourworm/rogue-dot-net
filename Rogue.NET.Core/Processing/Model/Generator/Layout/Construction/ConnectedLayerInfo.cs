@@ -8,20 +8,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
 {
     public class ConnectedLayerInfo<T> : LayerInfo<T> where T : class, IGridLocator
     {
-        public Graph RegionGraph { get; private set; }
+        public GraphInfo<T> RegionGraph { get; private set; }
 
-        public IEnumerable<ConnectedRegion<T>> ConnectionRegions { get; private set; }
-
-        public override IEnumerable<Region<T>> Regions
-        {
-            get { throw new Exception("Connection layer should use ConnectionRegions ConnectedLayerInfo<T>"); }
-        }
-
-        public ConnectedLayerInfo(string layerName, Graph regionGraph, IEnumerable<ConnectedRegion<T>> regions, bool isPassable)
+        public ConnectedLayerInfo(string layerName, GraphInfo<T> regionGraph, IEnumerable<Region<T>> regions, bool isPassable)
                 : base(layerName, regions, isPassable)
         {
             this.RegionGraph = regionGraph;
-            this.ConnectionRegions = regions;
         }
     }
 }

@@ -210,14 +210,14 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         private void RemoveEmbeddedConfiguration(string configurationName)
         {
-            _embeddedScenarioConfigurations.Filter(x => x.ScenarioDesign.Name == configurationName);
-            _embeddedScenarioConfigurationInfos.Filter(x => x.Name == configurationName);
+            _embeddedScenarioConfigurations.Remove(x => x.ScenarioDesign.Name == configurationName);
+            _embeddedScenarioConfigurationInfos.Remove(x => x.Name == configurationName);
         }
 
         private void RemoveUserConfiguration(string configurationName)
         {
-            _userScenarioConfigurations.Filter(x => x.ScenarioDesign.Name == configurationName);
-            _userScenarioConfigurationInfos.Filter(x => x.Name == configurationName);
+            _userScenarioConfigurations.Remove(x => x.ScenarioDesign.Name == configurationName);
+            _userScenarioConfigurationInfos.Remove(x => x.Name == configurationName);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
         public IEnumerable<RegionBoundary> CreateRandomRectangularRegions(int width, int height, double regionFillRatio, double regionSize, double regionSizeErradicity)
         {
-            var padding = 1;
+            var padding = 2;
 
             // Calculate room size based on parameters
             var roomWidthLimit = width * RANDOM_ROOM_FILL_RATIO_MAX;

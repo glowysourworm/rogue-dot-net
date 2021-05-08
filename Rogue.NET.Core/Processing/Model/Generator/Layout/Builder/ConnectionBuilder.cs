@@ -1,13 +1,9 @@
-﻿using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Algorithm.Component;
 using Rogue.NET.Core.Processing.Model.Extension;
-using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
@@ -25,61 +21,31 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
     public class ConnectionBuilder : IConnectionBuilder
     {
         readonly IMazeRegionCreator _mazeRegionCreator;
-        readonly IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly IRegionTriangulationCreator _regionTriangulationCreator;
 
         [ImportingConstructor]
-        public ConnectionBuilder(IMazeRegionCreator mazeRegionCreator,
-                                 IRandomSequenceGenerator randomSequenceGenerator,
-                                 IRegionTriangulationCreator regionTriangulationCreator)
+        public ConnectionBuilder(IMazeRegionCreator mazeRegionCreator)
         {
             _mazeRegionCreator = mazeRegionCreator;
-            _randomSequenceGenerator = randomSequenceGenerator;
-            _regionTriangulationCreator = regionTriangulationCreator;
         }
 
-        public void BuildConnections(LayoutContainer container, LayoutTemplate template)
+        public void BuildConnections(LayoutContainer container, LayoutTemplate template, GraphInfo<GridCellInfo> connectionGraph)
         {
-            BuildConnectionsWithAvoidRegions(container, template, new Region<GridCellInfo>[] { });
+            BuildConnectionsWithAvoidRegions(container, template, connectionGraph);
         }
 
         public void BuildConnectionsWithAvoidRegions(LayoutContainer container,
-                                                      LayoutTemplate template,
-                                                      IEnumerable<Region<GridCellInfo>> avoidRegions)
+                                                     LayoutTemplate template,
+                                                     GraphInfo<GridCellInfo> connectionGraph)
         {
-            if (!PreValidateRegions(container.BaseRegions))
-                throw new Exception("Invalid region layout in the grid - ConnectionBuilder.BuildCorridorsWithAvoidRegions");
-
-            if (!PreValidateRegions(container.ConnectionLayer.ConnectionRegions))
-                throw new Exception("Invalid region layout in the grid - ConnectionBuilder.BuildCorridorsWithAvoidRegions");
-
             switch (template.ConnectionType)
             {
                 case LayoutConnectionType.Corridor:
-                    ConnectUsingShortestPath(container, avoidRegions);
+                    ConnectUsingShortestPath(container, connectionGraph);
                     break;
                 case LayoutConnectionType.ConnectionPoints:
                     throw new Exception("Connection points aren't calculated in the connection builder. These are triangulated into the connection layer");
                 case LayoutConnectionType.Maze:
-                    {
-                        // Use "Filled" rule for rectangular regions only. "Open" maze rule works better with non-rectangular regions.
-                        switch (template.Type)
-                        {
-                            case LayoutType.RectangularRegion:
-                            case LayoutType.RandomRectangularRegion:
-                            case LayoutType.CellularAutomataMap:
-                            case LayoutType.ElevationMap:
-                            case LayoutType.RandomSmoothedRegion:
-                                CreateMazeCorridors(container, template, avoidRegions, MazeType.Filled);
-                                break;
-                            case LayoutType.MazeMap:
-                            case LayoutType.CellularAutomataMazeMap:
-                            case LayoutType.ElevationMazeMap:
-                            default:
-                                throw new Exception("Unhandled or Unsupported Layout Type for maze connections");
-                        }
-                    }
-                    break;
+                    throw new Exception("Maze layout types need to be handled using specific calls to CreateMazeCorridors AND ");
                 default:
                     throw new Exception("Unhandled Connection Type");
             }
@@ -90,135 +56,134 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         // https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
         // https://github.com/munificent/hauberk/blob/db360d9efa714efb6d937c31953ef849c7394a39/lib/src/content/dungeon.dart
         //
-        private void CreateMazeCorridors(LayoutContainer container,
-                                          LayoutTemplate template,
-                                          IEnumerable<Region<GridCellInfo>> avoidRegions,
-                                          MazeType mazeType)
+        public void CreateMazeCorridors(LayoutContainer container,
+                                        LayoutTemplate template,
+                                        MazeType mazeType)
         {
             // Procedure
             //
-            // - (Pre-Validated) Identify regions to pass to the maze generator (avoids these when removing walls)
-            // - Fill in empty cells with walls
-            // - Create mazes where there are 8-way walls surrounding a cell
-            // - Since maze generator removes walls (up to the edge of the avoid regions)
-            //   Must add back just those walls adjacent to the avoid regions
-            //
-            // - Then, BuildCorridors(...) will connect any mazes together that were interrupted
-            //   (Also, by the adding back of walls)
+            // - Make a set of empty space regions for the maze generator
+            // - Calculate room, and impassable terrain region sets
+            // - Create mazes for each empty space region - AVOIDING ROOMS AND IMPASSABLE TERRAIN
+            // - Apply the resulting 2D boolean array to the layout - adding new cells where TRUE
             //
 
-            container.Grid.Iterate((column, row) =>
+            // Add walls in the negative space - leaving room for region cells
+            var emptySpaceRegions = container.ConstructRegions((column, row) => container.Get(column, row) == null);
+
+            // Fetch all other regions in the layout that are walkable
+            var roomRegions = container.GetRegions(LayoutGrid.LayoutLayer.Room);
+            var corridorRegions = container.GetRegions(LayoutGrid.LayoutLayer.Corridor);
+            var impassableRegions = container.GetRegions(LayoutGrid.LayoutLayer.ImpassableTerrain);
+
+            // CORRIDORS HAVE ALREADY BEEN CALCULATED!
+            if (corridorRegions.Any())
+                throw new Exception("Trying to re-calculate corridors:  ConnectionBuilder.CreateMazeCorridors");
+
+            // Fill empty regions with recrusive-backtracked corridors
+            //
+            foreach (var region in emptySpaceRegions)
             {
-                // Add walls in the negative space - leaving room for region cells
-                if (container.Grid[column, row] == null)
-                    container.Grid[column, row] = new GridCellInfo(column, row) { IsWall = true, IsCorridor = false };
-            });
+                // Create the maze!
+                //
+                var mazeGrid = _mazeRegionCreator.CreateMaze(container.Width, container.Height, region,
+                                                             roomRegions.Union(corridorRegions),
+                                                             mazeType, template.MazeWallRemovalRatio,
+                                                             template.MazeHorizontalVerticalBias);
 
-            // Create a recursive-backtrack corridor in cell that contains 8-way walls. Continue until entire map is
-            // considered.
-
-            // Find empty regions and fill them with recrusive-backtracked corridors
-            //
-            // NOTE*** Avoiding edges that WERE created as walls - because the "Filled" rule won't touch those.
-            //
-            for (int i = 1; i < container.Grid.GetLength(0) - 1; i++)
-            {
-                for (int j = 1; j < container.Grid.GetLength(1) - 1; j++)
+                // Copy the new corridor data back to the layout
+                mazeGrid.Iterate((column, row) =>
                 {
-                    // Create a corridor where all adjacent cells are walls
-                    if (container.Grid.GetAdjacentElements(i, j).All(cell => cell.IsWall))
+                    // Outside the empty space region
+                    if (region[column, row] == null)
+                        return;
+
+                    var cell = container.Get(column, row);
+
+                    // TRUE => CORRIDOR
+                    if (mazeGrid[column, row])
                     {
-                        // Avoid both base regions and any additional avoid regions (impassable terrain)
-                        var allAvoidedRegions = container.BaseRegions.Union(avoidRegions);
+                        // New cell
+                        if (cell == null)
+                            container.SetLayout(column, row, new GridCellInfo(column, row)
+                            {
+                                IsCorridor = true
+                            });
 
-                        // Create the maze!
-                        _mazeRegionCreator.CreateCellsStartingAt(container.Grid,
-                                                                 allAvoidedRegions,
-                                                                 container.Grid[i, j].Location,
-                                                                 mazeType, template.MazeWallRemovalRatio,
-                                                                 template.MazeHorizontalVerticalBias);
+                        // Existing cell -> Remove the wall setting
+                        else
+                            throw new Exception("Trying to overwrite an existing layout cell:  ConnectionBuilder.CreateMazeCorridors");
+                        //{
+                        //    cell.IsWall = false;
+                        //    cell.IsCorridor = true;
+                        //}
                     }
-                }
+                });
             }
-
-            // Add back walls surrounding the regions
-            foreach (var region in container.BaseRegions)
-            {
-                foreach (var edgeLocation in region.EdgeLocations)
-                {
-                    var adjacentCells = container.Grid.GetAdjacentElements(edgeLocation.Column, edgeLocation.Row);
-
-                    foreach (var cell in adjacentCells)
-                    {
-                        // Adjacent cell is not in region; but is on the edge. This should
-                        // be a wall cell
-                        if (region[cell.Location.Column, cell.Location.Row] == null)
-                        {
-                            cell.IsWall = true;
-                            cell.IsCorridor = false;
-                        }
-                    }
-                }
-            }
-
-            // *** GRAPH BASE REGIONS HAVE NOW BEEN MODIFIED - MUST CALCULATE THE CONNECTION LAYER AND
-            //     STORE AS THE "MODIFIED" REGIONS.
-
-            // Re-identify regions to connect
-            var modifiedRegions = container.Grid.ConstructConnectedRegions(cell => !cell.IsWall);
-
-            // Finally, connect the MODIFIED regions using shortest path
-            var modifiedGraph = _regionTriangulationCreator.CreateTriangulation(modifiedRegions, template);
-
-            // RESET CONNECTION LAYER
-            container.SetConnectionLayer(modifiedRegions, modifiedGraph);
-
-            // Create corridors between any disconnected maze regions
-            ConnectUsingShortestPath(container, avoidRegions);
         }
 
         /// <summary>
-        /// Connects the CONNECTION layer based on the pre-calculated triangulation and regions
+        /// Connects layout based on the pre-calculated triangulation and regions
         /// </summary>
-        private void ConnectUsingShortestPath(LayoutContainer container,
-                                              IEnumerable<Region<GridCellInfo>> avoidRegions)
+        public void ConnectUsingShortestPath(LayoutContainer container, GraphInfo<GridCellInfo> connectionGraph)
         {
+            // Pre-fetch impassable regions. These are invalidated during the connection process
+            var impassableRegions = container.GetRegions(LayoutGrid.LayoutLayer.ImpassableTerrain);
+
             // For each edge in the triangulation - create a corridor
             //
-            foreach (var edge in container.ConnectionLayer.RegionGraph.Edges)
+            foreach (var connection in connectionGraph.Connections)
             {
-                var region1 = container.ConnectionLayer.ConnectionRegions.First(region => region.Id == edge.Point1.ReferenceId);
-                var region2 = container.ConnectionLayer.ConnectionRegions.First(region => region.Id == edge.Point2.ReferenceId);
-
-                region1.CalculateConnection(region2, _randomSequenceGenerator);
-
-                var connection = region1.GetConnection(region2);
-
-                var location1 = connection.Location;
-                var location2 = connection.AdjacentLocation;
-
                 // Create a Dijkstra path generator to find paths for the edge
-                var dijkstraMap = new DijkstraPathGenerator(container.Grid, avoidRegions, location1, new GridCellInfo[] { location2 }, true);
+                var dijkstraMap = new DijkstraPathGenerator(container.Width, container.Height, impassableRegions,
+                                                            connection.Location, new GridCellInfo[] { connection.AdjacentLocation }, true,
 
-                // Embed path cells using callback to set properties
-                dijkstraMap.EmbedPaths(new DijkstraPathGenerator.DijkstraEmbedPathCallback(cell =>
+                                                            // Main Callback for Dijkstra's Algorithm to fetch cells
+                                                            (column, row) =>
+                                                            {
+                                                                // NOTE*** THIS CALLBACK IS BEING USED TO CREATE NEW CELLS FOR
+                                                                //         EMBEDDING A PATH FOR THE LAYOUT THAT CAN GO OFF INTO
+                                                                //         UN-USED GRID LOCATIONS.
+                                                                return container.Get(column, row) ?? new GridCellInfo(column, row);
+                                                            });
+
+                var pathCells = new List<GridCellInfo>();
+
+                // NOTE*** EMBED PATH CELLS USING CALLBACK. THESE MAY-OR-MAY-NOT YET BE A PART
+                //         OF THE LAYOUT
+                dijkstraMap.CalculatePaths(new DijkstraPathGenerator.DijkstraPathCallback(cell =>
                 {
-                    cell.IsWall = false;
+                    // THESE CELLS MAY NOT YET BE PART OF THE LAYOUT GRID
                     cell.IsCorridor = true;
+
+                    // WALL SETTING IS APPLIED DURING LAYOUT FINALIZATION. THIS NEEDS TO BE
+                    // RE-DESIGNED!!
+                    cell.IsWall = false;
+
+                    // Invalidates the layout
+                    container.SetLayout(cell.Location.Column, cell.Location.Row, cell);
+
+                    pathCells.Add(cell);
                 }));
+
+                // Path tracing is done from TARGET -> SOURCE
+                if (pathCells.Count > 1)
+                {
+                    // Doors are the final cell before entering a room
+                    connection.DoorLocation = pathCells[pathCells.Count - 2];
+                    connection.AdjacentDoorLocation = pathCells[1];
+                }
+                else if (pathCells.Count == 1)
+                {
+                    connection.DoorLocation = pathCells[0];
+                    connection.AdjacentDoorLocation = pathCells[0];
+                }
+                else
+                    throw new Exception("Invalid path found between two regions:  ConnectionBuilder.ConnectUsingShortestPath");
+
+                // Store corridor for reference
+                connection.CorridorLocations = pathCells;
             }
-        }
-
-        private bool PreValidateRegions(IEnumerable<Region<GridCellInfo>> regions)
-        {
-            // Validate room regions
-            var invalidRoomRegions = regions.Where(region => !RegionValidator.ValidateBaseRegion(region));
-
-            // Check for a valid room region
-            if (invalidRoomRegions.Count() > 0)
-                return false;
-
-            return true;
         }
     }
 }

@@ -108,7 +108,7 @@ namespace Rogue.NET.Core.Math.Geometry
             // Theorem:  Point lies in the circum-circle iff d > 0 (When 1 -> 2 -> 3 are sorted counter-clockwise)
             //
 
-            // NOTE*** TODO:  MAY have to flip this in sign because of UI coordinates (y -> -y)
+            // NOTE*** (Be sure to check this because of UI coordinates (y -> -y))
             //
             return d > 0;
         }

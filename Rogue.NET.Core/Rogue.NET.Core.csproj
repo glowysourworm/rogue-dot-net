@@ -209,6 +209,9 @@
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\RegionConnection.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Construction\GraphInfo.cs" />
+    <Compile Include="Processing\Model\Generator\Layout\Construction\RegionConnectionInfo.cs" />
     <Compile Include="Processing\Service\FileDatabase\Interface\IRogueFileDatabaseSerializable.cs" />
     <Compile Include="Processing\Service\FileDatabase\Interface\IRogueFileDatabaseSerializer.cs" />
     <Compile Include="Processing\Service\FileDatabase\Interface\IRogueFileDatabase.cs" />
@@ -220,7 +223,6 @@
     <Compile Include="Media\SymbolEffect\LightIntensityEffect.cs" />
     <Compile Include="Media\SymbolEffect\SymbolEffectFilter.cs" />
     <Compile Include="Media\SymbolEffect\Utility\LightOperations.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\ConnectedRegion.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\Interface\ISymmetricBuilder.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Builder\SymmetricBuilder.cs" />
     <Compile Include="Processing\Model\Generator\Layout\Construction\LayoutContainer.cs" />
@@ -242,7 +244,6 @@
     <Compile Include="Math\Geometry\GraphEdgeCollection.cs" />
     <Compile Include="Math\Geometry\GraphTraversal.cs" />
     <Compile Include="Math\Geometry\Triangle.cs" />
-    <Compile Include="Math\Geometry\Interface\IRegionGraphWeightProvider.cs" />
     <Compile Include="Math\Geometry\Metric.cs" />
     <Compile Include="Math\Geometry\GraphVertex.cs" />
     <Compile Include="Math\Geometry\VectorOperation.cs" />
@@ -265,7 +266,7 @@
     <Compile Include="Media\SymbolEffect\SymbolEffectBase.cs" />
     <Compile Include="Media\SymbolEffect\Utility\ColorOperations.cs" />
     <Compile Include="Math\Geometry\GraphEdge.cs" />
-    <Compile Include="Math\Geometry\GridVector.cs" />
+    <Compile Include="Math\Geometry\Vector.cs" />
     <Compile Include="Model\Enums\Layout.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\LightAmbientTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\LightTemplate.cs" />
@@ -278,7 +279,6 @@
     <Compile Include="Processing\Model\Generator\Layout\Construction\LayerInfo.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Light.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LayerMapBase.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\RegionConnection.cs" />
     <Compile Include="Model\Scenario\Content\Level.cs" />
     <Compile Include="Model\Scenario\Content\LevelParameters.cs" />
     <Compile Include="Processing\Model\Algorithm\GridAlgorithm.cs" />

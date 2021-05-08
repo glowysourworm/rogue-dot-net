@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         public RegionBoundary Boundary { get; private set; }
         public RegionBoundary ParentBoundary { get; private set; }
 
-        public RegionConstructorInfo(T[] locations, T[] edgeLocations, RegionBoundary parentBoundary, RegionBoundary boundary)
+        public RegionConstructorInfo(T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
         {
             this.Locations = locations;
             this.EdgeLocations = edgeLocations;

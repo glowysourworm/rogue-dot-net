@@ -39,7 +39,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             foreach (var aura in player.Alteration.GetAuras())
             {
                 var auraLocations = _movement.GetVisibleLocations()
-                                             .Where(location => Metric.EuclideanDistance(playerLocation, location) <= aura.Item2.AuraRange)
+                                             .Where(location => Metric.ForceDistance(playerLocation, location, Metric.MetricType.Euclidean) <= aura.Item2.AuraRange)
                                              .Actualize();
 
                 UpdateAura(aura.Item1.Id, auraLocations, CharacterAlignmentType.PlayerAligned);
@@ -52,7 +52,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             foreach (var aura in character.Alteration.GetAuras())
             {
                 var auraLocations = _movement.GetVisibleLocations(character)
-                                             .Where(location => Metric.EuclideanDistance(characterLocation, location) <= aura.Item2.AuraRange)
+                                             .Where(location => Metric.ForceDistance(characterLocation, location, Metric.MetricType.Euclidean) <= aura.Item2.AuraRange)
                                              .Actualize();
 
                 UpdateAura(aura.Item1.Id, auraLocations, character.AlignmentType);

@@ -1,10 +1,7 @@
-﻿using Rogue.NET.Core.Math.Geometry;
-using Rogue.NET.Core.Math.Geometry.Interface;
-using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
-using Rogue.NET.Core.Processing.Model.Static;
-using System;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
-using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -37,7 +34,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Height = cellheight;
             this.Width = cellwidth;
         }
-        
+
         public int Left { get { return this.Column; } }
         public int Right { get { return (this.Column + this.Width) - 1; } }
         public int Top { get { return this.Row; } }
@@ -45,8 +42,19 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         public GridLocation GetCenter()
         {
-            return new GridLocation(this.Left + (this.Width / 2), 
+            return new GridLocation(this.Left + (this.Width / 2),
                                     this.Top + (this.Height / 2));
+        }
+
+        public IEnumerable<GridLocation> GetCorners()
+        {
+            return new GridLocation[]
+            {
+                new GridLocation(this.Left, this.Top),
+                new GridLocation(this.Right, this.Top),
+                new GridLocation(this.Left, this.Bottom),
+                new GridLocation(this.Right, this.Bottom)
+            };
         }
 
         public override string ToString()
@@ -144,6 +152,23 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var biggerBoundary = new RegionBoundary(topLeft, this.Width + 2, this.Height + 2);
 
             return biggerBoundary.Overlaps(boundary);
+        }
+
+        public bool IsLeftOf(RegionBoundary boundary)
+        {
+            return this.Right < boundary.Left;
+        }
+        public bool IsRightOf(RegionBoundary boundary)
+        {
+            return this.Left > boundary.Right;
+        }
+        public bool IsBelow(RegionBoundary boundary)
+        {
+            return this.Top > boundary.Bottom;
+        }
+        public bool IsAbove(RegionBoundary boundary)
+        {
+            return this.Bottom < boundary.Top;
         }
     }
 }

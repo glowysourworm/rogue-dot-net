@@ -51,5 +51,10 @@ namespace Rogue.NET.Core.Math
 
             return numbers.Min();
         }
+
+        public static int Abs(int number)
+        {
+            return System.Math.Abs(number);
+        }
     }
 }

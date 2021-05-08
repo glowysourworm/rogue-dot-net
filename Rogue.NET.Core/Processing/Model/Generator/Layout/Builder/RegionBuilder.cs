@@ -115,26 +115,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         private LayoutContainer CompleteBaseLayout(GridCellInfo[,] grid, LayoutTemplate template)
         {
             // Remove invalid regions
-            grid.RemoveInvalidRegions(cell => !cell.IsWall, region => !RegionValidator.ValidateBaseRegion(region));
-
-            // Identify the regions
-            var baseRegions = grid.ConstructConnectedRegions(cell => !cell.IsWall);
+            var baseRegions = grid.RemoveInvalidRegions(cell => !cell.IsWall, region => !RegionValidator.ValidateBaseRegion(region));
 
             // Validate region number
             if (baseRegions.Count() == 0)
                 return BuildDefaultLayout();
 
             // Create container for the layout
-            var container = new LayoutContainer(grid, template == null);
-
-            // Create triangulation to complete the connection layer
-            var graph = template == null ? _triangulationCreator.CreateDefaultTriangulation(baseRegions)
-                                         : _triangulationCreator.CreateTriangulation(baseRegions, template);
-
-            container.SetBaseLayer(baseRegions);
-            container.SetConnectionLayer(baseRegions, graph);
-
-            return container;
+            return new LayoutContainer(grid);
         }
 
         private GridCellInfo[,] CreateGrid(LayoutTemplate template)
@@ -224,8 +212,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Create the boundary
             var boundary = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
 
+            // Create region for the maze
+            _rectangularRegionCreator.CreateCells(grid, boundary, true);
+
+            // Identify the region just created
+            var region = grid.ConstructRegions(cell => cell != null)
+                             .Single();
+
             // Create maze in the region
-            _mazeRegionCreator.CreateCells(grid, boundary, MazeType.Filled, template.MazeWallRemovalRatio, template.MazeHorizontalVerticalBias, false);
+            var mazeGrid = _mazeRegionCreator.CreateMaze(grid.GetLength(0), grid.GetLength(1), region, 
+                                                         new Region<GridCellInfo>[] { },
+                                                         MazeType.Filled, template.MazeWallRemovalRatio, 
+                                                         template.MazeHorizontalVerticalBias);
+
+            // Set wall flags from the result
+            mazeGrid.Iterate((column, row) =>
+            {
+                grid[column, row].IsWall = !mazeGrid[column, row];
+            });
 
             return grid;
         }
@@ -316,16 +320,19 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             // Create walls inside each region and run maze generator
             foreach (var region in regions)
             {
-                foreach (var location in region.Locations)
-                    grid[location.Column, location.Row].IsWall = true;
+                var mazeGrid = _mazeRegionCreator.CreateMaze(grid.GetLength(0), grid.GetLength(1), region,
+                                                              new Region<GridCellInfo>[] { },
+                                                              MazeType.Open, wallRemovalRatio, horizontalVerticalBias);
 
-                for (int i = 0; i < region.Locations.Length; i++)
+                mazeGrid.Iterate((column, row) =>
                 {
-                    // Look for other places to start a maze
-                    if (grid.GetAdjacentElements(region.Locations[i].Column, region.Locations[i].Row)
-                            .All(cell => cell.IsWall))
-                        _mazeRegionCreator.CreateCellsStartingAt(grid, new Region<GridCellInfo>[] { }, _randomSequenceGenerator.GetRandomElement(region.Locations).Location, MazeType.Open, wallRemovalRatio, horizontalVerticalBias);
-                }
+                    // Skip locations outside the region
+                    if (region[column, row] == null)
+                        return;
+
+                    // FALSE => WALL
+                    grid[column, row].IsWall = !mazeGrid[column, row];
+                });
             }
         }
     }

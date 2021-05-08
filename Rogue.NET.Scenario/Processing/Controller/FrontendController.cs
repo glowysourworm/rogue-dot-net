@@ -233,10 +233,10 @@ namespace Rogue.NET.Scenario.Processing.Controller
         private void OnRemoveContent(IEnumerable<string> contentIds)
         {
             // Filter out contents with matching id's
-            _levelCanvasViewModel.Doodads.Filter(x => contentIds.Contains(x.ScenarioObjectId));
-            _levelCanvasViewModel.Items.Filter(x => contentIds.Contains(x.ScenarioObjectId));
-            _levelCanvasViewModel.Characters.Filter(x => contentIds.Contains(x.ScenarioObjectId));
-            _levelCanvasViewModel.Auras.Filter(x => contentIds.Contains(x.ScenarioObjectId));
+            _levelCanvasViewModel.Doodads.Remove(x => contentIds.Contains(x.ScenarioObjectId));
+            _levelCanvasViewModel.Items.Remove(x => contentIds.Contains(x.ScenarioObjectId));
+            _levelCanvasViewModel.Characters.Remove(x => contentIds.Contains(x.ScenarioObjectId));
+            _levelCanvasViewModel.Auras.Remove(x => contentIds.Contains(x.ScenarioObjectId));
         }
         #endregion
 

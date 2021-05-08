@@ -152,7 +152,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                     case SymbolType.Terrain:
                         {
                             // Copy the view model properties
-                            var copy = viewModel.DeepCopy();
+                            var copy = ObjectExtension.Clone(viewModel);
 
                             if (!useColorMask)
                                 copy.SymbolEffectType = CharacterSymbolEffectType.HslShift;
@@ -183,8 +183,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 case SymbolType.Terrain:
                     {
                         // Light / Dark
-                        var lightImage = viewModel.DeepCopy();
-                        var darkImage = viewModel.DeepCopy();
+                        var lightImage = ObjectExtension.Clone(viewModel);
+                        var darkImage = ObjectExtension.Clone(viewModel);
 
                         if (!useColorMask)
                         {

@@ -1,51 +1,59 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
 using System;
+
 using static Rogue.NET.Core.Math.Geometry.Metric;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
     public static class VectorOperation
     {
-        public static GridVector Add(this IGridLocator location1, IGridLocator location2)
+        public static Vector Add(this Vector vector1, Vector vector2)
         {
-            var componentX = location2.Column + location1.Column;
-            var componentY = location2.Row + location1.Row;
+            var componentX = vector2.X + vector1.X;
+            var componentY = vector2.Y + vector1.Y;
 
-            return new GridVector(componentX, componentY);
+            return new Vector(componentX, componentY);
         }
 
-        public static GridVector Subtract(this IGridLocator location1, IGridLocator location2)
+        public static Vector Subtract(this Vector vector1, Vector vector2)
         {
+            var componentX = vector2.X - vector1.X;
+            var componentY = vector2.Y - vector1.Y;
+
+            return new Vector(componentX, componentY);
+        }
+
+        public static Vector Subtract(this IGridLocator location1, IGridLocator location2)
+        {
+            if (location1.Type != location2.Type)
+                throw new Exception("Trying to subtract two different types of IGridLocators:  VectorOperation.Subtract");
+
             var componentX = location2.Column - location1.Column;
             var componentY = location2.Row - location1.Row;
 
-            return new GridVector(componentX, componentY);
+            return new Vector(componentX, componentY);
         }
 
-        public static GridVector Multiply(this IGridLocator location, float constant)
+        public static Vector Multiply(this Vector vector, float constant)
         {
-            var componentX = location.Column * constant;
-            var componentY = location.Row * constant;
+            var componentX = vector.X * constant;
+            var componentY = vector.Y * constant;
 
-            return new GridVector(componentX, componentY);
+            return new Vector(componentX, componentY);
         }
 
-        public static double Dot(this IGridLocator location1, IGridLocator location2)
+        public static double Dot(this Vector vector1, Vector vector2)
         {
-            return (location1.Column * location2.Column) + (location1.Row * location2.Row);
-        }
-
-        public static double Dot(this GridVector vector1, GridVector vector2)
-        {
-            return (vector1.ColumnDimension * vector2.ColumnDimension) + (vector1.RowDimension * vector2.RowDimension);
+            return (vector1.X * vector2.X) + (vector1.Y * vector2.Y);
         }
 
         /// <summary>
         /// Returns the magnitude of the cross product (casted in 3 dimensions)
         /// </summary>
-        public static double Cross(this IGridLocator vector1, IGridLocator vector2)
+        public static double Cross(this Vector vector1, Vector vector2)
         {
-            return (vector1.Column * vector2.Row) - (vector2.Column * vector1.Row);
+            return (vector1.X * vector2.Y) - (vector2.X * vector1.Y);
         }
 
         /// <summary>
@@ -55,26 +63,16 @@ namespace Rogue.NET.Core.Math.Geometry
         /// </summary>
         public static double Orientation(IGridLocator point1, IGridLocator point2, IGridLocator point3)
         {
+            if (point1.Type != MetricType.Euclidean ||
+                point2.Type != MetricType.Euclidean ||
+                point3.Type != MetricType.Euclidean)
+                throw new Exception("Trying to use non-euclidean metric for orientation calculation:  VectorOperation.Orientation");
+
             // 1 -> 2 -> 3 (Results from crossing the vectors 12 X 23 - where subtracting the points gives you the vector)
             var vector12 = point2.Subtract(point1);
             var vector23 = point3.Subtract(point2);
 
             return vector12.Cross(vector23);
-        }
-
-        public static double Magnitude(this IGridLocator location, MetricType metricType)
-        {
-            switch (metricType)
-            {
-                case MetricType.Roguian:
-                    return Metric.RoguianDistance(location.Column, location.Row);
-                case MetricType.Euclidean:
-                    return Metric.EuclideanDistance(location.Column, location.Row);
-                case MetricType.TaxiCab:
-                    return Metric.TaxiCabDistance(location.Column, location.Row);
-                default:
-                    throw new Exception("Unhandled Metric Type VectorOperation.cs");
-            }
         }
     }
 }

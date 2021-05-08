@@ -40,10 +40,95 @@ namespace Rogue.NET.Common.Extension
             return MoreEnumerable.LeftJoin(collection, secondCollection, keySelector, firstSelector, bothSelector);
         }
 
+        /// <summary>
+        /// Creates a cartesian (all possible combinations) of the two sequences and creates a projection using the result selector
+        /// </summary>
+        public static IEnumerable<TResult> Cartesian<T1, T2, TResult>(this IEnumerable<T1> collection, IEnumerable<T2> secondCollection, Func<T1, T2, TResult> resultSelector)
+        {
+            return MoreEnumerable.Cartesian(collection, secondCollection, resultSelector);
+        }
+
+        /// <summary>
+        /// Selects all distinct pairs of elements from both collections - based on a common key - ignoring both ordering, and duplicates. 
+        /// Example:  { 1, 2, 3 } X { 1, 3, 5 }  produces { (1, 3), (1, 5), (2, 1), (2, 3), (5, 2), (5, 3) }
+        /// </summary>
+        public static IEnumerable<TResult> Pairs<T1, T2, TKey, TResult>(this IEnumerable<T1> collection1,
+                                                                       IEnumerable<T2> collection2,
+                                                                       Func<T1, TKey> keySelector1,
+                                                                       Func<T2, TKey> keySelector2,
+                                                                       Func<T1, T2, TResult> resultSelector)
+        {
+            var result = new List<TResult>();
+            var lookup = new Dictionary<TKey, List<TKey>>();
+
+            foreach (var item1 in collection1)
+            {
+                foreach (var item2 in collection2)
+                {
+                    var key1 = keySelector1(item1);
+                    var key2 = keySelector2(item2);
+
+                    // Ignore equal items
+                    if (key1.Equals(key2))
+                        continue;
+
+                    // Ignore duplicate pairs (item1, item2)
+                    if (lookup.ContainsKey(key1) &&
+                        lookup[key1].Contains(key2))
+                        continue;
+
+                    // Ignore duplicate pairs (item2, item1)
+                    if (lookup.ContainsKey(key2) &&
+                        lookup[key2].Contains(key1))
+                        continue;
+
+                    else
+                    {
+                        // RESULT
+                        result.Add(resultSelector(item1, item2));
+
+                        // Store lookup 1 -> 2
+                        if (lookup.ContainsKey(key1))
+                            lookup[key1].Add(key2);
+
+                        else
+                            lookup.Add(key1, new List<TKey>() { key2 });
+
+                        // Store lookup 2 -> 1
+                        if (lookup.ContainsKey(key2))
+                            lookup[key2].Add(key1);
+
+                        else
+                            lookup.Add(key2, new List<TKey>() { key1 });
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Implementation of Except for IEnumerable using Where the provided equalityComparer
+        /// </summary>
+        public static IEnumerable<T> Except<T>(this IEnumerable<T> first, IEnumerable<T> second, Func<T, T, bool> equalityComparer)
+        {
+            return first.Where(element1 => !second.Any(element2 => equalityComparer(element1, element2)));
+        }
+
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
             foreach (var element in collection)
                 action(element);
+        }
+
+        public static IEnumerable<T> Maxima<T, TValue>(this IEnumerable<T> collection, Func<T, TValue> valueSelector)
+        {
+            return MoreEnumerable.MaxBy(collection, valueSelector);
+        }
+
+        public static IEnumerable<T> Minima<T, TValue>(this IEnumerable<T> collection, Func<T, TValue> valueSelector)
+        {
+            return MoreEnumerable.MinBy(collection, valueSelector);
         }
 
         /// <summary>
@@ -123,16 +208,15 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
-        /// Filters out some elements of a list and return those elements
+        /// Removes some elements of a list and return those elements
         /// </summary>
-        /// <param name="filter">filter to match elements by</param>
-        public static IEnumerable<T> Filter<T>(this IList<T> list, Func<T, bool> filter)
+        public static IEnumerable<T> Remove<T>(this IList<T> list, Func<T, bool> predicate)
         {
             var result = new List<T>();
 
             for (int i = list.Count - 1; i >= 0; i--)
             {
-                if (filter(list[i]))
+                if (predicate(list[i]))
                 {
                     // Store with results
                     result.Add(list[i]);
@@ -143,6 +227,21 @@ namespace Rogue.NET.Common.Extension
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Removes specified elements from the list using ReferenceEquals(..., ...)
+        /// </summary>
+        public static void Remove<T>(this IList<T> list, IEnumerable<T> listElements)
+        {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                foreach (var item in listElements)
+                {
+                    if (ReferenceEquals(list[i], item))
+                        list.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>
@@ -199,7 +298,8 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
-        /// Returns all elements in the collection that match the given item using the provided key selector
+        /// Returns all elements in the collection that match the given item using the provided key selector. This
+        /// avoids some extra Linq calls to GroupBy to create the collection.
         /// </summary>
         public static IEnumerable<T> Gather<T, K>(this IEnumerable<T> collection, T item, Func<T, K> keySelector)
         {

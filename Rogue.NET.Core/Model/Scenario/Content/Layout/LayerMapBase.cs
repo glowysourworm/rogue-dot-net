@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// Component for storing and mainintaining a 2D cell array for a layer of the level layout
     /// </summary>
     [Serializable]
-    public abstract class LayerMapBase<T, TRegion> : ISerializable, 
-                                                     IDeserializationCallback 
-                                                     where TRegion : Region<T> 
+    public abstract class LayerMapBase<T, TRegion> : ISerializable,
+                                                     IDeserializationCallback
+                                                     where TRegion : Region<T>
                                                      where T : class, IGridLocator
     {
         public string Name { get; private set; }
@@ -22,12 +23,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         TRegion[,] _regionMap;
 
         // Also, keep a collection of the regions for this layer
-        IEnumerable<TRegion> _regions;
+        IDictionary<string, TRegion> _regions;
 
         /// <summary>
-        /// Total layer map boundary - built by encompassing the individual regions
+        /// Layer map boundary - built by encompassing the individual regions
         /// </summary>
         public RegionBoundary Boundary { get; private set; }
+
+        /// <summary>
+        /// Total layer map boundary - with the encompassing LayoutGrid's dimensions
+        /// </summary>
+        public RegionBoundary ParentBoundary { get; private set; }
 
         public T Get(int column, int row)
         {
@@ -49,34 +55,36 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             get { return _regionMap[location.Column, location.Row]; }
         }
 
-        public IEnumerable<TRegion> Regions
+        public IDictionary<string, TRegion> Regions
         {
             get { return _regions; }
         }
 
         public IEnumerable<T> GetLocations()
         {
-            return _regions.SelectMany(region => region.Locations)
+            return _regions.Values
+                           .SelectMany(region => region.Locations)
                            .Actualize();
         }
 
         public IEnumerable<T> GetNonOccupiedLocations()
         {
-            return _regions.SelectMany(region => region.NonOccupiedLocations)
+            return _regions.Values
+                           .SelectMany(region => region.NonOccupiedLocations)
                            .Actualize();
         }
 
         public bool IsOccupied(IGridLocator location)
         {
-            return _regions.Any(region => region.IsOccupied(location));
+            return _regions.Any(region => region.Value.IsOccupied(location));
         }
 
         public void SetOccupied(IGridLocator location, bool occupied)
         {
             foreach (var region in _regions)
             {
-                if (region[location] != null)
-                    region.SetOccupied(location, occupied);
+                if (region.Value[location] != null)
+                    region.Value.SetOccupied(location, occupied);
             }
         }
 
@@ -120,7 +128,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 throw new Exception("Improper use of OnDeserialization()  LayerMap");
 
             foreach (var region in _regions)
-                region.OnDeserialization(grid);
+                region.Value.OnDeserialization(grid);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -138,7 +146,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             this.Name = layerName;
 
-            _regions = regions;
+            _regions = regions.ToDictionary(region => region.Id, region => region);
             _regionMap = new TRegion[width, height];
 
             // Iterate regions and initialize the map
@@ -159,7 +167,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var top = int.MaxValue;
             var bottom = int.MinValue;
 
-            foreach (var region in _regions)
+            foreach (var region in _regions.Values)
             {
                 if (region.Boundary.Left < left)
                     left = region.Boundary.Left;
@@ -174,8 +182,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     bottom = region.Boundary.Bottom;
             }
 
-            // TODO: Serialize this
             this.Boundary = new RegionBoundary(left, top, right - left + 1, bottom - top + 1);
+            this.ParentBoundary = new RegionBoundary(0, 0, width, height);
         }
     }
 }

@@ -11,17 +11,16 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         /// <summary>
         /// Callback that allows setting properties of the embedded path cells
         /// </summary>
-        public delegate void DijkstraEmbedPathCallback(GridCellInfo pathCell);
+        public delegate void DijkstraPathCallback(GridCellInfo pathCell);
 
-        readonly GridCellInfo[,] _grid;
-
-        public DijkstraPathGenerator(GridCellInfo[,] grid,
+        public DijkstraPathGenerator(int width, int height,
                                      IEnumerable<Region<GridCellInfo>> avoidRegions,
                                      GridCellInfo sourceLocation,
                                      IEnumerable<GridCellInfo> targetLocations,
-                                     bool obeyCardinalMovement)
-             : base(grid.GetLength(0),
-                    grid.GetLength(1),
+                                     bool obeyCardinalMovement,
+                                     DijkstraMapLocatorCallback dijkstraMapCallback)
+             : base(width,
+                    height,
                     obeyCardinalMovement,
                     sourceLocation,
                     targetLocations,
@@ -35,19 +34,16 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                         else
                             return 0;
 
-                    }), new DijkstraMapLocatorCallback((column, row) =>
-                    {
-                        // ALLOCATE NEW GRID CELLS FOR CREATING NEW PATHS
-                        return grid[column, row] ?? new GridCellInfo(column, row);
-                    }))
+                    }), dijkstraMapCallback)
         {
-            _grid = grid;
-
             // Initializes the map to run
             Initialize(sourceLocation, targetLocations);
         }
 
-        public void EmbedPaths(DijkstraEmbedPathCallback callback)
+        /// <summary>
+        /// Calculates path cells from source to all target locations
+        /// </summary>
+        public void CalculatePaths(DijkstraPathCallback callback)
         {
             Run();
 
@@ -58,9 +54,6 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                 {
                     // Allow setting properties on cells from the new path
                     callback(cell as GridCellInfo);
-
-                    // Embed the cell
-                    _grid[cell.Column, cell.Row] = cell as GridCellInfo;
                 }
             }
         }

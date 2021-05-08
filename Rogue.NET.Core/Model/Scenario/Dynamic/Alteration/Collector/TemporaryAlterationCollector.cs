@@ -38,7 +38,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 
         public IEnumerable<Scenario.Alteration.Common.AlterationContainer> Filter(string alterationName)
         {
-            return this.Alterations.Filter(x => x.RogueName == alterationName).Actualize();
+            return this.Alterations.Where(x => x.RogueName == alterationName).Actualize();
         }
 
         public IEnumerable<Scenario.Alteration.Common.AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect)
@@ -112,7 +112,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 
             // Return effects that have worn off
             return this.Alterations
-                       .Filter(x => (x.Effect as TemporaryAlterationEffect).EventTime <= 0)
+                       .Remove(x => (x.Effect as TemporaryAlterationEffect).EventTime <= 0)
                        .Select(x => x.RogueName);
         }
         public double GetAttributeAggregate(CharacterAttribute attribute)

@@ -4,23 +4,32 @@ using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System.Collections.Generic;
 
+using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
+
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
 {
     public interface IConnectionBuilder
     {
         /// <summary>
-        /// Generates connections between the specified regions - returns the region triangulation graph along with
-        /// modified regions (in the case that the grid is modified)
+        /// Generates connections between the specified regions - uses impassable terrain regions from the
+        /// LayoutContainer to build around ("Avoid Regions"). NOTE*** For maze connection types - must call
+        /// CreateMazeCorridors first manually. Then, the graph of regions to triangulate must be calculated.
         /// </summary>
         void BuildConnections(LayoutContainer container,
-                              LayoutTemplate template);
+                              LayoutTemplate template,
+                              GraphInfo<GridCellInfo> regionGraph);
 
         /// <summary>
-        /// Generates connections avoiding the provided regions. This is typically used for connecting regions separated
-        /// by terrain. Returns the region triangulation graph.
+        /// Creates maze CORRIDORS in the empty space in the layout. DOES NOT COMPLETE CONNECTIONS! MUST RE-GENERATE 
+        /// CONNECTION GRAPH; and call ConnectUsingShortestPath.
         /// </summary>
-        void BuildConnectionsWithAvoidRegions(LayoutContainer container,
-                                               LayoutTemplate template,
-                                               IEnumerable<Region<GridCellInfo>> avoidRegions);
+        public void CreateMazeCorridors(LayoutContainer container,
+                                        LayoutTemplate template,
+                                        MazeType mazeType);
+
+        /// <summary>
+        /// Completes the layout connections using the provided connection graph
+        /// </summary>
+        void ConnectUsingShortestPath(LayoutContainer container, GraphInfo<GridCellInfo> connectionGraph);
     }
 }

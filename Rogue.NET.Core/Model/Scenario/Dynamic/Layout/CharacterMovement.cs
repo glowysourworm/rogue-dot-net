@@ -319,7 +319,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
             // VISION COEFFICIENT:  Scaled intensity multiplier that maps from [0, visible radius] -> [0, 1], falling off linearly
             //
-            var playerDistance = Metric.EuclideanDistance(_contentGrid[player].Column, _contentGrid[player].Row, column, row);
+            var playerDistance = Metric.ForceDistance(_contentGrid[player].Column, _contentGrid[player].Row, column, row, Metric.MetricType.Euclidean);
 
             // Vision falls off linearly towards the vision max radius
             var effectiveVision = System.Math.Round(playerDistance > visionRadius ? 0 : (1 - (playerDistance / visionRadius)), 1);

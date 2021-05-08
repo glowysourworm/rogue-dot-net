@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         /// Removes regions of elements that PASS the provided invalidPredicate by setting them to null. Also, returns the
         /// VALID regions.
         /// </summary>
-        public static void RemoveInvalidRegions<T>(this T[,] grid,
+        public static IEnumerable<Region<T>> RemoveInvalidRegions<T>(this T[,] grid,
                                                    Func<T, bool> regionIdentifier,
                                                    Func<Region<T>, bool> invalidPredicate) where T : class, IGridLocator
         {
@@ -26,6 +26,9 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             // Select invalid regions
             var invalidRegions = regions.Where(region => invalidPredicate(region));
 
+            // Select valid regions
+            var validRegions = regions.Except(invalidRegions).Actualize();
+
             // Remove elements for this region
             foreach (var region in invalidRegions)
             {
@@ -33,6 +36,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 foreach (var location in region.Locations)
                     grid[location.Column, location.Row] = null;
             }
+
+            return validRegions;
         }
 
         /// <summary>
@@ -43,18 +48,6 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             var regionConstructors = IdentifyRegions(grid, predicate);
 
             return regionConstructors.Select(info => new Region<T>(info.Locations, info.EdgeLocations, info.Boundary, info.ParentBoundary))
-                                     .Actualize();
-        }
-
-        /// <summary>
-        /// Constructs 4-way contiguous regions of the grid where the elements pass the provided predicate. These "CONNECTED" regions
-        /// have extra data storage for their graph connections; but that data is not calculated here.
-        /// </summary>
-        public static IEnumerable<ConnectedRegion<T>> ConstructConnectedRegions<T>(this T[,] grid, Func<T, bool> predicate) where T : class, IGridLocator
-        {
-            var regionConstructors = IdentifyRegions(grid, predicate);
-
-            return regionConstructors.Select(info => new ConnectedRegion<T>(info.Locations, info.EdgeLocations, info.Boundary, info.ParentBoundary))
                                      .Actualize();
         }
 

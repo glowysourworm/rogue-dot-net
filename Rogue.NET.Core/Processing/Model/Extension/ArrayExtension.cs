@@ -619,5 +619,17 @@ namespace Rogue.NET.Core.Processing.Model.Extension
 
             return list;
         }
+
+        /// <summary>
+        /// Copies over references from the primary grid into a new grid of the same dimensions using the provided copier
+        /// </summary>
+        public static TResult[,] GridCopy<T, TResult>(this T[,] grid, Func<T, TResult> copier)
+        {
+            var copy = new TResult[grid.GetLength(0), grid.GetLength(1)];
+
+            grid.Iterate((column, row) => copy[column, row] = copier(grid[column, row]));
+
+            return copy;
+        }
     }
 }

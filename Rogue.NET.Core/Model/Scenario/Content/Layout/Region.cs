@@ -15,6 +15,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public string Id { get; private set; }
         public T[] Locations { get; private set; }
         public T[] EdgeLocations { get; private set; }
+        public T[] LeftEdgeExposedLocations { get; private set; }
+        public T[] RightEdgeExposedLocations { get; private set; }
+        public T[] TopEdgeExposedLocations { get; private set; }
+        public T[] BottomEdgeExposedLocations { get; private set; }
         public IEnumerable<T> OccupiedLocations { get { return _occupiedLocations; } }
         public IEnumerable<T> NonOccupiedLocations { get { return _nonOccupiedLocations; } }
         public RegionBoundary Boundary { get; private set; }
@@ -100,6 +104,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _occupiedLocations = new List<T>();
             _nonOccupiedLocations = new List<T>(locations);
 
+            // Non-serialized collections
+            var leftEdgeLocations = new List<T>();
+            var rightEdgeLocations = new List<T>();
+            var topEdgeLocations = new List<T>();
+            var bottomEdgeLocations = new List<T>();
+
             // Setup grid locations
             foreach (var location in locations)
             {
@@ -118,51 +128,52 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     throw new Exception("Invalid edge location for the region boundary Region.cs");
 
                 _edgeLocations[location.Column, location.Row] = true;
+
+                // Left Edge Exposed
+                if (_gridLocations.IsDefined(location.Column - 1, location.Row) &&
+                    _gridLocations[location.Column - 1, location.Row] == null)
+                    leftEdgeLocations.Add(location);
+
+                // Right Edge
+                if (_gridLocations.IsDefined(location.Column + 1, location.Row) &&
+                    _gridLocations[location.Column + 1, location.Row] == null)
+                    rightEdgeLocations.Add(location);
+
+                // Bottom Edge
+                if (_gridLocations.IsDefined(location.Column, location.Row + 1) &&
+                    _gridLocations[location.Column, location.Row + 1] == null)
+                    bottomEdgeLocations.Add(location);
+
+                // Top Edge
+                if (_gridLocations.IsDefined(location.Column, location.Row - 1) &&
+                    _gridLocations[location.Column, location.Row - 1] == null)
+                    topEdgeLocations.Add(location);
             }
+
+            this.LeftEdgeExposedLocations = leftEdgeLocations.ToArray();
+            this.RightEdgeExposedLocations = rightEdgeLocations.ToArray();
+            this.TopEdgeExposedLocations = topEdgeLocations.ToArray();
+            this.BottomEdgeExposedLocations = bottomEdgeLocations.ToArray();
         }
 
         public Region(SerializationInfo info, StreamingContext context)
         {
-            this.Id = info.GetString("Id");
-            this.Locations = new T[info.GetInt32("LocationsLength")];
-            this.EdgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
-            this.Boundary = (RegionBoundary)info.GetValue("Boundary", typeof(RegionBoundary));
-            this.ParentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
-
-            _gridLocations = new Grid<T>(this.ParentBoundary, this.Boundary);
-            _edgeLocations = new Grid<bool>(this.ParentBoundary, this.Boundary);
-            _occupiedLocationGrid = new Grid<bool>(this.ParentBoundary, this.Boundary);
-
-            // Initialize occupied collections - NOT SERIALIZED (INITIALIZE TO NON-OCCUPIED)
-            _occupiedLocations = new List<T>();
-            _nonOccupiedLocations = new List<T>();
+            var regionId = info.GetString("Id");
+            var locations = new T[info.GetInt32("LocationsLength")];
+            var edgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
+            var boundary = (RegionBoundary)info.GetValue("Boundary", typeof(RegionBoundary));
+            var parentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
 
             for (int i = 0; i < this.Locations.Length; i++)
-            {
-                var location = (T)info.GetValue("Location" + i.ToString(), typeof(T));
-
-                // Add to cell array
-                this.Locations[i] = location;
-
-                // Add to non-occupied locations to initialize
-                _nonOccupiedLocations.Add(location);
-
-                // Add to 2D array 
-                _gridLocations[location.Column, location.Row] = location;
-            }
+                locations[i] = (T)info.GetValue("Location" + i.ToString(), typeof(T));
 
             for (int i = 0; i < this.EdgeLocations.Length; i++)
-            {
-                var edgeLocation = (T)info.GetValue("EdgeLocation" + i.ToString(), typeof(T));
+                edgeLocations[i] = (T)info.GetValue("EdgeLocation" + i.ToString(), typeof(T));
 
-                // Add to edge cell array
-                this.EdgeLocations[i] = edgeLocation;
-
-                // Add to 2D edge array
-                _edgeLocations[edgeLocation.Column, edgeLocation.Row] = true;
-            }
+            Initialize(regionId, locations, edgeLocations, boundary, parentBoundary);
         }
 
+        // TODO: REMOVE THIS - ALSO, REMOVE SERIALIZATION OF EDGES
         public void OnDeserialization(object sender)
         {
             if (sender == null)
@@ -209,6 +220,43 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 // SET REFERENCES FROM THE PRIMARY GRID
                 _gridLocations[location.Column, location.Row] = referenceLocation;
             }
+
+            // Non-serialized collections
+            var leftEdgeLocations = new List<T>();
+            var rightEdgeLocations = new List<T>();
+            var topEdgeLocations = new List<T>();
+            var bottomEdgeLocations = new List<T>();
+
+            // Setup exposed edge locations
+            foreach (var location in this.EdgeLocations)
+            {
+                // Validate location inside boundary
+                if (!this.Boundary.Contains(location))
+                    throw new Exception("Invalid edge location for the region boundary Region.cs");
+
+                _edgeLocations[location.Column, location.Row] = true;
+
+                // Left Edge Exposed
+                if (_gridLocations[location.Column - 1, location.Row] == null)
+                    leftEdgeLocations.Add(location);
+
+                // Right Edge
+                if (_gridLocations[location.Column + 1, location.Row] == null)
+                    rightEdgeLocations.Add(location);
+
+                // Bottom Edge
+                if (_gridLocations[location.Column, location.Row + 1] == null)
+                    bottomEdgeLocations.Add(location);
+
+                // Top Edge
+                if (_gridLocations[location.Column, location.Row - 1] == null)
+                    topEdgeLocations.Add(location);
+            }
+
+            this.LeftEdgeExposedLocations = leftEdgeLocations.ToArray();
+            this.RightEdgeExposedLocations = rightEdgeLocations.ToArray();
+            this.TopEdgeExposedLocations = topEdgeLocations.ToArray();
+            this.BottomEdgeExposedLocations = bottomEdgeLocations.ToArray();
         }
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)

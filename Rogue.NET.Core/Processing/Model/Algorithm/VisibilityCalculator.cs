@@ -6,7 +6,6 @@ using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 
 namespace Rogue.NET.Core.Processing.Model.Algorithm
@@ -20,6 +19,16 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
         /// Callback from the visibility calculation to allow setting of data in the primary grid (prevents allocation)
         /// </summary>
         public delegate void VisibilityCalculatorCallback(int column, int row, bool isVisible);
+
+        /// <summary>
+        /// Provides grid location instances for the specified indices
+        /// </summary>
+        public delegate GridLocation VisibilityGridCallback(int column, int row);
+
+        /// <summary>
+        /// Provides callback to specify whether location is light blocking
+        /// </summary>
+        public delegate bool IsLightBlockingGridCallback(int column, int row);
 
         protected enum Octant
         {
@@ -47,7 +56,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                 _deltaY = point.Y - center.Y;
 
                 if (_deltaX != 0)
-                    _magnitude =  _deltaY / _deltaX;
+                    _magnitude = _deltaY / _deltaX;
 
                 else
                 {
@@ -142,18 +151,24 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             }, location, radius, callback);
         }
 
-        public static void CalculateVisibility(GridCellInfo[,] grid, GridLocation location, int radius, VisibilityCalculatorCallback callback)
+        /// <summary>
+        /// Routine for calculating visibility during the layout generation process. This is used to initialize the layout lighting
+        /// </summary>
+        public static void CalculateVisibility(GridLocation location,
+                                               int radius,
+                                               VisibilityGridCallback gridCallback,
+                                               IsLightBlockingGridCallback lightBlockingCallback,
+                                               VisibilityCalculatorCallback visibilityCallback)
         {
             CalculateVisibilityImpl((column, row) =>
             {
-                return grid.Get(column, row)?.Location;
+                return gridCallback(column, row);
             },
             (gridLocation) =>
             {
-                return grid[gridLocation.Column, gridLocation.Row] == null ||
-                       grid[gridLocation.Column, gridLocation.Row].IsWall ||
-                       grid[gridLocation.Column, gridLocation.Row].IsDoor;
-            }, location, radius, callback);
+                return lightBlockingCallback(gridLocation.Column, gridLocation.Row);
+
+            }, location, radius, visibilityCallback);
         }
 
         private static void CalculateVisibilityImpl(Func<int, int, GridLocation> getter, Func<GridLocation, bool> getterIsLightBlocking, GridLocation center, int maxRadius, VisibilityCalculatorCallback callback)

@@ -1,5 +1,7 @@
 ﻿using System.Runtime.Serialization;
 
+using static Rogue.NET.Core.Math.Geometry.Metric;
+
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Interface
 {
     /// <summary>
@@ -10,6 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Interface
     {
         int Column { get; }
         int Row { get; }
+        MetricType Type { get; }
 
         /// <summary>
         /// Override method for object.Equals(...)

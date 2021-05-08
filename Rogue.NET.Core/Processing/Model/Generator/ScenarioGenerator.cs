@@ -135,11 +135,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 }));
 
                 // Set up thread start data (MAKE A COPY TO DECOUPLE)
-                var branchCopy = levelBranches[index].DeepCopy();
+                var branchCopy = ObjectExtension.Clone(levelBranches[index]);
 
                 // Get weighted random layout template (MAKE A COPY TO DECOUPLE)
-                var generationTemplateCopy = _randomSequenceGenerator.GetWeightedRandom(branchCopy.Layouts, template => template.GenerationWeight)
-                                                                 .DeepCopy();
+                var generationTemplateCopy = ObjectExtension.Clone(_randomSequenceGenerator.GetWeightedRandom(branchCopy.Layouts, template => template.GenerationWeight)
+);
 
                 // ***MULTI-THREADING POLICY IRandomSequenceGenerator
                 thread.Name = (index + 1).ToString();

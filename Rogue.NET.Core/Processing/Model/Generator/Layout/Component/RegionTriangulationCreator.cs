@@ -1,11 +1,14 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System;
 using System.Collections.Generic;
@@ -26,7 +29,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public Graph CreateTriangulation<T>(IEnumerable<ConnectedRegion<T>> regions, LayoutTemplate template) where T : class, IGridLocator
+        public GraphInfo<T> CreateTriangulation<T>(IEnumerable<Region<T>> regions, LayoutTemplate template) where T : class, IGridLocator
         {
             // Procedure
             //
@@ -34,7 +37,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // 2) Save the connection points as an edge with reference regions
             // 3) Create a full Delaunay triangulation
             // 4) Remove all edges that are self-referencing
-            // 5) Remove all but the shortest distance connection between two regions
+            // 5) Remove all but the shortest distance connection between two regions (USING A EUCILDEAN METRIC)
             //
             // The result will be a Delaunay triangulation of the Regions as a graph. This means
             // the shortest-distance connections are kept between the regions to create a graph of
@@ -45,10 +48,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             //
 
             // CAN BE EXPENSIVE - TRY AND OPTIMIZE
-            var graph = CreateFullGraph(regions);
+            var fullGraph = CreateFullGraph(regions);
 
             if (regions.Count() == 1)
-                return graph;
+                return fullGraph;
 
             // Create corridors between the MST and Delaunay using the fill ratio
             //
@@ -58,42 +61,48 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                 template.ConnectionType != LayoutConnectionType.ConnectionPoints)
             {
                 // NOTE*** Delaunay output graph is not fully connected; but the regions ARE fully connected.
-                var delaunayGraph = CreateDelaunayTriangulation(graph, regions);
+                var delaunayGraph = CreateDelaunayTriangulation(fullGraph, regions);
 
-                // The MST must be re-created from the regions. The expensive work is already finished with the
-                // region connections being stored on each region.
+                // The MST must be re-created from the regions. The expensive work is already finished
                 //
-                var minimumSpanningGraph = CreateMinimumSpanningTree(regions);
+                var mstGraph = CreateMinimumSpanningTree(delaunayGraph, regions);
+
+                // Add corridors according to the fill ratio from the Delaunay graph
+                var extraEdges = delaunayGraph.Edges
+                                              .Where(delaunayEdge => !mstGraph.Edges.Any(mstEdge => delaunayEdge.IsEquivalent(mstEdge)))
+                                              .Actualize();
+
+                var extraConnections = delaunayGraph.Connections
+                                                    .Where(connection => extraEdges.Any(edge => EdgeConnectionComparer(edge, connection)));
 
                 // Calculate extra corridor count
-                var extraCorridorCount = (int)(template.FillRatioCorridors * (delaunayGraph.Edges.Count() - minimumSpanningGraph.Edges.Count()));
+                var extraCorridorCount = (int)(extraEdges.Count() * template.FillRatioCorridors);
 
-                // Create the final graph starting with the MST edges
-                var finalGraph = new Graph(minimumSpanningGraph.Edges);
+                if (extraCorridorCount == 0)
+                    return mstGraph;
 
-                // Add additional edges at random from the Delaunay graph
-                var extraEdges = delaunayGraph.Edges
-                                              .Where(edge1 => !minimumSpanningGraph.Edges.Any(edge2 => edge1.Equals(edge2)))
-                                              .ToList();
+                // Take random extra edges from extra edges
+                var randomExtraEdges = _randomSequenceGenerator.GetDistinctRandomElements(extraEdges, extraCorridorCount);
 
-                for (int i = 0; i < extraCorridorCount; i++)
+                var finalConnections = new List<RegionConnectionInfo<T>>(mstGraph.Connections);
+                var finalEdges = new List<GraphEdge>(mstGraph.Edges);
+
+                foreach (var edge in randomExtraEdges)
                 {
-                    // Get random edge from the extra edges
-                    var edge = _randomSequenceGenerator.GetRandomElement(extraEdges);
-
-                    extraEdges.Remove(edge);
-
-                    // Add the edge to the final graph
-                    finalGraph.AddEdge(edge);
+                    foreach (var connection in extraConnections.Where(connection => EdgeConnectionComparer(edge, connection)))
+                    {
+                        finalEdges.Add(edge);
+                        finalConnections.Add(connection);
+                    }
                 }
 
-                return finalGraph;
+                return new GraphInfo<T>(finalConnections, finalEdges);
             }
             else
-                return CreateMinimumSpanningTree(regions);
+                return CreateMinimumSpanningTree(fullGraph, regions);
         }
 
-        public Graph CreateDefaultTriangulation<T>(IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
+        public GraphInfo<T> CreateDefaultTriangulation<T>(IEnumerable<Region<T>> regions) where T : class, IGridLocator
         {
             if (regions.Count() != 1)
                 throw new Exception("Trying to create default triangulation for non-default regions");
@@ -101,67 +110,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             return CreateFullGraph(regions);
         }
 
-        private Graph CreateFullGraph<T>(IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
-        {
-            var graph = new Graph();
-
-            // For no edges - just create a graph with one vertex
-            if (regions.Count() == 1)
-            {
-                graph.AddVertex(new GraphVertex(regions.First().Id, 0, 0));
-
-                return graph;
-            }
-
-            var regionList = new List<ConnectedRegion<T>>(regions);
-
-            // Create connection points
-            for (int i = 0; i < regionList.Count; i++)
-            {
-                // Iterate starting at the current region to avoid duplicating connections
-                for (int j = i; j < regionList.Count; j++)
-                {
-                    var region1 = regionList[i];
-                    var region2 = regionList[j];
-
-                    // Don't add self-referential connections
-                    if (region1 == region2)
-                        continue;
-
-                    region1.CalculateConnection(region2, _randomSequenceGenerator);
-
-                    var connection = region1.GetConnection(region2);
-
-                    var location1 = connection.Location;
-                    var location2 = connection.AdjacentLocation;
-
-                    // Duplicate vertices are unlikely; but possible. So, have to check
-                    // for existing vertices
-                    //
-                    if (!graph.Vertices.Any(vertex => vertex.ReferenceId == region1.Id &&
-                                                      vertex.Column == location1.Column &&
-                                                      vertex.Row == location1.Row))
-                        graph.AddVertex(new GraphVertex(region1.Id, location1.Column, location1.Row));
-
-                    if (!graph.Vertices.Any(vertex => vertex.ReferenceId == region2.Id &&
-                                                      vertex.Column == location2.Column &&
-                                                      vertex.Row == location2.Row))
-                        graph.AddVertex(new GraphVertex(region2.Id, location2.Column, location2.Row));
-                }
-            }
-
-            return graph;
-        }
-
         /// <summary>
         /// Creates MST using Prim's Algorithm - which takes O(n log n)
         /// </summary>
-        private Graph CreateMinimumSpanningTree<T>(IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
+        private GraphInfo<T> CreateMinimumSpanningTree<T>(GraphInfo<T> graph, IEnumerable<Region<T>> regions) where T : class, IGridLocator
         {
             if (regions.Count() < 1)
                 throw new Exception("Trying to build MST with zero points");
 
-            // Procedure
+            // NOTE*** The MST is being created on a graph of REGIONS. This will behave differently than a
+            //         graph of vertices. So, the input graph should be the FULL GRAPH to avoid issues with
+            //         creating an MST of REGIONS.
+            //         
+
+            // Procedure (Prim's Algorithm)
             //
             // 1) Start the tree with a single vertex
             // 2) Calculate edges of the graph that connect NEW points not yet in the tree (P)
@@ -169,9 +131,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // 3) Choose the least distant edge and add that edge to the tree
             //
 
-            var unusedRegions = new List<ConnectedRegion<T>>(regions);
-            var usedRegions = new List<ConnectedRegion<T>>();
-            var tree = new Graph();
+            var unusedRegions = new List<Region<T>>(regions);
+            var usedRegions = new List<Region<T>>();
+            var tree = new List<GraphEdge>();
+            var treeConnections = new List<RegionConnectionInfo<T>>();
 
             while (usedRegions.Count < regions.Count())
             {
@@ -187,30 +150,43 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                 else
                 {
-                    ConnectedRegion<T> nextRegion = null;
+                    Region<T> nextRegion = null;
+                    RegionConnectionInfo<T> nextConnection = null;
                     GraphEdge nextEdge = null;
                     double minDistance = double.MaxValue;
 
-                    // Get the next edge that connects an UNUSED vertex to a USED vertex (in the tree)
+                    // Get the next edge that connects an UNUSED region to a USED region
                     foreach (var region1 in unusedRegions)
                     {
                         foreach (var region2 in usedRegions)
                         {
-                            region1.CalculateConnection(region2, _randomSequenceGenerator);
+                            // Fetch connection points for the two regions
+                            var connections = graph.Connections
+                                                   .Where(x => (x.Vertex.ReferenceId == region1.Id &&
+                                                                x.AdjacentVertex.ReferenceId == region2.Id) ||
+                                                               (x.Vertex.ReferenceId == region2.Id &&
+                                                                x.AdjacentVertex.ReferenceId == region1.Id));
 
-                            var distance = region1.GetConnection(region2).Distance;
+                            // CONNECTION NOT GUARANTEED
+                            if (!connections.Any())
+                                continue;
 
-                            if (distance < minDistance)
+                            var connection = connections.MinBy(x => x.EuclideanRenderedDistance);
+                            var edge = graph.FindEdges(region1.Id, region2.Id)
+                                            .Except(tree)
+                                            .MinBy(edge => edge.Distance);
+
+                            // EDGE NOT GUARANTEED
+                            if (edge == null)
+                                continue;
+
+                            // KEEP THE SHORTEST EDGE TO THE EXISTING TREE
+                            if (edge.Distance < minDistance)
                             {
-                                var connection = region1.GetConnection(region2);
-
-                                var vertex1 = new GraphVertex(region1.Id, connection.Location.Column, connection.Location.Row);
-                                var vertex2 = new GraphVertex(region2.Id, connection.AdjacentLocation.Column, connection.AdjacentLocation.Row);
-
-                                nextEdge = new GraphEdge(vertex1, vertex2, Metric.MetricType.Euclidean);
+                                nextEdge = edge;
                                 nextRegion = region1;
-
-                                minDistance = distance;
+                                minDistance = edge.Distance;
+                                nextConnection = connection;
                             }
                         }
                     }
@@ -218,39 +194,39 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                     if (nextEdge == null)
                         throw new Exception("No edge found between regions Minimum Spanning Tree");
 
-                    if (tree.Contains(nextEdge.Point1) &&
-                        tree.Contains(nextEdge.Point2))
+                    if (nextConnection == null)
+                        throw new Exception("No connection found between regions Minimum Spanning Tree");
+
+                    if (tree.Any(edge => edge.IsEquivalent(nextEdge)))
                         throw new Exception("Trying to add edge to tree that is already contained in the tree CreateMinimumSpanningTree<T>");
 
                     unusedRegions.Remove(nextRegion);
                     usedRegions.Add(nextRegion);
 
                     // Add next edge to the tree
-                    tree.AddEdge(nextEdge);
+                    tree.Add(nextEdge);
+                    treeConnections.Add(nextConnection);
                 }
             }
 
-            return tree;
+            return new GraphInfo<T>(treeConnections, tree);
         }
 
         /// <summary>
-        /// Creates Delaunay triangulation using the Bowyer-Watson algorithm O(n log n). Returns the single edge list (one
-        /// edge maximum between points in the mesh)
+        /// Creates Delaunay triangulation using the Bowyer-Watson algorithm O(n log n). 
         /// </summary>
-        private Graph CreateDelaunayTriangulation<T>(Graph fullGraph, IEnumerable<ConnectedRegion<T>> regions) where T : class, IGridLocator
+        private GraphInfo<T> CreateDelaunayTriangulation<T>(GraphInfo<T> fullGraph, IEnumerable<Region<T>> regions) where T : class, IGridLocator
         {
             if (fullGraph.Vertices.Count() < 3)
             {
                 return fullGraph;
             }
 
-            // NOTE*** The graph of regions is over the vertices of edge connections between two regions. These
-            //         differ depending on the two regions - because nearest neighbor locations are chosen for
-            //         the graph connection. 
+            // NOTE*** The graph of regions is over the VERTICES of edge connections between two regions (NOT THE 
+            //         REGIONS THEMSELVES). 
             //
-            //         This means that the Delaunay triangulation will have extra edges from region-to-region as
-            //         well as self-referencing edges (region references itself). These have to be filtered one 
-            //         more time to create a "Delaunay Triangulation" of the regions - thought of as graph nodes.
+            //         The result of this algorithm will be a Delaunay Triangulation - giving nearest neighbor graph
+            //         relationships - between two VERTICES - which are from two separate REGIONS.
             //          
 
             // Procedure - https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
@@ -301,9 +277,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             }
 
             // NOTE*** NULL VERTEX REFERENCE USED TO IDENTIFY SUPER TRIANGLE
-            var point1 = new GraphVertex(null, 0, 0);
-            var point2 = new GraphVertex(null, (int)((right * 2) + 1), 0);
-            var point3 = new GraphVertex(null, 0, (int)((bottom * 2) + 1));
+            var point1 = new GraphVertex(null, 0, 0, Metric.MetricType.Euclidean);
+            var point2 = new GraphVertex(null, (int)((right * 2) + 1), 0, Metric.MetricType.Euclidean);
+            var point3 = new GraphVertex(null, 0, (int)((bottom * 2) + 1), Metric.MetricType.Euclidean);
 
             // Initialize the mesh (the "super-triangle" is removed as part of the algorithm)
             //
@@ -320,7 +296,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                 //
                 // Remove those triangles from the mesh and return them
                 //
-                var badTriangles = triangles.Filter(triangle => triangle.CircumCircleContains(graphVertex));
+                var badTriangles = triangles.Remove(triangle => triangle.CircumCircleContains(graphVertex));
 
                 // Use edges from the polygon hole to create new triangles. This should be an "outline" of
                 // the bad triangles. So, use all edges from the bad triangles except for shared edges.
@@ -344,39 +320,45 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             }
 
             // Create the delaunay graph using distinct edges
-            var delaunayGraph = new Graph();
+            var delaunayEdges = new List<GraphEdge>();
 
             foreach (var triangle in triangles)
             {
                 // (Cleaning Up) Remove any edges shared with the "super-triangle" vertices
                 //
                 if (!(triangle.Point1.ReferenceId == null || triangle.Point2.ReferenceId == null) &&
-                    !delaunayGraph.Edges.Any(edge => edge.Equals(triangle.Point1, triangle.Point2)))
-                    delaunayGraph.AddEdge(new GraphEdge(triangle.Point1, triangle.Point2, Metric.MetricType.Euclidean));
+                    !delaunayEdges.Any(edge => edge.IsEquivalent(triangle.Point1, triangle.Point2)))
+                    delaunayEdges.Add(new GraphEdge(triangle.Point1, triangle.Point2));
 
                 if (!(triangle.Point2.ReferenceId == null || triangle.Point3.ReferenceId == null) &&
-                    !delaunayGraph.Edges.Any(edge => edge.Equals(triangle.Point2, triangle.Point3)))
-                    delaunayGraph.AddEdge(new GraphEdge(triangle.Point2, triangle.Point3, Metric.MetricType.Euclidean));
+                    !delaunayEdges.Any(edge => edge.IsEquivalent(triangle.Point2, triangle.Point3)))
+                    delaunayEdges.Add(new GraphEdge(triangle.Point2, triangle.Point3));
 
                 if (!(triangle.Point3.ReferenceId == null || triangle.Point1.ReferenceId == null) &&
-                    !delaunayGraph.Edges.Any(edge => edge.Equals(triangle.Point3, triangle.Point1)))
-                    delaunayGraph.AddEdge(new GraphEdge(triangle.Point3, triangle.Point1, Metric.MetricType.Euclidean));
+                    !delaunayEdges.Any(edge => edge.IsEquivalent(triangle.Point3, triangle.Point1)))
+                    delaunayEdges.Add(new GraphEdge(triangle.Point3, triangle.Point1));
 
                 // Add vertices that are without edges (two "super-triangle" vertices)
-                if (triangle.Point1.ReferenceId != null && !delaunayGraph.Contains(triangle.Point1))
-                    delaunayGraph.AddVertex(triangle.Point1);
+                //if (triangle.Point1.ReferenceId != null && !delaunayGraph.Contains(triangle.Point1))
+                //    delaunayGraph.AddVertex(triangle.Point1);
 
-                if (triangle.Point2.ReferenceId != null && !delaunayGraph.Contains(triangle.Point2))
-                    delaunayGraph.AddVertex(triangle.Point2);
+                //if (triangle.Point2.ReferenceId != null && !delaunayGraph.Contains(triangle.Point2))
+                //    delaunayGraph.AddVertex(triangle.Point2);
 
-                if (triangle.Point3.ReferenceId != null && !delaunayGraph.Contains(triangle.Point3))
-                    delaunayGraph.AddVertex(triangle.Point3);
+                //if (triangle.Point3.ReferenceId != null && !delaunayGraph.Contains(triangle.Point3))
+                //    delaunayGraph.AddVertex(triangle.Point3);
             }
 
-            // (More Cleaning Up) Remove self referencing edges
-            delaunayGraph.FilterByEdge(edge => edge.Point1.ReferenceId == edge.Point2.ReferenceId);
+            // (More Cleaning Up) Remove self referencing edges (BY REGION)
+            delaunayEdges.Remove(edge => edge.Point1.ReferenceId == edge.Point2.ReferenceId);
 
-            // (Even More Cleaning Up) Keep only the edges involving the proper region connection points
+            var delaunayConnections = new List<RegionConnectionInfo<T>>();
+
+            // (Even More Cleaning Up) Keep only the minimum edge relating to a SINGLE connection between two region distinct regions
+            //
+            // ***NOTE  There may be no related edge to a connection from the FULL graph because it wasn't part of the Delaunay 
+            //          triangulation for the VERTICES.
+            //
             foreach (var region1 in regions)
             {
                 foreach (var region2 in regions)
@@ -385,46 +367,194 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                         continue;
 
                     // Fetch ACTUAL connection points for the two regions
-                    var connection = region1.GetConnection(region2);
+                    var connection = fullGraph.Connections
+                                              .Single(x => (x.Vertex.ReferenceId == region1.Id &&
+                                                            x.AdjacentVertex.ReferenceId == region2.Id) ||
+                                                           (x.Vertex.ReferenceId == region2.Id &&
+                                                            x.AdjacentVertex.ReferenceId == region1.Id));
 
-                    var actualConnection1 = connection.Location;
-                    var actualConnection2 = connection.AdjacentLocation;
+                    if (delaunayConnections.Contains(connection))
+                        continue;
 
-                    // Keep only the edge with the proper connection points
-                    foreach (var edge in delaunayGraph.FindEdges(region1.Id, region2.Id))
-                    {
-                        var criteria1 = (edge.Point1.Column == actualConnection1.Column &&
-                                         edge.Point1.Row == actualConnection1.Row) &&
-                                        (edge.Point2.Column == actualConnection2.Column &&
-                                         edge.Point2.Row == actualConnection2.Row);
+                    // Calculate the min distance edge for this DISTINCT connection
+                    var edges = delaunayEdges.Where(edge => EdgeConnectionComparer(edge, connection))
+                                             .ToList();
 
-                        var criteria2 = (edge.Point1.Column == actualConnection2.Column &&
-                                         edge.Point1.Row == actualConnection2.Row) &&
-                                        (edge.Point2.Column == actualConnection1.Column &&
-                                         edge.Point2.Row == actualConnection1.Row);
+                    // BE SURE THERE'S AN EDGE FOR THIS CONNECTION
+                    if (edges.Count == 0)
+                        continue;
 
-                        // Edge must contain both actual connection points
-                        if (criteria1 || criteria2)
-                            continue;
+                    var minEdge = edges.MinBy(edge => edge.Distance);
 
-                        // Edge is a superfluous connection between the two regions
-                        delaunayGraph.Remove(edge);
-                    }
+                    // Using remove -> add to try and make this a little faster
+                    delaunayEdges.Remove(edges);
+                    delaunayEdges.Add(minEdge);
+
+                    // Add connection to the final delaunay connections
+                    delaunayConnections.Add(connection);
                 }
             }
 
-            // Finally, filter any vertices that aren't being used; but be sure that there is at least one
-            // per region
-            delaunayGraph.FilterByVertex(vertex => !delaunayGraph[vertex].Any());
+            // Return a new graph with modified connections and Delaunay edges
+            return new GraphInfo<T>(delaunayConnections, delaunayEdges);
+        }
 
-            // Validate the graph
-            if (delaunayGraph.Vertices.Any(vertex => delaunayGraph[vertex].Count() == 0))
-                throw new Exception("Unconnected node detected in Delaunay triangulation");
+        private GraphInfo<T> CreateFullGraph<T>(IEnumerable<Region<T>> regions) where T : class, IGridLocator
+        {
+            // For no edges - just create a graph with one vertex
+            if (regions.Count() == 1)
+            {
+                var graph = new GraphInfo<T>(new RegionConnectionInfo<T>[] { });
+                graph.AddVertex(new GraphVertex(regions.First().Id, 0, 0, Metric.MetricType.Euclidean));
 
-            if (delaunayGraph.Edges.Any(edge => edge.Point1.ReferenceId == edge.Point2.ReferenceId))
-                throw new Exception("Self-referential full graph created RegionTriangulationCreator");
+                return graph;
+            }
 
-            return delaunayGraph;
+            // Create distinct region pairs 
+            var connectionList = regions.Pairs(regions,
+                                               region => region.Id,
+                                               region => region.Id,
+                                              (region1, region2) => CalculateConnection(region1, region2));
+
+            // Create vertices for the graph -> filter duplicates
+            var vertices = connectionList.SelectMany(connection =>
+            {
+                return new GraphVertex[] { connection.Vertex, connection.AdjacentVertex };
+
+            }).DistinctWith((vertex1, vertex2) => vertex1.Equals(vertex2))
+              .Actualize();
+
+            // Create edges for the graph - ignoring ordering and self-referencing
+            var edges = vertices.Pairs(vertices,
+                                       vertex => vertex,
+                                       vertex => vertex,
+                                      (vertex1, vertex2) => new GraphEdge(vertex1, vertex2));
+
+            return new GraphInfo<T>(connectionList, edges);
+        }
+
+        private RegionConnectionInfo<T> CalculateConnection<T>(Region<T> region1, Region<T> region2) where T : class, IGridLocator
+        {
+            // Finalized connections
+            var connections = new Dictionary<string, RegionConnectionInfo<T>>();
+
+            // Search related edges to look for candidates to know the minimum distance
+            var candidateLocations = new List<Tuple<T, T, double>>();
+
+            // Create rendered cell distance method for calculating euclidean distance between locations
+            var renderedDistance = new Func<T, T, double>((location1, location2) =>
+            {
+                var dx = (location2.Column - location1.Column) * ModelConstants.CellWidth;
+                var dy = (location2.Row - location1.Row) * ModelConstants.CellHeight;
+
+                return System.Math.Sqrt((dx * dx) + (dy * dy));
+            });
+
+            // Candidate Locations
+            //
+            // - Want to minimize iterating the edge locations as much as possible - so,
+            //   for non-overlapping boundaries, iterate just the exposed edge locations.
+            //
+            // - Otherwise, iterate all edge locations
+            //
+
+            // Left of -> Iterate the RIGHT edge
+            if (region2.Boundary.IsLeftOf(region1.Boundary))
+            {
+                candidateLocations
+                    .AddRange(region2.RightEdgeExposedLocations
+                    .Cartesian(region1.LeftEdgeExposedLocations, (location2, location1) =>
+                    {
+                        return new Tuple<T, T, double>(location1, location2, renderedDistance(location1, location2));
+                    }));
+            }
+
+            // Right of -> Iterate the LEFT edge
+            if (region2.Boundary.IsRightOf(region1.Boundary))
+            {
+                candidateLocations
+                    .AddRange(region2.LeftEdgeExposedLocations
+                    .Cartesian(region1.RightEdgeExposedLocations, (location2, location1) =>
+                    {
+                        return new Tuple<T, T, double>(location1, location2, renderedDistance(location1, location2));
+                    }));
+            }
+
+            // Above -> Iterate the BOTTOM edge
+            if (region2.Boundary.IsAbove(region1.Boundary))
+            {
+                candidateLocations
+                    .AddRange(region2.BottomEdgeExposedLocations
+                    .Cartesian(region1.TopEdgeExposedLocations, (location2, location1) =>
+                    {
+                        return new Tuple<T, T, double>(location1, location2, renderedDistance(location1, location2));
+                    }));
+            }
+
+            // Below -> Iterate the ABOVE edge
+            if (region2.Boundary.IsBelow(region1.Boundary))
+            {
+                candidateLocations
+                    .AddRange(region2.TopEdgeExposedLocations
+                    .Cartesian(region1.BottomEdgeExposedLocations, (location2, location1) =>
+                    {
+                        return new Tuple<T, T, double>(location1, location2, renderedDistance(location1, location2));
+                    }));
+            }
+
+            // OVERLAPPING BOUNDARIES
+            if (candidateLocations.Count == 0)
+            {
+                // ALL EDGE LOCATIONS
+                candidateLocations
+                    .AddRange(region1.EdgeLocations
+                    .Cartesian(region2.EdgeLocations, (location1, location2) =>
+                    {
+                        return new Tuple<T, T, double>(location1, location2, renderedDistance(location1, location2));
+                    }));
+            }
+
+            // FILTER OUT NON-DISTINCT CONNECTIONS
+            candidateLocations = candidateLocations.DistinctWith((tuple1, tuple2) =>
+            {
+                return (tuple1.Item1.Equals(tuple2.Item1) &&
+                        tuple1.Item2.Equals(tuple2.Item2)) ||
+                       (tuple1.Item1.Equals(tuple2.Item2) &&
+                        tuple1.Item2.Equals(tuple2.Item1));
+            }).ToList();
+
+            // No candidates found
+            if (candidateLocations.Count == 0)
+                throw new Exception("No adjacent node connection found RegionTriangulatin.CalculateConnection");
+
+            // Choose random element from the MINIMA BY DISTANCE of the candidates
+            var tuple = _randomSequenceGenerator.GetRandomElement(candidateLocations.Minima(tuple => tuple.Item3));
+
+            return new RegionConnectionInfo<T>()
+            {
+                AdjacentLocation = tuple.Item2,
+                AdjacentVertex = new GraphVertex(region2.Id,
+                                                 tuple.Item2.Column * ModelConstants.CellWidth,
+                                                 tuple.Item2.Row * ModelConstants.CellHeight,
+                                                 Metric.MetricType.Euclidean),
+                Location = tuple.Item1,
+                Vertex = new GraphVertex(region1.Id,
+                                         tuple.Item1.Column * ModelConstants.CellWidth,
+                                         tuple.Item1.Row * ModelConstants.CellHeight,
+                                         Metric.MetricType.Euclidean),
+                EuclideanRenderedDistance = tuple.Item3
+            };
+        }
+
+        /// <summary>
+        /// Compares equality of a GraphEdge and a RegionConnectionInfo 1) by region reference ID, 2) ignoring order
+        /// </summary>
+        private static bool EdgeConnectionComparer<T>(GraphEdge edge, RegionConnectionInfo<T> connection) where T : class, IGridLocator
+        {
+            return (edge.Point1.ReferenceId == connection.Vertex.ReferenceId &&
+                    edge.Point2.ReferenceId == connection.AdjacentVertex.ReferenceId) ||
+                   (edge.Point1.ReferenceId == connection.AdjacentVertex.ReferenceId &&
+                    edge.Point2.ReferenceId == connection.Vertex.ReferenceId);
         }
     }
 }

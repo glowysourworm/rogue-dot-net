@@ -8,6 +8,7 @@ using Rogue.NET.Core.Processing.Model.Extension;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Component;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface;
 
@@ -25,6 +26,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         readonly ISymmetricBuilder _symmetricBuilder;
         readonly IConnectionBuilder _connectionBuilder;
         readonly ITerrainBuilder _terrainBuilder;
+        readonly IRegionTriangulationCreator _regionTriangulationCreator;
         readonly IWallFinisher _wallFinisher;
         readonly ILightingFinisher _lightingFinisher;
 
@@ -33,6 +35,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                                ISymmetricBuilder symmetricBuilder,
                                IConnectionBuilder connectionBuilder,
                                ITerrainBuilder terrainBuilder,
+                               IRegionTriangulationCreator regionTriangulationCreator,
                                IWallFinisher wallFinisher,
                                ILightingFinisher lightingFinisher)
         {
@@ -40,43 +43,94 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             _symmetricBuilder = symmetricBuilder;
             _connectionBuilder = connectionBuilder;
             _terrainBuilder = terrainBuilder;
+            _regionTriangulationCreator = regionTriangulationCreator;
             _wallFinisher = wallFinisher;
             _lightingFinisher = lightingFinisher;
         }
 
         public LayoutGrid CreateLayout(LayoutTemplate template)
         {
-            // Create BASE + CONNECTION layer for the connection builder
+            // Create BASE layer for the connection builder
             var container = CreateRegions(template);
 
-            // Check for default in case of failure
-            if (!Validate(container))
-                return CreateDefaultLayout();
-
-            // Create Corridors (Connection points only require the triangulation graph)
-            if (template.ConnectionType != LayoutConnectionType.ConnectionPoints)
-                _connectionBuilder.BuildConnections(container, template);
-
-            // Check for default in case of failure
-            if (!Validate(container))
-                return CreateDefaultLayout();
-
-            // Calculates the terrain layers. Sets up a new connection layer if necessary 
-            // due to impassable terrain
+            // Calculates the terrain layers. Sets up a new base layer
             if (!CreateTerrain(container, template))
                 return CreateDefaultLayout();
 
-            return FinishLayout(container, template);
+            // Identify regions to triangulate
+            container.RecreateRegions();
+
+            // Triangulate the result to create the connection layer
+            var regionGraph = _regionTriangulationCreator.CreateTriangulation(container.GetRegions(LayoutGrid.LayoutLayer.Room), template);
+
+            // Create Corridors (Connections only require the triangulation graph)
+            if (template.ConnectionType == LayoutConnectionType.Corridor)
+                _connectionBuilder.BuildConnections(container, template, regionGraph);
+
+            // Create Maze Corridors (Connections require some re-triangulation)
+            else if (template.ConnectionType == LayoutConnectionType.Maze)
+            {
+                switch (template.Type)
+                {
+                    // "Filled" maze maps look a little nicer inside rectangular rooms
+                    case LayoutType.RectangularRegion:
+                    case LayoutType.RandomRectangularRegion:
+                    case LayoutType.MazeMap:
+                        _connectionBuilder.CreateMazeCorridors(container, template, IMazeRegionCreator.MazeType.Filled);
+                        break;
+                    case LayoutType.RandomSmoothedRegion:
+                    case LayoutType.CellularAutomataMazeMap:
+                    case LayoutType.ElevationMap:
+                    case LayoutType.ElevationMazeMap:
+                    case LayoutType.CellularAutomataMap:
+                    default:
+                        _connectionBuilder.CreateMazeCorridors(container, template, IMazeRegionCreator.MazeType.Open);
+                        break;
+                }
+
+                // Re-create triangulation for the walkable regions -> Re-connect using shortest paths
+                container.RecreateRegions();
+
+                // Fetch the ENTIRE WALKABLE MAP to create MORE corridors to ADD to the container
+                regionGraph = _regionTriangulationCreator.CreateTriangulation(container.GetRegions(LayoutGrid.LayoutLayer.Walkable), template);
+
+                // Add the corridors to the container
+                _connectionBuilder.ConnectUsingShortestPath(container, regionGraph);
+            }
+
+            // Re-calculate regions for the layout finisher (TERRAIN MAY BE MODIFIED)
+            container.RecreateRegions();
+
+            // *** Layout Finishing
+
+            // Build Walls around cells
+            _wallFinisher.CreateWalls(container);
+
+            // Build Doors on connection points for room regions
+            _wallFinisher.CreateDoors(container, regionGraph);
+
+            // Re-calculate final regions for the lighting finisher (MODIFIED FOR WALLS / DOORS)
+            container.RecreateRegions();
+
+            // Create Lighting
+            _lightingFinisher.CreateLighting(container, template);
+
+            // Finalize regions for the validator
+            container.RecreateRegions();
+
+            // Check for default in case of failure
+            if (!Validate(container))
+                return CreateDefaultLayout();
+
+            return FinishLayout(container, regionGraph, template);
         }
 
         private LayoutGrid CreateDefaultLayout()
         {
             var container = _regionBuilder.BuildDefaultLayout();
 
-            container.SetTerrainLayers(new LayerInfo<GridCellInfo>[] { });
-
-            // Using simple template to finish the default layout
-            return FinishLayout(container, new LayoutTemplate()
+            // TODO: CREATE STATIC DEFAULT TEMPLATE 
+            var template = new LayoutTemplate()
             {
                 Type = LayoutType.RectangularRegion,
                 ConnectionType = LayoutConnectionType.Corridor,
@@ -85,7 +139,30 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 FillRatioRooms = 1,
                 RoomSize = 1,
                 RoomSizeErradicity = 0
-            });
+            };
+
+            // Identify regions to triangulate
+            container.RecreateRegions();
+
+            // Triangulate the result to create the connection layer
+            var regionGraph = _regionTriangulationCreator.CreateTriangulation(container.GetRegions(LayoutGrid.LayoutLayer.Room), template);
+
+            // *** Layout Finishing
+
+            // Build Walls around cells
+            _wallFinisher.CreateWalls(container);
+
+            // Build Doors on connection points for room regions
+            _wallFinisher.CreateDoors(container, regionGraph);
+
+            // Create Lighting
+            _lightingFinisher.CreateLighting(container, template);
+
+            // Modify regions for walls and doors
+            container.RecreateRegions();
+
+            // Using simple template to finish the default layout
+            return FinishLayout(container, regionGraph, template);
         }
 
         /// <summary>
@@ -115,10 +192,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 if (!_terrainBuilder.BuildTerrain(container, template))
                     return false;
             }
-            else
-            {
-                container.SetTerrainLayers(new LayerInfo<GridCellInfo>[] { });
-            }
 
             return true;
         }
@@ -126,113 +199,81 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <summary>
         /// 3rd pass - finishes layout by creating the layers from the primary grid, regions, and terrain layers
         /// </summary>
-        private LayoutGrid FinishLayout(LayoutContainer container, LayoutTemplate template)
+        private LayoutGrid FinishLayout(LayoutContainer container, GraphInfo<GridCellInfo> connectionGraph, LayoutTemplate template)
         {
-            // NOTE*** "Base" Regions are those that are first calculated by the generator. The "Connection" Regions are those that are re-calculated after
-            //         laying terrain (or) from using the Symmetric builder.
+            // NOTE*** "Base" Regions are those that are calculated as the primary rooms for the layout.
             //
-            //         The Graphs calculated by the triangulation routine are NON-DETERMINISTIC. The connections from these graphs are used to 
+            //         The Graphs calculated by the triangulation routine can be random. The connections from these graphs are used to 
             //         add content; and plan movement routes for characters.
             //
-            //         The Graph of the BASE regions is either 1) lost to re-calculation (or) 2) stored in the base region graph. It just 
-            //         depends on whether there was impassable terrain; or other modifications.
-            //
-            //         The "Room" Regions are re-calculated here IF THERE HAS BEEN ANY TERRAIN MODIFICATION. These are taken ONLY from the BASE 
-            //         regions to preserve the original room structure; but there is no Graph connecting them. (This would require having a way to repair
-            //         the triangulation that is damaged during terrain building)
-            //
-            //         The "Walkable" Regions are calculated here as a separate, non-connection layer. 
-            //
 
-            // Re-calculate the room regions
-            var roomRegions = container.Grid.ConstructRegions(cell => !cell.IsWall &&
-                                                                      // !cell.IsCorridor &&  *** NOT SURE ABOUT THESE CORRIDORS - THEY INVADE THE ORIGINAL ROOMS
-                                                                      !container.TerrainLayers.Any(layer => !layer.IsPassable && layer[cell.Column, cell.Row] != null) &&
-                                                                       container.BaseRegions.Any(region => region[cell.Column, cell.Row] != null));
-            // *** Layout Finishing
+            // *** Convert regions to final format
+            var finalRegions = container.GetRegions(LayoutGrid.LayoutLayer.Full)
+                                        .Select(region => ConvertRegion(container, region))
+                                        .Actualize();
 
-            // Build Walls around cells
-            _wallFinisher.CreateWalls(container.Grid, false);
+            var finalWalkableRegions = container.GetRegions(LayoutGrid.LayoutLayer.Walkable)
+                                                .Select(region => ConvertRegion(container, region))
+                                                .Actualize();
 
-            // Build Doors on connecting corridors - use original regions
-            _wallFinisher.CreateDoors(container.Grid, container.BaseRegions, container.TerrainLayers);
+            var finalPlacementRegions = container.GetRegions(LayoutGrid.LayoutLayer.Placement)
+                                                 .Select(region => ConvertRegion(container, region))
+                                                 .Actualize();
 
-            // Create Lighting
-            _lightingFinisher.CreateLighting(container, template);
+            var finalRoomRegions = container.GetRegions(LayoutGrid.LayoutLayer.Room)
+                                            .Select(region => ConvertRegion(container, region))
+                                            .Actualize();
 
-            // Identify final layout regions - INCLUDES ALL NON-EMPTY CELLS
-            var regions = container.Grid.ConstructRegions(cell => true);
+            var finalCorridorRegions = container.GetRegions(LayoutGrid.LayoutLayer.Corridor)
+                                                .Select(region => ConvertRegion(container, region))
+                                                .Actualize();
 
-            // Identify final walkable regions (1) Not a wall, 2) Not impassable terrain)
-            var walkableRegions = container.Grid.ConstructRegions(cell => !cell.IsWall &&
-                                                               !container.TerrainLayers.Any(layer => layer[cell.Column, cell.Row] != null && !layer.IsPassable));
+            var finalWallRegions = container.GetRegions(LayoutGrid.LayoutLayer.Wall)
+                                                 .Select(region => ConvertRegion(container, region))
+                                                 .Actualize();
 
-            // Identify placement layer (1) Not a wall, 2) Not a door, 3) Not impassable terrain)
-            var placementRegions = container.Grid.ConstructRegions(cell => !cell.IsWall &&
-                                                                !cell.IsDoor &&
-                                                                !container.TerrainLayers.Any(layer => layer[cell.Column, cell.Row] != null && !layer.IsPassable));
+            var finalImpassableRegions = container.GetRegions(LayoutGrid.LayoutLayer.ImpassableTerrain)
+                                                  .Select(region => ConvertRegion(container, region))
+                                                  .Actualize();
 
-            // Identify final corridor regions (1) Not a wall, 2) Marked a corridor)
-            var corridorRegions = container.Grid.ConstructRegions(cell => !cell.IsWall &&
-                                                                cell.IsCorridor);
-
-            // Identify final wall regions
-            var wallRegions = container.Grid.ConstructRegions(cell => cell.IsWall);
-
-            // *** Iterate regions to re-create using GridLocation (ONLY SUPPORTED SERIALIZED TYPE FOR REGIONS)
-            var finalRegions = regions.Select(region => ConvertRegion(container.Grid, region)).Actualize();
-            var finalConnectionRegions = container.ConnectionLayer.ConnectionRegions.Select(region => ConvertConnectedRegion(container.Grid, region)).Actualize();
-            var finalWalkableRegions = walkableRegions.Select(region => ConvertRegion(container.Grid, region)).Actualize();
-            var finalPlacementRegions = placementRegions.Select(region => ConvertRegion(container.Grid, region)).Actualize();
-            var finalRoomRegions = roomRegions.Select(region => ConvertRegion(container.Grid, region)).Actualize();
-            var finalCorridorRegions = corridorRegions.Select(region => ConvertRegion(container.Grid, region)).Actualize();
-            var finalWallRegions = wallRegions.Select(region => ConvertRegion(container.Grid, region)).Actualize();
-            var finalTerrianLayers = container.TerrainLayers.Select(layerInfo =>
+            var finalTerrianLayers = container.TerrainDefinitions.Select(definition =>
             {
-                var terrainRegions = layerInfo.Regions.Select(region => ConvertRegion(container.Grid, region));
+                var terrainRegions = container.GetTerrainRegions(definition);
 
-                return new LayerInfo<GridLocation>(layerInfo.LayerName, terrainRegions, layerInfo.IsPassable);
+                return new LayerInfo<GridLocation>(definition.Name, terrainRegions, definition.IsPassable);
             });
-
-            // Set connections from the connection regions to the finalized set
-            //
-            // TODO: Change triangulation code to set these from the graph after they're
-            //       calculated. (Problem is that it sets ALL of the connections as it's 
-            //       calculating the graph. This needs to be cleaned up after it finishes)
-            //
-            foreach (var edge in container.ConnectionLayer.RegionGraph.Edges)
-            {
-                var finalizedRegion1 = finalConnectionRegions.First(region => region.Id == edge.Point1.ReferenceId);
-                var finalizedRegion2 = finalConnectionRegions.First(region => region.Id == edge.Point2.ReferenceId);
-
-                var point1 = container.Grid[edge.Point1.Column, edge.Point1.Row].Location;
-                var point2 = container.Grid[edge.Point2.Column, edge.Point2.Row].Location;
-
-                finalizedRegion1.SetConnection(finalizedRegion2, point1, point2, edge.Distance);
-                finalizedRegion2.SetConnection(finalizedRegion1, point2, point1, edge.Distance);
-            }
 
             // Build layers
             var fullLayer = new LayerInfo<GridLocation>("Full Layer", finalRegions, false);
-            var connectionLayer = new ConnectedLayerInfo<GridLocation>("Connection Layer", container.ConnectionLayer.RegionGraph, finalConnectionRegions, true);
+            var connectionLayer = new ConnectedLayerInfo<GridLocation>("Connection Layer", ConvertGraph(connectionGraph), finalWalkableRegions, true);
             var walkableLayer = new LayerInfo<GridLocation>("Walkable Layer", finalWalkableRegions, true);
             var placementLayer = new LayerInfo<GridLocation>("Placement Layer", finalPlacementRegions, true);
             var roomLayer = new LayerInfo<GridLocation>("Room Layer", finalRoomRegions, true);
             var corridorLayer = new LayerInfo<GridLocation>("Corridor Layer", finalCorridorRegions, true);
             var wallLayer = new LayerInfo<GridLocation>("Wall Layer", finalWallRegions, false);
 
-            return new LayoutGrid(container.Grid, fullLayer, connectionLayer, 
-                                  walkableLayer, placementLayer, roomLayer,
-                                  corridorLayer, wallLayer, finalTerrianLayers);
+            // Final 2D array for the constructor
+            var grid = new GridCellInfo[container.Width, container.Height];
+
+            // (Use of encapsulation made this necessary...)
+            grid.Iterate((column, row) => grid[column, row] = container.Get(column, row));
+
+            return new LayoutGrid(grid, 
+                                  fullLayer, 
+                                  connectionLayer, 
+                                  walkableLayer, 
+                                  placementLayer, roomLayer,
+                                  corridorLayer, wallLayer, 
+                                  finalTerrianLayers);
         }
 
         /// <summary>
-        /// Identifies regions - removing invalid ones. Returns false if there are no valid regions.
+        /// Pulls regions from a finalized layout container and ensures they meet requirements
         /// </summary>
         private bool Validate(LayoutContainer container)
         {
-            if (container.BaseRegions.Any(region => !RegionValidator.ValidateBaseRegion(region)) ||
-                container.ConnectionLayer.ConnectionRegions.Any(region => !RegionValidator.ValidateBaseRegion(region)))
+            if (container.GetRegions(LayoutGrid.LayoutLayer.Walkable)
+                         .Any(region => !RegionValidator.ValidateBaseRegion(region)))
                 return false;
 
             return true;
@@ -241,22 +282,30 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// <summary>
         /// Converts Region to use GridLocation type for serialization.
         /// </summary>
-        private Region<GridLocation> ConvertRegion(GridCellInfo[,] grid, Region<GridCellInfo> region)
+        private Region<GridLocation> ConvertRegion(LayoutContainer container, Region<GridCellInfo> region)
         {
             return new Region<GridLocation>(region.Id,
-                                            region.Locations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
-                                            region.EdgeLocations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
+                                            region.Locations.Select(location => container.Get(location.Column, location.Row).Location).ToArray(),
+                                            region.EdgeLocations.Select(location => container.Get(location.Column, location.Row).Location).ToArray(),
                                             region.Boundary,
-                                            new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
+                                            new RegionBoundary(0, 0, container.Width, container.Height));
         }
 
-        private ConnectedRegion<GridLocation> ConvertConnectedRegion(GridCellInfo[,] grid, ConnectedRegion<GridCellInfo> region)
+        private GraphInfo<GridLocation> ConvertGraph(GraphInfo<GridCellInfo> graph)
         {
-            return new ConnectedRegion<GridLocation>(region.Id,
-                                                     region.Locations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
-                                                     region.EdgeLocations.Select(location => grid[location.Column, location.Row].Location).ToArray(),
-                                                     region.Boundary,
-                                                     new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1)));
+            return new GraphInfo<GridLocation>(graph.Connections
+                                                    .Select(connection =>
+                                                    {
+                                                        return new RegionConnectionInfo<GridLocation>()
+                                                        {
+                                                            AdjacentLocation = connection.AdjacentLocation.Location,
+                                                            Location = connection.Location.Location,
+                                                            AdjacentVertex = connection.AdjacentVertex,
+                                                            Vertex = connection.Vertex,
+                                                            EuclideanRenderedDistance = connection.EuclideanRenderedDistance
+                                                        };
+                                                    })
+                                                    .Actualize(), graph.Edges);
         }
     }
 }

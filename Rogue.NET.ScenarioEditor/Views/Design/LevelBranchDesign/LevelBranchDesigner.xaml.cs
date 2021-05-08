@@ -142,7 +142,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
                 this.PreviewLayerContainer.Visibility = Visibility.Collapsed;
 
                 RenderLayoutMode(this.FullLayerCB.IsChecked.GetValueOrDefault(),
-                                 this.ConnectionLayerCB.IsChecked.GetValueOrDefault(),
                                  this.WalkableLayerCB.IsChecked.GetValueOrDefault(),
                                  this.PlacementLayerCB.IsChecked.GetValueOrDefault(),
                                  this.RoomLayerCB.IsChecked.GetValueOrDefault(),
@@ -173,7 +172,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
         }
 
         private void RenderLayoutMode(bool fullLayer,
-                                      bool connectionLayer,
                                       bool walkableLayer,
                                       bool placementLayer,
                                       bool roomLayer,
@@ -188,9 +186,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
 
             if (fullLayer)
                 layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.Full, this.FullLayerSymbol, false));
-
-            if (connectionLayer)
-                layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.Connection, this.ConnectionLayerSymbol, false));
 
             if (walkableLayer)
                 layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.Walkable, this.WalkableLayerSymbol, false));
@@ -236,10 +231,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
             }
 
             // Combine layers
-            this.PreviewImage.Source = layerImages.Aggregate((image1, image2) =>
+            var finalRendering = layerImages.Aggregate((image1, image2) =>
             {
                 return _previewRenderingService.CombineRendering(image1, image2, WriteableBitmapExtensions.BlendMode.Alpha);
             });
+
+            this.PreviewImage.Source = finalRendering;
         }
 
         private void RenderPreviewMode(bool walkableLayer,
@@ -275,10 +272,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
             }
 
             // Combine layers
-            this.PreviewImage.Source = layerImages.Aggregate((image1, image2) =>
+            var finalRendering = layerImages.Aggregate((image1, image2) =>
             {
                 return _previewRenderingService.CombineRendering(image1, image2, WriteableBitmapExtensions.BlendMode.Alpha);
             });
+
+            this.PreviewImage.Source = finalRendering;
         }
 
         private SymbolDetailsTemplate CreateRectangleSymbol(double hue)

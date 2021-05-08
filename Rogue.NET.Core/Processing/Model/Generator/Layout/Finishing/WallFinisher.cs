@@ -21,10 +21,17 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
         }
 
-        public void CreateDoors(GridCellInfo[,] grid, IEnumerable<Region<GridCellInfo>> regions, IEnumerable<LayerInfo<GridCellInfo>> terrainLayers)
+        public void CreateDoors(LayoutContainer container, GraphInfo<GridCellInfo> connectionGraph)
         {
-            foreach (var region in regions)
+            // Set door locations for each graph connection
+            foreach (var connection in connectionGraph.Connections)
             {
+                connection.DoorLocation.IsDoor = true;
+                connection.AdjacentDoorLocation.IsDoor = true;
+            }
+
+            /* OLD ROUTINE - PER REGION, ITERATE...
+             * 
                 // Iterate edge locations
                 foreach (var location in region.EdgeLocations)
                 {
@@ -101,80 +108,64 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                                                  !terrainLayers.Any(layer => !layer.IsPassable && layer[oppositeDoorCell.Column, oppositeDoorCell.Row] != null);
                     }
                 }
-            }
+             */
         }
 
-        public void CreateWalls(GridCellInfo[,] grid, bool createBorder)
+        public void CreateWalls(LayoutContainer container)
         {
-            var bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
+            // Create new wall cells to add to the layout
             var walls = new List<GridCellInfo>();
 
             // Iterate - leaving a padding of 1 on the edge to create cells for walls
             //           without stepping out of bounds
             //
-            for (int i = 1; i < bounds.Width - 1; i++)
+            for (int column = 1; column < container.Width - 1; column++)
             {
-                for (int j = 1; j < bounds.Height - 1; j++)
+                for (int row = 1; row < container.Height - 1; row++)
                 {
                     // Locate a region or corridor
-                    if (grid[i, j] == null)
+                    if (container.Get(column, row) == null)
                         continue;
 
                     // Check the surrounding grid for empty cells
 
                     // North wall
-                    if (grid[i, j - 1] == null)
-                        walls.Add(new GridCellInfo(new GridLocation(i, j - 1)) { IsWall = true });
+                    if (container.Get(column, row - 1) == null)
+                        walls.Add(new GridCellInfo(new GridLocation(column, row - 1)) { IsWall = true });
 
                     // South wall
-                    if (grid[i, j + 1] == null)
-                        walls.Add(new GridCellInfo(new GridLocation(i, j + 1)) { IsWall = true });
+                    if (container.Get(column, row + 1) == null)
+                        walls.Add(new GridCellInfo(new GridLocation(column, row + 1)) { IsWall = true });
 
                     // West wall
-                    if (grid[i - 1, j] == null)
-                        walls.Add(new GridCellInfo(new GridLocation(i - 1, j)) { IsWall = true });
+                    if (container.Get(column - 1, row) == null)
+                        walls.Add(new GridCellInfo(new GridLocation(column - 1, row)) { IsWall = true });
 
                     // East wall
-                    if (grid[i + 1, j] == null)
-                        walls.Add(new GridCellInfo(new GridLocation(i + 1, j)) { IsWall = true });
+                    if (container.Get(column + 1, row) == null)
+                        walls.Add(new GridCellInfo(new GridLocation(column + 1, row)) { IsWall = true });
 
                     // North-East wall
-                    if (grid[i + 1, j - 1] == null)
-                        walls.Add(new GridCellInfo(new GridLocation(i + 1, j - 1)) { IsWall = true });
+                    if (container.Get(column + 1, row - 1) == null)
+                        walls.Add(new GridCellInfo(new GridLocation(column + 1, row - 1)) { IsWall = true });
 
                     // South-East wall
-                    if (grid[i + 1, j + 1] == null)
-                        walls.Add(new GridCellInfo(new GridLocation(i + 1, j + 1)) { IsWall = true });
+                    if (container.Get(column + 1, row + 1) == null)
+                        walls.Add(new GridCellInfo(new GridLocation(column + 1, row + 1)) { IsWall = true });
 
                     // North-West wall
-                    if (grid[i - 1, j - 1] == null)
-                        walls.Add(new GridCellInfo(new GridLocation(i - 1, j - 1)) { IsWall = true });
+                    if (container.Get(column - 1, row - 1) == null)
+                        walls.Add(new GridCellInfo(new GridLocation(column - 1, row - 1)) { IsWall = true });
 
                     // South-West wall
-                    if (grid[i - 1, j + 1] == null)
-                        walls.Add(new GridCellInfo(new GridLocation(i - 1, j + 1)) { IsWall = true });
+                    if (container.Get(column - 1, row + 1) == null)
+                        walls.Add(new GridCellInfo(new GridLocation(column - 1, row + 1)) { IsWall = true });
                 }
             }
 
             // Add wall cells to the grid
             foreach (var cell in walls)
-                grid[cell.Location.Column, cell.Location.Row] = cell;
-
-            // Optionally, create border
-            if (createBorder)
-            {
-                for (int i = 0; i < grid.GetLength(0); i++)
-                {
-                    grid[i, 0] = new GridCellInfo(i, 0) { IsWall = true };
-                    grid[i, grid.GetLength(1) - 1] = new GridCellInfo(i, grid.GetLength(1) - 1) { IsWall = true };
-                }
-
-                for (int j = 0; j < grid.GetLength(1); j++)
-                {
-                    grid[0, j] = new GridCellInfo(0, j) { IsWall = true };
-                    grid[grid.GetLength(0) - 1, j] = new GridCellInfo(grid.GetLength(0) - 1, j) { IsWall = true };
-                }
-            }
+                container.SetLayout(cell.Location.Column, cell.Location.Row, cell);
         }
     }
 }
