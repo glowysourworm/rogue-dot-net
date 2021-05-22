@@ -1,7 +1,9 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
+using Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface;
 
 using System;
 using System.Collections.Generic;
@@ -21,18 +23,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         /// </summary>
         public delegate bool RegionConstructionCallback(int column, int row);
 
+        readonly ITerrainBuilder _terrainBuilder;
+
         GridCellInfo[,] _grid;
-        IDictionary<TerrainLayerTemplate, GridLocation[,]> _terrainDict;
 
         // Finalized regions - created by calling FinalizeLayout()
-        IDictionary<LayoutLayer, IEnumerable<Region<GridCellInfo>>> _regionDict;
+        IDictionary<LayoutLayer, IEnumerable<RegionInfo<GridLocation>>> _regionDict;
+        IDictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> _finalizedTerrainDict;
 
-        // Terrain regions are applied to the underlying layout
-        IDictionary<TerrainLayerTemplate, IEnumerable<Region<GridLocation>>> _terrainRegionDict;
+        // Store data for both graphs for the layout
+        RegionGraphInfo<GridLocation> _graph;
 
         // State of the finalized layout and terrain layers. Resets when cells are modified
-        bool _invalid = false;
-        bool _terrainInvalid = false;
+        IDictionary<LayoutLayer, bool> _invalidRegionDict;
+        bool _graphInvalid = true;
 
         /// <summary>
         /// Width of the primary layout grid (and all terrain grids)
@@ -50,30 +54,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         public RegionBoundary Bounds { get; private set; }
 
         /// <summary>
-        /// Returns a set of terrain layer templates for each layer
-        /// </summary>
-        public IEnumerable<TerrainLayerTemplate> TerrainDefinitions { get { return _terrainDict.Keys; } }
-
-        /// <summary>
         /// Returns regions for the specified layer
         /// </summary>
-        public IEnumerable<Region<GridCellInfo>> GetRegions(LayoutLayer layer)
+        public IEnumerable<RegionInfo<GridLocation>> GetRegions(LayoutLayer layer)
         {
-            if (_invalid || _terrainInvalid)
-                throw new Exception("Must finalize layout before calling for the regions");
+            if (_invalidRegionDict[layer])
+                throw new Exception("Must finalize layout or process regions before calling for the regions");
 
             return _regionDict[layer];
-        }
-
-        /// <summary>
-        /// Returns set of terrain regions for the layer
-        /// </summary>
-        public IEnumerable<Region<GridLocation>> GetTerrainRegions(TerrainLayerTemplate definition)
-        {
-            if (_invalid || _terrainInvalid)
-                throw new Exception("Must finalize layout before calling for the regions");
-
-            return _terrainRegionDict[definition];
         }
 
         /// <summary>
@@ -84,180 +72,376 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             return _grid[column, row];
         }
 
-        // TODO: Consider moving these to an interface design
-
-        /// <summary>
-        /// Returns cardinal adjacent elements on the primary layout grid
-        /// </summary>
-        public IEnumerable<GridCellInfo> GetCardinalAdjacentElements(int column, int row)
+        public RegionGraphInfo<GridLocation> GetConnectionGraph()
         {
-            return _grid.GetCardinalAdjacentElements(column, row);
-        }
+            if (_graphInvalid)
+                throw new Exception("Must triangulate connection graph of rooms because of changes to layout");
 
-        public IEnumerable<GridLocation> GetCardinalAdjacentElements(TerrainLayerTemplate definition, int column, int row)
-        {
-            return _terrainDict[definition].GetCardinalAdjacentElements(column, row);
-        }
-
-        public bool HasTerrain(TerrainLayerTemplate definition, int column, int row)
-        {
-            return _terrainDict.ContainsKey(definition) &&
-                   _terrainDict[definition][column, row] != null;
+            return _graph;
         }
 
         public bool HasImpassableTerrain(int column, int row)
         {
-            return _terrainDict.Where(element => !element.Key.IsPassable)
-                               .Any(element => element.Value[column, row] != null);
+            return _terrainBuilder.AnyImpassableTerrain(column, row);
         }
 
         /// <summary>
         /// Sets new grid cell in the primary layout grid. INVALIDATES OTHER LAYERS OF THE FINAL LAYOUT
         /// </summary>
-        public void SetLayout(int column, int row, GridCellInfo cell)
+        public void AddLayout(int column, int row, GridCellInfo cell)
         {
+            if (_grid[column, row] != null)
+                throw new Exception("Trying to overwrite existing layout cell LayoutContainer.AddLayout");
+
             cell.IsLayoutModifiedEvent -= LayoutModified;
             cell.IsLayoutModifiedEvent += LayoutModified;
 
-            // Invalidate for new cells
-            _invalid |= _grid[column, row] != cell;
-
             _grid[column, row] = cell;
+
+            // Invalidate appropriate layers
+            LayoutAddedValidation(cell);
         }
 
-        public void SetTerrain(TerrainLayerTemplate definition, int column, int row, bool hasTerrain)
+        /// <summary>
+        /// Removes grid cell in the primary layout grid. INVALIDATES OTHER LAYERS OF THE FINAL LAYOUT
+        /// </summary>
+        public void RemoveLayout(GridCellInfo cell)
         {
-            if (hasTerrain)
+            if (_grid[cell.Column, cell.Row] != cell)
+                throw new Exception("Trying to overwrite invalid layout cell LayoutContainer.AddLayout");
+
+            cell.IsLayoutModifiedEvent -= LayoutModified;
+
+            // Nullify grid
+            _grid[cell.Column, cell.Row] = null;
+
+            // Invalidate appropriate layers
+            LayoutAddedValidation(cell);
+        }
+
+        /// <summary>
+        /// Sets graph for the current room regions and flags it as VALID.
+        /// </summary>
+        public void SetConnectionGraph(RegionGraphInfo<GridLocation> graph)
+        {
+            if (AnyInvalidLayers())
+                throw new Exception("Trying to set connection graph before finalizing layout:  LayoutContainer.SetConnectionGraph");
+
+            _graph = graph;
+            _graphInvalid = false;
+        }
+
+        /// <summary>
+        /// Constructs regions of empty space in the primary layout grid in its current state. THESE ARE NOT
+        /// STORED IN THE CONTAINER.
+        /// </summary>
+        public IEnumerable<RegionInfo<GridLocation>> CreateEmptySpaceRegions()
+        {
+            var locations = new GridLocation[this.Width, this.Height];
+
+            _grid.Iterate((column, row) =>
             {
-                // Check for invalidation of terrain
-                _terrainInvalid |= (_terrainDict[definition][column, row] == null);
+                if (_grid[column, row] == null)
+                    locations[column, row] = new GridLocation(column, row);
+            });
 
-                _terrainDict[definition][column, row] = _terrainDict[definition][column, row] ?? new GridLocation(column, row);
-            }
-            else
+            return locations.ConstructRegions("Empty Space", location => true, location => location);
+        }
+
+        /// <summary>
+        /// Processes updates to the layout regions using the current state of the layout / terrain grids.
+        /// </summary>
+        public void ProcessRegions()
+        {
+            RecreateRegions();
+        }
+
+
+        /// <summary>
+        /// Final validation routine - verifies layout is valid, regions, terrain, and runs a final connection layer validation
+        /// to check that region id's and connections match exactly.
+        /// </summary>
+        public bool Validate()
+        {
+            return !AnyInvalidLayers() &&
+                   !_graphInvalid &&
+                   ValidateConnections();
+        }
+
+        /// <summary>
+        /// Finalizes layout by making sure it is valid and there is support for terrain cells
+        /// </summary>
+        public FinalizedLayoutContainer Finalize()
+        {
+            if (_graphInvalid)
+                throw new Exception("Trying to finalize an invalid graph layout:  LayoutContainer.Finalize");
+
+            if (_finalizedTerrainDict == null)
+                throw new Exception("Must finalize terrain before finalizing the layout");
+
+            RecreateRegions();
+
+            return new FinalizedLayoutContainer()
             {
-                // Check for invalidation of terrain
-                _terrainInvalid |= (_terrainDict[definition][column, row] != null);
-
-                _terrainDict[definition][column, row] = null;
-            }
+                Bounds = this.Bounds,
+                Graph = _graph,
+                Grid = _grid,
+                RegionDict = _regionDict,
+                TerrainDict = _finalizedTerrainDict
+            };
         }
 
         /// <summary>
-        /// Creates a new terrain layer and sets up necessary layout support
+        /// CALLED BEFORE ADDING WALLS TO CREATE TERRAIN SUPPORT! FINALIZE TERRAIN BEFORE LAYOUT!  Creates terrain regions and 
+        /// support in the layout grid for valid terrain regions (removes islands). FORCES RE-CREATION OF LAYOUT LAYERS.
         /// </summary>
-        public void CreateTerrainLayer(TerrainLayerTemplate definition)
+        /// <returns></returns>
+        public void FinalizeTerrain()
         {
-            _terrainDict.Add(definition, new GridLocation[this.Width, this.Height]);
+
+            if (_graphInvalid)
+                throw new Exception("Trying to finalize an invalid graph layout:  LayoutContainer.FinalizeTerrain");
+
+            // Create terrain support in the primary grid, then re-create regions to finalize the terrain layers.
+            // There may be some new overlap between non-connected regions; but the graph is still valid and playable.
+            // Remove 
+            //
+
+            // Procedure
+            //
+            // 0) Re-create regions to ensure valid layers
+            // 1) Create terrain regions - eliminating islands (REMOVE FROM ORIGINAL)
+            // 2) Set terrain as valid since its cells align with the layout
+            // 3) Re-create FINAL set of LAYOUT regions checking for the terrain support flag
+            //
+
+            // Validate the layers
+            RecreateRegions();
+
+            // Construct new regions that obey the layout changes. This
+            // will prepare the final terrain regions that have support from the
+            // layout grid.
+
+            // Creates cells in the layout where terrain exists - can invalidate the layers. SHOULD
+            // NOT MODIFY THE TOPOLOGY!!
+            //
+            _terrainBuilder.AddTerrainSupport(this);
+
+            // Re-validate the layers - ADDING THE TERRAIN SUPPORT LAYER
+            RecreateRegions();
+
+            // Eliminates islands based on the WALKABLE AND TERRAIN SUPPORT LAYERS - obeying the terrain mask
+            _finalizedTerrainDict = _terrainBuilder.FinalizeTerrainRegions(this);
+
+            RecreateRegions();
+
+            // NOTE***  This should ONLY be called HERE! Since the terrain has been finalized - there is a change
+            //          the the regions. The new ones will have a different hash code identity than the old ones. This
+            //          is OK to do HERE - but ONLY because the TOPOLOGY HASN'T BEEN BROKEN.
+            RebuildGraph();
         }
+
 
         /// <summary>
-        /// Constructs regions of the primary layout grid in its current state
+        /// STATEFUL SERVICE INJECTION
         /// </summary>
-        public IEnumerable<Region<GridCellInfo>> ConstructRegions(RegionConstructionCallback predicate)
+        public LayoutContainer(ITerrainBuilder terrainBuilder,
+                               LayoutTemplate template,
+                               GridCellInfo[,] grid)
         {
-            return _grid.ConstructRegions(cell => predicate(cell.Column, cell.Row));
-        }
-
-        public IEnumerable<Region<GridLocation>> ConstructTerrainRegions(TerrainLayerTemplate definition, RegionConstructionCallback predicate)
-        {
-            return _terrainDict[definition].ConstructRegions(cell => predicate(cell.Column, cell.Row));
-        }
-
-        /// <summary>
-        /// Processes the primary grid with the terrain grids to create the final set of regions and terrain regions
-        /// </summary>
-        public void RecreateRegions()
-        {
-            if (!_invalid && !_terrainInvalid)
-                return;
-
-            ApplyTerrain();
-            CreateRegions();
-
-            _invalid = false;
-            _terrainInvalid = false;
-        }
-
-        public LayoutContainer(GridCellInfo[,] grid)
-        {
+            _terrainBuilder = terrainBuilder;
             _grid = grid;
-            _terrainDict = new Dictionary<TerrainLayerTemplate, GridLocation[,]>();
-            _regionDict = new Dictionary<LayoutLayer, IEnumerable<Region<GridCellInfo>>>();
-            _terrainRegionDict = new Dictionary<TerrainLayerTemplate, IEnumerable<Region<GridLocation>>>();
+            _regionDict = new Dictionary<LayoutLayer, IEnumerable<RegionInfo<GridLocation>>>();
+            _invalidRegionDict = new Dictionary<LayoutLayer, bool>();
+            _graph = null;
 
+            // Initialize
             this.Bounds = new RegionBoundary(0, 0, grid.GetLength(0), grid.GetLength(1));
+
+            // Initialize terrain layers
+            _terrainBuilder.Initialize(grid.GetLength(0), grid.GetLength(1), template.TerrainLayers);
+
+            // Create layer flags
+            foreach (var layer in Enum.GetValues(typeof(LayoutLayer))
+                                      .Cast<LayoutLayer>())
+            {
+                // Initialize to invalid
+                _invalidRegionDict.Add(layer, true);
+                _regionDict.Add(layer, new List<RegionInfo<GridLocation>>());
+            }
+
+            RecreateRegions();
         }
 
         #region (private) Methods
 
-        private void ApplyTerrain()
+        private void RecreateRegions(bool force = false)
         {
-            // Procedure
-            //
-            // 1) Create cells for all terrain locations in the primary grid
-            // 2) Create walls where terrain is impassible
-            // 3) SKIP cells marked as corridors
-
-            // Create new grid with removed cells for blocked terrain
-            for (int column = 0; column < _grid.GetLength(0); column++)
+            // Enumerate layout layers - skipping ones that haven't been modified
+            foreach (var layer in Enum.GetValues(typeof(LayoutLayer))
+                                      .Cast<LayoutLayer>())
             {
-                for (int row = 0; row < _grid.GetLength(1); row++)
+                // SKIP VALIDATED LAYERS - PRIMARY INVALID FLAG SET IF NEW CELLS ADDED
+                if (_invalidRegionDict[layer] || force)
                 {
-                    // Skipping corridors will allow paths through impassable terrain
-                    if (_grid[column, row] != null &&
-                        _grid[column, row].IsCorridor)
-                        continue;
-
-                    // Check all terrain layers
-                    foreach (var element in _terrainDict)
+                    // Combines layout grid with query to the terrain grids to construct layout regions. Avoids impassable terrain.
+                    //
+                    // NOTE*** IsTerrainSupport flag is NOT used as a query for terrain. It is supposed to be available to add cells
+                    //         where terrain overlaps the layout AND empty space. These MAY OR MAY NOT be walkable.
+                    //         
+                    switch (layer)
                     {
-                        // Terrain exists
-                        if (element.Value[column, row] != null)
-                        {
-                            _grid[column, row] = _grid[column, row] ?? new GridCellInfo(column, row);
+                        // AVOID IMPASSABLE TERRAIN
+                        case LayoutLayer.Walkable:
+                        case LayoutLayer.Placement:
+                        case LayoutLayer.ConnectionRoom:
+                        case LayoutLayer.Corridor:
+                        case LayoutLayer.Wall:
+                            _regionDict[layer] = _grid.ConstructRegions(layer.ToString(), cell => cell.IsLayer(layer) &&
+                                                                                                  !_terrainBuilder.AnyImpassableTerrain(cell.Column, cell.Row),
+                                                                                                  cell => cell.Location);
+                            break;
 
-                            // NOTE*** Fires Layout Modified event (SHOULD CONSIDER ADDING IMPASSABLE TERRAIN FLAG)
-                            _grid[column, row].IsWall = !element.Key.IsPassable;
-                        }
+                        // DON'T AVOID IMPASSABLE TERRAIN
+                        case LayoutLayer.Room:
+                        case LayoutLayer.FullNoTerrainSupport:
+                        case LayoutLayer.TerrainSupport:
+                            _regionDict[layer] = _grid.ConstructRegions(layer.ToString(), cell => cell.IsLayer(layer), cell => cell.Location);
+                            break;
+                        default:
+                            throw new Exception("Unhandled LayoutLayer type:  LayoutContainer.CreateRegions");
                     }
+
+                    _invalidRegionDict[layer] = false;
                 }
             }
         }
-        private void CreateRegions()
+
+        // Re-creates graph with new regions based on connection points that match with the current region dictionary
+        private void RebuildGraph()
         {
-            _regionDict.Clear();
-            _terrainRegionDict.Clear();
+            // NOTE*** This only works when CONNECTIONROOM regions haven't been altered by CORRIDORS in a way 
+            //         that BREAKS THE TOPOLOGY.
+            //
 
-            // Regions that don't depend on terrain
-            _regionDict.Add(LayoutLayer.Corridor, _grid.ConstructRegions(cell => cell.IsCorridor));
-            _regionDict.Add(LayoutLayer.Full, _grid.ConstructRegions(cell => true));
-            _regionDict.Add(LayoutLayer.Room, _grid.ConstructRegions(cell => !cell.IsCorridor && !cell.IsWall && !cell.IsDoor));
-            _regionDict.Add(LayoutLayer.Wall, _grid.ConstructRegions(cell => cell.IsWall));
+            // First, Check for a SINGLE ROOM topology
+            if (!_graph.HasEdges())
+            {
+                // MUST BE SINGLE REGION
+                var singleRegion = _regionDict[LayoutLayer.ConnectionRoom].Single();
 
-            // Regions that depend on IMASSABLE terrain
-            _regionDict.Add(LayoutLayer.Placement, _grid.ConstructRegions(cell => !cell.IsDoor && !cell.IsWall && !HasImpassableTerrain(cell.Column, cell.Row)));
-            _regionDict.Add(LayoutLayer.Walkable, _grid.ConstructRegions(cell => !cell.IsWall && !HasImpassableTerrain(cell.Column, cell.Row)));
-            _regionDict.Add(LayoutLayer.ImpassableTerrain, _grid.ConstructRegions(cell => HasImpassableTerrain(cell.Column, cell.Row)));
+                _graph = new RegionGraphInfo<GridLocation>(singleRegion);
 
-            // Create terrain regions
-            _terrainRegionDict = _terrainDict.ToDictionary(element => element.Key,
-                                                           element => element.Value
-                                                                             .ConstructRegions(cell =>
-                                                                             {
-                                                                                 // AVOID CORRIDORS FOR IMPASSABLE TERRAIN ONLY
-                                                                                 //
-                                                                                 // These locations have been marked by the connection builder
-                                                                                 //
-                                                                                 return !_grid[cell.Column, cell.Row].IsCorridor;
-                                                                             }));
+                return;
+            }
+
+            var edges = _graph.GetConnections();
+            var newEdges = new List<RegionConnectionInfo<GridLocation>>();
+
+            // Match edges using connection points
+            foreach (var edge in edges)
+            {
+                // Locate first region
+                var node = _regionDict[LayoutLayer.ConnectionRoom].First(region => region[edge.Location] != null);
+
+                // Locate adjacent region
+                var adjacentNode = _regionDict[LayoutLayer.ConnectionRoom].First(region => region[edge.AdjacentLocation] != null);
+
+                // Create a new edge for the graph
+                newEdges.Add(new RegionConnectionInfo<GridLocation>(node,
+                                                                    adjacentNode,
+                                                                    node[edge.Location],
+                                                                    adjacentNode[edge.AdjacentLocation],
+                                                                    edge.Vertex,
+                                                                    edge.AdjacentVertex,
+                                                                    edge.EuclideanRenderedDistance));
+            }
+
+            _graph = new RegionGraphInfo<GridLocation>(newEdges);
+            _graphInvalid = false;
         }
 
-
-
-        private void LayoutModified(GridCellInfo modifiedCell)
+        private LayoutLayer GetAffectedLayers(string cellPropertyName)
         {
-            _invalid = true;
+            switch (cellPropertyName)
+            {
+                case "IsWall": return LayoutLayer.Wall | LayoutLayer.Placement | LayoutLayer.ConnectionRoom | LayoutLayer.Walkable | LayoutLayer.Room;
+                case "IsCorridor": return LayoutLayer.ConnectionRoom | LayoutLayer.Room | LayoutLayer.Corridor;
+                default:
+                    throw new Exception("Unhandled GridCellInfo property:  LayoutContainer.IsLayerModified");
+            }
+        }
+
+        private void LayoutAddedValidation(GridCellInfo cell)
+        {
+            // Other Layers
+            foreach (var layer in Enum.GetValues(typeof(LayoutLayer))
+                                      .Cast<LayoutLayer>())
+            {
+                // Layer is affected by the addition of the new cell
+                if (cell.IsLayer(layer))
+                {
+                    _invalidRegionDict[layer] = true;
+
+                    if (layer == LayoutLayer.ConnectionRoom)
+                        _graphInvalid = true;
+                }
+            }
+        }
+
+        private void LayoutModified(string propertyName, GridCellInfo modifiedCell)
+        {
+            // Other Layers
+            foreach (var layer in Enum.GetValues(typeof(LayoutLayer))
+                                      .Cast<LayoutLayer>())
+            {
+                // 1) The layer directly contains the cell
+                if (_regionDict[layer].Any(region => region[modifiedCell.Column, modifiedCell.Row] != null))
+                    _invalidRegionDict[layer] = true;
+
+                // 2) The layer is affected by the property that changed
+                if (GetAffectedLayers(propertyName).Has(layer))
+                    _invalidRegionDict[layer] = true;
+
+                // CHECK TO SEE WHETHER INVALID CELL IS PART OF THE CONNECTION LAYER
+                if (_invalidRegionDict[layer] && layer == LayoutLayer.ConnectionRoom)
+                    _graphInvalid = true;
+            }
+        }
+
+        private bool ValidateConnections()
+        {
+            // Be sure that regions have been first validated
+            if (AnyInvalidLayers())
+                return false;
+
+            // Save some iterating by making this dictionary first
+            var regionLookup = _regionDict[LayoutLayer.ConnectionRoom].ToDictionary(region => region.Id, region => region);
+
+            var valid = true;
+
+            if (_graph.HasEdges())
+            {
+                // CHECK THAT GRAPH CONTAINS CONNECTIONS FOR THIS LAYER -> EXACTLY!
+                foreach (var connection in _graph.GetConnections())
+                {
+                    valid &= regionLookup.ContainsKey(connection.Vertex.ReferenceId);
+                    valid &= regionLookup.ContainsKey(connection.AdjacentVertex.ReferenceId);
+                }
+
+                // CHECK THAT THE REVERSE LOOKUP IS TRUE (FOR REGION ID's)
+                foreach (var region in _regionDict[LayoutLayer.ConnectionRoom])
+                {
+                    valid &= _graph.GetAdjacentEdges(region).Any();
+                }
+            }
+
+            return valid;
+        }
+
+        private bool AnyInvalidLayers()
+        {
+            return _invalidRegionDict.Values.Any(invalid => invalid);
         }
 
         #endregion

@@ -49,9 +49,9 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                     discoveredRegions.Add(region, region);
 
                 // Find all connections and add them to the frontier
-                foreach (var regionConnection in connectedLayer.Connections(region.Id))
+                foreach (var regionConnection in connectedLayer.ConnectionGraph.GetAdjacentEdges(region))
                 {
-                    var connectedRegion = connectedLayer.Regions[regionConnection.AdjacentRegionId];
+                    var connectedRegion = regionConnection.AdjacentNode;
 
                     // Exclude non-searchable regions
                     if (!searchableRegions.Contains(connectedRegion))

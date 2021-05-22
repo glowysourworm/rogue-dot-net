@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     [Serializable]
-    public class LayerMap : LayerMapBase<GridLocation, Region<GridLocation>>, ILayerMap
+    public class LayerMap : LayerMapBase, ILayerMap
     {
         public LayerMap(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)
                 : base(layerName, regions, width, height)

@@ -1096,8 +1096,17 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void RevealLayout()
         {
-            foreach (var location in _modelService.Level.Grid.FullMap.GetLocations())
+            foreach (var location in _modelService.Level.Grid.WalkableMap.GetLocations())
                 _modelService.Level.Grid[location.Column, location.Row].IsRevealed = true;
+
+            foreach (var location in _modelService.Level.Grid.WallMap.GetLocations())
+                _modelService.Level.Grid[location.Column, location.Row].IsRevealed = true;
+
+            foreach (var map in _modelService.Level.Grid.TerrainMaps)
+            {
+                foreach (var location in map.GetLocations())
+                    _modelService.Level.Grid[location.Column, location.Row].IsRevealed = true;
+            }
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your senses are vastly awakened");
         }

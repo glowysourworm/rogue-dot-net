@@ -143,7 +143,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             if (cell1 == null || cell2 == null)
                 return true;
 
-            if (_layoutGrid.ImpassableTerrainMap[location2] != null)
+            if (!_layoutGrid.TerrainMaps.Any(map => map.IsImpassable && map[location2] != null))
                 return true;
 
             // NOTE*** Optimized for performance *** GetAt<> is slow
@@ -466,10 +466,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                         return true;
 
                     if (_layoutGrid.WalkableMap[column2, row2] != null &&
-                       !IsPathToAdjacentLocationBlocked(cell1.Location,
-                                                        cell2.Location,
-                                                        true,
-                                                        character.AlignmentType))
+                        !IsPathToAdjacentLocationBlocked(cell1.Location,
+                                                         cell2.Location,
+                                                         true,
+                                                         character.AlignmentType))
                         return false;
 
                     else

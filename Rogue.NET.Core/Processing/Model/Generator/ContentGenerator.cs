@@ -54,7 +54,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var transporterDict = level.Grid
                                        .RoomMap
                                        .Regions
-                                       .ToDictionary(region => region.Value, region => _randomSequenceGenerator.GetRandomElement(region.Value.Locations));
+                                       .ToDictionary(region => region, region => _randomSequenceGenerator.GetRandomElement(region.Locations));
 
             var mandatoryNormalDoodads = new List<DoodadNormal>();
 
@@ -164,7 +164,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             foreach (var element in transporterDict)
             {
                 // Find all connecting edges
-                var connections = level.Grid.ConnectionMap.Connections(element.Key.Id);
+                var connections = level.Grid.ConnectionMap.ConnectionGraph.GetAdjacentEdges(element.Key);
 
                 // Locate connected regions and add to the transporter list
                 var connectingLocations = connections.Select(connection => connection.AdjacentLocation);

@@ -59,6 +59,9 @@ namespace Rogue.NET.Core.Model
             /// Padding for the layout around the edge
             /// </summary>
             public const int LayoutPadding = 1;
+
+            // TODO: Create more important layout validator
+            public const int RoomMinSize = 1;
         }
         public static class Settings
         {

@@ -2,7 +2,8 @@
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
 using System;
-using System.Collections.Generic;
+
+using static Rogue.NET.Core.Processing.Model.Extension.ArrayExtension;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
 {
@@ -25,7 +26,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
         /// <param name="wallRemovalRatio">Number in [0,1] to specify wall removal (THIS IS FURTHER SCALED BY THE COMPONENT)</param>
         /// <param name="horizontalVerticalBias">Number in [0,1] to specify horizontal v.s. vertical direction bias</param>
         bool[,] CreateMaze(int width, int height,
-                           Region<GridCellInfo> region,
+                           RegionInfo<GridLocation> region,
                            MazeType mazeType,
                            double wallRemovalRatio,
                            double horizontalVerticalBias);
@@ -37,11 +38,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface
         /// <param name="mazeType">Type of maze to build</param>
         /// <param name="wallRemovalRatio">Number in [0,1] to specify wall removal (THIS IS FURTHER SCALED BY THE COMPONENT)</param>
         /// <param name="horizontalVerticalBias">Number in [0,1] to specify horizontal v.s. vertical direction bias</param>
-        /// <param name="avoidRegions">Regions to avoid while running the algorithm</param>
+        /// <param name="avoidCallback">Callback for cells to avoid -> used with the algorithm to maze around it!</param>
         /// <exception cref="ArgumentException">Starting location is null or NOT A WALL CELL</exception>
         bool[,] CreateMaze(int width, int height,
-                           Region<GridCellInfo> region,
-                           IEnumerable<Region<GridCellInfo>> avoidRegions,
+                           RegionInfo<GridLocation> region,
+                           GridPredicate<GridLocation> avoidCallback,
                            MazeType mazeType,
                            double wallRemovalRatio,
                            double horizontalVerticalBias);

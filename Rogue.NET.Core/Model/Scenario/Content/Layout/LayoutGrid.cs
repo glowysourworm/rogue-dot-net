@@ -21,42 +21,49 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     {
         private GridCell[,] _grid;
 
+        [Flags]
         public enum LayoutLayer
         {
             /// <summary>
-            /// Contains all cell regions for the entire map that are non-empty
-            /// </summary>
-            Full,
-
-            /// <summary>
             /// Contains the walkable cell regions for the entire map (should be connected)
             /// </summary>
-            Walkable,
+            Walkable = 1,
 
             /// <summary>
             /// Contains the cell regions for placing any level content
             /// </summary>
-            Placement,
+            Placement = 2,
 
             /// <summary>
-            /// Contains the room regions - excludes corridors unless in a maze
+            /// Contains the room regions
             /// </summary>
-            Room,
+            Room = 4,
+
+            /// <summary>
+            /// Contains room regions - subdivided by impassable terrain. These must be connected in the 
+            /// connection layer.
+            /// </summary>
+            ConnectionRoom = 8,
 
             /// <summary>
             /// Contains cell regions marked "Corridor"
             /// </summary>
-            Corridor,
+            Corridor = 16,
 
             /// <summary>
             /// Contains cell regions marked "Wall"
             /// </summary>
-            Wall,
+            Wall = 32,
 
             /// <summary>
-            /// Contains cell regions of impassable terrain
+            /// Contains cells that are for terrain support - these MAY OR MAY NOT be impassable terrain cells
             /// </summary>
-            ImpassableTerrain
+            TerrainSupport = 64,
+
+            /// <summary>
+            /// Contains the walkable map plus impassable terrain.
+            /// </summary>
+            FullNoTerrainSupport = 128
         }
 
         // Define "Near the edge" as being randomly distributed with a peak at distance = (X * Grid Dimension) from the 
@@ -85,47 +92,26 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public ConnectedLayerMap ConnectionMap { get; private set; }
 
         // Non-connected Layers
-        public LayerMap FullMap { get; private set; }
+        public LayerMap FullNoTerrainSupportMap { get; private set; }
         public LayerMap WalkableMap { get; private set; }
         public LayerMap PlacementMap { get; private set; }
         public LayerMap RoomMap { get; private set; }
         public LayerMap CorridorMap { get; private set; }
         public LayerMap WallMap { get; private set; }
-        public LayerMap ImpassableTerrainMap { get; private set; }
-        public IEnumerable<LayerMap> TerrainMaps { get; private set; }
+        public LayerMap TerrainSupportMap { get; private set; }
+        public IEnumerable<TerrainLayerMap> TerrainMaps { get; private set; }
 
         /// <summary>
         /// Sets up cell occupation data in EACH of the regions for ALL layers
         /// </summary>
         public void SetOccupied(IGridLocator location, bool occupied)
         {
-            // Connected layers
-            this.ConnectionMap.SetOccupied(location, occupied);
-
-            // Non-connected layers
-            this.FullMap.SetOccupied(location, occupied);
-            this.WalkableMap.SetOccupied(location, occupied);
-            this.PlacementMap.SetOccupied(location, occupied);
-            this.RoomMap.SetOccupied(location, occupied);
-            this.CorridorMap.SetOccupied(location, occupied);
-            this.WallMap.SetOccupied(location, occupied);
-            this.ImpassableTerrainMap.SetOccupied(location, occupied);
-
-            foreach (var layer in this.TerrainMaps)
-                layer.SetOccupied(location, occupied);
+            _grid[location.Column, location.Row].IsOccupied = occupied;
         }
 
         public bool IsOccupied(IGridLocator location)
         {
-            return this.ConnectionMap.IsOccupied(location) ||
-                   this.FullMap.IsOccupied(location) ||
-                   this.WalkableMap.IsOccupied(location) ||
-                   this.PlacementMap.IsOccupied(location) ||
-                   this.RoomMap.IsOccupied(location) ||
-                   this.WallMap.IsOccupied(location) ||
-                   this.CorridorMap.IsOccupied(location) ||
-                   this.ImpassableTerrainMap.IsOccupied(location) ||
-                   this.TerrainMaps.Any(map => map.IsOccupied(location));
+            return _grid[location.Column, location.Row].IsOccupied;
         }
         #endregion
 
@@ -140,13 +126,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         ///         may be created afterwards using the public indexer.
         /// </summary>
         public LayoutGrid(GridCellInfo[,] grid,
-                          LayerInfo<GridLocation> fullLayer,
                           ConnectedLayerInfo<GridLocation> connectionLayer,
+                          LayerInfo<GridLocation> fullNoTerrainSupportLayer,
                           LayerInfo<GridLocation> walkableLayer,
                           LayerInfo<GridLocation> placementLayer,
                           LayerInfo<GridLocation> roomLayer,
                           LayerInfo<GridLocation> corridorLayer,
                           LayerInfo<GridLocation> wallLayer,
+                          LayerInfo<GridLocation> terrainSupportLayer,
                           IEnumerable<LayerInfo<GridLocation>> terrainLayers)
         {
             // Primary 2D array
@@ -154,10 +141,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             // Boundary
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
-
-            // Select distinct, impassable regions for the impassable terrain map
-            var impassableTerrainRegions = terrainLayers.Where(layer => !layer.IsPassable)
-                                                        .SelectMany(layer => layer.Regions);
 
             // Connected Layers
             this.ConnectionMap = new ConnectedLayerMap(connectionLayer.LayerName,
@@ -167,14 +150,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                                                        this.Bounds.Height);
 
             // Non-connected Layers
-            this.FullMap = new LayerMap(fullLayer.LayerName, fullLayer.Regions, this.Bounds.Width, this.Bounds.Height);
+            this.FullNoTerrainSupportMap = new LayerMap(fullNoTerrainSupportLayer.LayerName, fullNoTerrainSupportLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.WalkableMap = new LayerMap(walkableLayer.LayerName, walkableLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.PlacementMap = new LayerMap(placementLayer.LayerName, placementLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.RoomMap = new LayerMap(roomLayer.LayerName, roomLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.CorridorMap = new LayerMap(corridorLayer.LayerName, corridorLayer.Regions, this.Bounds.Width, this.Bounds.Height);
             this.WallMap = new LayerMap(wallLayer.LayerName, wallLayer.Regions, this.Bounds.Width, this.Bounds.Height);
-            this.ImpassableTerrainMap = new LayerMap("Impassable Terrain", impassableTerrainRegions, this.Bounds.Width, this.Bounds.Height);
-            this.TerrainMaps = terrainLayers.Select(layer => new LayerMap(layer.LayerName, layer.Regions, this.Bounds.Width, this.Bounds.Height))
+            this.TerrainSupportMap = new LayerMap(terrainSupportLayer.LayerName, terrainSupportLayer.Regions, this.Bounds.Width, this.Bounds.Height);
+            this.TerrainMaps = terrainLayers.Select(layer => new TerrainLayerMap(layer.LayerName, layer.Regions, this.Bounds.Width, this.Bounds.Height, !layer.IsPassable))
                                             .Actualize();
 
             // Initialize the grid
@@ -203,17 +186,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             var connectionMap = (ConnectedLayerMap)info.GetValue("ConnectionMap", typeof(ConnectedLayerMap));
             var roomMap = (LayerMap)info.GetValue("RoomMap", typeof(LayerMap));
-            var fullMap = (LayerMap)info.GetValue("FullMap", typeof(LayerMap));
+            var fullNoTerrainSupportMap = (LayerMap)info.GetValue("FullNoTerrainSupportMap", typeof(LayerMap));
             var walkableMap = (LayerMap)info.GetValue("WalkableMap", typeof(LayerMap));
             var placementMap = (LayerMap)info.GetValue("PlacementMap", typeof(LayerMap));
             var corridorMap = (LayerMap)info.GetValue("CorridorMap", typeof(LayerMap));
             var wallMap = (LayerMap)info.GetValue("WallMap", typeof(LayerMap));
-            var impassableMap = (LayerMap)info.GetValue("ImpassableTerrainMap", typeof(LayerMap));
+            var terrainSupportMap = (LayerMap)info.GetValue("TerrainSupportMap", typeof(LayerMap));
 
             _grid = new GridCell[width, height];
+
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
 
-            var terrainData = new List<LayerMap>();
+            var terrainData = new List<TerrainLayerMap>();
 
             // Populate cell grid
             for (int i = 0; i < count; i++)
@@ -226,32 +210,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             // Populate terrain
             for (int i = 0; i < terrainCount; i++)
             {
-                var terrain = (LayerMap)info.GetValue("TerrainMap" + i.ToString(), typeof(LayerMap));
+                var terrain = (TerrainLayerMap)info.GetValue("TerrainMap" + i.ToString(), typeof(TerrainLayerMap));
 
                 terrainData.Add(terrain);
             }
 
             this.ConnectionMap = connectionMap;
 
-            this.FullMap = fullMap;
+            this.FullNoTerrainSupportMap = fullNoTerrainSupportMap;
             this.WalkableMap = walkableMap;
             this.PlacementMap = placementMap;
             this.RoomMap = roomMap;
             this.CorridorMap = corridorMap;
             this.WallMap = wallMap;
-            this.ImpassableTerrainMap = impassableMap;
+            this.TerrainSupportMap = terrainSupportMap;
             this.TerrainMaps = terrainData;
-
-            // DESERIALIZATION CALLBACK - SET GRIDLOCATION REFERENCES
-            this.ConnectionMap.OnDeserialization(_grid);
-            this.FullMap.OnDeserialization(_grid);
-            this.WalkableMap.OnDeserialization(_grid);
-            this.PlacementMap.OnDeserialization(_grid);
-            this.RoomMap.OnDeserialization(_grid);
-            this.CorridorMap.OnDeserialization(_grid);
-            this.WallMap.OnDeserialization(_grid);
-            this.ImpassableTerrainMap.OnDeserialization(_grid);
-            this.TerrainMaps.ForEach(map => map.OnDeserialization(_grid));
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -271,14 +244,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("Height", _grid.GetLength(1));
             info.AddValue("Count", cells.Count);
             info.AddValue("TerrainMapCount", this.TerrainMaps.Count());
+
             info.AddValue("ConnectionMap", this.ConnectionMap);
             info.AddValue("RoomMap", this.RoomMap);
-            info.AddValue("FullMap", this.FullMap);
+            info.AddValue("FullNoTerrainSupportMap", this.FullNoTerrainSupportMap);
             info.AddValue("WalkableMap", this.WalkableMap);
             info.AddValue("PlacementMap", this.PlacementMap);
             info.AddValue("CorridorMap", this.CorridorMap);
             info.AddValue("WallMap", this.WallMap);
-            info.AddValue("ImpassableTerrainMap", this.ImpassableTerrainMap);
+            info.AddValue("TerrainSupportMap", this.TerrainSupportMap);
 
             for (int i = 0; i < cells.Count; i++)
                 info.AddValue("Cell" + i.ToString(), cells[i]);
@@ -347,33 +321,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             var map = SelectLayer(layer);
 
+            // Have to create collection of non-occupied locations for this layer
+            var locations = map.GetLocations()
+                               .Where(location => !_grid[location.Column, location.Row].IsOccupied);
+
             if (excludedLocations != null)
-                return randomSequenceGenerator.GetRandomElement(map.GetNonOccupiedLocations().Except(excludedLocations));
-
-            else
-                return randomSequenceGenerator.GetRandomElement(map.GetNonOccupiedLocations());
-        }
-
-        /// <summary>
-        /// Returns random group of non-occupied locations from the specified layer map - FROM A SINGLE REGION. Will return empty if there are no such
-        /// regions available. 
-        /// </summary>
-        public IEnumerable<GridLocation> GetNonOccupiedRegionLocations(LayoutLayer layer, int locationCount, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations = null)
-        {
-            var map = SelectLayer(layer);
-
-            var qualifiedRegions = excludedLocations != null ? map.Regions.Values.Where(region => region.NonOccupiedLocations.Except(excludedLocations).Count() >= locationCount)
-                                                             : map.Regions.Values.Where(region => region.NonOccupiedLocations.Count() >= locationCount);
-
-            if (qualifiedRegions.Count() == 0)
-                return new GridLocation[] { };
-
-            // Select random region from the qualified regions
-            var region = randomSequenceGenerator.GetRandomElement(qualifiedRegions);
-
-            // Return randomly chosen non-occupied locations
-            return randomSequenceGenerator.GetDistinctRandomElements(excludedLocations != null ? region.NonOccupiedLocations.Except(excludedLocations)
-                                                                                               : region.NonOccupiedLocations, locationCount);
+                locations = locations.Except(excludedLocations);
+            
+            return randomSequenceGenerator.GetRandomElement(locations);
         }
 
         /// <summary>
@@ -388,8 +343,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             {
                 if (excludedLocations != null)
                 {
-                    return map[location] != null &&
-                          !excludedLocations.Any(otherLocation => otherLocation.Equals(location));
+                    return  map[location] != null &&
+                           !excludedLocations.Any(otherLocation => otherLocation.Equals(location));
                 }
                 else
                     return map[location] != null;
@@ -402,7 +357,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var region = randomSequenceGenerator.GetRandomElement(qualifiedRegions);
 
             // Convert the region to grid locations
-            var result = new Region<GridLocation>(region.Locations.Select(cell => cell.Location).ToArray(),
+            var result = new Region<GridLocation>(System.Guid.NewGuid().ToString(),
+                                                  region.Locations.Select(cell => cell.Location).ToArray(),
                                                   region.EdgeLocations.Select(cell => cell.Location).ToArray(),
                                                   region.Boundary,
                                                   new RegionBoundary(0, 0, this.Bounds.Width, this.Bounds.Height));
@@ -420,24 +376,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             var map = SelectLayer(layer);
 
-            var edgePdf = excludedLocations != null ? GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), map.Boundary)
-                                                    : GetDistancePdf(map.GetNonOccupiedLocations(), map.Boundary);
+            // Have to create collection of non-occupied locations for this layer
+            var locations = map.GetLocations()
+                               .Where(location => !_grid[location.Column, location.Row].IsOccupied);
 
-            return randomSequenceGenerator.GetWeightedRandom(edgePdf.Keys, location => edgePdf[location]);
-        }
+            if (excludedLocations != null)
+                locations = locations.Except(excludedLocations);
 
-        /// <summary>
-        /// Returns a location that is "maximally distant" from the specified source location - using the sepcified map
-        /// </summary>
-        public GridLocation GetNonOccupiedDistantLocation(LayoutLayer layer, GridLocation sourceLocation, IRandomSequenceGenerator randomSequenceGenerator, IEnumerable<GridLocation> excludedLocations = null)
-        {
-            // Have to create a PDF based on distance from a source location - with a peak at SIMULATION_DISTANT_PARAMETER (in distance). 
-            // Then, use this PDF to create weighted random draw over the space of non-occupied locations.
-
-            var map = SelectLayer(layer);
-
-            var edgePdf = excludedLocations != null ? GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), new GridLocation[] { sourceLocation })
-                                                    : GetDistancePdf(map.GetNonOccupiedLocations(), new GridLocation[] { sourceLocation });
+            var edgePdf = GetDistancePdf(locations, map.Boundary);
 
             return randomSequenceGenerator.GetWeightedRandom(edgePdf.Keys, location => edgePdf[location]);
         }
@@ -452,8 +398,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             var map = SelectLayer(layer);
 
-            var edgePdf = excludedLocations != null ? GetDistancePdf(map.GetNonOccupiedLocations().Except(excludedLocations), sourceLocations)
-                                                    : GetDistancePdf(map.GetNonOccupiedLocations(), sourceLocations);
+            // Have to create collection of non-occupied locations for this layer
+            var locations = map.GetLocations()
+                               .Where(location => !_grid[location.Column, location.Row].IsOccupied);
+
+            if (excludedLocations != null)
+                locations = locations.Except(excludedLocations);
+
+            var edgePdf = GetDistancePdf(locations, sourceLocations);
 
             return randomSequenceGenerator.GetWeightedRandom(edgePdf.Keys, location => edgePdf[location]);
         }
@@ -468,10 +420,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var locations = new List<GridLocation>();
 
             // Iterate around the location on the primary grid - checking the layer map
-            _grid.IterateAround(location.Column, location.Row, range, (column, row) =>
+            _grid.IterateAround(location.Column, location.Row, range, (cell) =>
             {
-                if (map[column, row] != null)
-                    locations.Add(_grid[column, row].Location);
+                if (map[cell] != null &&
+                   !_grid[cell.Column, cell.Row].IsOccupied)
+                {
+                    locations.Add(_grid[cell.Column, cell.Row].Location);
+                }
+
+                return true;
             });
 
             return locations;
@@ -484,15 +441,55 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             var map = SelectLayer(layer);
 
+            // Have to create collection of non-occupied locations for this layer
+            var locations = map.GetLocations()
+                               .Where(location => !_grid[location.Column, location.Row].IsOccupied);
+
+            if (excludedLocations != null)
+                locations = locations.Except(excludedLocations);
+
             if (excludedLocations == null)
-                return map.GetNonOccupiedLocations()
+                return locations
                           .Except(new GridLocation[] { location })
                           .MinBy(otherLocation => Metric.ForceDistance(location, otherLocation, Metric.MetricType.Euclidean));
             else
-                return map.GetNonOccupiedLocations()
+                return locations
                           .Except(excludedLocations)
                           .Except(new GridLocation[] { location })
                           .MinBy(otherLocation => Metric.ForceDistance(location, otherLocation, Metric.MetricType.Euclidean));
+        }
+
+        /// <summary>
+        /// Searches for closest location in ANOTHER layer using CURRENT layer and location
+        /// </summary>
+        public GridLocation GetClosestLocationInLayer(GridLocation location, LayoutLayer currentLayer, LayoutLayer otherLayer)
+        {
+            var currentMap = SelectLayer(currentLayer);
+            var otherMap = SelectLayer(otherLayer);
+
+            if (currentMap[location] == null)
+                throw new Exception("Trying to search location in layer that doesn't exist: LayoutGrid.GetClosestLocationInLayer");
+
+            var maxRadius = MathFunctions.Max(this.Bounds.Right - location.Column,
+                                              this.Bounds.Bottom - location.Row,
+                                              location.Column - this.Bounds.Left,
+                                              location.Row - this.Bounds.Top);
+
+            GridLocation result = null;
+
+            _grid.IterateAround(location.Column, location.Row, maxRadius, cell =>
+            {
+                // Found region in other layer
+                if (otherMap[cell] != null)
+                {
+                    result = cell.Location;
+                    return false;
+                }
+
+                return true;
+            });
+
+            return result;
         }
 
         /// <summary>
@@ -502,20 +499,22 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             switch (layer)
             {
-                case LayoutLayer.Full:
-                    return this.FullMap;
                 case LayoutLayer.Walkable:
                     return this.WalkableMap;
                 case LayoutLayer.Placement:
                     return this.PlacementMap;
                 case LayoutLayer.Room:
                     return this.RoomMap;
+                case LayoutLayer.ConnectionRoom:
+                    return this.ConnectionMap;
                 case LayoutLayer.Corridor:
                     return this.CorridorMap;
                 case LayoutLayer.Wall:
                     return this.WallMap;
-                case LayoutLayer.ImpassableTerrain:
-                    return this.ImpassableTerrainMap;
+                case LayoutLayer.TerrainSupport:
+                    return this.TerrainSupportMap;
+                case LayoutLayer.FullNoTerrainSupport:
+                    return this.FullNoTerrainSupportMap;
                 default:
                     throw new Exception("Unhandled LayoutLayer GetNonOccupiedLocation");
             }

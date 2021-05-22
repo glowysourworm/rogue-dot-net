@@ -30,6 +30,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         #region (public) (serialized) Volatile Properties (Change during game play)
         public bool IsExplored { get; set; }
         public bool IsRevealed { get; set; }
+        public bool IsOccupied { get; set; }
         #endregion
 
         #region (public) (serialized) Properties
@@ -109,6 +110,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             this.IsExplored = info.GetBoolean("IsExplored");
             this.IsRevealed = info.GetBoolean("IsRevealed");
+            this.IsOccupied = info.GetBoolean("IsOccupied");
             this.IsDoor = info.GetBoolean("IsDoor");
             this.IsWall = info.GetBoolean("IsWall");
             this.IsWallLight = info.GetBoolean("IsWallLight");
@@ -127,6 +129,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             info.AddValue("IsExplored", this.IsExplored);
             info.AddValue("IsRevealed", this.IsRevealed);
+            info.AddValue("IsOccupied", this.IsOccupied);
             info.AddValue("IsDoor", this.IsDoor);
             info.AddValue("IsWall", this.IsWall);
             info.AddValue("IsWallLight", this.IsWallLight);

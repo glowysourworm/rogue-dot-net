@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             _regionBuilder = regionBuilder;
         }
 
-        public LayoutContainer CreateSymmetricLayout(LayoutTemplate template)
+        public GridCellInfo[,] CreateSymmetricLayout(LayoutTemplate template)
         {
             // Procedure
             //
@@ -32,42 +32,34 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
             //
 
             // Step 0 - Base + Initial Connection Layer
-            var container = _regionBuilder.BuildRegions(template);
+            var grid = _regionBuilder.BuildRegions(template);
 
             // Step 1 - Grid Folding
-            ExecuteLayoutFolding(container, template);
+            ExecuteLayoutFolding(grid, template);
 
-            return container;
+            return grid;
         }
 
-        private void ExecuteLayoutFolding(LayoutContainer container, LayoutTemplate template)
+        private void ExecuteLayoutFolding(GridCellInfo[,] grid, LayoutTemplate template)
         {
             switch (template.SymmetryType)
             {
                 case LayoutSymmetryType.LeftRight:
                     {
                         // E Half
-                        for (int i = 0; i < container.Width / 2; i++)
+                        for (int i = 0; i < grid.GetLength(0) / 2; i++)
                         {
-                            var mirrorColumn = container.Width - i - 1;
+                            var mirrorColumn = grid.GetLength(0) - i - 1;
 
-                            for (int j = 0; j < container.Height; j++)
+                            for (int j = 0; j < grid.GetLength(1); j++)
                             {
                                 // E -> W
-                                if (container.Get(i, j) != null)
-                                    container.SetLayout(mirrorColumn, j, new GridCellInfo(mirrorColumn, j)
-                                    {
-                                        IsWall = container.Get(i, j).IsWall,
-                                        IsCorridor = container.Get(i, j).IsCorridor
-                                    });
+                                if (grid[i, j] != null)
+                                    grid[mirrorColumn, j]=  new GridCellInfo(mirrorColumn, j);
 
                                 // W -> E
-                                else if (container.Get(mirrorColumn, j) != null)
-                                         container.SetLayout(i, j, new GridCellInfo(i, j)
-                                         {
-                                             IsWall = container.Get(mirrorColumn, j).IsWall,
-                                             IsCorridor = container.Get(mirrorColumn, j).IsCorridor
-                                         });
+                                else if (grid[mirrorColumn, j] != null)
+                                    grid[i, j] =  new GridCellInfo(i, j);
                             }
                         }
                     }
@@ -75,62 +67,46 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                 case LayoutSymmetryType.Quadrant:
                     {
                         // NE, SE, SW Quadrants
-                        for (int i = 0; i < container.Width / 2; i++)
+                        for (int i = 0; i < grid.GetLength(0) / 2; i++)
                         {
-                            var mirrorColumn = container.Width - i - 1;
+                            var mirrorColumn = grid.GetLength(0) - i - 1;
 
-                            for (int j = 0; j < container.Height / 2; j++)
+                            for (int j = 0; j < grid.GetLength(1) / 2; j++)
                             {
-                                var mirrorRow = container.Height - j - 1;
+                                var mirrorRow = grid.GetLength(1) - j - 1;
 
                                 GridCellInfo[] cells = new GridCellInfo[4];
 
                                 // Find cell to mirror - start with NW
 
                                 // NW
-                                if (container.Get(i, j) != null)
-                                    cells[0] = container.Get(i, j);
+                                if (grid[i, j] != null)
+                                    cells[0] = grid[i, j];
 
                                 // NE
-                                else if (container.Get(mirrorColumn, j) != null)
-                                    cells[1] = container.Get(mirrorColumn, j);
+                                else if (grid[mirrorColumn, j] != null)
+                                    cells[1] = grid[mirrorColumn, j];
 
                                 // SE
-                                else if (container.Get(mirrorColumn, mirrorRow) != null)
-                                    cells[2] = container.Get(mirrorColumn, mirrorRow);
+                                else if (grid[mirrorColumn, mirrorRow] != null)
+                                    cells[2] = grid[mirrorColumn, mirrorRow];
 
                                 // SW
-                                else if (container.Get(i, mirrorRow) != null)
-                                    cells[3] = container.Get(i, mirrorRow);
+                                else if (grid[i, mirrorRow] != null)
+                                    cells[3] = grid[i, mirrorRow];
 
                                 var cell = cells.FirstOrDefault(x => x != null);
 
                                 // Mirror cell over to other quadrants
                                 if (cell != null)
                                 {
-                                    container.SetLayout(i, j, new GridCellInfo(i, j)
-                                    {
-                                        IsWall = cell.IsWall,
-                                        IsCorridor = cell.IsCorridor
-                                    });
+                                    grid[i, j] = new GridCellInfo(i, j);
 
-                                    container.SetLayout(mirrorColumn, j, new GridCellInfo(mirrorColumn, j)
-                                    {
-                                        IsWall = cell.IsWall,
-                                        IsCorridor = cell.IsCorridor
-                                    });
+                                    grid[mirrorColumn, j] = new GridCellInfo(mirrorColumn, j);
 
-                                    container.SetLayout(i, mirrorRow, new GridCellInfo(i, mirrorRow)
-                                    {
-                                        IsWall = cell.IsWall,
-                                        IsCorridor = cell.IsCorridor
-                                    });
+                                    grid[i, mirrorRow] = new GridCellInfo(i, mirrorRow);
 
-                                    container.SetLayout(mirrorColumn, mirrorRow, new GridCellInfo(mirrorColumn, mirrorRow)
-                                    {
-                                        IsWall = cell.IsWall,
-                                        IsCorridor = cell.IsCorridor
-                                    });
+                                    grid[mirrorColumn, mirrorRow] = new GridCellInfo(mirrorColumn, mirrorRow);
                                 }
                             }
                         }

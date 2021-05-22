@@ -17,18 +17,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Interface
         // REGION TO AVOID EXCEPTIONS. Returns null if there is no region at the specified indices.
         public GridLocation Get(int column, int row);
 
+        public IEnumerable<Region<GridLocation>> Regions { get; }
+
         public Region<GridLocation> this[int column, int row] { get; }
 
         public Region<GridLocation> this[IGridLocator location] { get; }
 
-        public IDictionary<string, Region<GridLocation>> Regions { get; }
-
         public IEnumerable<GridLocation> GetLocations();
-
-        public IEnumerable<GridLocation> GetNonOccupiedLocations();
-
-        public bool IsOccupied(IGridLocator location);
-
-        public void SetOccupied(IGridLocator location, bool occupied);
     }
 }

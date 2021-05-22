@@ -13,6 +13,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing.Interface
         /// Creates doors where there are region cells adjacent to any corridor cells. The doors are created
         /// in the corridor.
         /// </summary>
-        void CreateDoors(LayoutContainer container, GraphInfo<GridCellInfo> connectionGraph);
+        void CreateDoors(LayoutContainer container);
     }
 }

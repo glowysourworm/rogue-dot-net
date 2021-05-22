@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using static Rogue.NET.Core.Model.Scenario.Content.Layout.LayoutGrid;
+
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 {
     /// <summary>
@@ -139,7 +141,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                     // Set visibility for this location if:
                     //
                     // 1) Search sweep is active
-                    // 2) Connection region exists for this location
+                    // 2) Connection region exists for this location (SearchGrid.Region MUST BE CONNECTED REGION)
                     // 3) Search region is equal to the connection region
                     //
                     if (_searchGrid != null &&
@@ -251,7 +253,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // Set searchable regions -> use rest location if it is available for the search radius
             _searchableRegions = _layoutGrid.ConnectionMap
                                             .Regions
-                                            .Values
                                             .Where(region =>
                                             {
                                                 // USE REGION BOUNDARY TO MAKE THIS SIMPLE
@@ -298,11 +299,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                 //
                 //         So, going to use the closest connection point to the current location as a destination
                 //
-                var connection = _layoutGrid.ConnectionMap
-                                            .Connections(_nextRegion.Id)
-                                            .MinBy(connection => Metric.Distance(currentLocation, connection.Location));
-
-                return _layoutGrid[connection.Location].Location;
+                return  _layoutGrid.ConnectionMap
+                                   .ConnectionGraph
+                                   .GetConnectionPoints(_nextRegion)
+                                   .MinBy(location => Metric.Distance(currentLocation, location));
             }
 
             // CHARACTER HAS ARRIVED! BEGIN A NEW SWEEP
@@ -328,26 +328,28 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         {
             // CHECK FOR ONLY A SINGLE REGION IN THE LAYER
             if (_layoutGrid.ConnectionMap.Regions.Count() == 1)
-                return _layoutGrid.ConnectionMap.Regions.First().Value;
+                return _layoutGrid.ConnectionMap.Regions.First();
 
-            // Plan route to next region
+            // Plan route to next CONNECTED region
             else
             {
-                // Get the current region - MAY NOT BE CONNECTED REGION
+
+
+                // Get the current CONNECTED region (May not be in connected layer)
                 var currentRegion = _layoutGrid.ConnectionMap[currentLocation];
 
                 // Calculate the next region using Breadth first search from the current region
                 if (currentRegion != null)
                     return TraversalAlgorithm.FindNextSearchRegion(_layoutGrid.ConnectionMap, 
                                                                    _searchableRegions, 
-                                                                   _searchedRegions, 
-                                                                   currentRegion as Region<GridLocation>);
+                                                                   _searchedRegions,
+                                                                   currentRegion);
 
-                // Starting search from the closest non-occupied connected region
+                // Starting search from the closest non-occupied CONNECTED region
                 else
                 {
-                    // Query for the closest connection region location
-                    var connectedLocation = _layoutGrid.GetClosestNonOccupiedLocation(LayoutGrid.LayoutLayer.Walkable, currentLocation);
+                    // Query for the closest connection region location (WALKABLE is guaranteed for current location)
+                    var connectedLocation = _layoutGrid.GetClosestLocationInLayer(currentLocation, LayoutLayer.Walkable, LayoutLayer.ConnectionRoom);
 
                     // Set the next region from this location
                     return _layoutGrid.ConnectionMap[connectedLocation];

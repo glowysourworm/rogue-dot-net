@@ -1,22 +1,33 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Rogue.NET.Core.Processing.Model.Extension
 {
     public static class ArrayExtension
     {
         /// <summary>
-        /// Callback used for grid processing - provides the column, row, and value at that index
+        /// Callback used for grid processing - provides the column, and row
         /// </summary>
         /// <typeparam name="T">Type parameter for grid (2D array) to iterate</typeparam>
         /// <param name="column">The column of iteration (1st dimension index)</param>
         /// <param name="row">The row of iteration (2nd dimension index)</param>
         public delegate void GridCallback<T>(int column, int row);
+
+        /// <summary>
+        /// Predicate used for grid processing - provides column, row
+        /// </summary>
+        /// <typeparam name="T">Type parameter for grid (2D array) to iterate</typeparam>
+        /// <param name="value">The value if the cell at this location</param>
+        /// <returns>True if the predicate is to pass for this location</returns>
+        public delegate bool GridPredicate<T>(T value);
 
         /// <summary>
         /// Iterates the grid entirely with the provided callback
@@ -34,26 +45,56 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// Iterates - starting at the provided column and row - outwards to the specified radius - checking the grid
         /// boundary as it goes.
         /// </summary>
-        public static void IterateAround<T>(this T[,] grid, int column, int row, int radius, GridCallback<T> callback)
+        public static void IterateAround<T>(this T[,] grid, int column, int row, int maxRadius, GridPredicate<T> continuationPredicate)
         {
-            for (int k = 0; k <= radius; k++)
+            for (int radius = 0; radius <= maxRadius; radius++)
             {
-                for (int i = column - radius; i <= column + radius; i++)
+                // CENTER
+                if (radius == 0)
                 {
-                    for (int j = row - radius; j <= row + radius; j++)
-                    {
-                        // Check for the boundary
-                        if (i < 0 ||
-                            i >= grid.GetLength(0) ||
-                            j < 0 ||
-                            j >= grid.GetLength(1))
-                            continue;
+                    if (!continuationPredicate(grid[column, row]))
+                        return;
 
-                        else
-                            callback(i, j);
+                    continue;
+                }
+
+                var left = System.Math.Max(0, column - radius);
+                var right = System.Math.Min(grid.GetLength(0), column + radius);
+
+                // Iterate in a box around the center - using the radius
+                for (int columnIndex = left; columnIndex <= right; columnIndex++)
+                {
+                    var top = System.Math.Max(0, row - radius);
+                    var bottom = System.Math.Min(grid.GetLength(1), row + radius);
+
+                    // LEFT EDGE (or) RIGHT EDGE
+                    if (columnIndex == left || columnIndex == right)
+                    {
+                        for (int rowIndex = top; rowIndex <= bottom; rowIndex++)
+                        {
+                            if (!continuationPredicate(grid[columnIndex, rowIndex]))
+                                return;
+                        }
+                    }
+                    // TOP cell (and) BOTTOM cell
+                    else
+                    {
+                        if (!continuationPredicate(grid[columnIndex, top]))
+                            return;
+
+                        if (!continuationPredicate(grid[columnIndex, bottom]))
+                            return;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates default IGridLocator (GridLocation) for a given column and row
+        /// </summary>
+        public static IGridLocator CreateLocator<T>(this T[,] grid, int column, int row)
+        {
+            return new GridLocation(column, row);
         }
 
         /// <summary>
@@ -291,7 +332,21 @@ namespace Rogue.NET.Core.Processing.Model.Extension
                 return new T[] { n, s, e, ne, se };
 
             return new T[] { n, s, e, w, ne, nw, se, sw };
-        }     
+        }
+
+        /// <summary>
+        /// Returns 4-way adjacent cells - leaving nulls; but checking boundaries to prevent exceptions. 
+        /// NOTE*** This will return null references for possible element positions ONLY.
+        /// </summary>
+        public static T[] GetCardinalAdjacentElementsUnsafe<T>(this T[,] grid, int column, int row) where T : class
+        {
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+
+            return new T[] { n, s, e, w };
+        }
 
         /// <summary>
         /// Returns 1st of 2 off diagonal elements in the specified non-cardinal direction (Example: NE -> N element)
@@ -441,14 +496,14 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             var result = new IGridLocator[count];
             var index = 0;
 
-            if (n != null) result[index++] = new GridLocation(column, row - 1);
-            if (s != null) result[index++] = new GridLocation(column, row + 1);
-            if (e != null) result[index++] = new GridLocation(column + 1, row);
-            if (w != null) result[index++] = new GridLocation(column - 1, row);
-            if (ne != null) result[index++] = new GridLocation(column + 1, row - 1);
-            if (nw != null) result[index++] = new GridLocation(column - 1, row - 1);
-            if (se != null) result[index++] = new GridLocation(column + 1, row + 1);
-            if (sw != null) result[index++] = new GridLocation(column - 1, row + 1);
+            if (n != null) result[index++] = grid.CreateLocator(column, row - 1);
+            if (s != null) result[index++] = grid.CreateLocator(column, row + 1);
+            if (e != null) result[index++] = grid.CreateLocator(column + 1, row);
+            if (w != null) result[index++] = grid.CreateLocator(column - 1, row);
+            if (ne != null) result[index++] = grid.CreateLocator(column + 1, row - 1);
+            if (nw != null) result[index++] = grid.CreateLocator(column - 1, row - 1);
+            if (se != null) result[index++] = grid.CreateLocator(column + 1, row + 1);
+            if (sw != null) result[index++] = grid.CreateLocator(column - 1, row + 1);
 
             return result;
         }
@@ -473,10 +528,10 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             var result = new IGridLocator[count];
             var index = 0;
 
-            if (n != null) result[index++] = new GridLocation(column, row - 1);
-            if (s != null) result[index++] = new GridLocation(column, row + 1);
-            if (e != null) result[index++] = new GridLocation(column + 1, row);
-            if (w != null) result[index++] = new GridLocation(column - 1, row);
+            if (n != null) result[index++] = grid.CreateLocator(column, row - 1);
+            if (s != null) result[index++] = grid.CreateLocator(column, row + 1);
+            if (e != null) result[index++] = grid.CreateLocator(column + 1, row);
+            if (w != null) result[index++] = grid.CreateLocator(column - 1, row);
 
             return result;
         }
@@ -505,14 +560,14 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             var result = new IGridLocator[count];
             var index = 0;
 
-            if (north) result[index++] = new GridLocation(column, row - 1);
-            if (south) result[index++] = new GridLocation(column, row + 1);
-            if (east) result[index++] = new GridLocation(column + 1, row);
-            if (west) result[index++] = new GridLocation(column - 1, row);
-            if (north && east) result[index++] = new GridLocation(column + 1, row - 1);
-            if (north && west) result[index++] = new GridLocation(column - 1, row - 1);
-            if (south && east) result[index++] = new GridLocation(column + 1, row + 1);
-            if (south && west) result[index++] = new GridLocation(column - 1, row + 1);
+            if (north) result[index++] = grid.CreateLocator(column, row - 1);
+            if (south) result[index++] = grid.CreateLocator(column, row + 1);
+            if (east) result[index++] = grid.CreateLocator(column + 1, row);
+            if (west) result[index++] = grid.CreateLocator(column - 1, row);
+            if (north && east) result[index++] = grid.CreateLocator(column + 1, row - 1);
+            if (north && west) result[index++] = grid.CreateLocator(column - 1, row - 1);
+            if (south && east) result[index++] = grid.CreateLocator(column + 1, row + 1);
+            if (south && west) result[index++] = grid.CreateLocator(column - 1, row + 1);
 
             return result;
         }
@@ -537,10 +592,66 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             var result = new IGridLocator[count];
             var index = 0;
 
-            if (north) result[index++] = new GridLocation(column, row - 1);
-            if (south) result[index++] = new GridLocation(column, row + 1);
-            if (east) result[index++] = new GridLocation(column + 1, row);
-            if (west) result[index++] = new GridLocation(column - 1, row);
+            if (north) result[index++] = grid.CreateLocator(column, row - 1);
+            if (south) result[index++] = grid.CreateLocator(column, row + 1);
+            if (east) result[index++] = grid.CreateLocator(column + 1, row);
+            if (west) result[index++] = grid.CreateLocator(column - 1, row);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Retusn cardinally adjacent elements that pass the given predicate - stripping out nulls
+        /// </summary>
+        public static IGridLocator[] GetCardinalAdjacentLocatorsFor<T>(this T[,] grid, int column, int row, GridPredicate<T> predicate) where T : class
+        {
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+
+            // Need this to be optimized for speed
+            var count = 0;
+            if (n != null && predicate(n)) count++;
+            if (s != null && predicate(s)) count++;
+            if (e != null && predicate(e)) count++;
+            if (w != null && predicate(w)) count++;
+
+            var result = new IGridLocator[count];
+            var index = 0;
+
+            if (n != null && predicate(n)) result[index++] = grid.CreateLocator(column, row - 1);
+            if (s != null && predicate(s)) result[index++] = grid.CreateLocator(column, row + 1);
+            if (e != null && predicate(e)) result[index++] = grid.CreateLocator(column + 1, row);
+            if (w != null && predicate(w)) result[index++] = grid.CreateLocator(column - 1, row);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Retusn cardinally adjacent elements that pass the given predicate - leaving in null elements
+        /// </summary>
+        public static IGridLocator[] GetCardinalAdjacentLocatorsForUnsafe<T>(this T[,] grid, int column, int row, GridPredicate<T> predicate) where T : class
+        {
+            var n = grid.Get(column, row - 1);
+            var s = grid.Get(column, row + 1);
+            var e = grid.Get(column + 1, row);
+            var w = grid.Get(column - 1, row);
+
+            // Need this to be optimized for speed
+            var count = 0;
+            if (predicate(n)) count++;
+            if (predicate(s)) count++;
+            if (predicate(e)) count++;
+            if (predicate(w)) count++;
+
+            var result = new IGridLocator[count];
+            var index = 0;
+
+            if (predicate(n)) result[index++] = grid.CreateLocator(column, row - 1);
+            if (predicate(s)) result[index++] = grid.CreateLocator(column, row + 1);
+            if (predicate(e)) result[index++] = grid.CreateLocator(column + 1, row);
+            if (predicate(w)) result[index++] = grid.CreateLocator(column - 1, row);
 
             return result;
         }
@@ -630,6 +741,36 @@ namespace Rogue.NET.Core.Processing.Model.Extension
             grid.Iterate((column, row) => copy[column, row] = copier(grid[column, row]));
 
             return copy;
+        }
+
+        /// <summary>
+        /// Outputs a CSV file to the Dijkstra's map directory (overwrites existing files)
+        /// </summary>
+        /// <typeparam name="T">Uses ToString() representation</typeparam>
+        /// <param name="grid">Grid to output</param>
+        /// <param name="name">Name of file (used as prefix)</param>
+        public static void OutputDebug<T>(this T[,] grid, string name)
+        {
+            var fileName = Path.Combine(ResourceConstants.ArrayDebugOutputDirectory, name + "_output.csv");
+
+            var builder = new StringBuilder();
+
+            // Output by row CSV
+            for (int row = 0; row < grid.GetLength(1); row++)
+            {
+                for (int column = 0; column < grid.GetLength(0); column++)
+                {
+                    builder.Append(grid[column, row].ToString() + ", ");
+                }
+
+                // Remove trailing comma
+                builder.Remove(builder.Length - 1, 1);
+
+                // Append return carriage
+                builder.Append("\r\n");
+            }
+
+            File.WriteAllText(fileName, builder.ToString());
         }
     }
 }

@@ -13,48 +13,24 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// connections associated with adjacent rooms or regions. These must be pre-calculated as a graph.
     /// </summary>
     [Serializable]
-    public class ConnectedLayerMap : LayerMapBase<GridLocation, Region<GridLocation>>, ISerializable, ILayerMap
+    public class ConnectedLayerMap : LayerMapBase, ISerializable, ILayerMap
     {
-        private IDictionary<string, IEnumerable<RegionConnection<GridLocation>>> _connections;
-
-        public IEnumerable<RegionConnection<GridLocation>> Connections(int column, int row)
-        {
-            if (this[column, row] == null)
-                return new RegionConnection<GridLocation>[] { };
-
-            return Connections(this[column, row].Id);
-        }
-
-        public IEnumerable<RegionConnection<GridLocation>> Connections(string regionId)
-        {
-            return _connections[regionId];
-        }
+        public RegionGraph ConnectionGraph { get; private set; }
 
         public ConnectedLayerMap(string layerName,
-                                 GraphInfo<GridLocation> graph,
+                                 RegionGraph graph,
                                  IEnumerable<Region<GridLocation>> regions,
                                  int width,
                                  int height)
                 : base(layerName, regions, width, height)
         {
-            _connections = regions.ToDictionary(region => region.Id,
-                                                region =>
-                                                {
-                                                    var connections = graph.Connections.Where(connection => connection.Vertex.ReferenceId == region.Id);
-
-                                                    return connections.Select(connection => new RegionConnection<GridLocation>()
-                                                    {
-                                                        Location = connection.Location,
-                                                        AdjacentLocation = connection.AdjacentLocation,
-                                                        AdjacentRegionId = connection.AdjacentVertex.ReferenceId
-                                                    });
-                                                });
+            this.ConnectionGraph = graph;
         }
 
         public ConnectedLayerMap(SerializationInfo info, StreamingContext context)
                 : base(info, context)
         {
-            _connections = (Dictionary<string, IEnumerable<RegionConnection<GridLocation>>>)info.GetValue("Connections", typeof(Dictionary<string, List<RegionConnection<GridLocation>>>));
+            this.ConnectionGraph = (RegionGraph)info.GetValue("ConnectionGraph", typeof(RegionGraph));
         }
 
 
@@ -62,7 +38,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             base.GetObjectData(info, context);
 
-            info.AddValue("Connections", _connections);
+            info.AddValue("ConnectionGraph", this.ConnectionGraph);
         }
     }
 }

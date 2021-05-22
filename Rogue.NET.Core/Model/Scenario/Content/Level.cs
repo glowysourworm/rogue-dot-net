@@ -231,7 +231,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                     randomLocation = this.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Placement, randomSequenceGenerator, excludedLocations);
                     break;
                 case ContentRandomPlacementType.RandomRegion:
-                    randomLocation = this.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Room, randomSequenceGenerator, excludedLocations);
+                    randomLocation = this.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.ConnectionRoom, randomSequenceGenerator, excludedLocations);
                     break;
                 case ContentRandomPlacementType.RandomCorridor:
                     randomLocation = this.Grid.GetNonOccupiedLocation(LayoutGrid.LayoutLayer.Corridor, randomSequenceGenerator, excludedLocations);
@@ -347,14 +347,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 case ContentGroupPlacementType.RandomlyDistantRoom:
                     {
                         // Start with location near the edge of the room map
-                        var location = this.Grid.GetNonOccupiedEdgeLocation(LayoutGrid.LayoutLayer.Room, randomSequenceGenerator, excludedLocations);
+                        var location = this.Grid.GetNonOccupiedEdgeLocation(LayoutGrid.LayoutLayer.ConnectionRoom, randomSequenceGenerator, excludedLocations);
 
                         var distantLocations = new List<GridLocation>() { location };
 
                         for (int i = 1; i < scenarioObjects.Count(); i++)
                         {
                             // Calculate next location based on the previous
-                            location = this.Grid.GetNonOccupiedDistantLocations(LayoutGrid.LayoutLayer.Room, distantLocations, randomSequenceGenerator, excludedLocations);
+                            location = this.Grid.GetNonOccupiedDistantLocations(LayoutGrid.LayoutLayer.ConnectionRoom, distantLocations, randomSequenceGenerator, excludedLocations);
 
                             if (location != null)
                                 distantLocations.Add(location);

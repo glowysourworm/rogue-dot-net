@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using Rogue.NET.Core.Math.Algorithm.Interface;
+
+using System.Runtime.Serialization;
 
 using static Rogue.NET.Core.Math.Geometry.Metric;
 

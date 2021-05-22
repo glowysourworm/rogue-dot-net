@@ -45,7 +45,12 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         /// <summary>
         /// Constant that indictaes a region of the grid that is to be AVOIDED; but CROSSABLE.
         /// </summary>
-        public readonly static float MapCostAvoid = 10000;
+        public readonly static float MapCostAvoid = 2;
+
+        /// <summary>
+        /// Constant that indicates a region of the grid that is to be HIGHLY AVOIDED; but CROSSABLE.
+        /// </summary>
+        public readonly static float MapCostHighAvoid = 10;
 
         /// <summary>
         /// Constant that indicates that a region is off-limits to the Dijkstra map.
@@ -67,6 +72,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         const int CELL_MOVEMENT_COST = 1;
 
         bool _initialized = false;
+        bool _finished = false;
 
         protected DijkstraMapBase(int width,
                                   int height,
@@ -115,10 +121,16 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             _initialized = true;
         }
 
+        /// <summary>
+        /// Runs Dijkstra's algorithm ONCE. WILL NOT RE-RUN.
+        /// </summary>
         protected void Run()
         {
             if (!_initialized)
                 throw new Exception("Must call Initialize() before Run() DijkstraMapBase");
+
+            if (_finished)
+                return;
 
             // Track goal progress
             var goalDict = this.TargetLocations
@@ -224,6 +236,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     row = nextNode.Key.Row;
                 }
             }
+
+            _finished = true;
         }
 
         private void UpdateOutputMap(float currentWeight, int destColumn, int destRow, int sourceColumn, int sourceRow)
@@ -378,7 +392,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     lowestWeight = this.OutputMap[column - 1, row + 1];
                 }
 
-                if (lowestWeight == double.MaxValue)
+                if (lowestWeight == DijkstraMapBase.MapCostInfinity)
                     throw new Exception("Mishandled Dijkstra Map DijkstraMap.GeneratePath()");
 
                 currentLocation = lowestWeightLocation;
@@ -395,38 +409,6 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             }
 
             return result;
-        }
-
-        // Use to help debug
-        protected void OutputCSV(string directory, string filePrefix)
-        {
-            OutputCSV(this.OutputMap, Path.Combine(directory, filePrefix + "_output.csv"));
-        }
-
-        private void OutputCSV(float[,] matrix, string fileName)
-        {
-            var builder = new StringBuilder();
-
-            // Output by row CSV
-            for (int j = 0; j < matrix.GetLength(1); j++)
-            {
-                for (int i = 0; i < matrix.GetLength(0); i++)
-                {
-                    if (matrix[i, j] != MapCostInfinity)
-                        builder.Append(matrix[i, j].ToString("F3") + ", ");
-
-                    else
-                        builder.Append("MAX, ");
-                }
-
-                // Remove trailing comma
-                builder.Remove(builder.Length - 1, 1);
-
-                // Append return carriage
-                builder.Append("\r\n");
-            }
-
-            File.WriteAllText(fileName, builder.ToString());
         }
     }
 }

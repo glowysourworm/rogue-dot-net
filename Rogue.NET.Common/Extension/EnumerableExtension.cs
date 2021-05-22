@@ -4,6 +4,8 @@ using System.Linq;
 
 using MoreLinq;
 
+using Rogue.NET.Common.Collection;
+
 namespace Rogue.NET.Common.Extension
 {
     /// <summary>
@@ -41,14 +43,6 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
-        /// Creates a cartesian (all possible combinations) of the two sequences and creates a projection using the result selector
-        /// </summary>
-        public static IEnumerable<TResult> Cartesian<T1, T2, TResult>(this IEnumerable<T1> collection, IEnumerable<T2> secondCollection, Func<T1, T2, TResult> resultSelector)
-        {
-            return MoreEnumerable.Cartesian(collection, secondCollection, resultSelector);
-        }
-
-        /// <summary>
         /// Selects all distinct pairs of elements from both collections - based on a common key - ignoring both ordering, and duplicates. 
         /// Example:  { 1, 2, 3 } X { 1, 3, 5 }  produces { (1, 3), (1, 5), (2, 1), (2, 3), (5, 2), (5, 3) }
         /// </summary>
@@ -59,7 +53,7 @@ namespace Rogue.NET.Common.Extension
                                                                        Func<T1, T2, TResult> resultSelector)
         {
             var result = new List<TResult>();
-            var lookup = new Dictionary<TKey, List<TKey>>();
+            var lookup = new Dictionary<TKey, Dictionary<TKey, TKey>>();
 
             foreach (var item1 in collection1)
             {
@@ -74,12 +68,12 @@ namespace Rogue.NET.Common.Extension
 
                     // Ignore duplicate pairs (item1, item2)
                     if (lookup.ContainsKey(key1) &&
-                        lookup[key1].Contains(key2))
+                        lookup[key1].ContainsKey(key2))
                         continue;
 
                     // Ignore duplicate pairs (item2, item1)
                     if (lookup.ContainsKey(key2) &&
-                        lookup[key2].Contains(key1))
+                        lookup[key2].ContainsKey(key1))
                         continue;
 
                     else
@@ -89,17 +83,17 @@ namespace Rogue.NET.Common.Extension
 
                         // Store lookup 1 -> 2
                         if (lookup.ContainsKey(key1))
-                            lookup[key1].Add(key2);
+                            lookup[key1].Add(key2, key2);
 
                         else
-                            lookup.Add(key1, new List<TKey>() { key2 });
+                            lookup.Add(key1, new Dictionary<TKey, TKey>() { { key2, key2 } });
 
                         // Store lookup 2 -> 1
                         if (lookup.ContainsKey(key2))
-                            lookup[key2].Add(key1);
+                            lookup[key2].Add(key1, key1);
 
                         else
-                            lookup.Add(key2, new List<TKey>() { key1 });
+                            lookup.Add(key2, new Dictionary<TKey, TKey>() { { key1, key1 } });
                     }
                 }
             }
@@ -234,9 +228,11 @@ namespace Rogue.NET.Common.Extension
         /// </summary>
         public static void Remove<T>(this IList<T> list, IEnumerable<T> listElements)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            // Foreach item-to-remove
+            foreach (var item in listElements)
             {
-                foreach (var item in listElements)
+                // Iterate BACKWARDS and remove ALL INSTANCES
+                for (int i = list.Count - 1; i >= 0; i--)
                 {
                     if (ReferenceEquals(list[i], item))
                         list.RemoveAt(i);
@@ -319,28 +315,26 @@ namespace Rogue.NET.Common.Extension
         /// Returns elements that are distinct using the specified equality comparer. NOTE*** Relies on object.Equals() to compare
         /// references (or values).
         /// </summary>
-        public static IEnumerable<T> DistinctWith<T>(this IEnumerable<T> collection, Func<T, T, bool> equalityComparer)
+        public static IList<T> DistinctWith<T>(this IList<T> list, Func<T, T, bool> equalityComparer)
         {
-            var result = new List<T>();
-
-            foreach (var item1 in collection)
+            // Iterate backwards to avoid problems when removing. STOP AT 1.
+            for (int index1 = list.Count - 1; index1 >= 1; index1--)
             {
-                var found = false;
-
-                foreach (var item2 in result)
+                // Iterate starting behind index1 -> 0. Remove at index2 when duplicate(s) found
+                for (int index2 = index1 - 1; index2 >= 0; index2--)
                 {
-                    if (equalityComparer(item1, item2))
+                    if (equalityComparer(list[index1], list[index2]))
                     {
-                        found = true;
-                        break;
+                        // Remove at index2
+                        list.RemoveAt(index2);
+
+                        // Decrement index1 by 1 to compensate
+                        index1--;
                     }
                 }
-
-                if (!found)
-                    result.Add(item1);
             }
 
-            return result;
+            return list;
         }
 
         /// <summary>
@@ -348,11 +342,41 @@ namespace Rogue.NET.Common.Extension
         /// </summary>
         public static T MinBy<T, V>(this IEnumerable<T> collection, Func<T, V> selector) where V : IComparable
         {
+            var valueType = typeof(V).IsValueType;
+            var minValue = default(V);
+            var minItem = default(T);
 
-            return collection.Select(x => new { Item = x, Value = selector(x) })
-                             .OrderBy(x => x.Value)
-                             .Select(x => x.Item)
-                             .FirstOrDefault();
+            foreach (var item in collection)
+            {
+                var itemValue = selector(item);
+
+                // Reference type - initialize min
+                if (valueType && minValue.CompareTo(default(V)) == 0)
+                {
+                    minValue = itemValue;
+                    minItem = item;
+                }
+
+                // Value type - initialize min
+                else if (!valueType && ReferenceEquals(minValue, default(V)))
+                {
+                    minValue = itemValue;
+                    minItem = item;
+                }
+
+                else if (minValue.CompareTo(itemValue) > 0)
+                {
+                    minValue = itemValue;
+                    minItem = item;
+                }
+            }
+
+            return minItem;
+
+            //return collection.Select(x => new { Item = x, Value = selector(x) })
+            //                 .OrderBy(x => x.Value)
+            //                 .Select(x => x.Item)
+            //                 .FirstOrDefault();
 
             //return MoreEnumerable.MinBy(collection, selector).Min();
         }
@@ -363,10 +387,41 @@ namespace Rogue.NET.Common.Extension
         public static T MaxBy<T, V>(this IEnumerable<T> collection, Func<T, V> selector) where V : IComparable
         {
 
-            return collection.Select(x => new { Item = x, Value = selector(x) })
-                             .OrderBy(x => x.Value)
-                             .Select(x => x.Item)
-                             .LastOrDefault();
+            var valueType = typeof(V).IsValueType;
+            var maxValue = default(V);
+            var maxItem = default(T);
+
+            foreach (var item in collection)
+            {
+                var itemValue = selector(item);
+
+                // Reference type - initialize min
+                if (valueType && maxValue.CompareTo(default(V)) == 0)
+                {
+                    maxValue = itemValue;
+                    maxItem = item;
+                }
+
+                // Value type - initialize min
+                else if (!valueType && ReferenceEquals(maxValue, default(V)))
+                {
+                    maxValue = itemValue;
+                    maxItem = item;
+                }
+
+                else if (maxValue.CompareTo(itemValue) < 0)
+                {
+                    maxValue = itemValue;
+                    maxItem = item;
+                }
+            }
+
+            return maxItem;
+
+            //return collection.Select(x => new { Item = x, Value = selector(x) })
+            //                 .OrderBy(x => x.Value)
+            //                 .Select(x => x.Item)
+            //                 .LastOrDefault();
 
             //return MoreEnumerable.MinBy(collection, selector).Min();
         }
@@ -457,6 +512,14 @@ namespace Rogue.NET.Common.Extension
         public static IEnumerable<V> OfType<T, V>(this IEnumerable<T> collection)
         {
             return collection.Where(item => item is V).Cast<V>();
+        }
+
+        /// <summary>
+        /// Creates a SimpleList implementation - which supports serialization
+        /// </summary>
+        public static SimpleList<T> ToSimpleList<T>(this IEnumerable<T> collection)
+        {
+            return new SimpleList<T>(collection);
         }
     }
 }

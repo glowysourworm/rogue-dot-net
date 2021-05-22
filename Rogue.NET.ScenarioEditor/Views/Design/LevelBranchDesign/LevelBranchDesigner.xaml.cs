@@ -31,14 +31,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
         readonly ScenarioConfigurationMapper _scenarioConfigurationMapper;
 
         // Layout Preview Symbols
-        readonly SymbolDetailsTemplate FullLayerSymbol;
+        readonly SymbolDetailsTemplate FullNoTerrainSupportLayerSymbol;
         readonly SymbolDetailsTemplate ConnectionLayerSymbol;
         readonly SymbolDetailsTemplate WalkableLayerSymbol;
         readonly SymbolDetailsTemplate PlacementLayerSymbol;
         readonly SymbolDetailsTemplate RoomLayerSymbol;
         readonly SymbolDetailsTemplate CorridorLayerSymbol;
         readonly SymbolDetailsTemplate WallLayerSymbol;
-        readonly SymbolDetailsTemplate ImpassibleTerrainLayerSymbol;
+        readonly SymbolDetailsTemplate TerrainSupportLayerSymbol;
 
         // LAST PREVIEW
         LayoutTemplate _previewLayoutTemplate;
@@ -78,14 +78,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
             InitializeComponent();
 
             // TODO: CREATE SOME STATIC METHODS FOR THESE RESOURCES
-            this.FullLayerSymbol = CreateRectangleSymbol(0 * 2 * Math.PI / 8.0);
+            this.FullNoTerrainSupportLayerSymbol = CreateRectangleSymbol(0 * 2 * Math.PI / 8.0);
             this.ConnectionLayerSymbol = CreateRectangleSymbol(1 * 2 * Math.PI / 8.0);
             this.WalkableLayerSymbol = CreateRectangleSymbol(2 * 2 * Math.PI / 8.0);
             this.PlacementLayerSymbol = CreateRectangleSymbol(3 * 2 * Math.PI / 8.0);
             this.RoomLayerSymbol = CreateRectangleSymbol(4 * 2 * Math.PI / 8.0);
             this.CorridorLayerSymbol = CreateRectangleSymbol(5 * 2 * Math.PI / 8.0);
             this.WallLayerSymbol = CreateRectangleSymbol(6 * 2 * Math.PI / 8.0);
-            this.ImpassibleTerrainLayerSymbol = CreateRectangleSymbol(7 * 2 * Math.PI / 8.0);
+            this.TerrainSupportLayerSymbol = CreateRectangleSymbol(7 * 2 * Math.PI / 8.0);
 
             this.DataContextChanged += (sender, args) =>
             {
@@ -141,13 +141,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
                 this.LayoutLayerContainer.Visibility = Visibility.Visible;
                 this.PreviewLayerContainer.Visibility = Visibility.Collapsed;
 
-                RenderLayoutMode(this.FullLayerCB.IsChecked.GetValueOrDefault(),
+                RenderLayoutMode(this.FullNoTerrainSupportLayerCB.IsChecked.GetValueOrDefault(),
                                  this.WalkableLayerCB.IsChecked.GetValueOrDefault(),
                                  this.PlacementLayerCB.IsChecked.GetValueOrDefault(),
                                  this.RoomLayerCB.IsChecked.GetValueOrDefault(),
+                                 this.ConnectionRoomLayerCB.IsChecked.GetValueOrDefault(),
                                  this.CorridorLayerCB.IsChecked.GetValueOrDefault(),
                                  this.WallLayerCB.IsChecked.GetValueOrDefault(),
-                                 this.ImpassableTerrainLayerCB.IsChecked.GetValueOrDefault());
+                                 this.TerrainSupportLayerCB.IsChecked.GetValueOrDefault());
             }
             else
             {
@@ -171,21 +172,22 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
             }
         }
 
-        private void RenderLayoutMode(bool fullLayer,
+        private void RenderLayoutMode(bool fullNTSLayer,
                                       bool walkableLayer,
                                       bool placementLayer,
                                       bool roomLayer,
+                                      bool connectionRoomLayer,
                                       bool corridorLayer,
                                       bool wallLayer,
-                                      bool impassableTerrainLayer)
+                                      bool terrainSupportLayer)
         {
             if (!_initialized)
                 return;
 
             var layerImages = new List<WriteableBitmap>();
 
-            if (fullLayer)
-                layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.Full, this.FullLayerSymbol, false));
+            if (fullNTSLayer)
+                layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.FullNoTerrainSupport, this.FullNoTerrainSupportLayerSymbol, false));
 
             if (walkableLayer)
                 layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.Walkable, this.WalkableLayerSymbol, false));
@@ -196,14 +198,17 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
             if (roomLayer)
                 layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.Room, this.RoomLayerSymbol, false));
 
+            if (connectionRoomLayer)
+                layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.ConnectionRoom, this.ConnectionLayerSymbol, false));
+
             if (corridorLayer)
                 layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.Corridor, this.CorridorLayerSymbol, false));
 
             if (wallLayer)
                 layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.Wall, this.WallLayerSymbol, false));
 
-            if (impassableTerrainLayer)
-                layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.ImpassableTerrain, this.ImpassibleTerrainLayerSymbol, false));
+            if (terrainSupportLayer)
+                layerImages.Add(_previewRenderingService.RenderLayoutLayer(_previewLayoutGrid, LayoutGrid.LayoutLayer.TerrainSupport, this.TerrainSupportLayerSymbol, false));
 
             if (layerImages.Count == 0)
             {
@@ -263,7 +268,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Design.LevelBranchDesign
 
             // Terrain
             foreach (var layer in terrainLayers)
-                layerImages.Add(_previewRenderingService.RenderTerrainLayer(_previewLayoutGrid, layer, true));
+            {
+                // VERIFY THAT LAYER WAS GENERATED
+                if (_previewLayoutGrid.TerrainMaps.Any(map => map.Name == layer.Name))
+                    layerImages.Add(_previewRenderingService.RenderTerrainLayer(_previewLayoutGrid, layer, true));
+            }
 
             if (layerImages.Count == 0)
             {

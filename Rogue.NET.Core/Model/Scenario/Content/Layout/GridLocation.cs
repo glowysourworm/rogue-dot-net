@@ -1,9 +1,10 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
 using System;
 using System.Runtime.Serialization;
 
 using static Rogue.NET.Core.Math.Geometry.Metric;
-using static Rogue.NET.Core.Model.Scenario.Content.Layout.Interface.IGridLocator;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -49,27 +50,60 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             info.AddValue("Row", this.Row);
         }
 
-        public override bool Equals(object obj)
+        // SHOULD BEHAVE LIKE A VALUE TYPE
+        public static bool operator ==(GridLocation location1, GridLocation location2)
         {
-            if (obj == null)
+            if (ReferenceEquals(location1, location2))
+                return true;
+
+            else if (ReferenceEquals(location1, null))
+                return ReferenceEquals(location2, null);
+
+            else if (ReferenceEquals(location2, null))
                 return false;
 
-            if (obj is GridLocation)
+            else
+                return location1.Equals(location2);
+        }
+
+        public static bool operator !=(GridLocation location1, GridLocation location2)
+        {
+            if (ReferenceEquals(location1, location2))
+                return false;
+
+            else if (ReferenceEquals(location1, null))
+                return !ReferenceEquals(location2, null);
+
+            else if (ReferenceEquals(location2, null))
+                return true;
+
+            else
+                return !location1.Equals(location2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(obj, null))
+                return false;
+
+            var location = obj as GridLocation;
+
+            if (!ReferenceEquals(location, null))
             {
-                var location = (GridLocation)obj;
-                return location.Column == this.Column && location.Row == this.Row && location.Type == this.Type;
+                return location.Column == this.Column && 
+                       location.Row == this.Row && 
+                       location.Type == this.Type;
             }
             else
                 throw new Exception("Trying to compare GridLocation to non-compatible type");
         }
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return this.CreateHashCode(this.Column, this.Row, this.Type);
         }
         public override string ToString()
         {
             return "Column=" + Column.ToString() + " Row=" + Row.ToString() + " Type=" + this.Type.ToString();
         }
-
     }
 }

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Rogue.NET.Core.Math.Algorithm.Interface;
+
+using System;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
     [Serializable]
-    public class GraphEdge
+    public class GraphEdge : IGraphEdge<GraphVertex>
     {
         public GraphVertex Point1 { get; set; }
         public GraphVertex Point2 { get; set; }
@@ -12,6 +14,12 @@ namespace Rogue.NET.Core.Math.Geometry
         {
             get { return Metric.Distance(this.Point1, this.Point2); }
         }
+
+        #region IGraphEdge
+        public GraphVertex Node { get { return this.Point1; } }
+        public GraphVertex AdjacentNode { get { return this.Point2; } }
+        public double Weight { get { return this.Distance; } }
+        #endregion
 
         public GraphEdge(GraphVertex point1, GraphVertex point2)
         {

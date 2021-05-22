@@ -21,13 +21,16 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
         }
 
-        public void CreateDoors(LayoutContainer container, GraphInfo<GridCellInfo> connectionGraph)
+        public void CreateDoors(LayoutContainer container)
         {
             // Set door locations for each graph connection
-            foreach (var connection in connectionGraph.Connections)
+            if (container.GetConnectionGraph().HasEdges())
             {
-                connection.DoorLocation.IsDoor = true;
-                connection.AdjacentDoorLocation.IsDoor = true;
+                foreach (var connection in container.GetConnectionGraph().GetConnections())
+                {
+                    //connection.DoorLocation.IsDoor = true;
+                    //connection.AdjacentDoorLocation.IsDoor = true;
+                }
             }
 
             /* OLD ROUTINE - PER REGION, ITERATE...
@@ -165,7 +168,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
 
             // Add wall cells to the grid
             foreach (var cell in walls)
-                container.SetLayout(cell.Location.Column, cell.Location.Row, cell);
+            {
+                var existingCell = container.Get(cell.Column, cell.Row);
+                if (existingCell == null)
+                    container.AddLayout(cell.Location.Column, cell.Location.Row, cell);
+
+                else
+                    existingCell.IsWall = true;
+            }
         }
     }
 }

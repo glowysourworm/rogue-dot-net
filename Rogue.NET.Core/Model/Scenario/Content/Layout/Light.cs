@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Media;
 
+using Rogue.NET.Common.Extension;
+
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     [Serializable]
@@ -32,14 +34,24 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         public override int GetHashCode()
         {
-            var hash = 17;
+            return this.CreateHashCode(this.Red,
+                                       this.Green,
+                                       this.Blue,
+                                       this.Intensity);
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is Light)
+            {
+                var light = obj as Light;
 
-            hash = (hash * 397) ^ this.Red.GetHashCode();
-            hash = (hash * 397) ^ this.Green.GetHashCode();
-            hash = (hash * 397) ^ this.Blue.GetHashCode();
-            hash = (hash * 397) ^ this.Intensity.GetHashCode();
+                return this.Red == light.Red &&
+                       this.Green == light.Green &&
+                       this.Blue == light.Blue &&
+                       this.Intensity == light.Intensity;
+            }
 
-            return hash;
+            return false;
         }
 
         public Light()

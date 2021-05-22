@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -11,51 +10,45 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         /// <summary>
         /// Callback that allows setting properties of the embedded path cells
         /// </summary>
-        public delegate void DijkstraPathCallback(GridCellInfo pathCell);
+        public delegate void DijkstraPathCallback(IGridLocator pathLocator);
 
         public DijkstraPathGenerator(int width, int height,
-                                     IEnumerable<Region<GridCellInfo>> avoidRegions,
-                                     GridCellInfo sourceLocation,
-                                     IEnumerable<GridCellInfo> targetLocations,
+                                     IGridLocator sourceLocation,
+                                     IEnumerable<IGridLocator> targetLocations,
                                      bool obeyCardinalMovement,
+                                     DijkstraMapCostCallback dijkstraMapCostCallback,
                                      DijkstraMapLocatorCallback dijkstraMapCallback)
              : base(width,
                     height,
                     obeyCardinalMovement,
                     sourceLocation,
                     targetLocations,
-                    new DijkstraMapCostCallback((column1, row1, column2, row2) =>
-                    {
-                        // MOVEMENT COST BASED ON THE DESTINATION CELL
-                        //
-                        if (avoidRegions.Any(region => region[column2, row2] != null))
-                            return DijkstraMapBase.MapCostAvoid;
-
-                        else
-                            return 0;
-
-                    }), dijkstraMapCallback)
+                    dijkstraMapCostCallback,
+                    dijkstraMapCallback)
         {
             // Initializes the map to run
             Initialize(sourceLocation, targetLocations);
         }
 
         /// <summary>
-        /// Calculates path cells from source to all target locations
+        /// Calculates path cells from source to target location - in FORWARD direction
         /// </summary>
-        public void CalculatePaths(DijkstraPathCallback callback)
+        public IEnumerable<IGridLocator> CalculatePath(IGridLocator targetLocation)
+        {
+            Run();
+
+            return GeneratePath(targetLocation).Reverse();
+        }
+
+        /// <summary>
+        /// Calculates path cells from source to all target locations - in FORWARD direction
+        /// </summary>
+        public IDictionary<IGridLocator, IEnumerable<IGridLocator>> CalculatePaths()
         {
             Run();
 
             // Create paths for each target
-            foreach (var targetLocation in this.TargetLocations)
-            {
-                foreach (var cell in GeneratePath(targetLocation))
-                {
-                    // Allow setting properties on cells from the new path
-                    callback(cell as GridCellInfo);
-                }
-            }
+            return this.TargetLocations.ToDictionary(location => location, location => GeneratePath(location).Reverse());
         }
     }
 }

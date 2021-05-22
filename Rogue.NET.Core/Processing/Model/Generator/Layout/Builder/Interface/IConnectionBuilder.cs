@@ -1,8 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
-
-using System.Collections.Generic;
 
 using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
@@ -16,20 +13,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
         /// CreateMazeCorridors first manually. Then, the graph of regions to triangulate must be calculated.
         /// </summary>
         void BuildConnections(LayoutContainer container,
-                              LayoutTemplate template,
-                              GraphInfo<GridCellInfo> regionGraph);
+                              LayoutTemplate template);
 
         /// <summary>
-        /// Creates maze CORRIDORS in the empty space in the layout. DOES NOT COMPLETE CONNECTIONS! MUST RE-GENERATE 
-        /// CONNECTION GRAPH; and call ConnectUsingShortestPath.
+        /// Creates maze regions in the empty space in the layout as NON-CORRIDOR ROOMS. DOES NOT COMPLETE 
+        /// CONNECTIONS! MUST RE-GENERATE CONNECTION GRAPH; and call BuildConnections.
         /// </summary>
-        public void CreateMazeCorridors(LayoutContainer container,
-                                        LayoutTemplate template,
-                                        MazeType mazeType);
-
-        /// <summary>
-        /// Completes the layout connections using the provided connection graph
-        /// </summary>
-        void ConnectUsingShortestPath(LayoutContainer container, GraphInfo<GridCellInfo> connectionGraph);
+        public void CreateMazeRegionsInEmptySpace(LayoutContainer container,
+                                                  LayoutTemplate template,
+                                                  MazeType mazeType);
     }
 }

@@ -139,13 +139,9 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Corridors are masked off during terrain creation")]
         Corridors = 2,
 
-        [Display(Name = "Walls",
-                 Description = "Walls are masked off during terrain creation")]
-        Walls = 4,
-
         [Display(Name = "Empty Space",
                  Description = "Empty space is masked off during terrain creation")]
-        EmptySpace = 8
+        EmptySpace = 4
     }
     public enum TerrainGenerationType
     {

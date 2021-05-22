@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Algorithm.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using System;
 using System.Runtime.Serialization;
 
@@ -7,12 +9,15 @@ using static Rogue.NET.Core.Math.Geometry.Metric;
 namespace Rogue.NET.Core.Math.Geometry
 {
     [Serializable]
-    public class GraphVertex : IGridLocator
+    public class GraphVertex : IGridLocator, IGraphNode
     {
         public string ReferenceId { get; private set; }
         public int Column { get; set; }
         public int Row { get; set; }
         public MetricType Type { get; set; }
+
+        // IGraphNode
+        public int Hash { get { return this.GetHashCode(); } }
 
         public GraphVertex(string referenceId, int column, int row, MetricType type)
         {
@@ -55,14 +60,10 @@ namespace Rogue.NET.Core.Math.Geometry
 
         public override int GetHashCode()
         {
-            var hash = 397;
-
-            hash = (17 * hash) + this.Column.GetHashCode();
-            hash = (17 * hash) + this.Row.GetHashCode();
-            hash = (17 * hash) + this.ReferenceId.GetHashCode();
-            hash = (17 * hash) + this.Type.GetHashCode();
-
-            return hash;
+            return this.CreateHashCode(this.Column, 
+                                       this.Row, 
+                                       this.ReferenceId, 
+                                       this.Type);
         }
 
         public override string ToString()

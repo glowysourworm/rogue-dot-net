@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Processing.Model.Extension;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Processing.Model.Extension;
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// serializes the data.
     /// </summary>
     [Serializable]
-    public class Grid<T> : ISerializable, IDeserializationCallback
+    public class Grid<T> : ISerializable
     {
         readonly T[,] _grid;
         readonly int _offsetColumn;
@@ -65,6 +66,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
 
         /// <summary>
+        /// Returns the region boundary for the sub-grid that this Grid instance represents
+        /// </summary>
+        public RegionBoundary GetBoundary()
+        {
+            return new RegionBoundary(_offsetColumn, _offsetRow, _width, _height);
+        }
+
+        /// <summary>
         /// Returns true if the grid is defined in the provided PARENT indices
         /// </summary>
         public bool IsDefined(int parentColumn, int parentRow)
@@ -76,15 +85,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 return false;
 
             return true;
-        }
-
-        /// <summary>
-        /// Sets value for the grid at the provided parent coordinates. Throws an exception if
-        /// the indicies are outside the bounds of the the grid's boundary.
-        /// </summary>
-        public void Set(int parentColumn, int parentRow, T value)
-        {
-            this[parentColumn, parentRow] = value;
         }
 
         public Grid(RegionBoundary parentBoundary, RegionBoundary boundary)
@@ -141,19 +141,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             // Gather the item data from the grid
             _grid.Iterate((column, row) =>
             {
-                // T is a reference type -> check for null reference
-                if (typeof(T).IsClass)
-                {
-                    if (_grid[column, row] != null)
-                        dict.Add(new GridLocation(column, row), _grid[column, row]);
-                }
+                if (ReferenceEquals(_grid[column, row], null))
+                    return;
 
-                // T is a value type -> check for default(T)
-                else
-                {
-                    if (!_grid[column, row].Equals(default(T)))
-                        dict.Add(new GridLocation(column, row), _grid[column, row]);
-                }
+                dict.Add(new GridLocation(column, row), _grid[column, row]);
             });
 
             // Serialize the item data
@@ -165,27 +156,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             {
                 info.AddValue("Item" + counter, element.Value);
                 info.AddValue("ItemLocation" + counter++, element.Key);
-            }
-        }
-
-        /// <summary>
-        /// Routine used to match parent references from the deserialized parent grid
-        /// </summary>
-        public void OnDeserialization(object sender)
-        {
-            var parentGrid = sender as T[,];
-
-            if (parentGrid == null)
-                return;
-
-            // Iterate over PARENT grid - transferring data (or) references to THIS grid
-            for (int i = _offsetColumn; i < _offsetColumn + _width; i++)
-            {
-                for (int j = _offsetRow; j < _offsetRow + _height; j++)
-                {
-                    // Use indexer to set data from parent indices
-                    this[i, j] = parentGrid[i, j];
-                }
             }
         }
     }

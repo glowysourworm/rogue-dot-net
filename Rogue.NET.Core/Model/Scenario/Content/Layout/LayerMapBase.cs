@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
@@ -12,18 +13,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// Component for storing and mainintaining a 2D cell array for a layer of the level layout
     /// </summary>
     [Serializable]
-    public abstract class LayerMapBase<T, TRegion> : ISerializable,
-                                                     IDeserializationCallback
-                                                     where TRegion : Region<T>
-                                                     where T : class, IGridLocator
+    public abstract class LayerMapBase : ISerializable
     {
         public string Name { get; private set; }
 
         // Keep a grid of region references per cell in the region
-        TRegion[,] _regionMap;
+        Region<GridLocation>[,] _regionMap;
 
         // Also, keep a collection of the regions for this layer
-        IDictionary<string, TRegion> _regions;
+        List<Region<GridLocation>> _regions;
 
         /// <summary>
         /// Layer map boundary - built by encompassing the individual regions
@@ -35,60 +33,33 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// </summary>
         public RegionBoundary ParentBoundary { get; private set; }
 
-        public T Get(int column, int row)
+        public GridLocation Get(int column, int row)
         {
-            var region = _regionMap[column, row];
+            if (_regionMap[column, row] != null)
+                return _regionMap[column, row][column, row];
 
-            if (region != null)
-                return region[column, row];
-
-            return null;
+            return default(GridLocation);
         }
 
-        public TRegion this[int column, int row]
+        public Region<GridLocation> this[int column, int row]
         {
             get { return _regionMap[column, row]; }
         }
 
-        public TRegion this[IGridLocator location]
+        public Region<GridLocation> this[IGridLocator location]
         {
             get { return _regionMap[location.Column, location.Row]; }
         }
 
-        public IDictionary<string, TRegion> Regions
+        public IEnumerable<GridLocation> GetLocations()
         {
-            get { return _regions; }
-        }
-
-        public IEnumerable<T> GetLocations()
-        {
-            return _regions.Values
-                           .SelectMany(region => region.Locations)
+            return _regions.SelectMany(region => region.Locations)
                            .Actualize();
         }
 
-        public IEnumerable<T> GetNonOccupiedLocations()
-        {
-            return _regions.Values
-                           .SelectMany(region => region.NonOccupiedLocations)
-                           .Actualize();
-        }
+        public IEnumerable<Region<GridLocation>> Regions { get { return _regions; } }
 
-        public bool IsOccupied(IGridLocator location)
-        {
-            return _regions.Any(region => region.Value.IsOccupied(location));
-        }
-
-        public void SetOccupied(IGridLocator location, bool occupied)
-        {
-            foreach (var region in _regions)
-            {
-                if (region.Value[location] != null)
-                    region.Value.SetOccupied(location, occupied);
-            }
-        }
-
-        public LayerMapBase(string layerName, IEnumerable<TRegion> regions, int width, int height)
+        public LayerMapBase(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)
         {
             // Get regions from the region graph
             Initialize(layerName, regions, width, height);
@@ -99,55 +70,25 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var name = info.GetString("Name");
             var width = info.GetInt32("Width");
             var height = info.GetInt32("Height");
-            var regionCount = info.GetInt32("RegionCount");
-
-            // NOTE*** DOING TYPE INSPECTION TO SIMPLIFY THE INHERITANCE SPECIFICATION. 
-            //          
-            //         THE ALTERNATIVE IS:  LayerMap<Region<GridLocation>> and ConnectedLayerMap<ConnectedRegion<GridLocation>>
-            //
-            var regions = new List<TRegion>();
-
-            for (int i = 0; i < regionCount; i++)
-            {
-                var region = (TRegion)info.GetValue("Region" + i.ToString(), typeof(TRegion));
-
-                regions.Add(region);
-            }
+            var regions = (SimpleList<Region<GridLocation>>)info.GetValue("Regions", typeof(SimpleList<Region<GridLocation>>));
 
             Initialize(name, regions, width, height);
         }
 
-        public void OnDeserialization(object sender)
-        {
-            if (sender == null)
-                return;
-
-            var grid = sender as GridCell[,];
-
-            if (grid == null)
-                throw new Exception("Improper use of OnDeserialization()  LayerMap");
-
-            foreach (var region in _regions)
-                region.Value.OnDeserialization(grid);
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Name", this.Name);
             info.AddValue("Width", _regionMap.GetLength(0));
             info.AddValue("Height", _regionMap.GetLength(1));
-            info.AddValue("RegionCount", _regions.Count());
-
-            for (int i = 0; i < _regions.Count(); i++)
-                info.AddValue("Region" + i.ToString(), _regions.ElementAt(i));
+            info.AddValue("Regions", _regions.ToSimpleList());
         }
 
-        protected void Initialize(string layerName, IEnumerable<TRegion> regions, int width, int height)
+        protected void Initialize(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)
         {
             this.Name = layerName;
 
-            _regions = regions.ToDictionary(region => region.Id, region => region);
-            _regionMap = new TRegion[width, height];
+            _regions = new List<Region<GridLocation>>(regions);
+            _regionMap = new Region<GridLocation>[width, height];
 
             // Iterate regions and initialize the map
             foreach (var region in regions)
@@ -167,7 +108,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var top = int.MaxValue;
             var bottom = int.MinValue;
 
-            foreach (var region in _regions.Values)
+            foreach (var region in _regions)
             {
                 if (region.Boundary.Left < left)
                     left = region.Boundary.Left;

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
+using static Rogue.NET.Core.Processing.Model.Extension.ArrayExtension;
 using static Rogue.NET.Core.Processing.Model.Generator.Layout.Component.Interface.IMazeRegionCreator;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
@@ -33,29 +34,29 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public bool[,] CreateMaze(int width, int height, 
-                                  Region<GridCellInfo> region, 
+        public bool[,] CreateMaze(int width, int height,
+                                  RegionInfo<GridLocation> region, 
                                   MazeType mazeType, 
                                   double wallRemovalRatio, 
                                   double horizontalVerticalBias)
         {
-            return RecursiveBacktracker(width, height, region, new Region<GridCellInfo>[] { }, wallRemovalRatio, horizontalVerticalBias, mazeType);
+            return RecursiveBacktracker(width, height, region, (cell) => false, wallRemovalRatio, horizontalVerticalBias, mazeType);
         }
 
         public bool[,] CreateMaze(int width, int height, 
-                                  Region<GridCellInfo> region, 
-                                  IEnumerable<Region<GridCellInfo>> avoidRegions, 
+                                  RegionInfo<GridLocation> region, 
+                                  GridPredicate<GridLocation> impassableTerrainCallback,
                                   MazeType mazeType, 
                                   double wallRemovalRatio, 
                                   double horizontalVerticalBias)
         {
-            return RecursiveBacktracker(width, height, region, avoidRegions, wallRemovalRatio, horizontalVerticalBias, mazeType);
+            return RecursiveBacktracker(width, height, region, impassableTerrainCallback, wallRemovalRatio, horizontalVerticalBias, mazeType);
         }
 
         bool[,] RecursiveBacktracker(int width,
                                      int height,
-                                     Region<GridCellInfo> region,
-                                     IEnumerable<Region<GridCellInfo>> avoidRegions, 
+                                     RegionInfo<GridLocation> region,
+                                     GridPredicate<GridLocation> impassableTerrainCallback,
                                      double wallRemovalRatio, 
                                      double horizontalVerticalBias, 
                                      MazeType mazeType)
@@ -85,7 +86,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             // Create grid of locations REPRESENTING WALLS
             var grid = new GridLocation[width, height];
 
-            // Pre-Condition:  Fill cells with "walls"
+            // Pre-Condition:  Fill result grid with "walls"
             grid.Iterate((column, row) => grid[column, row] = new GridLocation(column, row));
 
             // Choose random starting location
@@ -102,7 +103,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
             history.Push(currentLocation);
 
             // Set the first cell
-            grid[currentLocation.Column, currentLocation.Row] = new GridLocation(currentLocation);
+            grid[currentLocation.Column, currentLocation.Row] = null;
             visitedCells[currentLocation.Column, currentLocation.Row] = true;
 
             //Main loop - create the maze!
@@ -112,7 +113,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                 //
                 var adjacentLocations = grid.GetCardinalAdjacentElements(currentLocation.Column, currentLocation.Row)
                                             .Where(location => region[currentLocation] != null)
-                                            .Where(location => avoidRegions.All(region => region[location] == null))
+                                            .Where(location => !impassableTerrainCallback(location))
                                             .Where(location => !visitedCells[location.Column, location.Row])
                                             .Actualize();
 
@@ -142,13 +143,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
                     // Run query to see whether this cell can be used in the maze
                     //
-                    var viableLocation = mazeType == MazeType.Filled ? FiveAdjacentWallsDirectionalRule(currentLocation, nextLocation, grid.GetAdjacentElements(nextLocation.Column, nextLocation.Row))
-                                                                     : CardinalAdjacentWallsRule(currentLocation, nextLocation, grid.GetCardinalAdjacentElements(nextLocation.Column, nextLocation.Row));
+                    var viableLocation = (mazeType == MazeType.Filled) ? FiveAdjacentWallsDirectionalRule(currentLocation, nextLocation, grid.GetAdjacentElementsUnsafe(nextLocation.Column, nextLocation.Row))
+                                                                       : FiveAdjacentWallsRule(currentLocation, nextLocation, grid.GetAdjacentElementsUnsafe(nextLocation.Column, nextLocation.Row));
 
                     // If any neighbor cells CAN be visited - then push the current one on the stack
                     if (viableLocation)
                     {
-                        // Remove the wall
+                        // Remove the "wall" - THIS IS A VIABLE MAZE PATH
                         grid[nextLocation.Column, nextLocation.Row] = null;
 
                         // Push on the stack
@@ -173,7 +174,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                         continue;
 
                     // Check avoid regions
-                    else if (avoidRegions.Any(region => region[i, j] != null))
+                    else if (impassableTerrainCallback(grid[i,j]))
                         continue;
 
                     // Check random wall removal ratio before proceeding
@@ -185,7 +186,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                 }
             }
 
-            // RETURN A 2D ARRAY OF BOOLEANS AS THE RESULT
+            // RETURN A 2D ARRAY OF BOOLEANS AS THE RESULT (NULL -> CORRIDOR)
             return grid.GridCopy(location => location == null);
         }
 
@@ -238,15 +239,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         /// <summary>
         /// Returns true if all 4-way adjacent cells are walls (Except the current cell)
         /// </summary>
-        private static bool CardinalAdjacentWallsRule(IGridLocator currentCell, IGridLocator nextLocation, IGridLocator[] nextCell8WayNeighbors)
+        private static bool CardinalAdjacentWallsRule(IGridLocator currentCell, IGridLocator nextLocation, IGridLocator[] nextCell4WayNeighbors)
         {
-            return nextCell8WayNeighbors.Where(cell => cell != currentCell)
+            return nextCell4WayNeighbors.Where(cell => cell != currentCell)
                                         .All(cell => cell != null);
         }
 
         /// <summary>
-        /// Returns true if all 5 adjacent cells to the next cell are walls. This prevents neighboring off-diagonal walls that separate
-        /// passages - making the maze look much more complete. 
+        /// Returns true if AT LEAST 5 adjacent cells to the NEXT cell are walls. This ALLOWS off-diagonal CORRIDORS. (Open feel)
         /// </summary>
         private static bool FiveAdjacentWallsRule(IGridLocator currentLocation, IGridLocator nextLocation, IGridLocator[] nextCell8WayNeighbors)
         {
@@ -256,7 +256,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
 
         /// <summary>
         /// Same as the FiveAdjacentWallsRule with the added condition that the 5 adjacent walls must be "in the direction of
-        /// travel". Example:  Movement Direction = E. Then, the set { N, NE, E, SE, S } must ALL be walls.
+        /// travel". Example:  Movement Direction = E. Then, the set { N, NE, E, SE, S } must ALL be walls. This tends to make
+        /// the maze look a little more "bulky" with walls. (Filled feel)
         /// </summary>
         private static bool FiveAdjacentWallsDirectionalRule(IGridLocator currentLocation, IGridLocator nextLocation, IGridLocator[] nextCell8WayNeighbors)
         {

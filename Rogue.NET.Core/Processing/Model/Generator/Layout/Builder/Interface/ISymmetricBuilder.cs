@@ -1,10 +1,5 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
 {
@@ -13,6 +8,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
         /// <summary>
         /// Creates a BASE and CONNECTION layer from the template
         /// </summary>
-        LayoutContainer CreateSymmetricLayout(LayoutTemplate template);
+        GridCellInfo[,] CreateSymmetricLayout(LayoutTemplate template);
     }
 }

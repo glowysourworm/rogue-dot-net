@@ -23,8 +23,8 @@ namespace Rogue.NET
             if (!Directory.Exists(ResourceConstants.TempDirectory))
                 Directory.CreateDirectory(ResourceConstants.TempDirectory);
 
-            if (!Directory.Exists(ResourceConstants.DijkstraOutputDirectory))
-                Directory.CreateDirectory(ResourceConstants.DijkstraOutputDirectory);
+            if (!Directory.Exists(ResourceConstants.ArrayDebugOutputDirectory))
+                Directory.CreateDirectory(ResourceConstants.ArrayDebugOutputDirectory);
 
             var loadingWindow = SplashWindowFactory.CreatePopupWindow(SplashEventType.Loading);
 

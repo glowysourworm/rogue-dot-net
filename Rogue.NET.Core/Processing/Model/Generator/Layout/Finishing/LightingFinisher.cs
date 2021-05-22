@@ -46,7 +46,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public void CreateLighting(LayoutContainer container, LayoutTemplate template)
+        public void CreateLighting(FinalizedLayoutContainer container, LayoutTemplate template)
         {
             // Procedure
             //
@@ -79,59 +79,54 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             CreateTerrainLighting(container, template);
         }
 
-        private void CreateLightThreshold(LayoutContainer container, LayoutTemplate template)
+        private void CreateLightThreshold(FinalizedLayoutContainer container, LayoutTemplate template)
         {
-            for (int column = 0; column < container.Width; column++)
+            container.Grid.Iterate((column, row) =>
             {
-                for (int row = 0; row < container.Height; row++)
-                {
-                    if (container.Get(column, row) == null)
-                        continue;
+                if (container.Grid[column, row] == null)
+                    return;
 
-                    var intensity = ScaleIntensity(template.LightingThreshold);
+                var intensity = ScaleIntensity(template.LightingThreshold);
+
+                intensity = intensity.Round(1);
+
+                // Set a white light threshold (to simulate white light)
+                container.Grid[column, row].AmbientLight = new Light(Light.White, intensity);
+            });
+
+        }
+
+        private void CreateWhiteNoiseLighting(FinalizedLayoutContainer container, LightAmbientTemplate template)
+        {
+            // Create the light for the room
+            var light = _lightGenerator.GenerateLight(template.Light);
+
+            container.Grid.Iterate((column, row) =>
+            {
+                if (container.Grid[column, row] == null)
+                    return;
+
+                if (_randomSequenceGenerator.Get() < template.FillRatio)
+                {
+                    // Go ahead and adjust light intensity here since the light instance is only local
+                    var intensity = ScaleIntensity(_randomSequenceGenerator.GetRandomValue(template.IntensityRange));
 
                     intensity = intensity.Round(1);
 
-                    // Set a white light threshold (to simulate white light)
-                    container.Get(column, row).AmbientLight = new Light(Light.White, intensity);
+                    // Blend the current light value with the new light
+                    container.Grid[column, row].AccentLight = new Light(light, intensity);
                 }
-            }
+            });
         }
 
-        private void CreateWhiteNoiseLighting(LayoutContainer container, LightAmbientTemplate template)
+        private void CreatePerlinNoiseLighting(FinalizedLayoutContainer container, LightAmbientTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.Light);
 
-            for (int column = 0; column < container.Width; column++)
+            _noiseGenerator.Run(NoiseType.PerlinNoise, container.Grid.GetLength(0), container.Grid.GetLength(1), LIGHT_PERLIN_FREQUENCY, (column, row, value) =>
             {
-                for (int row = 0; row < container.Height; row++)
-                {
-                    if (container.Get(column, row) == null)
-                        continue;
-
-                    if (_randomSequenceGenerator.Get() < template.FillRatio)
-                    {
-                        // Go ahead and adjust light intensity here since the light instance is only local
-                        var intensity = ScaleIntensity(_randomSequenceGenerator.GetRandomValue(template.IntensityRange));
-
-                        intensity = intensity.Round(1);
-
-                        // Blend the current light value with the new light
-                        container.Get(column, row).AccentLight = new Light(light, intensity);
-                    }
-                }
-            }
-        }
-
-        private void CreatePerlinNoiseLighting(LayoutContainer container, LightAmbientTemplate template)
-        {
-            // Create the light for the room
-            var light = _lightGenerator.GenerateLight(template.Light);
-
-            _noiseGenerator.Run(NoiseType.PerlinNoise, container.Width, container.Height, LIGHT_PERLIN_FREQUENCY, (column, row, value) =>
-            {
-                if (container.Get(column, row) != null)
+                if (container.Grid[column, row] != null)
                 {
                     // Scale the value from [-1, 1] -> [0, 1]
                     var scaledValue = (value * 0.5) + 0.5;
@@ -151,7 +146,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
                         intensity = intensity.Round(1);
 
                         // Add light to the grid
-                        container.Get(column, row).AccentLight = new Light(light, intensity);
+                        container.Grid[column, row].AccentLight = new Light(light, intensity);
                     }
                 }
 
@@ -159,7 +154,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             });
         }
 
-        private void CreateWallLighting(LayoutContainer container, LayoutTemplate template)
+        private void CreateWallLighting(FinalizedLayoutContainer container, LayoutTemplate template)
         {
             // Create the light for the room
             var light = _lightGenerator.GenerateLight(template.WallLight);
@@ -173,37 +168,34 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             var wallLightFOV = new Dictionary<GridCellInfo, List<DistanceLocation>>();
 
             // Combine color with existing lighting for the cell
-            for (int column = 0; column < container.Width; column++)
+            container.Grid.Iterate((column, row) =>
             {
-                for (int row = 0; row < container.Height; row++)
+                var cell = container.Grid[column, row];
+
+                if (cell == null)
+                    return;
+
+                if (!cell.IsWall)
+                    return;
+
+                // Create the first wall light
+                if (!installedWallLights.Any(location => Metric.ForceDistance(cell.Location, location, Metric.MetricType.Euclidean) <= minimumRadius))
                 {
-                    var cell = container.Get(column, row);
+                    installedWallLights.Add(cell.Location);
 
-                    if (cell == null)
-                        continue;
+                    // Go ahead and adjust light intensity here since the light instance is only local
+                    var wallLightIntensity = ScaleIntensity(template.WallLightIntensity).Round(1);
 
-                    if (!cell.IsWall)
-                        continue;
+                    // Blend in the resulting light 
+                    cell.WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
+                    cell.IsWallLight = true;
 
-                    // Create the first wall light
-                    if (!installedWallLights.Any(location => Metric.ForceDistance(cell.Location, location, Metric.MetricType.Euclidean) <= minimumRadius))
-                    {
-                        installedWallLights.Add(cell.Location);
-
-                        // Go ahead and adjust light intensity here since the light instance is only local
-                        var wallLightIntensity = ScaleIntensity(template.WallLightIntensity).Round(1);
-
-                        // Blend in the resulting light 
-                        cell.WallLight = new Light(light.Red, light.Green, light.Blue, wallLightIntensity);
-                        cell.IsWallLight = true;
-
-                        CreatePointSourceLighting(container, column, row, cell.WallLight);
-                    }
+                    CreatePointSourceLighting(container, column, row, cell.WallLight);
                 }
-            }
+            });
         }
 
-        private void CreateTerrainLighting(LayoutContainer container, LayoutTemplate template)
+        private void CreateTerrainLighting(FinalizedLayoutContainer container, LayoutTemplate template)
         {
             foreach (var terrainLayer in template.TerrainLayers
                                                  .Where(layer => layer.TerrainLayer.EmitsLight)
@@ -212,37 +204,34 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             {
 
                 var light = _lightGenerator.GenerateLight(terrainLayer.EmittedLight);
-                var terrainRegions = container.GetTerrainRegions(terrainLayer);
+                var terrainRegions = container.TerrainDict[terrainLayer];
 
-                for (int column = 0; column < container.Width; column++)
+                container.Grid.Iterate((column, row) =>
                 {
-                    for (int row = 0; row < container.Height; row++)
-                    {
-                        // Create point source light at this location
-                        if (terrainRegions.Any(region => region[column, row] != null))
-                            CreatePointSourceLighting(container, column, row, light, true, terrainLayer.Name);
-                    }
-                }
+                    // Create point source light at this location
+                    if (terrainRegions.Any(region => region[column, row] != null))
+                        CreatePointSourceLighting(container, column, row, light, true, terrainLayer.Name);
+                });
             }
         }
 
-        private void CreatePointSourceLighting(LayoutContainer container, int column, int row, Light light, bool terrainLight = false, string terrainName = null)
+        private void CreatePointSourceLighting(FinalizedLayoutContainer container, int column, int row, Light light, bool terrainLight = false, string terrainName = null)
         {
             // Add to field of view
-            VisibilityCalculator.CalculateVisibility(container.Get(column, row).Location, ModelConstants.MaxVisibileRadiusNPC,
+            VisibilityCalculator.CalculateVisibility(container.Grid[column, row].Location, ModelConstants.MaxVisibileRadiusNPC,
                 (column, row) =>
                 {
                     if (container.Bounds.Contains(column, row))
-                        return container.Get(column, row)?.Location;
+                        return container.Grid[column, row]?.Location;
 
                     return null;
                 },
                 (column, row) =>
                 {
                     if (container.Bounds.Contains(column, row))
-                        return   container.Get(column, row) == null ||
-                                 container.Get(column, row).IsWall ||
-                                 container.Get(column, row).IsDoor;
+                        return container.Grid[column, row] == null ||
+                               container.Grid[column, row].IsWall ||
+                               container.Grid[column, row].IsDoor;
 
                     return false;
                 },
@@ -250,7 +239,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             {
                 if (isVisible)
                 {
-                    var cell = container.Get(column, row);
+                    var cell = container.Grid[column, row];
                     var distance = Metric.ForceDistance(column, row, column, row, Metric.MetricType.Euclidean);
 
                     // Calculate 1 / r^a intensity (pseudo-power-law)

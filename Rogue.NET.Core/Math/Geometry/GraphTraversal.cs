@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using Rogue.NET.Core.Math.Algorithm.Interface;
+
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
     /// <summary>
     /// Component for planning a route between graph vertices
     /// </summary>
-    public class GraphTraversal
+    public class GraphTraversal<TNode, TEdge> where TNode : IGraphNode
+                                              where TEdge : IGraphEdge<TNode>
     {
-        public GraphVertex Source { get; private set; }
-        public GraphVertex Destination { get; private set; }
-        public IEnumerable<GraphVertex> Route { get; private set; }
+        public TNode Source { get; private set; }
+        public TNode Destination { get; private set; }
+        public IEnumerable<TEdge> Route { get; private set; }
 
-        public GraphTraversal(GraphVertex source, GraphVertex destination, IEnumerable<GraphVertex> route)
+        public GraphTraversal(TNode source, TNode destination, IEnumerable<TEdge> route)
         {
             this.Source = source;
             this.Destination = destination;

@@ -52,5 +52,37 @@ namespace Rogue.NET.Common.Extension
 
             return propertyInfo;
         }
+
+        /// <summary>
+        /// Implements standard method to calculate hash codes. Calls object.GetHashCode(..) from each
+        /// object parameter. Uses these to create the final hash.
+        /// </summary>
+        public static int CreateHashCode(this object theObject, params object[] propertiesToHash)
+        {
+            var hash = 397;
+
+            for (int index = 0; index < propertiesToHash.Length; index++)
+            {
+                hash = (hash * 397) ^ propertiesToHash[index].GetHashCode();
+            }
+
+            return hash;
+        }
+
+        /// <summary>
+        /// Implements standard method to calculate hash codes to EXTEND hash code already calculated. 
+        /// Calls object.GetHashCode(..) from each object parameter. Uses these to create the final hash.
+        /// </summary>
+        public static int ExtendHashCode(this int hashCode, params object[] propertiesToHash)
+        {
+            var hash = hashCode;
+
+            for (int index = 0; index < propertiesToHash.Length; index++)
+            {
+                hash = (hash * 397) ^ propertiesToHash[index].GetHashCode();
+            }
+
+            return hash;
+        }
     }
 }

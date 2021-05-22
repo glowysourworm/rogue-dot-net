@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Math.Algorithm.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
@@ -7,108 +9,137 @@ using System.Runtime.Serialization;
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     /// <summary>
-    /// Serializable data structure to store calculated room information
+    /// Serializable data structure to store regions of the layout that are related
     /// </summary>
     [Serializable]
-    public class Region<T> : ISerializable, IDeserializationCallback where T : class, IGridLocator
+    public class Region<T> : ISerializable, IGraphNode  where T : class, IGridLocator
     {
         public string Id { get; private set; }
         public T[] Locations { get; private set; }
         public T[] EdgeLocations { get; private set; }
-        public T[] LeftEdgeExposedLocations { get; private set; }
-        public T[] RightEdgeExposedLocations { get; private set; }
-        public T[] TopEdgeExposedLocations { get; private set; }
-        public T[] BottomEdgeExposedLocations { get; private set; }
-        public IEnumerable<T> OccupiedLocations { get { return _occupiedLocations; } }
-        public IEnumerable<T> NonOccupiedLocations { get { return _nonOccupiedLocations; } }
         public RegionBoundary Boundary { get; private set; }
         public RegionBoundary ParentBoundary { get; private set; }
 
-        // Occupied Location Collections
-        List<T> _occupiedLocations;
-        List<T> _nonOccupiedLocations;
+        // IGraphNode
+        public int Hash { get { return base.GetHashCode(); } }
+
+        // Store calculated hash for efficiency
+        int _calculatedHash;
 
         // 2D Arrays for region locations and edges - NOT SERIALIZED
-        Grid<T> _gridLocations;
-        Grid<bool> _edgeLocations;
-        Grid<bool> _occupiedLocationGrid;
+        Grid<T> _grid;
+        Grid<bool> _edgeGrid;
 
         #region (public) Indexers for grid locations and edges
         public T this[int column, int row]
         {
-            get { return _gridLocations[column, row]; }
+            get { return _grid[column, row]; }
         }
         public T this[IGridLocator location]
         {
-            get { return _gridLocations[location.Column, location.Row]; }
+            get { return _grid[location.Column, location.Row]; }
         }
         public bool IsEdge(int column, int row)
         {
-            return _edgeLocations[column, row];
+            return _edgeGrid[column, row];
         }
-        public bool IsOccupied(IGridLocator location)
-        {
-            return _occupiedLocationGrid[location.Column, location.Row];
-        }
-        public void SetOccupied(IGridLocator location, bool occupied)
-        {
-            var column = location.Column;
-            var row = location.Row;
+        #endregion
 
-            // Occupied
-            if (_occupiedLocationGrid[column, row])
-            {
-                if (!occupied)
-                {
-                    _occupiedLocations.Remove(_gridLocations[column, row]);
-                    _nonOccupiedLocations.Add(_gridLocations[column, row]);
-                }
-            }
+        #region STRUCT-LIKE EQUALS / HASH BEHAVIOR
+        public static bool operator ==(Region<T> region1, Region<T> region2)
+        {
+            if (ReferenceEquals(region1, region2))
+                return true;
 
-            // Non-Occupied
+            else if (ReferenceEquals(region1, null))
+                return ReferenceEquals(region2, null);
+
+            else if (ReferenceEquals(region2, null))
+                return false;
+
             else
+                return region1.Equals(region2);
+        }
+
+        public static bool operator !=(Region<T> region1, Region<T> region2)
+        {
+            if (ReferenceEquals(region1, region2))
+                return false;
+
+            else if (ReferenceEquals(region1, null))
+                return !ReferenceEquals(region2, null);
+
+            else if (ReferenceEquals(region2, null))
+                return true;
+
+            else
+                return !region1.Equals(region2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherRegion = (Region<T>)obj;
+
+            // No way to check for "null" reference to obj that is supposed to be a struct..(?)
+            return otherRegion.GetHashCode() == this.GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            if (_calculatedHash == default(int))
             {
-                if (occupied)
+                _calculatedHash = this.CreateHashCode(this.Id,
+                                                      this.Boundary,
+                                                      this.ParentBoundary);
+
+                // (PERFORMANCE!!) CREATE GRID<T> HASH CODE USING CALLS FOR SPECIFIC TYPES
+                _calculatedHash = ExtendHashCodeForGrid(_grid, _calculatedHash);
+            }
+
+            return _calculatedHash;
+        }
+
+        private int ExtendHashCodeForGrid(Grid<T> grid, int hashToExtend)
+        {
+            var gridBounds = grid.GetBoundary();
+
+            for (int column = gridBounds.Left; column <= gridBounds.Right; column++)
+            {
+                for (int row = gridBounds.Top; row <= gridBounds.Bottom; row++)
                 {
-                    _nonOccupiedLocations.Remove(_gridLocations[column, row]);
-                    _occupiedLocations.Add(_gridLocations[column, row]);
+                    if (grid[column, row] != null)
+                    {
+                        if (grid[column, row] is GridLocation)
+                        {
+                            var location = grid[column, row] as GridLocation;
+
+                            hashToExtend = grid.CreateHashCode(location);       // HAS ITS OWN STRUCT-LIKE HASH CODE
+                        }
+                        else
+                            throw new Exception("Unhandled Grid<T> Type:  Region.GetGridHashCode");
+                    }
                 }
             }
 
-            _occupiedLocationGrid[column, row] = occupied;
+            return hashToExtend;
         }
         #endregion
 
         public Region(string regionId, T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
         {
-            Initialize(regionId, locations, edgeLocations, boundary, parentBoundary);
-        }
+            if (string.IsNullOrEmpty(regionId) || locations.Length == 0 || edgeLocations.Length == 0)
+                throw new Exception("Invalid Region parameters - Region.cs");
 
-        public Region(T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
-        {
-            Initialize(Guid.NewGuid().ToString(), locations, edgeLocations, boundary, parentBoundary);
-        }
-
-        private void Initialize(string regionId, T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
-        {
             this.Id = regionId;
             this.Locations = locations;
             this.EdgeLocations = edgeLocations;
             this.Boundary = boundary;
             this.ParentBoundary = parentBoundary;
 
-            _gridLocations = new Grid<T>(parentBoundary, boundary);
-            _edgeLocations = new Grid<bool>(parentBoundary, boundary);
-            _occupiedLocationGrid = new Grid<bool>(parentBoundary, boundary);
+            _calculatedHash = default(int);
 
-            _occupiedLocations = new List<T>();
-            _nonOccupiedLocations = new List<T>(locations);
-
-            // Non-serialized collections
-            var leftEdgeLocations = new List<T>();
-            var rightEdgeLocations = new List<T>();
-            var topEdgeLocations = new List<T>();
-            var bottomEdgeLocations = new List<T>();
+            _grid = new Grid<T>(parentBoundary, boundary);
+            _edgeGrid = new Grid<bool>(parentBoundary, boundary);
 
             // Setup grid locations
             foreach (var location in locations)
@@ -117,7 +148,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 if (!boundary.Contains(location))
                     throw new Exception("Invalid location for the region boundary Region.cs");
 
-                _gridLocations[location.Column, location.Row] = location;
+                _grid[location.Column, location.Row] = location;
             }
 
             // Setup edge locations
@@ -127,206 +158,61 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 if (!boundary.Contains(location))
                     throw new Exception("Invalid edge location for the region boundary Region.cs");
 
-                _edgeLocations[location.Column, location.Row] = true;
-
-                // Left Edge Exposed
-                if (_gridLocations.IsDefined(location.Column - 1, location.Row) &&
-                    _gridLocations[location.Column - 1, location.Row] == null)
-                    leftEdgeLocations.Add(location);
-
-                // Right Edge
-                if (_gridLocations.IsDefined(location.Column + 1, location.Row) &&
-                    _gridLocations[location.Column + 1, location.Row] == null)
-                    rightEdgeLocations.Add(location);
-
-                // Bottom Edge
-                if (_gridLocations.IsDefined(location.Column, location.Row + 1) &&
-                    _gridLocations[location.Column, location.Row + 1] == null)
-                    bottomEdgeLocations.Add(location);
-
-                // Top Edge
-                if (_gridLocations.IsDefined(location.Column, location.Row - 1) &&
-                    _gridLocations[location.Column, location.Row - 1] == null)
-                    topEdgeLocations.Add(location);
+                _edgeGrid[location.Column, location.Row] = true;
             }
-
-            this.LeftEdgeExposedLocations = leftEdgeLocations.ToArray();
-            this.RightEdgeExposedLocations = rightEdgeLocations.ToArray();
-            this.TopEdgeExposedLocations = topEdgeLocations.ToArray();
-            this.BottomEdgeExposedLocations = bottomEdgeLocations.ToArray();
         }
 
-        public Region(SerializationInfo info, StreamingContext context)
+        protected Region(SerializationInfo info, StreamingContext context)
         {
             var regionId = info.GetString("Id");
-            var locations = new T[info.GetInt32("LocationsLength")];
-            var edgeLocations = new T[info.GetInt32("EdgeLocationsLength")];
+            var grid = (Grid<T>)info.GetValue("Grid", typeof(Grid<T>));
+            var edgeGrid = (Grid<bool>)info.GetValue("EdgeGrid", typeof(Grid<bool>));
             var boundary = (RegionBoundary)info.GetValue("Boundary", typeof(RegionBoundary));
             var parentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
 
-            for (int i = 0; i < this.Locations.Length; i++)
-                locations[i] = (T)info.GetValue("Location" + i.ToString(), typeof(T));
+            _calculatedHash = default(int);
 
-            for (int i = 0; i < this.EdgeLocations.Length; i++)
-                edgeLocations[i] = (T)info.GetValue("EdgeLocation" + i.ToString(), typeof(T));
+            _grid = grid;
+            _edgeGrid = edgeGrid;
 
-            Initialize(regionId, locations, edgeLocations, boundary, parentBoundary);
+            var locations = new List<T>();
+            var edgeLocations = new List<T>();
+
+            this.Id = regionId;
+            this.Boundary = boundary;
+            this.ParentBoundary = parentBoundary;
+
+            for (int column = this.ParentBoundary.Left; column <= this.ParentBoundary.Right; column++)
+            {
+                for (int row = this.ParentBoundary.Top; row <= this.ParentBoundary.Bottom; row++)
+                {
+                    if (_grid[column, row] != null)
+                    {
+                        locations.Add(_grid[column, row]);
+
+                        if (_edgeGrid[column, row])
+                            edgeLocations.Add(_grid[column, row]);
+                    }
+                }
+            }
+
+            this.Locations = locations.ToArray();
+            this.EdgeLocations = edgeLocations.ToArray();
         }
 
-        // TODO: REMOVE THIS - ALSO, REMOVE SERIALIZATION OF EDGES
-        public void OnDeserialization(object sender)
-        {
-            if (sender == null)
-                return;
-
-            var grid = sender as GridCell[,];
-
-            if (grid == null)
-                throw new Exception("Improper use of OnDeserialization()  LayerMap");
-
-            // Setup grid locations
-            for (int i = 0; i < this.Locations.Length; i++)
-            {
-                var location = this.Locations[i] as GridLocation;
-
-                if (location == null)
-                    throw new Exception("Improper use of Region<T> - Should be set up for GridLocation for storage");
-
-                var referenceLocation = grid[location.Column, location.Row].Location as T;
-
-                // SET REFERENCES FROM THE PRIMARY GRID
-                this.Locations[i] = referenceLocation;
-
-                // INITIALIZED IN PARALLEL TO LOCATIONS
-                _nonOccupiedLocations[i] = referenceLocation;
-
-                // SET REFERENCES FROM THE PRIMARY GRID
-                _gridLocations[location.Column, location.Row] = referenceLocation;
-            }
-
-            // Setup edge locations
-            for (int i = 0; i < this.EdgeLocations.Length; i++)
-            {
-                var location = this.EdgeLocations[i] as GridLocation;
-
-                if (location == null)
-                    throw new Exception("Improper use of Region<T> - Should be set up for GridLocation for storage");
-
-                var referenceLocation = grid[location.Column, location.Row].Location as T;
-
-                // SET REFERENCES FROM THE PRIMARY GRID
-                this.EdgeLocations[i] = referenceLocation;
-
-                // SET REFERENCES FROM THE PRIMARY GRID
-                _gridLocations[location.Column, location.Row] = referenceLocation;
-            }
-
-            // Non-serialized collections
-            var leftEdgeLocations = new List<T>();
-            var rightEdgeLocations = new List<T>();
-            var topEdgeLocations = new List<T>();
-            var bottomEdgeLocations = new List<T>();
-
-            // Setup exposed edge locations
-            foreach (var location in this.EdgeLocations)
-            {
-                // Validate location inside boundary
-                if (!this.Boundary.Contains(location))
-                    throw new Exception("Invalid edge location for the region boundary Region.cs");
-
-                _edgeLocations[location.Column, location.Row] = true;
-
-                // Left Edge Exposed
-                if (_gridLocations[location.Column - 1, location.Row] == null)
-                    leftEdgeLocations.Add(location);
-
-                // Right Edge
-                if (_gridLocations[location.Column + 1, location.Row] == null)
-                    rightEdgeLocations.Add(location);
-
-                // Bottom Edge
-                if (_gridLocations[location.Column, location.Row + 1] == null)
-                    bottomEdgeLocations.Add(location);
-
-                // Top Edge
-                if (_gridLocations[location.Column, location.Row - 1] == null)
-                    topEdgeLocations.Add(location);
-            }
-
-            this.LeftEdgeExposedLocations = leftEdgeLocations.ToArray();
-            this.RightEdgeExposedLocations = rightEdgeLocations.ToArray();
-            this.TopEdgeExposedLocations = topEdgeLocations.ToArray();
-            this.BottomEdgeExposedLocations = bottomEdgeLocations.ToArray();
-        }
-
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Id", this.Id);
-            info.AddValue("LocationsLength", this.Locations.Length);
-            info.AddValue("EdgeLocationsLength", this.EdgeLocations.Length);
+            info.AddValue("Grid", _grid);
+            info.AddValue("EdgeGrid", _edgeGrid);
             info.AddValue("Boundary", this.Boundary);
             info.AddValue("ParentBoundary", this.ParentBoundary);
-
-            var counter = 0;
-
-            foreach (var location in this.Locations)
-            {
-                // VALIDATE TYPE USED AS IGridLocator
-                if (location.GetType() != typeof(GridLocation))
-                    throw new SerializationException("Unsupported IGridLocator type during serialization Region.cs");
-
-                info.AddValue("Location" + counter++.ToString(), location);
-            }
-
-            counter = 0;
-
-            foreach (var location in this.EdgeLocations)
-            {
-                // VALIDATE TYPE USED AS IGridLocator
-                if (location.GetType() != typeof(GridLocation))
-                    throw new SerializationException("Unsupported IGridLocator type during serialization Region.cs");
-
-                info.AddValue("EdgeLocation" + counter++.ToString(), location);
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is Region<T>)
-            {
-                var region = obj as Region<T>;
-
-                // Check that the number of cells matches
-                if (region.Locations.Length != this.Locations.Length)
-                    return false;
-
-                // Check that the boundary matches
-                if (!region.Boundary.Equals(this.Boundary))
-                    return false;
-
-                // Iterate until a mis-match is found
-                foreach (var otherLocation in region.Locations)
-                {
-                    if (this[otherLocation.Column, otherLocation.Row] == null)
-                        return false;
-                }
-
-                // Found match for each cell
-                return true;
-            }
-
-            else
-                return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
         }
 
         public override string ToString()
         {
-            return string.Format("Locations[{0}], EdgeLocations[{1}], Boundary=[{2}]", this.Locations.Length, this.EdgeLocations.Length, this.Boundary.ToString());
+            return string.Format("Id={0} Locations[{1}], EdgeLocations[{2}], Boundary=[{3}]", 
+                                  this.Id, this.Locations.Length, this.EdgeLocations.Length, this.Boundary.ToString());
         }
     }
 }

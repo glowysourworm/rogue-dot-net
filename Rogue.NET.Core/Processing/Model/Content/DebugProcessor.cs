@@ -68,8 +68,17 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public void RevealAll()
         {
             // TODO:  Should use a spell to call the alteration processor for this. 
-            foreach (var location in _modelService.Level.Grid.FullMap.GetLocations())
+            foreach (var location in _modelService.Level.Grid.WalkableMap.GetLocations())
                 _modelService.Level.Grid[location.Column, location.Row].IsRevealed = true;
+
+            foreach (var location in _modelService.Level.Grid.WallMap.GetLocations())
+                _modelService.Level.Grid[location.Column, location.Row].IsRevealed = true;
+
+            foreach (var map in _modelService.Level.Grid.TerrainMaps)
+            {
+                foreach (var location in map.GetLocations())
+                    _modelService.Level.Grid[location.Column, location.Row].IsRevealed = true;
+            }
 
             if (_modelService.Level.HasStairsDown())
                 _modelService.Level.GetStairsDown().IsRevealed = true;
