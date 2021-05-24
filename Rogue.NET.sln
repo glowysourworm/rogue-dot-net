@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Scenario", "Rogue
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Core", "Rogue.NET.Core\Rogue.NET.Core.csproj", "{3E574589-233F-4B39-B93C-445E6F44A736}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.UnitTest", "Rogue.NET.UnitTest\Rogue.NET.UnitTest.csproj", "{59B9DB4D-2667-414C-AF34-81E1ECF8748B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Minimum Content|Any CPU = Debug Minimum Content|Any CPU
@@ -142,13 +144,37 @@ Global
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|x86.ActiveCfg = Release|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|x86.Build.0 = Release|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|Any CPU.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|Any CPU.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|Mixed Platforms.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|x86.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|x86.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Scenario Configuration Source Instantiate|Any CPU.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Scenario Configuration Source Instantiate|Any CPU.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Scenario Configuration Source Instantiate|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Scenario Configuration Source Instantiate|Mixed Platforms.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Scenario Configuration Source Instantiate|x86.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Scenario Configuration Source Instantiate|x86.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug|x86.Build.0 = Debug|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Release|x86.ActiveCfg = Release|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {9AAB88A4-A649-4401-988C-B3E0EA12D13D}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {9AAB88A4-A649-4401-988C-B3E0EA12D13D}
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True

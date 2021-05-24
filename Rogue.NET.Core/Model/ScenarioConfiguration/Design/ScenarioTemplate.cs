@@ -1,9 +1,7 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
 {
@@ -12,7 +10,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
     {
         private string _objectiveDescription;
         private int _skillPointsPerCharacterPoint;
-        private int _hpPerCharacterPoint;
         private int _healthPerCharacterPoint;
         private int _staminaPerCharacterPoint;
         private double _strengthPerCharacterPoint;

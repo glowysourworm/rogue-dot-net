@@ -20,6 +20,13 @@ namespace Rogue.NET.Common.Extension
             return attributes.Any() ? (T)attributes.First() : default(T);
         }
 
+        public static bool ImplementsInterface<T>(this object value)
+        {
+            return value.GetType()
+                        .GetInterfaces()
+                        .Any(type => type.Equals(typeof(T)));
+        }
+
         /// <summary>
         /// Returns a deep clone of the object using the Agile.Mapper
         /// </summary>
