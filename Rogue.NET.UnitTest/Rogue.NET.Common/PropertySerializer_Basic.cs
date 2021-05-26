@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 using Rogue.NET.Common.Serialization;
 using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Processing.Service;
 using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
@@ -44,21 +45,29 @@ namespace Rogue.NET.UnitTest
         [Test]
         public void ScenarioConfigurationSave()
         {
-            var serializer = new PropertySerializer();
+            var serializer = new RecursiveSerializer<ScenarioConfigurationContainer>();
 
             var fileName = Path.Combine(TestParameters.DebugOutputDirectory, "Fighter." + ResourceConstants.ScenarioConfigurationExtension);
             var fighterScenario = _scenarioResourceService.GetScenarioConfiguration("Fighter");
 
-            using (var stream = File.OpenWrite(fileName))
+            using (var memoryStream = new MemoryStream())
             {
                 try
                 {
-                    serializer.Serialize(stream, fighterScenario);
+                    serializer.Serialize(memoryStream, fighterScenario);
                 }
                 catch (Exception ex)
                 {
                     Assert.Fail(ex.Message);
                 }
+
+                // Render the buffer
+                var buffer = memoryStream.GetBuffer();
+
+                // Compress
+                // buffer = ZipEncoder.Compress(buffer);
+
+                File.WriteAllBytes(fileName, buffer);
             }
         }
     }

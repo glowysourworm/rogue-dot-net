@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rogue.NET.Common.Serialization
+namespace Rogue.NET.Common.Serialization.Planning
 {
     internal class PropertyStorageInfo
     {

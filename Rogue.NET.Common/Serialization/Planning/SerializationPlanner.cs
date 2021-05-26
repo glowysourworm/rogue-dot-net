@@ -9,27 +9,37 @@ namespace Rogue.NET.Common.Serialization.Planning
     internal class SerializationPlanner<T>
     {
         // Reads properties from objects for this serialization plan
-        PropertyReader _reader;
+        PropertyWriter _writer;
 
         // TRACK REFERENCES BY HASH CODE
         Dictionary<HashedObjectInfo, SerializationNodeBase> _referenceDict;
 
+        // TRACK TYPES
+        Dictionary<HashedType, HashedType> _typeDict;
+
         // Creates basic object wrappers for serialization. TRACKS HASH REFERENCES!
         SerializationObjectFactory _factory;
 
-        public SerializationPlanner()
+        internal SerializationPlanner()
         {
-            _reader = new PropertyReader();
+            _writer = new PropertyWriter();
             _referenceDict = new Dictionary<HashedObjectInfo, SerializationNodeBase>();
+            _typeDict = new Dictionary<HashedType, HashedType>();
             _factory = new SerializationObjectFactory();
         }
 
-        public ISerializationPlan Plan(T theObject)
+        internal ISerializationPlan Plan(T theObject)
         {
             if (ReferenceEquals(theObject, null))
                 throw new ArgumentException("Trying to serialize a null object reference:  SerializationPlanner.Plan");
 
             var wrappedObject = _factory.Create(theObject, typeof(T));
+
+            if (wrappedObject is SerializationCollection ||
+                wrappedObject is SerializationNullObject ||
+                wrappedObject is SerializationPrimitive)
+                throw new Exception("Invalid target type for serialization root object:  " + wrappedObject.ObjectInfo.Type.TypeName);
+
             var node = new SerializationNode(wrappedObject);
 
             // Recursively analyze the graph
@@ -44,13 +54,20 @@ namespace Rogue.NET.Common.Serialization.Planning
             // STORE REFERENCE TO BASE OBJECT (KEEP TRACK!)
             _referenceDict.Add(wrappedObject.ObjectInfo, node);
 
-            return new SerializationPlan(_referenceDict, node);
+            // STORE TYPE
+            _typeDict.Add(wrappedObject.ObjectInfo.Type, wrappedObject.ObjectInfo.Type);
+
+            return new SerializationPlan(_referenceDict, _typeDict, node);
         }
 
         protected SerializationNodeBase Analyze(PropertyStorageInfo info)
         {
             // Create wrapped object - HANDLES NULLS
             var wrappedObject = _factory.Create(info.PropertyValue, info.PropertyType);
+
+            // STORE TYPE (INCLUDES NULL, PRIMITIVE TYPES)
+            if (!_typeDict.ContainsKey(wrappedObject.ObjectInfo.Type))
+                _typeDict.Add(wrappedObject.ObjectInfo.Type, wrappedObject.ObjectInfo.Type);
 
             // NULL
             if (wrappedObject is SerializationNullObject)
@@ -92,6 +109,13 @@ namespace Rogue.NET.Common.Serialization.Planning
                 var wrappedCollection = wrappedObject as SerializationCollection;
                 var collectionNode = node as SerializationCollectionNode;
 
+                // COLLECTION PROPERTIES (SPECIFIED MODE ONLY!)
+                foreach (var property in ReadProperties(wrappedCollection))
+                {
+                    // Analyze Collection Properties
+                    collectionNode.SubNodes.Add(Analyze(property));
+                }
+
                 // ENUMERATE -> ANALYZE
                 foreach (var element in wrappedCollection.Collection)
                 {
@@ -129,19 +153,22 @@ namespace Rogue.NET.Common.Serialization.Planning
             {
                 var referenceObject = wrappedObject as SerializationObject;
 
-                return referenceObject.GetProperties(_reader);
+                return referenceObject.GetProperties(_writer);
             }
             else if (wrappedObject is SerializationValue)
             {
                 var valueObject = wrappedObject as SerializationValue;
 
-                return valueObject.GetProperties(_reader);
+                return valueObject.GetProperties(_writer);
             }
-            // EXPECTING NESTED COLLECTIONS TO CRASH    
+            else if (wrappedObject is SerializationCollection)
+            {
+                var collectionObject = wrappedObject as SerializationCollection;
+
+                return collectionObject.GetProperties(_writer);
+            }
             else
                 throw new Exception("Invalid SerializationObjectBase type for reading properties");
-
-
         }
     }
 }

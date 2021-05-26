@@ -1,86 +1,35 @@
 ﻿
+using Rogue.NET.Common.Serialization.Planning;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Rogue.NET.Common.Serialization
 {
     /// <summary>
-    /// Stores property data to an underlying record
+    /// Reads properties (from serialization backend) for the invoker
     /// </summary>
     public class PropertyReader
     {
-        // Keep track of property types to avoid extra reflection calls
-        static Dictionary<Type, IEnumerable<PropertyInfo>> _propertyDict;
+        readonly IDictionary<string, PropertyResolvedInfo> _properties;
 
-        // Actual object contextual properties
-        Dictionary<string, PropertyStorageInfo> _properties;
-
-        static PropertyReader()
+        internal PropertyReader(IEnumerable<PropertyResolvedInfo> properties)
         {
-            _propertyDict = new Dictionary<Type, IEnumerable<PropertyInfo>>();
-        }
-        public PropertyReader()
-        {
-            _properties = new Dictionary<string, PropertyStorageInfo>();
+            _properties = properties.ToDictionary(property => property.PropertyName, property => property);
         }
 
-        public void Read<T>(string propertyName, T property)
+        internal IEnumerable<PropertyResolvedInfo> Properties { get { return _properties.Values; } }
+
+        public T Read<T>(string propertyName)
         {
             if (_properties.ContainsKey(propertyName))
-                throw new ArgumentException("Property with the same name is already added to the reader:  " + propertyName);
+                throw new ArgumentException("Property not present in the underlying stream:  " + propertyName);
 
-            _properties.Add(propertyName, new PropertyStorageInfo()
-            {
-                PropertyName = propertyName,
-                PropertyType = typeof(T),
-                PropertyValue = property
-            });
-        }
+            if (!_properties[propertyName].PropertyType.Equals(typeof(T)))
+                throw new ArgumentException("Requested property type is invalid:  " + propertyName);
 
-        /// <summary>
-        /// Clears current property context and begins for a new object to store data
-        /// </summary>
-        internal void ClearContext()
-        {
-            _properties.Clear();
-        }
-
-        /// <summary>
-        /// Returns entire list of properties
-        /// </summary>
-        internal IEnumerable<PropertyStorageInfo> GetResult()
-        {
-            return _properties.Values;
-        }
-
-        internal IEnumerable<PropertyStorageInfo> GetPropertiesReflection(object graphObject)
-        {
-            var propertyInfos = GetPropertyInfos(graphObject);
-
-            return propertyInfos.Select(info => new PropertyStorageInfo()
-            {
-                PropertyName = info.Name,
-                PropertyType = info.PropertyType,
-                PropertyValue = info.GetValue(graphObject)
-            });
-        }
-
-        /// <summary>
-        /// NOTE*** ORDERED TO KEEP SERIALIZATION CONSISTENT!!!
-        /// </summary>
-        private IEnumerable<PropertyInfo> GetPropertyInfos(object graphObject)
-        {
-            if (!_propertyDict.ContainsKey(graphObject.GetType()))
-            {
-                // ORDER BY PROPERTY NAME
-                _propertyDict.Add(graphObject.GetType(), graphObject.GetType()
-                                                                    .GetProperties()
-                                                                    .OrderBy(property => property.Name));
-            }
-
-            return _propertyDict[graphObject.GetType()];
+            return (T)_properties[propertyName].ResolvedInfo.TheObject;
         }
     }
 }

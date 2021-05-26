@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Serialization.Attribute;
 using Rogue.NET.Common.Serialization.Formatter;
 
 using System;
@@ -14,11 +13,6 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class SerializationObjectFactory
     {
-        /// <summary>
-        /// Name of the "Get" method for the serializer to locate on the target object
-        /// </summary>
-        public static string GET_METHOD_NAME = "GetProperties";
-
         public Dictionary<int, HashedObjectInfo> _referenceHashDict;
 
         public SerializationObjectFactory()
@@ -52,34 +46,25 @@ namespace Rogue.NET.Common.Serialization.Target
             if (theObject == null)
                 return new SerializationNullObject(objectInfo);
 
-            // ATTRIBUTE MARKED
-            var serializableAttrib = theObjectType.GetAttribute<PropertySerializable>();
+            // STRINGS IMPLEMENT IEnumerable!
+            var isCollection = objectInfo.TheObject.ImplementsInterface<IEnumerable>() &&
+                              !FormatterFactory.IsPrimitiveSupported(objectInfo.Type.Resolve());
 
-            if (serializableAttrib != null)
-            {
-                return CreateFromAttribute(objectInfo, serializableAttrib);
-            }
+            // COLLECTION (STRINGS IMPLEMENT IEnumerable!)
+            if (isCollection)
+                return CreateCollection(objectInfo);
 
-            // ATTRIBUTE NOT PRESENT
+            // PRIMITIVE
+            else if (FormatterFactory.IsPrimitiveSupported(objectInfo.Type.Resolve()))
+                return CreatePrimitive(objectInfo);
+
+            // VAULE TYPE
+            else if (objectInfo.Type.Resolve().IsValueType)
+                return CreateValue(objectInfo);
+
+            // REFERENCE TYPE
             else
-            {
-                // COLLECTION (STRINGS IMPLEMENT IEnumerable!)
-                if (objectInfo.TheObject.ImplementsInterface<IEnumerable>() &&
-                   !PrimitiveFormatter.IsPrimitive(objectInfo.Type.Resolve()))
-                    return CreateCollection(objectInfo);
-
-                // PRIMITIVE
-                else if (PrimitiveFormatter.IsPrimitive(objectInfo.Type.Resolve()))
-                    return CreatePrimitive(objectInfo);
-
-                // VAULE TYPE
-                else if (objectInfo.Type.Resolve().IsValueType)
-                    return CreateValue(objectInfo);
-
-                // REFERENCE TYPE
-                else
-                    return CreateObject(objectInfo);
-            }
+                return CreateObject(objectInfo);
         }
 
         /// <summary>
@@ -92,7 +77,7 @@ namespace Rogue.NET.Common.Serialization.Target
                 return new HashedObjectInfo(theObjectType);
 
             // PRIMITIVE
-            if (PrimitiveFormatter.IsPrimitive(theObjectType))
+            if (FormatterFactory.IsPrimitiveSupported(theObjectType))
             {
                 return new HashedObjectInfo(theObject, theObjectType);
             }
@@ -126,43 +111,12 @@ namespace Rogue.NET.Common.Serialization.Target
             {
                 hashInfo = new HashedObjectInfo(theObject, theObjectType);
             }
-            
 
-            if (!_referenceHashDict.ContainsKey(hashInfo.HashCode))
-                _referenceHashDict.Add(hashInfo.HashCode, hashInfo);
+
+            if (!_referenceHashDict.ContainsKey(hashInfo.GetHashCode()))
+                _referenceHashDict.Add(hashInfo.GetHashCode(), hashInfo);
 
             return hashInfo;
-        }
-
-        // REFERENCE TRACKED
-        private SerializationObjectBase CreateFromAttribute(HashedObjectInfo info, PropertySerializable attribute)
-        {
-            // Mode is Default -> Parameterless ctor
-            if (attribute.Mode == PropertySerializableMode.Default)
-            {
-                var constructor = info.Type.Resolve().GetConstructor(new Type[] { });
-
-                if (constructor == null)
-                    throw new Exception("PropertySerializableMode.Default must supply parameterless ctor: " + info.Type.TypeName);
-
-                // DEFAULT -> No Get Method
-                return new SerializationObject(info, constructor);
-            }
-
-            else
-            {
-                var constructor = info.Type.Resolve().GetConstructor(new Type[] { typeof(PropertyReader) });
-                var getMethod = info.Type.Resolve().GetMethod(GET_METHOD_NAME, new Type[] { typeof(PropertyReader) });
-
-                if (constructor == null)
-                    throw new Exception("PropertySerializableMode.Specific must supply the constructor ctor(PropertyReader): " + info.Type.TypeName);
-
-                if (getMethod == null)
-                    throw new Exception("PropertySerializableMode.Specific must supply the set method GetProperties(PropertyReader): " + info.Type.TypeName);
-
-                // SPECIFIC -> Set Method
-                return new SerializationObject(info, constructor, getMethod);
-            }
         }
 
         // REFERENCE TRACKED
@@ -170,10 +124,14 @@ namespace Rogue.NET.Common.Serialization.Target
         {
             // Procedure
             //
+            // 0) Determine SerializationMode by checking for constructor and get method
             // 1) Get element type
             // 2) Check that collection type is supported:  List<T>, Dictionary<K, T>, T[]
             // 3) Create the result
             //
+
+            // Validates type and SerializationMode
+            var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
 
             // ARRAY
             if (info.Type.Resolve().IsArray)
@@ -181,7 +139,7 @@ namespace Rogue.NET.Common.Serialization.Target
                 var childType = info.Type.Resolve().GetElementType();       // ARRAY ONLY
                 var array = info.TheObject as Array;
 
-                return new SerializationCollection(info, array, array.Length, SerializationCollection.CollectionType.Array, childType);
+                return new SerializationCollection(info, memberInfo, array, array.Length,CollectionInterfaceType.Array, childType);
             }
             // GENERIC ENUMERABLE
             else
@@ -203,7 +161,7 @@ namespace Rogue.NET.Common.Serialization.Target
 
                     var dictionary = info.TheObject as IDictionary;
 
-                    return new SerializationCollection(info, dictionary, dictionary.Count, SerializationCollection.CollectionType.Dictionary, argument);
+                    return new SerializationCollection(info, memberInfo, dictionary, dictionary.Count, CollectionInterfaceType.IDictionary, argument);
                 }
                 else if (info.TheObject.ImplementsInterface<IList>())
                 {
@@ -214,7 +172,7 @@ namespace Rogue.NET.Common.Serialization.Target
 
                     var list = info.TheObject as IList;
 
-                    return new SerializationCollection(info, list, list.Count, SerializationCollection.CollectionType.List, argument);
+                    return new SerializationCollection(info, memberInfo, list, list.Count, CollectionInterfaceType.IDictionary, argument);
                 }
                 else
                     throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.TypeName);
@@ -229,49 +187,19 @@ namespace Rogue.NET.Common.Serialization.Target
         // REFERENCE TRACKED
         private SerializationObjectBase CreateValue(HashedObjectInfo info)
         {
-            var parameterlessCtor = info.Type.Resolve().GetConstructor(new Type[] { });
-            var serializationCtor = info.Type.Resolve().GetConstructor(new Type[] { typeof(PropertyReader) });
-            var getMethod = info.Type.Resolve().GetMethod(GET_METHOD_NAME, new Type[] { typeof(PropertyReader) });
+            // Validates type and SerializationMode
+            var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
 
-            // SPECIFIC MODE - CHECK FOR GET / CTOR
-            if (serializationCtor != null &&
-                getMethod != null)
-            {
-                return new SerializationValue(info, serializationCtor, getMethod);
-            }
-
-            // DEFAULT MODE
-            else if (parameterlessCtor != null)
-            {
-                return new SerializationValue(info, parameterlessCtor);
-            }
-
-            else
-                throw new Exception("PropertySerializer object must supply parameterless constructor: " + info.Type.TypeName);
+            return new SerializationValue(info, memberInfo);
         }
 
         // REFERENCE TRACKED
         private SerializationObjectBase CreateObject(HashedObjectInfo info)
         {
-            var parameterlessCtor = info.Type.Resolve().GetConstructor(new Type[] { });
-            var serializationCtor = info.Type.Resolve().GetConstructor(new Type[] { typeof(PropertyReader) });
-            var getMethod = info.Type.Resolve().GetMethod(GET_METHOD_NAME, new Type[] { typeof(PropertyReader) });
+            // Validates type and SerializationMode
+            var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
 
-            // SPECIFIC MODE - CHECK FOR GET / CTOR
-            if (serializationCtor != null &&
-                getMethod != null)
-            {
-                return new SerializationObject(info, serializationCtor, getMethod);
-            }
-
-            // DEFAULT MODE
-            else if (parameterlessCtor != null)
-            {
-                return new SerializationObject(info, parameterlessCtor);
-            }
-
-            else
-                throw new Exception("PropertySerializer object must supply parameterless constructor: " + info.Type.TypeName);
+            return new SerializationValue(info, memberInfo);
         }
     }
 }

@@ -18,6 +18,11 @@ namespace Rogue.NET.Common.Extension
             return attributes.Any() ? (T)attributes.First() : default(T);
         }
 
+        public static bool HasInterface<T>(this Type type) 
+        {
+            return type.GetInterface(typeof(T).Name) != null;
+        }
+
         /// <summary>
         /// Creates an instance of the specified type using the default (parameterless) constructor
         /// </summary>

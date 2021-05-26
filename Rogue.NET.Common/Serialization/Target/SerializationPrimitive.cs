@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Rogue.NET.Common.Serialization.Planning;
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
@@ -12,11 +11,11 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class SerializationPrimitive : SerializationObjectBase
     {
-        public SerializationPrimitive(HashedObjectInfo objectInfo) : base(objectInfo)
+        public SerializationPrimitive(HashedObjectInfo objectInfo) : base(objectInfo, RecursiveSerializerMemberInfo.Empty)
         {
         }
 
-        internal override IEnumerable<PropertyStorageInfo> GetProperties(PropertyReader reader)
+        internal override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
         {
             throw new Exception("Invalid use of GetProperties for SerializationPrimitive");
         }

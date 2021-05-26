@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Rogue.NET.Common.Serialization.Planning;
+
+using System.Collections.Generic;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
@@ -9,16 +11,21 @@ namespace Rogue.NET.Common.Serialization.Target
     internal abstract class SerializationObjectBase
     {
         public HashedObjectInfo ObjectInfo { get; private set; }
+        
+        public SerializationMode Mode { get { return this.MemberInfo.Mode; } }
 
-        protected SerializationObjectBase(HashedObjectInfo objectInfo)
+        protected RecursiveSerializerMemberInfo MemberInfo { get; private set; }
+
+        protected SerializationObjectBase(HashedObjectInfo objectInfo, RecursiveSerializerMemberInfo memberInfo)
         {
             this.ObjectInfo = objectInfo;
+            this.MemberInfo = memberInfo;
         }
 
         /// <summary>
         /// Returns property info collection for this instance - allowing the reader to "visit" the serialization
         /// target.
         /// </summary>
-        internal abstract IEnumerable<PropertyStorageInfo> GetProperties(PropertyReader reader);
+        internal abstract IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer);
     }
 }

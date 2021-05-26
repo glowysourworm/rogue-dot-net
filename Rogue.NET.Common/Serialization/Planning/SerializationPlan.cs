@@ -11,9 +11,14 @@ namespace Rogue.NET.Common.Serialization.Planning
 
         public IDictionary<HashedObjectInfo, SerializationNodeBase> UniqueReferenceDict { get; private set; }
 
-        public SerializationPlan(IDictionary<HashedObjectInfo, SerializationNodeBase> referenceDict, SerializationNode rootNode)
+        public IDictionary<HashedType, HashedType> TypeDict { get; private set; }
+
+        public SerializationPlan(IDictionary<HashedObjectInfo, SerializationNodeBase> referenceDict,
+                                 IDictionary<HashedType, HashedType> typeDict,
+                                 SerializationNode rootNode)
         {
             this.UniqueReferenceDict = referenceDict;
+            this.TypeDict = typeDict;
             this.RootNode = rootNode;
         }
     }

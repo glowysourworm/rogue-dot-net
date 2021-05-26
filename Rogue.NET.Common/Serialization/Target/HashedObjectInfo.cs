@@ -13,46 +13,40 @@ namespace Rogue.NET.Common.Serialization.Target
         public HashedType Type { get; private set; }
 
         /// <summary>
-        /// Calculated hash (TRYING TO DO THIS ONLY ONCE). HASH DEPENDS ON *** TYPE + OBJECT.GetHashCode() ***
-        /// </summary>
-        public int HashCode { get; private set; }
-
-        /// <summary>
         /// Creates a null reference for the specified type
         /// </summary>
         public HashedObjectInfo(Type nullObjectType)
         {
             this.TheObject = null;
             this.Type = new HashedType(nullObjectType);
-
-            // *** USING HASH CODE FOR TYPE ONLY
-            this.HashCode = nullObjectType.GetHashCode();
         }
         public HashedObjectInfo(object theObject, Type type)
         {
             this.TheObject = theObject;
             this.Type = new HashedType(type);
-
-            // *** USE BOTH TYPE AND HASH CODE FOR TRACKING!
-            this.HashCode = this.CreateHashCode(type.GetHashCode(), 
-                                                theObject.GetHashCode());
         }
 
         public override bool Equals(object obj)
         {
             var info = obj as HashedObjectInfo;
 
-            return this.HashCode == info.HashCode;
+            return this.GetHashCode() == info.GetHashCode();
         }
 
         public override int GetHashCode()
         {
-            return this.HashCode;
+            // RETURN TYPE + OBJECT.GetHashCode() UNLESS NULL REFERENCE INFO
+            //
+            if (this.TheObject == null)
+                return this.Type.GetHashCode();
+
+            else
+                return this.CreateHashCode(this.TheObject, this.Type);
         }
 
         public override string ToString()
         {
-            return string.Format("Hash={0}, Type={1}", this.HashCode, this.Type.TypeName);
+            return string.Format("Hash={0}, Type={1}", this.GetHashCode(), this.Type.TypeName);
         }
     }
 }

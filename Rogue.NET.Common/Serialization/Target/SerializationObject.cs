@@ -1,4 +1,4 @@
-﻿using Rogue.NET.Common.Serialization.Attribute;
+﻿using Rogue.NET.Common.Serialization.Planning;
 
 using System;
 using System.Collections.Generic;
@@ -12,43 +12,30 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class SerializationObject : SerializationObjectBase
     {
-        public PropertySerializableMode Mode { get; private set; }
-        protected ConstructorInfo Constructor { get; private set; }
-        protected MethodInfo GetMethod { get; private set; }
-
-        internal SerializationObject(HashedObjectInfo objectInfo, ConstructorInfo constructor) : base(objectInfo)
+        internal SerializationObject(HashedObjectInfo objectInfo, RecursiveSerializerMemberInfo memberInfo) : base(objectInfo, memberInfo)
         {
-            this.Constructor = constructor;
-            this.GetMethod = null;
-            this.Mode = PropertySerializableMode.Default;
         }
 
-        internal SerializationObject(HashedObjectInfo objectInfo, ConstructorInfo constructor, MethodInfo getMethod) : base(objectInfo)
+        internal override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
         {
-            this.Constructor = constructor;
-            this.GetMethod = getMethod;
-            this.Mode = PropertySerializableMode.Specified;
-        }
-
-        internal override IEnumerable<PropertyStorageInfo> GetProperties(PropertyReader reader)
-        {
-            if (this.Mode == PropertySerializableMode.Default)
-                return reader.GetPropertiesReflection(this.ObjectInfo.TheObject);
+            // No GetProperties(PropertyWriter writer) defined -> Use reflected public properties
+            if (this.MemberInfo.GetMethod == null)
+                return writer.GetPropertiesReflection(this.ObjectInfo.TheObject);
 
             // CLEAR CURRENT CONTEXT
-            reader.ClearContext();
+            writer.ClearContext();
 
             // CALL OBJECT'S GetProperties METHOD
             try
             {
-                this.GetMethod.Invoke(this.ObjectInfo.TheObject, new object[] { reader });
+                this.MemberInfo.GetMethod.Invoke(this.ObjectInfo.TheObject, new object[] { writer });
             }
             catch (Exception innerException)
             {
                 throw new Exception("Error trying to read properties from " + this.ObjectInfo.Type.TypeName, innerException);
             }
 
-            return reader.GetResult();
+            return writer.GetResult();
         }
     }
 }

@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Rogue.NET.Common.Serialization.Interface;
+
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Common.Serialization.Formatter
 {
     /// <summary>
     /// Base for binary formatter for any type (usually primitives)
     /// </summary>
-    public abstract class BaseFormatter
+    public abstract class BaseFormatter<T> : IBaseFormatter
     {
-        /// <summary>
-        /// The target type for this formatter
-        /// </summary>
-        public Type TargetType { get; private set; }
-
         /// <summary>
         /// Causes the target object to be rendered to the stream - expecting the TargetType as input. Advances
         /// Stream object by size rendered.
@@ -25,21 +18,40 @@ namespace Rogue.NET.Common.Serialization.Formatter
         /// <param name="theObject">Object target of TargetType</param>
         public void Write(Stream stream, object theObject)
         {
-            if (theObject.GetType() != this.TargetType)
-                throw new Exception("Invalid target type for formatter:  BaseFormatter.cs");
+            // MAKING EXCEPTION FOR ENUM TYPES
+            if (theObject.GetType().IsEnum &&
+                this is EnumFormatter)
+                WriteImpl(stream, (T)theObject);
 
-            WriteImpl(stream, theObject);
+            else if (theObject.GetType() != typeof(T))
+                throw new Exception("Invalid target type for BaseFormatter:  " + theObject.GetType() + " is not a " + typeof(T));
+
+            else
+                WriteImpl(stream, (T)theObject);
+        }
+
+        /// <summary>
+        /// Reads object of expected type from the stream. Advances stream object by that amount.
+        /// </summary>
+        public T Read(Stream stream)
+        {
+            return ReadImpl(stream);
         }
 
         /// <summary>
         /// Renders the object to the stream in the appropriate format. Advances stream the number
         /// of bytes rendered.
         /// </summary>
-        protected abstract void WriteImpl(Stream stream, object theObject);
+        protected abstract void WriteImpl(Stream stream, T theObject);
 
-        public BaseFormatter(Type targetType)
+        /// <summary>
+        /// Reads object of expected type from the stream. Advances stream object by that amount.
+        /// </summary>
+        protected abstract T ReadImpl(Stream stream);
+
+        object IBaseFormatter.Read(Stream stream)
         {
-            this.TargetType = targetType;
+            return Read(stream);
         }
     }
 }

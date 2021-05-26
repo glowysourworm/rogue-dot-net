@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace Rogue.NET.Common.Serialization.Planning
 {
     /// <summary>
-    /// Supports just the collection as nodes. NO OTHER PROPERTY SUPPORT WITH SUB-NODES!
+    /// Supports both collection properties and child collection (elements)
     /// </summary>
-    internal class SerializationCollectionNode : SerializationNodeBase
+    internal class SerializationCollectionNode : SerializationNode
     {
         public List<SerializationNodeBase> Children { get; private set; }
 

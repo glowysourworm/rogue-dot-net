@@ -33,7 +33,6 @@ namespace Rogue.NET.Common.Serialization.Target
         /// <summary>
         /// Tries to resolve Type object from type name + assembly name. ALSO USES CACHED TYPE FROM CONSTRUCTOR!
         /// </summary>
-        /// <returns></returns>
         public Type Resolve()
         {
             if (_type != null)
