@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
 
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Rogue.NET.Common.Serialization.Target
@@ -10,24 +11,29 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class HashedType
     {
-        public string TypeName { get; private set; }
-        public string AssemblyName { get; private set; }
+        // PARAMETERS USED TO REFINE HASH CODE
+        public string AssemblyName { get { return _type.Assembly.FullName; } }
+        public string TypeName { get { return _type.Name; } }
+        public string TypeFullName { get { return _type.FullName; } }
+        public bool IsGeneric { get { return _type.IsGenericType; } }
 
+        /// <summary>
+        /// RECURSIVE DATA STRUCTURE
+        /// </summary>
+        public HashedType[] GenericArguments { get; private set; }
+        
         // CACHED ONLY FOR PERFORMANCE
         Type _type;
-
-        public HashedType(string typeName, string assemblyName)
-        {
-            this.TypeName = typeName;
-            this.AssemblyName = assemblyName;
-        }
 
         public HashedType(Type type)
         {
             _type = type;
 
-            this.TypeName = type.FullName;
-            this.AssemblyName = type.Assembly.FullName;
+            var arguments = type.GetGenericArguments() ?? new Type[] { };
+
+            // Create generic arguments array
+            this.GenericArguments = arguments.Select(argument => new HashedType(argument))
+                                             .ToArray();
         }
 
         /// <summary>
@@ -54,7 +60,13 @@ namespace Rogue.NET.Common.Serialization.Target
 
         public override int GetHashCode()
         {
-            return this.CreateHashCode(this.TypeName, this.AssemblyName);
+            var baseHash = this.CreateHashCode(this.AssemblyName, 
+                                               this.TypeName,
+                                               this.TypeFullName,
+                                               this.IsGeneric);
+
+            // RECURSIVE!!
+            return baseHash.ExtendHashCode(this.GenericArguments);
         }
     }
 }

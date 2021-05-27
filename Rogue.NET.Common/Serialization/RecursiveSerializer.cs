@@ -58,5 +58,14 @@ namespace Rogue.NET.Common.Serialization
         {
             return _deserializer.Deserialize<T>(stream);
         }
+
+        /// <summary>
+        /// Can call after Serialize<typeparamref name="T"/>(Stream, T) has been called to create a manifest for
+        /// the last run.
+        /// </summary>
+        public SerializationManifest GetSerializationManifest()
+        {
+            return _serializer.CreateManifest();
+        }
     }
 }

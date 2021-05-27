@@ -11,6 +11,7 @@ namespace Rogue.NET.Common.Serialization.Target
     internal class DeserializationCollection : DeserializationObjectBase
     {
         internal int Count { get { return _count; } }
+        internal Type ElementType { get { return _elementType; } }
 
         // Stored data from serialization
         CollectionInterfaceType _interfaceType;

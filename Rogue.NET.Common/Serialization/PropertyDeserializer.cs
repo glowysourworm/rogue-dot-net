@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Rogue.NET.Common.Serialization
 {
@@ -15,11 +17,8 @@ namespace Rogue.NET.Common.Serialization
         // Collection of formatters for serialization
         Dictionary<Type, IBaseFormatter> _formatters;
 
-        // Collection of all types from loaded ASSEMBLIES
-        Dictionary<HashedType, Type> _loadedTypes;
-
         // Collection of all types from loaded ASSEMBLIES with their EXPECTED HASH CODES
-        Dictionary<int, HashedType> _loadedHashedTypes;
+        Dictionary<int, HashedType> _loadedTypes;
 
         // Creates wrapped objects for deserialization
         DeserializationObjectFactory _factory;
@@ -28,24 +27,15 @@ namespace Rogue.NET.Common.Serialization
         internal PropertyDeserializer()
         {
             _formatters = new Dictionary<Type, IBaseFormatter>();
-
-            // Load all types from the app domain
-            _loadedTypes = AppDomain.CurrentDomain
-                                    .GetAssemblies()
-                                    .SelectMany(assembly => assembly.GetTypes())
-                                    .ToDictionary(type => new HashedType(type), type => type);
-
-            // Resolve hash codes for each of the HashedType references
-            _loadedHashedTypes = _loadedTypes.ToDictionary(element => element.Key.GetHashCode(), element => element.Key);
-
+            _loadedTypes = new Dictionary<int, HashedType>();
             _factory = new DeserializationObjectFactory();
             _resolver = new DeserializationResolver();
         }
 
         internal T Deserialize<T>(Stream stream)
         {
-            // Read root (header)
-            var wrappedRoot = ReadNext(stream);
+            // Read root
+            var wrappedRoot = ReadNext(stream, typeof(T));
 
             if (wrappedRoot.Reference.Type.Resolve() != typeof(T))
                 throw new Exception("File type doesn't match the type of object being Deserialized:  " + wrappedRoot.Reference.Type.TypeName);
@@ -110,7 +100,7 @@ namespace Rogue.NET.Common.Serialization
                 foreach (var definition in definitions)
                 {
                     // READ NEXT
-                    var wrappedObject = ReadNext(stream);
+                    var wrappedObject = ReadNext(stream, definition.PropertyType);
 
                     // VALIDATE THE PROPERTY!
                     if (wrappedObject.Reference.Type.Resolve() != definition.PropertyType)
@@ -129,7 +119,7 @@ namespace Rogue.NET.Common.Serialization
                 for (int index = 0; index < collectionNode.Count; index++)
                 {
                     // READ NEXT
-                    var wrappedObject = ReadNext(stream);
+                    var wrappedObject = ReadNext(stream, (collectionNode.NodeObject as DeserializationCollection).ElementType);
 
                     // Create child node
                     var childNode = CreateNode(wrappedObject, PropertyDefinition.CollectionElement);
@@ -161,7 +151,7 @@ namespace Rogue.NET.Common.Serialization
                 foreach (var definition in definitions)
                 {
                     // READ NEXT
-                    var wrappedSubObject = ReadNext(stream);
+                    var wrappedSubObject = ReadNext(stream, definition.PropertyType);
 
                     // VALIDATE THE PROPERTY!
                     if (wrappedSubObject.Reference.Type.Resolve() != definition.PropertyType)
@@ -181,7 +171,7 @@ namespace Rogue.NET.Common.Serialization
                 throw new Exception("Unhandled DeserializationNodeBase type:  PropertyDeserializer.DeserializeRecurse");
         }
 
-        private DeserializationObjectBase ReadNext(Stream stream)
+        private DeserializationObjectBase ReadNext(Stream stream, Type expectedType)
         {
             // FROM SERIALIZER
             //
@@ -198,8 +188,8 @@ namespace Rogue.NET.Common.Serialization
             var nextMode = Read<SerializationMode>(stream);
             var nextHash = Read<int>(stream);
 
-            var hashedType = _loadedHashedTypes[nextHash];
-            var objectType = _loadedTypes[hashedType];
+            // Resolves the expected type with the actual hash code and returns the wrapped type
+            var hashedType = ResolveType(expectedType, nextHash);
 
             switch (nextNode)
             {
@@ -208,7 +198,7 @@ namespace Rogue.NET.Common.Serialization
                 case SerializedNodeType.Primitive:
                     {
                         // READ PRIMITIVE VALUE FROM STREAM
-                        var primitive = Read(stream, objectType);
+                        var primitive = Read(stream, hashedType.Resolve());
 
                         return _factory.CreatePrimitive(new HashedObjectInfo(primitive, hashedType.Resolve()), nextMode);
                     }
@@ -250,6 +240,21 @@ namespace Rogue.NET.Common.Serialization
                 default:
                     throw new Exception("Unhandled SerializedNodeType:  DeserializationObjectFactory.TypeTrack");
             }
+        }
+
+        private HashedType ResolveType(Type expectedType, int hashedTypeHashCode)
+        {
+            if (_loadedTypes.ContainsKey(hashedTypeHashCode))
+                return _loadedTypes[hashedTypeHashCode];
+
+            var hashedType = new HashedType(expectedType);
+
+            if (hashedType.GetHashCode() != hashedTypeHashCode)
+                throw new Exception("Invalid hash code read from stream for type:  " + expectedType.Name);
+
+            _loadedTypes.Add(hashedType.GetHashCode(), hashedType);
+
+            return hashedType;
         }
 
         private object Read(Stream stream, Type type)

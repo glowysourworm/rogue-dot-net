@@ -6,6 +6,7 @@ using Rogue.NET.Common.Serialization.Target;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Rogue.NET.Common.Serialization
@@ -31,23 +32,12 @@ namespace Rogue.NET.Common.Serialization
             // Procedure
             //
             // 1) Run the planner to create reference dictionary and node tree
-            // 2) Create / store file header
-            // 3) Create / store TYPE HASH TABLE
-            // 4) Serialize the reference dictionary ReferenceInfo OBJECT HASHES
-            // 5) (Recurse) Serialize the node graph OBJECTS
-            // 6) Validate OUR serialized objects against the ISerializationPlan
+            // 2) (Recurse) Serialize the node graph OBJECTS
+            // 3) Validate OUR serialized objects against the ISerializationPlan
             //
 
             // Run the planner
             var plan = planner.Plan(theObject);
-
-            // Store root type hash
-            var header = new HashedType(typeof(T));
-            var rootNodeType = plan.RootNode.NodeObject is SerializationValue ? SerializedNodeType.Value : SerializedNodeType.Object;
-
-            // Serialize header [ SerializedNodeType, int ]
-            Write(stream, rootNodeType);
-            Write(stream, header.GetHashCode());
 
             // Recurse
             SerializeRecurse(stream, plan.RootNode);
@@ -58,6 +48,11 @@ namespace Rogue.NET.Common.Serialization
                 if (!_serializedObjects.ContainsKey(element.Key))
                     throw new Exception("Serialization plan doesn't match the serialized manifest:  " + element.Key.Type.TypeName);
             }
+        }
+
+        internal SerializationManifest CreateManifest()
+        {
+            return new SerializationManifest(_serializedObjects);
         }
 
         private void SerializeRecurse(Stream stream, SerializationNodeBase node)
@@ -243,7 +238,5 @@ namespace Rogue.NET.Common.Serialization
             else
                 throw new Exception("Unhandled type:  PropertySerializer.CreateFormatter: " + type.FullName);
         }
-
-
     }
 }

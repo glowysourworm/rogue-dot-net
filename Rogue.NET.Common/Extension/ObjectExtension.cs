@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Common.Utility;
+﻿using KellermanSoftware.CompareNetObjects;
+
+using Rogue.NET.Common.Utility;
 
 using System;
 using System.Linq;

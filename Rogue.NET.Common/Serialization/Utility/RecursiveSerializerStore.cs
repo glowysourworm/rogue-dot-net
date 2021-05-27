@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Planning;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
 
 using System;
@@ -130,7 +131,8 @@ namespace Rogue.NET.Common.Serialization
             {
                 // ORDER BY PROPERTY NAME
                 _propertyDict.Add(type, type.GetProperties()
-                                            .OrderBy(property => property.Name));
+                                            .OrderBy(property => property.Name)
+                                            .Actualize());
             }
 
             return _propertyDict[type];

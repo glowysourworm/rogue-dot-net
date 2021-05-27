@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Rogue.NET.Common.Serialization.Target
+﻿namespace Rogue.NET.Common.Serialization.Target
 {
     /// <summary>
     /// Wraps the hash code for HashedObjectInfo.GetHashCode() during deserialization
@@ -41,7 +35,7 @@ namespace Rogue.NET.Common.Serialization.Target
         /// <returns>True if hash codes match, False otherwise.</returns>
         public bool ValidateReference(object actualObject)
         {
-            var resolvedHashInfo = ReferenceEquals(actualObject, null) ? new HashedObjectInfo(this.Type.Resolve()) : 
+            var resolvedHashInfo = ReferenceEquals(actualObject, null) ? new HashedObjectInfo(this.Type.Resolve()) :
                                                                          new HashedObjectInfo(actualObject, this.Type.Resolve());
 
             // SHOULD BE EQUAL IF OBJECT WAS DESERIALIZED PROPERLY

@@ -1,3 +1,5 @@
+using KellermanSoftware.CompareNetObjects;
+
 using Moq;
 
 using NUnit.Framework;
@@ -12,6 +14,7 @@ using Rogue.NET.Core.Processing.Service.Interface;
 
 using System;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace Rogue.NET.UnitTest
 {
@@ -48,13 +51,16 @@ namespace Rogue.NET.UnitTest
             var serializer = new RecursiveSerializer<ScenarioConfigurationContainer>();
 
             var fileName = Path.Combine(TestParameters.DebugOutputDirectory, "Fighter." + ResourceConstants.ScenarioConfigurationExtension);
-            var fighterScenario = _scenarioResourceService.GetScenarioConfiguration("Fighter");
+            var manifestFileName = Path.Combine(TestParameters.DebugOutputDirectory, "Fighter." + ResourceConstants.ScenarioConfigurationExtension + ".manifest");
+            var fighterScenarioBefore = _scenarioResourceService.GetScenarioConfiguration("Fighter");
+            ScenarioConfigurationContainer fighterScenarioAfter = null;
 
+            // Serialize
             using (var memoryStream = new MemoryStream())
             {
                 try
                 {
-                    serializer.Serialize(memoryStream, fighterScenario);
+                    serializer.Serialize(memoryStream, fighterScenarioBefore);
                 }
                 catch (Exception ex)
                 {
@@ -68,7 +74,28 @@ namespace Rogue.NET.UnitTest
                 // buffer = ZipEncoder.Compress(buffer);
 
                 File.WriteAllBytes(fileName, buffer);
+
+                // Validate using manifest
+                // var manifest = serializer.GetSerializationManifest();
             }
+
+            // Deserialize
+            using (var fileStream = File.OpenRead(fileName))
+            {
+                try
+                {
+                    fighterScenarioAfter = serializer.Deserialize(fileStream);
+                }
+                catch (Exception ex)
+                {
+                    Assert.Fail(ex.Message);
+                }
+            }
+
+            var compareLogic = new CompareLogic();
+            var result = compareLogic.Compare(fighterScenarioAfter, fighterScenarioBefore);
+
+            Assert.IsTrue(result.AreEqual);
         }
     }
 }

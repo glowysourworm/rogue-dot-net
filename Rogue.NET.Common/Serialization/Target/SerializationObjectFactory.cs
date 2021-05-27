@@ -199,7 +199,7 @@ namespace Rogue.NET.Common.Serialization.Target
             // Validates type and SerializationMode
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
 
-            return new SerializationValue(info, memberInfo);
+            return new SerializationObject(info, memberInfo);
         }
     }
 }
