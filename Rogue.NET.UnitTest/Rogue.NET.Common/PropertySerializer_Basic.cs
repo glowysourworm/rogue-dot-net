@@ -63,6 +63,31 @@ namespace Rogue.NET.UnitTest
 
             var manifest1 = RunSerializer(fighterScenario, out fighterScenarioResult1);
             var manifest2 = RunSerializer(fighterScenarioResult1, out fighterScenarioResult2);
+
+            CompareConfiguration(fighterScenario, fighterScenarioResult1);
+            CompareConfiguration(fighterScenario, fighterScenarioResult2);
+            CompareConfiguration(fighterScenarioResult1, fighterScenarioResult2);
+        }
+
+        // ROUGH COMPARISON!
+        private void CompareConfiguration(ScenarioConfigurationContainer configuration1, ScenarioConfigurationContainer configuration2)
+        {
+            Assert.IsTrue(configuration1.AlterationCategories.Count == configuration2.AlterationCategories.Count);
+            Assert.IsTrue(configuration1.AlteredCharacterStates.Count == configuration2.AlteredCharacterStates.Count);
+            Assert.IsTrue(configuration1.AttackAttributes.Count == configuration2.AttackAttributes.Count);
+            Assert.IsTrue(configuration1.ConsumableTemplates.Count == configuration2.ConsumableTemplates.Count);
+            Assert.IsTrue(configuration1.DoodadTemplates.Count == configuration2.DoodadTemplates.Count);
+            Assert.IsTrue(configuration1.EnemyTemplates.Count == configuration2.EnemyTemplates.Count);
+            Assert.IsTrue(configuration1.EquipmentTemplates.Count == configuration2.EquipmentTemplates.Count);
+            Assert.IsTrue(configuration1.FriendlyTemplates.Count == configuration2.FriendlyTemplates.Count);
+            Assert.IsTrue(configuration1.LayoutTemplates.Count == configuration2.LayoutTemplates.Count);
+            Assert.IsTrue(configuration1.PlayerTemplates.Count == configuration2.PlayerTemplates.Count);
+            Assert.IsTrue(configuration1.SkillTemplates.Count == configuration2.SkillTemplates.Count);
+            Assert.IsTrue(configuration1.TerrainLayers.Count == configuration2.TerrainLayers.Count);
+            Assert.IsTrue(configuration1.SkillTemplates.Count == configuration2.SkillTemplates.Count);
+            Assert.IsTrue(configuration1.SymbolPool.Count == configuration2.SymbolPool.Count);
+
+            Assert.IsTrue(configuration1.ScenarioDesign.LevelDesigns.Count == configuration2.ScenarioDesign.LevelDesigns.Count);
         }
 
         private SerializationManifest RunSerializer(ScenarioConfigurationContainer configuration, out ScenarioConfigurationContainer configurationResult)
