@@ -5,20 +5,21 @@ using System.Collections.Generic;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
-    internal class DeserializationNullReference : DeserializationObjectBase
+    internal class DeserializationNullPrimitive : DeserializationObjectBase
     {
-        public DeserializationNullReference(HashedObjectReference reference) : base(reference, RecursiveSerializerMemberInfo.Empty)
+        internal DeserializationNullPrimitive(HashedObjectReference reference) : base(reference, RecursiveSerializerMemberInfo.Empty)
         {
+
         }
 
         protected override void Construct()
         {
-            throw new Exception("Trying to construct a null reference:  DeserializationNullReference.cs");
+            throw new Exception("Trying to construct a null primitive:  DeserializationNullPrimitive.cs");
         }
 
         protected override IEnumerable<PropertyDefinition> GetPropertyDefinitions(PropertyPlanner planner)
         {
-            throw new Exception("Trying to get property definitions for a null reference:  DeserializationNullReference.cs");
+            throw new Exception("Trying to get property definitions for a null primitive:  DeserializationNullPrimitive.cs");
         }
 
         protected override HashedObjectInfo ProvideResult()
@@ -28,7 +29,7 @@ namespace Rogue.NET.Common.Serialization.Target
 
         protected override void WriteProperties(PropertyReader reader)
         {
-            throw new Exception("Trying to write properties for a null reference:  DeserializationNullReference.cs");
+            throw new Exception("Trying to write properties for a null primitive:  DeserializationNullPrimitive.cs");
         }
     }
 }

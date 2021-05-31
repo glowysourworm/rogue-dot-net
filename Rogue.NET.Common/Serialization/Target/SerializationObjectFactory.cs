@@ -13,11 +13,34 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class SerializationObjectFactory
     {
-        public Dictionary<int, HashedObjectInfo> _referenceHashDict;
+        Dictionary<HashedObjectInfo, SerializationObjectBase> _referenceDict;
 
-        public SerializationObjectFactory()
+        List<SerializationObjectBase> _allObjects;
+
+        internal SerializationObjectBase this[HashedObjectInfo objectInfo]
         {
-            _referenceHashDict = new Dictionary<int, HashedObjectInfo>();
+            get { return _referenceDict[objectInfo]; }
+        }
+
+        internal SerializationObjectFactory()
+        {
+            _referenceDict = new Dictionary<HashedObjectInfo, SerializationObjectBase>();
+            _allObjects = new List<SerializationObjectBase>();
+        }
+
+        internal bool ContainsReference(HashedObjectInfo reference)
+        {
+            return _referenceDict.ContainsKey(reference);
+        }
+
+        internal IDictionary<HashedObjectInfo, SerializationObjectBase> GetReferences()
+        {
+            return _referenceDict;
+        }
+
+        internal IEnumerable<SerializationObjectBase> GetAllSerializedObjects()
+        {
+            return _allObjects;
         }
 
         /// <summary>
@@ -40,47 +63,62 @@ namespace Rogue.NET.Common.Serialization.Target
             // NULL REFERENCE:    Wrapped by type
             //
 
-            var objectInfo = ReferenceTrack(theObject, theObjectType);
+            var objectInfo = CreateHashInfo(theObject, theObjectType);
+
+            var isPrimitive = FormatterFactory.IsPrimitiveSupported(objectInfo.Type.GetImplementingType());
+
+            // PRIMITIVE NULL
+            if (ReferenceEquals(theObject, null) && isPrimitive)
+                return Finalize(new SerializationNullPrimitive(objectInfo));
 
             // NULL
-            if (theObject == null)
-                return new SerializationNullObject(objectInfo);
+            if (ReferenceEquals(theObject, null))
+                return Finalize(new SerializationNullObject(objectInfo));
 
             // STRINGS IMPLEMENT IEnumerable!
-            var isCollection = objectInfo.TheObject.ImplementsInterface<IEnumerable>() &&
-                              !FormatterFactory.IsPrimitiveSupported(objectInfo.Type.Resolve());
+            var isCollection = objectInfo.GetObject().ImplementsInterface<IEnumerable>() && !isPrimitive;
+
+            // PRIMITIVE
+            if (isPrimitive)
+                return Finalize(CreatePrimitive(objectInfo));
+
+            // REFERENCE (Is reference type AND is OLD REFERENCE)
+            else if (_referenceDict.ContainsKey(objectInfo))
+                return Finalize(CreateReference(objectInfo));
+
+            // ***** THE REST GET ADDED TO THE REFERENCE DICT
 
             // COLLECTION (STRINGS IMPLEMENT IEnumerable!)
             if (isCollection)
-                return CreateCollection(objectInfo);
-
-            // PRIMITIVE
-            else if (FormatterFactory.IsPrimitiveSupported(objectInfo.Type.Resolve()))
-                return CreatePrimitive(objectInfo);
+                return Finalize(CreateCollection(objectInfo));
 
             // VAULE TYPE
-            else if (objectInfo.Type.Resolve().IsValueType)
-                return CreateValue(objectInfo);
+            else if (objectInfo.Type.GetImplementingType().IsValueType)
+                return Finalize(CreateValue(objectInfo));
 
-            // REFERENCE TYPE
+            // OBJECT TYPE
             else
-                return CreateObject(objectInfo);
+                return Finalize(CreateObject(objectInfo));
         }
 
         /// <summary>
         /// CALCULATES HASH CODE FOR OBJECT + TYPE HASH. Throw exceptions for circular references for REFERENCE TYPES
         /// </summary>
-        private HashedObjectInfo ReferenceTrack(object theObject, Type theObjectType)
+        private HashedObjectInfo CreateHashInfo(object theObject, Type theObjectType)
         {
+            var isPrimitive = FormatterFactory.IsPrimitiveSupported(theObjectType);
+
+            // PRIMITIVE NULL
+            if (isPrimitive && ReferenceEquals(theObject, null))
+                return new HashedObjectInfo(theObjectType);
+
             // NULL
             if (theObject == null)
                 return new HashedObjectInfo(theObjectType);
 
             // PRIMITIVE
-            if (FormatterFactory.IsPrimitiveSupported(theObjectType))
-            {
+            if (isPrimitive)
                 return new HashedObjectInfo(theObject, theObjectType);
-            }
 
             // POSSIBLE PERFORMANCE ISSUE CALCULATING HASH CODES
             //
@@ -90,18 +128,23 @@ namespace Rogue.NET.Common.Serialization.Target
 
             HashedObjectInfo hashInfo = null;
 
+            // *** NOTE:  Trying to work with MSFT Type... So, just using this to catch things we 
+            //            might have missed. PASS IN the object type called for. THIS IS TO WORK WITH
+            //            the property definitions. (Keeps the type consistent)
+            //
+
             // Property Type != Actual Object Type
             if (!theObject.GetType().Equals(theObjectType))
             {
                 // INTERFACE
                 if (theObjectType.IsInterface)
                 {
-                    hashInfo = new HashedObjectInfo(theObject, theObject.GetType());
+                    hashInfo = new HashedObjectInfo(theObject, theObjectType);
                 }
                 // SUB CLASS
                 else if (theObject.GetType().IsSubclassOf(theObjectType))
                 {
-                    hashInfo = new HashedObjectInfo(theObject, theObject.GetType());
+                    hashInfo = new HashedObjectInfo(theObject, theObjectType);
                 }
                 else
                     throw new Exception("Unhandled polymorphic object type:  " + theObjectType.FullName);
@@ -112,14 +155,9 @@ namespace Rogue.NET.Common.Serialization.Target
                 hashInfo = new HashedObjectInfo(theObject, theObjectType);
             }
 
-
-            if (!_referenceHashDict.ContainsKey(hashInfo.GetHashCode()))
-                _referenceHashDict.Add(hashInfo.GetHashCode(), hashInfo);
-
             return hashInfo;
         }
 
-        // REFERENCE TRACKED
         private SerializationObjectBase CreateCollection(HashedObjectInfo info)
         {
             // Procedure
@@ -134,48 +172,48 @@ namespace Rogue.NET.Common.Serialization.Target
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
 
             // ARRAY
-            if (info.Type.Resolve().IsArray)
+            if (info.Type.GetImplementingType().IsArray)
             {
-                var childType = info.Type.Resolve().GetElementType();       // ARRAY ONLY
-                var array = info.TheObject as Array;
+                var childType = info.Type.GetImplementingType().GetElementType();       // ARRAY ONLY
+                var array = info.GetObject() as Array;
 
-                return new SerializationCollection(info, memberInfo, array, array.Length,CollectionInterfaceType.Array, childType);
+                return new SerializationCollection(info, memberInfo, array, array.Length, CollectionInterfaceType.Array, childType);
             }
             // GENERIC ENUMERABLE
             else
             {
-                if (!info.Type.Resolve().IsGenericType)
-                    throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.TypeName);
+                if (!info.Type.GetImplementingType().IsGenericType)
+                    throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.DeclaringType);
 
-                else if (info.TheObject.ImplementsInterface<IDictionary>())
+                else if (info.GetObject().ImplementsInterface<IDictionary>())
                 {
-                    var arguments = info.Type.Resolve().GetGenericArguments();
+                    var arguments = info.Type.GetImplementingType().GetGenericArguments();
 
                     if (arguments.Length != 2)
-                        throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.TypeName);
+                        throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.DeclaringType);
 
-                    var argument = (info.TheObject as IEnumerable).GetType().GetGenericArguments()[0];
+                    var argument = (info.GetObject() as IEnumerable).GetType().GetGenericArguments()[0];
 
                     if (argument == null)
-                        throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.TypeName);
+                        throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.DeclaringType);
 
-                    var dictionary = info.TheObject as IDictionary;
+                    var dictionary = info.GetObject() as IDictionary;
 
                     return new SerializationCollection(info, memberInfo, dictionary, dictionary.Count, CollectionInterfaceType.IDictionary, argument);
                 }
-                else if (info.TheObject.ImplementsInterface<IList>())
+                else if (info.GetObject().ImplementsInterface<IList>())
                 {
-                    var argument = (info.TheObject as IEnumerable).GetType().GetGenericArguments()[0];
+                    var argument = (info.GetObject() as IEnumerable).GetType().GetGenericArguments()[0];
 
                     if (argument == null)
-                        throw new Exception("Invalid IList argument for PropertySerializer: " + info.Type.TypeName);
+                        throw new Exception("Invalid IList argument for PropertySerializer: " + info.Type.DeclaringType);
 
-                    var list = info.TheObject as IList;
+                    var list = info.GetObject() as IList;
 
-                    return new SerializationCollection(info, memberInfo, list, list.Count, CollectionInterfaceType.IDictionary, argument);
+                    return new SerializationCollection(info, memberInfo, list, list.Count, CollectionInterfaceType.IList, argument);
                 }
                 else
-                    throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.TypeName);
+                    throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.DeclaringType);
             }
         }
 
@@ -184,7 +222,14 @@ namespace Rogue.NET.Common.Serialization.Target
             return new SerializationPrimitive(info);
         }
 
-        // REFERENCE TRACKED
+        private SerializationObjectBase CreateReference(HashedObjectInfo referencedInfo)
+        {
+            // Validates type and SerializationMode
+            var memberInfo = RecursiveSerializerStore.GetMemberInfo(referencedInfo.Type);
+
+            return new SerializationReference(referencedInfo, memberInfo);
+        }
+
         private SerializationObjectBase CreateValue(HashedObjectInfo info)
         {
             // Validates type and SerializationMode
@@ -193,13 +238,35 @@ namespace Rogue.NET.Common.Serialization.Target
             return new SerializationValue(info, memberInfo);
         }
 
-        // REFERENCE TRACKED
         private SerializationObjectBase CreateObject(HashedObjectInfo info)
         {
             // Validates type and SerializationMode
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
 
             return new SerializationObject(info, memberInfo);
+        }
+
+        // TRACK REFERENCES AND ALL OBJECTS -> RETURN
+        private SerializationObjectBase Finalize(SerializationObjectBase result)
+        {
+            _allObjects.Add(result);
+
+            if (result is SerializationNullObject ||
+                result is SerializationPrimitive ||
+                result is SerializationNullPrimitive)
+                return result;
+
+            var isReference = result is SerializationReference;
+
+            if (isReference)
+                return result;
+
+            if (_referenceDict.ContainsKey(result.ObjectInfo))
+                throw new Exception("Duplicate reference found:  " + result.ObjectInfo.Type.GetImplementingType().FullName);
+
+            _referenceDict.Add(result.ObjectInfo, result);
+
+            return result;
         }
     }
 }

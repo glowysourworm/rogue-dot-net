@@ -5,6 +5,8 @@ using Moq;
 using NUnit.Framework;
 
 using Rogue.NET.Common.Serialization;
+using Rogue.NET.Common.Serialization.Manifest;
+using Rogue.NET.Common.Serialization.Target;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Processing.Service;
@@ -13,6 +15,7 @@ using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -51,7 +54,7 @@ namespace Rogue.NET.UnitTest
             var serializer = new RecursiveSerializer<ScenarioConfigurationContainer>();
 
             var fileName = Path.Combine(TestParameters.DebugOutputDirectory, "Fighter." + ResourceConstants.ScenarioConfigurationExtension);
-            var manifestFileName = Path.Combine(TestParameters.DebugOutputDirectory, "Fighter." + ResourceConstants.ScenarioConfigurationExtension + ".manifest");
+            var manifestFileName = Path.Combine(TestParameters.DebugOutputDirectory, "Fighter." + ResourceConstants.ScenarioConfigurationExtension + ".manifest.xml");
             var fighterScenarioBefore = _scenarioResourceService.GetScenarioConfiguration("Fighter");
             ScenarioConfigurationContainer fighterScenarioAfter = null;
 
@@ -79,6 +82,16 @@ namespace Rogue.NET.UnitTest
                 // var manifest = serializer.GetSerializationManifest();
             }
 
+            // Use MSFT to serialize the manifest
+            var manifest = serializer.CreateManifest();
+
+            using (var fileStream = File.OpenWrite(manifestFileName))
+            {
+                var xmlSerializer = new XmlSerializer(typeof(SerializationManifest));
+
+                xmlSerializer.Serialize(fileStream, manifest);
+            }
+
             // Deserialize
             using (var fileStream = File.OpenRead(fileName))
             {
@@ -90,6 +103,16 @@ namespace Rogue.NET.UnitTest
                 {
                     Assert.Fail(ex.Message);
                 }
+            }
+
+            // Use MSFT to serialize the manifest
+            manifest = serializer.CreateManifest();
+
+            using (var fileStream = File.OpenWrite(manifestFileName))
+            {
+                var xmlSerializer = new XmlSerializer(typeof(List<SerializedNodeManifest>));
+
+                xmlSerializer.Serialize(fileStream, manifest.DeserializerOutput);
             }
 
             var compareLogic = new CompareLogic();

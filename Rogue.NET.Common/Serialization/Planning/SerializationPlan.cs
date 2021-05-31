@@ -7,18 +7,19 @@ namespace Rogue.NET.Common.Serialization.Planning
 {
     internal class SerializationPlan : ISerializationPlan
     {
-        public SerializationNode RootNode { get; private set; }
+        public SerializationNodeBase RootNode { get; private set; }
 
-        public IDictionary<HashedObjectInfo, SerializationNodeBase> UniqueReferenceDict { get; private set; }
+        public IDictionary<HashedObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; private set; }
 
-        public IDictionary<HashedType, HashedType> TypeDict { get; private set; }
+        public IEnumerable<SerializationObjectBase> AllSerializedObjects { get; private set; }
 
-        public SerializationPlan(IDictionary<HashedObjectInfo, SerializationNodeBase> referenceDict,
+        public SerializationPlan(IDictionary<HashedObjectInfo, SerializationObjectBase> referenceDict,
                                  IDictionary<HashedType, HashedType> typeDict,
-                                 SerializationNode rootNode)
+                                 IEnumerable<SerializationObjectBase> allObjects,
+                                 SerializationNodeBase rootNode)
         {
             this.UniqueReferenceDict = referenceDict;
-            this.TypeDict = typeDict;
+            this.AllSerializedObjects = allObjects;
             this.RootNode = rootNode;
         }
     }

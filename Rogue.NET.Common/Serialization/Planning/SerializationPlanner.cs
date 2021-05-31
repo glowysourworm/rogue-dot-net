@@ -11,9 +11,6 @@ namespace Rogue.NET.Common.Serialization.Planning
         // Reads properties from objects for this serialization plan
         PropertyWriter _writer;
 
-        // TRACK REFERENCES BY HASH CODE
-        Dictionary<HashedObjectInfo, SerializationNodeBase> _referenceDict;
-
         // TRACK TYPES
         Dictionary<HashedType, HashedType> _typeDict;
 
@@ -23,128 +20,146 @@ namespace Rogue.NET.Common.Serialization.Planning
         internal SerializationPlanner()
         {
             _writer = new PropertyWriter();
-            _referenceDict = new Dictionary<HashedObjectInfo, SerializationNodeBase>();
             _typeDict = new Dictionary<HashedType, HashedType>();
             _factory = new SerializationObjectFactory();
         }
 
         internal ISerializationPlan Plan(T theObject)
         {
-            if (ReferenceEquals(theObject, null))
-                throw new ArgumentException("Trying to serialize a null object reference:  SerializationPlanner.Plan");
-
+            // Create wrapper for the object
             var wrappedObject = _factory.Create(theObject, typeof(T));
 
-            if (wrappedObject is SerializationCollection ||
-                wrappedObject is SerializationNullObject ||
-                wrappedObject is SerializationPrimitive)
-                throw new Exception("Invalid target type for serialization root object:  " + wrappedObject.ObjectInfo.Type.TypeName);
+            // Create root node
+            var node = CreateNode(wrappedObject);
 
-            var node = new SerializationNode(wrappedObject);
+            // Recurse
+            Analyze(node);
 
-            // Recursively analyze the graph
-            foreach (var property in ReadProperties(wrappedObject))
-            {
-                var subNode = Analyze(property);
-
-                if (subNode != null)
-                    node.SubNodes.Add(subNode);
-            }
-
-            // STORE REFERENCE TO BASE OBJECT (KEEP TRACK!)
-            _referenceDict.Add(wrappedObject.ObjectInfo, node);
-
-            // STORE TYPE
-            _typeDict.Add(wrappedObject.ObjectInfo.Type, wrappedObject.ObjectInfo.Type);
-
-            return new SerializationPlan(_referenceDict, _typeDict, node);
+            return new SerializationPlan(_factory.GetReferences(), 
+                                         _typeDict, 
+                                         _factory.GetAllSerializedObjects(), 
+                                         node);
         }
 
-        protected SerializationNodeBase Analyze(PropertyStorageInfo info)
+        private void Analyze(SerializationNodeBase node)
         {
-            // Create wrapped object - HANDLES NULLS
-            var wrappedObject = _factory.Create(info.PropertyValue, info.PropertyType);
+            // Procedure
+            //
+            // 0) HALT RECURSION CHECK:  NULL, PRIMITIVE, REFERENCE object types
+            // 1) Collections -> Read node properties (recursively) -> Read child objects (recursively)
+            // 2) Property Nodes -> Read node properties (recursively)
+            // 3) STORE REFERENCE
+            //
 
-            // STORE TYPE (INCLUDES NULL, PRIMITIVE TYPES)
-            if (!_typeDict.ContainsKey(wrappedObject.ObjectInfo.Type))
-                _typeDict.Add(wrappedObject.ObjectInfo.Type, wrappedObject.ObjectInfo.Type);
+            // NULL PRIMITIVE
+            if (node.NodeObject is SerializationNullPrimitive)
+                return;
+
+            // NULL
+            else if (node.NodeObject is SerializationNullObject)
+                return;
+
+            // PRIMITIVE
+            else if (node.NodeObject is SerializationPrimitive)
+                return;
+
+            // REFERENCE (NOTE*** THESE ARE CREATED BY THE FACTORY!!) (HALTS RECURSION)
+            else if (node.NodeObject is SerializationReference)
+                return;
+
+            // COLLECTION
+            else if (node.NodeObject is SerializationCollection)
+            {
+                // READ PROPERTIES
+                foreach (var property in ReadProperties(node.NodeObject))
+                {
+                    // Create wrapped object for the property
+                    var wrappedProperty = _factory.Create(property.PropertyValue, property.PropertyType);
+
+                    // Create node
+                    var propertyNode = CreateNode(wrappedProperty);
+
+                    // RECURSE
+                    Analyze(propertyNode);
+
+                    // STORE AS SUB-NODE
+                    (node as SerializationCollectionNode).SubNodes.Add(propertyNode);
+                }
+
+                // READ ELEMENTS
+                foreach (var child in (node.NodeObject as SerializationCollection).Collection)
+                {
+                    // Create wrapped object for the element
+                    var wrappedChild = _factory.Create(child, (node.NodeObject as SerializationCollection).ElementType);
+
+                    // Create node
+                    var childNode = CreateNode(wrappedChild);
+
+                    // RECURSE
+                    Analyze(childNode);
+
+                    // STORE AS ELEMENT (CHILD) NODE
+                    (node as SerializationCollectionNode).Children.Add(childNode);
+                }
+            }
+
+            // VALUE or OBJECT
+            else if (node.NodeObject is SerializationValue ||
+                     node.NodeObject is SerializationObject)
+            {
+                // READ PROPERTIES
+                foreach (var property in ReadProperties(node.NodeObject))
+                {
+                    // Create wrapped object for the property
+                    var wrappedProperty = _factory.Create(property.PropertyValue, property.PropertyType);
+
+                    // Create node
+                    var propertyNode = CreateNode(wrappedProperty);
+
+                    // RECURSE
+                    Analyze(propertyNode);
+
+                    // STORE AS SUB-NODE
+                    (node as SerializationNode).SubNodes.Add(propertyNode);
+                }
+            }   
+
+            else
+                throw new Exception("Unhandled SerializationObjectBase type SerializationPlanner.CreateNode");
+        }
+
+        private SerializationNodeBase CreateNode(SerializationObjectBase wrappedObject)
+        {
+            // NULL PRIMITIVE
+            if (wrappedObject is SerializationNullPrimitive)
+                return new SerializationNode(wrappedObject);
 
             // NULL
             if (wrappedObject is SerializationNullObject)
-            {
                 return new SerializationNode(wrappedObject);
-            }
 
             // PRIMITIVE
-            if (wrappedObject is SerializationPrimitive)
-            {
+            else if (wrappedObject is SerializationPrimitive)
                 return new SerializationNode(wrappedObject);
-            }
 
-            // Create reference, and node
-            var node = (wrappedObject is SerializationCollection) ? (SerializationNodeBase)new SerializationCollectionNode(wrappedObject) :
-                                                                    (SerializationNodeBase)new SerializationNode(wrappedObject);
+            // REFERENCE
+            else if (wrappedObject is SerializationReference)
+                return new SerializationNode(wrappedObject);
 
-            // VALUE, OBJECT, COLLECTION -> ADD REFERENCE (OR) HALT RECURSION!!!
-            if (wrappedObject is SerializationValue ||
-                wrappedObject is SerializationObject ||
-                wrappedObject is SerializationCollection)
-            {
-                if (!_referenceDict.ContainsKey(wrappedObject.ObjectInfo))
-                    _referenceDict.Add(wrappedObject.ObjectInfo, node);
+            // VALUE
+            else if (wrappedObject is SerializationValue)
+                return new SerializationNode(wrappedObject);
 
-                // HALT RECURSION -> RETURN REFERENCED NODE
-                else
-                    return _referenceDict[wrappedObject.ObjectInfo];
-            }
+            // OBJECT
+            else if (wrappedObject is SerializationObject)
+                return new SerializationNode(wrappedObject);
 
             // COLLECTION
-            if (wrappedObject is SerializationCollection)
-            {
-                // NOTE*** Serializer will store a reference to the collection with the COUNT
-                //         included. This will allow deserialization of the elements in the
-                //         collection.
-                //
+            else if (wrappedObject is SerializationCollection)
+                return new SerializationCollectionNode(wrappedObject);
 
-                var wrappedCollection = wrappedObject as SerializationCollection;
-                var collectionNode = node as SerializationCollectionNode;
-
-                // COLLECTION PROPERTIES (SPECIFIED MODE ONLY!)
-                foreach (var property in ReadProperties(wrappedCollection))
-                {
-                    // Analyze Collection Properties
-                    collectionNode.SubNodes.Add(Analyze(property));
-                }
-
-                // ENUMERATE -> ANALYZE
-                foreach (var element in wrappedCollection.Collection)
-                {
-                    // Create child object
-                    var wrappedChild = _factory.Create(element, wrappedCollection.ElementType);
-
-                    // Analyze
-                    foreach (var property in ReadProperties(wrappedChild))
-                    {
-                        // RECURSE
-                        collectionNode.Children.Add(Analyze(property));
-                    }
-                }
-            }
-
-            // OBJECT / VALUE -> RECURSE
-            else if (wrappedObject is SerializationValue ||
-                     wrappedObject is SerializationObject)
-            {
-                var referenceNode = node as SerializationNode;
-
-                // Store sub-nodes for each sub-property
-                foreach (var property in ReadProperties(referenceNode.NodeObject))
-                {
-                    referenceNode.SubNodes.Add(Analyze(property));
-                }
-            }
-
-            return node;
+            else
+                throw new Exception("Unhandled SerializationObjectBase type SerializationPlanner.CreateNode");
         }
 
         private IEnumerable<PropertyStorageInfo> ReadProperties(SerializationObjectBase wrappedObject)

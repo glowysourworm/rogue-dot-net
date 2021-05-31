@@ -28,7 +28,8 @@ namespace Rogue.NET.Common.Serialization.Planning
             _properties.Add(propertyName, new PropertyDefinition()
             {
                 PropertyName = propertyName,
-                PropertyType = propertyType
+                PropertyType = propertyType,
+                IsUserDefined = true
             });
         }
 
@@ -58,7 +59,8 @@ namespace Rogue.NET.Common.Serialization.Planning
             return propertyInfos.Select(info => new PropertyDefinition()
             {
                 PropertyName = info.Name,
-                PropertyType = info.PropertyType
+                PropertyType = info.PropertyType,
+                IsUserDefined = false
             });
         }
     }

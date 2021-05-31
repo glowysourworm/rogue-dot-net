@@ -1,14 +1,15 @@
 ﻿namespace Rogue.NET.Common.Serialization.Target
 {
     /// <summary>
-    /// Wraps the hash code for HashedObjectInfo.GetHashCode() during deserialization
+    /// Wraps the hash code for HashedObjectInfo.GetHashCode() during deserialization. HASH CODE BASED ON
+    /// SERIALIZED VALUE! this.HashCode.
     /// </summary>
     internal class HashedObjectReference
     {
         public HashedType Type { get; private set; }
 
         /// <summary>
-        /// HASH CODE FROM HashObjectInfo.GetHashCode()
+        /// HASH CODE FROM SERIALIZATION PROCEDURE HashObjectInfo.GetHashCode()
         /// </summary>
         public int HashCode { get; private set; }
 
@@ -18,28 +19,29 @@
         public HashedObjectReference(HashedType hashedType)
         {
             this.Type = hashedType;
-            this.HashCode = default(int);
+
+            // USING TYPE + OBJECT HASH CODE CONVENTION
+            this.HashCode = hashedType.GetHashCode();
         }
 
         public HashedObjectReference(HashedType hashedType, int hashCode)
         {
             this.Type = hashedType;
+
+            // HASH CODE FROM HashObjectInfo.GetHashCode()
             this.HashCode = hashCode;
         }
 
-        /// <summary>
-        /// Creates HashCodeInfo using the resolved object. Validates the resulting hash code against the one 
-        /// stored in HashedObjectReference.
-        /// </summary>
-        /// <param name="actualObject">Resolved object from Deserializer</param>
-        /// <returns>True if hash codes match, False otherwise.</returns>
-        public bool ValidateReference(object actualObject)
+        public override bool Equals(object obj)
         {
-            var resolvedHashInfo = ReferenceEquals(actualObject, null) ? new HashedObjectInfo(this.Type.Resolve()) :
-                                                                         new HashedObjectInfo(actualObject, this.Type.Resolve());
+            var reference = obj as HashedObjectReference;
 
-            // SHOULD BE EQUAL IF OBJECT WAS DESERIALIZED PROPERLY
-            return resolvedHashInfo.GetHashCode() == this.HashCode;
+            return this.HashCode == reference.HashCode;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.HashCode;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Rogue.NET.Common.Serialization.Formatter
 {
     internal static class FormatterFactory
     {
-        internal static IBaseFormatter CreateFormatter(Type type)
+        internal static IBaseFormatter CreatePrimitiveFormatter(Type type)
         {
             if (type == typeof(bool))
                 return new BooleanFormatter();

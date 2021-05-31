@@ -9,21 +9,44 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class HashedObjectInfo
     {
-        public object TheObject { get; private set; }
         public HashedType Type { get; private set; }
+
+        private object _theObject;
+        private bool _representsNullReference;
 
         /// <summary>
         /// Creates a null reference for the specified type
         /// </summary>
         public HashedObjectInfo(Type nullObjectType)
         {
-            this.TheObject = null;
+            _theObject = null;
+            _representsNullReference = true;
             this.Type = new HashedType(nullObjectType);
         }
-        public HashedObjectInfo(object theObject, Type type)
+        /// <summary>
+        /// Creates a null reference for the specified hashed type
+        /// </summary>
+        public HashedObjectInfo(HashedType nullObjectType)
         {
-            this.TheObject = theObject;
-            this.Type = new HashedType(type);
+            _theObject = null;
+            _representsNullReference = true;
+            this.Type = nullObjectType;
+        }
+        public HashedObjectInfo(object theObject, Type declaringType)
+        {
+            _theObject = theObject;
+            _representsNullReference = false;
+            this.Type = new HashedType(declaringType, theObject.GetType());
+        }
+
+        public bool RepresentsNullReference()
+        {
+            return _representsNullReference;
+        }
+
+        public object GetObject()
+        {
+            return _theObject;
         }
 
         public override bool Equals(object obj)
@@ -37,16 +60,16 @@ namespace Rogue.NET.Common.Serialization.Target
         {
             // RETURN TYPE + OBJECT.GetHashCode() UNLESS NULL REFERENCE INFO
             //
-            if (this.TheObject == null)
+            if (_representsNullReference)
                 return this.Type.GetHashCode();
 
             else
-                return this.CreateHashCode(this.TheObject, this.Type);
+                return this.CreateHashCode(_theObject, this.Type);
         }
 
         public override string ToString()
         {
-            return string.Format("Hash={0}, Type={1}", this.GetHashCode(), this.Type.TypeName);
+            return string.Format("Hash={0}, Type={1}", this.GetHashCode(), this.Type.DeclaringType);
         }
     }
 }

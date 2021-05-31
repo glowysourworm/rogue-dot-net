@@ -29,7 +29,7 @@ namespace Rogue.NET.Common.Serialization
             if (!_properties[propertyName].PropertyType.Equals(typeof(T)))
                 throw new ArgumentException("Requested property type is invalid:  " + propertyName);
 
-            return (T)_properties[propertyName].ResolvedInfo.TheObject;
+            return (T)_properties[propertyName].ResolvedInfo.GetObject();
         }
     }
 }

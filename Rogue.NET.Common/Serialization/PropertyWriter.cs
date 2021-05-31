@@ -45,9 +45,12 @@ namespace Rogue.NET.Common.Serialization
             return _properties.Values;
         }
 
-        internal IEnumerable<PropertyStorageInfo> GetPropertiesReflection(object graphObject)
+        internal IEnumerable<PropertyStorageInfo> GetPropertiesReflection(Type type, object graphObject)
         {
-            var propertyInfos = RecursiveSerializerStore.GetOrderedProperties(graphObject.GetType());
+            if (type != graphObject.GetType())
+                throw new Exception("Type of object not equal to the implementation type:  " + type.FullName);
+
+            var propertyInfos = RecursiveSerializerStore.GetOrderedProperties(type);
 
             return propertyInfos.Select(info => new PropertyStorageInfo()
             {

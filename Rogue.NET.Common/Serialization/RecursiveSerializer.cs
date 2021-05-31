@@ -2,37 +2,42 @@
 
 namespace Rogue.NET.Common.Serialization
 {
-    internal enum SerializedNodeType : byte
+    public enum SerializedNodeType : byte
     {
+        /// <summary>
+        /// Serializer should store [ NullPrimitive = 0, Reference HashedType ]
+        /// </summary>
+        NullPrimitive = 0,
+
         /// <summary>
         /// Serializer should store [ Null = 0, Reference HashedType ]
         /// </summary>
-        Null = 0,
+        Null = 1,
 
         /// <summary>
         /// Serializer should store [ Primitive = 1, HashedType, Value ]
         /// </summary>
-        Primitive = 1,
+        Primitive = 2,
 
         /// <summary>
         /// (STRUCT) Serializer should store [ Value = 2, Hash Info ] (Recruse Sub-graph)
         /// </summary>
-        Value = 2,
+        Value = 3,
 
         /// <summary>
         /// (CLASS) Serializer should store [ Object = 3, Hash Info ] (Recruse Sub-graph)
         /// </summary>
-        Object = 3,
+        Object = 4,
 
         /// <summary>
         /// Serializer should store [ Reference = 4, Hash Info ]
         /// </summary>
-        Reference = 4,
+        Reference = 5,
 
         /// <summary>
         /// Serializer should store [ Collection = 5, Collection Type, Child Count ] (loop) Children (Recruse Sub-graphs)
         /// </summary>
-        Collection = 5
+        Collection = 6
     }
 
     /// <summary>
@@ -59,13 +64,12 @@ namespace Rogue.NET.Common.Serialization
             return _deserializer.Deserialize<T>(stream);
         }
 
-        /// <summary>
-        /// Can call after Serialize<typeparamref name="T"/>(Stream, T) has been called to create a manifest for
-        /// the last run.
-        /// </summary>
-        public SerializationManifest GetSerializationManifest()
+        public SerializationManifest CreateManifest()
         {
-            return _serializer.CreateManifest();
+            return new SerializationManifest(_serializer.GetTypeTable(), 
+                                             _serializer.GetSerializedObjects(), 
+                                             _deserializer.GetTypeTable(), 
+                                             _deserializer.GetDeserializedObjects());
         }
     }
 }

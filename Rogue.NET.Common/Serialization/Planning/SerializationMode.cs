@@ -3,7 +3,7 @@
     /// <summary>
     /// Specifies mode of serialization per-object in the graph
     /// </summary>
-    internal enum SerializationMode : byte
+    public enum SerializationMode : byte
     {
         /// <summary>
         /// No constructor used to create object (ARRAYS, PRIMITIVES AND NULL REFERENCES)

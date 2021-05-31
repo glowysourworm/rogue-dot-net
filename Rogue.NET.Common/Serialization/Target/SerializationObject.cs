@@ -20,7 +20,7 @@ namespace Rogue.NET.Common.Serialization.Target
         {
             // No GetProperties(PropertyWriter writer) defined -> Use reflected public properties
             if (this.MemberInfo.GetMethod == null)
-                return writer.GetPropertiesReflection(this.ObjectInfo.TheObject);
+                return writer.GetPropertiesReflection(this.ObjectInfo.Type.GetImplementingType(), this.ObjectInfo.GetObject());
 
             // CLEAR CURRENT CONTEXT
             writer.ClearContext();
@@ -28,11 +28,11 @@ namespace Rogue.NET.Common.Serialization.Target
             // CALL OBJECT'S GetProperties METHOD
             try
             {
-                this.MemberInfo.GetMethod.Invoke(this.ObjectInfo.TheObject, new object[] { writer });
+                this.MemberInfo.GetMethod.Invoke(this.ObjectInfo.GetObject(), new object[] { writer });
             }
             catch (Exception innerException)
             {
-                throw new Exception("Error trying to read properties from " + this.ObjectInfo.Type.TypeName, innerException);
+                throw new Exception("Error trying to read properties from " + this.ObjectInfo.Type.DeclaringType, innerException);
             }
 
             return writer.GetResult();

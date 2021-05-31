@@ -9,7 +9,7 @@ namespace Rogue.NET.Common.Serialization.Target
     /// <summary>
     /// Specifies how elements can be ADDED to the collection
     /// </summary>
-    internal enum CollectionInterfaceType : byte
+    public enum CollectionInterfaceType : byte
     {
         Array = 0,
         IList = 1,

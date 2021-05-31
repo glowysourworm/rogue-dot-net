@@ -21,5 +21,6 @@ namespace Rogue.NET.Common.Serialization.Planning
 
         public string PropertyName { get; set; }
         public Type PropertyType { get; set; }
+        public bool IsUserDefined { get; set; }
     }
 }

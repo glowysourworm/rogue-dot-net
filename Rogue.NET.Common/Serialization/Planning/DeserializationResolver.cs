@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Target;
+﻿using Rogue.NET.Common.CustomException;
+using Rogue.NET.Common.Serialization.Target;
 
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,11 @@ namespace Rogue.NET.Common.Serialization.Planning
             _deserializedObjectcs = new Dictionary<HashedObjectReference, DeserializationObjectBase>();
         }
 
+        internal IDictionary<HashedObjectReference, DeserializationObjectBase> GetDeserializedObjects()
+        {
+            return _deserializedObjectcs;
+        }
+
         internal DeserializationNodeBase Resolve(DeserializationNodeBase node)
         {
             ResolveImpl(node);
@@ -31,7 +37,13 @@ namespace Rogue.NET.Common.Serialization.Planning
             //             the end of the loop call SetValue on the current node's object. Primitives
             //             for leaves should then be ready for resolving the node.
             //
-            //             After node is resolved - STORE REFERENCE AS DESERIALIZED OBJECT
+            //             After node is resolved - STORE REFERENCE AS DESERIALIZED OBJECT ONLY IF IT
+            //             IS OF A REFERENCE TYPE:  
+            //
+            //             DeserializationObject
+            //             DeserializationValue
+            //             DeserializationCollection
+            //
 
             // COLLECTION
             if (node is DeserializationCollectionNode)
@@ -53,7 +65,7 @@ namespace Rogue.NET.Common.Serialization.Planning
                 if (collectionProperties.Any())
                     collectionNode.NodeObject.WriteProperties(collectionProperties);
 
-                var resolvedChildNodes = new List<DeserializationObjectBase>();
+                var resolvedChildNodes = new List<HashedObjectInfo>();
 
                 // Iterate Elements -> Resolve recursively
                 for (int index = 0; index < collectionNode.Count; index++)
@@ -66,8 +78,21 @@ namespace Rogue.NET.Common.Serialization.Planning
                     // RECURSE TO RESOLVE (Child Nodes are NON-PROPERTY NODES)
                     Resolve(childNode);
 
-                    // TODO: CONSTRUCT THE ACTUAL RESOLVED COLLECTION
-                    resolvedChildNodes.Add(childNode.NodeObject);
+                    // NOTE*** Data from these child nodes MUST BE PASSED to the DeserializationObjectBase WITH REFERENCES
+                    //         RESOLVED. 
+                    //
+                    //         This is because of references to OTHER resolved objects already in our posession. 
+                    //
+                    //         To solve this, just check for hashed objects that are in the deserialzied object dictionary.
+                    //
+
+                    // REFERENCE
+                    if (_deserializedObjectcs.ContainsKey(childNode.NodeObject.Reference))
+                        resolvedChildNodes.Add(_deserializedObjectcs[childNode.NodeObject.Reference].Resolve());
+
+                    // ANY OTHER
+                    else
+                        resolvedChildNodes.Add(childNode.NodeObject.Resolve());
                 }
 
                 // FINALIZE COLLECTION
@@ -91,14 +116,25 @@ namespace Rogue.NET.Common.Serialization.Planning
                 }
 
                 // Set properties using DeserializationObjectBase
-                nextNode.NodeObject.WriteProperties(properties);
-
+                if (nextNode.NodeObject is DeserializationCollection ||
+                    nextNode.NodeObject is DeserializationObject ||
+                    nextNode.NodeObject is DeserializationValue)
+                    nextNode.NodeObject.WriteProperties(properties);
             }
             else
                 throw new Exception("Unhandled DeserializationNodeBase type:  PropertyDeserializer.DeserializeRecurse");
 
+            var isReferenced = node.NodeObject is DeserializationCollection ||
+                               node.NodeObject is DeserializationObject ||
+                               node.NodeObject is DeserializationValue;
+
+            // CHECK FOR DUPLICATE REFERENCES
+            if (_deserializedObjectcs.ContainsKey(node.NodeObject.Reference) && isReferenced)
+                throw new Exception("Duplicate reference for deserialized object:  " + node.NodeObject.Reference.Type);
+
             // STORE REFERENCE (OBJECT IS READY!)
-            _deserializedObjectcs.Add(node.NodeObject.Reference, node.NodeObject);
+            if (isReferenced)
+                _deserializedObjectcs.Add(node.NodeObject.Reference, node.NodeObject);
         }
 
         /// <summary>
@@ -107,13 +143,22 @@ namespace Rogue.NET.Common.Serialization.Planning
         /// </summary>
         private PropertyResolvedInfo ResolveNodeRecurse(DeserializationNodeBase node)
         {
-            // NULL
-            if (node.NodeObject is DeserializationNullReference)
+            // NULL PRIMITIVE
+            if (node.NodeObject is DeserializationNullPrimitive)
                 return new PropertyResolvedInfo()
                 {
                     PropertyName = node.Property.PropertyName,
                     PropertyType = node.Property.PropertyType,
-                    ResolvedInfo = null
+                    ResolvedInfo = node.NodeObject.Resolve()
+                };
+
+            // NULL
+            else if (node.NodeObject is DeserializationNullReference)
+                return new PropertyResolvedInfo()
+                {
+                    PropertyName = node.Property.PropertyName,
+                    PropertyType = node.Property.PropertyType,
+                    ResolvedInfo = node.NodeObject.Resolve()
                 };
 
             // PRIMITIVE
@@ -125,14 +170,21 @@ namespace Rogue.NET.Common.Serialization.Planning
                     ResolvedInfo = node.NodeObject.Resolve()
                 };
 
-            // CHECK FOR ALREADY DESERIALIZED OBJECT REFERENCES
-            if (_deserializedObjectcs.ContainsKey(node.NodeObject.Reference))
+            // REFERENCE - MUST HAVE PREVIOUSLY DESERIALIZED OBJECT TO RESOLVE!
+            else if (node.NodeObject is DeserializationReference)
+            {
+                // Check the node object - which contains the REFERENCE HASH
+                if (!_deserializedObjectcs.ContainsKey(node.NodeObject.Reference))
+                    throw new FormattedException("UN-RESOLVED REFERENCE:  Hash={0}, Type={1}", node.NodeObject.Reference.HashCode, node.NodeObject.Reference.Type.DeclaringType);
+
+                // Return OTHER reference using DeserializationObjectBase.Resolve() (FORCES VAILDATION)
                 return new PropertyResolvedInfo()
                 {
                     PropertyName = node.Property.PropertyName,
                     PropertyType = node.Property.PropertyType,
                     ResolvedInfo = _deserializedObjectcs[node.NodeObject.Reference].Resolve()
                 };
+            }
 
             // ELSE -> RECURSE
             else

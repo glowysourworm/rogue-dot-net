@@ -25,10 +25,15 @@ namespace Rogue.NET.Common.Serialization.Target
         /// <returns>Resolved object</returns>
         internal HashedObjectInfo Resolve()
         {
-            var hashedInfo = ResolveImpl();
+            var hashedInfo = ProvideResult();
 
-            if (hashedInfo.GetHashCode() != this.Reference.HashCode)
-                throw new Exception("Invalid resolved hash code for object:  " + this.Reference.Type.TypeName);
+            // CAN ONLY VALIDATE TYPE BASED ON HASH CODE
+            if (hashedInfo.Type.GetHashCode() != this.Reference.Type.GetHashCode())
+            {
+                // Check to see if the implementing type is equivalent to the referenced type
+                if (hashedInfo.Type.GetImplementingType() != this.Reference.Type.GetImplementingType())
+                    throw new Exception("Invalid resolved hash code for object type:  " + this.Reference.Type.DeclaringType);
+            }
 
             return hashedInfo;
         }
@@ -49,7 +54,10 @@ namespace Rogue.NET.Common.Serialization.Target
             return GetPropertyDefinitions(new PropertyPlanner());
         }
 
-        protected abstract HashedObjectInfo ResolveImpl();
+        /// <summary>
+        /// Finalizes object and returns wrapped value
+        /// </summary>
+        protected abstract HashedObjectInfo ProvideResult();
 
         protected abstract IEnumerable<PropertyDefinition> GetPropertyDefinitions(PropertyPlanner planner);
 

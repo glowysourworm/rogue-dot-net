@@ -32,10 +32,10 @@ namespace Rogue.NET.Common.Serialization
         /// </summary>
         internal static RecursiveSerializerMemberInfo GetMemberInfo(HashedType hashedType)
         {
-            var parameterlessCtor = hashedType.Resolve().GetConstructor(new Type[] { });
-            var planningMethod = hashedType.Resolve().GetMethod(RecursiveSerializerStore.PlanningMethodName, new Type[] { typeof(PropertyPlanner) });
-            var setMethod = hashedType.Resolve().GetMethod(RecursiveSerializerStore.SetMethodName, new Type[] { typeof(PropertyReader) });
-            var getMethod = hashedType.Resolve().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(PropertyWriter) });
+            var parameterlessCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { });
+            var planningMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.PlanningMethodName, new Type[] { typeof(PropertyPlanner) });
+            var setMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.SetMethodName, new Type[] { typeof(PropertyReader) });
+            var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(PropertyWriter) });
 
             if (parameterlessCtor == null)
                 throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must have a parameterless constructor. (See Inner Exception)");
@@ -66,10 +66,10 @@ namespace Rogue.NET.Common.Serialization
         /// </summary>
         internal static RecursiveSerializerMemberInfo GetMemberInfo(HashedType hashedType, SerializationMode mode)
         {
-            var parameterlessCtor = hashedType.Resolve().GetConstructor(new Type[] { });
-            var planningMethod = hashedType.Resolve().GetMethod(RecursiveSerializerStore.PlanningMethodName, new Type[] { typeof(PropertyPlanner) });
-            var setMethod = hashedType.Resolve().GetMethod(RecursiveSerializerStore.SetMethodName, new Type[] { typeof(PropertyReader) });
-            var getMethod = hashedType.Resolve().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(PropertyWriter) });
+            var parameterlessCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { });
+            var planningMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.PlanningMethodName, new Type[] { typeof(PropertyPlanner) });
+            var setMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.SetMethodName, new Type[] { typeof(PropertyReader) });
+            var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(PropertyWriter) });
 
             // Create the primary members for the serializer
             var memberInfo = new RecursiveSerializerMemberInfo(parameterlessCtor, setMethod, getMethod, planningMethod, mode);

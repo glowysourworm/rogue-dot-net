@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
@@ -11,44 +10,145 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class HashedType
     {
-        // PARAMETERS USED TO REFINE HASH CODE
-        public string AssemblyName { get { return _type.Assembly.FullName; } }
-        public string TypeName { get { return _type.Name; } }
-        public string TypeFullName { get { return _type.FullName; } }
-        public bool IsGeneric { get { return _type.IsGenericType; } }
+        internal string DeclaringAssembly { get { return _declaringType.Assembly.FullName; } }
+        internal string DeclaringType { get { return _declaringType.FullName; } }
+        internal bool DeclaringIsGeneric { get { return _declaringType.IsGenericType; } }
+
+        internal string ImplementingAssembly
+        {
+            get
+            {
+                if (_implementingType == null)
+                    throw new NullReferenceException("HashedType.ImplementingAssembly must have a implementing type");
+
+                return _implementingType.Assembly.FullName;
+            }
+        }
+        internal string ImplementingType
+        {
+            get
+            {
+                if (_implementingType == null)
+                    throw new NullReferenceException("HashedType.ImplementingType must have a implementing type");
+
+                return _implementingType.FullName;
+            }
+        }
+        internal bool ImplementingIsGeneric
+        {
+            get
+            {
+                if (_implementingType == null)
+                    throw new NullReferenceException("HashedType.ImplementingIsGeneric must have a implementing type");
+
+                return _implementingType.IsGenericType;
+            }
+        }
 
         /// <summary>
         /// RECURSIVE DATA STRUCTURE
         /// </summary>
-        public HashedType[] GenericArguments { get; private set; }
-        
-        // CACHED ONLY FOR PERFORMANCE
-        Type _type;
+        internal HashedType[] DeclaringGenericArguments { get; private set; }
+        internal HashedType[] ImplementingGenericArguments { get; private set; }
 
-        public HashedType(Type type)
+        // CACHED FOR PERFORMANCE ONLY
+        Type _declaringType;
+        Type _implementingType;
+
+        internal HashedType(Type declaringType)
         {
-            _type = type;
+            Initialize(declaringType, declaringType);
+        }
 
-            var arguments = type.GetGenericArguments() ?? new Type[] { };
+        /// <summary>
+        /// Private method used for deserializing
+        /// </summary>
+        internal HashedType(Type declaringType, Type implementingType)
+        {
+            _declaringType = declaringType;
+            _implementingType = implementingType;
+
+            Initialize(declaringType, implementingType);
+        }
+
+        private void Initialize(Type declaringType, Type implementingType)
+        {
+            if (declaringType == null)
+                throw new NullReferenceException("HashedType must have a declaring type");
+
+            _declaringType = declaringType;
+            _implementingType = implementingType;
+
+            var arguments = declaringType.GetGenericArguments() ?? new Type[] { };
+            var implementingArguments = _implementingType.GetGenericArguments() ?? new Type[] { };
 
             // Create generic arguments array
-            this.GenericArguments = arguments.Select(argument => new HashedType(argument))
-                                             .ToArray();
+            this.DeclaringGenericArguments = arguments.Select(argument => new HashedType(argument))
+                                                      .ToArray();
+
+            this.ImplementingGenericArguments = implementingArguments.Select(argument => new HashedType(argument))
+                                                                     .ToArray();
+        }
+
+        /// <summary>
+        /// Used for creating instance with NO TYPE DISCREPANCY
+        /// </summary>
+        public static HashedType Create(string declaringAssembly, string declaringType, bool declaringIsGeneric, HashedType[] declaringGenericArguments)
+        {
+            return new HashedType(ResolveFromFields(declaringAssembly, declaringType));
+        }
+
+        /// <summary>
+        /// Used for creating instance with TYPE DISCREPANCY
+        /// </summary>
+        public static HashedType Create(string declaringAssembly, string declaringType, bool declaringIsGeneric, HashedType[] declaringGenericArguments,
+                                        string implementingAssembly, string implementingType, bool implementingIsGeneric, HashedType[] implementingGenericArguments)
+        {
+            var typeDeclaring = ResolveFromFields(declaringAssembly, declaringType);
+            var typeImplementing = ResolveFromFields(implementingAssembly, implementingType);
+
+            return new HashedType(typeDeclaring, typeImplementing);
+        }
+
+        private static Type ResolveFromFields(string assemblyName, string typeName)
+        {
+            var assembly = AppDomain.CurrentDomain
+                                    .GetAssemblies()
+                                    .FirstOrDefault(assembly => assembly.FullName == assemblyName);
+
+            if (assembly == null)
+                throw new Exception("No assembly found for type:  " + typeName);
+
+            var type = assembly.GetType(typeName);
+
+            if (type == null)
+                throw new Exception("No type found in loaded assembly:  " + typeName);
+
+            return type;
         }
 
         /// <summary>
         /// Tries to resolve Type object from type name + assembly name. ALSO USES CACHED TYPE FROM CONSTRUCTOR!
         /// </summary>
-        public Type Resolve()
+        public Type GetImplementingType()
         {
-            if (_type != null)
-                return _type;
+            return _implementingType;
+        }
 
-            var assembly = Assembly.Load(this.AssemblyName);
+        /// <summary>
+        /// Tries to resolve Type object from type name + assembly name. ALSO USES CACHED TYPE FROM CONSTRUCTOR!
+        /// </summary>
+        public Type GetDeclaringType()
+        {
+            return _declaringType;
+        }
 
-            _type = assembly.GetType(this.TypeName);
+        public bool HasTypeDiscrepancy()
+        {
+            // return !_declaringType.Equals(_implementingType);
 
-            return _type;
+            return ((this.DeclaringType != this.ImplementingType) && !string.IsNullOrEmpty(this.ImplementingType)) ||
+                   ((this.DeclaringAssembly != this.ImplementingAssembly) && !string.IsNullOrEmpty(this.ImplementingAssembly));
         }
 
         public override bool Equals(object obj)
@@ -60,13 +160,29 @@ namespace Rogue.NET.Common.Serialization.Target
 
         public override int GetHashCode()
         {
-            var baseHash = this.CreateHashCode(this.AssemblyName, 
-                                               this.TypeName,
-                                               this.TypeFullName,
-                                               this.IsGeneric);
+            var baseHash = this.CreateHashCode(this.DeclaringAssembly,
+                                               this.DeclaringType,
+                                               this.DeclaringIsGeneric);
 
             // RECURSIVE!!
-            return baseHash.ExtendHashCode(this.GenericArguments);
+            baseHash = baseHash.ExtendHashCode(this.DeclaringGenericArguments);
+
+            if (HasTypeDiscrepancy())
+            {
+                baseHash = baseHash.ExtendHashCode(this.ImplementingAssembly,
+                                                   this.ImplementingType,
+                                                   this.ImplementingIsGeneric);
+
+                // RECURSIVE!!
+                baseHash = baseHash.ExtendHashCode(this.ImplementingGenericArguments);
+            }
+
+            return baseHash;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Declaring Type={0}, ImplementingType={1}", this.DeclaringType, this.ImplementingType);
         }
     }
 }

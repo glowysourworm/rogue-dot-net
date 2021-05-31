@@ -10,16 +10,16 @@ namespace Rogue.NET.Common.Serialization.Interface
         /// <summary>
         /// Stores dictionary of unique references to reference-type objects
         /// </summary>
-        IDictionary<HashedObjectInfo, SerializationNodeBase> UniqueReferenceDict { get; }
+        IDictionary<HashedObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; }
 
         /// <summary>
-        /// Stores hashed type information for EVERY serialized type
+        /// Collection of ALL SERIAILZED OBJECTS in the plan
         /// </summary>
-        IDictionary<HashedType, HashedType> TypeDict { get; }
+        IEnumerable<SerializationObjectBase> AllSerializedObjects { get; }
 
         /// <summary>
         /// Root node for the object graph
         /// </summary>
-        SerializationNode RootNode { get; }
+        SerializationNodeBase RootNode { get; }
     }
 }

@@ -12,6 +12,7 @@ namespace Rogue.NET.Common.Serialization.Target
     {
         internal int Count { get { return _count; } }
         internal Type ElementType { get { return _elementType; } }
+        internal CollectionInterfaceType InterfaceType { get { return _interfaceType; } }
 
         // Stored data from serialization
         CollectionInterfaceType _interfaceType;
@@ -47,21 +48,18 @@ namespace Rogue.NET.Common.Serialization.Target
             }
         }
 
-        internal void FinalizeCollection(IEnumerable<DeserializationObjectBase> resolvedChildren)
+        internal void FinalizeCollection(IEnumerable<HashedObjectInfo> resolvedChildren)
         {           
             var elements = new ArrayList();
 
             foreach (var resolvedChild in resolvedChildren)
             {
                 // VALIDATE ELEMENT TYPE
-                if (!resolvedChild.Reference.Type.Resolve().Equals(_elementType))
-                    throw new Exception("Invalid collection element type: " + resolvedChild.Reference.Type.TypeName);
-
-                // CALL RESOLVE() TO DETACH HashedObjectInfo
-                var objectInfo = resolvedChild.Resolve();
+                if (!_elementType.IsAssignableFrom(resolvedChild.Type.GetImplementingType()))
+                    throw new Exception("Invalid collection element type: " + resolvedChild.Type.DeclaringType);
 
                 // Add the finished object to the elements
-                elements.Add(objectInfo.TheObject);
+                elements.Add(resolvedChild.GetObject());
             }
 
             // PROBABLY OK, WATCH FOR DIFFERENT COLLECTION TYPES
@@ -107,7 +105,7 @@ namespace Rogue.NET.Common.Serialization.Target
             }
             catch (Exception innerException)
             {
-                throw new Exception("Error trying to read properties from " + this.Reference.Type.TypeName, innerException);
+                throw new Exception("Error trying to read properties from " + this.Reference.Type.DeclaringType, innerException);
             }
 
             return planner.GetResult();
@@ -124,16 +122,16 @@ namespace Rogue.NET.Common.Serialization.Target
                     _collection = this.MemberInfo.ParameterlessConstructor.Invoke(new object[] { }) as IEnumerable;
 
                 if (_collection == null)
-                    throw new Exception("Constructor failed for collection of type:  " + this.Reference.Type.TypeName);
+                    throw new Exception("Constructor failed for collection of type:  " + this.Reference.Type.DeclaringType);
             }
             catch (Exception ex)
             {
                 throw new Exception(string.Format("Error trying to construct object of type {0}. Must have a parameterless constructor",
-                                                  this.Reference.Type.TypeName), ex);
+                                                  this.Reference.Type.DeclaringType), ex);
             }
         }
 
-        protected override HashedObjectInfo ResolveImpl()
+        protected override HashedObjectInfo ProvideResult()
         {
             return new HashedObjectInfo(_collection, _collection.GetType());
         }
@@ -143,7 +141,7 @@ namespace Rogue.NET.Common.Serialization.Target
             // DEFAULT MODE - NO PROPERTY SUPPORT
             if (this.MemberInfo.SetMethod == null && reader.Properties.Any())
             {
-                throw new Exception("Trying read reflected or custom properties in DEFAULT MODE for collection:  " + this.Reference.Type.TypeName);
+                throw new Exception("Trying read reflected or custom properties in DEFAULT MODE for collection:  " + this.Reference.Type.DeclaringType);
             }
 
             else
@@ -155,7 +153,7 @@ namespace Rogue.NET.Common.Serialization.Target
                 }
                 catch (Exception innerException)
                 {
-                    throw new Exception("Error trying to set properties from " + this.Reference.Type.TypeName, innerException);
+                    throw new Exception("Error trying to set properties from " + this.Reference.Type.DeclaringType, innerException);
                 }
             }
         }

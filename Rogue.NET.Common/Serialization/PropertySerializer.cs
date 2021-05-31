@@ -7,22 +7,27 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Rogue.NET.Common.Serialization
 {
     internal class PropertySerializer
     {
         // Collection of formatters for serialization
-        Dictionary<Type, IBaseFormatter> _formatters;
+        Dictionary<Type, IBaseFormatter> _primitiveFormatters;
+
+        // Used to create TYPE TABLE
+        HashedTypeFormatter _hashedTypeFormatter;
 
         // Collection of UNIQUE objects that HAVE BEEN SERIALIZED
         Dictionary<HashedObjectInfo, SerializationObjectBase> _serializedObjects;
 
+        IList<HashedType> _typeTable;
+
         internal PropertySerializer()
         {
-            _formatters = new Dictionary<Type, IBaseFormatter>();
+            _primitiveFormatters = new Dictionary<Type, IBaseFormatter>();
             _serializedObjects = new Dictionary<HashedObjectInfo, SerializationObjectBase>();
+            _hashedTypeFormatter = new HashedTypeFormatter();
         }
 
         internal void Serialize<T>(Stream stream, T theObject)
@@ -32,12 +37,30 @@ namespace Rogue.NET.Common.Serialization
             // Procedure
             //
             // 1) Run the planner to create reference dictionary and node tree
-            // 2) (Recurse) Serialize the node graph OBJECTS
-            // 3) Validate OUR serialized objects against the ISerializationPlan
+            // 2) STORE TYPE TABLE (KEEPS TRACK OF IMPLEMETING TYPE DISCREPANCIES)
+            // 3) (Recurse) Serialize the node graph OBJECTS
+            // 4) Validate OUR serialized objects against the ISerializationPlan
             //
 
             // Run the planner
             var plan = planner.Plan(theObject);
+
+            // Collect discrepancies
+            var typeDiscrepancies = plan.AllSerializedObjects
+                                        .Where(serializedObject => serializedObject.ObjectInfo.Type.HasTypeDiscrepancy())
+                                        .Select(serializedObject => serializedObject.ObjectInfo.Type)
+                                        .Distinct()
+                                        .ToList();
+
+            // Store TYPE TABLE for the manifest
+            _typeTable = new List<HashedType>(typeDiscrepancies);
+
+            // Write count of types in the TYPE TABLE
+            Write<int>(stream, typeDiscrepancies.Count);
+
+            // Write TYPE TABLE
+            foreach (var type in typeDiscrepancies)
+                _hashedTypeFormatter.Write(stream, type);
 
             // Recurse
             SerializeRecurse(stream, plan.RootNode);
@@ -46,13 +69,18 @@ namespace Rogue.NET.Common.Serialization
             foreach (var element in plan.UniqueReferenceDict)
             {
                 if (!_serializedObjects.ContainsKey(element.Key))
-                    throw new Exception("Serialization plan doesn't match the serialized manifest:  " + element.Key.Type.TypeName);
+                    throw new Exception("Serialization plan doesn't match the serialized manifest:  " + element.Key.Type.DeclaringType);
             }
         }
 
-        internal SerializationManifest CreateManifest()
+        internal IEnumerable<SerializationObjectBase> GetSerializedObjects()
         {
-            return new SerializationManifest(_serializedObjects);
+            return _serializedObjects.Values;
+        }
+
+        internal IEnumerable<HashedType> GetTypeTable()
+        {
+            return _typeTable;
         }
 
         private void SerializeRecurse(Stream stream, SerializationNodeBase node)
@@ -103,20 +131,32 @@ namespace Rogue.NET.Common.Serialization
             //
             //     For COLLECTIONS, also store the child count, and the CollectionInterfaceType ENUM. 
             //
-            // Serialize:  [ Null = 0,       Serialization Mode, Hashed Type Code ]
-            // Serialize:  [ Primitive = 1,  Serialization Mode, Hashed Type Code, Primitive Value ]
-            // Serialize:  [ Value = 2,      Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
-            // Serialize:  [ Object = 3,     Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
-            // Serialize:  [ Reference = 4,  Serialization Mode, Hashed Type Code, Hash Object Info Code ]
-            // Serialize:  [ Collection = 5, Serialization Mode, Hashed Type Code, Hash Object Info Code,
-            //                               Child Count,
-            //                               Collection Interface Type ] (loop) Children (Recruse Sub-graphs)
+            // Serialize:  [ Null Primitive = 0, Serialization Mode, Hashed Type Code ]
+            // Serialize:  [ Null = 1,           Serialization Mode, Hashed Type Code ]
+            // Serialize:  [ Primitive = 2,      Serialization Mode, Hashed Type Code, Primitive Value ]
+            // Serialize:  [ Value = 3,          Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
+            // Serialize:  [ Object = 4,         Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
+            // Serialize:  [ Reference = 5,      Serialization Mode, Hashed Type Code, Hash Object Info Code ]
+            // Serialize:  [ Collection = 6,     Serialization Mode, Hashed Type Code, Hash Object Info Code,
+            //                                   Child Count,
+            //                                   Collection Interface Type ] (loop) Children (Recruse Sub-graphs)
             //
 
-            // NULL
-            if (nodeObject is SerializationNullObject)
+            // PRIMITIVE NULL
+            if (nodeObject is SerializationNullPrimitive)
             {
-                // Serialize:  [ Null = 0, Hashed Type Code ]
+                // Serialize:  [ NullPrimitive = 0, Serialization Mode, Hashed Type Code ]
+                Write(stream, SerializedNodeType.NullPrimitive);
+                Write(stream, nodeObject.Mode);
+                Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
+
+                return;
+            }
+
+            // NULL
+            else if (nodeObject is SerializationNullObject)
+            {
+                // Serialize:  [ Null = 1, Hashed Type Code ]
                 Write(stream, SerializedNodeType.Null);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
@@ -127,19 +167,21 @@ namespace Rogue.NET.Common.Serialization
             // PRIMITIVE
             else if (nodeObject is SerializationPrimitive)
             {
-                // Serialize:  [ Primitive = 1, Hashed Type Code, Value ]
+                // Serialize:  [ Primitive = 2, Hashed Type Code, Value ]
                 Write(stream, SerializedNodeType.Primitive);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
-                Write(stream, nodeObject.ObjectInfo.TheObject, nodeObject.ObjectInfo.Type.Resolve());
+                Write(stream, nodeObject.ObjectInfo.GetObject(), nodeObject.ObjectInfo.Type.GetImplementingType());
 
                 return;
             }
 
-            // (VALUE, OBJECT, COLLECTION):  CHECK FOR PREVIOUSLY SERIALIZED REFERENCES
-            if (_serializedObjects.ContainsKey(nodeObject.ObjectInfo))
+            // *** REFERENCE TYPES
+
+            // REFERENCE
+            if (nodeObject is SerializationReference)
             {
-                // Serialize:  [Reference = 4, Hashed Type Code, Hash Object Info Code ]
+                // Serialize:  [Reference = 5, Hashed Type Code, Hash Object Info Code ]
                 Write(stream, SerializedNodeType.Reference);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
@@ -147,15 +189,17 @@ namespace Rogue.NET.Common.Serialization
 
                 return;
             }
-            // STORE REFERENCE
-            else
-                _serializedObjects.Add(nodeObject.ObjectInfo, nodeObject);
 
+            // STORE REFERENCE
+            if (_serializedObjects.ContainsKey(nodeObject.ObjectInfo))
+                throw new Exception("Duplicate reference found:  " + nodeObject.ObjectInfo.Type.GetImplementingType());
+
+            _serializedObjects.Add(nodeObject.ObjectInfo, nodeObject);
 
             // VALUE (Either new sub-graph OR reference to serialized object)
             if (nodeObject is SerializationValue)
             {
-                // (STRUCT) Serialize:  [Value = 2, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
+                // (STRUCT) Serialize:  [Value = 3, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
                 Write(stream, SerializedNodeType.Value);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
@@ -165,7 +209,7 @@ namespace Rogue.NET.Common.Serialization
             // OBJECT (Either new sub-graph OR reference to serialized object)
             else if (nodeObject is SerializationObject)
             {
-                // (CLASS) Serialize:  [Object = 3, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
+                // (CLASS) Serialize:  [Object = 4, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
                 Write(stream, SerializedNodeType.Object);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
@@ -175,7 +219,7 @@ namespace Rogue.NET.Common.Serialization
             // COLLECTION
             else if (nodeObject is SerializationCollection)
             {
-                // Serialize:  [ Collection = 5, Hashed Type Code, Hash Object Info Code, Child Count ] (loop) Children (Recruse Sub-graphs)
+                // Serialize:  [ Collection = 6, Hashed Type Code, Hash Object Info Code, Child Count ] (loop) Children (Recruse Sub-graphs)
                 Write(stream, SerializedNodeType.Collection);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
@@ -203,10 +247,10 @@ namespace Rogue.NET.Common.Serialization
 
         private IBaseFormatter SelectFormatter(Type type)
         {
-            if (!_formatters.ContainsKey(type))
-                _formatters.Add(type, CreateFormatter(type));
+            if (!_primitiveFormatters.ContainsKey(type))
+                _primitiveFormatters.Add(type, CreateFormatter(type));
 
-            return _formatters[type];
+            return _primitiveFormatters[type];
         }
 
         private IBaseFormatter CreateFormatter(Type type)

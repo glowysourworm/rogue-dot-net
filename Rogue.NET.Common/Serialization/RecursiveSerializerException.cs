@@ -19,14 +19,14 @@ namespace Rogue.NET.Common.Serialization
             this.Type = type;
         }
 
-        public override IDictionary Data
-        {
-            get
-            {
-                this.Data.Add(this.Type.TypeName, this.Type);
+        //public override IDictionary Data
+        //{
+        //    get
+        //    {
+        //        // this.Data.Add(this.Type.DeclaringType, this.Type);
 
-                return this.Data;
-            }
-        }
+        //        return this.Data;
+        //    }
+        //}
     }
 }

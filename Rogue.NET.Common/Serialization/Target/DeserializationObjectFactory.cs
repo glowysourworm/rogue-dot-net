@@ -30,38 +30,38 @@ namespace Rogue.NET.Common.Serialization.Target
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
 
             // ARRAY
-            if (reference.Type.Resolve().IsArray)
+            if (reference.Type.GetImplementingType().IsArray)
             {
                 if (mode != SerializationMode.None)
                     throw new RecursiveSerializerException(reference.Type, "Array SerializationMode should be set to None");
 
-                var elementType = reference.Type.Resolve().GetElementType();       // ARRAY ONLY
+                var elementType = reference.Type.GetImplementingType().GetElementType();       // ARRAY ONLY
 
                 return new DeserializationCollection(reference, memberInfo, elementType, childCount, interfaceType);
             }
             // GENERIC ENUMERABLE
             else
             {
-                if (!reference.Type.Resolve().IsGenericType)
+                if (!reference.Type.GetImplementingType().IsGenericType)
                     throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>");
 
-                else if (reference.Type.Resolve().HasInterface<IDictionary>())
+                else if (reference.Type.GetImplementingType().HasInterface<IDictionary>())
                 {
-                    var arguments = reference.Type.Resolve().GetGenericArguments();
+                    var arguments = reference.Type.GetImplementingType().GetGenericArguments();
 
                     if (arguments.Length != 2)
                         throw new RecursiveSerializerException(reference.Type, "Invalid IDictionary argument list for PropertySerializer");
 
-                    var argument = reference.Type.Resolve().GetGenericArguments()[0];
+                    var argument = reference.Type.GetImplementingType().GetGenericArguments()[0];
 
                     if (argument == null)
                         throw new RecursiveSerializerException(reference.Type, "Invalid IDictionary argument list for PropertySerializer");
 
                     return new DeserializationCollection(reference, memberInfo, argument, childCount, CollectionInterfaceType.IDictionary);
                 }
-                else if (reference.Type.Resolve().HasInterface<IList>())
+                else if (reference.Type.GetImplementingType().HasInterface<IList>())
                 {
-                    var argument = reference.Type.Resolve().GetGenericArguments()[0];
+                    var argument = reference.Type.GetImplementingType().GetGenericArguments()[0];
 
                     if (argument == null)
                         throw new RecursiveSerializerException(reference.Type, "Invalid IList argument for PropertySerializer");
@@ -76,17 +76,33 @@ namespace Rogue.NET.Common.Serialization.Target
         internal DeserializationObjectBase CreateNullReference(HashedObjectReference reference, SerializationMode mode)
         {
             if (mode != SerializationMode.None)
-                throw new Exception("Invalid Serialization Mode for null referenced type:  " + reference.Type.Resolve().ToString());
+                throw new Exception("Invalid Serialization Mode for null referenced type:  " + reference.Type.GetImplementingType().ToString());
 
             return new DeserializationNullReference(reference);
+        }
+
+        internal DeserializationObjectBase CreateNullPrimitive(HashedObjectReference reference, SerializationMode mode)
+        {
+            if (mode != SerializationMode.None)
+                throw new Exception("Invalid Serialization Mode for null primitive type:  " + reference.Type.GetImplementingType().ToString());
+
+            return new DeserializationNullPrimitive(reference);
         }
 
         internal DeserializationObjectBase CreatePrimitive(HashedObjectInfo info, SerializationMode mode)
         {
             if (mode != SerializationMode.None)
-                throw new Exception("Invalid Serialization Mode for null referenced type:  " + info.Type.Resolve().ToString());
+                throw new Exception("Invalid Serialization Mode for null referenced type:  " + info.Type.GetImplementingType().ToString());
 
             return new DeserializationPrimitive(info);
+        }
+
+        internal DeserializationObjectBase CreateReference(HashedObjectReference reference, SerializationMode mode)
+        {
+            // Validate type and get members
+            var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
+
+            return new DeserializationReference(reference, memberInfo);
         }
 
         internal DeserializationObjectBase CreateValue(HashedObjectReference reference, SerializationMode mode)

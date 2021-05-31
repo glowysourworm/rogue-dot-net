@@ -24,7 +24,7 @@ namespace Rogue.NET.Common.Serialization.Target
             catch (Exception ex)
             {
                 throw new Exception(string.Format("Error trying to construct object of type {0}. Must have a parameterless constructor",
-                                                  this.Reference.Type.TypeName), ex);
+                                                  this.Reference.Type.DeclaringType), ex);
             }
         }
 
@@ -36,10 +36,10 @@ namespace Rogue.NET.Common.Serialization.Target
                 foreach (var property in reader.Properties)
                 {
                     // Get property info for THIS type
-                    var propertyInfo = this.Reference.Type.Resolve().GetProperty(property.PropertyName);
+                    var propertyInfo = this.Reference.Type.GetImplementingType().GetProperty(property.PropertyName);
 
                     // Set property VALUE on our _defaultObject
-                    propertyInfo.SetValue(_defaultObject, property.ResolvedInfo.TheObject);
+                    propertyInfo.SetValue(_defaultObject, property.ResolvedInfo.GetObject());
                 }
             }
 
@@ -52,7 +52,7 @@ namespace Rogue.NET.Common.Serialization.Target
                 }
                 catch (Exception innerException)
                 {
-                    throw new Exception("Error trying to set properties from " + this.Reference.Type.TypeName, innerException);
+                    throw new Exception("Error trying to set properties from " + this.Reference.Type.DeclaringType, innerException);
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace Rogue.NET.Common.Serialization.Target
         {
             // Get default property definitions using reflected public properties
             if (this.MemberInfo.PlanningMethod == null)
-                return planner.GetDefaultProperties(this.Reference.Type.Resolve());
+                return planner.GetDefaultProperties(this.Reference.Type.GetImplementingType());
 
             // CLEAR CURRENT CONTEXT
             planner.ClearContext();
@@ -73,13 +73,13 @@ namespace Rogue.NET.Common.Serialization.Target
             }
             catch (Exception innerException)
             {
-                throw new Exception("Error trying to read properties from " + this.Reference.Type.TypeName, innerException);
+                throw new Exception("Error trying to read properties from " + this.Reference.Type.DeclaringType, innerException);
             }
 
             return planner.GetResult();
         }
 
-        protected override HashedObjectInfo ResolveImpl()
+        protected override HashedObjectInfo ProvideResult()
         {
             return new HashedObjectInfo(_defaultObject, _defaultObject.GetType());
         }

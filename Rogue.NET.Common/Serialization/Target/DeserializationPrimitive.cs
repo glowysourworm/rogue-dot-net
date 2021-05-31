@@ -28,9 +28,9 @@ namespace Rogue.NET.Common.Serialization.Target
             throw new Exception("Trying to call constructor on a primitive");
         }
 
-        protected override HashedObjectInfo ResolveImpl()
+        protected override HashedObjectInfo ProvideResult()
         {
-            throw new NotImplementedException("Should not be calling Resolve() on a PRIMITIVE");
+            return this.ObjectInfo;
         }
 
         protected override void WriteProperties(PropertyReader reader)

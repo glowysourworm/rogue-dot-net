@@ -6,19 +6,22 @@ using Rogue.NET.Common.Serialization.Target;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Rogue.NET.Common.Serialization
 {
     internal class PropertyDeserializer
     {
         // Collection of formatters for serialization
-        Dictionary<Type, IBaseFormatter> _formatters;
+        Dictionary<Type, IBaseFormatter> _primitiveFormatters;
+
+        // Created for loading hashed TYPE TABLE
+        HashedTypeFormatter _hashedTypeFormatter;
 
         // Collection of all types from loaded ASSEMBLIES with their EXPECTED HASH CODES
         Dictionary<int, HashedType> _loadedTypes;
+
+        // TYPE TABLE
+        IList<HashedType> _typeTable;
 
         // Creates wrapped objects for deserialization
         DeserializationObjectFactory _factory;
@@ -26,19 +29,56 @@ namespace Rogue.NET.Common.Serialization
 
         internal PropertyDeserializer()
         {
-            _formatters = new Dictionary<Type, IBaseFormatter>();
+            _primitiveFormatters = new Dictionary<Type, IBaseFormatter>();
             _loadedTypes = new Dictionary<int, HashedType>();
             _factory = new DeserializationObjectFactory();
             _resolver = new DeserializationResolver();
+            _hashedTypeFormatter = new HashedTypeFormatter();
+            _typeTable = new List<HashedType>();
+        }
+
+        internal IEnumerable<DeserializationObjectBase> GetDeserializedObjects()
+        {
+            return _resolver.GetDeserializedObjects().Values;
+        }
+
+        internal IEnumerable<HashedType> GetTypeTable()
+        {
+            return _typeTable;
         }
 
         internal T Deserialize<T>(Stream stream)
         {
+            // Procedure
+            //
+            // 1) Read TYPE TABLE
+            // 2) Store type table in LOADED TYPES
+            // 3) Read Object from stream
+            // 4) Wrap into node for deserializing
+            // 5) Recure on the node
+            // 6) Resolve the object graph
+            //
+
+            // Read TYPE TABLE
+            var typeTableCount = Read<int>(stream);
+
+            for (int index = 0; index < typeTableCount; index++)
+            {
+                // READ HASHED TYPE (Recurses)
+                var hashedType = _hashedTypeFormatter.Read(stream);
+
+                // LOAD TYPE TABLE - CREATES UNIQUE HASH CODE
+                _loadedTypes.Add(hashedType.GetHashCode(), hashedType);
+
+                // Store for the manifest
+                _typeTable.Add(hashedType);
+            }
+
             // Read root
             var wrappedRoot = ReadNext(stream, typeof(T));
 
-            if (wrappedRoot.Reference.Type.Resolve() != typeof(T))
-                throw new Exception("File type doesn't match the type of object being Deserialized:  " + wrappedRoot.Reference.Type.TypeName);
+            if (wrappedRoot.Reference.Type.GetImplementingType() != typeof(T))
+                throw new Exception("File type doesn't match the type of object being Deserialized:  " + wrappedRoot.Reference.Type.DeclaringType);
 
             // Create root node
             var node = CreateNode(wrappedRoot, PropertyDefinition.Empty);
@@ -49,8 +89,8 @@ namespace Rogue.NET.Common.Serialization
             // Stitch together object references recursively
             var resolvedRoot = _resolver.Resolve(node);
 
-            // And -> We've -> Resolved() -> TheObject! :)
-            return (T)resolvedRoot.NodeObject.Resolve().TheObject;
+            // And -> We've -> Resolved() -> TheObject()! :)
+            return (T)resolvedRoot.NodeObject.Resolve().GetObject();
         }
 
         /// <summary>
@@ -58,10 +98,16 @@ namespace Rogue.NET.Common.Serialization
         /// </summary>
         private DeserializationNodeBase CreateNode(DeserializationObjectBase wrappedObject, PropertyDefinition definition)
         {
-            if (wrappedObject is DeserializationNullReference)
+            if (wrappedObject is DeserializationNullPrimitive)
+                return new DeserializationNode(wrappedObject, definition);
+
+            else if (wrappedObject is DeserializationNullReference)
                 return new DeserializationNode(wrappedObject, definition);
 
             else if (wrappedObject is DeserializationPrimitive)
+                return new DeserializationNode(wrappedObject, definition);
+
+            else if (wrappedObject is DeserializationReference)
                 return new DeserializationNode(wrappedObject, definition);
 
             else if (wrappedObject is DeserializationValue)
@@ -102,9 +148,24 @@ namespace Rogue.NET.Common.Serialization
                     // READ NEXT
                     var wrappedObject = ReadNext(stream, definition.PropertyType);
 
+                    // NOTE*** Type Discrepancies:  Have to patch these from the TYPE TABLE for when the NON user defined
+                    //                              properties have a different implementing type
+                    //
+
                     // VALIDATE THE PROPERTY!
-                    if (wrappedObject.Reference.Type.Resolve() != definition.PropertyType)
-                        throw new Exception("Invalid property for type:  " + definition.PropertyType + ", " + definition.PropertyName);
+                    if (!definition.IsUserDefined)
+                    {
+                        if (wrappedObject.Reference.Type.GetImplementingType() != definition.PropertyType &&
+                            wrappedObject.Reference.Type.GetDeclaringType() != definition.PropertyType)
+                        {
+                            throw new Exception("Invalid property for type:  " + definition.PropertyType + ", " + definition.PropertyName);
+                        }
+                        // PATCH PROPERTY DEFINITION FOR TYPE DISCREPANCIES
+                        else if (wrappedObject.Reference.Type.GetImplementingType() != definition.PropertyType)
+                        {
+                            definition.PropertyType = wrappedObject.Reference.Type.GetImplementingType();
+                        }
+                    }
 
                     // Create node for the property
                     var subNode = CreateNode(wrappedObject, definition);
@@ -136,12 +197,20 @@ namespace Rogue.NET.Common.Serialization
             {
                 var nextNode = node as DeserializationNode;
 
+                // PRIMITIVE NULL (Halt Recursion)
+                if (nextNode.NodeObject is DeserializationNullPrimitive)
+                    return;
+
                 // NULL (Halt Recursion)
-                if (nextNode.NodeObject is DeserializationNullReference)
+                else if (nextNode.NodeObject is DeserializationNullReference)
                     return;
 
                 // PRIMITIVE (Halt Recursion)
                 else if (nextNode.NodeObject is DeserializationPrimitive)
+                    return;
+
+                // REFERENCE (Halt Recursion)
+                else if (nextNode.NodeObject is DeserializationReference)
                     return;
 
                 // HAND CONTROL TO EITHER FRONT END OR GET REFLECTED PROPERTIES
@@ -153,9 +222,24 @@ namespace Rogue.NET.Common.Serialization
                     // READ NEXT
                     var wrappedSubObject = ReadNext(stream, definition.PropertyType);
 
+                    // NOTE*** Type Discrepancies:  Have to patch these from the TYPE TABLE for when the NON user defined
+                    //                              properties have a different implementing type
+                    //
+
                     // VALIDATE THE PROPERTY!
-                    if (wrappedSubObject.Reference.Type.Resolve() != definition.PropertyType)
-                        throw new Exception("Invalid property for type:  " + definition.PropertyType + ", " + definition.PropertyName);
+                    if (!definition.IsUserDefined)
+                    {
+                        if (wrappedSubObject.Reference.Type.GetImplementingType() != definition.PropertyType &&
+                            wrappedSubObject.Reference.Type.GetDeclaringType() != definition.PropertyType)
+                        { 
+                            throw new Exception("Invalid property for type:  " + definition.PropertyType + ", " + definition.PropertyName);
+                        }
+                        // PATCH PROPERTY DEFINITION FOR TYPE DISCREPANCIES
+                        else if (wrappedSubObject.Reference.Type.GetImplementingType() != definition.PropertyType)
+                        {
+                            definition.PropertyType = wrappedSubObject.Reference.Type.GetImplementingType();
+                        }
+                    }
 
                     // Create sub-node
                     var subNode = CreateNode(wrappedSubObject, definition);
@@ -175,14 +259,15 @@ namespace Rogue.NET.Common.Serialization
         {
             // FROM SERIALIZER
             //
-            // Serialize:  [ Null = 0,       Serialization Mode, Hashed Type Code ]
-            // Serialize:  [ Primitive = 1,  Serialization Mode, Hashed Type Code, Primitive Value ]
-            // Serialize:  [ Value = 2,      Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
-            // Serialize:  [ Object = 3,     Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
-            // Serialize:  [ Reference = 4,  Serialization Mode, Hashed Type Code, Hash Object Info Code ]
-            // Serialize:  [ Collection = 5, Serialization Mode, Hashed Type Code, Hash Object Info Code,
-            //                               Child Count,
-            //                               Collection Interface Type ] (loop) Children (Recruse Sub-graphs)
+            // Serialize:  [ Null Primitive = 0, Serialization Mode, Hashed Type Code ]
+            // Serialize:  [ Null = 1,           Serialization Mode, Hashed Type Code ]
+            // Serialize:  [ Primitive = 2,      Serialization Mode, Hashed Type Code, Primitive Value ]
+            // Serialize:  [ Value = 3,          Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
+            // Serialize:  [ Object = 4,         Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
+            // Serialize:  [ Reference = 5,      Serialization Mode, Hashed Type Code, Hash Object Info Code ]
+            // Serialize:  [ Collection = 6,     Serialization Mode, Hashed Type Code, Hash Object Info Code,
+            //                                   Child Count,
+            //                                   Collection Interface Type ] (loop) Children (Recruse Sub-graphs)
 
             var nextNode = Read<SerializedNodeType>(stream);
             var nextMode = Read<SerializationMode>(stream);
@@ -193,14 +278,16 @@ namespace Rogue.NET.Common.Serialization
 
             switch (nextNode)
             {
+                case SerializedNodeType.NullPrimitive:
+                    return _factory.CreateNullPrimitive(new HashedObjectReference(hashedType), nextMode);
                 case SerializedNodeType.Null:
                     return _factory.CreateNullReference(new HashedObjectReference(hashedType), nextMode);
                 case SerializedNodeType.Primitive:
                     {
                         // READ PRIMITIVE VALUE FROM STREAM
-                        var primitive = Read(stream, hashedType.Resolve());
+                        var primitive = Read(stream, hashedType.GetImplementingType());
 
-                        return _factory.CreatePrimitive(new HashedObjectInfo(primitive, hashedType.Resolve()), nextMode);
+                        return _factory.CreatePrimitive(new HashedObjectInfo(primitive, hashedType.GetImplementingType()), nextMode);
                     }
                 case SerializedNodeType.Value:
                     {
@@ -222,7 +309,7 @@ namespace Rogue.NET.Common.Serialization
                         // READ REFERENCE HASH FROM STREAM
                         var hashCode = Read<int>(stream);
 
-                        return _factory.CreateObject(new HashedObjectReference(hashedType, hashCode), nextMode);
+                        return _factory.CreateReference(new HashedObjectReference(hashedType, hashCode), nextMode);
                     }
                 case SerializedNodeType.Collection:
                     {
@@ -273,10 +360,10 @@ namespace Rogue.NET.Common.Serialization
 
         private IBaseFormatter SelectFormatter(Type type)
         {
-            if (!_formatters.ContainsKey(type))
-                _formatters.Add(type, FormatterFactory.CreateFormatter(type));
+            if (!_primitiveFormatters.ContainsKey(type))
+                _primitiveFormatters.Add(type, FormatterFactory.CreatePrimitiveFormatter(type));
 
-            return _formatters[type];
+            return _primitiveFormatters[type];
         }
     }
 }
