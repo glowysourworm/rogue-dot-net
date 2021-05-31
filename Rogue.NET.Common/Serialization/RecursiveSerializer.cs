@@ -54,6 +54,15 @@ namespace Rogue.NET.Common.Serialization
             _deserializer = new PropertyDeserializer();
         }
 
+        /// <summary>
+        /// Clears out context and sets up for a new run
+        /// </summary>
+        public void Clear()
+        {
+            _serializer = new PropertySerializer();
+            _deserializer = new PropertyDeserializer();
+        }
+
         public void Serialize(Stream stream, T theObject)
         {
             _serializer.Serialize(stream, theObject);

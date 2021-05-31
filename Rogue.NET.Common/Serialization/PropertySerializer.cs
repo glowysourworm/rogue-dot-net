@@ -156,7 +156,7 @@ namespace Rogue.NET.Common.Serialization
             // NULL
             else if (nodeObject is SerializationNullObject)
             {
-                // Serialize:  [ Null = 1, Hashed Type Code ]
+                // Serialize:  [ Null = 1, Serialization Mode, Hashed Type Code ]
                 Write(stream, SerializedNodeType.Null);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
@@ -167,7 +167,7 @@ namespace Rogue.NET.Common.Serialization
             // PRIMITIVE
             else if (nodeObject is SerializationPrimitive)
             {
-                // Serialize:  [ Primitive = 2, Hashed Type Code, Value ]
+                // Serialize:  [ Primitive = 2, Serialization Mode, Hashed Type Code, Primitive Value ]
                 Write(stream, SerializedNodeType.Primitive);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
@@ -181,7 +181,7 @@ namespace Rogue.NET.Common.Serialization
             // REFERENCE
             if (nodeObject is SerializationReference)
             {
-                // Serialize:  [Reference = 5, Hashed Type Code, Hash Object Info Code ]
+                // Serialize:  [ Reference = 5, Serialization Mode, Hashed Type Code, Hash Object Info Code ]
                 Write(stream, SerializedNodeType.Reference);
                 Write(stream, nodeObject.Mode);
                 Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());

@@ -17,27 +17,6 @@ namespace Rogue.NET.Common.Serialization.Target
             this.MemberInfo = memberInfo;
         }
 
-        /// <summary>
-        /// Resolves the object's hash code with the initial reference and returns the 
-        /// final result. 
-        /// </summary>
-        /// <exception cref="Exception">Object doesn't resolve with the same hash</exception>
-        /// <returns>Resolved object</returns>
-        internal HashedObjectInfo Resolve()
-        {
-            var hashedInfo = ProvideResult();
-
-            // CAN ONLY VALIDATE TYPE BASED ON HASH CODE
-            if (hashedInfo.Type.GetHashCode() != this.Reference.Type.GetHashCode())
-            {
-                // Check to see if the implementing type is equivalent to the referenced type
-                if (hashedInfo.Type.GetImplementingType() != this.Reference.Type.GetImplementingType())
-                    throw new Exception("Invalid resolved hash code for object type:  " + this.Reference.Type.DeclaringType);
-            }
-
-            return hashedInfo;
-        }
-
         internal void WriteProperties(IEnumerable<PropertyResolvedInfo> properties)
         {
             WriteProperties(new PropertyReader(properties));
@@ -55,8 +34,33 @@ namespace Rogue.NET.Common.Serialization.Target
         }
 
         /// <summary>
-        /// Finalizes object and returns wrapped value
+        /// Resolves the object's hash code with the initial reference and returns the 
+        /// final result. 
         /// </summary>
+        internal HashedObjectInfo Resolve()
+        {
+            var hashedInfo = ProvideResult();
+
+            Validate(hashedInfo);
+
+            return hashedInfo;
+        }
+
+        private void Validate(HashedObjectInfo providedResult)
+        {
+            // CAN ONLY VALIDATE TYPE BASED ON HASH CODE
+            if (providedResult.Type.GetHashCode() != this.Reference.Type.GetHashCode())
+            {
+                // Check to see if the implementing type is equivalent to the referenced type
+                if (providedResult.Type.GetImplementingType() != this.Reference.Type.GetImplementingType())
+                    throw new Exception("Invalid resolved hash code for object type:  " + this.Reference.Type.ToString());
+            }
+
+            // *** PROVIDE HASH CODE VAILDATION FOR PRIMITIVE ONLY! (THIS SIMULATES A CHECKSUM FOR ALL PRIMITIVES)
+            if ((this is DeserializationPrimitive) && providedResult.GetHashCode() != this.Reference.HashCode)
+                throw new Exception("Invalid hash code for primitive type:  " + providedResult.Type.ToString());
+        }
+
         protected abstract HashedObjectInfo ProvideResult();
 
         protected abstract IEnumerable<PropertyDefinition> GetPropertyDefinitions(PropertyPlanner planner);

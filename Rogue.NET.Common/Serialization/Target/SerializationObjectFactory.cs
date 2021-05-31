@@ -4,6 +4,7 @@ using Rogue.NET.Common.Serialization.Formatter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
