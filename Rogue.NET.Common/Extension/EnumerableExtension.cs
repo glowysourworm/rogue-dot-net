@@ -513,13 +513,5 @@ namespace Rogue.NET.Common.Extension
         {
             return collection.Where(item => item is V).Cast<V>();
         }
-
-        /// <summary>
-        /// Creates a SimpleList implementation - which supports serialization
-        /// </summary>
-        public static SimpleList<T> ToSimpleList<T>(this IEnumerable<T> collection)
-        {
-            return new SimpleList<T>(collection);
-        }
     }
 }

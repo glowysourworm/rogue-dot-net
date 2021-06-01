@@ -1,6 +1,4 @@
-﻿using Rogue.NET.Core.Math.Algorithm.Interface;
-
-using System.Runtime.Serialization;
+﻿using Rogue.NET.Common.Serialization.Interface;
 
 using static Rogue.NET.Core.Math.Geometry.Metric;
 
@@ -10,7 +8,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout.Interface
     /// Interface for related 2D array objects that have a location on a 2D array or a member that has
     /// some location specified by 2 indices.
     /// </summary>
-    public interface IGridLocator : ISerializable
+    public interface IGridLocator : IRecursiveSerializable
     {
         int Column { get; }
         int Row { get; }

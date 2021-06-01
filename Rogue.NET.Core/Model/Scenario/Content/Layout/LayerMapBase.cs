@@ -1,11 +1,10 @@
-﻿using Rogue.NET.Common.Collection;
-using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -13,7 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// Component for storing and mainintaining a 2D cell array for a layer of the level layout
     /// </summary>
     [Serializable]
-    public abstract class LayerMapBase : ISerializable
+    public abstract class LayerMapBase : IRecursiveSerializable
     {
         public string Name { get; private set; }
 
@@ -59,28 +58,41 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         public IEnumerable<Region<GridLocation>> Regions { get { return _regions; } }
 
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public LayerMapBase() { }
+
         public LayerMapBase(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)
         {
             // Get regions from the region graph
             Initialize(layerName, regions, width, height);
         }
 
-        public LayerMapBase(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            var name = info.GetString("Name");
-            var width = info.GetInt32("Width");
-            var height = info.GetInt32("Height");
-            var regions = (SimpleList<Region<GridLocation>>)info.GetValue("Regions", typeof(SimpleList<Region<GridLocation>>));
-
-            Initialize(name, regions, width, height);
+            planner.Define<string>("Name");
+            planner.Define<int>("Width");
+            planner.Define<int>("Height");
+            planner.Define<List<Region<GridLocation>>>("Regions");
         }
 
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        public void GetProperties(IPropertyWriter writer)
         {
-            info.AddValue("Name", this.Name);
-            info.AddValue("Width", _regionMap.GetLength(0));
-            info.AddValue("Height", _regionMap.GetLength(1));
-            info.AddValue("Regions", _regions.ToSimpleList());
+            writer.Write("Name", this.Name);
+            writer.Write("Width", _regionMap.GetLength(0));
+            writer.Write("Height", _regionMap.GetLength(1));
+            writer.Write("Regions", _regions);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            var name = reader.Read<string>("Name");
+            var width = reader.Read<int>("Width");
+            var height = reader.Read<int>("Height");
+            var regions = reader.Read<List<Region<GridLocation>>>("Regions");
+
+            Initialize(name, regions, width, height);
         }
 
         protected void Initialize(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)

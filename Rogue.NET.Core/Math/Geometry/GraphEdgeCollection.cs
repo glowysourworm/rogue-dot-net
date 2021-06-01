@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Collection;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 
@@ -15,8 +16,8 @@ namespace Rogue.NET.Core.Math.Geometry
     /// directed (or) un-directed graph lookup and duplicate edge validation.
     /// </summary>
     [Serializable]
-    public class GraphEdgeCollection<TNode, TEdge> : ISerializable where TNode : IGraphNode
-                                                                   where TEdge : IGraphEdge<TNode>
+    public class GraphEdgeCollection<TNode, TEdge> : IRecursiveSerializable where TNode : IGraphNode
+                                                                            where TEdge : IGraphEdge<TNode>
     {
         Dictionary<SpatialIndex, TEdge> _edges;
         Dictionary<TNode, Dictionary<SpatialIndex, TEdge>> _nodeEdges;
@@ -186,6 +187,10 @@ namespace Rogue.NET.Core.Math.Geometry
             return _nodeEdges.Keys;
         }
 
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public GraphEdgeCollection() { }
 
         public GraphEdgeCollection(bool directedGraph)
         {
@@ -194,14 +199,6 @@ namespace Rogue.NET.Core.Math.Geometry
 
         public GraphEdgeCollection(IEnumerable<TEdge> edges, bool directedGraph)
         {
-            Initialize(edges, directedGraph);
-        }
-
-        public GraphEdgeCollection(SerializationInfo info, StreamingContext context)
-        {
-            var edges = (SimpleList<TEdge>)info.GetValue("Edges", typeof(SimpleList<TEdge>));
-            var directedGraph = info.GetBoolean("DirectedGraph");
-             
             Initialize(edges, directedGraph);
         }
 
@@ -219,10 +216,24 @@ namespace Rogue.NET.Core.Math.Geometry
             }
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            info.AddValue("Edges", _edges.Values.ToSimpleList());
-            info.AddValue("DirectedGraph", _directedGraph);
+            planner.Define<List<TEdge>>("Edges");
+            planner.Define<bool>("DirectedGraph");
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("Edges", _edges.Values.ToList());
+            writer.Write("DirectedGraph", _directedGraph);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            var edges = reader.Read<List<TEdge>>("Edges");
+            var directedGraph = reader.Read<bool>("DirectedGraph");
+
+            Initialize(edges, directedGraph);
         }
     }
 }

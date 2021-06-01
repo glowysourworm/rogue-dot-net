@@ -1,9 +1,8 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Processing.Model.Extension;
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -13,15 +12,23 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// serializes the data.
     /// </summary>
     [Serializable]
-    public class Grid<T> : ISerializable
+    public class Grid<T> : IRecursiveSerializable
     {
-        readonly T[,] _grid;
-        readonly int _offsetColumn;
-        readonly int _offsetRow;
-        readonly int _width;
-        readonly int _height;
-        readonly int _parentWidth;
-        readonly int _parentHeight;
+        //readonly T[,] _grid;
+        //readonly int _offsetColumn;
+        //readonly int _offsetRow;
+        //readonly int _width;
+        //readonly int _height;
+        //readonly int _parentWidth;
+        //readonly int _parentHeight;
+
+        T[,] _grid;
+        int _offsetColumn;
+        int _offsetRow;
+        int _width;
+        int _height;
+        int _parentWidth;
+        int _parentHeight;
 
         /// <summary>
         /// Indexer to the 2D array based on the PARENT COLUMN AND ROW. Allows indexing over 
@@ -87,6 +94,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             return true;
         }
 
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public Grid() { }
+
         public Grid(RegionBoundary parentBoundary, RegionBoundary boundary)
         {
             _offsetColumn = boundary.Left;
@@ -99,35 +111,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _grid = new T[_width, _height];
         }
 
-        public Grid(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            _offsetColumn = info.GetInt32("OffsetColumn");
-            _offsetRow = info.GetInt32("OffsetRow");
-            _width = info.GetInt32("Width");
-            _height = info.GetInt32("Height");
-            _parentWidth = info.GetInt32("ParentWidth");
-            _parentHeight = info.GetInt32("ParentHeight");
-            _grid = new T[_width, _height];
-
-            var count = info.GetInt32("Count");
-
-            for (int i = 0; i < count; i++)
-            {
-                var item = (T)info.GetValue("Item" + i, typeof(T));
-                var location = (GridLocation)info.GetValue("ItemLocation" + i, typeof(GridLocation));
-
-                _grid[location.Column, location.Row] = item;
-            }
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("OffsetColumn", _offsetColumn);
-            info.AddValue("OffsetRow", _offsetRow);
-            info.AddValue("Width", _width);
-            info.AddValue("Height", _height);
-            info.AddValue("ParentWidth", _parentWidth);
-            info.AddValue("ParentHeight", _parentHeight);
+            planner.Define<int>("OffsetColumn");
+            planner.Define<int>("OffsetRow");
+            planner.Define<int>("Width");
+            planner.Define<int>("Height");
+            planner.Define<int>("ParentWidth");
+            planner.Define<int>("ParentHeight");
 
             // NOTE*** TRYING TO MINIMIZE STORAGE BY GATHERING DATA FROM THE GRID
             //         .. BUT THE TRADEOFF IS THAT THE LOCATION ALSO HAS TO BE STORED.
@@ -148,14 +139,74 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             });
 
             // Serialize the item data
-            info.AddValue("Count", dict.Count);
+            planner.Define<int>("Count");
 
             var counter = 0;
 
             foreach (var element in dict)
             {
-                info.AddValue("Item" + counter, element.Value);
-                info.AddValue("ItemLocation" + counter++, element.Key);
+                planner.Define<T>("Item" + counter);
+                planner.Define<GridLocation>("ItemLocation" + counter++);
+            }
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("OffsetColumn", _offsetColumn);
+            writer.Write("OffsetRow", _offsetRow);
+            writer.Write("Width", _width);
+            writer.Write("Height", _height);
+            writer.Write("ParentWidth", _parentWidth);
+            writer.Write("ParentHeight", _parentHeight);
+
+            // NOTE*** TRYING TO MINIMIZE STORAGE BY GATHERING DATA FROM THE GRID
+            //         .. BUT THE TRADEOFF IS THAT THE LOCATION ALSO HAS TO BE STORED.
+            //
+            //         THIS COULD BE OPTIMIZED BY FIRST CALCULATING WHETHER IT'S MORE
+            //         STORAGE EFFICIENT TO STORE LOCATION+ITEM, OR ITEM (WITH THE GRID
+            //         SCAN TO LOCATE IT'S COLUMN AND ROW).
+            //
+            var dict = new Dictionary<GridLocation, T>();
+
+            // Gather the item data from the grid
+            _grid.Iterate((column, row) =>
+            {
+                if (ReferenceEquals(_grid[column, row], null))
+                    return;
+
+                dict.Add(new GridLocation(column, row), _grid[column, row]);
+            });
+
+            // Serialize the item data
+            writer.Write("Count", dict.Count);
+
+            var counter = 0;
+
+            foreach (var element in dict)
+            {
+                writer.Write("Item" + counter, element.Value);
+                writer.Write("ItemLocation" + counter++, element.Key);
+            }
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            _offsetColumn = reader.Read<int>("OffsetColumn");
+            _offsetRow = reader.Read<int>("OffsetRow");
+            _width = reader.Read<int>("Width");
+            _height = reader.Read<int>("Height");
+            _parentWidth = reader.Read<int>("ParentWidth");
+            _parentHeight = reader.Read<int>("ParentHeight");
+            _grid = new T[_width, _height];
+
+            var count = reader.Read<int>("Count");
+
+            for (int i = 0; i < count; i++)
+            {
+                var item = reader.Read<T>("Item" + i);
+                var location = reader.Read<GridLocation>("ItemLocation" + i);
+
+                _grid[location.Column, location.Row] = item;
             }
         }
     }

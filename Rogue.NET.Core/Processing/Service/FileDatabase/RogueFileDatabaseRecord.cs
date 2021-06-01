@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Processing.Service
         /// Attempts to load data from disk
         /// </summary>
         /// <exception cref="Exception">Throw exception if loading fails</exception>
-        public object Load()
+        public T Load<T>()
         {
             // Load bytes from file
             var buffer = File.ReadAllBytes(this.FileName);
@@ -35,13 +35,13 @@ namespace Rogue.NET.Core.Processing.Service
             // Decompress the data
             buffer = ZipEncoder.Decompress(buffer);
 
-            return BinarySerializer.Deserialize(buffer);
+            return BinarySerializer.Deserialize<T>(buffer, BinarySerializer.SerializationMode.RecursiveSerializer);
         }
 
-        public void Save(object newData)
+        public void Save<T>(T newData)
         {
             // Store data to buffer
-            var buffer = BinarySerializer.Serialize(newData);
+            var buffer = BinarySerializer.Serialize(newData, BinarySerializer.SerializationMode.RecursiveSerializer);
 
             // Compress data
             buffer = ZipEncoder.Compress(buffer);

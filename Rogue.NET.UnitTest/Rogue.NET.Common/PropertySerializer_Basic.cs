@@ -1,31 +1,29 @@
 
-using KellermanSoftware.CompareNetObjects;
+using Microsoft.Practices.ServiceLocation;
 
 using Moq;
 
 using NUnit.Framework;
 
 using Rogue.NET.Common.Serialization;
-using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Service;
 using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.UnitTest.Extension;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Xml.Serialization;
 
 namespace Rogue.NET.UnitTest
 {
     public class PropertySerializer_Basic
     {
         IScenarioResourceService _scenarioResourceService;
+        IScenarioGenerator _scenarioGenerator;
 
         [SetUp]
         public void Setup()
@@ -38,10 +36,10 @@ namespace Rogue.NET.UnitTest
             var scenarioImageSourceFactory = new Mock<IScenarioImageSourceFactory>();
 
             // MOCK except for configuration cache
-            _scenarioResourceService = new ScenarioResourceService(scenarioConfigurationCache, scenarioCache.Object, svgCache.Object, scenarioImageSourceFactory.Object);
+            _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
 
-            // Load configurations from embedded resources
-            ScenarioConfigurationCache.Load();
+            // Use container to resolve
+            _scenarioGenerator = ServiceLocator.Current.GetInstance<IScenarioGenerator>();
         }
 
         [TearDown]
@@ -53,9 +51,6 @@ namespace Rogue.NET.UnitTest
         [Test]
         public void ScenarioConfigurationSave()
         {
-            var serializer = new RecursiveSerializer<ScenarioConfigurationContainer>();
-
-            var manifestFileName = Path.Combine(TestParameters.DebugOutputDirectory, "Fighter." + ResourceConstants.ScenarioConfigurationExtension + ".manifest.xml");
             var fighterScenario = _scenarioResourceService.GetScenarioConfiguration("Fighter");
 
             ScenarioConfigurationContainer fighterScenarioResult1 = null;
@@ -67,6 +62,18 @@ namespace Rogue.NET.UnitTest
             CompareConfiguration(fighterScenario, fighterScenarioResult1);
             CompareConfiguration(fighterScenario, fighterScenarioResult2);
             CompareConfiguration(fighterScenarioResult1, fighterScenarioResult2);
+        }
+
+        [Test]
+        public void ScenarioSave()
+        {
+            var configuration = _scenarioResourceService.GetScenarioConfiguration("Fighter");
+            var scenario = _scenarioGenerator.CreateScenario(configuration, "Mr. Rogue", configuration.PlayerTemplates.First().Class, 1, false);
+            var serializer = new RecursiveSerializer<ScenarioContainer>();
+
+            ScenarioContainer scenarioDeserialized = null;
+
+            RunSerializer(scenario, out scenarioDeserialized);
         }
 
         // ROUGH COMPARISON!
@@ -90,18 +97,18 @@ namespace Rogue.NET.UnitTest
             Assert.IsTrue(configuration1.ScenarioDesign.LevelDesigns.Count == configuration2.ScenarioDesign.LevelDesigns.Count);
         }
 
-        private SerializationManifest RunSerializer(ScenarioConfigurationContainer configuration, out ScenarioConfigurationContainer configurationResult)
+        private SerializationManifest RunSerializer<T>(T theObject, out T theObjectResult)
         {
-            var serializer = new RecursiveSerializer<ScenarioConfigurationContainer>();
+            var serializer = new RecursiveSerializer<T>();
 
-            configurationResult = null;
+            theObjectResult = default(T);
 
             // Serialize
             using (var memoryStream = new MemoryStream())
             {
                 try
                 {
-                    serializer.Serialize(memoryStream, configuration);
+                    serializer.Serialize(memoryStream, theObject);
                 }
                 catch (Exception ex)
                 {
@@ -112,7 +119,7 @@ namespace Rogue.NET.UnitTest
                 {
                     try
                     {
-                        configurationResult = serializer.Deserialize(deserializeStream);
+                        theObjectResult = serializer.Deserialize(deserializeStream);
                     }
                     catch (Exception ex)
                     {

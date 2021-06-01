@@ -1,10 +1,8 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
-using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
+﻿using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -13,9 +11,14 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// connections associated with adjacent rooms or regions. These must be pre-calculated as a graph.
     /// </summary>
     [Serializable]
-    public class ConnectedLayerMap : LayerMapBase, ISerializable, ILayerMap
+    public class ConnectedLayerMap : LayerMapBase, IRecursiveSerializable, ILayerMap
     {
         public RegionGraph ConnectionGraph { get; private set; }
+
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public ConnectedLayerMap() : base() { }
 
         public ConnectedLayerMap(string layerName,
                                  RegionGraph graph,
@@ -27,18 +30,25 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.ConnectionGraph = graph;
         }
 
-        public ConnectedLayerMap(SerializationInfo info, StreamingContext context)
-                : base(info, context)
+        public new void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            this.ConnectionGraph = (RegionGraph)info.GetValue("ConnectionGraph", typeof(RegionGraph));
+            base.GetPropertyDefinitions(planner);
+
+            planner.Define<RegionGraph>("ConnectionGraph");
         }
 
-
-        public new void GetObjectData(SerializationInfo info, StreamingContext context)
+        public new void GetProperties(IPropertyWriter writer)
         {
-            base.GetObjectData(info, context);
+            base.GetProperties(writer);
 
-            info.AddValue("ConnectionGraph", this.ConnectionGraph);
+            writer.Write("ConnectionGraph", this.ConnectionGraph);
+        }
+
+        public new void SetProperties(IPropertyReader reader)
+        {
+            base.SetProperties(reader);
+
+            this.ConnectionGraph = reader.Read<RegionGraph>("ConnectionGraph");
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Rogue.NET.Common.Utility;
+﻿using Rogue.NET.Core.Processing.Service.Cache;
+using Rogue.NET.UnitTest.Extension;
 
 using System.IO;
-using System.Reflection;
 
 namespace Rogue.NET.UnitTest
 {
@@ -21,6 +21,13 @@ namespace Rogue.NET.UnitTest
 
             if (!Directory.Exists(TestParameters.DebugOutputDirectory))
                 Directory.CreateDirectory(TestParameters.DebugOutputDirectory);
+
+            // Load configurations from embedded resources
+            ScenarioConfigurationCache.Load();
+
+            var bootstrapper = new UnitTestBootstrapper();
+
+            bootstrapper.Run();
         }
 
         public static void Cleanup()

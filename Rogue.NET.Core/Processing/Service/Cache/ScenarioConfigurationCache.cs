@@ -1,11 +1,11 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
-using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -63,15 +63,15 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             var configuration = _embeddedScenarioConfigurations.Union(_userScenarioConfigurations)
                                                                .FirstOrDefault(x => x.ScenarioDesign.Name == configurationName);
 
-            // NOTE*** Creating clone of the configuration using binary copy
-            if (configuration != null)
-            {
-                var buffer = BinarySerializer.Serialize(configuration);
+            //// NOTE*** Creating clone of the configuration using binary copy
+            //if (configuration != null)
+            //{
+            //    var buffer = BinarySerializer.Serialize(configuration);
 
-                return (ScenarioConfigurationContainer)BinarySerializer.Deserialize(buffer);
-            }
+            //    return (ScenarioConfigurationContainer)BinarySerializer.Deserialize(buffer);
+            //}
 
-            return null;
+            return BinarySerializer.BinaryCopy(configuration, BinarySerializer.SerializationMode.RecursiveSerializer);
         }
 
         public void SaveConfiguration(ScenarioConfigurationContainer configuration)
@@ -87,10 +87,10 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 AddUserConfiguration(configuration);
             }
 
-            var file = Path.Combine(ResourceConstants.ScenarioDirectory, configuration.ScenarioDesign.Name) + "." + 
+            var file = Path.Combine(ResourceConstants.ScenarioDirectory, configuration.ScenarioDesign.Name) + "." +
                                     ResourceConstants.ScenarioConfigurationExtension;
 
-            File.WriteAllBytes(file, BinarySerializer.Serialize(configuration));
+            BinarySerializer.SerializeToFile(file, configuration, BinarySerializer.SerializationMode.RecursiveSerializer);
         }
         public void EmbedConfiguration(ScenarioConfigurationContainer configuration)
         {
@@ -108,7 +108,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             var file = Path.Combine(ResourceConstants.EmbeddedScenarioDirectory, configuration.ScenarioDesign.Name) + "." +
                                     ResourceConstants.ScenarioConfigurationExtension;
 
-            File.WriteAllBytes(file, BinarySerializer.Serialize(configuration));
+            BinarySerializer.SerializeToFile(file, configuration, BinarySerializer.SerializationMode.RecursiveSerializer);
         }
         public ScenarioImage GetRandomSmileyCharacter(bool eliminateChoice)
         {
@@ -152,7 +152,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     var memoryStream = new MemoryStream();
                     stream.CopyTo(memoryStream);
 
-                    AddEmbeddedConfiguration((ScenarioConfigurationContainer)BinarySerializer.Deserialize(memoryStream.GetBuffer()));
+                    AddEmbeddedConfiguration(BinarySerializer.Deserialize<ScenarioConfigurationContainer>(memoryStream.GetBuffer(), BinarySerializer.SerializationMode.MSFT));
                 }
             }
 
@@ -162,7 +162,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             foreach (var file in Directory.GetFiles(ResourceConstants.ScenarioDirectory)
                                           .Where(x => x.EndsWith("." + ResourceConstants.ScenarioConfigurationExtension)))
             {
-                AddUserConfiguration((ScenarioConfigurationContainer)BinarySerializer.DeserializeFromFile(file));
+                AddUserConfiguration(BinarySerializer.DeserializeFromFile<ScenarioConfigurationContainer>(file, BinarySerializer.SerializationMode.MSFT));
             }
         }
 

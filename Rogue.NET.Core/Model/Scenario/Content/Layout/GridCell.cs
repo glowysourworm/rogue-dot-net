@@ -1,15 +1,15 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 using static Rogue.NET.Core.Math.Geometry.Metric;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     [Serializable]
-    public class GridCell : ISerializable, IGridLocator
+    public class GridCell : IRecursiveSerializable, IGridLocator
     {
         #region (public) IGridLocator
         public int Column
@@ -105,40 +105,55 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             return this.Location == null ? "" : this.Location.ToString();
         }
 
-        #region ISerializable - Used Custom Serialization to minimize footprint
-        public GridCell(SerializationInfo info, StreamingContext context)
+        #region IRecursiveSerializable - Used Custom Serialization to minimize footprint
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            this.IsExplored = info.GetBoolean("IsExplored");
-            this.IsRevealed = info.GetBoolean("IsRevealed");
-            this.IsOccupied = info.GetBoolean("IsOccupied");
-            this.IsDoor = info.GetBoolean("IsDoor");
-            this.IsWall = info.GetBoolean("IsWall");
-            this.IsWallLight = info.GetBoolean("IsWallLight");
-            this.Location = (GridLocation)info.GetValue("Location", typeof(GridLocation));
-            this.DoorSearchCounter = info.GetInt32("DoorSearchCounter");
+            planner.Define<bool>("IsExplored");
+            planner.Define<bool>("IsRevealed");
+            planner.Define<bool>("IsOccupied");
+            planner.Define<bool>("IsDoor");
+            planner.Define<bool>("IsWall");
+            planner.Define<bool>("IsWallLight");
+            planner.Define<GridLocation>("Location");
+            planner.Define<int>("DoorSearchCounter");
 
-            var lightCount = info.GetInt32("LightCount");
+            for (int i = 0; i < this.Lights.Length; i++)
+                planner.Define<Light>("Light" + i.ToString());
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("IsExplored", this.IsExplored);
+            writer.Write("IsRevealed", this.IsRevealed);
+            writer.Write("IsDoor", this.IsDoor);
+            writer.Write("IsWall", this.IsWall);
+            writer.Write("IsWallLight", this.IsWallLight);
+            writer.Write("Location", this.Location);
+            writer.Write("DoorSearchCounter", this.DoorSearchCounter);
+            writer.Write("LightCount", this.Lights.Length);
+
+            for (int i = 0; i < this.Lights.Length; i++)
+                writer.Write("Light" + i.ToString(), this.Lights[i]);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            this.IsExplored = reader.Read<bool>("IsExplored");
+            this.IsRevealed = reader.Read<bool>("IsRevealed");
+            this.IsOccupied = reader.Read<bool>("IsOccupied");
+            this.IsDoor = reader.Read<bool>("IsDoor");
+            this.IsWall = reader.Read<bool>("IsWall");
+            this.IsWallLight = reader.Read<bool>("IsWallLight");
+            this.Location = reader.Read<GridLocation>("Location");
+            this.DoorSearchCounter = reader.Read<int>("DoorSearchCounter");
+
+
+            var lightCount = reader.Read<int>("LightCount");
 
             this.Lights = new Light[lightCount];
 
             for (int i = 0; i < lightCount; i++)
-                this.Lights[i] = (Light)info.GetValue("Light" + i.ToString(), typeof(Light));
-
-        }
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("IsExplored", this.IsExplored);
-            info.AddValue("IsRevealed", this.IsRevealed);
-            info.AddValue("IsOccupied", this.IsOccupied);
-            info.AddValue("IsDoor", this.IsDoor);
-            info.AddValue("IsWall", this.IsWall);
-            info.AddValue("IsWallLight", this.IsWallLight);
-            info.AddValue("Location", this.Location);
-            info.AddValue("DoorSearchCounter", this.DoorSearchCounter);
-            info.AddValue("LightCount", this.Lights.Length);
-
-            for (int i = 0; i < this.Lights.Length; i++)
-                info.AddValue("Light" + i.ToString(), this.Lights[i]);
+                this.Lights[i] = reader.Read<Light>("Light" + i.ToString());
         }
         #endregion
     }

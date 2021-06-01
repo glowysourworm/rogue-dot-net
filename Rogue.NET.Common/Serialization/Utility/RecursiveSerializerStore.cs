@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
 
@@ -37,26 +38,25 @@ namespace Rogue.NET.Common.Serialization
             var setMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.SetMethodName, new Type[] { typeof(PropertyReader) });
             var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(PropertyWriter) });
 
+            var hasInterfaceImplementing = hashedType.GetImplementingType().HasInterface<IRecursiveSerializable>();
+            var hasInterfaceDeclaring = hashedType.GetDeclaringType().HasInterface<IRecursiveSerializable>();
+            var hasInterface = hasInterfaceDeclaring && hasInterfaceImplementing;
+
+            if (hasInterfaceDeclaring != hasInterfaceImplementing)
+                throw new RecursiveSerializerException(hashedType, "Improper use of IRecursiveSerializable:  Both declaring and implementing types must be marked IRecursiveSerializable:  " + hashedType.ToString());
+
             if (parameterlessCtor == null)
                 throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must have a parameterless constructor. (See Inner Exception)");
 
-            if (planningMethod != null && (setMethod == null || getMethod == null))
-                throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must ALSO have get and set methods. (See Inner Exception)");
-
-            if (setMethod != null && (planningMethod == null || getMethod == null))
-                throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must ALSO have planning and get methods. (See Inner Exception)");
-
-            if (getMethod != null && (setMethod == null || planningMethod == null))
-                throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must ALSO have planning and setMethod methods. (See Inner Exception)");
-
-            var specifiedMode = (parameterlessCtor != null && planningMethod != null && getMethod != null && setMethod != null);
+            if (hasInterface && (planningMethod != null || setMethod == null || getMethod == null))
+                throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must implement IRecursiveSerializable. (See Inner Exception)");
 
             // Create the primary members for the serializer
             var memberInfo = new RecursiveSerializerMemberInfo(parameterlessCtor, 
-                                                               setMethod, 
-                                                               getMethod, 
-                                                               planningMethod, 
-                                                               specifiedMode ? SerializationMode.Specified : SerializationMode.Default);
+                                                               hasInterface ? setMethod : null, 
+                                                               hasInterface ? getMethod : null, 
+                                                               hasInterface ? planningMethod : null,
+                                                               hasInterface ? SerializationMode.Specified : SerializationMode.Default);
             return memberInfo;
         }
 
@@ -71,40 +71,25 @@ namespace Rogue.NET.Common.Serialization
             var setMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.SetMethodName, new Type[] { typeof(PropertyReader) });
             var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(PropertyWriter) });
 
+            var hasInterfaceImplementing = hashedType.GetImplementingType().HasInterface<IRecursiveSerializable>();
+            var hasInterfaceDeclaring = hashedType.GetDeclaringType().HasInterface<IRecursiveSerializable>();
+            var hasInterface = hasInterfaceDeclaring && hasInterfaceImplementing;
+
+            if (hasInterfaceDeclaring != hasInterfaceImplementing)
+                throw new RecursiveSerializerException(hashedType, "Improper use of IRecursiveSerializable:  Both declaring and implementing types must be marked IRecursiveSerializable:  " + hashedType.ToString());
+
+            if (parameterlessCtor == null)
+                throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must have a parameterless constructor. (See Inner Exception)");
+
+            if (mode == SerializationMode.Specified && !hasInterface)
+                throw new RecursiveSerializerException(hashedType, "Improper use of SerializationMode.Specified - must implement IRecursiveSerializable");
+
             // Create the primary members for the serializer
-            var memberInfo = new RecursiveSerializerMemberInfo(parameterlessCtor, setMethod, getMethod, planningMethod, mode);
-
-            switch (mode)
-            {
-                case SerializationMode.None:
-                    {
-                        if (planningMethod != null || setMethod != null || getMethod != null)
-                            throw new RecursiveSerializerException(hashedType, "Improper use of SerializationMode.None");
-                    }
-                    break;
-                case SerializationMode.Default:
-                    {
-                        if (planningMethod != null || setMethod != null || getMethod != null)
-                            throw new RecursiveSerializerException(hashedType, "Improper use of SerializationMode.Default - must NOT have planning and set methods");
-
-                        if (parameterlessCtor == null)
-                            throw new RecursiveSerializerException(hashedType, "Improper use of SerializationMode.Default - must have a parameterless constructor");
-                    }
-                    break;
-                case SerializationMode.Specified:
-                    {
-                        if (planningMethod == null || setMethod == null || getMethod == null)
-                            throw new RecursiveSerializerException(hashedType, "Improper use of SerializationMode.Specified - must have planning, get, and set methods");
-
-                        if (parameterlessCtor == null)
-                            throw new RecursiveSerializerException(hashedType, "Improper use of SerializationMode.Specified - must have a parameterless constructor");
-                    }
-                    break;
-                default:
-                    throw new Exception("Unhandled SerializationMode type:  RecursiveSerializerStore.cs");
-            }
-
-            return memberInfo;
+            return new RecursiveSerializerMemberInfo(parameterlessCtor,
+                                                     hasInterface ? setMethod : null,
+                                                     hasInterface ? getMethod : null,
+                                                     hasInterface ? planningMethod : null,
+                                                     mode);
         }
 
         /// <summary>

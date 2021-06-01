@@ -1,15 +1,20 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     [Serializable]
-    public class TerrainLayerMap : LayerMapBase, ILayerMap
+    public class TerrainLayerMap : LayerMapBase, ILayerMap, IRecursiveSerializable
     {
         public bool IsImpassable { get; private set; }
+
+        /// <summary>
+        /// SERIAILZATION ONLY
+        /// </summary>
+        public TerrainLayerMap() : base() { }
 
         public TerrainLayerMap(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height, bool isImpassable)
                 : base(layerName, regions, width, height)
@@ -17,16 +22,26 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsImpassable = isImpassable;
         }
 
-        public TerrainLayerMap(SerializationInfo info, StreamingContext context) : base(info, context)
+
+        public new void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            var isImpassable = info.GetBoolean("IsImpassable");
+            base.GetPropertyDefinitions(planner);
+
+            planner.Define<bool>("IsImpassable");
         }
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        public new void GetProperties(IPropertyWriter writer)
         {
-            base.GetObjectData(info, context);
+            base.GetProperties(writer);
 
-            info.AddValue("IsImpassable", this.IsImpassable);
+            writer.Write("IsImpassable", this.IsImpassable);
+        }
+
+        public new void SetProperties(IPropertyReader reader)
+        {
+            base.SetProperties(reader);
+
+            this.IsImpassable = reader.Read<bool>("IsImpassable");
         }
     }
 }

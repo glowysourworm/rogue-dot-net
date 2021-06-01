@@ -1,7 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Event;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
@@ -9,8 +8,8 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-using Rogue.NET.Core.Processing.Model.Content.Calculator;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,7 @@ using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.CharacterBase;
 namespace Rogue.NET.Core.Model.Scenario.Content
 {
     [Serializable]
-    public class Level : ISerializable
+    public class Level : IRecursiveSerializable
     {
         /// <summary>
         /// Primary layout storage component for the level
@@ -74,14 +73,98 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             };
         }
 
-        public Level(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            this.Grid = (LayoutGrid)info.GetValue("Grid", typeof(LayoutGrid));
-            this.Parameters = (LevelParameters)info.GetValue("Parameters", typeof(LevelParameters));
+            planner.Define<LayoutGrid>("Grid");
+            planner.Define<LevelParameters>("Parameters");
 
-            var count = info.GetInt32("ContentCount");
-            var homeLocationCount = info.GetInt32("HomeLocationCount");
-            var memorizedCount = info.GetInt32("MemorizedContentCount");
+            planner.Define<int>("ContentCount");
+            planner.Define<int>("HomeLocationCount");
+            planner.Define<int>("MemorizedContentCount");
+
+            var count = this.Content.AllContent.Where(content => !(content is Player)).Count();
+            var homeLocationCount = this.Content.NonPlayerCharacters.Count();
+            var memorizedCount = this.MemorizedContent.AllContent.Count();
+
+            // Deserialize the content
+            for (int i = 0; i < count; i++)
+            {
+                planner.Define<ScenarioObject>("Content" + i.ToString());
+                planner.Define<GridLocation>("Location" + i.ToString());
+            }
+
+            // Deserialize the home locations
+            for (int i = 0; i < homeLocationCount; i++)
+            {
+                // Store this character's Id along with its home location
+                planner.Define<string>("HomeLocationCharacterId" + i.ToString());
+                planner.Define<GridLocation>("HomeLocation" + i.ToString());
+            }
+
+            // Deserialize the memorized content
+            for (int i = 0; i < memorizedCount; i++)
+            {
+                planner.Define<ScenarioObject>("MemorizedContent" + i.ToString());
+                planner.Define<GridLocation>("MemorizedLocation" + i.ToString());
+            }
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("Grid", this.Grid);
+            writer.Write("Parameters", this.Parameters);
+
+            // Serialize the number of content entries
+            writer.Write("ContentCount", this.Content.AllContent.Where(content => !(content is Player)).Count());
+            writer.Write("HomeLocationCount", this.Content.NonPlayerCharacters.Count());
+            writer.Write("MemorizedContentCount", this.MemorizedContent.AllContent.Count());
+
+            var counter = 0;
+
+            // Serialize the content
+            foreach (var content in this.Content.AllContent)
+            {
+                // *** SERIALIZE EVERYTHING EXCEPT THE PLAYER
+                if (content is Player)
+                    continue;
+
+                // Store the object and its location
+                writer.Write("Content" + counter, content);
+                writer.Write("Location" + counter++, this.Content[content.Id]);
+            }
+
+            counter = 0;
+
+            // Serialize the home locations of non-player characters
+            foreach (var content in this.Content.NonPlayerCharacters)
+            {
+                // Store this character's Id along with its home location
+                writer.Write("HomeLocationCharacterId" + counter, content.Id);
+                writer.Write("HomeLocation" + counter++, this.Content.GetHomeLocation(content));
+            }
+
+            counter = 0;
+
+            // Serialize memorized content - THIS WILL BE DUPLICATED DATA. KEPT THIS WAY BECAUSE
+            //                               LEVEL CONTENTS THAT ARE PICKED UP WILL BE LOST REFERENCES.
+            //                               SO, THE REFERENCES ARE MATCHED DURING DESERIALIZATION FOR
+            //                               ANY DUPLICATES STILL IN THE LEVEL CONTENT GRID.
+            foreach (var content in this.MemorizedContent.AllContent)
+            {
+                // Store the object and its location
+                writer.Write("MemorizedContent" + counter, content);
+                writer.Write("MemorizedLocation" + counter++, this.MemorizedContent[content.Id]);
+            }
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            this.Grid = reader.Read<LayoutGrid>("Grid");
+            this.Parameters = reader.Read<LevelParameters>("Parameters");
+
+            var count = reader.Read<int>("ContentCount");
+            var homeLocationCount = reader.Read<int>("HomeLocationCount");
+            var memorizedCount = reader.Read<int>("MemorizedContentCount");
 
             // Instantiate the level content and memorized content
             this.Content = new ContentGrid(this.Grid);
@@ -91,8 +174,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             // Deserialize the content
             for (int i = 0; i < count; i++)
             {
-                var scenarioObject = (ScenarioObject)info.GetValue("Content" + i.ToString(), typeof(ScenarioObject));
-                var location = (GridLocation)info.GetValue("Location" + i.ToString(), typeof(GridLocation));
+                var scenarioObject = reader.Read<ScenarioObject>("Content" + i.ToString());
+                var location = reader.Read<GridLocation>("Location" + i.ToString());
 
                 // Add the content to the container
                 this.Content.AddContent(scenarioObject, location);
@@ -105,8 +188,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             for (int i = 0; i < homeLocationCount; i++)
             {
                 // Store this character's Id along with its home location
-                var contentId = info.GetString("HomeLocationCharacterId" + i.ToString());
-                var location = (GridLocation)info.GetValue("HomeLocation" + i.ToString(), typeof(GridLocation));
+                var contentId = reader.Read<string>("HomeLocationCharacterId" + i.ToString());
+                var location = reader.Read<GridLocation>("HomeLocation" + i.ToString());
                 var character = this.Content.Get(contentId) as NonPlayerCharacter;
 
                 // OVERWRITE THE HOME LOCATION SET BY AddContent(...)
@@ -116,8 +199,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             // Deserialize the memorized content
             for (int i = 0; i < memorizedCount; i++)
             {
-                var scenarioObject = (ScenarioObject)info.GetValue("MemorizedContent" + i.ToString(), typeof(ScenarioObject));
-                var location = (GridLocation)info.GetValue("MemorizedLocation" + i.ToString(), typeof(GridLocation));
+                var scenarioObject = reader.Read<ScenarioObject>("MemorizedContent" + i.ToString());
+                var location = reader.Read<GridLocation>("MemorizedLocation" + i.ToString());
 
                 // MATCH UP ANY REFERENCES STILL HELD BY THE LEVEL CONTENT GRID
                 if (this.Content.Contains(scenarioObject.Id))
@@ -125,54 +208,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
                 // Add the content to the container
                 this.MemorizedContent.AddContent(scenarioObject, location);
-            }
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Grid", this.Grid);
-            info.AddValue("Parameters", this.Parameters);
-
-            // Serialize the number of content entries
-            info.AddValue("ContentCount", this.Content.AllContent.Where(content => !(content is Player)).Count());
-            info.AddValue("HomeLocationCount", this.Content.NonPlayerCharacters.Count());
-            info.AddValue("MemorizedContentCount", this.MemorizedContent.AllContent.Count());
-
-            var counter = 0;
-
-            // Serialize the content
-            foreach (var content in this.Content.AllContent)
-            {
-                // *** SERIALIZE EVERYTHING EXCEPT THE PLAYER
-                if (content is Player)
-                    continue;
-
-                // Store the object and its location
-                info.AddValue("Content" + counter, content);
-                info.AddValue("Location" + counter++, this.Content[content.Id]);
-            }
-
-            counter = 0;
-
-            // Serialize the home locations of non-player characters
-            foreach (var content in this.Content.NonPlayerCharacters)
-            {
-                // Store this character's Id along with its home location
-                info.AddValue("HomeLocationCharacterId" + counter, content.Id);
-                info.AddValue("HomeLocation" + counter++, this.Content.GetHomeLocation(content));
-            }
-
-            counter = 0;
-
-            // Serialize memorized content - THIS WILL BE DUPLICATED DATA. KEPT THIS WAY BECAUSE
-            //                               LEVEL CONTENTS THAT ARE PICKED UP WILL BE LOST REFERENCES.
-            //                               SO, THE REFERENCES ARE MATCHED DURING DESERIALIZATION FOR
-            //                               ANY DUPLICATES STILL IN THE LEVEL CONTENT GRID.
-            foreach (var content in this.MemorizedContent.AllContent)
-            {
-                // Store the object and its location
-                info.AddValue("MemorizedContent" + counter, content);
-                info.AddValue("MemorizedLocation" + counter++, this.MemorizedContent[content.Id]);
             }
         }
 
@@ -218,8 +253,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// <summary>
         /// Adds content at a random non-occupied location in the level
         /// </summary>
-        public bool AddContentRandom(IRandomSequenceGenerator randomSequenceGenerator, 
-                                     ScenarioObject scenarioObject, 
+        public bool AddContentRandom(IRandomSequenceGenerator randomSequenceGenerator,
+                                     ScenarioObject scenarioObject,
                                      ContentRandomPlacementType contentPlacementType,
                                      IEnumerable<GridLocation> excludedLocations = null)
         {
@@ -290,8 +325,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// <summary>
         /// Adds content group according to the group placement type
         /// </summary>
-        public bool AddContentGroup(IRandomSequenceGenerator randomSequenceGenerator, 
-                                    IEnumerable<ScenarioObject> scenarioObjects, 
+        public bool AddContentGroup(IRandomSequenceGenerator randomSequenceGenerator,
+                                    IEnumerable<ScenarioObject> scenarioObjects,
                                     ContentGroupPlacementType placementType,
                                     IEnumerable<GridLocation> excludedLocations = null)
         {
@@ -310,8 +345,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
                 case ContentGroupPlacementType.Adjacent:
                     {
                         // Get a contiguous, random rectangle of non-occupied locations
-                        var squareRegion = this.Grid.GetNonOccupiedRegionLocationGroup(LayoutGrid.LayoutLayer.Placement, squareEdge, squareEdge, 
-                                                                                  randomSequenceGenerator, 
+                        var squareRegion = this.Grid.GetNonOccupiedRegionLocationGroup(LayoutGrid.LayoutLayer.Placement, squareEdge, squareEdge,
+                                                                                  randomSequenceGenerator,
                                                                                   excludedLocations);
 
                         if (squareRegion != null)

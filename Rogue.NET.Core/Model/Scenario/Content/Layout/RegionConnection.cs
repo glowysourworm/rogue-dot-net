@@ -1,12 +1,12 @@
-﻿using Rogue.NET.Core.Math.Algorithm.Interface;
+﻿using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Core.Math.Algorithm.Interface;
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     [Serializable]
-    public class RegionConnection : IGraphEdge<Region<GridLocation>>, ISerializable
+    public class RegionConnection : IGraphEdge<Region<GridLocation>>, IRecursiveSerializable
     {
         public Region<GridLocation> Node { get; private set; }
         public Region<GridLocation> AdjacentNode { get; private set; }
@@ -19,6 +19,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// </summary>
         public double Weight { get; private set; }
 
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public RegionConnection() { }
+
         public RegionConnection(Region<GridLocation> node, Region<GridLocation> adjacentNode, GridLocation location, GridLocation adjacentLocation, double weight)
         {
             this.Node = node;
@@ -28,22 +33,31 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Weight = weight;
         }
 
-        public RegionConnection(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            this.Node = (Region<GridLocation>)info.GetValue("Node", typeof(Region<GridLocation>));
-            this.AdjacentNode = (Region<GridLocation>)info.GetValue("AdjacentNode", typeof(Region<GridLocation>));
-            this.Location = (GridLocation)info.GetValue("Location", typeof(GridLocation));
-            this.AdjacentLocation = (GridLocation)info.GetValue("AdjacentLocation", typeof(GridLocation));
-            this.Weight = info.GetDouble("Weight");
+            planner.Define<Region<GridLocation>>("Node");
+            planner.Define<Region<GridLocation>>("AdjacentNode");
+            planner.Define<GridLocation>("Location");
+            planner.Define<GridLocation>("AdjacentLocation");
+            planner.Define<double>("Weight");
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public void GetProperties(IPropertyWriter writer)
         {
-            info.AddValue("Node", this.Node);
-            info.AddValue("AdjacentNode", this.AdjacentNode);
-            info.AddValue("Location", this.Location);
-            info.AddValue("AdjacentLocation", this.AdjacentLocation);
-            info.AddValue("Weight", this.Weight);
+            writer.Write("Node", this.Node);
+            writer.Write("AdjacentNode", this.AdjacentNode);
+            writer.Write("Location", this.Location);
+            writer.Write("AdjacentLocation", this.AdjacentLocation);
+            writer.Write("Weight", this.Weight);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            this.Node = reader.Read<Region<GridLocation>>("Node");
+            this.AdjacentNode = reader.Read<Region<GridLocation>>("AdjacentNode");
+            this.Location = reader.Read<GridLocation>("Location");
+            this.AdjacentLocation = reader.Read<GridLocation>("AdjacentLocation");
+            this.Weight = reader.Read<double>("Weight");
         }
     }
 }

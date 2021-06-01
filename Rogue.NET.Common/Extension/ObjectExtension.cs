@@ -39,7 +39,7 @@ namespace Rogue.NET.Common.Extension
 
         public static T DeepCopy<T>(this T value)
         {
-            return (T)BinarySerializer.BinaryCopy(value);
+            return BinarySerializer.BinaryCopy<T>(value, BinarySerializer.SerializationMode.MSFT);
         }
 
         public static PropertyInfo GetPropertyInfo<T, V>(this T theObject, Expression<Func<T, V>> propertySelector)

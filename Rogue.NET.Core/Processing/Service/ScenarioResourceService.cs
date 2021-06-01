@@ -159,7 +159,7 @@ namespace Rogue.NET.Core.Processing.Service
         // TEMP FILE STORAGE
         public string SaveToTempFile<T>(T theObject, bool compress)
         {
-            var buffer = BinarySerializer.Serialize(theObject);
+            var buffer = BinarySerializer.Serialize(theObject, BinarySerializer.SerializationMode.RecursiveSerializer);
 
             if (compress)
                 buffer = ZipEncoder.Compress(buffer);
@@ -177,7 +177,7 @@ namespace Rogue.NET.Core.Processing.Service
             if (compressed)
                 buffer = ZipEncoder.Decompress(buffer);
 
-            return (T)BinarySerializer.Deserialize(buffer);
+            return BinarySerializer.Deserialize<T>(buffer, BinarySerializer.SerializationMode.RecursiveSerializer);
         }
         public void DeleteTempFile(string fileName)
         {

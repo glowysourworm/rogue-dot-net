@@ -107,7 +107,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //          Content generation WRITES to properties - so is NOT THREAD SAFE.
 
             var useLevelCompression = true;
-            var maxThreadCount = 8;
+            // TODO: SUPPORT MULTI-THREADED RANDOM SEQUENCES
+            var maxThreadCount = 1;         
             var runningThreads = new List<Thread>();
             var threads = new Dictionary<ScenarioGeneratorThreadData, Thread>();
             var completedThreadData = new ConcurrentDictionary<string, ScenarioGeneratorThreadData>();
@@ -138,11 +139,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 var branchCopy = ObjectExtension.Clone(levelBranches[index]);
 
                 // Get weighted random layout template (MAKE A COPY TO DECOUPLE)
-                var generationTemplateCopy = ObjectExtension.Clone(_randomSequenceGenerator.GetWeightedRandom(branchCopy.Layouts, template => template.GenerationWeight)
-);
-
-                // ***MULTI-THREADING POLICY IRandomSequenceGenerator
-                thread.Name = (index + 1).ToString();
+                var generationTemplateCopy = ObjectExtension.Clone(_randomSequenceGenerator.GetWeightedRandom(branchCopy.Layouts, template => template.GenerationWeight));
 
                 // TODO: Figure out proper setting
                 thread.Priority = ThreadPriority.Highest;

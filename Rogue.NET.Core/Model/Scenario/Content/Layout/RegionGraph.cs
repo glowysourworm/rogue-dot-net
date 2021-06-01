@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Collection;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Math.Geometry;
 
@@ -11,7 +12,7 @@ using System.Runtime.Serialization;
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
     [Serializable]
-    public class RegionGraph : IGraph<Region<GridLocation>, RegionConnection>, ISerializable
+    public class RegionGraph : IGraph<Region<GridLocation>, RegionConnection>, IRecursiveSerializable
     {
         // TRIVIAL GRAPH
         Region<GridLocation> _singleRegion;
@@ -25,6 +26,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         // Mode setting
         bool _isSingleRegion;
 
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public RegionGraph() { }
+
         public RegionGraph(Region<GridLocation> singleRegion)
         {
             Initialize(true, singleRegion, null);
@@ -35,39 +41,53 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             Initialize(false, null, connections);
         }
 
-        public RegionGraph(SerializationInfo info, StreamingContext context)
-        {
-            var isSingleRegion = info.GetBoolean("IsSingleRegion");
-
-            Region<GridLocation> singleRegion = null;
-            SimpleList<RegionConnection> edges = null;
-
-            if (isSingleRegion)
-            {
-                singleRegion = (Region<GridLocation>)info.GetValue("SingleRegion", typeof(Region<GridLocation>));
-            }
-            else
-            {
-                edges = (SimpleList<RegionConnection>)info.GetValue("Edges", typeof(SimpleList<RegionConnection>));
-            }
-
-            Initialize(isSingleRegion, singleRegion, edges);
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
             var isSingleRegion = _singleRegion != null;
 
-            info.AddValue("IsSingleRegion", isSingleRegion);
+            planner.Define<bool>("IsSingleRegion");
 
             if (isSingleRegion)
             {
-                info.AddValue("SingleRegion", _singleRegion);
+                planner.Define<Region<GridLocation>>("SingleRegion");
             }
             else
             {
-                info.AddValue("Edges", _edges.GetEdges().ToSimpleList());
+                planner.Define<List<RegionConnection>>("Edges");
             }
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("IsSingleRegion", _isSingleRegion);
+
+            if (_isSingleRegion)
+            {
+                writer.Write("SingleRegion", _singleRegion);
+            }
+            else
+            {
+                writer.Write("Edges", _edges);
+            }
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            var isSingleRegion = reader.Read<bool>("IsSingleRegion");
+
+            Region<GridLocation> singleRegion = null;
+            List<RegionConnection> edges = null;
+
+            if (isSingleRegion)
+            {
+                singleRegion = reader.Read<Region<GridLocation>>("SingleRegion");
+            }
+            else
+            {
+                edges = reader.Read<List<RegionConnection>>("Edges");
+            }
+
+            Initialize(isSingleRegion, singleRegion, edges);
         }
 
         private void Initialize(bool isSingleRegion, Region<GridLocation> singleRegion, IEnumerable<RegionConnection> connections)

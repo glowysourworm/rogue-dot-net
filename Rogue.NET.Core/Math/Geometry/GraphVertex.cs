@@ -1,8 +1,9 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+
 using System;
-using System.Runtime.Serialization;
 
 using static Rogue.NET.Core.Math.Geometry.Metric;
 
@@ -19,6 +20,11 @@ namespace Rogue.NET.Core.Math.Geometry
         // IGraphNode
         public int Hash { get { return this.GetHashCode(); } }
 
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public GraphVertex() { }
+
         public GraphVertex(string referenceId, int column, int row, MetricType type)
         {
             this.ReferenceId = referenceId;
@@ -27,20 +33,28 @@ namespace Rogue.NET.Core.Math.Geometry
             this.Type = type;
         }
 
-        public GraphVertex(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            this.ReferenceId = info.GetString("ReferenceId");
-            this.Column = info.GetInt32("Column");
-            this.Row = info.GetInt32("Row");
-            this.Type = (MetricType)info.GetValue("Type", typeof(MetricType));
+            planner.Define<string>("ReferenceId");
+            planner.Define<int>("Column");
+            planner.Define<int>("Row");
+            planner.Define<MetricType>("Type");
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public void GetProperties(IPropertyWriter writer)
         {
-            info.AddValue("ReferenceId", this.ReferenceId);
-            info.AddValue("Column", this.Column);
-            info.AddValue("Row", this.Row);
-            info.AddValue("Type", this.Type);
+            writer.Write("ReferenceId", this.ReferenceId);
+            writer.Write("Column", this.Column);
+            writer.Write("Row", this.Row);
+            writer.Write("Type", this.Type);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            this.ReferenceId = reader.Read<string>("ReferenceId");
+            this.Column = reader.Read<int>("Column");
+            this.Row = reader.Read<int>("Row");
+            this.Type = reader.Read<MetricType>("Type");
         }
 
         public override bool Equals(object obj)
@@ -60,9 +74,9 @@ namespace Rogue.NET.Core.Math.Geometry
 
         public override int GetHashCode()
         {
-            return this.CreateHashCode(this.Column, 
-                                       this.Row, 
-                                       this.ReferenceId, 
+            return this.CreateHashCode(this.Column,
+                                       this.Row,
+                                       this.ReferenceId,
                                        this.Type);
         }
 

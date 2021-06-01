@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
@@ -37,17 +38,25 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             Column = column;
             this.Type = MetricType.Rogue;
         }
-        public GridLocation(SerializationInfo info, StreamingContext context)
+
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            this.Column = info.GetInt32("Column");
-            this.Row = info.GetInt32("Row");
+            planner.Define<int>("Column");
+            planner.Define<int>("Row");
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("Column", this.Column);
+            writer.Write("Row", this.Row);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            this.Column = reader.Read<int>("Column");
+            this.Row = reader.Read<int>("Row");
 
             this.Type = MetricType.Rogue;
-        }
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Column", this.Column);
-            info.AddValue("Row", this.Row);
         }
 
         // SHOULD BEHAVE LIKE A VALUE TYPE

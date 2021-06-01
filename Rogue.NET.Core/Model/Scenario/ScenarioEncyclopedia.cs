@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Abstract;
+﻿using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Content;
 using System;
@@ -9,7 +10,7 @@ using System.Runtime.Serialization;
 namespace Rogue.NET.Core.Model.Scenario
 {
     [Serializable]
-    public class ScenarioEncyclopedia : ISerializable
+    public class ScenarioEncyclopedia : IRecursiveSerializable
     {
         private Dictionary<string, ScenarioMetaData> _encyclopedia;
         private IEnumerable<ScenarioImage> _characterClasses;
@@ -36,17 +37,25 @@ namespace Rogue.NET.Core.Model.Scenario
             _characterClasses = characterClasses.ToList();
             _alterationCategories = alterationCategories.ToList();
         }
-        public ScenarioEncyclopedia(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            _encyclopedia = (Dictionary<string, ScenarioMetaData>)info.GetValue("Encyclopedia", typeof(Dictionary<string, ScenarioMetaData>));
-            _characterClasses = (IEnumerable<ScenarioImage>)info.GetValue("CharacterClasses", typeof(IEnumerable<ScenarioImage>));
-            _alterationCategories = (IEnumerable<AlterationCategory>)info.GetValue("AlterationCategories", typeof(IEnumerable<AlterationCategory>));
+            planner.Define("Encyclopedia", typeof(Dictionary<string, ScenarioMetaData>));
+            planner.Define("CharacterClasses", typeof(List<ScenarioImage>));
+            planner.Define("AlterationCategories", typeof(List<AlterationCategory>));
         }
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+
+        public void GetProperties(IPropertyWriter writer)
         {
-            info.AddValue("Encyclopedia", _encyclopedia);
-            info.AddValue("CharacterClasses", _characterClasses);
-            info.AddValue("AlterationCategories", _alterationCategories);
+            writer.Write("Encyclopedia", _encyclopedia);
+            writer.Write("CharacterClasses", _characterClasses);
+            writer.Write("AlterationCategories", _alterationCategories);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            _encyclopedia = reader.Read<Dictionary<string, ScenarioMetaData>>("Encyclopedia");
+            _characterClasses = reader.Read<List<ScenarioImage>>("CharacterClasses");
+            _alterationCategories = reader.Read<List<AlterationCategory>>("AlterationCategories");
         }
 
         #region Linq Support
@@ -91,6 +100,8 @@ namespace Rogue.NET.Core.Model.Scenario
         {
             return _encyclopedia.Values.Where(x => predicate(x));
         }
+
+
         #endregion
     }
 }

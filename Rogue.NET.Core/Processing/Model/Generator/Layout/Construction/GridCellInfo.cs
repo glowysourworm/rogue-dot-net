@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
@@ -142,15 +143,25 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             return true;
         }
 
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public GridCellInfo()
+        {
+            // SERIALIZATION ONLY
+            Initialize(0, 0);
+        }
+
         public GridCellInfo(GridLocation location)
         {
-            this.Location = location;
-            this.AmbientLight = Light.White;
-            this.AccentLight = Light.None;
-            this.WallLight = Light.None;
-            this.TerrainLights = new Dictionary<string, Light>();
+            Initialize(location.Column, location.Row);
         }
         public GridCellInfo(int column, int row)
+        {
+            Initialize(column, row);
+        }
+
+        private void Initialize(int column, int row)
         {
             this.Location = new GridLocation(column, row);
             this.AmbientLight = Light.White;
@@ -158,33 +169,50 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             this.WallLight = Light.None;
             this.TerrainLights = new Dictionary<string, Light>();
         }
-        public GridCellInfo(SerializationInfo info, StreamingContext context)
+
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            this.Location = (GridLocation)info.GetValue("Location", typeof(GridLocation));
-            this.IsDoor = (bool)info.GetValue("IsDoor", typeof(bool));
-            this.IsWall = (bool)info.GetValue("IsWall", typeof(bool));
-            this.IsWallLight = (bool)info.GetValue("IsWallLight", typeof(bool));
-            this.IsCorridor = (bool)info.GetValue("IsCorridor", typeof(bool));
-            this.IsTerrainSupport = (bool)info.GetValue("IsTerrainSupport", typeof(bool));
-            this.DoorSearchCounter = (int)info.GetValue("DoorSearchCounter", typeof(int));
-            this.AmbientLight = (Light)info.GetValue("AmbientLight", typeof(Light));
-            this.WallLight = (Light)info.GetValue("WallLight", typeof(Light));
-            this.AccentLight = (Light)info.GetValue("AccentLight", typeof(Light));
-            this.TerrainLights = (Dictionary<string, Light>)info.GetValue("TerrainLights", typeof(Dictionary<string, Light>));
+            planner.Define<GridLocation>("Location");
+            planner.Define<bool>("IsDoor");
+            planner.Define<bool>("IsWall");
+            planner.Define<bool>("IsWallLight");
+            planner.Define<bool>("IsCorridor");
+            planner.Define<bool>("IsTerrainSupport");
+            planner.Define<int>("DoorSearchCounter");
+            planner.Define<Light>("AmbientLight");
+            planner.Define<Light>("WallLight");
+            planner.Define<Light>("AccentLight");
+            planner.Define<Dictionary<string, Light>>("TerrainLights");
         }
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+
+        public void GetProperties(IPropertyWriter writer)
         {
-            info.AddValue("Location", this.Location);
-            info.AddValue("IsDoor", this.IsDoor);
-            info.AddValue("IsWall", this.IsWall);
-            info.AddValue("IsWallLight", this.IsWallLight);
-            info.AddValue("IsCorridor", this.IsCorridor);
-            info.AddValue("IsTerrainSupport", this.IsTerrainSupport);
-            info.AddValue("DoorSearchCounter", this.DoorSearchCounter);
-            info.AddValue("AmbientLight", this.AmbientLight);
-            info.AddValue("WallLight", this.WallLight);
-            info.AddValue("AccentLight", this.AccentLight);
-            info.AddValue("TerrainLights", this.TerrainLights);
+            writer.Write("Location", this.Location);
+            writer.Write("IsDoor", this.IsDoor);
+            writer.Write("IsWall", this.IsWall);
+            writer.Write("IsWallLight", this.IsWallLight);
+            writer.Write("IsCorridor", this.IsCorridor);
+            writer.Write("IsTerrainSupport", this.IsTerrainSupport);
+            writer.Write("DoorSearchCounter", this.DoorSearchCounter);
+            writer.Write("AmbientLight", this.AmbientLight);
+            writer.Write("WallLight", this.WallLight);
+            writer.Write("AccentLight", this.AccentLight);
+            writer.Write("TerrainLights", this.TerrainLights);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            this.Location = reader.Read<GridLocation>("Location");
+            this.IsDoor = reader.Read<bool>("IsDoor");
+            this.IsWall = reader.Read<bool>("IsWall");
+            this.IsWallLight = reader.Read<bool>("IsWallLight");
+            this.IsCorridor = reader.Read<bool>("IsCorridor");
+            this.IsTerrainSupport = reader.Read<bool>("IsTerrainSupport");
+            this.DoorSearchCounter = reader.Read<int>("DoorSearchCounter");
+            this.AmbientLight = reader.Read<Light>("AmbientLight");
+            this.WallLight = reader.Read<Light>("WallLight");
+            this.AccentLight = reader.Read<Light>("AccentLight");
+            this.TerrainLights = reader.Read<Dictionary<string, Light>>("TerrainLights");
         }
 
         public override string ToString()

@@ -41,10 +41,10 @@ namespace Rogue.NET.Common.Serialization.Planning
         internal SerializationMode Mode { get; private set; }
 
         internal RecursiveSerializerMemberInfo(ConstructorInfo parameterlessConstructor,
-                                             MethodInfo setMethod,
-                                             MethodInfo getMethod,
-                                             MethodInfo planningMethod,
-                                             SerializationMode mode)
+                                               MethodInfo setMethod,
+                                               MethodInfo getMethod,
+                                               MethodInfo planningMethod,
+                                               SerializationMode mode)
         {
             this.ParameterlessConstructor = parameterlessConstructor;
             this.SetMethod = setMethod;

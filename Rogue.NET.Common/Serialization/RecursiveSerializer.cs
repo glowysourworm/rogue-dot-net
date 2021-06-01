@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Rogue.NET.Common.Serialization
 {
@@ -49,6 +50,12 @@ namespace Rogue.NET.Common.Serialization
         PropertyDeserializer _deserializer;
 
         public RecursiveSerializer()
+        {
+            _serializer = new PropertySerializer();
+            _deserializer = new PropertyDeserializer();
+        }
+
+        public RecursiveSerializer(Type objectType)
         {
             _serializer = new PropertySerializer();
             _deserializer = new PropertyDeserializer();

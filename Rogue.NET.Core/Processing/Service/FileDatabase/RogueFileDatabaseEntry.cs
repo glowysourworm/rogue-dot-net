@@ -5,7 +5,6 @@ using Rogue.NET.Core.Processing.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq.Expressions;
 using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Processing.Service
@@ -92,7 +91,7 @@ namespace Rogue.NET.Core.Processing.Service
         {
             var record = this.Records[recordName];
 
-            return (V)record.Load();
+            return (V)record.Load<V>();
         }
 
         public void AddOrUpdate<V>(string recordName, V value)

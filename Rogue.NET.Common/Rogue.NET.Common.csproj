@@ -223,7 +223,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collection\BinarySearchTree.cs" />
-    <Compile Include="Collection\SimpleList.cs" />
     <Compile Include="Collection\SimpleOrderedList.cs" />
     <Compile Include="Constant\CharacterSymbol.cs" />
     <Compile Include="Constant\GameSymbol.cs" />
@@ -268,6 +267,10 @@
     <Compile Include="Serialization\Formatter\StringFormatter.cs" />
     <Compile Include="Serialization\Formatter\UnsignedIntegerFormatter.cs" />
     <Compile Include="Serialization\Interface\IBaseFormatter.cs" />
+    <Compile Include="Serialization\Interface\IPropertyPlanner.cs" />
+    <Compile Include="Serialization\Interface\IPropertyReader.cs" />
+    <Compile Include="Serialization\Interface\IPropertyWriter.cs" />
+    <Compile Include="Serialization\Interface\IRecursiveSerializable.cs" />
     <Compile Include="Serialization\Interface\ISerializationPlan.cs" />
     <Compile Include="Serialization\Manifest\SerializedNodeManifest.cs" />
     <Compile Include="Serialization\Manifest\SerializedTypeManifest.cs" />

@@ -1,10 +1,10 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -12,7 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     /// Serializable data structure to store regions of the layout that are related
     /// </summary>
     [Serializable]
-    public class Region<T> : ISerializable, IGraphNode  where T : class, IGridLocator
+    public class Region<T> : IRecursiveSerializable, IGraphNode where T : class, IGridLocator
     {
         public string Id { get; private set; }
         public T[] Locations { get; private set; }
@@ -125,6 +125,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         #endregion
 
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public Region() { }
+
         public Region(string regionId, T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
         {
             if (string.IsNullOrEmpty(regionId) || locations.Length == 0 || edgeLocations.Length == 0)
@@ -162,13 +167,31 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
         }
 
-        protected Region(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            var regionId = info.GetString("Id");
-            var grid = (Grid<T>)info.GetValue("Grid", typeof(Grid<T>));
-            var edgeGrid = (Grid<bool>)info.GetValue("EdgeGrid", typeof(Grid<bool>));
-            var boundary = (RegionBoundary)info.GetValue("Boundary", typeof(RegionBoundary));
-            var parentBoundary = (RegionBoundary)info.GetValue("ParentBoundary", typeof(RegionBoundary));
+            planner.Define<string>("Id");
+            planner.Define<Grid<T>>("Grid");
+            planner.Define<Grid<bool>>("EdgeGrid");
+            planner.Define<RegionBoundary>("Boundary");
+            planner.Define<RegionBoundary>("ParentBoundary");
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("Id", this.Id);
+            writer.Write("Grid", _grid);
+            writer.Write("EdgeGrid", _edgeGrid);
+            writer.Write("Boundary", this.Boundary);
+            writer.Write("ParentBoundary", this.ParentBoundary);
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            var regionId = reader.Read<string>("Id");
+            var grid = reader.Read<Grid<T>>("Grid");
+            var edgeGrid = reader.Read<Grid<bool>>("EdgeGrid");
+            var boundary = reader.Read<RegionBoundary>("Boundary");
+            var parentBoundary = reader.Read<RegionBoundary>("ParentBoundary");
 
             _calculatedHash = default(int);
 
@@ -200,18 +223,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.EdgeLocations = edgeLocations.ToArray();
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Id", this.Id);
-            info.AddValue("Grid", _grid);
-            info.AddValue("EdgeGrid", _edgeGrid);
-            info.AddValue("Boundary", this.Boundary);
-            info.AddValue("ParentBoundary", this.ParentBoundary);
-        }
-
         public override string ToString()
         {
-            return string.Format("Id={0} Locations[{1}], EdgeLocations[{2}], Boundary=[{3}]", 
+            return string.Format("Id={0} Locations[{1}], EdgeLocations[{2}], Boundary=[{3}]",
                                   this.Id, this.Locations.Length, this.EdgeLocations.Length, this.Boundary.ToString());
         }
     }

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Planning;
+﻿using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Common.Serialization.Planning;
 
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 
 namespace Rogue.NET.Common.Serialization
 {
-    public class PropertyWriter
+    public class PropertyWriter : IPropertyWriter
     {
         // Actual object contextual properties
         Dictionary<string, PropertyStorageInfo> _properties;

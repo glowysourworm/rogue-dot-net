@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
@@ -17,7 +18,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
 
     [Serializable]
-    public class LayoutGrid : ISerializable
+    public class LayoutGrid : IRecursiveSerializable
     {
         private GridCell[,] _grid;
 
@@ -176,22 +177,103 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
         }
 
-        #region ISerializable
-        public LayoutGrid(SerializationInfo info, StreamingContext context)
-        {
-            var width = info.GetInt32("Width");
-            var height = info.GetInt32("Height");
-            var count = info.GetInt32("Count");
-            var terrainCount = info.GetInt32("TerrainMapCount");
+        /// <summary>
+        /// SERIALIZATION ONLY
+        /// </summary>
+        public LayoutGrid() { }
 
-            var connectionMap = (ConnectedLayerMap)info.GetValue("ConnectionMap", typeof(ConnectedLayerMap));
-            var roomMap = (LayerMap)info.GetValue("RoomMap", typeof(LayerMap));
-            var fullNoTerrainSupportMap = (LayerMap)info.GetValue("FullNoTerrainSupportMap", typeof(LayerMap));
-            var walkableMap = (LayerMap)info.GetValue("WalkableMap", typeof(LayerMap));
-            var placementMap = (LayerMap)info.GetValue("PlacementMap", typeof(LayerMap));
-            var corridorMap = (LayerMap)info.GetValue("CorridorMap", typeof(LayerMap));
-            var wallMap = (LayerMap)info.GetValue("WallMap", typeof(LayerMap));
-            var terrainSupportMap = (LayerMap)info.GetValue("TerrainSupportMap", typeof(LayerMap));
+        #region IRecursiveSerializable
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
+        {
+            var cells = new List<GridCell>();
+
+            // Collect the grid cells in a list
+            for (int i = 0; i < _grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < _grid.GetLength(1); j++)
+                {
+                    if (_grid[i, j] != null)
+                        cells.Add(_grid[i, j]);
+                }
+            }
+
+            planner.Define<int>("Width");
+            planner.Define<int>("Height");
+            planner.Define<int>("Count");
+            planner.Define<int>("TerrainMapCount");
+
+            planner.Define<ConnectedLayerMap>("ConnectionMap");
+            planner.Define<LayerMap>("RoomMap");
+            planner.Define<LayerMap>("FullNoTerrainSupportMap");
+            planner.Define<LayerMap>("WalkableMap");
+            planner.Define<LayerMap>("PlacementMap");
+            planner.Define<LayerMap>("CorridorMap");
+            planner.Define<LayerMap>("WallMap");
+            planner.Define<LayerMap>("TerrainSupportMap");
+
+            // Populate cell grid
+            for (int i = 0; i < cells.Count; i++)
+            {
+                planner.Define<GridCell>("Cell" + i.ToString());
+            }
+
+            // Populate terrain
+            for (int i = 0; i < this.TerrainMaps.Count(); i++)
+            {
+                planner.Define<TerrainLayerMap>("TerrainMap" + i.ToString());
+            }
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            var cells = new List<GridCell>();
+
+            // Collect the grid cells in a list
+            for (int i = 0; i < _grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < _grid.GetLength(1); j++)
+                {
+                    if (_grid[i, j] != null)
+                        cells.Add(_grid[i, j]);
+                }
+            }
+
+            writer.Write("Width", _grid.GetLength(0));
+            writer.Write("Height", _grid.GetLength(1));
+            writer.Write("Count", cells.Count);
+            writer.Write("TerrainMapCount", this.TerrainMaps.Count());
+
+            writer.Write("ConnectionMap", this.ConnectionMap);
+            writer.Write("RoomMap", this.RoomMap);
+            writer.Write("FullNoTerrainSupportMap", this.FullNoTerrainSupportMap);
+            writer.Write("WalkableMap", this.WalkableMap);
+            writer.Write("PlacementMap", this.PlacementMap);
+            writer.Write("CorridorMap", this.CorridorMap);
+            writer.Write("WallMap", this.WallMap);
+            writer.Write("TerrainSupportMap", this.TerrainSupportMap);
+
+            for (int i = 0; i < cells.Count; i++)
+                writer.Write("Cell" + i.ToString(), cells[i]);
+
+            for (int i = 0; i < this.TerrainMaps.Count(); i++)
+                writer.Write("TerrainMap" + i.ToString(), this.TerrainMaps.ElementAt(i));
+        }
+
+        public void SetProperties(IPropertyReader reader)
+        {
+            var width = reader.Read<int>("Width");
+            var height = reader.Read<int>("Height");
+            var count = reader.Read<int>("Count");
+            var terrainCount = reader.Read<int>("TerrainMapCount");
+
+            var connectionMap = reader.Read<ConnectedLayerMap>("ConnectionMap");
+            var roomMap = reader.Read<LayerMap>("RoomMap");
+            var fullNoTerrainSupportMap = reader.Read<LayerMap>("FullNoTerrainSupportMap");
+            var walkableMap = reader.Read<LayerMap>("WalkableMap");
+            var placementMap = reader.Read<LayerMap>("PlacementMap");
+            var corridorMap = reader.Read<LayerMap>("CorridorMap");
+            var wallMap = reader.Read<LayerMap>("WallMap");
+            var terrainSupportMap = reader.Read<LayerMap>("TerrainSupportMap");
 
             _grid = new GridCell[width, height];
 
@@ -202,7 +284,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             // Populate cell grid
             for (int i = 0; i < count; i++)
             {
-                var cell = (GridCell)info.GetValue("Cell" + i.ToString(), typeof(GridCell));
+                var cell = reader.Read<GridCell>("Cell" + i.ToString());
 
                 _grid[cell.Location.Column, cell.Location.Row] = cell;
             }
@@ -210,7 +292,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             // Populate terrain
             for (int i = 0; i < terrainCount; i++)
             {
-                var terrain = (TerrainLayerMap)info.GetValue("TerrainMap" + i.ToString(), typeof(TerrainLayerMap));
+                var terrain = reader.Read<TerrainLayerMap>("TerrainMap" + i.ToString());
 
                 terrainData.Add(terrain);
             }
@@ -225,40 +307,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.WallMap = wallMap;
             this.TerrainSupportMap = terrainSupportMap;
             this.TerrainMaps = terrainData;
-        }
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            var cells = new List<GridCell>();
-
-            // Collect the grid cells in a list
-            for (int i = 0; i < _grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < _grid.GetLength(1); j++)
-                {
-                    if (_grid[i, j] != null)
-                        cells.Add(_grid[i, j]);
-                }
-            }
-
-            info.AddValue("Width", _grid.GetLength(0));
-            info.AddValue("Height", _grid.GetLength(1));
-            info.AddValue("Count", cells.Count);
-            info.AddValue("TerrainMapCount", this.TerrainMaps.Count());
-
-            info.AddValue("ConnectionMap", this.ConnectionMap);
-            info.AddValue("RoomMap", this.RoomMap);
-            info.AddValue("FullNoTerrainSupportMap", this.FullNoTerrainSupportMap);
-            info.AddValue("WalkableMap", this.WalkableMap);
-            info.AddValue("PlacementMap", this.PlacementMap);
-            info.AddValue("CorridorMap", this.CorridorMap);
-            info.AddValue("WallMap", this.WallMap);
-            info.AddValue("TerrainSupportMap", this.TerrainSupportMap);
-
-            for (int i = 0; i < cells.Count; i++)
-                info.AddValue("Cell" + i.ToString(), cells[i]);
-
-            for (int i = 0; i < this.TerrainMaps.Count(); i++)
-                info.AddValue("TerrainMap" + i.ToString(), this.TerrainMaps.ElementAt(i));
         }
         #endregion
 

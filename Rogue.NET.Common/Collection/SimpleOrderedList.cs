@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Rogue.NET.Common.Serialization;
+using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Common.Serialization.Planning;
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -9,7 +13,7 @@ namespace Rogue.NET.Common.Collection
     /// A simple ordered list implementation - sorts items when inserted and removed
     /// </summary>
     [Serializable]
-    public class SimpleOrderedList<T> : IList<T>, ISerializable
+    public class SimpleOrderedList<T> : IList<T>, IRecursiveSerializable
     {
         List<T> _list;
 
@@ -18,26 +22,19 @@ namespace Rogue.NET.Common.Collection
             _list = new List<T>();
         }
 
-        public SimpleOrderedList(SerializationInfo info, StreamingContext context)
+        public void GetPropertyDefinitions(IPropertyPlanner planner)
         {
-            var count = info.GetInt32("Count");
-
-            _list = new List<T>(count);
-
-            for (int i = 0; i < _list.Count; i++)
-            {
-                _list.Add((T)info.GetValue("Item" + i.ToString(), typeof(T)));
-            }
+            planner.Define("List", typeof(List<T>));
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public void GetProperties(IPropertyWriter writer)
         {
-            info.AddValue("Count", _list.Count);
+            writer.Write("List", _list);
+        }
 
-            for (int i = 0; i < _list.Count; i++)
-            {
-                info.AddValue("Item" + i.ToString(), _list[i]);
-            }
+        public void SetProperties(IPropertyReader reader)
+        {
+            _list = reader.Read<List<T>>("List");
         }
 
         public T this[int index]

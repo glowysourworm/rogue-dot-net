@@ -44,12 +44,14 @@ namespace Rogue.NET.Core.Processing.Service
             if (!File.Exists(ResourceConstants.RogueFileDatabase))
             {
                 BinarySerializer.SerializeToFile(ResourceConstants.RogueFileDatabase,
-                                                 RogueFileDatabase.Entries);
+                                                 RogueFileDatabase.Entries,
+                                                 BinarySerializer.SerializationMode.MSFT);
             }           
             else
             {
                 // Set new entries from file
-                RogueFileDatabase.Entries = (Dictionary<string, RogueFileDatabaseEntry>)BinarySerializer.DeserializeFromFile(ResourceConstants.RogueFileDatabase);
+                RogueFileDatabase.Entries = BinarySerializer.DeserializeFromFile<Dictionary<string, RogueFileDatabaseEntry>>(
+                    ResourceConstants.RogueFileDatabase, BinarySerializer.SerializationMode.MSFT);
 
                 // Validate Entries
                 foreach (var entry in RogueFileDatabase.Entries)
@@ -137,7 +139,8 @@ namespace Rogue.NET.Core.Processing.Service
         private void Save()
         {
             BinarySerializer.SerializeToFile(ResourceConstants.RogueFileDatabase,
-                                             RogueFileDatabase.Entries);
+                                             RogueFileDatabase.Entries,
+                                             BinarySerializer.SerializationMode.MSFT);
         }
     }
 }
