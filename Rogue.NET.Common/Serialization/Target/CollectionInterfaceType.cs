@@ -11,8 +11,7 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     public enum CollectionInterfaceType : byte
     {
-        Array = 0,
-        IList = 1,
-        IDictionary = 2
+        IList = 0,
+        IDictionary = 1
     }
 }

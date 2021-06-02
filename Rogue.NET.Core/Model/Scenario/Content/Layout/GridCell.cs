@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using static Rogue.NET.Core.Math.Geometry.Metric;
 
@@ -116,29 +117,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.IsWallLight = reader.Read<bool>("IsWallLight");
             this.Location = reader.Read<GridLocation>("Location");
             this.DoorSearchCounter = reader.Read<int>("DoorSearchCounter");
-
-
-            var lightCount = reader.Read<int>("LightCount");
-
-            this.Lights = new Light[lightCount];
-
-            for (int i = 0; i < lightCount; i++)
-                this.Lights[i] = reader.Read<Light>("Light" + i.ToString());
+            this.Lights = reader.Read<List<Light>>("Lights").ToArray();
         }
 
         public void GetProperties(IPropertyWriter writer)
         {
             writer.Write("IsExplored", this.IsExplored);
             writer.Write("IsRevealed", this.IsRevealed);
+            writer.Write("IsOccupied", this.IsOccupied);
             writer.Write("IsDoor", this.IsDoor);
             writer.Write("IsWall", this.IsWall);
             writer.Write("IsWallLight", this.IsWallLight);
             writer.Write("Location", this.Location);
             writer.Write("DoorSearchCounter", this.DoorSearchCounter);
-            writer.Write("LightCount", this.Lights.Length);
-
-            for (int i = 0; i < this.Lights.Length; i++)
-                writer.Write("Light" + i.ToString(), this.Lights[i]);
+            writer.Write("Lights", this.Lights.ToList());
         }
         #endregion
     }

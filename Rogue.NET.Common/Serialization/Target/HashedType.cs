@@ -182,7 +182,7 @@ namespace Rogue.NET.Common.Serialization.Target
 
         public override string ToString()
         {
-            return string.Format("Declaring Type={0}, ImplementingType={1}", this.DeclaringType, this.ImplementingType);
+            return string.Format("Declaring Type={0}, ImplementingType={1}", _declaringType.Name, _implementingType.Name);
         }
     }
 }

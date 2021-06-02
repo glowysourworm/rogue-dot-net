@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Planning;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Planning;
 
 using System;
 using System.Collections.Generic;
@@ -57,5 +58,10 @@ namespace Rogue.NET.Common.Serialization.Target
         }
 
         protected abstract HashedObjectInfo ProvideResult();
+
+        public override string ToString()
+        {
+            return this.FormatToString();
+        }
     }
 }

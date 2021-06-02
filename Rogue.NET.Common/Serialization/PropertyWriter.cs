@@ -50,6 +50,7 @@ namespace Rogue.NET.Common.Serialization
                 PropertyName = info.Name,
                 PropertyType = info.PropertyType,
                 PropertyValue = info.GetValue(graphObject)
+
             }).ToDictionary(info => info.PropertyName, info => info);
 
             return _properties.Values;

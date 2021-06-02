@@ -91,7 +91,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             {
                 // Get the next location towards the source - taking the smallest adjacent output that isn't blocked
                 nextLocation = this.OutputMap
-                                   .GetAdjacentValueLocators(nextLocation.Column, nextLocation.Row)
+                                   .GetAdjacentElementLocators(nextLocation.Column, nextLocation.Row)
                                    .Where(location => !_blockedCallback(nextLocation.Column, nextLocation.Row, location.Column, location.Row))
                                    .MinBy(location => this.OutputMap[location.Column, location.Row]);
 

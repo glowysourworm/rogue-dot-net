@@ -73,25 +73,23 @@ namespace Rogue.NET.Common.Serialization.Target
                 elements.Add(resolvedChild.GetObject());
             }
 
-            // PROBABLY OK, WATCH FOR DIFFERENT COLLECTION TYPES
-            if (_interfaceType == CollectionInterfaceType.Array)
-                Array.Copy(elements.ToArray(), _collection as Array, _count);
-
             foreach (var element in elements)
             {
-                // Reflect KeyValuePair values
-                if (_interfaceType == CollectionInterfaceType.IDictionary)
-                {
-                    var key = _dictionaryKeyInfo.GetValue(element);
-                    var value = _dictionaryValueInfo.GetValue(element);
-
-                    (_collection as IDictionary).Add(key, value);
-                }
-
                 switch (_interfaceType)
                 {
+                    case CollectionInterfaceType.IDictionary:
+                        {
+                            // Reflect KeyValuePair values
+                            var key = _dictionaryKeyInfo.GetValue(element);
+                            var value = _dictionaryValueInfo.GetValue(element);
+
+                            (_collection as IDictionary).Add(key, value);
+                        }
+                        break;
                     case CollectionInterfaceType.IList:
-                        (_collection as IList).Add(element);
+                        {
+                            (_collection as IList).Add(element);
+                        }
                         break;
                     default:
                         throw new Exception("Unhandled collection interface type: DeserializationCollection.FinalizeCollection");
@@ -124,11 +122,7 @@ namespace Rogue.NET.Common.Serialization.Target
             // CONSTRUCT
             try
             {
-                if (_interfaceType == CollectionInterfaceType.Array)
-                    _collection = Array.CreateInstance(_elementType, _count);
-
-                else
-                    _collection = this.MemberInfo.ParameterlessConstructor.Invoke(new object[] { }) as IEnumerable;
+                _collection = this.MemberInfo.ParameterlessConstructor.Invoke(new object[] { }) as IEnumerable;
 
                 if (_collection == null)
                     throw new Exception("Constructor failed for collection of type:  " + this.Reference.Type.DeclaringType);
@@ -145,11 +139,7 @@ namespace Rogue.NET.Common.Serialization.Target
 
             try
             {
-                if (_interfaceType == CollectionInterfaceType.Array)
-                    throw new Exception("Trying to construct array type in SPECIFIED MODE:  " + this.Reference.Type.ToString());
-
-                else
-                    _collection = this.MemberInfo.SpecifiedConstructor.Invoke(new object[] { reader }) as IEnumerable;
+                _collection = this.MemberInfo.SpecifiedConstructor.Invoke(new object[] { reader }) as IEnumerable;
 
                 if (_collection == null)
                     throw new Exception("Constructor failed for collection of type:  " + this.Reference.Type.ToString());

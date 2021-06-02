@@ -113,7 +113,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                         {
                             var location = grid[column, row] as GridLocation;
 
-                            hashToExtend = grid.CreateHashCode(location);       // HAS ITS OWN STRUCT-LIKE HASH CODE
+                            hashToExtend = hashToExtend.ExtendHashCode(location);       // HAS ITS OWN STRUCT-LIKE HASH CODE
                         }
                         else
                             throw new Exception("Unhandled Grid<T> Type:  Region.GetGridHashCode");

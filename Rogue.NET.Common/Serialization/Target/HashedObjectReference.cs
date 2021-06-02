@@ -1,4 +1,6 @@
-﻿namespace Rogue.NET.Common.Serialization.Target
+﻿using Rogue.NET.Common.Extension;
+
+namespace Rogue.NET.Common.Serialization.Target
 {
     /// <summary>
     /// Wraps the hash code for HashedObjectInfo.GetHashCode() during deserialization. HASH CODE BASED ON
@@ -42,6 +44,11 @@
         public override int GetHashCode()
         {
             return this.HashCode;
+        }
+
+        public override string ToString()
+        {
+            return this.FormatToString();
         }
     }
 }

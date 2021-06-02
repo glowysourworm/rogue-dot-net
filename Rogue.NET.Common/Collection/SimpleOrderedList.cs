@@ -13,7 +13,7 @@ namespace Rogue.NET.Common.Collection
     /// A simple ordered list implementation - sorts items when inserted and removed
     /// </summary>
     [Serializable]
-    public class SimpleOrderedList<T> : IList<T>, IRecursiveSerializable
+    public class SimpleOrderedList<T> : IList<T>, IList, IRecursiveSerializable
     {
         List<T> _list;
 
@@ -52,6 +52,16 @@ namespace Rogue.NET.Common.Collection
         public bool IsReadOnly
         {
             get { return false; }
+        }
+
+        public bool IsFixedSize => throw new NotImplementedException();
+        public object SyncRoot => throw new NotImplementedException();
+        public bool IsSynchronized => throw new NotImplementedException();
+
+        object IList.this[int index] 
+        {
+            get { return _list[index]; }
+            set { _list[index] = (T)value; }
         }
 
         public void Add(T item)
@@ -116,6 +126,40 @@ namespace Rogue.NET.Common.Collection
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _list.GetEnumerator();
+        }
+
+        public int Add(object value)
+        {
+            _list.Add((T)value);
+
+            _list.Sort();
+
+            return 0;
+        }
+
+        public bool Contains(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexOf(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(Array array, int index)
+        {
+            throw new NotImplementedException();
         }
     }
 }

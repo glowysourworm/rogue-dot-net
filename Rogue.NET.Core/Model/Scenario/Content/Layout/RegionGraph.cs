@@ -65,7 +65,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
             else
             {
-                writer.Write("Edges", _edges);
+                writer.Write("Edges", _edges.GetEdges().ToList());
             }
         }
 

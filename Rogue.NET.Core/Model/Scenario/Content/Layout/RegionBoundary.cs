@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;
 using System.Collections.Generic;
@@ -78,7 +79,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return this.CreateHashCode(this.Column,
+                                       this.Row,
+                                       this.Height,
+                                       this.Width);
         }
 
         /// <summary>

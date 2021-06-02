@@ -1,4 +1,9 @@
-﻿using System;
+﻿using KellermanSoftware.CompareNetObjects;
+
+using Rogue.NET.Common.Serialization.Manifest;
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Rogue.NET.Common.Serialization
@@ -83,9 +88,44 @@ namespace Rogue.NET.Common.Serialization
         public SerializationManifest CreateManifest()
         {
             return new SerializationManifest(_serializer.GetTypeTable(), 
-                                             _serializer.GetSerializedObjects(), 
+                                             _serializer.GetManifest(), 
                                              _deserializer.GetTypeTable(), 
-                                             _deserializer.GetDeserializedObjects());
+                                             _deserializer.GetManifest());
+        }
+
+        public List<SerializedNodeDifference> CreateDifferenceList()
+        {
+            var serializerOutput = _serializer.GetManifest();
+            var deserializerOutput = _deserializer.GetManifest();
+
+            var differences = new List<SerializedNodeDifference>();
+            var compareLogic = new CompareLogic(new ComparisonConfig());
+
+            for (int index = 0; index < Math.Max(serializerOutput.Count, deserializerOutput.Count); index++)
+            {
+                if (index >= serializerOutput.Count)
+                    differences.Add(new SerializedNodeDifference()
+                    {
+                        SerializedNode = null,
+                        DeserializedNode = deserializerOutput[index]
+                    });
+
+                else if (index >= deserializerOutput.Count)
+                    differences.Add(new SerializedNodeDifference()
+                    {
+                        SerializedNode = serializerOutput[index],
+                        DeserializedNode = null
+                    });
+
+                else if (!compareLogic.Compare(serializerOutput[index], deserializerOutput[index]).AreEqual)
+                    differences.Add(new SerializedNodeDifference()
+                    {
+                        SerializedNode = serializerOutput[index], 
+                        DeserializedNode = deserializerOutput[index]
+                    });
+            }
+
+            return differences;
         }
     }
 }

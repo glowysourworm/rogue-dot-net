@@ -20,7 +20,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     [Serializable]
     public class LayoutGrid : IRecursiveSerializable
     {
-        private GridCell[,] _grid;
+        private Grid<GridCell> _grid;
 
         [Flags]
         public enum LayoutLayer
@@ -80,12 +80,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public virtual GridCell this[int column, int row]
         {
             //NOTE*** Returns null as a default
-            get { return _grid.Get(column, row); }
+            get { return _grid[column, row]; }
         }
         public virtual GridCell this[IGridLocator location]
         {
             //NOTE*** Returns null as a default
-            get { return _grid.Get(location.Column, location.Row); }
+            get { return _grid[location.Column, location.Row]; }
         }
         public RegionBoundary Bounds { get; private set; }
 
@@ -137,11 +137,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                           LayerInfo<GridLocation> terrainSupportLayer,
                           IEnumerable<LayerInfo<GridLocation>> terrainLayers)
         {
-            // Primary 2D array
-            _grid = new GridCell[grid.GetLength(0), grid.GetLength(1)];
-
             // Boundary
             this.Bounds = new RegionBoundary(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
+
+            // Primary 2D array
+            _grid = new Grid<GridCell>(this.Bounds, this.Bounds);
 
             // Connected Layers
             this.ConnectionMap = new ConnectedLayerMap(connectionLayer.LayerName,
@@ -180,73 +180,23 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         #region IRecursiveSerializable
         public LayoutGrid(IPropertyReader reader)
         {
-            var width = reader.Read<int>("Width");
-            var height = reader.Read<int>("Height");
-            var count = reader.Read<int>("Count");
-            var terrainCount = reader.Read<int>("TerrainMapCount");
-
-            var connectionMap = reader.Read<ConnectedLayerMap>("ConnectionMap");
-            var roomMap = reader.Read<LayerMap>("RoomMap");
-            var fullNoTerrainSupportMap = reader.Read<LayerMap>("FullNoTerrainSupportMap");
-            var walkableMap = reader.Read<LayerMap>("WalkableMap");
-            var placementMap = reader.Read<LayerMap>("PlacementMap");
-            var corridorMap = reader.Read<LayerMap>("CorridorMap");
-            var wallMap = reader.Read<LayerMap>("WallMap");
-            var terrainSupportMap = reader.Read<LayerMap>("TerrainSupportMap");
-
-            _grid = new GridCell[width, height];
-
-            this.Bounds = new RegionBoundary(new GridLocation(0, 0), width, height);
-
-            var terrainData = new List<TerrainLayerMap>();
-
-            // Populate cell grid
-            for (int i = 0; i < count; i++)
-            {
-                var cell = reader.Read<GridCell>("Cell" + i.ToString());
-
-                _grid[cell.Location.Column, cell.Location.Row] = cell;
-            }
-
-            // Populate terrain
-            for (int i = 0; i < terrainCount; i++)
-            {
-                var terrain = reader.Read<TerrainLayerMap>("TerrainMap" + i.ToString());
-
-                terrainData.Add(terrain);
-            }
-
-            this.ConnectionMap = connectionMap;
-
-            this.FullNoTerrainSupportMap = fullNoTerrainSupportMap;
-            this.WalkableMap = walkableMap;
-            this.PlacementMap = placementMap;
-            this.RoomMap = roomMap;
-            this.CorridorMap = corridorMap;
-            this.WallMap = wallMap;
-            this.TerrainSupportMap = terrainSupportMap;
-            this.TerrainMaps = terrainData;
+            _grid = reader.Read<Grid<GridCell>>("Grid");
+            this.Bounds = reader.Read<RegionBoundary>("Bounds");
+            this.ConnectionMap = reader.Read<ConnectedLayerMap>("ConnectionMap");
+            this.RoomMap = reader.Read<LayerMap>("RoomMap");
+            this.FullNoTerrainSupportMap = reader.Read<LayerMap>("FullNoTerrainSupportMap");
+            this.WalkableMap = reader.Read<LayerMap>("WalkableMap");
+            this.PlacementMap = reader.Read<LayerMap>("PlacementMap");
+            this.CorridorMap = reader.Read<LayerMap>("CorridorMap");
+            this.WallMap = reader.Read<LayerMap>("WallMap");
+            this.TerrainSupportMap = reader.Read<LayerMap>("TerrainSupportMap");
+            this.TerrainMaps = reader.Read<List<TerrainLayerMap>>("TerrainMaps");
         }
 
         public void GetProperties(IPropertyWriter writer)
         {
-            var cells = new List<GridCell>();
-
-            // Collect the grid cells in a list
-            for (int i = 0; i < _grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < _grid.GetLength(1); j++)
-                {
-                    if (_grid[i, j] != null)
-                        cells.Add(_grid[i, j]);
-                }
-            }
-
-            writer.Write("Width", _grid.GetLength(0));
-            writer.Write("Height", _grid.GetLength(1));
-            writer.Write("Count", cells.Count);
-            writer.Write("TerrainMapCount", this.TerrainMaps.Count());
-
+            writer.Write("Grid", _grid);
+            writer.Write("Bounds", this.Bounds);
             writer.Write("ConnectionMap", this.ConnectionMap);
             writer.Write("RoomMap", this.RoomMap);
             writer.Write("FullNoTerrainSupportMap", this.FullNoTerrainSupportMap);
@@ -255,12 +205,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             writer.Write("CorridorMap", this.CorridorMap);
             writer.Write("WallMap", this.WallMap);
             writer.Write("TerrainSupportMap", this.TerrainSupportMap);
-
-            for (int i = 0; i < cells.Count; i++)
-                writer.Write("Cell" + i.ToString(), cells[i]);
-
-            for (int i = 0; i < this.TerrainMaps.Count(); i++)
-                writer.Write("TerrainMap" + i.ToString(), this.TerrainMaps.ElementAt(i));
+            writer.Write("TerrainMaps", this.TerrainMaps.ToList());
         }
         #endregion
 
@@ -341,7 +286,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var map = SelectLayer(layer);
 
             // Search for sub-regions that have a contiguous square of non-occupied cells
-            var qualifiedRegions = _grid.ScanRectanglarRegions(width, height, location =>
+            var qualifiedRegions = _grid.ScanRectangularRegions(width, height, location =>
             {
                 if (excludedLocations != null)
                 {
@@ -350,7 +295,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 }
                 else
                     return map[location] != null;
-            });
+            }, (cell) => cell.Location);
 
             if (qualifiedRegions.Count() == 0)
                 return null;
@@ -360,8 +305,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             // Convert the region to grid locations
             var result = new Region<GridLocation>(System.Guid.NewGuid().ToString(),
-                                                  region.Locations.Select(cell => cell.Location).ToArray(),
-                                                  region.EdgeLocations.Select(cell => cell.Location).ToArray(),
+                                                  region.Locations.ToArray(),
+                                                  region.EdgeLocations.ToArray(),
                                                   region.Boundary,
                                                   new RegionBoundary(0, 0, this.Bounds.Width, this.Bounds.Height));
 

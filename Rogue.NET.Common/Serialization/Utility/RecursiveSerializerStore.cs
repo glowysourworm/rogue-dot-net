@@ -33,7 +33,7 @@ namespace Rogue.NET.Common.Serialization
         {
             var memberInfo = CreateBaseMemberInfo(hashedType);
 
-            return GetMemberInfo(hashedType, memberInfo.Mode);
+            return ValidateMemberInfo(hashedType, memberInfo.ParameterlessConstructor, memberInfo.SpecifiedConstructor, memberInfo.GetMethod, memberInfo.Mode);
         }
 
         internal static RecursiveSerializerMemberInfo GetMemberInfo(HashedType hashedType, SerializationMode mode)
@@ -109,6 +109,7 @@ namespace Rogue.NET.Common.Serialization
             {
                 // ORDER BY PROPERTY NAME
                 _propertyDict.Add(type, type.GetProperties()
+                                            .Where(property => property.GetMethod != null && property.SetMethod != null)
                                             .OrderBy(property => property.Name)
                                             .Actualize());
             }

@@ -30,48 +30,34 @@ namespace Rogue.NET.Common.Serialization.Target
             // Validate type and get members
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
 
-            // ARRAY
-            if (reference.Type.GetImplementingType().IsArray)
+            if (!reference.Type.GetImplementingType().IsGenericType)
+                throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>");
+
+            else if (reference.Type.GetImplementingType().HasInterface<IDictionary>())
             {
-                if (mode != SerializationMode.None)
-                    throw new RecursiveSerializerException(reference.Type, "Array SerializationMode should be set to None");
+                var arguments = reference.Type.GetImplementingType().GetGenericArguments();
 
-                var elementType = reference.Type.GetImplementingType().GetElementType();       // ARRAY ONLY
+                if (arguments.Length != 2)
+                    throw new RecursiveSerializerException(reference.Type, "Invalid IDictionary argument list for PropertySerializer");
 
-                return new DeserializationCollection(reference, memberInfo, definitions, elementType, childCount, interfaceType);
+                var argument = reference.Type.GetImplementingType().GetGenericArguments()[0];
+
+                if (argument == null)
+                    throw new RecursiveSerializerException(reference.Type, "Invalid IDictionary argument list for PropertySerializer");
+
+                return new DeserializationCollection(reference, memberInfo, definitions, argument, childCount, CollectionInterfaceType.IDictionary);
             }
-            // GENERIC ENUMERABLE
+            else if (reference.Type.GetImplementingType().HasInterface<IList>())
+            {
+                var argument = reference.Type.GetImplementingType().GetGenericArguments()[0];
+
+                if (argument == null)
+                    throw new RecursiveSerializerException(reference.Type, "Invalid IList argument for PropertySerializer");
+
+                return new DeserializationCollection(reference, memberInfo, definitions, argument, childCount, CollectionInterfaceType.IList);
+            }
             else
-            {
-                if (!reference.Type.GetImplementingType().IsGenericType)
-                    throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>");
-
-                else if (reference.Type.GetImplementingType().HasInterface<IDictionary>())
-                {
-                    var arguments = reference.Type.GetImplementingType().GetGenericArguments();
-
-                    if (arguments.Length != 2)
-                        throw new RecursiveSerializerException(reference.Type, "Invalid IDictionary argument list for PropertySerializer");
-
-                    var argument = reference.Type.GetImplementingType().GetGenericArguments()[0];
-
-                    if (argument == null)
-                        throw new RecursiveSerializerException(reference.Type, "Invalid IDictionary argument list for PropertySerializer");
-
-                    return new DeserializationCollection(reference, memberInfo, definitions, argument, childCount, CollectionInterfaceType.IDictionary);
-                }
-                else if (reference.Type.GetImplementingType().HasInterface<IList>())
-                {
-                    var argument = reference.Type.GetImplementingType().GetGenericArguments()[0];
-
-                    if (argument == null)
-                        throw new RecursiveSerializerException(reference.Type, "Invalid IList argument for PropertySerializer");
-
-                    return new DeserializationCollection(reference, memberInfo, definitions, argument, childCount, CollectionInterfaceType.IList);
-                }
-                else
-                    throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>");
-            }
+                throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>");
         }
 
         internal DeserializationObjectBase CreateNullReference(HashedObjectReference reference, SerializationMode mode)

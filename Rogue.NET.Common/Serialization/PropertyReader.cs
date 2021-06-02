@@ -1,4 +1,5 @@
 ﻿
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Planning;
 
 using System;
@@ -10,7 +11,7 @@ namespace Rogue.NET.Common.Serialization
     /// <summary>
     /// Reads properties (from serialization backend) for the invoker
     /// </summary>
-    public class PropertyReader
+    public class PropertyReader : IPropertyReader
     {
         readonly IDictionary<string, PropertyResolvedInfo> _properties;
 
@@ -23,7 +24,7 @@ namespace Rogue.NET.Common.Serialization
 
         public T Read<T>(string propertyName)
         {
-            if (_properties.ContainsKey(propertyName))
+            if (!_properties.ContainsKey(propertyName))
                 throw new ArgumentException("Property not present in the underlying stream:  " + propertyName);
 
             if (!_properties[propertyName].PropertyType.Equals(typeof(T)))

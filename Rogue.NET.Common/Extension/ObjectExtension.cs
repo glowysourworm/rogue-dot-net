@@ -93,5 +93,17 @@ namespace Rogue.NET.Common.Extension
 
             return hash;
         }
+
+        /// <summary>
+        /// Creates formatted string of object data using property reflection
+        /// </summary>
+        public static string FormatToString<T>(this T theObject)
+        {
+            var properties = typeof(T).GetProperties();
+
+            var result = string.Join(", ", properties.Select(property => property.Name + "=" + property.GetValue(theObject)?.ToString()));
+
+            return "{" + result + " }";
+        }
     }
 }

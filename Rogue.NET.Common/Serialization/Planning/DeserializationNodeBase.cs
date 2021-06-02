@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Target;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Target;
 
 namespace Rogue.NET.Common.Serialization.Planning
 {
@@ -18,6 +19,11 @@ namespace Rogue.NET.Common.Serialization.Planning
         {
             this.NodeObject = nodeObject;
             this.Property = definition;
+        }
+
+        public override string ToString()
+        {
+            return this.FormatToString();
         }
     }
 }

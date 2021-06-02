@@ -172,50 +172,38 @@ namespace Rogue.NET.Common.Serialization.Target
             // Validates type and SerializationMode
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
 
-            // ARRAY
-            if (info.Type.GetImplementingType().IsArray)
-            {
-                var childType = info.Type.GetImplementingType().GetElementType();       // ARRAY ONLY
-                var array = info.GetObject() as Array;
+            if (!info.Type.GetImplementingType().IsGenericType)
+                throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.DeclaringType);
 
-                return new SerializationCollection(info, memberInfo, array, array.Length, CollectionInterfaceType.Array, childType);
+            else if (info.GetObject().ImplementsInterface<IDictionary>())
+            {
+                var arguments = info.Type.GetImplementingType().GetGenericArguments();
+
+                if (arguments.Length != 2)
+                    throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.DeclaringType);
+
+                var argument = (info.GetObject() as IEnumerable).GetType().GetGenericArguments()[0];
+
+                if (argument == null)
+                    throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.DeclaringType);
+
+                var dictionary = info.GetObject() as IDictionary;
+
+                return new SerializationCollection(info, memberInfo, dictionary, dictionary.Count, CollectionInterfaceType.IDictionary, argument);
             }
-            // GENERIC ENUMERABLE
+            else if (info.GetObject().ImplementsInterface<IList>())
+            {
+                var argument = (info.GetObject() as IEnumerable).GetType().GetGenericArguments()[0];
+
+                if (argument == null)
+                    throw new Exception("Invalid IList argument for PropertySerializer: " + info.Type.DeclaringType);
+
+                var list = info.GetObject() as IList;
+
+                return new SerializationCollection(info, memberInfo, list, list.Count, CollectionInterfaceType.IList, argument);
+            }
             else
-            {
-                if (!info.Type.GetImplementingType().IsGenericType)
-                    throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.DeclaringType);
-
-                else if (info.GetObject().ImplementsInterface<IDictionary>())
-                {
-                    var arguments = info.Type.GetImplementingType().GetGenericArguments();
-
-                    if (arguments.Length != 2)
-                        throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.DeclaringType);
-
-                    var argument = (info.GetObject() as IEnumerable).GetType().GetGenericArguments()[0];
-
-                    if (argument == null)
-                        throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.DeclaringType);
-
-                    var dictionary = info.GetObject() as IDictionary;
-
-                    return new SerializationCollection(info, memberInfo, dictionary, dictionary.Count, CollectionInterfaceType.IDictionary, argument);
-                }
-                else if (info.GetObject().ImplementsInterface<IList>())
-                {
-                    var argument = (info.GetObject() as IEnumerable).GetType().GetGenericArguments()[0];
-
-                    if (argument == null)
-                        throw new Exception("Invalid IList argument for PropertySerializer: " + info.Type.DeclaringType);
-
-                    var list = info.GetObject() as IList;
-
-                    return new SerializationCollection(info, memberInfo, list, list.Count, CollectionInterfaceType.IList, argument);
-                }
-                else
-                    throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.DeclaringType);
-            }
+                throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.DeclaringType);
         }
 
         private SerializationObjectBase CreatePrimitive(HashedObjectInfo info)

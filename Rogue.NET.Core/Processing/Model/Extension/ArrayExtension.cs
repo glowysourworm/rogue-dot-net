@@ -2,11 +2,10 @@
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
-using Rogue.NET.Core.Processing.Model.Content.Calculator;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace Rogue.NET.Core.Processing.Model.Extension
@@ -132,7 +131,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// <summary>
         /// Returns 4-way adjacent cells - nulls excluded
         /// </summary>
-        public static T[] GetCardinalAdjacentElements<T>(this T[,] grid, int column, int row) where T : class
+        public static T[] GetCardinalAdjacentElements<T>(this T[,] grid, int column, int row)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -160,7 +159,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// <summary>
         /// Returns 8-way adjacent cells - stripping out nulls
         /// </summary>
-        public static T[] GetAdjacentElements<T>(this T[,] grid, int column, int row) where T : class
+        public static T[] GetAdjacentElements<T>(this T[,] grid, int column, int row)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -201,7 +200,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// Returns adjacent elements that are reachable by a cardinal one. Example:  NW is connected if it is
         /// non-null; and N is also non-null.
         /// </summary>
-        public static T[] GetAdjacentElementsWithCardinalConnection<T>(this T[,] grid, int column, int row) where T : class
+        public static T[] GetAdjacentElementsWithCardinalConnection<T>(this T[,] grid, int column, int row)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -242,7 +241,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// Returns all elements within the specified distance from the given location (using the Roguian metric). Method does
         /// not strip out null elements; but checks boundaries to prevent exceptions.
         /// </summary>
-        public static T[] GetElementsNearUnsafe<T>(this T[,] grid, int column, int row, int distance) where T : class
+        public static T[] GetElementsNearUnsafe<T>(this T[,] grid, int column, int row, int distance)
         {
             // Calculate the array result length
             var sumSequence = 0;
@@ -284,7 +283,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// Returns 8-way adjacent cells - leaving nulls; but checking boundaries to prevent exceptions. 
         /// NOTE*** This will return null references for possible element positions ONLY.
         /// </summary>
-        public static T[] GetAdjacentElementsUnsafe<T>(this T[,] grid, int column, int row) where T : class
+        public static T[] GetAdjacentElementsUnsafe<T>(this T[,] grid, int column, int row)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -338,7 +337,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// Returns 4-way adjacent cells - leaving nulls; but checking boundaries to prevent exceptions. 
         /// NOTE*** This will return null references for possible element positions ONLY.
         /// </summary>
-        public static T[] GetCardinalAdjacentElementsUnsafe<T>(this T[,] grid, int column, int row) where T : class
+        public static T[] GetCardinalAdjacentElementsUnsafe<T>(this T[,] grid, int column, int row)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -391,87 +390,9 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
-        /// Returns 4-way adjacent cell values
-        /// </summary>
-        public static T[] GetCardinalAdjacentValues<T>(this T[,] grid, int column, int row) where T : struct
-        {
-            var n = grid.Get(column, row - 1);
-            var s = grid.Get(column, row + 1);
-            var e = grid.Get(column + 1, row);
-            var w = grid.Get(column - 1, row);
-
-            // Need this to be optimized for speed
-            var count = 0;
-            var north = (row - 1 >= 0);
-            var south = (row + 1 < grid.GetLength(1));
-            var east = (column + 1 < grid.GetLength(0));
-            var west = (column - 1 >= 0);
-
-            if (north) count++;
-            if (south) count++;
-            if (east) count++;
-            if (west) count++;
-
-            var result = new T[count];
-            var index = 0;
-
-            if (north) result[index++] = n;
-            if (south) result[index++] = s;
-            if (east) result[index++] = e;
-            if (west) result[index++] = w;
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns 8-way adjacent cell values
-        /// </summary>
-        public static T[] GetAdjacentValues<T>(this T[,] grid, int column, int row) where T : struct
-        {
-            var n = grid.Get(column, row - 1);
-            var s = grid.Get(column, row + 1);
-            var e = grid.Get(column + 1, row);
-            var w = grid.Get(column - 1, row);
-            var ne = grid.Get(column + 1, row - 1);
-            var nw = grid.Get(column - 1, row - 1);
-            var se = grid.Get(column + 1, row + 1);
-            var sw = grid.Get(column - 1, row + 1);
-
-            var north = (row - 1 >= 0);
-            var south = (row + 1 < grid.GetLength(1));
-            var east = (column + 1 < grid.GetLength(0));
-            var west = (column - 1 >= 0);
-
-            // Need this to be optimized for speed
-            var count = 0;
-            if (north) count++;
-            if (south) count++;
-            if (east) count++;
-            if (west) count++;
-            if (north && east) count++;
-            if (north && west) count++;
-            if (south && east) count++;
-            if (south && west) count++;
-
-            var result = new T[count];
-            var index = 0;
-
-            if (north) result[index++] = n;
-            if (south) result[index++] = s;
-            if (east) result[index++] = e;
-            if (west) result[index++] = w;
-            if (north && east) result[index++] = ne;
-            if (north && west) result[index++] = nw;
-            if (south && east) result[index++] = se;
-            if (south && west) result[index++] = sw;
-
-            return result;
-        }
-
-        /// <summary>
         /// Returns locators for the adjacent elements whose values are non-null; and in bounds
         /// </summary>
-        public static IGridLocator[] GetAdjacentElementLocators<T>(this T[,] grid, int column, int row) where T : class
+        public static IGridLocator[] GetAdjacentElementLocators<T>(this T[,] grid, int column, int row)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -511,7 +432,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// <summary>
         /// Returns locators for the adjacent elements whose values are non-null; and in bounds
         /// </summary>
-        public static IGridLocator[] GetCardinalAdjacentElementLocators<T>(this T[,] grid, int column, int row) where T : class
+        public static IGridLocator[] GetCardinalAdjacentElementLocators<T>(this T[,] grid, int column, int row)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -537,73 +458,9 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         }
 
         /// <summary>
-        /// Returns locators for 8-way adjacent values that are in bounds
-        /// </summary>
-        public static IGridLocator[] GetAdjacentValueLocators<T>(this T[,] grid, int column, int row) where T : struct
-        {
-            var north = (row - 1 >= 0);
-            var south = (row + 1 < grid.GetLength(1));
-            var east = (column + 1 < grid.GetLength(0));
-            var west = (column - 1 >= 0);
-
-            // Need this to be optimized for speed
-            var count = 0;
-            if (north) count++;
-            if (south) count++;
-            if (east) count++;
-            if (west) count++;
-            if (north && east) count++;
-            if (north && west) count++;
-            if (south && east) count++;
-            if (south && west) count++;
-
-            var result = new IGridLocator[count];
-            var index = 0;
-
-            if (north) result[index++] = grid.CreateLocator(column, row - 1);
-            if (south) result[index++] = grid.CreateLocator(column, row + 1);
-            if (east) result[index++] = grid.CreateLocator(column + 1, row);
-            if (west) result[index++] = grid.CreateLocator(column - 1, row);
-            if (north && east) result[index++] = grid.CreateLocator(column + 1, row - 1);
-            if (north && west) result[index++] = grid.CreateLocator(column - 1, row - 1);
-            if (south && east) result[index++] = grid.CreateLocator(column + 1, row + 1);
-            if (south && west) result[index++] = grid.CreateLocator(column - 1, row + 1);
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns locators for 4-way adjacent values that are in bounds
-        /// </summary>
-        public static IGridLocator[] GetCardinalAdjacentValueLocators<T>(this T[,] grid, int column, int row) where T : struct
-        {
-            var north = (row - 1 >= 0);
-            var south = (row + 1 < grid.GetLength(1));
-            var east = (column + 1 < grid.GetLength(0));
-            var west = (column - 1 >= 0);
-
-            // Need this to be optimized for speed
-            var count = 0;
-            if (north) count++;
-            if (south) count++;
-            if (east) count++;
-            if (west) count++;
-
-            var result = new IGridLocator[count];
-            var index = 0;
-
-            if (north) result[index++] = grid.CreateLocator(column, row - 1);
-            if (south) result[index++] = grid.CreateLocator(column, row + 1);
-            if (east) result[index++] = grid.CreateLocator(column + 1, row);
-            if (west) result[index++] = grid.CreateLocator(column - 1, row);
-
-            return result;
-        }
-
-        /// <summary>
         /// Retusn cardinally adjacent elements that pass the given predicate - stripping out nulls
         /// </summary>
-        public static IGridLocator[] GetCardinalAdjacentLocatorsFor<T>(this T[,] grid, int column, int row, GridPredicate<T> predicate) where T : class
+        public static IGridLocator[] GetCardinalAdjacentLocatorsFor<T>(this T[,] grid, int column, int row, GridPredicate<T> predicate)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -631,7 +488,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// <summary>
         /// Retusn cardinally adjacent elements that pass the given predicate - leaving in null elements
         /// </summary>
-        public static IGridLocator[] GetCardinalAdjacentLocatorsForUnsafe<T>(this T[,] grid, int column, int row, GridPredicate<T> predicate) where T : class
+        public static IGridLocator[] GetCardinalAdjacentLocatorsForUnsafe<T>(this T[,] grid, int column, int row, GridPredicate<T> predicate)
         {
             var n = grid.Get(column, row - 1);
             var s = grid.Get(column, row + 1);
@@ -694,7 +551,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// Returns true if any adjacent elements are positive with respect to the provided predicate OR are 
         /// out of bounds OR are null.
         /// </summary>
-        public static bool IsEdgeElement<T>(this T[,] grid, int column, int row, Func<T, bool> predicate) where T : class
+        public static bool IsEdgeElement<T>(this T[,] grid, int column, int row, Func<T, bool> predicate)
         {
             var north = grid.Get(column, row - 1);
             var south = grid.Get(column, row + 1);

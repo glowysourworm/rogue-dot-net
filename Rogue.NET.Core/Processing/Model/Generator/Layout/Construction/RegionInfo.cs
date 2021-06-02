@@ -85,7 +85,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
                         {
                             var location = grid[column, row] as GridLocation;
 
-                            hashToExtend = grid.CreateHashCode(location);       // HAS ITS OWN STRUCT-LIKE HASH CODE
+                            hashToExtend = hashToExtend.ExtendHashCode(location);       // HAS ITS OWN STRUCT-LIKE HASH CODE
                         }
                         else if (grid[column, row] is GridCellInfo)
                         {
@@ -94,24 +94,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
                             // Do collections first
                             foreach (var element in cell.TerrainLights)
                             {
-                                hashToExtend = grid.CreateHashCode(element.Key);
-                                hashToExtend = grid.CreateHashCode(element.Value);  // LIGHT HAS ITS OWN HASH CODE
+                                hashToExtend = hashToExtend.ExtendHashCode(element.Key);
+                                hashToExtend = hashToExtend.ExtendHashCode(element.Value);  // LIGHT HAS ITS OWN HASH CODE
                             }
 
-                            hashToExtend = grid.CreateHashCode(cell.AccentLight,    // LIGHT HAS ITS OWN HASH CODE
-                                                               cell.AmbientLight,
-                                                               cell.Column,
-                                                               cell.DoorSearchCounter,
-                                                               // cell.IsConnectionSupport,
-                                                               cell.IsCorridor,
-                                                               cell.IsDoor,
-                                                               cell.IsTerrainSupport,
-                                                               cell.IsWall,
-                                                               cell.IsWallLight,
-                                                               cell.Location,       // LOCATION HAS ITS OWN HASH CODE
-                                                               cell.Row,
-                                                               cell.Type,
-                                                               cell.WallLight);
+                            hashToExtend = hashToExtend.ExtendHashCode(cell.AccentLight,    // LIGHT HAS ITS OWN HASH CODE
+                                                                       cell.AmbientLight,
+                                                                       cell.Column,
+                                                                       cell.DoorSearchCounter,
+                                                                       // cell.IsConnectionSupport,
+                                                                       cell.IsCorridor,
+                                                                       cell.IsDoor,
+                                                                       cell.IsTerrainSupport,
+                                                                       cell.IsWall,
+                                                                       cell.IsWallLight,
+                                                                       cell.Location,       // LOCATION HAS ITS OWN HASH CODE
+                                                                       cell.Row,
+                                                                       cell.Type,
+                                                                       cell.WallLight);
                         }
                         else
                             throw new Exception("Unhandled Grid<T> Type:  RegionInfo.GetGridHashCode");

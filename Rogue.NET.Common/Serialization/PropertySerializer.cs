@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Formatter;
 using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Common.Serialization.Manifest;
 using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
 
@@ -22,13 +23,18 @@ namespace Rogue.NET.Common.Serialization
         // Collection of UNIQUE objects that HAVE BEEN SERIALIZED
         Dictionary<HashedObjectInfo, SerializationObjectBase> _serializedObjects;
 
+        // TYPE TABLE
         IList<HashedType> _typeTable;
+
+        // ORDERED NODE MANIFEST
+        IList<SerializedNodeManifest> _outputManifest;
 
         internal PropertySerializer()
         {
             _primitiveFormatters = new Dictionary<Type, IBaseFormatter>();
             _serializedObjects = new Dictionary<HashedObjectInfo, SerializationObjectBase>();
             _hashedTypeFormatter = new HashedTypeFormatter();
+            _outputManifest = new List<SerializedNodeManifest>();
         }
 
         internal void Serialize<T>(Stream stream, T theObject)
@@ -38,8 +44,8 @@ namespace Rogue.NET.Common.Serialization
             // Procedure
             //
             // 1) Run the planner to create reference dictionary and node tree
-            // 2) STORE TYPE TABLE (KEEPS TRACK OF IMPLEMETING TYPE DISCREPANCIES)
-            // 3) STORE SPECIFIED MODE TABLE (Objects that have specified properties)
+            // 2) STORE TYPE TABLE
+            // 3) STORE PROPERTY TABLE (BY HASHED TYPE)
             // 4) (Recurse) Serialize the node graph OBJECTS
             // 5) Validate OUR serialized objects against the ISerializationPlan
             //
@@ -48,37 +54,41 @@ namespace Rogue.NET.Common.Serialization
             var plan = planner.Plan(theObject);
 
             // Collect discrepancies
-            var typeDiscrepancies = plan.AllSerializedObjects
-                                        .Where(serializedObject => serializedObject.ObjectInfo.Type.HasTypeDiscrepancy())
+            var serializedTypes = plan.AllSerializedObjects
                                         .Select(serializedObject => serializedObject.ObjectInfo.Type)
-                                        .Distinct()
+                                        .DistinctBy(type => type.GetHashCode())
                                         .ToList();
 
             // Store TYPE TABLE for the manifest
-            _typeTable = new List<HashedType>(typeDiscrepancies);
+            _typeTable = new List<HashedType>(serializedTypes);
 
             // TYPE TABLE COUNT
-            Write<int>(stream, typeDiscrepancies.Count);
+            Write<int>(stream, serializedTypes.Count);
 
             // TYPE TABLE
-            foreach (var type in typeDiscrepancies)
+            foreach (var type in serializedTypes)
                 _hashedTypeFormatter.Write(stream, type);
 
             // Collect unique object types in SPECIFIED MODE
-            var specifiedObjects = plan.UniqueReferenceDict
+            var referenceObjects = plan.UniqueReferenceDict
                                        .Values
                                        .Where(objectBase => objectBase.Mode == SerializationMode.Specified)
-                                       .DistinctBy(objectBase => objectBase.ObjectInfo.Type.GetHashCode())
+
+                                       // Possibility to have collisions based on GetHashCode() in the user code
+                                       .DistinctBy(objectBase => objectBase.ObjectInfo.GetHashCode())
                                        .ToList();
 
-            // SPECIFIED MODE TABLE
-            Write<int>(stream, specifiedObjects.Count);
+            // PROPERTY TABLE (SPECIFIED MODE ONLY)
+            Write<int>(stream, referenceObjects.Count);
 
-            foreach (var objectBase in specifiedObjects)
+            foreach (var objectBase in referenceObjects)
             {
                 var properties = objectBase.GetProperties();
 
-                // TYPE HASH CODE - AS REFERENCE WHEN DESERIALIZING TO FETCH PLANNED PROPERTIES
+                // OBJECT HASH CODE - AS REFERENCE WHEN DESERIALIZING TO FETCH PLANNED PROPERTIES
+                Write<int>(stream, objectBase.ObjectInfo.GetHashCode());
+
+                // TYPE HASH CODE (AS REFERENCE)
                 Write<int>(stream, objectBase.ObjectInfo.Type.GetHashCode());
 
                 // PROPERTY COUNT
@@ -113,6 +123,11 @@ namespace Rogue.NET.Common.Serialization
         internal IEnumerable<HashedType> GetTypeTable()
         {
             return _typeTable;
+        }
+
+        internal IList<SerializedNodeManifest> GetManifest()
+        {
+            return _outputManifest;
         }
 
         private void SerializeRecurse(Stream stream, SerializationNodeBase node)
@@ -163,24 +178,11 @@ namespace Rogue.NET.Common.Serialization
             //
             //     For COLLECTIONS, also store the child count, and the CollectionInterfaceType ENUM. 
             //
-            // Serialize:  [ Null Primitive = 0, Serialization Mode, Hashed Type Code ]
-            // Serialize:  [ Null = 1,           Serialization Mode, Hashed Type Code ]
-            // Serialize:  [ Primitive = 2,      Serialization Mode, Hashed Type Code, Primitive Value ]
-            // Serialize:  [ Value = 3,          Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
-            // Serialize:  [ Object = 4,         Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
-            // Serialize:  [ Reference = 5,      Serialization Mode, Hashed Type Code, Hash Object Info Code ]
-            // Serialize:  [ Collection = 6,     Serialization Mode, Hashed Type Code, Hash Object Info Code,
-            //                                   Child Count,
-            //                                   Collection Interface Type ] (loop) Children (Recruse Sub-graphs)
-            //
 
             // PRIMITIVE NULL
             if (nodeObject is SerializationNullPrimitive)
             {
-                // Serialize:  [ NullPrimitive = 0, Serialization Mode, Hashed Type Code ]
-                Write(stream, SerializedNodeType.NullPrimitive);
-                Write(stream, nodeObject.Mode);
-                Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
+                WriteNode(stream, SerializedNodeType.NullPrimitive, nodeObject.Mode, nodeObject);
 
                 return;
             }
@@ -188,10 +190,7 @@ namespace Rogue.NET.Common.Serialization
             // NULL
             else if (nodeObject is SerializationNullObject)
             {
-                // Serialize:  [ Null = 1, Serialization Mode, Hashed Type Code ]
-                Write(stream, SerializedNodeType.Null);
-                Write(stream, nodeObject.Mode);
-                Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
+                WriteNode(stream, SerializedNodeType.Null, nodeObject.Mode, nodeObject);
 
                 return;
             }
@@ -199,11 +198,7 @@ namespace Rogue.NET.Common.Serialization
             // PRIMITIVE
             else if (nodeObject is SerializationPrimitive)
             {
-                // Serialize:  [ Primitive = 2, Serialization Mode, Hashed Type Code, Primitive Value ]
-                Write(stream, SerializedNodeType.Primitive);
-                Write(stream, nodeObject.Mode);
-                Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
-                Write(stream, nodeObject.ObjectInfo.GetObject(), nodeObject.ObjectInfo.Type.GetImplementingType());
+                WriteNode(stream, SerializedNodeType.Primitive, nodeObject.Mode, nodeObject);
 
                 return;
             }
@@ -213,11 +208,7 @@ namespace Rogue.NET.Common.Serialization
             // REFERENCE
             if (nodeObject is SerializationReference)
             {
-                // Serialize:  [ Reference = 5, Serialization Mode, Hashed Type Code, Hash Object Info Code ]
-                Write(stream, SerializedNodeType.Reference);
-                Write(stream, nodeObject.Mode);
-                Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
-                Write(stream, nodeObject.ObjectInfo.GetHashCode());
+                WriteNode(stream, SerializedNodeType.Reference, nodeObject.Mode, nodeObject);
 
                 return;
             }
@@ -231,36 +222,98 @@ namespace Rogue.NET.Common.Serialization
             // VALUE (Either new sub-graph OR reference to serialized object)
             if (nodeObject is SerializationValue)
             {
-                // (STRUCT) Serialize:  [Value = 3, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
-                Write(stream, SerializedNodeType.Value);
-                Write(stream, nodeObject.Mode);
-                Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
-                Write(stream, nodeObject.ObjectInfo.GetHashCode());
+                WriteNode(stream, SerializedNodeType.Value, nodeObject.Mode, nodeObject);
             }
 
             // OBJECT (Either new sub-graph OR reference to serialized object)
             else if (nodeObject is SerializationObject)
             {
-                // (CLASS) Serialize:  [Object = 4, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
-                Write(stream, SerializedNodeType.Object);
-                Write(stream, nodeObject.Mode);
-                Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
-                Write(stream, nodeObject.ObjectInfo.GetHashCode());
+                WriteNode(stream, SerializedNodeType.Object, nodeObject.Mode, nodeObject);
             }
 
             // COLLECTION
             else if (nodeObject is SerializationCollection)
             {
-                // Serialize:  [ Collection = 6, Hashed Type Code, Hash Object Info Code, Child Count ] (loop) Children (Recruse Sub-graphs)
-                Write(stream, SerializedNodeType.Collection);
-                Write(stream, nodeObject.Mode);
-                Write(stream, nodeObject.ObjectInfo.Type.GetHashCode());
-                Write(stream, nodeObject.ObjectInfo.GetHashCode());
-                Write(stream, (nodeObject as SerializationCollection).Count);
-                Write(stream, (nodeObject as SerializationCollection).InterfaceType);
+                WriteNode(stream, SerializedNodeType.Collection, nodeObject.Mode, nodeObject);
             }
             else
                 throw new Exception("Invalid SerializationObjectBase PropertySerializer.SerializeNodeObject");
+        }
+
+        private void WriteNode(Stream stream, 
+                               SerializedNodeType type, 
+                               SerializationMode mode, 
+                               SerializationObjectBase nodeObject)
+        {
+            // Serialize:  [ Null Primitive = 0, Serialization Mode, Hashed Type Code ]
+            // Serialize:  [ Null = 1,           Serialization Mode, Hashed Type Code ]
+            // Serialize:  [ Primitive = 2,      Serialization Mode, Hashed Type Code, Primitive Value ]
+            // Serialize:  [ Value = 3,          Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
+            // Serialize:  [ Object = 4,         Serialization Mode, Hashed Type Code, Hash Object Info Code ] (Recruse Sub - graph)
+            // Serialize:  [ Reference = 5,      Serialization Mode, Hashed Type Code, Hash Object Info Code ]
+            // Serialize:  [ Collection = 6,     Serialization Mode, Hashed Type Code, Hash Object Info Code,
+            //                                   Child Count,
+            //                                   Collection Interface Type ] (loop) Children (Recruse Sub-graphs)
+
+            var manifest = new SerializedNodeManifest();
+
+            var objectInfo = nodeObject.ObjectInfo;
+            var objectType = nodeObject.ObjectInfo.Type;
+
+            Write(stream, type);
+            Write(stream, mode);
+            Write(stream, objectType.GetHashCode());
+
+            // Write manifest
+            manifest.Assembly = objectType.DeclaringAssembly;
+            manifest.GenericArgumentTypes = objectType.DeclaringGenericArguments.Select(hashedType => hashedType.ToString()).ToArray();
+            manifest.IsGeneric = objectType.DeclaringIsGeneric;
+            manifest.Mode = mode;
+            manifest.Node = type;
+            manifest.NodeTypeHashCode = objectType.GetHashCode();
+            manifest.Type = objectType.ToString();
+            manifest.ObjectHashCode = objectInfo.GetHashCode();
+
+            switch (type)
+            {
+                case SerializedNodeType.NullPrimitive:
+                case SerializedNodeType.Null:
+                    // Write manifest
+                    //manifest.ObjectHashCode = 0;
+                    break;
+
+                case SerializedNodeType.Primitive:
+                    Write(stream, objectInfo.GetObject(), objectType.GetImplementingType());
+
+                    // Write manifest
+                    //manifest.ObjectHashCode = objectInfo.GetHashCode();
+                    break;
+
+                case SerializedNodeType.Value:
+                case SerializedNodeType.Object:
+                case SerializedNodeType.Reference:
+                    Write(stream, objectInfo.GetHashCode());
+
+                    // Write manifest
+                    //manifest.ObjectHashCode = objectInfo.GetHashCode();
+                    break;
+
+                case SerializedNodeType.Collection:
+                    Write(stream, objectInfo.GetHashCode());
+                    Write(stream, (nodeObject as SerializationCollection).Count);
+                    Write(stream, (nodeObject as SerializationCollection).InterfaceType);
+
+                    // Write manifest
+                    //manifest.ObjectHashCode = objectInfo.GetHashCode();
+                    manifest.CollectionCount = (nodeObject as SerializationCollection).Count;
+                    manifest.CollectionType = (nodeObject as SerializationCollection).InterfaceType;
+                    break;
+                default:
+                    throw new Exception("Unhandled SerializedNodeType PropertySerializer.cs");
+            }
+
+            // STORE MANIFEST OBJECT
+            _outputManifest.Add(manifest);
         }
 
         private void Write(Stream stream, object theObject, Type theObjectType)

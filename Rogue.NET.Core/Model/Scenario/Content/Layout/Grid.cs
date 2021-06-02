@@ -1,8 +1,14 @@
 ﻿using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+using Rogue.NET.Core.Processing.Model.Algorithm;
 using Rogue.NET.Core.Processing.Model.Extension;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using static Rogue.NET.Core.Processing.Model.Extension.ArrayExtension;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -156,6 +162,35 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 writer.Write("Item" + counter, element.Value);
                 writer.Write("ItemLocation" + counter++, element.Key);
             }
+        }
+
+        // Array Extension
+        public IEnumerable<T> GetAdjacentElements(int column, int row)
+        {
+            return _grid.GetAdjacentElements(column, row);
+        }
+        public IEnumerable<T> GetCardinalAdjacentElements(int column, int row)
+        {
+            return _grid.GetCardinalAdjacentElements(column, row);
+        }
+        public T GetOffDiagonalElement1(int column, int row, Compass direction, out Compass cardinalDirection1)
+        {
+            return _grid.GetOffDiagonalElement1(column, row, direction, out cardinalDirection1);
+        }
+        public T GetOffDiagonalElement2(int column, int row, Compass direction, out Compass cardinalDirection2)
+        {
+            return _grid.GetOffDiagonalElement2(column, row, direction, out cardinalDirection2);
+        }
+        public void IterateAround(int column, int row, int range, GridPredicate<T> continuationPredicate)
+        {
+            _grid.IterateAround(column, row, range, continuationPredicate);
+        }
+
+
+        // Grid Algorithm (T : class, IGridLocator)
+        public IEnumerable<Region<TRegion>> ScanRectangularRegions<TRegion>(int rectangleWidth, int rectangleHeight, Func<T, bool> predicate, Func<T, TRegion> selector) where TRegion : class, IGridLocator
+        {
+            return _grid.ScanRectanglarRegions(rectangleWidth, rectangleHeight, predicate, selector);
         }
     }
 }

@@ -271,6 +271,7 @@
     <Compile Include="Serialization\Interface\IPropertyWriter.cs" />
     <Compile Include="Serialization\Interface\IRecursiveSerializable.cs" />
     <Compile Include="Serialization\Interface\ISerializationPlan.cs" />
+    <Compile Include="Serialization\Manifest\SerializedNodeDifference.cs" />
     <Compile Include="Serialization\Manifest\SerializedNodeManifest.cs" />
     <Compile Include="Serialization\Manifest\SerializedTypeManifest.cs" />
     <Compile Include="Serialization\Planning\DeserializationCollectionNode.cs" />

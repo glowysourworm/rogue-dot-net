@@ -53,7 +53,7 @@ namespace Rogue.NET.Common.Serialization
                 Node = GetNodeType(node),
                 Mode = node.Mode,
                 CollectionCount = (node as SerializationCollection)?.Count ?? 0,
-                CollectionType = (node as SerializationCollection)?.InterfaceType ?? CollectionInterfaceType.Array,
+                CollectionType = (node as SerializationCollection)?.InterfaceType ?? CollectionInterfaceType.IList,
                 Type = node.ObjectInfo.Type.DeclaringType,
                 Assembly = node.ObjectInfo.Type.DeclaringAssembly,
                 IsGeneric = node.ObjectInfo.Type.DeclaringIsGeneric,
@@ -70,13 +70,42 @@ namespace Rogue.NET.Common.Serialization
                 // Mode not kept for deserialization - but is used to validate the data
                 Mode = Planning.SerializationMode.None,
                 CollectionCount = (node as DeserializationCollection)?.Count ?? 0,
-                CollectionType = (node as DeserializationCollection)?.InterfaceType ?? CollectionInterfaceType.Array,
+                CollectionType = (node as DeserializationCollection)?.InterfaceType ?? CollectionInterfaceType.IList,
                 Type = node.Reference.Type.DeclaringType,
                 Assembly = node.Reference.Type.DeclaringAssembly,
                 IsGeneric = node.Reference.Type.DeclaringIsGeneric,
                 GenericArgumentTypes = node.Reference.Type.DeclaringGenericArguments.Select(x => x.DeclaringType).ToArray(),
                 NodeTypeHashCode = node.Reference.Type.GetHashCode(),
                 ObjectHashCode = node.Reference.GetHashCode()
+
+            }).ToList();
+        }
+
+        internal SerializationManifest(IEnumerable<HashedType> serializedTypeTable,
+                               IEnumerable<SerializedNodeManifest> serializerOutput,
+                               IEnumerable<HashedType> deserializedTypeTable,
+                               IEnumerable<SerializedNodeManifest> deserializerOutput)
+        {
+            this.SerializerOutput = new List<SerializedNodeManifest>(serializerOutput);
+            this.DeserializerOutput = new List<SerializedNodeManifest>(deserializerOutput);
+
+            this.SerializedTypeTable = serializedTypeTable.Select(type => new SerializedTypeManifest()
+            {
+                HashCode = type.GetHashCode(),
+                DeclaringAssembly = type.DeclaringAssembly,
+                DeclaringType = type.DeclaringType,
+                ImplementingAssembly = type.ImplementingAssembly,
+                ImplementingType = type.ImplementingType
+
+            }).ToList();
+
+            this.DeserializedTypeTable = deserializedTypeTable.Select(type => new SerializedTypeManifest()
+            {
+                HashCode = type.GetHashCode(),
+                DeclaringAssembly = type.DeclaringAssembly,
+                DeclaringType = type.DeclaringType,
+                ImplementingAssembly = type.ImplementingAssembly,
+                ImplementingType = type.ImplementingType
 
             }).ToList();
         }
