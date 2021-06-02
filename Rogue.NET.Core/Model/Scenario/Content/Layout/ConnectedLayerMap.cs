@@ -15,11 +15,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     {
         public RegionGraph ConnectionGraph { get; private set; }
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public ConnectedLayerMap() : base() { }
-
         public ConnectedLayerMap(string layerName,
                                  RegionGraph graph,
                                  IEnumerable<Region<GridLocation>> regions,
@@ -30,11 +25,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.ConnectionGraph = graph;
         }
 
-        public new void GetPropertyDefinitions(IPropertyPlanner planner)
+        public ConnectedLayerMap(IPropertyReader reader) : base(reader)
         {
-            base.GetPropertyDefinitions(planner);
-
-            planner.Define<RegionGraph>("ConnectionGraph");
+            this.ConnectionGraph = reader.Read<RegionGraph>("ConnectionGraph");
         }
 
         public new void GetProperties(IPropertyWriter writer)
@@ -44,11 +37,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             writer.Write("ConnectionGraph", this.ConnectionGraph);
         }
 
-        public new void SetProperties(IPropertyReader reader)
-        {
-            base.SetProperties(reader);
 
-            this.ConnectionGraph = reader.Read<RegionGraph>("ConnectionGraph");
-        }
     }
 }

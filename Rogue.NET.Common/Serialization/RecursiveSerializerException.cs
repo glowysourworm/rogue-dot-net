@@ -1,7 +1,6 @@
 ﻿using Rogue.NET.Common.Serialization.Target;
 
 using System;
-using System.Collections;
 
 namespace Rogue.NET.Common.Serialization
 {
@@ -19,14 +18,9 @@ namespace Rogue.NET.Common.Serialization
             this.Type = type;
         }
 
-        //public override IDictionary Data
-        //{
-        //    get
-        //    {
-        //        // this.Data.Add(this.Type.DeclaringType, this.Type);
-
-        //        return this.Data;
-        //    }
-        //}
+        internal RecursiveSerializerException(HashedType type, string message, Exception innerException) : base(message, new RecursiveSerializerInnerException(innerException))
+        {
+            this.Type = type;
+        }
     }
 }

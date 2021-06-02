@@ -62,8 +62,7 @@ namespace Rogue.NET.Common.Serialization.Planning
                 }
 
                 // Set properties using DeserializationObjectBase
-                if (collectionProperties.Any())
-                    collectionNode.NodeObject.WriteProperties(collectionProperties);
+                collectionNode.NodeObject.Construct(collectionProperties);
 
                 var resolvedChildNodes = new List<HashedObjectInfo>();
 
@@ -95,7 +94,7 @@ namespace Rogue.NET.Common.Serialization.Planning
                         resolvedChildNodes.Add(childNode.NodeObject.Resolve());
                 }
 
-                // FINALIZE COLLECTION
+                // FINALIZE COLLECTION (MUST HAVE CALLED Construct())
                 (collectionNode.NodeObject as DeserializationCollection).FinalizeCollection(resolvedChildNodes);
             }
             // NODE
@@ -119,7 +118,7 @@ namespace Rogue.NET.Common.Serialization.Planning
                 if (nextNode.NodeObject is DeserializationCollection ||
                     nextNode.NodeObject is DeserializationObject ||
                     nextNode.NodeObject is DeserializationValue)
-                    nextNode.NodeObject.WriteProperties(properties);
+                    nextNode.NodeObject.Construct(properties);
             }
             else
                 throw new Exception("Unhandled DeserializationNodeBase type:  PropertyDeserializer.DeserializeRecurse");

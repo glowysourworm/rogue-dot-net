@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
@@ -10,73 +11,82 @@ namespace Rogue.NET.Common.Serialization.Target
         // Object being constructed
         private object _defaultObject;
 
-        internal DeserializationObject(HashedObjectReference reference, RecursiveSerializerMemberInfo memberInfo) : base(reference, memberInfo)
+        // Property definitions
+        private IEnumerable<PropertyDefinition> _definitions;
+
+        internal DeserializationObject(HashedObjectReference reference, RecursiveSerializerMemberInfo memberInfo, IEnumerable<PropertyDefinition> definitions) : base(reference, memberInfo)
         {
-            Construct();
+            _definitions = definitions;
         }
 
-        protected override void Construct()
+        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
         {
+            return _definitions;
+        }
+
+        internal override void Construct(IEnumerable<PropertyResolvedInfo> resolvedProperties)
+        {
+            switch (this.MemberInfo.Mode)
+            {
+                case SerializationMode.Default:
+                    ConstructDefault(resolvedProperties);
+                    break;
+                case SerializationMode.Specified:
+                    ConstructSpecified(resolvedProperties);
+                    break;
+                case SerializationMode.None:
+                default:
+                    throw new Exception("Unhandled SerializationMode type:  DeserializationObject.cs");
+            }
+        }
+
+        private void ConstructDefault(IEnumerable<PropertyResolvedInfo> resolvedProperties)
+        {
+            // CONSTRUCT
             try
             {
                 _defaultObject = this.MemberInfo.ParameterlessConstructor.Invoke(new object[] { });
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format("Error trying to construct object of type {0}. Must have a parameterless constructor",
-                                                  this.Reference.Type.DeclaringType), ex);
+                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing from parameterless constructor", ex);
             }
-        }
 
-        protected override IEnumerable<PropertyDefinition> GetPropertyDefinitions(PropertyPlanner planner)
-        {
-            // No method Get
-            if (this.MemberInfo.PlanningMethod == null)
-                return planner.GetDefaultProperties(this.Reference.Type.GetImplementingType());
-
-            // CLEAR CURRENT CONTEXT
-            planner.ClearContext();
-
-            // CALL OBJECT'S GetPropertyDefinitions METHOD
+            // SET PROPERTIES
             try
             {
-                this.MemberInfo.PlanningMethod.Invoke(_defaultObject, new object[] { planner });
-            }
-            catch (Exception innerException)
-            {
-                throw new Exception("Error trying to read properties from " + this.Reference.Type.DeclaringType, innerException);
-            }
+                var allProperties = RecursiveSerializerStore.GetOrderedProperties(this.Reference.Type.GetImplementingType());
 
-            return planner.GetResult();
-        }
-
-        protected override void WriteProperties(PropertyReader reader)
-        {
-            // Set using reflection
-            if (this.MemberInfo.SetMethod == null)
-            {
-                foreach (var property in reader.Properties)
+                foreach (var property in resolvedProperties)
                 {
-                    // Get property info for THIS type
-                    var propertyInfo = this.Reference.Type.GetImplementingType().GetProperty(property.PropertyName);
+                    // LOCATE PROPERTY INFO
+                    var propertyInfo = allProperties.FirstOrDefault(info => info.Name == property.PropertyName && 
+                                                                            info.PropertyType.IsAssignableFrom(property.PropertyType));
 
-                    // Set property VALUE on our _defaultObject
-                    //
+                    if (propertyInfo == null)
+                        throw new Exception("Error locating property info:  " + propertyInfo.Name);
+
+                    // SAFE TO CALL GetObject() 
                     propertyInfo.SetValue(_defaultObject, property.ResolvedInfo.GetObject());
                 }
             }
-
-            else
+            catch (Exception ex)
             {
-                // CALL OBJECT'S SetProperties METHOD
-                try
-                {
-                    this.MemberInfo.SetMethod.Invoke(_defaultObject, new object[] { reader });
-                }
-                catch (Exception innerException)
-                {
-                    throw new Exception("Error trying to set properties from " + this.Reference.Type.DeclaringType, innerException);
-                }
+                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing object from properties", ex);
+            }
+        }
+
+        private void ConstructSpecified(IEnumerable<PropertyResolvedInfo> resolvedProperties)
+        {
+            var reader = new PropertyReader(resolvedProperties);
+
+            try
+            {
+                _defaultObject = this.MemberInfo.SpecifiedConstructor.Invoke(new object[] { reader });
+            }
+            catch (Exception ex)
+            {
+                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing from specified constructor", ex);
             }
         }
 

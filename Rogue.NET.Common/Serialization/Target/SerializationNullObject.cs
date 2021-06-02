@@ -11,7 +11,7 @@ namespace Rogue.NET.Common.Serialization.Target
         {
         }
 
-        internal override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
+        protected override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
         {
             throw new Exception("Invalid use of GetProperties for null-referenced object");
         }

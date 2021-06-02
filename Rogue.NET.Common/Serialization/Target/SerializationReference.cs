@@ -11,7 +11,7 @@ namespace Rogue.NET.Common.Serialization.Target
         {
         }
 
-        internal override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
+        protected override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
         {
             throw new NotSupportedException("Trying to get properties on a referenced serialized object - should not be recursing");
         }

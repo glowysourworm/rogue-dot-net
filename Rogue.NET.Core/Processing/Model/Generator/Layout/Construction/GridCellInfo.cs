@@ -143,15 +143,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             return true;
         }
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public GridCellInfo()
-        {
-            // SERIALIZATION ONLY
-            Initialize(0, 0);
-        }
-
         public GridCellInfo(GridLocation location)
         {
             Initialize(location.Column, location.Row);
@@ -161,6 +152,21 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             Initialize(column, row);
         }
 
+        public GridCellInfo(IPropertyReader reader)
+        {
+            this.Location = reader.Read<GridLocation>("Location");
+            this.IsDoor = reader.Read<bool>("IsDoor");
+            this.IsWall = reader.Read<bool>("IsWall");
+            this.IsWallLight = reader.Read<bool>("IsWallLight");
+            this.IsCorridor = reader.Read<bool>("IsCorridor");
+            this.IsTerrainSupport = reader.Read<bool>("IsTerrainSupport");
+            this.DoorSearchCounter = reader.Read<int>("DoorSearchCounter");
+            this.AmbientLight = reader.Read<Light>("AmbientLight");
+            this.WallLight = reader.Read<Light>("WallLight");
+            this.AccentLight = reader.Read<Light>("AccentLight");
+            this.TerrainLights = reader.Read<Dictionary<string, Light>>("TerrainLights");
+        }
+
         private void Initialize(int column, int row)
         {
             this.Location = new GridLocation(column, row);
@@ -168,21 +174,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             this.AccentLight = Light.None;
             this.WallLight = Light.None;
             this.TerrainLights = new Dictionary<string, Light>();
-        }
-
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
-        {
-            planner.Define<GridLocation>("Location");
-            planner.Define<bool>("IsDoor");
-            planner.Define<bool>("IsWall");
-            planner.Define<bool>("IsWallLight");
-            planner.Define<bool>("IsCorridor");
-            planner.Define<bool>("IsTerrainSupport");
-            planner.Define<int>("DoorSearchCounter");
-            planner.Define<Light>("AmbientLight");
-            planner.Define<Light>("WallLight");
-            planner.Define<Light>("AccentLight");
-            planner.Define<Dictionary<string, Light>>("TerrainLights");
         }
 
         public void GetProperties(IPropertyWriter writer)
@@ -198,21 +189,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             writer.Write("WallLight", this.WallLight);
             writer.Write("AccentLight", this.AccentLight);
             writer.Write("TerrainLights", this.TerrainLights);
-        }
-
-        public void SetProperties(IPropertyReader reader)
-        {
-            this.Location = reader.Read<GridLocation>("Location");
-            this.IsDoor = reader.Read<bool>("IsDoor");
-            this.IsWall = reader.Read<bool>("IsWall");
-            this.IsWallLight = reader.Read<bool>("IsWallLight");
-            this.IsCorridor = reader.Read<bool>("IsCorridor");
-            this.IsTerrainSupport = reader.Read<bool>("IsTerrainSupport");
-            this.DoorSearchCounter = reader.Read<int>("DoorSearchCounter");
-            this.AmbientLight = reader.Read<Light>("AmbientLight");
-            this.WallLight = reader.Read<Light>("WallLight");
-            this.AccentLight = reader.Read<Light>("AccentLight");
-            this.TerrainLights = reader.Read<Dictionary<string, Light>>("TerrainLights");
         }
 
         public override string ToString()

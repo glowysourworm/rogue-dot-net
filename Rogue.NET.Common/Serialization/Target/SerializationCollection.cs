@@ -27,20 +27,17 @@ namespace Rogue.NET.Common.Serialization.Target
             this.ElementType = elementType;
         }
 
-        internal override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
+        protected override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
         {
             // DEFAULT MODE - NO PROPERTY SUPPORT
             if (this.MemberInfo.Mode == SerializationMode.Default ||
                 this.MemberInfo.Mode == SerializationMode.None)
                 return new PropertyStorageInfo[] { };
 
-            // CLEAR CURRENT CONTEXT
-            writer.ClearContext();
-
             // CALL OBJECT'S GetPropertyDefinitions METHOD
             try
             {
-                this.MemberInfo.PlanningMethod.Invoke(this.Collection, new object[] { writer });
+                this.MemberInfo.GetMethod.Invoke(this.Collection, new object[] { writer });
             }
             catch (Exception)
             {

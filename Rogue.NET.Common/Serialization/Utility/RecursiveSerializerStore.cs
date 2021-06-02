@@ -18,9 +18,7 @@ namespace Rogue.NET.Common.Serialization
         // Keep track of property types to avoid extra reflection calls
         static Dictionary<Type, IEnumerable<PropertyInfo>> _propertyDict;
 
-        internal static readonly string PlanningMethodName = "GetPropertyDefinitions";
-        internal static readonly string SetMethodName = "SetProperties";
-        internal static string GetMethodName = "GetProperties";
+        internal static readonly string GetMethodName = "GetProperties";
 
         static RecursiveSerializerStore()
         {
@@ -33,63 +31,58 @@ namespace Rogue.NET.Common.Serialization
         /// </summary>
         internal static RecursiveSerializerMemberInfo GetMemberInfo(HashedType hashedType)
         {
-            var parameterlessCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { });
-            var planningMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.PlanningMethodName, new Type[] { typeof(PropertyPlanner) });
-            var setMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.SetMethodName, new Type[] { typeof(PropertyReader) });
-            var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(PropertyWriter) });
+            var memberInfo = CreateBaseMemberInfo(hashedType);
 
-            var hasInterfaceImplementing = hashedType.GetImplementingType().HasInterface<IRecursiveSerializable>();
-            var hasInterfaceDeclaring = hashedType.GetDeclaringType().HasInterface<IRecursiveSerializable>();
-            var hasInterface = hasInterfaceDeclaring && hasInterfaceImplementing;
-
-            if (hasInterfaceDeclaring != hasInterfaceImplementing)
-                throw new RecursiveSerializerException(hashedType, "Improper use of IRecursiveSerializable:  Both declaring and implementing types must be marked IRecursiveSerializable:  " + hashedType.ToString());
-
-            if (parameterlessCtor == null)
-                throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must have a parameterless constructor. (See Inner Exception)");
-
-            if (hasInterface && (planningMethod != null || setMethod == null || getMethod == null))
-                throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must implement IRecursiveSerializable. (See Inner Exception)");
-
-            // Create the primary members for the serializer
-            var memberInfo = new RecursiveSerializerMemberInfo(parameterlessCtor, 
-                                                               hasInterface ? setMethod : null, 
-                                                               hasInterface ? getMethod : null, 
-                                                               hasInterface ? planningMethod : null,
-                                                               hasInterface ? SerializationMode.Specified : SerializationMode.Default);
-            return memberInfo;
+            return GetMemberInfo(hashedType, memberInfo.Mode);
         }
 
-        /// <summary>
-        /// Validates the type along with its serialization mode to retrieve members for the recursive serializer. THROWS 
-        /// EXCEPTIONS! (FOR DESERIALIZATION)
-        /// </summary>
         internal static RecursiveSerializerMemberInfo GetMemberInfo(HashedType hashedType, SerializationMode mode)
         {
-            var parameterlessCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { });
-            var planningMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.PlanningMethodName, new Type[] { typeof(PropertyPlanner) });
-            var setMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.SetMethodName, new Type[] { typeof(PropertyReader) });
-            var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(PropertyWriter) });
+            var memberInfo = CreateBaseMemberInfo(hashedType);
 
+            return ValidateMemberInfo(hashedType, memberInfo.ParameterlessConstructor, memberInfo.SpecifiedConstructor, memberInfo.GetMethod, mode);
+        }
+
+        private static RecursiveSerializerMemberInfo ValidateMemberInfo(HashedType hashedType, 
+                                                                        ConstructorInfo parameterlessCtor, 
+                                                                        ConstructorInfo specifiedCtor, 
+                                                                        MethodInfo getMethod, 
+                                                                        SerializationMode mode)
+        {
             var hasInterfaceImplementing = hashedType.GetImplementingType().HasInterface<IRecursiveSerializable>();
             var hasInterfaceDeclaring = hashedType.GetDeclaringType().HasInterface<IRecursiveSerializable>();
             var hasInterface = hasInterfaceDeclaring && hasInterfaceImplementing;
 
-            if (hasInterfaceDeclaring != hasInterfaceImplementing)
-                throw new RecursiveSerializerException(hashedType, "Improper use of IRecursiveSerializable:  Both declaring and implementing types must be marked IRecursiveSerializable:  " + hashedType.ToString());
-
-            if (parameterlessCtor == null)
+            if (mode == SerializationMode.Default && parameterlessCtor == null)
                 throw new RecursiveSerializerException(hashedType, "Improper use of Recursive Serializer - must have a parameterless constructor. (See Inner Exception)");
 
-            if (mode == SerializationMode.Specified && !hasInterface)
-                throw new RecursiveSerializerException(hashedType, "Improper use of SerializationMode.Specified - must implement IRecursiveSerializable");
+            if (mode == SerializationMode.Specified)
+            {
+                if (!hasInterface)
+                    throw new RecursiveSerializerException(hashedType, "Improper use of SerializationMode.Specified - must implement IRecursiveSerializable");
+
+                if (hasInterfaceDeclaring != hasInterfaceImplementing)
+                    throw new RecursiveSerializerException(hashedType, "Improper use of IRecursiveSerializable:  Both declaring and implementing types must be marked IRecursiveSerializable:  " + hashedType.ToString());
+            }
+
+            // Refine the member info parameters
+            return new RecursiveSerializerMemberInfo(parameterlessCtor,
+                                                     mode == SerializationMode.Specified ? specifiedCtor : null,
+                                                     mode == SerializationMode.Specified ? getMethod : null,
+                                                     mode);
+        }
+
+        private static RecursiveSerializerMemberInfo CreateBaseMemberInfo(HashedType hashedType)
+        {
+            var parameterlessCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { });
+            var specifiedModeCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { typeof(IPropertyReader) });
+            var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(IPropertyWriter) });
 
             // Create the primary members for the serializer
             return new RecursiveSerializerMemberInfo(parameterlessCtor,
-                                                     hasInterface ? setMethod : null,
-                                                     hasInterface ? getMethod : null,
-                                                     hasInterface ? planningMethod : null,
-                                                     mode);
+                                                     specifiedModeCtor,
+                                                     getMethod,
+                                                     specifiedModeCtor == null ? SerializationMode.Default : SerializationMode.Specified);
         }
 
         /// <summary>

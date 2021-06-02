@@ -39,24 +39,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Type = MetricType.Rogue;
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
+        public GridLocation(IPropertyReader reader)
         {
-            planner.Define<int>("Column");
-            planner.Define<int>("Row");
+            this.Column = reader.Read<int>("Column");
+            this.Row = reader.Read<int>("Row");
+
+            this.Type = MetricType.Rogue;
         }
 
         public void GetProperties(IPropertyWriter writer)
         {
             writer.Write("Column", this.Column);
             writer.Write("Row", this.Row);
-        }
-
-        public void SetProperties(IPropertyReader reader)
-        {
-            this.Column = reader.Read<int>("Column");
-            this.Row = reader.Read<int>("Row");
-
-            this.Type = MetricType.Rogue;
         }
 
         // SHOULD BEHAVE LIKE A VALUE TYPE

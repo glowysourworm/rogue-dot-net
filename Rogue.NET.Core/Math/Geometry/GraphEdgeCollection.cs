@@ -1,13 +1,10 @@
-﻿using Rogue.NET.Common.Collection;
-using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Interface;
-using Rogue.NET.Core.Math.Algorithm;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace Rogue.NET.Core.Math.Geometry
 {
@@ -187,11 +184,6 @@ namespace Rogue.NET.Core.Math.Geometry
             return _nodeEdges.Keys;
         }
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public GraphEdgeCollection() { }
-
         public GraphEdgeCollection(bool directedGraph)
         {
             Initialize(null, directedGraph);
@@ -200,6 +192,18 @@ namespace Rogue.NET.Core.Math.Geometry
         public GraphEdgeCollection(IEnumerable<TEdge> edges, bool directedGraph)
         {
             Initialize(edges, directedGraph);
+        }
+        public GraphEdgeCollection(IPropertyReader reader)
+        {
+            var edges = reader.Read<List<TEdge>>("Edges");
+            var directedGraph = reader.Read<bool>("DirectedGraph");
+
+            Initialize(edges, directedGraph);
+        }
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("Edges", _edges.Values.ToList());
+            writer.Write("DirectedGraph", _directedGraph);
         }
 
         private void Initialize(IEnumerable<TEdge> edges, bool directedGraph)
@@ -216,24 +220,6 @@ namespace Rogue.NET.Core.Math.Geometry
             }
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
-        {
-            planner.Define<List<TEdge>>("Edges");
-            planner.Define<bool>("DirectedGraph");
-        }
 
-        public void GetProperties(IPropertyWriter writer)
-        {
-            writer.Write("Edges", _edges.Values.ToList());
-            writer.Write("DirectedGraph", _directedGraph);
-        }
-
-        public void SetProperties(IPropertyReader reader)
-        {
-            var edges = reader.Read<List<TEdge>>("Edges");
-            var directedGraph = reader.Read<bool>("DirectedGraph");
-
-            Initialize(edges, directedGraph);
-        }
     }
 }

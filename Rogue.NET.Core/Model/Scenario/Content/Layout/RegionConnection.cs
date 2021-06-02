@@ -19,11 +19,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// </summary>
         public double Weight { get; private set; }
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public RegionConnection() { }
-
         public RegionConnection(Region<GridLocation> node, Region<GridLocation> adjacentNode, GridLocation location, GridLocation adjacentLocation, double weight)
         {
             this.Node = node;
@@ -33,13 +28,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.Weight = weight;
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
+        public RegionConnection(IPropertyReader reader)
         {
-            planner.Define<Region<GridLocation>>("Node");
-            planner.Define<Region<GridLocation>>("AdjacentNode");
-            planner.Define<GridLocation>("Location");
-            planner.Define<GridLocation>("AdjacentLocation");
-            planner.Define<double>("Weight");
+            this.Node = reader.Read<Region<GridLocation>>("Node");
+            this.AdjacentNode = reader.Read<Region<GridLocation>>("AdjacentNode");
+            this.Location = reader.Read<GridLocation>("Location");
+            this.AdjacentLocation = reader.Read<GridLocation>("AdjacentLocation");
+            this.Weight = reader.Read<double>("Weight");
         }
 
         public void GetProperties(IPropertyWriter writer)
@@ -51,13 +46,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             writer.Write("Weight", this.Weight);
         }
 
-        public void SetProperties(IPropertyReader reader)
-        {
-            this.Node = reader.Read<Region<GridLocation>>("Node");
-            this.AdjacentNode = reader.Read<Region<GridLocation>>("AdjacentNode");
-            this.Location = reader.Read<GridLocation>("Location");
-            this.AdjacentLocation = reader.Read<GridLocation>("AdjacentLocation");
-            this.Weight = reader.Read<double>("Weight");
-        }
+
     }
 }

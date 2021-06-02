@@ -25,17 +25,20 @@ namespace Rogue.NET.Common.Serialization.Target
         // ACTUAL COLLECTION
         IEnumerable _collection;
 
+        IEnumerable<PropertyDefinition> _definitions;
+
         internal DeserializationCollection(HashedObjectReference reference,
-                                         RecursiveSerializerMemberInfo memberInfo,
-                                         Type elementType,
-                                         int count,
-                                         CollectionInterfaceType interfaceType) : base(reference, memberInfo)
+                                           RecursiveSerializerMemberInfo memberInfo,
+                                           IEnumerable<PropertyDefinition> definitions,
+                                           Type elementType,
+                                           int count,
+                                           CollectionInterfaceType interfaceType) : base(reference, memberInfo)
         {
             _count = count;
             _interfaceType = interfaceType;
             _elementType = elementType;
 
-            Construct();
+            _definitions = definitions;
 
             // Call these during initialization
             if (_interfaceType == CollectionInterfaceType.IDictionary)
@@ -48,8 +51,16 @@ namespace Rogue.NET.Common.Serialization.Target
             }
         }
 
+        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
+        {
+            return _definitions;
+        }
+
         internal void FinalizeCollection(IEnumerable<HashedObjectInfo> resolvedChildren)
-        {           
+        {
+            if (this.MemberInfo.Mode == SerializationMode.Specified)
+                throw new Exception("Trying to call DeserializationCollection in SPECIFIED MODE");
+
             var elements = new ArrayList();
 
             foreach (var resolvedChild in resolvedChildren)
@@ -88,31 +99,29 @@ namespace Rogue.NET.Common.Serialization.Target
             }
         }
 
-        // FOR COLLECTIONS - NO PROPERTIES ARE SUPPORTED UNLESS THE COLLECTION USES SERIALIZATIONMODE.SPECIFIED
-        protected override IEnumerable<PropertyDefinition> GetPropertyDefinitions(PropertyPlanner planner)
+        internal override void Construct(IEnumerable<PropertyResolvedInfo> resolvedProperties)
         {
-            // DEFAULT MODE - NO PROPERTY SUPPORT
-            if (this.MemberInfo.PlanningMethod == null)
-                return new PropertyDefinition[] { };
-
-            // CLEAR CURRENT CONTEXT
-            planner.ClearContext();
-
-            // CALL OBJECT'S GetPropertyDefinitions METHOD
-            try
+            switch (this.MemberInfo.Mode)
             {
-                this.MemberInfo.PlanningMethod.Invoke(_collection, new object[] { planner });
+                case SerializationMode.Default:
+                    ConstructDefault(resolvedProperties);
+                    break;
+                case SerializationMode.Specified:
+                    ConstructSpecified(resolvedProperties);
+                    break;
+                case SerializationMode.None:
+                default:
+                    throw new Exception("Unhandled SerializationMode type:  DeserializationCollection.cs");
             }
-            catch (Exception innerException)
-            {
-                throw new Exception("Error trying to read properties from " + this.Reference.Type.DeclaringType, innerException);
-            }
-
-            return planner.GetResult();
         }
 
-        protected override void Construct()
+        private void ConstructDefault(IEnumerable<PropertyResolvedInfo> resolvedProperties)
         {
+            // NO PROPERTY SUPPORT FOR DEFAULT MODE
+            if (resolvedProperties.Any())
+                throw new RecursiveSerializerException(this.Reference.Type, "No property support for DEFAULT mode collections");
+
+            // CONSTRUCT
             try
             {
                 if (_interfaceType == CollectionInterfaceType.Array)
@@ -126,36 +135,34 @@ namespace Rogue.NET.Common.Serialization.Target
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format("Error trying to construct object of type {0}. Must have a parameterless constructor",
-                                                  this.Reference.Type.DeclaringType), ex);
+                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing from parameterless constructor", ex);
+            }
+        }
+
+        private void ConstructSpecified(IEnumerable<PropertyResolvedInfo> resolvedProperties)
+        {
+            var reader = new PropertyReader(resolvedProperties);
+
+            try
+            {
+                if (_interfaceType == CollectionInterfaceType.Array)
+                    throw new Exception("Trying to construct array type in SPECIFIED MODE:  " + this.Reference.Type.ToString());
+
+                else
+                    _collection = this.MemberInfo.SpecifiedConstructor.Invoke(new object[] { reader }) as IEnumerable;
+
+                if (_collection == null)
+                    throw new Exception("Constructor failed for collection of type:  " + this.Reference.Type.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing from specified constructor: " + this.MemberInfo.SpecifiedConstructor.Name, ex);
             }
         }
 
         protected override HashedObjectInfo ProvideResult()
         {
             return new HashedObjectInfo(_collection, _collection.GetType());
-        }
-
-        protected override void WriteProperties(PropertyReader reader)
-        {
-            // DEFAULT MODE - NO PROPERTY SUPPORT
-            if (this.MemberInfo.SetMethod == null && reader.Properties.Any())
-            {
-                throw new Exception("Trying read reflected or custom properties in DEFAULT MODE for collection:  " + this.Reference.Type.DeclaringType);
-            }
-
-            else
-            {
-                // CALL OBJECT'S SetProperties METHOD
-                try
-                {
-                    this.MemberInfo.SetMethod.Invoke(_collection, new object[] { reader });
-                }
-                catch (Exception innerException)
-                {
-                    throw new Exception("Error trying to set properties from " + this.Reference.Type.DeclaringType, innerException);
-                }
-            }
         }
     }
 }

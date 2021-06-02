@@ -16,16 +16,34 @@ namespace Rogue.NET.Common.Serialization.Target
 
         protected RecursiveSerializerMemberInfo MemberInfo { get; private set; }
 
+        readonly PropertyWriter _propertyWriter;
+
+        bool _propertiesWritten = false;
+
         protected SerializationObjectBase(HashedObjectInfo objectInfo, RecursiveSerializerMemberInfo memberInfo)
         {
             this.ObjectInfo = objectInfo;
             this.MemberInfo = memberInfo;
+
+            _propertyWriter = new PropertyWriter();
         }
 
         /// <summary>
         /// Returns property info collection for this instance - allowing the reader to "visit" the serialization
         /// target.
         /// </summary>
-        internal abstract IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer);
+        internal IEnumerable<PropertyStorageInfo> GetProperties()
+        {
+            if (_propertiesWritten)
+                return _propertyWriter.GetResult();
+
+            GetProperties(_propertyWriter);
+
+            _propertiesWritten = true;
+
+            return _propertyWriter.GetResult();
+        }
+
+        protected abstract IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer);
     }
 }

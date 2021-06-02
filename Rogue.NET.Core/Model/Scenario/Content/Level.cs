@@ -73,91 +73,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             };
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
-        {
-            planner.Define<LayoutGrid>("Grid");
-            planner.Define<LevelParameters>("Parameters");
-
-            planner.Define<int>("ContentCount");
-            planner.Define<int>("HomeLocationCount");
-            planner.Define<int>("MemorizedContentCount");
-
-            var count = this.Content.AllContent.Where(content => !(content is Player)).Count();
-            var homeLocationCount = this.Content.NonPlayerCharacters.Count();
-            var memorizedCount = this.MemorizedContent.AllContent.Count();
-
-            // Deserialize the content
-            for (int i = 0; i < count; i++)
-            {
-                planner.Define<ScenarioObject>("Content" + i.ToString());
-                planner.Define<GridLocation>("Location" + i.ToString());
-            }
-
-            // Deserialize the home locations
-            for (int i = 0; i < homeLocationCount; i++)
-            {
-                // Store this character's Id along with its home location
-                planner.Define<string>("HomeLocationCharacterId" + i.ToString());
-                planner.Define<GridLocation>("HomeLocation" + i.ToString());
-            }
-
-            // Deserialize the memorized content
-            for (int i = 0; i < memorizedCount; i++)
-            {
-                planner.Define<ScenarioObject>("MemorizedContent" + i.ToString());
-                planner.Define<GridLocation>("MemorizedLocation" + i.ToString());
-            }
-        }
-
-        public void GetProperties(IPropertyWriter writer)
-        {
-            writer.Write("Grid", this.Grid);
-            writer.Write("Parameters", this.Parameters);
-
-            // Serialize the number of content entries
-            writer.Write("ContentCount", this.Content.AllContent.Where(content => !(content is Player)).Count());
-            writer.Write("HomeLocationCount", this.Content.NonPlayerCharacters.Count());
-            writer.Write("MemorizedContentCount", this.MemorizedContent.AllContent.Count());
-
-            var counter = 0;
-
-            // Serialize the content
-            foreach (var content in this.Content.AllContent)
-            {
-                // *** SERIALIZE EVERYTHING EXCEPT THE PLAYER
-                if (content is Player)
-                    continue;
-
-                // Store the object and its location
-                writer.Write("Content" + counter, content);
-                writer.Write("Location" + counter++, this.Content[content.Id]);
-            }
-
-            counter = 0;
-
-            // Serialize the home locations of non-player characters
-            foreach (var content in this.Content.NonPlayerCharacters)
-            {
-                // Store this character's Id along with its home location
-                writer.Write("HomeLocationCharacterId" + counter, content.Id);
-                writer.Write("HomeLocation" + counter++, this.Content.GetHomeLocation(content));
-            }
-
-            counter = 0;
-
-            // Serialize memorized content - THIS WILL BE DUPLICATED DATA. KEPT THIS WAY BECAUSE
-            //                               LEVEL CONTENTS THAT ARE PICKED UP WILL BE LOST REFERENCES.
-            //                               SO, THE REFERENCES ARE MATCHED DURING DESERIALIZATION FOR
-            //                               ANY DUPLICATES STILL IN THE LEVEL CONTENT GRID.
-            foreach (var content in this.MemorizedContent.AllContent)
-            {
-                // Store the object and its location
-                writer.Write("MemorizedContent" + counter, content);
-                writer.Write("MemorizedLocation" + counter++, this.MemorizedContent[content.Id]);
-            }
-        }
-
-        public void SetProperties(IPropertyReader reader)
+        public Level(IPropertyReader reader)
         {
             this.Grid = reader.Read<LayoutGrid>("Grid");
             this.Parameters = reader.Read<LevelParameters>("Parameters");
@@ -208,6 +124,54 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
                 // Add the content to the container
                 this.MemorizedContent.AddContent(scenarioObject, location);
+            }
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("Grid", this.Grid);
+            writer.Write("Parameters", this.Parameters);
+
+            // Serialize the number of content entries
+            writer.Write("ContentCount", this.Content.AllContent.Where(content => !(content is Player)).Count());
+            writer.Write("HomeLocationCount", this.Content.NonPlayerCharacters.Count());
+            writer.Write("MemorizedContentCount", this.MemorizedContent.AllContent.Count());
+
+            var counter = 0;
+
+            // Serialize the content
+            foreach (var content in this.Content.AllContent)
+            {
+                // *** SERIALIZE EVERYTHING EXCEPT THE PLAYER
+                if (content is Player)
+                    continue;
+
+                // Store the object and its location
+                writer.Write("Content" + counter, content);
+                writer.Write("Location" + counter++, this.Content[content.Id]);
+            }
+
+            counter = 0;
+
+            // Serialize the home locations of non-player characters
+            foreach (var content in this.Content.NonPlayerCharacters)
+            {
+                // Store this character's Id along with its home location
+                writer.Write("HomeLocationCharacterId" + counter, content.Id);
+                writer.Write("HomeLocation" + counter++, this.Content.GetHomeLocation(content));
+            }
+
+            counter = 0;
+
+            // Serialize memorized content - THIS WILL BE DUPLICATED DATA. KEPT THIS WAY BECAUSE
+            //                               LEVEL CONTENTS THAT ARE PICKED UP WILL BE LOST REFERENCES.
+            //                               SO, THE REFERENCES ARE MATCHED DURING DESERIALIZATION FOR
+            //                               ANY DUPLICATES STILL IN THE LEVEL CONTENT GRID.
+            foreach (var content in this.MemorizedContent.AllContent)
+            {
+                // Store the object and its location
+                writer.Write("MemorizedContent" + counter, content);
+                writer.Write("MemorizedLocation" + counter++, this.MemorizedContent[content.Id]);
             }
         }
 

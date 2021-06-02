@@ -20,11 +20,6 @@ namespace Rogue.NET.Core.Math.Geometry
         // IGraphNode
         public int Hash { get { return this.GetHashCode(); } }
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public GraphVertex() { }
-
         public GraphVertex(string referenceId, int column, int row, MetricType type)
         {
             this.ReferenceId = referenceId;
@@ -33,12 +28,12 @@ namespace Rogue.NET.Core.Math.Geometry
             this.Type = type;
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
+        public GraphVertex(IPropertyReader reader)
         {
-            planner.Define<string>("ReferenceId");
-            planner.Define<int>("Column");
-            planner.Define<int>("Row");
-            planner.Define<MetricType>("Type");
+            this.ReferenceId = reader.Read<string>("ReferenceId");
+            this.Column = reader.Read<int>("Column");
+            this.Row = reader.Read<int>("Row");
+            this.Type = reader.Read<MetricType>("Type");
         }
 
         public void GetProperties(IPropertyWriter writer)
@@ -47,14 +42,6 @@ namespace Rogue.NET.Core.Math.Geometry
             writer.Write("Column", this.Column);
             writer.Write("Row", this.Row);
             writer.Write("Type", this.Type);
-        }
-
-        public void SetProperties(IPropertyReader reader)
-        {
-            this.ReferenceId = reader.Read<string>("ReferenceId");
-            this.Column = reader.Read<int>("Column");
-            this.Row = reader.Read<int>("Row");
-            this.Type = reader.Read<MetricType>("Type");
         }
 
         public override bool Equals(object obj)

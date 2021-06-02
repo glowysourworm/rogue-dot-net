@@ -11,11 +11,11 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class SerializationPrimitive : SerializationObjectBase
     {
-        public SerializationPrimitive(HashedObjectInfo objectInfo) : base(objectInfo, RecursiveSerializerMemberInfo.Empty)
+        internal SerializationPrimitive(HashedObjectInfo objectInfo) : base(objectInfo, RecursiveSerializerMemberInfo.Empty)
         {
         }
 
-        internal override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
+        protected override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
         {
             throw new Exception("Invalid use of GetProperties for SerializationPrimitive");
         }

@@ -22,19 +22,14 @@ namespace Rogue.NET.Common.Collection
             _list = new List<T>();
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
+        public SimpleOrderedList(IPropertyReader reader)
         {
-            planner.Define("List", typeof(List<T>));
+            _list = reader.Read<List<T>>("List");
         }
 
         public void GetProperties(IPropertyWriter writer)
         {
             writer.Write("List", _list);
-        }
-
-        public void SetProperties(IPropertyReader reader)
-        {
-            _list = reader.Read<List<T>>("List");
         }
 
         public T this[int index]

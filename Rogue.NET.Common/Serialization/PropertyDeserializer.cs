@@ -6,6 +6,7 @@ using Rogue.NET.Common.Serialization.Target;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Rogue.NET.Common.Serialization
 {
@@ -20,6 +21,9 @@ namespace Rogue.NET.Common.Serialization
         // Collection of all types from loaded ASSEMBLIES with their EXPECTED HASH CODES
         Dictionary<int, HashedType> _loadedTypes;
 
+        // Collection of SPECIFIED MODE properties BY HASHED TYPE (HASH CODE)
+        Dictionary<int, IEnumerable<PropertyDefinition>> _specifiedObjectDict;
+
         // TYPE TABLE
         IList<HashedType> _typeTable;
 
@@ -31,6 +35,7 @@ namespace Rogue.NET.Common.Serialization
         {
             _primitiveFormatters = new Dictionary<Type, IBaseFormatter>();
             _loadedTypes = new Dictionary<int, HashedType>();
+            _specifiedObjectDict = new Dictionary<int, IEnumerable<PropertyDefinition>>();
             _factory = new DeserializationObjectFactory();
             _resolver = new DeserializationResolver();
             _hashedTypeFormatter = new HashedTypeFormatter();
@@ -53,10 +58,11 @@ namespace Rogue.NET.Common.Serialization
             //
             // 1) Read TYPE TABLE
             // 2) Store type table in LOADED TYPES
-            // 3) Read Object from stream
-            // 4) Wrap into node for deserializing
-            // 5) Recure on the node
-            // 6) Resolve the object graph
+            // 3) Read the SPECIFIED MODE TABLE
+            // 4) Read Object from stream
+            // 5) Wrap into node for deserializing
+            // 6) Recure on the node
+            // 7) Resolve the object graph
             //
 
             // Read TYPE TABLE
@@ -72,6 +78,39 @@ namespace Rogue.NET.Common.Serialization
 
                 // Store for the manifest
                 _typeTable.Add(hashedType);
+            }
+
+            // SPECIFIED MODE TABLE
+            var specifiedObjectCount = Read<int>(stream);
+
+            for (int index = 0; index < specifiedObjectCount; index++)
+            {
+                var properties = new List<PropertyDefinition>();
+
+                // HASH CODE - AS REFERENCE WHEN DESERIALIZING
+                var typeHashCode = Read<int>(stream);
+
+                // PROPERTY COUNT
+                var propertyCount = Read<int>(stream);
+
+                for (int propertyIndex = 0; propertyIndex < propertyCount; propertyIndex++)
+                {
+                    // PROPERTY NAME
+                    var propertyName = Read<string>(stream);
+
+                    // PROPERTY DECLARING TYPE - AS HASHED TYPE!!!
+                    var propertyType = _hashedTypeFormatter.Read(stream);
+
+                    properties.Add(new PropertyDefinition()
+                    {
+                        PropertyName = propertyName,
+                        PropertyType = propertyType.GetDeclaringType(),
+                        IsUserDefined = true
+                    });
+                }
+
+                // SPECIFIED MODE TYPE IS READY!
+                _specifiedObjectDict.Add(typeHashCode, properties);
             }
 
             // Read root
@@ -131,15 +170,12 @@ namespace Rogue.NET.Common.Serialization
             // Select formatter for objects that are value types if no ctor / get methods are supplied
             //
 
-            // STORE REFERENCE (DO THIS AT A LATER TIME WHEN OBJECT IS READY!)
-            // _deserializedObjectcs.Add(node.NodeObject.Reference, node.NodeObject);
-
             // COLLECTION
             if (node is DeserializationCollectionNode)
             {
                 var collectionNode = node as DeserializationCollectionNode;
 
-                // HAND CONTROL TO FRONT END FOR CUSTOM PROPERTIES
+                // Fetch definitions for properties from the node object
                 var definitions = collectionNode.NodeObject.GetPropertyDefinitions();
 
                 // RECURSE ANY CUSTOM PROPERTIES
@@ -294,14 +330,20 @@ namespace Rogue.NET.Common.Serialization
                         // READ REFERENCE HASH FROM STREAM
                         var hashCode = Read<int>(stream);
 
-                        return _factory.CreateValue(new HashedObjectReference(hashedType, hashCode), nextMode);
+                        // GET PROPERTY DEFINITIONS
+                        var definitions = GetPropertyDefinitions(hashedType, nextMode);
+
+                        return _factory.CreateValue(new HashedObjectReference(hashedType, hashCode), nextMode, definitions);
                     }
                 case SerializedNodeType.Object:
                     {
                         // READ REFERENCE HASH FROM STREAM
                         var hashCode = Read<int>(stream);
 
-                        return _factory.CreateObject(new HashedObjectReference(hashedType, hashCode), nextMode);
+                        // GET PROPERTY DEFINITIONS
+                        var definitions = GetPropertyDefinitions(hashedType, nextMode);
+
+                        return _factory.CreateObject(new HashedObjectReference(hashedType, hashCode), nextMode, definitions);
                     }
 
                 case SerializedNodeType.Reference:
@@ -322,10 +364,42 @@ namespace Rogue.NET.Common.Serialization
                         // READ INTERFACE TYPE
                         var interfaceType = Read<CollectionInterfaceType>(stream);
 
-                        return _factory.CreateCollection(new HashedObjectReference(hashedType, hashCode), childCount, interfaceType, nextMode);
+                        // GET PROPERTY DEFINITIONS - SPECIFIED MODE ONLY!!!
+                        var definitions = nextMode == SerializationMode.Specified ? GetPropertyDefinitions(hashedType, nextMode) :
+                                                                                    new PropertyDefinition[] { };
+
+                        return _factory.CreateCollection(new HashedObjectReference(hashedType, hashCode), childCount, interfaceType, nextMode, definitions);
                     }
                 default:
                     throw new Exception("Unhandled SerializedNodeType:  DeserializationObjectFactory.TypeTrack");
+            }
+        }
+
+        private IEnumerable<PropertyDefinition> GetPropertyDefinitions(HashedType hashedType, SerializationMode mode)
+        {
+            switch (mode)
+            {
+                case SerializationMode.Default:
+                    {
+                        var propertyInfos = RecursiveSerializerStore.GetOrderedProperties(hashedType.GetImplementingType());
+
+                        return propertyInfos.Select(info => new PropertyDefinition()
+                        {
+                            PropertyName = info.Name,
+                            PropertyType = info.PropertyType,
+                            IsUserDefined = false
+                        });
+                    }
+                case SerializationMode.Specified:
+                    {
+                        if (!_specifiedObjectDict.ContainsKey(hashedType.GetHashCode()))
+                            throw new Exception("SPECIFIED MODE property definitions not found:  " + hashedType.ToString());
+
+                        return _specifiedObjectDict[hashedType.GetHashCode()];
+                    }
+                case SerializationMode.None:
+                default:
+                    throw new Exception("Unhandled SerializationMode Type:  PropertyDeserializer.GetPropertyDefinitions");
             }
         }
 

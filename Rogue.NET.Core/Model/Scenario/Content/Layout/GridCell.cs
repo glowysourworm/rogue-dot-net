@@ -106,37 +106,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
 
         #region IRecursiveSerializable - Used Custom Serialization to minimize footprint
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
-        {
-            planner.Define<bool>("IsExplored");
-            planner.Define<bool>("IsRevealed");
-            planner.Define<bool>("IsOccupied");
-            planner.Define<bool>("IsDoor");
-            planner.Define<bool>("IsWall");
-            planner.Define<bool>("IsWallLight");
-            planner.Define<GridLocation>("Location");
-            planner.Define<int>("DoorSearchCounter");
-
-            for (int i = 0; i < this.Lights.Length; i++)
-                planner.Define<Light>("Light" + i.ToString());
-        }
-
-        public void GetProperties(IPropertyWriter writer)
-        {
-            writer.Write("IsExplored", this.IsExplored);
-            writer.Write("IsRevealed", this.IsRevealed);
-            writer.Write("IsDoor", this.IsDoor);
-            writer.Write("IsWall", this.IsWall);
-            writer.Write("IsWallLight", this.IsWallLight);
-            writer.Write("Location", this.Location);
-            writer.Write("DoorSearchCounter", this.DoorSearchCounter);
-            writer.Write("LightCount", this.Lights.Length);
-
-            for (int i = 0; i < this.Lights.Length; i++)
-                writer.Write("Light" + i.ToString(), this.Lights[i]);
-        }
-
-        public void SetProperties(IPropertyReader reader)
+        public GridCell(IPropertyReader reader)
         {
             this.IsExplored = reader.Read<bool>("IsExplored");
             this.IsRevealed = reader.Read<bool>("IsRevealed");
@@ -154,6 +124,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             for (int i = 0; i < lightCount; i++)
                 this.Lights[i] = reader.Read<Light>("Light" + i.ToString());
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("IsExplored", this.IsExplored);
+            writer.Write("IsRevealed", this.IsRevealed);
+            writer.Write("IsDoor", this.IsDoor);
+            writer.Write("IsWall", this.IsWall);
+            writer.Write("IsWallLight", this.IsWallLight);
+            writer.Write("Location", this.Location);
+            writer.Write("DoorSearchCounter", this.DoorSearchCounter);
+            writer.Write("LightCount", this.Lights.Length);
+
+            for (int i = 0; i < this.Lights.Length; i++)
+                writer.Write("Light" + i.ToString(), this.Lights[i]);
         }
         #endregion
     }

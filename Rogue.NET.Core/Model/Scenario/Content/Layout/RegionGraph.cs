@@ -26,11 +26,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         // Mode setting
         bool _isSingleRegion;
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public RegionGraph() { }
-
         public RegionGraph(Region<GridLocation> singleRegion)
         {
             Initialize(true, singleRegion, null);
@@ -41,37 +36,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             Initialize(false, null, connections);
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
-        {
-            var isSingleRegion = _singleRegion != null;
-
-            planner.Define<bool>("IsSingleRegion");
-
-            if (isSingleRegion)
-            {
-                planner.Define<Region<GridLocation>>("SingleRegion");
-            }
-            else
-            {
-                planner.Define<List<RegionConnection>>("Edges");
-            }
-        }
-
-        public void GetProperties(IPropertyWriter writer)
-        {
-            writer.Write("IsSingleRegion", _isSingleRegion);
-
-            if (_isSingleRegion)
-            {
-                writer.Write("SingleRegion", _singleRegion);
-            }
-            else
-            {
-                writer.Write("Edges", _edges);
-            }
-        }
-
-        public void SetProperties(IPropertyReader reader)
+        public RegionGraph(IPropertyReader reader)
         {
             var isSingleRegion = reader.Read<bool>("IsSingleRegion");
 
@@ -89,6 +54,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             Initialize(isSingleRegion, singleRegion, edges);
         }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("IsSingleRegion", _isSingleRegion);
+
+            if (_isSingleRegion)
+            {
+                writer.Write("SingleRegion", _singleRegion);
+            }
+            else
+            {
+                writer.Write("Edges", _edges);
+            }
+        }
+
 
         private void Initialize(bool isSingleRegion, Region<GridLocation> singleRegion, IEnumerable<RegionConnection> connections)
         {

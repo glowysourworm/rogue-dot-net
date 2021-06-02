@@ -125,11 +125,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         #endregion
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public Region() { }
-
         public Region(string regionId, T[] locations, T[] edgeLocations, RegionBoundary boundary, RegionBoundary parentBoundary)
         {
             if (string.IsNullOrEmpty(regionId) || locations.Length == 0 || edgeLocations.Length == 0)
@@ -167,25 +162,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
-        {
-            planner.Define<string>("Id");
-            planner.Define<Grid<T>>("Grid");
-            planner.Define<Grid<bool>>("EdgeGrid");
-            planner.Define<RegionBoundary>("Boundary");
-            planner.Define<RegionBoundary>("ParentBoundary");
-        }
-
-        public void GetProperties(IPropertyWriter writer)
-        {
-            writer.Write("Id", this.Id);
-            writer.Write("Grid", _grid);
-            writer.Write("EdgeGrid", _edgeGrid);
-            writer.Write("Boundary", this.Boundary);
-            writer.Write("ParentBoundary", this.ParentBoundary);
-        }
-
-        public void SetProperties(IPropertyReader reader)
+        public Region(IPropertyReader reader)
         {
             var regionId = reader.Read<string>("Id");
             var grid = reader.Read<Grid<T>>("Grid");
@@ -221,6 +198,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
             this.Locations = locations.ToArray();
             this.EdgeLocations = edgeLocations.ToArray();
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("Id", this.Id);
+            writer.Write("Grid", _grid);
+            writer.Write("EdgeGrid", _edgeGrid);
+            writer.Write("Boundary", this.Boundary);
+            writer.Write("ParentBoundary", this.ParentBoundary);
         }
 
         public override string ToString()

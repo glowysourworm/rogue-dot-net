@@ -3,6 +3,7 @@ using Rogue.NET.Common.Serialization.Planning;
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
@@ -16,7 +17,7 @@ namespace Rogue.NET.Common.Serialization.Target
         {
         }
 
-        internal DeserializationObjectBase CreateCollection(HashedObjectReference reference, int childCount, CollectionInterfaceType interfaceType, SerializationMode mode)
+        internal DeserializationObjectBase CreateCollection(HashedObjectReference reference, int childCount, CollectionInterfaceType interfaceType, SerializationMode mode, IEnumerable<PropertyDefinition> definitions)
         {
             // Procedure
             //
@@ -37,7 +38,7 @@ namespace Rogue.NET.Common.Serialization.Target
 
                 var elementType = reference.Type.GetImplementingType().GetElementType();       // ARRAY ONLY
 
-                return new DeserializationCollection(reference, memberInfo, elementType, childCount, interfaceType);
+                return new DeserializationCollection(reference, memberInfo, definitions, elementType, childCount, interfaceType);
             }
             // GENERIC ENUMERABLE
             else
@@ -57,7 +58,7 @@ namespace Rogue.NET.Common.Serialization.Target
                     if (argument == null)
                         throw new RecursiveSerializerException(reference.Type, "Invalid IDictionary argument list for PropertySerializer");
 
-                    return new DeserializationCollection(reference, memberInfo, argument, childCount, CollectionInterfaceType.IDictionary);
+                    return new DeserializationCollection(reference, memberInfo, definitions, argument, childCount, CollectionInterfaceType.IDictionary);
                 }
                 else if (reference.Type.GetImplementingType().HasInterface<IList>())
                 {
@@ -66,7 +67,7 @@ namespace Rogue.NET.Common.Serialization.Target
                     if (argument == null)
                         throw new RecursiveSerializerException(reference.Type, "Invalid IList argument for PropertySerializer");
 
-                    return new DeserializationCollection(reference, memberInfo, argument, childCount, CollectionInterfaceType.IList);
+                    return new DeserializationCollection(reference, memberInfo, definitions, argument, childCount, CollectionInterfaceType.IList);
                 }
                 else
                     throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>");
@@ -105,20 +106,20 @@ namespace Rogue.NET.Common.Serialization.Target
             return new DeserializationReference(reference, memberInfo);
         }
 
-        internal DeserializationObjectBase CreateValue(HashedObjectReference reference, SerializationMode mode)
+        internal DeserializationObjectBase CreateValue(HashedObjectReference reference, SerializationMode mode, IEnumerable<PropertyDefinition> definitions)
         {
             // Validate type and get members
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
 
-            return new DeserializationValue(reference, memberInfo);
+            return new DeserializationValue(reference, memberInfo, definitions);
         }
 
-        internal DeserializationObjectBase CreateObject(HashedObjectReference reference, SerializationMode mode)
+        internal DeserializationObjectBase CreateObject(HashedObjectReference reference, SerializationMode mode, IEnumerable<PropertyDefinition> definitions)
         {
             // Validate type and get members
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
 
-            return new DeserializationObject(reference, memberInfo);
+            return new DeserializationObject(reference, memberInfo, definitions);
         }
     }
 }

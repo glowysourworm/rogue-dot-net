@@ -58,23 +58,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         public IEnumerable<Region<GridLocation>> Regions { get { return _regions; } }
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public LayerMapBase() { }
-
         public LayerMapBase(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)
         {
             // Get regions from the region graph
             Initialize(layerName, regions, width, height);
         }
 
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
+        public LayerMapBase(IPropertyReader reader)
         {
-            planner.Define<string>("Name");
-            planner.Define<int>("Width");
-            planner.Define<int>("Height");
-            planner.Define<List<Region<GridLocation>>>("Regions");
+            var name = reader.Read<string>("Name");
+            var width = reader.Read<int>("Width");
+            var height = reader.Read<int>("Height");
+            var regions = reader.Read<List<Region<GridLocation>>>("Regions");
+
+            Initialize(name, regions, width, height);
         }
 
         public void GetProperties(IPropertyWriter writer)
@@ -83,16 +80,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             writer.Write("Width", _regionMap.GetLength(0));
             writer.Write("Height", _regionMap.GetLength(1));
             writer.Write("Regions", _regions);
-        }
-
-        public void SetProperties(IPropertyReader reader)
-        {
-            var name = reader.Read<string>("Name");
-            var width = reader.Read<int>("Width");
-            var height = reader.Read<int>("Height");
-            var regions = reader.Read<List<Region<GridLocation>>>("Regions");
-
-            Initialize(name, regions, width, height);
         }
 
         protected void Initialize(string layerName, IEnumerable<Region<GridLocation>> regions, int width, int height)

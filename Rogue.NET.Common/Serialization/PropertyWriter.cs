@@ -31,14 +31,6 @@ namespace Rogue.NET.Common.Serialization
         }
 
         /// <summary>
-        /// Clears current property context and begins for a new object to store data
-        /// </summary>
-        internal void ClearContext()
-        {
-            _properties.Clear();
-        }
-
-        /// <summary>
         /// Returns entire list of properties
         /// </summary>
         internal IEnumerable<PropertyStorageInfo> GetResult()
@@ -53,12 +45,14 @@ namespace Rogue.NET.Common.Serialization
 
             var propertyInfos = RecursiveSerializerStore.GetOrderedProperties(type);
 
-            return propertyInfos.Select(info => new PropertyStorageInfo()
+            _properties = propertyInfos.Select(info => new PropertyStorageInfo()
             {
                 PropertyName = info.Name,
                 PropertyType = info.PropertyType,
                 PropertyValue = info.GetValue(graphObject)
-            });
+            }).ToDictionary(info => info.PropertyName, info => info);
+
+            return _properties.Values;
         }
     }
 }

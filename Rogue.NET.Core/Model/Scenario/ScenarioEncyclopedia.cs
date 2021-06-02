@@ -37,25 +37,17 @@ namespace Rogue.NET.Core.Model.Scenario
             _characterClasses = characterClasses.ToList();
             _alterationCategories = alterationCategories.ToList();
         }
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
+        public ScenarioEncyclopedia(IPropertyReader reader)
         {
-            planner.Define("Encyclopedia", typeof(Dictionary<string, ScenarioMetaData>));
-            planner.Define("CharacterClasses", typeof(List<ScenarioImage>));
-            planner.Define("AlterationCategories", typeof(List<AlterationCategory>));
+            _encyclopedia = reader.Read<Dictionary<string, ScenarioMetaData>>("Encyclopedia");
+            _characterClasses = reader.Read<List<ScenarioImage>>("CharacterClasses");
+            _alterationCategories = reader.Read<List<AlterationCategory>>("AlterationCategories");
         }
-
         public void GetProperties(IPropertyWriter writer)
         {
             writer.Write("Encyclopedia", _encyclopedia);
             writer.Write("CharacterClasses", _characterClasses);
             writer.Write("AlterationCategories", _alterationCategories);
-        }
-
-        public void SetProperties(IPropertyReader reader)
-        {
-            _encyclopedia = reader.Read<Dictionary<string, ScenarioMetaData>>("Encyclopedia");
-            _characterClasses = reader.Read<List<ScenarioImage>>("CharacterClasses");
-            _alterationCategories = reader.Read<List<AlterationCategory>>("AlterationCategories");
         }
 
         #region Linq Support

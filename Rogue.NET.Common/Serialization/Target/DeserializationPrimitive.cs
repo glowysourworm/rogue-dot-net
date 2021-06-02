@@ -18,12 +18,12 @@ namespace Rogue.NET.Common.Serialization.Target
             this.ObjectInfo = info;
         }
 
-        protected override IEnumerable<PropertyDefinition> GetPropertyDefinitions(PropertyPlanner planner)
+        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
         {
-            throw new Exception("Trying to call GetPropertyDefinitions(PropertyPlanner) on a primitive");
+            throw new Exception("Trying to get property definitions for a primitive:  DeserializationPrimitive.cs");
         }
 
-        protected override void Construct()
+        internal override void Construct(IEnumerable<PropertyResolvedInfo> resolvedProperties)
         {
             throw new Exception("Trying to call constructor on a primitive");
         }
@@ -31,11 +31,6 @@ namespace Rogue.NET.Common.Serialization.Target
         protected override HashedObjectInfo ProvideResult()
         {
             return this.ObjectInfo;
-        }
-
-        protected override void WriteProperties(PropertyReader reader)
-        {
-            throw new NotImplementedException("Should not be calling WriteProperties(PropertyReader) on a PRIMITIVE");
         }
     }
 }

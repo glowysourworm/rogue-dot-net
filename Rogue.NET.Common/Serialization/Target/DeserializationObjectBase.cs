@@ -17,21 +17,16 @@ namespace Rogue.NET.Common.Serialization.Target
             this.MemberInfo = memberInfo;
         }
 
-        internal void WriteProperties(IEnumerable<PropertyResolvedInfo> properties)
-        {
-            WriteProperties(new PropertyReader(properties));
-        }
+        /// <summary>
+        /// Constructs and stores the object using the appropriate constructor (See RecursiveSerializerMemberInfo)
+        /// </summary>
+        internal abstract void Construct(IEnumerable<PropertyResolvedInfo> resolvedProperties);
 
         /// <summary>
-        /// Called during first pass on the Deserializer. This will either call for reflected public properties, or
-        /// query the front end object using GetPropertyDefinitions(PropertyReader reader).
-        /// 
-        /// FOR COLLECTIONS - NO PROPERTIES ARE SUPPORTED UNLESS THE COLLECTION USES SERIALIZATIONMODE.SPECIFIED
+        /// Retrieves list of property definitions passed in at the constructor (SHOULD BE FOR REFERENCE TYPES ONLY)
         /// </summary>
-        internal IEnumerable<PropertyDefinition> GetPropertyDefinitions()
-        {
-            return GetPropertyDefinitions(new PropertyPlanner());
-        }
+        /// <returns></returns>
+        internal abstract IEnumerable<PropertyDefinition> GetPropertyDefinitions();
 
         /// <summary>
         /// Resolves the object's hash code with the initial reference and returns the 
@@ -62,14 +57,5 @@ namespace Rogue.NET.Common.Serialization.Target
         }
 
         protected abstract HashedObjectInfo ProvideResult();
-
-        protected abstract IEnumerable<PropertyDefinition> GetPropertyDefinitions(PropertyPlanner planner);
-
-        protected abstract void WriteProperties(PropertyReader reader);
-
-        /// <summary>
-        /// Constructs and stores the object using either the supplied constructor
-        /// </summary>
-        protected abstract void Construct();
     }
 }

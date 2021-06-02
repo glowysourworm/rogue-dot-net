@@ -12,24 +12,19 @@ namespace Rogue.NET.Common.Serialization.Target
 
         }
 
-        protected override void Construct()
-        {
-            throw new Exception("Trying to construct a null primitive:  DeserializationNullPrimitive.cs");
-        }
-
-        protected override IEnumerable<PropertyDefinition> GetPropertyDefinitions(PropertyPlanner planner)
+        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
         {
             throw new Exception("Trying to get property definitions for a null primitive:  DeserializationNullPrimitive.cs");
+        }
+
+        internal override void Construct(IEnumerable<PropertyResolvedInfo> resolvedProperties)
+        {
+            throw new Exception("Trying to construct a null primitive:  DeserializationNullPrimitive.cs");
         }
 
         protected override HashedObjectInfo ProvideResult()
         {
             return new HashedObjectInfo(this.Reference.Type);
-        }
-
-        protected override void WriteProperties(PropertyReader reader)
-        {
-            throw new Exception("Trying to write properties for a null primitive:  DeserializationNullPrimitive.cs");
         }
     }
 }

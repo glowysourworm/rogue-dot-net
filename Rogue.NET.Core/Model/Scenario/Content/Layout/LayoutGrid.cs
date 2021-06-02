@@ -177,89 +177,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             }
         }
 
-        /// <summary>
-        /// SERIALIZATION ONLY
-        /// </summary>
-        public LayoutGrid() { }
-
         #region IRecursiveSerializable
-        public void GetPropertyDefinitions(IPropertyPlanner planner)
-        {
-            var cells = new List<GridCell>();
-
-            // Collect the grid cells in a list
-            for (int i = 0; i < _grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < _grid.GetLength(1); j++)
-                {
-                    if (_grid[i, j] != null)
-                        cells.Add(_grid[i, j]);
-                }
-            }
-
-            planner.Define<int>("Width");
-            planner.Define<int>("Height");
-            planner.Define<int>("Count");
-            planner.Define<int>("TerrainMapCount");
-
-            planner.Define<ConnectedLayerMap>("ConnectionMap");
-            planner.Define<LayerMap>("RoomMap");
-            planner.Define<LayerMap>("FullNoTerrainSupportMap");
-            planner.Define<LayerMap>("WalkableMap");
-            planner.Define<LayerMap>("PlacementMap");
-            planner.Define<LayerMap>("CorridorMap");
-            planner.Define<LayerMap>("WallMap");
-            planner.Define<LayerMap>("TerrainSupportMap");
-
-            // Populate cell grid
-            for (int i = 0; i < cells.Count; i++)
-            {
-                planner.Define<GridCell>("Cell" + i.ToString());
-            }
-
-            // Populate terrain
-            for (int i = 0; i < this.TerrainMaps.Count(); i++)
-            {
-                planner.Define<TerrainLayerMap>("TerrainMap" + i.ToString());
-            }
-        }
-
-        public void GetProperties(IPropertyWriter writer)
-        {
-            var cells = new List<GridCell>();
-
-            // Collect the grid cells in a list
-            for (int i = 0; i < _grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < _grid.GetLength(1); j++)
-                {
-                    if (_grid[i, j] != null)
-                        cells.Add(_grid[i, j]);
-                }
-            }
-
-            writer.Write("Width", _grid.GetLength(0));
-            writer.Write("Height", _grid.GetLength(1));
-            writer.Write("Count", cells.Count);
-            writer.Write("TerrainMapCount", this.TerrainMaps.Count());
-
-            writer.Write("ConnectionMap", this.ConnectionMap);
-            writer.Write("RoomMap", this.RoomMap);
-            writer.Write("FullNoTerrainSupportMap", this.FullNoTerrainSupportMap);
-            writer.Write("WalkableMap", this.WalkableMap);
-            writer.Write("PlacementMap", this.PlacementMap);
-            writer.Write("CorridorMap", this.CorridorMap);
-            writer.Write("WallMap", this.WallMap);
-            writer.Write("TerrainSupportMap", this.TerrainSupportMap);
-
-            for (int i = 0; i < cells.Count; i++)
-                writer.Write("Cell" + i.ToString(), cells[i]);
-
-            for (int i = 0; i < this.TerrainMaps.Count(); i++)
-                writer.Write("TerrainMap" + i.ToString(), this.TerrainMaps.ElementAt(i));
-        }
-
-        public void SetProperties(IPropertyReader reader)
+        public LayoutGrid(IPropertyReader reader)
         {
             var width = reader.Read<int>("Width");
             var height = reader.Read<int>("Height");
@@ -307,6 +226,41 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             this.WallMap = wallMap;
             this.TerrainSupportMap = terrainSupportMap;
             this.TerrainMaps = terrainData;
+        }
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            var cells = new List<GridCell>();
+
+            // Collect the grid cells in a list
+            for (int i = 0; i < _grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < _grid.GetLength(1); j++)
+                {
+                    if (_grid[i, j] != null)
+                        cells.Add(_grid[i, j]);
+                }
+            }
+
+            writer.Write("Width", _grid.GetLength(0));
+            writer.Write("Height", _grid.GetLength(1));
+            writer.Write("Count", cells.Count);
+            writer.Write("TerrainMapCount", this.TerrainMaps.Count());
+
+            writer.Write("ConnectionMap", this.ConnectionMap);
+            writer.Write("RoomMap", this.RoomMap);
+            writer.Write("FullNoTerrainSupportMap", this.FullNoTerrainSupportMap);
+            writer.Write("WalkableMap", this.WalkableMap);
+            writer.Write("PlacementMap", this.PlacementMap);
+            writer.Write("CorridorMap", this.CorridorMap);
+            writer.Write("WallMap", this.WallMap);
+            writer.Write("TerrainSupportMap", this.TerrainSupportMap);
+
+            for (int i = 0; i < cells.Count; i++)
+                writer.Write("Cell" + i.ToString(), cells[i]);
+
+            for (int i = 0; i < this.TerrainMaps.Count(); i++)
+                writer.Write("TerrainMap" + i.ToString(), this.TerrainMaps.ElementAt(i));
         }
         #endregion
 

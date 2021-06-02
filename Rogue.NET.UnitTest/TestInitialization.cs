@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Processing.Service.Cache;
+﻿using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Processing.Service.Cache;
 using Rogue.NET.UnitTest.Extension;
 
 using System.IO;

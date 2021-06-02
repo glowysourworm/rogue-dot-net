@@ -267,7 +267,6 @@
     <Compile Include="Serialization\Formatter\StringFormatter.cs" />
     <Compile Include="Serialization\Formatter\UnsignedIntegerFormatter.cs" />
     <Compile Include="Serialization\Interface\IBaseFormatter.cs" />
-    <Compile Include="Serialization\Interface\IPropertyPlanner.cs" />
     <Compile Include="Serialization\Interface\IPropertyReader.cs" />
     <Compile Include="Serialization\Interface\IPropertyWriter.cs" />
     <Compile Include="Serialization\Interface\IRecursiveSerializable.cs" />
@@ -278,7 +277,6 @@
     <Compile Include="Serialization\Planning\DeserializationNode.cs" />
     <Compile Include="Serialization\Planning\DeserializationNodeBase.cs" />
     <Compile Include="Serialization\Planning\DeserializationResolver.cs" />
-    <Compile Include="Serialization\Planning\PropertyPlanner.cs" />
     <Compile Include="Serialization\Planning\PropertyDefinition.cs" />
     <Compile Include="Serialization\Planning\PropertyResolvedInfo.cs" />
     <Compile Include="Serialization\PropertyDeserializer.cs" />

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Formatter;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Formatter;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
@@ -38,8 +39,9 @@ namespace Rogue.NET.Common.Serialization
             //
             // 1) Run the planner to create reference dictionary and node tree
             // 2) STORE TYPE TABLE (KEEPS TRACK OF IMPLEMETING TYPE DISCREPANCIES)
-            // 3) (Recurse) Serialize the node graph OBJECTS
-            // 4) Validate OUR serialized objects against the ISerializationPlan
+            // 3) STORE SPECIFIED MODE TABLE (Objects that have specified properties)
+            // 4) (Recurse) Serialize the node graph OBJECTS
+            // 5) Validate OUR serialized objects against the ISerializationPlan
             //
 
             // Run the planner
@@ -55,12 +57,42 @@ namespace Rogue.NET.Common.Serialization
             // Store TYPE TABLE for the manifest
             _typeTable = new List<HashedType>(typeDiscrepancies);
 
-            // Write count of types in the TYPE TABLE
+            // TYPE TABLE COUNT
             Write<int>(stream, typeDiscrepancies.Count);
 
-            // Write TYPE TABLE
+            // TYPE TABLE
             foreach (var type in typeDiscrepancies)
                 _hashedTypeFormatter.Write(stream, type);
+
+            // Collect unique object types in SPECIFIED MODE
+            var specifiedObjects = plan.UniqueReferenceDict
+                                       .Values
+                                       .Where(objectBase => objectBase.Mode == SerializationMode.Specified)
+                                       .DistinctBy(objectBase => objectBase.ObjectInfo.Type.GetHashCode())
+                                       .ToList();
+
+            // SPECIFIED MODE TABLE
+            Write<int>(stream, specifiedObjects.Count);
+
+            foreach (var objectBase in specifiedObjects)
+            {
+                var properties = objectBase.GetProperties();
+
+                // TYPE HASH CODE - AS REFERENCE WHEN DESERIALIZING TO FETCH PLANNED PROPERTIES
+                Write<int>(stream, objectBase.ObjectInfo.Type.GetHashCode());
+
+                // PROPERTY COUNT
+                Write<int>(stream, properties.Count());
+
+                foreach (var property in properties)
+                {
+                    // PROPERTY NAME
+                    Write<string>(stream, property.PropertyName);
+
+                    // PROPERTY DECLARING TYPE - AS HASHED TYPE!!!
+                    _hashedTypeFormatter.Write(stream, new HashedType(property.PropertyType));
+                }
+            }
 
             // Recurse
             SerializeRecurse(stream, plan.RootNode);

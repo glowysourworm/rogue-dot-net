@@ -1,17 +1,13 @@
 
 using Microsoft.Practices.ServiceLocation;
 
-using Moq;
-
 using NUnit.Framework;
 
 using Rogue.NET.Common.Serialization;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
-using Rogue.NET.Core.Processing.Service;
-using Rogue.NET.Core.Processing.Service.Cache;
-using Rogue.NET.Core.Processing.Service.Cache.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 
 using System;
@@ -24,22 +20,16 @@ namespace Rogue.NET.UnitTest
     {
         IScenarioResourceService _scenarioResourceService;
         IScenarioGenerator _scenarioGenerator;
+        ILayoutGenerator _layoutGenerator;
 
         [SetUp]
         public void Setup()
         {
             TestInitialization.Initialize();
 
-            var scenarioConfigurationCache = new ScenarioConfigurationCache();
-            var scenarioCache = new Mock<IScenarioCache>();
-            var svgCache = new Mock<ISvgCache>();
-            var scenarioImageSourceFactory = new Mock<IScenarioImageSourceFactory>();
-
-            // MOCK except for configuration cache
             _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
-
-            // Use container to resolve
             _scenarioGenerator = ServiceLocator.Current.GetInstance<IScenarioGenerator>();
+            _layoutGenerator = ServiceLocator.Current.GetInstance<ILayoutGenerator>();
         }
 
         [TearDown]
@@ -68,12 +58,16 @@ namespace Rogue.NET.UnitTest
         public void ScenarioSave()
         {
             var configuration = _scenarioResourceService.GetScenarioConfiguration("Fighter");
-            var scenario = _scenarioGenerator.CreateScenario(configuration, "Mr. Rogue", configuration.PlayerTemplates.First().Class, 1, false);
+            // var scenario = _scenarioGenerator.CreateScenario(configuration, "Mr. Rogue", configuration.PlayerTemplates.First().Class, 1, false);
+            var layout = _layoutGenerator.CreateLayout(configuration.LayoutTemplates.First());
             var serializer = new RecursiveSerializer<ScenarioContainer>();
 
-            ScenarioContainer scenarioDeserialized = null;
+            LayoutGrid layoutDeserialized = null;
 
-            RunSerializer(scenario, out scenarioDeserialized);
+            RunSerializer(layout, out layoutDeserialized);
+
+            var manifest = serializer.CreateManifest();
+
         }
 
         // ROUGH COMPARISON!

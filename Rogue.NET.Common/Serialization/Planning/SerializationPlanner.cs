@@ -168,19 +168,19 @@ namespace Rogue.NET.Common.Serialization.Planning
             {
                 var referenceObject = wrappedObject as SerializationObject;
 
-                return referenceObject.GetProperties(_writer);
+                return referenceObject.GetProperties();
             }
             else if (wrappedObject is SerializationValue)
             {
                 var valueObject = wrappedObject as SerializationValue;
 
-                return valueObject.GetProperties(_writer);
+                return valueObject.GetProperties();
             }
             else if (wrappedObject is SerializationCollection)
             {
                 var collectionObject = wrappedObject as SerializationCollection;
 
-                return collectionObject.GetProperties(_writer);
+                return collectionObject.GetProperties();
             }
             else
                 throw new Exception("Invalid SerializationObjectBase type for reading properties");
