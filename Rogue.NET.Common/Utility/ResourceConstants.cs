@@ -1,15 +1,58 @@
-﻿namespace Rogue.NET.Common.Utility
+﻿using System.IO;
+using System.Reflection;
+
+namespace Rogue.NET.Common.Utility
 {
     public static class ResourceConstants
     {
-        public const string RogueFileDatabase = "..\\.roguedb";
+        public enum ResourcePaths
+        {
+            RogueFileDatabase,
+            SavedGameDirectory,
+            ScenarioDirectory,
+            TempDirectory,
+            DebugOutputDirectory,
+            EmbeddedScenarioDirectory
+        }
+
+        // Paths
+        private const string RogueFileDatabase = "..\\.roguedb";
+        private const string SavedGameDirectory = "..\\save";
+        private const string ScenarioDirectory = "..\\scenarios";
+        private const string TempDirectory = "..\\temp";
+        private const string DebugOutputDirectory = "..\\debug-output";
+        private const string EmbeddedScenarioDirectory = "..\\..\\..\\Rogue.NET.Common\\Resource\\Configuration";
+
+        // Extensions
         public const string RogueFileDatabaseRecordExtension = "rdb";
-        public const string SavedGameDirectory = "..\\save";
-        public const string ScenarioDirectory = "..\\scenarios";
-        public const string TempDirectory = "..\\temp";
-        public const string DebugOutputDirectory = "..\\debug-output";
         public const string ScenarioExtension = "rdn";
         public const string ScenarioConfigurationExtension = "rdns";
-        public const string EmbeddedScenarioDirectory = "..\\..\\..\\Rogue.NET.Common\\Resource\\Configuration";
+
+        public static string GetPath(ResourcePaths resource, string additionalOffset = "")
+        {
+            var fileName = Assembly.GetExecutingAssembly().Location;
+            var offset = Path.GetDirectoryName(fileName);
+
+            if (!string.IsNullOrEmpty(additionalOffset))
+                offset = Path.Combine(offset, additionalOffset);
+
+            switch (resource)
+            {
+                case ResourcePaths.RogueFileDatabase:
+                    return Path.Combine(offset, RogueFileDatabase);
+                case ResourcePaths.SavedGameDirectory:
+                    return Path.Combine(offset, SavedGameDirectory);
+                case ResourcePaths.ScenarioDirectory:
+                    return Path.Combine(offset, ScenarioDirectory);
+                case ResourcePaths.TempDirectory:
+                    return Path.Combine(offset, TempDirectory);
+                case ResourcePaths.DebugOutputDirectory:
+                    return Path.Combine(offset, DebugOutputDirectory);
+                case ResourcePaths.EmbeddedScenarioDirectory:
+                    return Path.Combine(offset, EmbeddedScenarioDirectory);
+                default:
+                    throw new System.Exception("Unhandled Resource Path:  ResourceConstants.cs");
+            }
+        }
     }
 }

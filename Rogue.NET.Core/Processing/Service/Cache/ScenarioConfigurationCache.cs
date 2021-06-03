@@ -64,13 +64,6 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                                                                .FirstOrDefault(x => x.ScenarioDesign.Name == configurationName);
 
             //// NOTE*** Creating clone of the configuration using binary copy
-            //if (configuration != null)
-            //{
-            //    var buffer = BinarySerializer.Serialize(configuration);
-
-            //    return (ScenarioConfigurationContainer)BinarySerializer.Deserialize(buffer);
-            //}
-
             return BinarySerializer.BinaryCopy(configuration, BinarySerializer.SerializationMode.RecursiveSerializer);
         }
 
@@ -87,7 +80,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 AddUserConfiguration(configuration);
             }
 
-            var file = Path.Combine(ResourceConstants.ScenarioDirectory, configuration.ScenarioDesign.Name) + "." +
+            var file = Path.Combine(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.ScenarioDirectory), configuration.ScenarioDesign.Name) + "." +
                                     ResourceConstants.ScenarioConfigurationExtension;
 
             BinarySerializer.SerializeToFile(file, configuration, BinarySerializer.SerializationMode.RecursiveSerializer);
@@ -105,7 +98,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                 AddEmbeddedConfiguration(configuration);
             }
 
-            var file = Path.Combine(ResourceConstants.EmbeddedScenarioDirectory, configuration.ScenarioDesign.Name) + "." +
+            var file = Path.Combine(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.EmbeddedScenarioDirectory), configuration.ScenarioDesign.Name) + "." +
                                     ResourceConstants.ScenarioConfigurationExtension;
 
             BinarySerializer.SerializeToFile(file, configuration, BinarySerializer.SerializationMode.RecursiveSerializer);
@@ -142,7 +135,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // Embedded Scenario Configurations
             _embeddedScenarioConfigurations.Clear();
 
-            foreach (var configResource in Enum.GetValues(typeof(ConfigResources)))
+            foreach (var configResource in Enum.GetValues(typeof(ConfigResources)).Cast<ConfigResources>())
             {
                 var name = configResource.ToString();
                 var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
@@ -152,17 +145,17 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                     var memoryStream = new MemoryStream();
                     stream.CopyTo(memoryStream);
 
-                    AddEmbeddedConfiguration(BinarySerializer.Deserialize<ScenarioConfigurationContainer>(memoryStream.GetBuffer(), BinarySerializer.SerializationMode.MSFT));
+                    AddEmbeddedConfiguration(BinarySerializer.Deserialize<ScenarioConfigurationContainer>(memoryStream.GetBuffer(), BinarySerializer.SerializationMode.RecursiveSerializer));
                 }
             }
 
             // User Scenario Configurations (On Disk)
             _userScenarioConfigurations.Clear();
 
-            foreach (var file in Directory.GetFiles(ResourceConstants.ScenarioDirectory)
+            foreach (var file in Directory.GetFiles(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.ScenarioDirectory))
                                           .Where(x => x.EndsWith("." + ResourceConstants.ScenarioConfigurationExtension)))
             {
-                AddUserConfiguration(BinarySerializer.DeserializeFromFile<ScenarioConfigurationContainer>(file, BinarySerializer.SerializationMode.MSFT));
+                AddUserConfiguration(BinarySerializer.DeserializeFromFile<ScenarioConfigurationContainer>(file, BinarySerializer.SerializationMode.RecursiveSerializer));
             }
         }
 

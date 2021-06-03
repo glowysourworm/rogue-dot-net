@@ -38,8 +38,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             using (var rogueFileDatabase = new RogueFileDatabase())
             {
                 return rogueFileDatabase.Add(CreateUniqueName(rogueName, configurationName, seed), 
-                                             typeof(ScenarioContainer), 
-                                             ResourceConstants.SavedGameDirectory);
+                                             typeof(ScenarioContainer),
+                                             ResourceConstants.GetPath(ResourceConstants.ResourcePaths.SavedGameDirectory));
             }
         }
 

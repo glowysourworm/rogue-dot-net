@@ -608,7 +608,7 @@ namespace Rogue.NET.Core.Processing.Model.Extension
         /// <param name="name">Name of file (used as prefix)</param>
         public static void OutputDebug<T>(this T[,] grid, string name)
         {
-            var fileName = Path.Combine(ResourceConstants.DebugOutputDirectory, name + "_output.csv");
+            var fileName = Path.Combine(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.DebugOutputDirectory), name + "_output.csv");
 
             var builder = new StringBuilder();
 

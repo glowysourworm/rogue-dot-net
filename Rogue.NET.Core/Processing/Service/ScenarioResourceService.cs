@@ -164,7 +164,7 @@ namespace Rogue.NET.Core.Processing.Service
             if (compress)
                 buffer = ZipEncoder.Compress(buffer);
 
-            var fileName = Path.Combine(ResourceConstants.TempDirectory, System.Guid.NewGuid().ToString());
+            var fileName = Path.Combine(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.TempDirectory), System.Guid.NewGuid().ToString());
 
             File.WriteAllBytes(fileName, buffer);
 

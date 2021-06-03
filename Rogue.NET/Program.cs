@@ -14,17 +14,17 @@ namespace Rogue.NET
         public static void Main()
         {
             // Create Game Directories
-            if (!Directory.Exists(ResourceConstants.SavedGameDirectory))
-                Directory.CreateDirectory(ResourceConstants.SavedGameDirectory);
+            if (!Directory.Exists(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.SavedGameDirectory)))
+                Directory.CreateDirectory(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.SavedGameDirectory));
 
-            if (!Directory.Exists(ResourceConstants.ScenarioDirectory))
-                Directory.CreateDirectory(ResourceConstants.ScenarioDirectory);
+            if (!Directory.Exists(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.DebugOutputDirectory)))
+                Directory.CreateDirectory(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.DebugOutputDirectory));
 
-            if (!Directory.Exists(ResourceConstants.TempDirectory))
-                Directory.CreateDirectory(ResourceConstants.TempDirectory);
+            if (!Directory.Exists(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.ScenarioDirectory)))
+                Directory.CreateDirectory(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.ScenarioDirectory));
 
-            if (!Directory.Exists(ResourceConstants.DebugOutputDirectory))
-                Directory.CreateDirectory(ResourceConstants.DebugOutputDirectory);
+            if (!Directory.Exists(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.TempDirectory)))
+                Directory.CreateDirectory(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.TempDirectory));
 
             var loadingWindow = SplashWindowFactory.CreatePopupWindow(SplashEventType.Loading);
 

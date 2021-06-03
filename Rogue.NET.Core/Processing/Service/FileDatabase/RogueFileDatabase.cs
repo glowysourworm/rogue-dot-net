@@ -41,9 +41,9 @@ namespace Rogue.NET.Core.Processing.Service
             RogueFileDatabase.Entries.Clear();
 
             // Create initial collection / database file
-            if (!File.Exists(ResourceConstants.RogueFileDatabase))
+            if (!File.Exists(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.RogueFileDatabase)))
             {
-                BinarySerializer.SerializeToFile(ResourceConstants.RogueFileDatabase,
+                BinarySerializer.SerializeToFile(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.RogueFileDatabase),
                                                  RogueFileDatabase.Entries,
                                                  BinarySerializer.SerializationMode.MSFT);
             }           
@@ -51,7 +51,7 @@ namespace Rogue.NET.Core.Processing.Service
             {
                 // Set new entries from file
                 RogueFileDatabase.Entries = BinarySerializer.DeserializeFromFile<Dictionary<string, RogueFileDatabaseEntry>>(
-                    ResourceConstants.RogueFileDatabase, BinarySerializer.SerializationMode.MSFT);
+                    ResourceConstants.GetPath(ResourceConstants.ResourcePaths.RogueFileDatabase), BinarySerializer.SerializationMode.MSFT);
 
                 // Validate Entries
                 foreach (var entry in RogueFileDatabase.Entries)
@@ -138,7 +138,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         private void Save()
         {
-            BinarySerializer.SerializeToFile(ResourceConstants.RogueFileDatabase,
+            BinarySerializer.SerializeToFile(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.RogueFileDatabase),
                                              RogueFileDatabase.Entries,
                                              BinarySerializer.SerializationMode.MSFT);
         }

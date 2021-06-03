@@ -2,6 +2,7 @@
 {
     public enum ConfigResources
     {
+        Adventurer,
         Fighter,
         Paladin,
         Witch,

@@ -70,6 +70,14 @@
                 <Button Style="{StaticResource ActionButton}" Content="&#xf01e;" Margin="2,0,0,0" 
                         Command="{Binding RedoCommand}" />
 
+                <Button Style="{StaticResource ActionButton}" ToolTip="Load Adventurer Scenario" Margin="16,0,0,0">
+                    <Button.Content>
+                        <coreView:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyExpression="Happy" Height="18" Width="12" />
+                    </Button.Content>
+                    <Button.InputBindings>
+                        <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Adventurer" MouseAction="LeftClick" />
+                    </Button.InputBindings>
+                </Button>
                 <Button Style="{StaticResource ActionButton}" ToolTip="Load Fighter Scenario" Margin="16,0,0,0">
                     <Button.Content>
                         <coreView:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyExpression="Happy" Height="18" Width="12" />
@@ -112,6 +120,17 @@
                 </Button>
                 
                 <!-- DEBUG ONLY -->
+                <Button Style="{StaticResource ActionButton}" Width="100" Visibility="{Binding Converter={StaticResource DebugVisibilityCollapsedConverter}}" Margin="16,0,0,0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <coreView:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyExpression="Happy" Height="18" Width="12" />
+                            <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
+                        </StackPanel>
+                    </Button.Content>
+                    <Button.InputBindings>
+                        <MouseBinding Command="{Binding SaveBuiltInCommand}" CommandParameter="Adventurer" MouseAction="LeftClick" />
+                    </Button.InputBindings>
+                </Button>                
                 <Button Style="{StaticResource ActionButton}" Width="100" Visibility="{Binding Converter={StaticResource DebugVisibilityCollapsedConverter}}" Margin="16,0,0,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">

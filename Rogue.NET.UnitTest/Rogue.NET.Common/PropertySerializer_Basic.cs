@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 using Rogue.NET.Common.Serialization;
 using Rogue.NET.Common.Serialization.Manifest;
+using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
@@ -73,7 +74,6 @@ namespace Rogue.NET.UnitTest
         public void LayoutSave()
         {
             var configuration = _scenarioResourceService.GetScenarioConfiguration("Fighter");
-            // var scenario = _scenarioGenerator.CreateScenario(configuration, "Mr. Rogue", configuration.PlayerTemplates.First().Class, 1, false);
             var layout = _layoutGenerator.CreateLayout(configuration.LayoutTemplates.First());
 
             LayoutGrid layoutDeserialized1 = null;
@@ -92,7 +92,7 @@ namespace Rogue.NET.UnitTest
         public void ScenarioSave()
         {
             var configuration = _scenarioResourceService.GetScenarioConfiguration("Fighter");
-            var scenario = _scenarioGenerator.CreateScenario(configuration, "Mr. Roguennnn", configuration.PlayerTemplates.First().Class, 1, false);
+            var scenario = _scenarioGenerator.CreateScenario(configuration, "Test Scenario", configuration.PlayerTemplates.First().Class, 1, false);
 
             ScenarioContainer scenarioDeserialized1 = null;
             ScenarioContainer scenarioDeserialized2 = null;
@@ -127,8 +127,8 @@ namespace Rogue.NET.UnitTest
             Assert.IsTrue(map1.Boundary.Equals(map2.Boundary));
             Assert.IsTrue(map1.Name.Equals(map2.Name));
             Assert.IsTrue(map1.ParentBoundary.Equals(map2.ParentBoundary));
-            
-            foreach(var region1 in map1.Regions)
+
+            foreach (var region1 in map1.Regions)
             {
                 var region2 = map2.Regions.FirstOrDefault(region => region.Id == region1.Id);
 
@@ -196,7 +196,7 @@ namespace Rogue.NET.UnitTest
 
         private void OutputManifestDiff(List<SerializedNodeDifference> diff, string name)
         {
-            var fileName = Path.Combine(TestParameters.DebugOutputDirectory, name + ".xml");
+            var fileName = Path.Combine(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.DebugOutputDirectory), name + ".xml");
 
             using (var stream = File.OpenWrite(fileName))
             {
@@ -208,7 +208,7 @@ namespace Rogue.NET.UnitTest
 
         private void OutputManifest(SerializationManifest manifest, string name)
         {
-            var fileName = Path.Combine(TestParameters.DebugOutputDirectory, name + ".xml");
+            var fileName = Path.Combine(ResourceConstants.GetPath(ResourceConstants.ResourcePaths.DebugOutputDirectory), name + ".xml");
 
             using (var stream = File.OpenWrite(fileName))
             {
