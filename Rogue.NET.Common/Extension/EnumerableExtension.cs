@@ -53,7 +53,7 @@ namespace Rogue.NET.Common.Extension
                                                                        Func<T1, T2, TResult> resultSelector)
         {
             var result = new List<TResult>();
-            var lookup = new Dictionary<TKey, Dictionary<TKey, TKey>>();
+            var lookup = new SimpleDictionary<TKey, SimpleDictionary<TKey, TKey>>();
 
             foreach (var item1 in collection1)
             {
@@ -86,14 +86,14 @@ namespace Rogue.NET.Common.Extension
                             lookup[key1].Add(key2, key2);
 
                         else
-                            lookup.Add(key1, new Dictionary<TKey, TKey>() { { key2, key2 } });
+                            lookup.Add(key1, new SimpleDictionary<TKey, TKey>() { { key2, key2 } });
 
                         // Store lookup 2 -> 1
                         if (lookup.ContainsKey(key2))
                             lookup[key2].Add(key1, key1);
 
                         else
-                            lookup.Add(key2, new Dictionary<TKey, TKey>() { { key1, key1 } });
+                            lookup.Add(key2, new SimpleDictionary<TKey, TKey>() { { key1, key1 } });
                     }
                 }
             }
@@ -512,6 +512,18 @@ namespace Rogue.NET.Common.Extension
         public static IEnumerable<V> OfType<T, V>(this IEnumerable<T> collection)
         {
             return collection.Where(item => item is V).Cast<V>();
+        }
+
+        public static SimpleDictionary<KResult, VResult> ToSimpleDictionary<T, KResult, VResult>(this IEnumerable<T> collection,
+                                                                                                 Func<T, KResult> keySelector,
+                                                                                                 Func<T, VResult> valueSelector)
+        {
+            var result = new SimpleDictionary<KResult, VResult>();
+
+            foreach (var element in collection)
+                result.Add(keySelector(element), valueSelector(element));
+
+            return result;
         }
     }
 }

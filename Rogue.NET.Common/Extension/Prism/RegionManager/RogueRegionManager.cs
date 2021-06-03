@@ -1,4 +1,6 @@
 ﻿using Microsoft.Practices.ServiceLocation;
+
+using Rogue.NET.Common.Collection;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
 using System;
 using System.Collections.Generic;
@@ -164,11 +166,11 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
         /// <summary>
         /// Maintains primary list of view instances (MUST BE STATIC TO FACILITATE ATTACHED PROPERTY DESIGN)
         /// </summary>
-        protected static Dictionary<RogueRegion, List<RogueRegionView>> RegionViews { get; set; }
+        protected static SimpleDictionary<RogueRegion, List<RogueRegionView>> RegionViews { get; set; }
 
         static RogueRegionManager()
         {
-            RogueRegionManager.RegionViews = new Dictionary<RogueRegion, List<RogueRegionView>>();
+            RogueRegionManager.RegionViews = new SimpleDictionary<RogueRegion, List<RogueRegionView>>();
         }
 
         public RogueRegionManager() { }

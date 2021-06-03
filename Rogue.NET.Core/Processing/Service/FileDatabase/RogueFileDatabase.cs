@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Utility;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Processing.Service.FileDatabase.Interface;
 
 using System;
@@ -15,7 +16,7 @@ namespace Rogue.NET.Core.Processing.Service
     /// </summary>
     public class RogueFileDatabase : IRogueFileDatabase, IDisposable
     {
-        protected static IDictionary<string, RogueFileDatabaseEntry> Entries = new Dictionary<string, RogueFileDatabaseEntry>();
+        protected static SimpleDictionary<string, RogueFileDatabaseEntry> Entries = new SimpleDictionary<string, RogueFileDatabaseEntry>();
         protected static bool IsInitialized = false;
 
         public RogueFileDatabase()
@@ -50,7 +51,7 @@ namespace Rogue.NET.Core.Processing.Service
             else
             {
                 // Set new entries from file
-                RogueFileDatabase.Entries = BinarySerializer.DeserializeFromFile<Dictionary<string, RogueFileDatabaseEntry>>(
+                RogueFileDatabase.Entries = BinarySerializer.DeserializeFromFile<SimpleDictionary<string, RogueFileDatabaseEntry>>(
                     ResourceConstants.GetPath(ResourceConstants.ResourcePaths.RogueFileDatabase), BinarySerializer.SerializationMode.MSFT);
 
                 // Validate Entries

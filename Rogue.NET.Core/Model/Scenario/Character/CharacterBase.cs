@@ -6,19 +6,21 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Model.Scenario.Character
 {
     [Serializable]
     public abstract class CharacterBase : ScenarioObject
     {
-        public Dictionary<string, Equipment> Equipment { get; set; }
-        public Dictionary<string, Consumable> Consumables { get; set; }     
+        public SimpleDictionary<string, Equipment> Equipment { get; set; }
+        public SimpleDictionary<string, Consumable> Consumables { get; set; }     
 
         /// <summary>
         /// Returns inventory as a single collection (avoid repeated use)
         /// </summary>
-        public Dictionary<string, ItemBase> Inventory
+        public SimpleDictionary<string, ItemBase> Inventory
         {
             get
             {
@@ -26,7 +28,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
                            .Values
                            .Cast<ItemBase>()
                            .Union(this.Consumables.Values)
-                           .ToDictionary(x => x.Id);
+                           .ToSimpleDictionary(x => x.Id, x => x);
             }
         }
 
@@ -44,14 +46,14 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public CharacterAlteration Alteration { get; set; }
 
-        public Dictionary<string, AttackAttribute> AttackAttributes { get; set; }
+        public SimpleDictionary<string, AttackAttribute> AttackAttributes { get; set; }
 
         public CharacterBase()
         {
             this.Alteration = new CharacterAlteration();
-            this.Equipment = new Dictionary<string, Equipment>();
-            this.Consumables = new Dictionary<string, Consumable>();
-            this.AttackAttributes = new Dictionary<string, AttackAttribute>();
+            this.Equipment = new SimpleDictionary<string, Equipment>();
+            this.Consumables = new SimpleDictionary<string, Consumable>();
+            this.AttackAttributes = new SimpleDictionary<string, AttackAttribute>();
         }
     }
 }

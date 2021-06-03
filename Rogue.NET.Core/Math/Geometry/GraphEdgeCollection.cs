@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 
@@ -16,8 +17,8 @@ namespace Rogue.NET.Core.Math.Geometry
     public class GraphEdgeCollection<TNode, TEdge> : IRecursiveSerializable where TNode : IGraphNode
                                                                             where TEdge : IGraphEdge<TNode>
     {
-        Dictionary<SpatialIndex, TEdge> _edges;
-        Dictionary<TNode, Dictionary<SpatialIndex, TEdge>> _nodeEdges;
+        SimpleDictionary<SpatialIndex, TEdge> _edges;
+        SimpleDictionary<TNode, SimpleDictionary<SpatialIndex, TEdge>> _nodeEdges;
         bool _directedGraph;
 
         /// <summary>
@@ -119,14 +120,14 @@ namespace Rogue.NET.Core.Math.Geometry
                 _nodeEdges[edge.Node].Add(new SpatialIndex(edge, _directedGraph), edge);
 
             else
-                _nodeEdges.Add(edge.Node, new Dictionary<SpatialIndex, TEdge>() { { new SpatialIndex(edge, _directedGraph), edge } });
+                _nodeEdges.Add(edge.Node, new SimpleDictionary<SpatialIndex, TEdge>() { { new SpatialIndex(edge, _directedGraph), edge } });
 
             // Reverse entry - will not fail spatial index
             if (_nodeEdges.ContainsKey(edge.AdjacentNode))
                 _nodeEdges[edge.AdjacentNode].Add(new SpatialIndex(edge, _directedGraph), edge);
 
             else
-                _nodeEdges.Add(edge.AdjacentNode, new Dictionary<SpatialIndex, TEdge>() { { new SpatialIndex(edge, _directedGraph), edge } });
+                _nodeEdges.Add(edge.AdjacentNode, new SimpleDictionary<SpatialIndex, TEdge>() { { new SpatialIndex(edge, _directedGraph), edge } });
         }
 
         public void Remove(TEdge edge)
@@ -208,8 +209,8 @@ namespace Rogue.NET.Core.Math.Geometry
 
         private void Initialize(IEnumerable<TEdge> edges, bool directedGraph)
         {
-            _edges = new Dictionary<SpatialIndex, TEdge>();
-            _nodeEdges = new Dictionary<TNode, Dictionary<SpatialIndex, TEdge>>();
+            _edges = new SimpleDictionary<SpatialIndex, TEdge>();
+            _nodeEdges = new SimpleDictionary<TNode, SimpleDictionary<SpatialIndex, TEdge>>();
             _directedGraph = directedGraph;
 
             // Initialize for edges and adjacent vertex lookup

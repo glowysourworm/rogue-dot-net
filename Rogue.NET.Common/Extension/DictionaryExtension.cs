@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Rogue.NET.Common.Collection;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,12 +13,11 @@ namespace Rogue.NET.Common.Extension
         /// </summary>
         /// <typeparam name="K">Key Type</typeparam>
         /// <typeparam name="V">Value Type</typeparam>
-        /// <param name="dictionary">The IDictionary implementation</param>
         /// <param name="filter">Func that specifies a filter on the supplied dictionary</param>
         /// <returns>Returns new Dictionary of filtered values</returns>
-        public static IDictionary<K, V> Filter<K, V>(this IDictionary<K, V> dictionary, Func<KeyValuePair<K, V>, bool> filter)
+        public static SimpleDictionary<K, V> Filter<K, V>(this SimpleDictionary<K, V> dictionary, Func<KeyValuePair<K, V>, bool> filter)
         {
-            var result = new Dictionary<K, V>();
+            var result = new SimpleDictionary<K, V>();
 
             var removeKeys = dictionary
                                .Where(x => filter(x))
@@ -31,6 +32,18 @@ namespace Rogue.NET.Common.Extension
                 // Remove from dictionary
                 dictionary.Remove(key);
             }
+
+            return result;
+        }
+
+        public static SimpleDictionary<KResult, VResult> ToSimpleDictionary<K, V, KResult, VResult>(this SimpleDictionary<K, V> dictionary, 
+                                                                                                     Func<KeyValuePair<K, V>, KResult> keySelector,
+                                                                                                     Func<KeyValuePair<K, V>, VResult> valueSelector)
+        {
+            var result = new SimpleDictionary<KResult, VResult>();
+
+            foreach (var element in dictionary)
+                result.Add(keySelector(element), valueSelector(element));
 
             return result;
         }

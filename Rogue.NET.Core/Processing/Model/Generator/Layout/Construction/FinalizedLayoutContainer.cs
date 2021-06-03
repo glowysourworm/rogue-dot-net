@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
     {
         public RegionBoundary Bounds { get; set; }
         public GridCellInfo[,] Grid { get; set; }
-        public IDictionary<LayoutLayer, IEnumerable<RegionInfo<GridLocation>>> RegionDict { get; set; }
-        public IDictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> TerrainDict { get; set; }
+        public SimpleDictionary<LayoutLayer, IEnumerable<RegionInfo<GridLocation>>> RegionDict { get; set; }
+        public SimpleDictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> TerrainDict { get; set; }
         public RegionGraphInfo<GridLocation> Graph { get; set; }
     }
 }

@@ -28,13 +28,10 @@ namespace Rogue.NET.Common.Utility
         public const string ScenarioExtension = "rdn";
         public const string ScenarioConfigurationExtension = "rdns";
 
-        public static string GetPath(ResourcePaths resource, string additionalOffset = "")
+        public static string GetPath(ResourcePaths resource)
         {
             var fileName = Assembly.GetExecutingAssembly().Location;
             var offset = Path.GetDirectoryName(fileName);
-
-            if (!string.IsNullOrEmpty(additionalOffset))
-                offset = Path.Combine(offset, additionalOffset);
 
             switch (resource)
             {

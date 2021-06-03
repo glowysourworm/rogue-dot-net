@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -43,12 +45,12 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         /// <summary>
         /// Calculates path cells from source to all target locations - in FORWARD direction
         /// </summary>
-        public IDictionary<IGridLocator, IEnumerable<IGridLocator>> CalculatePaths()
+        public SimpleDictionary<IGridLocator, IEnumerable<IGridLocator>> CalculatePaths()
         {
             Run();
 
             // Create paths for each target
-            return this.TargetLocations.ToDictionary(location => location, location => GeneratePath(location).Reverse());
+            return this.TargetLocations.ToSimpleDictionary(location => location, location => GeneratePath(location).Reverse());
         }
     }
 }

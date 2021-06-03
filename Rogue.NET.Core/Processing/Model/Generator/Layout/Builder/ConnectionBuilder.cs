@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Algorithm;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
@@ -35,12 +36,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         protected class ConnectionInfo
         {
             // Using dictionary for faster hashing
-            public Dictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>> FinishedConnections { get; private set; }
+            public SimpleDictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>> FinishedConnections { get; private set; }
 
-            public Dictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo> PartialConnectionDict { get; private set; }
+            public SimpleDictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo> PartialConnectionDict { get; private set; }
 
-            public ConnectionInfo(Dictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>> finishedConnections,
-                                  Dictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo> partialConnectionDict)
+            public ConnectionInfo(SimpleDictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>> finishedConnections,
+                                  SimpleDictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo> partialConnectionDict)
             {
                 this.FinishedConnections = finishedConnections;
                 this.PartialConnectionDict = partialConnectionDict;
@@ -48,8 +49,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
             public static ConnectionInfo CreateEmpty()
             {
-                return new ConnectionInfo(new Dictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>>(),
-                                          new Dictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo>());
+                return new ConnectionInfo(new SimpleDictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>>(),
+                                          new SimpleDictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo>());
             }
         }
 
@@ -244,8 +245,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
                                               .Except(connectionInfo.FinishedConnections.Keys)
                                               .ToList();
 
-            var finishedConnections = new Dictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>>(connectionInfo.FinishedConnections);
-            var partialConnections = new Dictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo>();
+            var finishedConnections = new SimpleDictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>>(connectionInfo.FinishedConnections);
+            var partialConnections = new SimpleDictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo>();
 
             foreach (var connection in connectionsToRoute)
             {
@@ -281,8 +282,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         private ConnectionInfo RoutePartialConnections(LayoutContainer container, ConnectionInfo connectionInfo)
         {
             // Create new ConnectionInfo for result
-            var finishedConnections = new Dictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>>(connectionInfo.FinishedConnections);
-            var partialConnections = new Dictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo>(connectionInfo.PartialConnectionDict);
+            var finishedConnections = new SimpleDictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>>(connectionInfo.FinishedConnections);
+            var partialConnections = new SimpleDictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo>(connectionInfo.PartialConnectionDict);
 
             // Iterate PARTIAL connections where there are new ones to attempt
             foreach (var connection in partialConnections.Where(element => !element.Value.IsRouted))
@@ -358,8 +359,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         private ConnectionInfo ForceRoutes(LayoutContainer container, ConnectionInfo connectionInfo)
         {
             // Create new ConnectionInfo for result
-            var finishedConnections = new Dictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>>(connectionInfo.FinishedConnections);
-            var partialConnections = new Dictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo>(connectionInfo.PartialConnectionDict);
+            var finishedConnections = new SimpleDictionary<RegionConnectionInfo<GridLocation>, RegionConnectionInfo<GridLocation>>(connectionInfo.FinishedConnections);
+            var partialConnections = new SimpleDictionary<RegionConnectionInfo<GridLocation>, PartialConnectionInfo>(connectionInfo.PartialConnectionDict);
 
             for (int index = partialConnections.Count - 1; index >= 0; index--)
             {

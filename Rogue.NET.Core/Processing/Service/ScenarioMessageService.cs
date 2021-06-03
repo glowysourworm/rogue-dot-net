@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Event.Backend;
@@ -45,8 +46,8 @@ namespace Rogue.NET.Core.Processing.Service
                 string alterationDisplayName, 
                 string effectedAttributeName, 
                 double effect, 
-                bool isCausedByAttackAttributes = false, 
-                IDictionary<ScenarioImage, double> attackAttributeEffect = null)
+                bool isCausedByAttackAttributes = false,
+                SimpleDictionary<ScenarioImage, double> attackAttributeEffect = null)
         {
             _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new AlterationMessageData(priority)
             {
@@ -78,7 +79,7 @@ namespace Rogue.NET.Core.Processing.Service
                 double baseHit,
                 bool isCriticalHit,
                 bool anySpecializedHits = false,
-                IDictionary<ScenarioImage, double> specializedHits = null)
+                SimpleDictionary<ScenarioImage, double> specializedHits = null)
         {
             _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new MeleeMessageData(priority)
             {

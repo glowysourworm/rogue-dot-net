@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
@@ -165,7 +166,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Finishing
             var minimumRadius = ((1 - template.WallLightFillRatio) * WALL_LIGHT_SPACE_PARAMETER) + WALL_LIGHT_SPACE_MINIMUM;
 
             // Collect the combined FOV for all wall lights
-            var wallLightFOV = new Dictionary<GridCellInfo, List<DistanceLocation>>();
+            var wallLightFOV = new SimpleDictionary<GridCellInfo, List<DistanceLocation>>();
 
             // Combine color with existing lighting for the cell
             container.Grid.Iterate((column, row) =>

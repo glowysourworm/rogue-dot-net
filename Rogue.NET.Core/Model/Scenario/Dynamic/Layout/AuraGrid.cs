@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -21,7 +22,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         List<string>[,] _enemyAlignedAuraGrid;
 
         // Dictionary lookup - stores affected locations per aura
-        Dictionary<string, IEnumerable<GridLocation>> _auraDict;
+        SimpleDictionary<string, IEnumerable<GridLocation>> _auraDict;
 
         public AuraGrid(CharacterMovement movement)
         {
@@ -30,7 +31,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             // Initialize private collections
             _playerAlignedAuraGrid = new List<string>[movement.Boundary.Width, movement.Boundary.Height];
             _enemyAlignedAuraGrid = new List<string>[movement.Boundary.Width, movement.Boundary.Height];
-            _auraDict = new Dictionary<string, IEnumerable<GridLocation>>();
+            _auraDict = new SimpleDictionary<string, IEnumerable<GridLocation>>();
         }
 
         public void Update(Player player, GridLocation playerLocation)

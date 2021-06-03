@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
@@ -16,13 +17,13 @@ namespace Rogue.NET.Common.Serialization
     internal static class RecursiveSerializerStore
     {
         // Keep track of property types to avoid extra reflection calls
-        static Dictionary<Type, IEnumerable<PropertyInfo>> _propertyDict;
+        static SimpleDictionary<Type, IEnumerable<PropertyInfo>> _propertyDict;
 
         internal static readonly string GetMethodName = "GetProperties";
 
         static RecursiveSerializerStore()
         {
-            _propertyDict = new Dictionary<Type, IEnumerable<PropertyInfo>>();
+            _propertyDict = new SimpleDictionary<Type, IEnumerable<PropertyInfo>>();
         }
 
         /// <summary>

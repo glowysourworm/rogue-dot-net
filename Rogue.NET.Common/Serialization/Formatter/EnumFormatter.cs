@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Common.Serialization.Interface;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +18,7 @@ namespace Rogue.NET.Common.Serialization.Formatter
 
         readonly Type _enumType;
 
-        readonly IDictionary<object, IComparable> _enumValues;
+        readonly SimpleDictionary<object, IComparable> _enumValues;
 
         public EnumFormatter(Type enumType)
         {
@@ -37,7 +39,7 @@ namespace Rogue.NET.Common.Serialization.Formatter
             _enumValues = Enum.GetValues(enumType)
                               .Cast<object>()
                               .Select(enumObject => Convert.ChangeType(enumObject, _enumType.GetEnumUnderlyingType()))
-                              .ToDictionary(value => value, value => (IComparable)value);
+                              .ToSimpleDictionary(value => value, value => (IComparable)value);
         }
 
         protected override Enum ReadImpl(Stream stream)

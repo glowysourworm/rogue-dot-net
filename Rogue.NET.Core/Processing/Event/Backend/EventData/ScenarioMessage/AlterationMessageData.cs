@@ -1,6 +1,6 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
-using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage
 {
@@ -37,6 +37,6 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage
         /// <summary>
         /// Calculated attack-attribute effect
         /// </summary>
-        public IDictionary<ScenarioImage, double> AttackAttributeEffect { get; set; }
+        public SimpleDictionary<ScenarioImage, double> AttackAttributeEffect { get; set; }
     }
 }

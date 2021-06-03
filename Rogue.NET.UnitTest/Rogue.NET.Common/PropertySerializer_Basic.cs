@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Rogue.NET.Common.Serialization;
 using Rogue.NET.Common.Serialization.Manifest;
 using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
@@ -48,32 +49,34 @@ namespace Rogue.NET.UnitTest
         [Test]
         public void ScenarioConfigurationSave()
         {
-            var fighterScenario = _scenarioResourceService.GetScenarioConfiguration("Fighter");
+            var scenario = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Adventurer.ToString());
 
-            ScenarioConfigurationContainer fighterScenarioResult1 = null;
-            ScenarioConfigurationContainer fighterScenarioResult2 = null;
+            ScenarioConfigurationContainer scenarioResult1 = null;
+            ScenarioConfigurationContainer scenarioResult2 = null;
 
-            var manifest1 = RunSerializer(fighterScenario, out fighterScenarioResult1);
-            var manifest2 = RunSerializer(fighterScenarioResult1, out fighterScenarioResult2);
+            var manifest1 = RunSerializer(scenario, out scenarioResult1);
+            var manifest2 = RunSerializer(scenarioResult1, out scenarioResult2);
 
             var comparison = new CompareLogic(new ComparisonConfig()
             {
                 MaxDifferences = int.MaxValue
             });
 
-            var result = comparison.Compare(manifest1.SerializerOutput, manifest1.DeserializerOutput);
+            var result1 = comparison.Compare(manifest1.SerializerOutput, manifest1.DeserializerOutput);
+            var result2 = comparison.Compare(manifest2.SerializerOutput, manifest2.DeserializerOutput);
 
-            Assert.IsTrue(result.AreEqual);
+            Assert.IsTrue(result1.AreEqual);
+            Assert.IsTrue(result2.AreEqual);
 
-            CompareConfiguration(fighterScenario, fighterScenarioResult1);
-            CompareConfiguration(fighterScenario, fighterScenarioResult2);
-            CompareConfiguration(fighterScenarioResult1, fighterScenarioResult2);
+            CompareConfiguration(scenario, scenarioResult1);
+            CompareConfiguration(scenario, scenarioResult2);
+            CompareConfiguration(scenarioResult1, scenarioResult2);
         }
 
         [Test]
         public void LayoutSave()
         {
-            var configuration = _scenarioResourceService.GetScenarioConfiguration("Fighter");
+            var configuration = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Adventurer.ToString());
             var layout = _layoutGenerator.CreateLayout(configuration.LayoutTemplates.First());
 
             LayoutGrid layoutDeserialized1 = null;
@@ -91,8 +94,8 @@ namespace Rogue.NET.UnitTest
         [Test]
         public void ScenarioSave()
         {
-            var configuration = _scenarioResourceService.GetScenarioConfiguration("Fighter");
-            var scenario = _scenarioGenerator.CreateScenario(configuration, "Test Scenario", configuration.PlayerTemplates.First().Class, 1, false);
+            var configuration = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Adventurer.ToString());
+            var scenario = _scenarioGenerator.CreateScenario(configuration, "Test Scenario", configuration.PlayerTemplates.First().Name, 1, false);
 
             ScenarioContainer scenarioDeserialized1 = null;
             ScenarioContainer scenarioDeserialized2 = null;

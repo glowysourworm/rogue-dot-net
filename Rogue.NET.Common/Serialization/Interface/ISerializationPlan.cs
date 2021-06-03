@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Planning;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
 
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Rogue.NET.Common.Serialization.Interface
         /// <summary>
         /// Stores dictionary of unique references to reference-type objects
         /// </summary>
-        IDictionary<HashedObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; }
+        SimpleDictionary<HashedObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; }
 
         /// <summary>
         /// Collection of ALL SERIAILZED OBJECTS in the plan

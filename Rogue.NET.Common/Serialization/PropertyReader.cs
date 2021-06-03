@@ -1,10 +1,11 @@
 ﻿
+using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Planning;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Rogue.NET.Common.Serialization
 {
@@ -13,11 +14,11 @@ namespace Rogue.NET.Common.Serialization
     /// </summary>
     public class PropertyReader : IPropertyReader
     {
-        readonly IDictionary<string, PropertyResolvedInfo> _properties;
+        readonly SimpleDictionary<string, PropertyResolvedInfo> _properties;
 
         internal PropertyReader(IEnumerable<PropertyResolvedInfo> properties)
         {
-            _properties = properties.ToDictionary(property => property.PropertyName, property => property);
+            _properties = properties.ToSimpleDictionary(property => property.PropertyName, property => property);
         }
 
         internal IEnumerable<PropertyResolvedInfo> Properties { get { return _properties.Values; } }

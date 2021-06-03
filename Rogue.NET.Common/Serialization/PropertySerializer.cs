@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Formatter;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Manifest;
@@ -15,13 +16,13 @@ namespace Rogue.NET.Common.Serialization
     internal class PropertySerializer
     {
         // Collection of formatters for serialization
-        Dictionary<Type, IBaseFormatter> _primitiveFormatters;
+        SimpleDictionary<Type, IBaseFormatter> _primitiveFormatters;
 
         // Used to create TYPE TABLE
         HashedTypeFormatter _hashedTypeFormatter;
 
         // Collection of UNIQUE objects that HAVE BEEN SERIALIZED
-        Dictionary<HashedObjectInfo, SerializationObjectBase> _serializedObjects;
+        SimpleDictionary<HashedObjectInfo, SerializationObjectBase> _serializedObjects;
 
         // TYPE TABLE
         IList<HashedType> _typeTable;
@@ -31,8 +32,8 @@ namespace Rogue.NET.Common.Serialization
 
         internal PropertySerializer()
         {
-            _primitiveFormatters = new Dictionary<Type, IBaseFormatter>();
-            _serializedObjects = new Dictionary<HashedObjectInfo, SerializationObjectBase>();
+            _primitiveFormatters = new SimpleDictionary<Type, IBaseFormatter>();
+            _serializedObjects = new SimpleDictionary<HashedObjectInfo, SerializationObjectBase>();
             _hashedTypeFormatter = new HashedTypeFormatter();
             _outputManifest = new List<SerializedNodeManifest>();
         }

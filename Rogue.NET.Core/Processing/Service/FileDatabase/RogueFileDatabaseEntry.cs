@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension.Event;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Processing.Service.Interface;
 
@@ -19,7 +20,7 @@ namespace Rogue.NET.Core.Processing.Service
         /// <summary>
         /// Primary data records for the entry - NOT STORED WITH THIS ENTRY - READ FROM DIRECTORY
         /// </summary>
-        protected IDictionary<string, RogueFileDatabaseRecord> Records = new Dictionary<string, RogueFileDatabaseRecord>();
+        protected SimpleDictionary<string, RogueFileDatabaseRecord> Records = new SimpleDictionary<string, RogueFileDatabaseRecord>();
 
         /// <summary>
         /// Event to listen for updates on the entry
@@ -43,7 +44,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         public RogueFileDatabaseEntry()
         {
-            this.Records = new Dictionary<string, RogueFileDatabaseRecord>();
+            this.Records = new SimpleDictionary<string, RogueFileDatabaseRecord>();
         }
 
         public RogueFileDatabaseEntry(SerializationInfo info, StreamingContext context) : this()

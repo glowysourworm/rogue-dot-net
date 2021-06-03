@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+﻿using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -11,7 +12,7 @@ using System;
 
 namespace Rogue.NET.Core.Model.Scenario
 {
-    public class ScenarioContainer : IRogueFileDatabaseSerializable
+    public class ScenarioContainer : IRogueFileDatabaseSerializable, IRecursiveSerializable
     {
         // Primary reference for the level in play
         public Level CurrentLevel { get; private set; }
@@ -69,6 +70,16 @@ namespace Rogue.NET.Core.Model.Scenario
             this.Statistics = new ScenarioStatistics();
         }
 
+        public ScenarioContainer(IPropertyReader reader)
+        {
+            this.Detail = reader.Read<ScenarioContainerDetail>("Detail");
+            this.CurrentLevel = reader.Read<Level>("Level " + this.Detail.CurrentLevelNumber.ToString());
+            this.Player = reader.Read<Player>("Player");
+            this.Configuration = reader.Read<ScenarioConfigurationContainer>("Configuration");
+            this.Encyclopedia = reader.Read<ScenarioEncyclopedia>("Encyclopedia");
+            this.Statistics = reader.Read<ScenarioStatistics>("Statistics");
+        }
+
         public ScenarioContainer(IRogueFileDatabaseSerializer serializer)
         {
             this.Detail = serializer.Fetch<ScenarioContainerDetail>("Detail");
@@ -77,6 +88,17 @@ namespace Rogue.NET.Core.Model.Scenario
             this.Configuration = serializer.Fetch<ScenarioConfigurationContainer>("Configuration");
             this.Encyclopedia = serializer.Fetch<ScenarioEncyclopedia>("Encyclopedia");
             this.Statistics = serializer.Fetch<ScenarioStatistics>("Statistics");
+        }
+
+
+        public void GetProperties(IPropertyWriter writer)
+        {
+            writer.Write("Detail", this.Detail);
+            writer.Write("Level " + this.Detail.CurrentLevelNumber.ToString(), this.CurrentLevel);
+            writer.Write("Player", this.Player);
+            writer.Write("Configuration", this.Configuration);
+            writer.Write("Encyclopedia", this.Encyclopedia);
+            writer.Write("Statistics", this.Statistics);
         }
 
         public void SaveRecords(IRogueFileDatabaseSerializer serializer)

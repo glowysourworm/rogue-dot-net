@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
@@ -19,9 +20,9 @@ namespace Rogue.NET.Core.Model.Scenario
         IList<ScenarioObject>[,] _levelContentGrid;
 
         // Gives the contents as a dictionary
-        Dictionary<string, ScenarioObject> _levelContentDict;
-        Dictionary<string, GridLocation> _levelLocationDict;
-        Dictionary<string, GridLocation> _homeLocationDict;
+        SimpleDictionary<string, ScenarioObject> _levelContentDict;
+        SimpleDictionary<string, GridLocation> _levelLocationDict;
+        SimpleDictionary<string, GridLocation> _homeLocationDict;
 
         IList<CharacterBase> _characters;
         IList<NonPlayerCharacter> _nonPlayerCharacters;
@@ -149,16 +150,16 @@ namespace Rogue.NET.Core.Model.Scenario
         {
             Initialize(grid.Bounds.Width,
                        grid.Bounds.Height,
-                       new Dictionary<string, ScenarioObject>(),
-                       new Dictionary<string, GridLocation>());
+                       new SimpleDictionary<string, ScenarioObject>(),
+                       new SimpleDictionary<string, GridLocation>());
         }
 
-        private void Initialize(int width, int height, Dictionary<string, ScenarioObject> contentDict, Dictionary<string, GridLocation> locationDict)
+        private void Initialize(int width, int height, SimpleDictionary<string, ScenarioObject> contentDict, SimpleDictionary<string, GridLocation> locationDict)
         {
             _levelContentGrid = new List<ScenarioObject>[width, height];
-            _levelContentDict = new Dictionary<string, ScenarioObject>();
-            _levelLocationDict = new Dictionary<string, GridLocation>();
-            _homeLocationDict = new Dictionary<string, GridLocation>();
+            _levelContentDict = new SimpleDictionary<string, ScenarioObject>();
+            _levelLocationDict = new SimpleDictionary<string, GridLocation>();
+            _homeLocationDict = new SimpleDictionary<string, GridLocation>();
 
             this.Characters = new List<CharacterBase>();
             this.NonPlayerCharacters = new List<NonPlayerCharacter>();

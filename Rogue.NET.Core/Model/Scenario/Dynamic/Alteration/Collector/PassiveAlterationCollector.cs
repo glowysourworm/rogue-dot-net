@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
@@ -15,11 +16,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
     [Serializable]
     public class PassiveAlterationCollector : IAlterationCollector, IAlterationEffectCollector
     {
-        protected IDictionary<string, AlterationContainer> Alterations { get; set; }
+        protected SimpleDictionary<string, AlterationContainer> Alterations { get; set; }
 
         public PassiveAlterationCollector()
         {
-            this.Alterations = new Dictionary<string, AlterationContainer>();
+            this.Alterations = new SimpleDictionary<string, AlterationContainer>();
         }
         public bool Apply(AlterationContainer alteration)
         {
@@ -49,13 +50,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
         {
             return this.Alterations
-                       .ToDictionary(x => x.Key, x => x.Value.Cost);
+                       .ToSimpleDictionary(x => x.Key, x => x.Value.Cost);
         }
 
         public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects = false)
         {
             return this.Alterations
-                       .ToDictionary(x => x.Key, x => x.Value.Effect);
+                       .ToSimpleDictionary(x => x.Key, x => x.Value.Effect);
         }
 
         public IEnumerable<SymbolEffectTemplate> GetSymbolChanges()

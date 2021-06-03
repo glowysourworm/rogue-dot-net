@@ -40,7 +40,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects = false)
         {
             return this.TargetEffects
-                       .ToDictionary(x => x.RogueName, x => (IAlterationEffect)x);
+                       .ToSimpleDictionary(x => x.RogueName, x => (IAlterationEffect)x);
         }
 
         public IEnumerable<SymbolEffectTemplate> GetSymbolChanges()

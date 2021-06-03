@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Interface;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Target;
 
 using System;
@@ -12,7 +13,7 @@ namespace Rogue.NET.Common.Serialization.Planning
         PropertyWriter _writer;
 
         // TRACK TYPES
-        Dictionary<HashedType, HashedType> _typeDict;
+        SimpleDictionary<HashedType, HashedType> _typeDict;
 
         // Creates basic object wrappers for serialization. TRACKS HASH REFERENCES!
         SerializationObjectFactory _factory;
@@ -20,7 +21,7 @@ namespace Rogue.NET.Common.Serialization.Planning
         internal SerializationPlanner()
         {
             _writer = new PropertyWriter();
-            _typeDict = new Dictionary<HashedType, HashedType>();
+            _typeDict = new SimpleDictionary<HashedType, HashedType>();
             _factory = new SerializationObjectFactory();
         }
 

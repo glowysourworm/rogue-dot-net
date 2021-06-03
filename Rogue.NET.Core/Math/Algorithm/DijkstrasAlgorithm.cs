@@ -19,8 +19,8 @@ namespace Rogue.NET.Core.Math.Algorithm
         public static GraphTraversal<TNode, TEdge> Run<TNode, TEdge>(IGraph<TNode, TEdge> graph, TNode source, TNode destination) where TNode : IGraphNode
                                                                                                                                   where TEdge : IGraphEdge<TNode>
         {
-            var visitedDict = new Dictionary<TNode, double>();
-            var outputDict = new Dictionary<TNode, double>();
+            var visitedDict = new SimpleDictionary<TNode, double>();
+            var outputDict = new SimpleDictionary<TNode, double>();
 
             // Initialize the cost dictionary
             foreach (var vertex in graph.Vertices)
@@ -123,7 +123,7 @@ namespace Rogue.NET.Core.Math.Algorithm
             }
         }
 
-        private static void UpdateOutput<T>(Dictionary<T, double> outputDict,
+        private static void UpdateOutput<T>(SimpleDictionary<T, double> outputDict,
                                             BinarySearchTree<double, List<T>> frontier,
                                             IGraphEdge<T> edge,
                                             T adjacentVertex,

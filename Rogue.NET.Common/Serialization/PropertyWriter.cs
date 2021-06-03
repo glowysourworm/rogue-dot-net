@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Common.Serialization.Interface;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Planning;
 
 using System;
@@ -10,11 +12,11 @@ namespace Rogue.NET.Common.Serialization
     public class PropertyWriter : IPropertyWriter
     {
         // Actual object contextual properties
-        Dictionary<string, PropertyStorageInfo> _properties;
+        SimpleDictionary<string, PropertyStorageInfo> _properties;
 
         internal PropertyWriter()
         {
-            _properties = new Dictionary<string, PropertyStorageInfo>();
+            _properties = new SimpleDictionary<string, PropertyStorageInfo>();
         }
 
         public void Write<T>(string propertyName, T property)
@@ -51,7 +53,7 @@ namespace Rogue.NET.Common.Serialization
                 PropertyType = info.PropertyType,
                 PropertyValue = info.GetValue(graphObject)
 
-            }).ToDictionary(info => info.PropertyName, info => info);
+            }).ToSimpleDictionary(info => info.PropertyName, info => info);
 
             return _properties.Values;
         }

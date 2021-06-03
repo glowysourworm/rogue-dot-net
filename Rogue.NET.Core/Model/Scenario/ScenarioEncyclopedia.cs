@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Interface;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Model.Scenario.Abstract;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -12,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario
     [Serializable]
     public class ScenarioEncyclopedia : IRecursiveSerializable
     {
-        private Dictionary<string, ScenarioMetaData> _encyclopedia;
+        private SimpleDictionary<string, ScenarioMetaData> _encyclopedia;
         private IEnumerable<ScenarioImage> _characterClasses;
         private IEnumerable<AlterationCategory> _alterationCategories;
 
@@ -27,27 +28,27 @@ namespace Rogue.NET.Core.Model.Scenario
 
         public ScenarioEncyclopedia()
         {
-            _encyclopedia = new Dictionary<string, ScenarioMetaData>();
+            _encyclopedia = new SimpleDictionary<string, ScenarioMetaData>();
         }
-        public ScenarioEncyclopedia(IDictionary<string, ScenarioMetaData> encyclopedia, 
+        public ScenarioEncyclopedia(SimpleDictionary<string, ScenarioMetaData> encyclopedia, 
                                     IEnumerable<ScenarioImage> characterClasses, 
                                     IEnumerable<AlterationCategory> alterationCategories)
         {
-            _encyclopedia = encyclopedia.ToDictionary(x => x.Key, x => x.Value);
+            _encyclopedia = encyclopedia;
             _characterClasses = characterClasses.ToList();
             _alterationCategories = alterationCategories.ToList();
         }
         public ScenarioEncyclopedia(IPropertyReader reader)
         {
-            _encyclopedia = reader.Read<Dictionary<string, ScenarioMetaData>>("Encyclopedia");
+            _encyclopedia = reader.Read<SimpleDictionary<string, ScenarioMetaData>>("Encyclopedia");
             _characterClasses = reader.Read<List<ScenarioImage>>("CharacterClasses");
             _alterationCategories = reader.Read<List<AlterationCategory>>("AlterationCategories");
         }
         public void GetProperties(IPropertyWriter writer)
         {
             writer.Write("Encyclopedia", _encyclopedia);
-            writer.Write("CharacterClasses", _characterClasses);
-            writer.Write("AlterationCategories", _alterationCategories);
+            writer.Write("CharacterClasses", _characterClasses.ToList());
+            writer.Write("AlterationCategories", _alterationCategories.ToList());
         }
 
         #region Linq Support

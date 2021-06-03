@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         GraphEdgeCollection<Region<GridLocation>, RegionConnection> _edges;
 
         // Connection points (non-serialized)
-        Dictionary<Region<GridLocation>, List<GridLocation>> _connectionPoints;
+        SimpleDictionary<Region<GridLocation>, List<GridLocation>> _connectionPoints;
 
         // Mode setting
         bool _isSingleRegion;
@@ -81,7 +81,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             else
             {
                 _edges = new GraphEdgeCollection<Region<GridLocation>, RegionConnection>(connections, false);
-                _connectionPoints = new Dictionary<Region<GridLocation>, List<GridLocation>>();
+                _connectionPoints = new SimpleDictionary<Region<GridLocation>, List<GridLocation>>();
 
                 // Pre-calculate the connection points
                 foreach (var connection in connections)

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
@@ -110,7 +111,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // TODO: SUPPORT MULTI-THREADED RANDOM SEQUENCES
             var maxThreadCount = 1;         
             var runningThreads = new List<Thread>();
-            var threads = new Dictionary<ScenarioGeneratorThreadData, Thread>();
+            var threads = new SimpleDictionary<ScenarioGeneratorThreadData, Thread>();
             var completedThreadData = new ConcurrentDictionary<string, ScenarioGeneratorThreadData>();
 
             // NOTE*** IRandomSequenceGenerator is shared - but has a multi-threading policy that 
@@ -298,9 +299,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         /// </summary>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        private IDictionary<string, ScenarioMetaData> CreateEncyclopediaData(ScenarioConfigurationContainer configuration)
+        private SimpleDictionary<string, ScenarioMetaData> CreateEncyclopediaData(ScenarioConfigurationContainer configuration)
         {
-            Dictionary<string, ScenarioMetaData> encyclopedia = new Dictionary<string, ScenarioMetaData>();
+            SimpleDictionary<string, ScenarioMetaData> encyclopedia = new SimpleDictionary<string, ScenarioMetaData>();
 
             //Load Encyclopedia Rogue-Tanica (Consumables)
             foreach (var template in configuration.ConsumableTemplates)
@@ -449,7 +450,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // 5) Store the symbol reference so as not to re-use it.
             //
 
-            var usedSymbols = new Dictionary<string, List<SymbolDetailsTemplate>>();
+            var usedSymbols = new SimpleDictionary<string, List<SymbolDetailsTemplate>>();
 
             var mapSymbolFunction = new Action<SymbolDetailsTemplate,
                                                IEnumerable<SymbolDetailsTemplate>,

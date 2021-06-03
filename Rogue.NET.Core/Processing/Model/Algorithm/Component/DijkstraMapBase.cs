@@ -1,12 +1,10 @@
 ﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
-using Rogue.NET.Core.Processing.Model.Extension;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
 {
@@ -66,8 +64,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
         private bool[,] _visitedMap;
 
         // Frontier BST for the map
-        BinarySearchTree<float, Dictionary<IGridLocator, IGridLocator>> _frontier;
-        
+        BinarySearchTree<float, SimpleDictionary<IGridLocator, IGridLocator>> _frontier;
+
         // Cell movement cost
         const int CELL_MOVEMENT_COST = 1;
 
@@ -94,7 +92,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             this.TargetLocations = targetLocations;
 
             _visitedMap = new bool[width, height];
-            _frontier = new BinarySearchTree<float, Dictionary<IGridLocator, IGridLocator>>();
+            _frontier = new BinarySearchTree<float, SimpleDictionary<IGridLocator, IGridLocator>>();
         }
 
         protected void Initialize(IGridLocator sourceLocation, IEnumerable<IGridLocator> targetLocations)
@@ -134,7 +132,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
 
             // Track goal progress
             var goalDict = this.TargetLocations
-                               .ToDictionary(location => location, location => false);
+                               .ToSimpleDictionary(location => location, location => false);
 
             // Process the first element
             var column = this.SourceLocation.Column;
@@ -276,7 +274,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
             // Both weights are absent from the frontier
             if (oldWeightList == null &&
                 newWeightList == null)
-                _frontier.Insert(newWeight, new Dictionary<IGridLocator, IGridLocator>() { { locator, locator } });
+                _frontier.Insert(newWeight, new SimpleDictionary<IGridLocator, IGridLocator>() { { locator, locator } });
 
             // Old weight list exists; New weight list is absent
             else if (oldWeightList != null &&
@@ -291,7 +289,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm.Component
                     _frontier.Remove(oldWeight);
 
                 // Insert new node in the frontier
-                _frontier.Insert(newWeight, new Dictionary<IGridLocator, IGridLocator>() { { locator, locator } });
+                _frontier.Insert(newWeight, new SimpleDictionary<IGridLocator, IGridLocator>() { { locator, locator } });
             }
 
             // Old weight is absent; New weight exists

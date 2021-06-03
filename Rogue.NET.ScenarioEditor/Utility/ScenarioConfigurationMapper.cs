@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
@@ -27,18 +29,18 @@ namespace Rogue.NET.ScenarioEditor.Utility
     public class ScenarioConfigurationMapper
     {
         // Constructed type maps for configuration name spaces
-        private static readonly IDictionary<Type, Type> _forwardTypeMap;
-        private static readonly IDictionary<Type, Type> _reverseTypeMap;
+        private static readonly SimpleDictionary<Type, Type> _forwardTypeMap;
+        private static readonly SimpleDictionary<Type, Type> _reverseTypeMap;
 
         // Reference map used to track duplicate references in the source and
         // replicate them in the destination.
-        private IDictionary<Template, TemplateViewModel> _forwardReferenceMap;
-        private IDictionary<TemplateViewModel, Template> _reverseReferenceMap;
+        private SimpleDictionary<Template, TemplateViewModel> _forwardReferenceMap;
+        private SimpleDictionary<TemplateViewModel, Template> _reverseReferenceMap;
 
         static ScenarioConfigurationMapper()
         {
-            _forwardTypeMap = new Dictionary<Type, Type>();
-            _reverseTypeMap = new Dictionary<Type, Type>();
+            _forwardTypeMap = new SimpleDictionary<Type, Type>();
+            _reverseTypeMap = new SimpleDictionary<Type, Type>();
 
             var sourceTypes = typeof(ScenarioConfigurationContainer).Assembly.GetTypes();
             var destTypes = typeof(ScenarioConfigurationContainerViewModel).Assembly.GetTypes();
@@ -64,8 +66,8 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
         public ScenarioConfigurationMapper()
         {
-            _forwardReferenceMap = new Dictionary<Template, TemplateViewModel>();
-            _reverseReferenceMap = new Dictionary<TemplateViewModel, Template>();
+            _forwardReferenceMap = new SimpleDictionary<Template, TemplateViewModel>();
+            _reverseReferenceMap = new SimpleDictionary<TemplateViewModel, Template>();
         }
 
         public ScenarioConfigurationContainerViewModel Map(ScenarioConfigurationContainer model, out IEnumerable<BrushTemplateViewModel> scenarioBrushes)
@@ -154,10 +156,10 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
             // Map collection properties separately
             var destProperties = typeof(TDest).GetProperties()
-                                              .ToDictionary(x => x.Name, x => x);
+                                              .ToSimpleDictionary(x => x.Name, x => x);
 
             var sourceProperties = typeof(TSource).GetProperties()
-                                                  .ToDictionary(x => x.Name, x => x);
+                                                  .ToSimpleDictionary(x => x.Name, x => x);
 
             foreach (var sourceProperty in sourceProperties)
             {

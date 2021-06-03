@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension.Prism.RegionManager;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension.Prism.RegionManager;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -12,11 +13,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
     /// </summary>
     public class RogueRegionEvent : RogueEventBase
     {
-        readonly IDictionary<string, Action<RogueRegion>> _actions;
+        readonly SimpleDictionary<string, Action<RogueRegion>> _actions;
 
         public RogueRegionEvent()
         {
-            _actions = new Dictionary<string, Action<RogueRegion>>();
+            _actions = new SimpleDictionary<string, Action<RogueRegion>>();
         }
 
         public string Subscribe(Action<RogueRegion> action)
@@ -49,11 +50,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
     /// </summary>
     public class RogueRegionEvent<T> : RogueEventBase
     {
-        readonly IDictionary<string, Action<RogueRegion, T>> _actions;
+        readonly SimpleDictionary<string, Action<RogueRegion, T>> _actions;
 
         public RogueRegionEvent()
         {
-            _actions = new Dictionary<string, Action<RogueRegion, T>>();
+            _actions = new SimpleDictionary<string, Action<RogueRegion, T>>();
         }
 
         public string Subscribe(Action<RogueRegion, T> action)

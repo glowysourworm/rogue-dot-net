@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
@@ -54,7 +55,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var transporterDict = level.Grid
                                        .RoomMap
                                        .Regions
-                                       .ToDictionary(region => region, region => _randomSequenceGenerator.GetRandomElement(region.Locations));
+                                       .ToSimpleDictionary(region => region, region => _randomSequenceGenerator.GetRandomElement(region.Locations));
 
             var mandatoryNormalDoodads = new List<DoodadNormal>();
 
@@ -142,7 +143,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     level.AddContentRandom(_randomSequenceGenerator, consumable, ContentRandomPlacementType.Random);
             }
         }
-        private void AddTransporters(Level level, IDictionary<Region<GridLocation>, GridLocation> transporterDict)
+        private void AddTransporters(Level level, SimpleDictionary<Region<GridLocation>, GridLocation> transporterDict)
         {
             var transporters = new List<DoodadNormal>();
             var usedRegions = new List<Region<GridLocation>>();

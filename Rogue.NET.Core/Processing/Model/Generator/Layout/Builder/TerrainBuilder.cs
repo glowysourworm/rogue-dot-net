@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -30,7 +31,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
 
         // *** TERRAIN STATE -> Stores ORIGINAL terrain grids. These are processed to
         //                      create the final regions.
-        IDictionary<TerrainLayerTemplate, GridLocation[,]> _terrainDict;
+        SimpleDictionary<TerrainLayerTemplate, GridLocation[,]> _terrainDict;
 
         int _width;
         int _height;
@@ -39,7 +40,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         public TerrainBuilder(INoiseGenerator noiseGenerator)
         {
             _noiseGenerator = noiseGenerator;
-            _terrainDict = new Dictionary<TerrainLayerTemplate, GridLocation[,]>();
+            _terrainDict = new SimpleDictionary<TerrainLayerTemplate, GridLocation[,]>();
             _width = 0;
             _height = 0;
         }
@@ -140,9 +141,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder
         }
 
         // Constructs terrain regions based on the original terrain grid - removing islands.
-        public Dictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> FinalizeTerrainRegions(LayoutContainer container)
+        public SimpleDictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> FinalizeTerrainRegions(LayoutContainer container)
         {
-            var result = new Dictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>>();
+            var result = new SimpleDictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>>();
 
             foreach (var element in _terrainDict)
             {

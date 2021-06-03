@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Practices.ServiceLocation;
 
+using Rogue.NET.Common.Collection;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -201,7 +202,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //
 
             // *** CONVERT THE LAYOUT
-            var finalRegions = new Dictionary<LayoutLayer, IEnumerable<Region<GridLocation>>>();
+            var finalRegions = new SimpleDictionary<LayoutLayer, IEnumerable<Region<GridLocation>>>();
 
             foreach (var layer in Enum.GetValues(typeof(LayoutLayer))
                                       .Cast<LayoutLayer>())

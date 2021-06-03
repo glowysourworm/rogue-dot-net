@@ -1,9 +1,8 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Collection;
 using Rogue.NET.Core.Processing.Service.Cache.Interface;
-using System.Collections.Generic;
+
 using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -13,13 +12,13 @@ namespace Rogue.NET.Core.Processing.Service.Cache
     [Export(typeof(IScenarioBitmapSourceFactory))]
     public class ScenarioBitmapSourceFactory : IScenarioBitmapSourceFactory
     {
-        readonly Dictionary<ScaledCacheImage, WriteableBitmap> _cache;
+        readonly SimpleDictionary<ScaledCacheImage, WriteableBitmap> _cache;
 
         protected struct ScaledCacheImage
         {
             public DrawingImage OriginalImage { get; set; }
             public double Scale { get; set; }
-            
+
             public ScaledCacheImage(DrawingImage image, double scale)
             {
                 this.OriginalImage = image;
@@ -40,7 +39,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
         public ScenarioBitmapSourceFactory()
         {
-            _cache = new Dictionary<ScaledCacheImage, WriteableBitmap>();
+            _cache = new SimpleDictionary<ScaledCacheImage, WriteableBitmap>();
         }
 
         public WriteableBitmap GetImageSource(DrawingImage drawingImage, double scale)
@@ -65,7 +64,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             // Create the Bitmap and render the rectangle onto it.
             var bitmap = new RenderTargetBitmap((int)visual.ContentBounds.Width, (int)visual.ContentBounds.Height, 96, 96, PixelFormats.Pbgra32);
             bitmap.Render(visual);
-           
+
             var writeableBitmap = new WriteableBitmap(bitmap);
 
             // Cache the result

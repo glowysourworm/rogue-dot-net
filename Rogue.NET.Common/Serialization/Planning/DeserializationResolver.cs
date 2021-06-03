@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.CustomException;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.CustomException;
 using Rogue.NET.Common.Serialization.Target;
 
 using System;
@@ -10,14 +11,14 @@ namespace Rogue.NET.Common.Serialization.Planning
     internal class DeserializationResolver
     {
         // Collection of UNIQUE objects that HAVE BEEN DESERIALIZED
-        Dictionary<HashedObjectReference, DeserializationObjectBase> _deserializedObjectcs;
+        SimpleDictionary<HashedObjectReference, DeserializationObjectBase> _deserializedObjectcs;
 
         internal DeserializationResolver()
         {
-            _deserializedObjectcs = new Dictionary<HashedObjectReference, DeserializationObjectBase>();
+            _deserializedObjectcs = new SimpleDictionary<HashedObjectReference, DeserializationObjectBase>();
         }
 
-        internal IDictionary<HashedObjectReference, DeserializationObjectBase> GetDeserializedObjects()
+        internal SimpleDictionary<HashedObjectReference, DeserializationObjectBase> GetDeserializedObjects()
         {
             return _deserializedObjectcs;
         }
@@ -95,7 +96,9 @@ namespace Rogue.NET.Common.Serialization.Planning
                 }
 
                 // FINALIZE COLLECTION (MUST HAVE CALLED Construct())
-                (collectionNode.NodeObject as DeserializationCollection).FinalizeCollection(resolvedChildNodes);
+                //                
+                if (resolvedChildNodes.Any())
+                    (collectionNode.NodeObject as DeserializationCollection).FinalizeCollection(resolvedChildNodes);
             }
             // NODE
             else if (node is DeserializationNode)

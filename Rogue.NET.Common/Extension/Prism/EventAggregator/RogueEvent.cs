@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Rogue.NET.Common.Collection;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,11 +8,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {
     public class RogueEvent<T> : RogueEventBase
     {
-        readonly IDictionary<RogueEventKey, Action<T>> _actions;
+        readonly SimpleDictionary<RogueEventKey, Action<T>> _actions;
 
         public RogueEvent()
         {
-            _actions = new Dictionary<RogueEventKey, Action<T>>();
+            _actions = new SimpleDictionary<RogueEventKey, Action<T>>();
         }
 
         public string Subscribe(Action<T> action, RogueEventPriority priority = RogueEventPriority.None)
@@ -46,11 +48,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
     }
     public class RogueEvent : RogueEventBase
     {
-        readonly IDictionary<RogueEventKey, Action> _actions;
+        readonly SimpleDictionary<RogueEventKey, Action> _actions;
 
         public RogueEvent()
         {
-            _actions = new Dictionary<RogueEventKey, Action>();
+            _actions = new SimpleDictionary<RogueEventKey, Action>();
         }
 
         public string Subscribe(Action action, RogueEventPriority priority = RogueEventPriority.None)

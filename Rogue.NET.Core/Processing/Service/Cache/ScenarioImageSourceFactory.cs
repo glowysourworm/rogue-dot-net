@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media.SymbolEffect;
 using Rogue.NET.Core.Media.SymbolEffect.Interface;
 using Rogue.NET.Core.Media.SymbolEffect.Utility;
@@ -30,7 +31,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         readonly ISvgCache _svgCache;
         readonly ISymbolEffectFilter _symbolEffectFilter;
 
-        Dictionary<int, DrawingImage> _imageSourceCache;
+        SimpleDictionary<int, DrawingImage> _imageSourceCache;
 
         [ImportingConstructor]
         public ScenarioImageSourceFactory(ISvgCache svgCache, ISymbolEffectFilter symbolEffectFilter)
@@ -38,7 +39,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             _svgCache = svgCache;
             _symbolEffectFilter = symbolEffectFilter;
 
-            _imageSourceCache = new Dictionary<int, DrawingImage>();
+            _imageSourceCache = new SimpleDictionary<int, DrawingImage>();
         }
 
         public DrawingImage GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, double effectiveVision, Light[] lighting)

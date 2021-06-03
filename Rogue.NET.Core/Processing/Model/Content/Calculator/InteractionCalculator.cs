@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
@@ -205,9 +206,9 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
             }
         }
 
-        private IDictionary<ScenarioImage, double> CreateAttackAttributeResults(
-                IEnumerable<AttackAttribute> offensiveAttributes,
-                IEnumerable<AttackAttribute> defensiveAttributes)
+        private SimpleDictionary<ScenarioImage, double> CreateAttackAttributeResults(
+                                    IEnumerable<AttackAttribute> offensiveAttributes,
+                                    IEnumerable<AttackAttribute> defensiveAttributes)
         {
             return offensiveAttributes.Select(offensiveAttribute =>
             {
@@ -241,7 +242,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Calculator
                 }
             })
             .Where(x => x.Value > 0)
-            .ToDictionary(x => x.AttackAttribute, x => x.Value);
+            .ToSimpleDictionary(x => x.AttackAttribute, x => x.Value);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             // Use Breadth First Search to scan the graph
             //
             var frontierQueue = new Queue<Region<GridLocation>>();
-            var discoveredRegions = new Dictionary<Region<GridLocation>, Region<GridLocation>>();
+            var discoveredRegions = new SimpleDictionary<Region<GridLocation>, Region<GridLocation>>();
 
             // Initialize the queue
             frontierQueue.Enqueue(startingRegion);

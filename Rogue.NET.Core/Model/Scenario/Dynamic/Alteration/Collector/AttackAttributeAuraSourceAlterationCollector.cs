@@ -9,6 +9,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
 using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
+using Rogue.NET.Common.Collection;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
@@ -21,11 +22,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                    IAlterationEffectCollector,
                    IAlterationAuraSourceCollector
     {
-        protected IDictionary<string, Scenario.Alteration.Common.AlterationContainer> Alterations { get; set; }
+        protected SimpleDictionary<string, Scenario.Alteration.Common.AlterationContainer> Alterations { get; set; }
 
         public AttackAttributeAuraSourceAlterationCollector()
         {
-            this.Alterations = new Dictionary<string, Scenario.Alteration.Common.AlterationContainer>();
+            this.Alterations = new SimpleDictionary<string, Scenario.Alteration.Common.AlterationContainer>();
         }
 
         public bool Apply(Scenario.Alteration.Common.AlterationContainer alteration)
@@ -47,14 +48,14 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
         {
             return this.Alterations
-                       .ToDictionary(x => x.Key, x => x.Value.Cost);
+                       .ToSimpleDictionary(x => x.Key, x => x.Value.Cost);
         }
 
         public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects = false)
         {
             // Aura source not affected by the IAlterationEffect
-            return includeSourceEffects ? this.Alterations.ToDictionary(x => x.Key, x => x.Value.Effect) 
-                                        : new Dictionary<string, IAlterationEffect>();
+            return includeSourceEffects ? this.Alterations.ToSimpleDictionary(x => x.Key, x => x.Value.Effect) 
+                                        : new SimpleDictionary<string, IAlterationEffect>();
         }
 
         public IEnumerable<AuraSourceParameters> GetAuraSourceParameters()

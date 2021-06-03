@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Interface;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using Rogue.NET.Core.Processing.Model.Algorithm;
@@ -141,7 +142,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             //         STORAGE EFFICIENT TO STORE LOCATION+ITEM, OR ITEM (WITH THE GRID
             //         SCAN TO LOCATE IT'S COLUMN AND ROW).
             //
-            var dict = new Dictionary<GridLocation, T>();
+            var dict = new SimpleDictionary<GridLocation, T>();
 
             // Gather the item data from the grid
             _grid.Iterate((column, row) =>

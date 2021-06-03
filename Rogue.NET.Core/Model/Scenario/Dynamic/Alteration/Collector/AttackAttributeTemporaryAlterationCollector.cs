@@ -9,6 +9,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common.Extension;
+using Rogue.NET.Common.Collection;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
@@ -71,7 +72,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
         {
             // Temporary alterations only have a one-time cost
-            return new Dictionary<string, AlterationCost>();
+            return new SimpleDictionary<string, AlterationCost>();
         }
 
         public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects = false)

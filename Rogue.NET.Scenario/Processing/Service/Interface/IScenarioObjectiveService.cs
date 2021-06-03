@@ -1,6 +1,6 @@
 ﻿
+using Rogue.NET.Common.Collection;
 using Rogue.NET.Core.Model.Scenario;
-using System.Collections.Generic;
 
 namespace Rogue.NET.Scenario.Processing.Service.Interface
 {
@@ -14,6 +14,6 @@ namespace Rogue.NET.Scenario.Processing.Service.Interface
         /// <summary>
         /// Returns a dictionary keyed by RogueName to signal when objectives are acheived.
         /// </summary>
-        IDictionary<string, bool> GetScenarioObjectiveUpdates(ScenarioContainer scenarioContainer);
+        SimpleDictionary<string, bool> GetScenarioObjectiveUpdates(ScenarioContainer scenarioContainer);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using System;
@@ -19,7 +20,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
                 string effectedAttributeName,
                 double effect,
                 bool isCausedByAttackAttributes = false,
-                IDictionary<ScenarioImage, double> attackAttributeEffect = null);
+                SimpleDictionary<ScenarioImage, double> attackAttributeEffect = null);
 
         void PublishAlterationCombatMessage(CharacterAlignmentType alignmentType,
                                             string attackerName, 
@@ -33,7 +34,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
                 double baseHit,
                 bool isCriticalHit,
                 bool anySpecializedHits = false,
-                IDictionary<ScenarioImage, double> specializedHits = null);
+                SimpleDictionary<ScenarioImage, double> specializedHits = null);
 
         void PublishPlayerAdvancement(ScenarioMessagePriority priority, string playerName, int playerLevel, IList<Tuple<string, double, Color>> attributesChanged);
 

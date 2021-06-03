@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Constant;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Constant;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model;
@@ -22,12 +23,12 @@ namespace Rogue.NET.Core.Processing.Service.Cache
     {
         // Default symbol for a failed SVG load
         readonly static DrawingGroup DEFAULT_DRAWING;
-        readonly static IDictionary<string, DrawingGroup> _cache;
+        readonly static SimpleDictionary<string, DrawingGroup> _cache;
         readonly static IEnumerable<string> _gameResourceNames;
         readonly static IEnumerable<string> _symbolResourceNames;
         readonly static IEnumerable<string> _orientedSymbolResourceNames;
         readonly static IEnumerable<string> _terrainSymbolResourceNames;
-        readonly static IDictionary<string, List<string>> _characterResourceNames;
+        readonly static SimpleDictionary<string, List<string>> _characterResourceNames;
 
         // These are paths that are absolute prefixes to the sub-folders
         const string SVG_PATH_PREFIX = "Rogue.NET.Common.Resource.Svg";
@@ -42,7 +43,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         static SvgCache()
         {
             // Create static SVG cache to feed other image caches
-            _cache = new Dictionary<string, DrawingGroup>();
+            _cache = new SimpleDictionary<string, DrawingGroup>();
 
             // Load and store resource names
             _gameResourceNames = GetResourceNamesImpl(SymbolType.Game);
@@ -180,7 +181,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                            })
                            .Actualize();
         }
-        private static IDictionary<string, List<string>> GetCharacterResourceNamesImpl()
+        private static SimpleDictionary<string, List<string>> GetCharacterResourceNamesImpl()
         {
             var assembly = typeof(ZipEncoder).Assembly;
 
@@ -201,9 +202,8 @@ namespace Rogue.NET.Core.Processing.Service.Cache
                                        return new { Category = pieces[0].Trim(), FileName = pieces[1].Trim() };
                                    })
                                    .GroupBy(x => x.Category)
-                                   .ToDictionary(x => x.Key,
-                                                 x => x.Select(z => z.FileName)
-                                                       .ToList());
+                                   .ToSimpleDictionary(x => x.Key,
+                                                       x => x.Select(z => z.FileName).ToList());
         }
         private DrawingGroup LoadSVG(ScenarioCacheImage cacheImage)
         {

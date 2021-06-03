@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Generator.Layout.Construction;
 
@@ -27,7 +28,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Builder.Interface
         /// Completes the terrain regions based on the FULL layer. ELIMINATES ISLANDS FROM THE TERRAIN
         /// AND LAYOUT GRIDS. DOES NOT MODIFY THE TOPOLOGY OF THE ROOM CONNECTIONS.
         /// </summary>
-        Dictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> FinalizeTerrainRegions(LayoutContainer container);
+        SimpleDictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> FinalizeTerrainRegions(LayoutContainer container);
 
         /// <summary>
         /// Queries the original terrain grids to see whether there is impassable terrain at this location

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm;
@@ -28,14 +29,14 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         GridCellInfo[,] _grid;
 
         // Finalized regions - created by calling FinalizeLayout()
-        IDictionary<LayoutLayer, IEnumerable<RegionInfo<GridLocation>>> _regionDict;
-        IDictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> _finalizedTerrainDict;
+        SimpleDictionary<LayoutLayer, IEnumerable<RegionInfo<GridLocation>>> _regionDict;
+        SimpleDictionary<TerrainLayerTemplate, IEnumerable<RegionInfo<GridLocation>>> _finalizedTerrainDict;
 
         // Store data for both graphs for the layout
         RegionGraphInfo<GridLocation> _graph;
 
         // State of the finalized layout and terrain layers. Resets when cells are modified
-        IDictionary<LayoutLayer, bool> _invalidRegionDict;
+        SimpleDictionary<LayoutLayer, bool> _invalidRegionDict;
         bool _graphInvalid = true;
 
         /// <summary>
@@ -251,8 +252,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         {
             _terrainBuilder = terrainBuilder;
             _grid = grid;
-            _regionDict = new Dictionary<LayoutLayer, IEnumerable<RegionInfo<GridLocation>>>();
-            _invalidRegionDict = new Dictionary<LayoutLayer, bool>();
+            _regionDict = new SimpleDictionary<LayoutLayer, IEnumerable<RegionInfo<GridLocation>>>();
+            _invalidRegionDict = new SimpleDictionary<LayoutLayer, bool>();
             _graph = null;
 
             // Initialize
@@ -416,7 +417,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
                 return false;
 
             // Save some iterating by making this dictionary first
-            var regionLookup = _regionDict[LayoutLayer.ConnectionRoom].ToDictionary(region => region.Id, region => region);
+            var regionLookup = _regionDict[LayoutLayer.ConnectionRoom].ToSimpleDictionary(region => region.Id, region => region);
 
             var valid = true;
 

@@ -1,10 +1,10 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Formatter;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
@@ -14,7 +14,7 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class SerializationObjectFactory
     {
-        Dictionary<HashedObjectInfo, SerializationObjectBase> _referenceDict;
+        SimpleDictionary<HashedObjectInfo, SerializationObjectBase> _referenceDict;
 
         List<SerializationObjectBase> _allObjects;
 
@@ -25,7 +25,7 @@ namespace Rogue.NET.Common.Serialization.Target
 
         internal SerializationObjectFactory()
         {
-            _referenceDict = new Dictionary<HashedObjectInfo, SerializationObjectBase>();
+            _referenceDict = new SimpleDictionary<HashedObjectInfo, SerializationObjectBase>();
             _allObjects = new List<SerializationObjectBase>();
         }
 
@@ -34,7 +34,7 @@ namespace Rogue.NET.Common.Serialization.Target
             return _referenceDict.ContainsKey(reference);
         }
 
-        internal IDictionary<HashedObjectInfo, SerializationObjectBase> GetReferences()
+        internal SimpleDictionary<HashedObjectInfo, SerializationObjectBase> GetReferences()
         {
             return _referenceDict;
         }
@@ -59,7 +59,7 @@ namespace Rogue.NET.Common.Serialization.Target
             // VALUE TYPE:        Treated as default - Serializer will try locating a formatter. THROWS
             //                    EXCEPTION OTHERWISE!
             //
-            // COLLECTION:        Validate for the types we're supporting:  List, Dictionary, Array.
+            // COLLECTION:        Validate for the types we're supporting:  List.
             //
             // NULL REFERENCE:    Wrapped by type
             //
@@ -77,7 +77,7 @@ namespace Rogue.NET.Common.Serialization.Target
                 return Finalize(new SerializationNullObject(objectInfo));
 
             // STRINGS IMPLEMENT IEnumerable!
-            var isCollection = objectInfo.GetObject().ImplementsInterface<IEnumerable>() && !isPrimitive;
+            var isCollection = objectInfo.GetObject().ImplementsInterface<IList>() && !isPrimitive;
 
             // PRIMITIVE
             if (isPrimitive)
@@ -165,7 +165,7 @@ namespace Rogue.NET.Common.Serialization.Target
             //
             // 0) Determine SerializationMode by checking for constructor and get method
             // 1) Get element type
-            // 2) Check that collection type is supported:  List<T>, Dictionary<K, T>, T[]
+            // 2) Check that collection type is supported:  List<T>
             // 3) Create the result
             //
 
@@ -173,27 +173,11 @@ namespace Rogue.NET.Common.Serialization.Target
             var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
 
             if (!info.Type.GetImplementingType().IsGenericType)
-                throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.DeclaringType);
+                throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>: " + info.Type.DeclaringType);
 
-            else if (info.GetObject().ImplementsInterface<IDictionary>())
-            {
-                var arguments = info.Type.GetImplementingType().GetGenericArguments();
-
-                if (arguments.Length != 2)
-                    throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.DeclaringType);
-
-                var argument = (info.GetObject() as IEnumerable).GetType().GetGenericArguments()[0];
-
-                if (argument == null)
-                    throw new Exception("Invalid IDictionary argument list for PropertySerializer: " + info.Type.DeclaringType);
-
-                var dictionary = info.GetObject() as IDictionary;
-
-                return new SerializationCollection(info, memberInfo, dictionary, dictionary.Count, CollectionInterfaceType.IDictionary, argument);
-            }
             else if (info.GetObject().ImplementsInterface<IList>())
             {
-                var argument = (info.GetObject() as IEnumerable).GetType().GetGenericArguments()[0];
+                var argument = (info.GetObject() as IList).GetType().GetGenericArguments()[0];
 
                 if (argument == null)
                     throw new Exception("Invalid IList argument for PropertySerializer: " + info.Type.DeclaringType);
@@ -203,7 +187,7 @@ namespace Rogue.NET.Common.Serialization.Target
                 return new SerializationCollection(info, memberInfo, list, list.Count, CollectionInterfaceType.IList, argument);
             }
             else
-                throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>, Dictionary<K, T>: " + info.Type.DeclaringType);
+                throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>: " + info.Type.DeclaringType);
         }
 
         private SerializationObjectBase CreatePrimitive(HashedObjectInfo info)

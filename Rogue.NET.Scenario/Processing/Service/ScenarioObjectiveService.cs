@@ -1,11 +1,11 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Abstract;
-using Rogue.NET.Core.Processing.Service.Cache.Interface;
-using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Processing.Service.Interface;
+
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -14,10 +14,10 @@ namespace Rogue.NET.Scenario.Processing.Service
     [Export(typeof(IScenarioObjectiveService))]
     public class ScenarioObjectiveService : IScenarioObjectiveService
     {
-        public IDictionary<string, bool> GetScenarioObjectiveUpdates(ScenarioContainer scenarioContainer)
+        public SimpleDictionary<string, bool> GetScenarioObjectiveUpdates(ScenarioContainer scenarioContainer)
         {
             return scenarioContainer.Encyclopedia.SubSet(metaData => metaData.IsObjective)
-                                    .ToDictionary(x => x.RogueName, x =>
+                                    .ToSimpleDictionary(x => x.RogueName, x =>
                                     {
                                         return IsObjectiveAcheived(scenarioContainer, x);
                                     });

@@ -30,7 +30,7 @@ namespace Rogue.NET.Common.Collection
     public class BinarySearchTree<K, T> where T : class where K : IComparable<K>
     {
         // Track values to help visualize when debugging
-        Dictionary<K, T> _valueDict;
+        SimpleDictionary<K, T> _valueDict;
 
         // Root node
         BinarySearchTreeNode _root;
@@ -70,7 +70,7 @@ namespace Rogue.NET.Common.Collection
 
         public BinarySearchTree()
         {
-            _valueDict = new Dictionary<K, T>();
+            _valueDict = new SimpleDictionary<K, T>();
         }
 
         public void Clear()

@@ -123,7 +123,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             // Create content dictionary with unique references - showing memorized content
             var allContent = content.Union(memorizedContent)
                                     .Distinct()
-                                    .ToDictionary(x => x, x => memorizedContent.Contains(x));
+                                    .ToSimpleDictionary(x => x, x => memorizedContent.Contains(x));
 
             // Doodads
             foreach (var scenarioObject in allContent.Keys.Where(x => x is DoodadBase))

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
+using Rogue.NET.Common.Collection;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
@@ -20,11 +21,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                       IAlterationEffectCollector,
                       IAttackAttributeAlterationCollector
     {
-        protected IDictionary<string, Scenario.Alteration.Common.AlterationContainer> Alterations { get; set; }
+        protected SimpleDictionary<string, Scenario.Alteration.Common.AlterationContainer> Alterations { get; set; }
 
         public AttackAttributePassiveAlterationCollector()
         {
-            this.Alterations = new Dictionary<string, Scenario.Alteration.Common.AlterationContainer>();
+            this.Alterations = new SimpleDictionary<string, Scenario.Alteration.Common.AlterationContainer>();
         }
         public bool Apply(Scenario.Alteration.Common.AlterationContainer alteration)
         {
@@ -45,13 +46,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
         {
             return this.Alterations
-                       .ToDictionary(x => x.Key, x => x.Value.Cost);
+                       .ToSimpleDictionary(x => x.Key, x => x.Value.Cost);
         }
 
         public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects)
         {
             return this.Alterations
-                       .ToDictionary(x => x.Key, x => x.Value.Effect);
+                       .ToSimpleDictionary(x => x.Key, x => x.Value.Effect);
         }
 
         public IEnumerable<AlteredCharacterState> GetAlteredStates()

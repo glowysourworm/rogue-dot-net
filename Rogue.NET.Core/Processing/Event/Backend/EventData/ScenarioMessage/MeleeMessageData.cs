@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using System.Collections.Generic;
 
@@ -16,6 +17,6 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage
         public bool IsCriticalHit { get; set; }
         public bool AnySpecializedHits { get; set; }
 
-        public IDictionary<ScenarioImage, double> SpecializedHits { get; set; }
+        public SimpleDictionary<ScenarioImage, double> SpecializedHits { get; set; }
     }
 }

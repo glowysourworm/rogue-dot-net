@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -59,7 +60,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             player.Level = 0;
 
             player.AttackAttributes = playerTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                                                                     .ToDictionary(x => x.RogueName);
+                                                                     .ToSimpleDictionary(x => x.RogueName, x => x);
 
             //Starting Skills
             player.SkillSets = playerTemplate.Skills
@@ -139,7 +140,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             // Attack Attributes
             character.AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                                                                  .ToDictionary(x => x.RogueName);
+                                                                  .ToSimpleDictionary(x => x.RogueName, x => x);
 
             //Starting Consumables
             foreach (var consumableTemplate in template.StartingConsumables)

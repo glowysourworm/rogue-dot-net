@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Enums;
@@ -27,17 +28,17 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
         readonly ContentGrid _contentGrid;
 
         // Character visibility calculations PER REGION (RE-CREATED EACH TIME CHARACTER ENTERS NEW REGION)
-        Dictionary<NonPlayerCharacter, CharacterMovementPlanner> _searchDict;
+        SimpleDictionary<NonPlayerCharacter, CharacterMovementPlanner> _searchDict;
 
         // Player - Content Visibility
-        Dictionary<ScenarioObject, ScenarioObject> _contentVisibilityDict;
+        SimpleDictionary<ScenarioObject, ScenarioObject> _contentVisibilityDict;
 
         // Store instances of the dijkstra path finder
-        Dictionary<NonPlayerCharacter, DijkstraPathFinder> _pathFinderDict;
+        SimpleDictionary<NonPlayerCharacter, DijkstraPathFinder> _pathFinderDict;
 
         // Primary visibility information for the Player
-        Dictionary<GridLocation, GridLocation> _visibleLocations;
-        Dictionary<GridLocation, GridLocation> _lastVisibleLocations;
+        SimpleDictionary<GridLocation, GridLocation> _visibleLocations;
+        SimpleDictionary<GridLocation, GridLocation> _lastVisibleLocations;
 
         // Expose the primary grid boundary
         public RegionBoundary Boundary { get { return _layoutGrid.Bounds; } }
@@ -51,11 +52,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
             _layoutGrid = layoutGrid;
             _contentGrid = contentGrid;
 
-            _searchDict = new Dictionary<NonPlayerCharacter, CharacterMovementPlanner>();
-            _pathFinderDict = new Dictionary<NonPlayerCharacter, DijkstraPathFinder>();
-            _contentVisibilityDict = new Dictionary<ScenarioObject, ScenarioObject>();
-            _visibleLocations = new Dictionary<GridLocation, GridLocation>();
-            _lastVisibleLocations = new Dictionary<GridLocation, GridLocation>();
+            _searchDict = new SimpleDictionary<NonPlayerCharacter, CharacterMovementPlanner>();
+            _pathFinderDict = new SimpleDictionary<NonPlayerCharacter, DijkstraPathFinder>();
+            _contentVisibilityDict = new SimpleDictionary<ScenarioObject, ScenarioObject>();
+            _visibleLocations = new SimpleDictionary<GridLocation, GridLocation>();
+            _lastVisibleLocations = new SimpleDictionary<GridLocation, GridLocation>();
         }
 
         public void Update(Player player, GridLocation playerLocation)

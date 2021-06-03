@@ -19,9 +19,6 @@ namespace Rogue.NET.Common.Serialization.Target
         int _count;
         Type _elementType;
 
-        PropertyInfo _dictionaryKeyInfo;
-        PropertyInfo _dictionaryValueInfo;
-
         // ACTUAL COLLECTION
         IEnumerable _collection;
 
@@ -39,16 +36,6 @@ namespace Rogue.NET.Common.Serialization.Target
             _elementType = elementType;
 
             _definitions = definitions;
-
-            // Call these during initialization
-            if (_interfaceType == CollectionInterfaceType.IDictionary)
-            {
-                if (_elementType.GetGenericArguments().Length != 2)
-                    throw new Exception("Invalid generic argument list for DeserializionCollection element type" + _elementType.Name);
-
-                _dictionaryKeyInfo = _elementType.GetProperty("Key");
-                _dictionaryValueInfo = _elementType.GetProperty("Value");
-            }
         }
 
         internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
@@ -77,15 +64,6 @@ namespace Rogue.NET.Common.Serialization.Target
             {
                 switch (_interfaceType)
                 {
-                    case CollectionInterfaceType.IDictionary:
-                        {
-                            // Reflect KeyValuePair values
-                            var key = _dictionaryKeyInfo.GetValue(element);
-                            var value = _dictionaryValueInfo.GetValue(element);
-
-                            (_collection as IDictionary).Add(key, value);
-                        }
-                        break;
                     case CollectionInterfaceType.IList:
                         {
                             (_collection as IList).Add(element);

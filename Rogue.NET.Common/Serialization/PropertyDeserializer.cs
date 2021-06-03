@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Formatter;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Serialization.Formatter;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Manifest;
 using Rogue.NET.Common.Serialization.Planning;
@@ -14,16 +15,16 @@ namespace Rogue.NET.Common.Serialization
     internal class PropertyDeserializer
     {
         // Collection of formatters for serialization
-        Dictionary<Type, IBaseFormatter> _primitiveFormatters;
+        SimpleDictionary<Type, IBaseFormatter> _primitiveFormatters;
 
         // Created for loading hashed TYPE TABLE
         HashedTypeFormatter _hashedTypeFormatter;
 
         // Collection of all types from loaded ASSEMBLIES with their EXPECTED HASH CODES
-        Dictionary<int, HashedType> _loadedTypes;
+        SimpleDictionary<int, HashedType> _loadedTypes;
 
         // Collection of properties BY HASHED TYPE (HASH CODE) for reference objects
-        Dictionary<HashedObjectReference, IEnumerable<PropertyDefinition>> _specifiedPropertyDict;
+        SimpleDictionary<HashedObjectReference, IEnumerable<PropertyDefinition>> _specifiedPropertyDict;
 
         // Output manifest
         IList<SerializedNodeManifest> _outputManifest;
@@ -34,9 +35,9 @@ namespace Rogue.NET.Common.Serialization
 
         internal PropertyDeserializer()
         {
-            _primitiveFormatters = new Dictionary<Type, IBaseFormatter>();
-            _loadedTypes = new Dictionary<int, HashedType>();
-            _specifiedPropertyDict = new Dictionary<HashedObjectReference, IEnumerable<PropertyDefinition>>();
+            _primitiveFormatters = new SimpleDictionary<Type, IBaseFormatter>();
+            _loadedTypes = new SimpleDictionary<int, HashedType>();
+            _specifiedPropertyDict = new SimpleDictionary<HashedObjectReference, IEnumerable<PropertyDefinition>>();
             _factory = new DeserializationObjectFactory();
             _resolver = new DeserializationResolver();
             _hashedTypeFormatter = new HashedTypeFormatter();

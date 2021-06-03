@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Model.Algorithm;
@@ -36,7 +37,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
         // NOTE*** REFERENCES SET BY THE PRIMARY LAYOUT GRID. NO ADDITIONAL MEMORY ALLOCATION
         //
-        Dictionary<GridLocation, GridLocation> _visibleLocations;
+        SimpleDictionary<GridLocation, GridLocation> _visibleLocations;
 
         // Collection of regions that have been fully searched
         List<Region<GridLocation>> _searchedRegions;
@@ -68,7 +69,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
             _searchedRegions = new List<Region<GridLocation>>();
             _searchableRegions = new List<Region<GridLocation>>();
-            _visibleLocations = new Dictionary<GridLocation, GridLocation>();
+            _visibleLocations = new SimpleDictionary<GridLocation, GridLocation>();
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 
             _searchedRegions = new List<Region<GridLocation>>();
             _searchableRegions = new List<Region<GridLocation>>();
-            _visibleLocations = new Dictionary<GridLocation, GridLocation>();
+            _visibleLocations = new SimpleDictionary<GridLocation, GridLocation>();
         }
 
         public SearchGrid<GridLocation> SearchGrid 

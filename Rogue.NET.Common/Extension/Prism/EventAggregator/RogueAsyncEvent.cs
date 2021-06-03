@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Rogue.NET.Common.Collection;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,11 +9,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {
     public class RogueAsyncEvent<T> : RogueEventBase
     {
-        readonly IDictionary<RogueEventKey, Func<T, Task>> _functions;
+        readonly SimpleDictionary<RogueEventKey, Func<T, Task>> _functions;
 
         public RogueAsyncEvent()
         {
-            _functions = new Dictionary<RogueEventKey, Func<T, Task>>();
+            _functions = new SimpleDictionary<RogueEventKey, Func<T, Task>>();
         }
 
         public string Subscribe(Func<T, Task> func, RogueEventPriority priority = RogueEventPriority.None)

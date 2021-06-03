@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
 using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
@@ -30,24 +31,24 @@ namespace Rogue.NET.Core.Model.Static
     public static class AlterationSpecificationContainer
     {
         // Alteration Interface Type -> Alteration Effect Interface Type -> Alteration Cost Type
-        readonly static Dictionary<Type, Dictionary<Type, AlterationCostType>> _alterationCostTypes;
-        readonly static Dictionary<Type, Dictionary<Type, bool>> _alterationBlockingSupport;
+        readonly static SimpleDictionary<Type, SimpleDictionary<Type, AlterationCostType>> _alterationCostTypes;
+        readonly static SimpleDictionary<Type, SimpleDictionary<Type, bool>> _alterationBlockingSupport;
 
         // (Duplicate is necessary for showing data on the UI...)
-        readonly static Dictionary<Type, Dictionary<Type, AlterationCostType>> _alterationTemplateCostTypes;
-        readonly static Dictionary<Type, Dictionary<Type, bool>> _alterationTemplateBlockingSupport;
+        readonly static SimpleDictionary<Type, SimpleDictionary<Type, AlterationCostType>> _alterationTemplateCostTypes;
+        readonly static SimpleDictionary<Type, SimpleDictionary<Type, bool>> _alterationTemplateBlockingSupport;
 
         static AlterationSpecificationContainer()
         {
-            _alterationCostTypes = new Dictionary<Type, Dictionary<Type, AlterationCostType>>();
-            _alterationBlockingSupport = new Dictionary<Type, Dictionary<Type, bool>>();
+            _alterationCostTypes = new SimpleDictionary<Type, SimpleDictionary<Type, AlterationCostType>>();
+            _alterationBlockingSupport = new SimpleDictionary<Type, SimpleDictionary<Type, bool>>();
 
-            _alterationTemplateCostTypes = new Dictionary<Type, Dictionary<Type, AlterationCostType>>();
-            _alterationTemplateBlockingSupport = new Dictionary<Type, Dictionary<Type, bool>>();
+            _alterationTemplateCostTypes = new SimpleDictionary<Type, SimpleDictionary<Type, AlterationCostType>>();
+            _alterationTemplateBlockingSupport = new SimpleDictionary<Type, SimpleDictionary<Type, bool>>();
 
             // ISkillAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(ISkillAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(ISkillAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeAuraAlterationEffect), AlterationCostType.PerStep },
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.OneTime },
                     { typeof(AttackAttributePassiveAlterationEffect), AlterationCostType.PerStep },
@@ -75,7 +76,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEnemyAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(IEnemyAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IEnemyAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.OneTime },
                     { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.OneTime },
                     { typeof(CreateEnemyAlterationEffect), AlterationCostType.OneTime },
@@ -90,7 +91,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IFriendlyAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(IFriendlyAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IFriendlyAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.None },
                     { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.None },
                     { typeof(PermanentAlterationEffect), AlterationCostType.None },
@@ -98,7 +99,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // ITemporaryCharacterAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(ITemporaryCharacterAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(ITemporaryCharacterAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.None },
                     { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.None },
                     { typeof(PermanentAlterationEffect), AlterationCostType.None },
@@ -106,14 +107,14 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEquipmentAttackAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(IEquipmentAttackAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IEquipmentAttackAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.OneTime },
                     { typeof(DrainMeleeAlterationEffect), AlterationCostType.OneTime },
                     { typeof(PermanentAlterationEffect), AlterationCostType.OneTime }
                 });
             // IEquipmentEquipAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(IEquipmentEquipAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IEquipmentEquipAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeAuraAlterationEffect), AlterationCostType.PerStep },
                     { typeof(AttackAttributePassiveAlterationEffect), AlterationCostType.PerStep },
                     { typeof(AuraAlterationEffect), AlterationCostType.PerStep },
@@ -122,7 +123,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEquipmentCurseAlterationEffect -> AlterationCostType (NONE FOR CURSES)
             _alterationCostTypes.Add(
-                typeof(IEquipmentCurseAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IEquipmentCurseAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeAuraAlterationEffect), AlterationCostType.None },
                     { typeof(AttackAttributePassiveAlterationEffect), AlterationCostType.None },
                     { typeof(AuraAlterationEffect), AlterationCostType.None },
@@ -130,7 +131,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IDoodadAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(IDoodadAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IDoodadAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.OneTime },
                     { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.OneTime },
                     { typeof(ChangeLevelAlterationEffect), AlterationCostType.OneTime },
@@ -152,7 +153,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(IConsumableAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IConsumableAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.OneTime },
                     { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.OneTime },
                     { typeof(ChangeLevelAlterationEffect), AlterationCostType.OneTime },
@@ -175,7 +176,7 @@ namespace Rogue.NET.Core.Model.Static
 
             // IConsumableProjectileAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(IConsumableProjectileAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IConsumableProjectileAlterationEffect), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.None },
                     { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.None },
                     { typeof(PermanentAlterationEffect), AlterationCostType.None },
@@ -185,7 +186,7 @@ namespace Rogue.NET.Core.Model.Static
 
             // ISkillAlterationEffect -> Block Support
             _alterationBlockingSupport.Add(
-                typeof(ISkillAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(ISkillAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeAuraAlterationEffect), false },
                     { typeof(AttackAttributeMeleeAlterationEffect), true },
                     { typeof(AttackAttributePassiveAlterationEffect), false },
@@ -213,7 +214,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEnemyAlterationEffect -> Block Support
             _alterationBlockingSupport.Add(
-                typeof(IEnemyAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IEnemyAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), true },
                     { typeof(AttackAttributeTemporaryAlterationEffect), true },
                     { typeof(CreateEnemyAlterationEffect), false },
@@ -228,7 +229,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IFriendlyAlterationEffect -> Block Support
             _alterationBlockingSupport.Add(
-                typeof(IFriendlyAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IFriendlyAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), true },
                     { typeof(AttackAttributeTemporaryAlterationEffect), true },
                     { typeof(PermanentAlterationEffect), true },
@@ -236,7 +237,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // ITemporaryCharacterAlterationEffect -> Block Support
             _alterationBlockingSupport.Add(
-                typeof(ITemporaryCharacterAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(ITemporaryCharacterAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), true },
                     { typeof(AttackAttributeTemporaryAlterationEffect), true },
                     { typeof(PermanentAlterationEffect), true },
@@ -244,14 +245,14 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEquipmentAttackAlterationEffect -> Block Support
             _alterationBlockingSupport.Add(
-                typeof(IEquipmentAttackAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IEquipmentAttackAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), false },
                     { typeof(DrainMeleeAlterationEffect), false },
                     { typeof(PermanentAlterationEffect), false }
                 });
             // IEquipmentEquipAlterationEffect -> Block Support (NONE FOR PASSIVES)
             _alterationBlockingSupport.Add(
-                typeof(IEquipmentEquipAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IEquipmentEquipAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeAuraAlterationEffect), false },
                     { typeof(AttackAttributePassiveAlterationEffect), false },
                     { typeof(BlockAlterationAlterationEffect), false },
@@ -260,7 +261,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEquipmentCurseAlterationEffect -> Block Support (NONE FOR CURSES)
             _alterationBlockingSupport.Add(
-                typeof(IEquipmentCurseAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IEquipmentCurseAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeAuraAlterationEffect), false },
                     { typeof(AttackAttributePassiveAlterationEffect), false },
                     { typeof(AuraAlterationEffect), false },
@@ -268,7 +269,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IDoodadAlterationEffect -> Block Support (NONE FOR DOODADS)
             _alterationBlockingSupport.Add(
-                typeof(IDoodadAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IDoodadAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), false },
                     { typeof(AttackAttributeTemporaryAlterationEffect), false },
                     { typeof(ChangeLevelAlterationEffect), false },
@@ -290,7 +291,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableAlterationEffect -> Block Support (NONE FOR DOODADS)
             _alterationBlockingSupport.Add(
-                typeof(IConsumableAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IConsumableAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), false },
                     { typeof(AttackAttributeTemporaryAlterationEffect), false },
                     { typeof(ChangeLevelAlterationEffect), false },
@@ -312,7 +313,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableProjectileAlterationEffect -> Block Support (NONE FOR PROJECTILES)
             _alterationBlockingSupport.Add(
-                typeof(IConsumableProjectileAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IConsumableProjectileAlterationEffect), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), false },
                     { typeof(AttackAttributeTemporaryAlterationEffect), false },
                     { typeof(PermanentAlterationEffect), false },
@@ -323,7 +324,7 @@ namespace Rogue.NET.Core.Model.Static
 
             // ISkillAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(ISkillAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(ISkillAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeAuraAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), AlterationCostType.PerStep },
@@ -351,7 +352,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEnemyAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(IEnemyAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IEnemyAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(CreateEnemyAlterationEffectTemplate), AlterationCostType.OneTime },
@@ -366,7 +367,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IFriendlyAlterationEffect -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(IFriendlyAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IFriendlyAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(PermanentAlterationEffectTemplate), AlterationCostType.OneTime },
@@ -374,7 +375,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // ITemporaryCharacterAlterationEffect -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(ITemporaryCharacterAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(ITemporaryCharacterAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(PermanentAlterationEffectTemplate), AlterationCostType.OneTime },
@@ -382,14 +383,14 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEquipmentAttackAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(IEquipmentAttackAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IEquipmentAttackAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(DrainMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(PermanentAlterationEffectTemplate), AlterationCostType.OneTime }
                 });
             // IEquipmentEquipAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(IEquipmentEquipAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IEquipmentEquipAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeAuraAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), AlterationCostType.PerStep },
                     { typeof(AuraAlterationEffectTemplate), AlterationCostType.PerStep },
@@ -398,7 +399,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEquipmentCurseAlterationEffectTemplate -> AlterationCostType (NONE FOR CURSES)
             _alterationTemplateCostTypes.Add(
-                typeof(IEquipmentCurseAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IEquipmentCurseAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeAuraAlterationEffectTemplate), AlterationCostType.None },
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), AlterationCostType.None },
                     { typeof(AuraAlterationEffectTemplate), AlterationCostType.None },
@@ -406,7 +407,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IDoodadAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(IDoodadAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IDoodadAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(ChangeLevelAlterationEffectTemplate), AlterationCostType.OneTime },
@@ -428,7 +429,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(IConsumableAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IConsumableAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(ChangeLevelAlterationEffectTemplate), AlterationCostType.OneTime },
@@ -450,7 +451,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableProjectileAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(IConsumableProjectileAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IConsumableProjectileAlterationEffectTemplate), new SimpleDictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.None },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.None },
                     { typeof(PermanentAlterationEffectTemplate), AlterationCostType.None },
@@ -460,7 +461,7 @@ namespace Rogue.NET.Core.Model.Static
 
             // ISkillAlterationEffectTemplate -> Block Support
             _alterationTemplateBlockingSupport.Add(
-                typeof(ISkillAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(ISkillAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeAuraAlterationEffectTemplate), false },
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), true },
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), false },
@@ -488,7 +489,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEnemyAlterationEffectTemplate -> Block Support
             _alterationTemplateBlockingSupport.Add(
-                typeof(IEnemyAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IEnemyAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), true },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), true },
                     { typeof(CreateEnemyAlterationEffectTemplate), false },
@@ -503,7 +504,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IFriendlyAlterationEffect -> Block Support
             _alterationTemplateBlockingSupport.Add(
-                typeof(IFriendlyAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IFriendlyAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), true },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), true },
                     { typeof(PermanentAlterationEffectTemplate), true },
@@ -511,7 +512,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // ITemporaryCharacterAlterationEffect -> Block Support
             _alterationTemplateBlockingSupport.Add(
-                typeof(ITemporaryCharacterAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(ITemporaryCharacterAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), true },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), true },
                     { typeof(PermanentAlterationEffectTemplate), true },
@@ -519,14 +520,14 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEquipmentAttackAlterationEffectTemplate -> Block Support
             _alterationTemplateBlockingSupport.Add(
-                typeof(IEquipmentAttackAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IEquipmentAttackAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), false },
                     { typeof(DrainMeleeAlterationEffectTemplate), false },
                     { typeof(PermanentAlterationEffectTemplate), false }
                 });
             // IEquipmentEquipAlterationEffectTemplate -> Block Support (NONE FOR PASSIVES)
             _alterationTemplateBlockingSupport.Add(
-                typeof(IEquipmentEquipAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IEquipmentEquipAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeAuraAlterationEffectTemplate), false },
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), false },
                     { typeof(BlockAlterationAlterationEffectTemplate), false },
@@ -535,7 +536,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IEquipmentCurseAlterationEffectTemplate -> Block Support (NONE FOR CURSES)
             _alterationTemplateBlockingSupport.Add(
-                typeof(IEquipmentCurseAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IEquipmentCurseAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeAuraAlterationEffectTemplate), false },
                     { typeof(AttackAttributePassiveAlterationEffectTemplate), false },
                     { typeof(AuraAlterationEffectTemplate), false },
@@ -543,7 +544,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IDoodadAlterationEffectTemplate -> Block Support (NONE FOR DOODADS)
             _alterationTemplateBlockingSupport.Add(
-                typeof(IDoodadAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IDoodadAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), false },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), false },
                     { typeof(ChangeLevelAlterationEffectTemplate), false },
@@ -565,7 +566,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableAlterationEffectTemplate -> Block Support (NONE FOR DOODADS)
             _alterationTemplateBlockingSupport.Add(
-                typeof(IConsumableAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IConsumableAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), false },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), false },
                     { typeof(ChangeLevelAlterationEffectTemplate), false },
@@ -587,7 +588,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableProjectileAlterationEffectTemplate -> Block Support (NONE FOR PROJECTILES)
             _alterationTemplateBlockingSupport.Add(
-                typeof(IConsumableProjectileAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IConsumableProjectileAlterationEffectTemplate), new SimpleDictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), false },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), false },
                     { typeof(PermanentAlterationEffectTemplate), false },

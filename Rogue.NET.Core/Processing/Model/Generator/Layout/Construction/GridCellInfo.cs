@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm.Interface;
@@ -8,7 +9,6 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 using static Rogue.NET.Core.Math.Geometry.Metric;
 using static Rogue.NET.Core.Model.Scenario.Content.Layout.LayoutGrid;
@@ -102,22 +102,22 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
         public Light AmbientLight { get; set; }
         public Light WallLight { get; set; }
         public Light AccentLight { get; set; }
-        public Dictionary<string, Light> TerrainLights { get; set; }
+        public SimpleDictionary<string, Light> TerrainLights { get; set; }
 
         public bool IsLayer(LayoutLayer layer)
         {
             switch (layer)
             {
                 // USED DURING TERRAIN FINALIZATION
-                case LayoutLayer.FullNoTerrainSupport:           return !this.IsTerrainSupport;
-                case LayoutLayer.ConnectionRoom:                 return !this.IsCorridor && !this.IsWall && !this.IsDoor && !this.IsTerrainSupport;
+                case LayoutLayer.FullNoTerrainSupport: return !this.IsTerrainSupport;
+                case LayoutLayer.ConnectionRoom: return !this.IsCorridor && !this.IsWall && !this.IsDoor && !this.IsTerrainSupport;
 
-                case LayoutLayer.Walkable:                       return !this.IsWall;
-                case LayoutLayer.Placement:                      return !this.IsDoor && !this.IsWall;
-                case LayoutLayer.Room:                           return !this.IsCorridor && !this.IsWall && !this.IsDoor;
-                case LayoutLayer.Corridor:                       return this.IsCorridor;
-                case LayoutLayer.Wall:                           return this.IsWall;
-                case LayoutLayer.TerrainSupport:                 return this.IsTerrainSupport;
+                case LayoutLayer.Walkable: return !this.IsWall;
+                case LayoutLayer.Placement: return !this.IsDoor && !this.IsWall;
+                case LayoutLayer.Room: return !this.IsCorridor && !this.IsWall && !this.IsDoor;
+                case LayoutLayer.Corridor: return this.IsCorridor;
+                case LayoutLayer.Wall: return this.IsWall;
+                case LayoutLayer.TerrainSupport: return this.IsTerrainSupport;
                 default:
                     throw new Exception("Unhandled layout type:  LayoutContainer.IsLayer");
             }
@@ -164,7 +164,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             this.AmbientLight = reader.Read<Light>("AmbientLight");
             this.WallLight = reader.Read<Light>("WallLight");
             this.AccentLight = reader.Read<Light>("AccentLight");
-            this.TerrainLights = reader.Read<Dictionary<string, Light>>("TerrainLights");
+            this.TerrainLights = reader.Read<SimpleDictionary<string, Light>>("TerrainLights");
         }
 
         private void Initialize(int column, int row)
@@ -173,7 +173,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Construction
             this.AmbientLight = Light.White;
             this.AccentLight = Light.None;
             this.WallLight = Light.None;
-            this.TerrainLights = new Dictionary<string, Light>();
+            this.TerrainLights = new SimpleDictionary<string, Light>();
         }
 
         public void GetProperties(IPropertyWriter writer)

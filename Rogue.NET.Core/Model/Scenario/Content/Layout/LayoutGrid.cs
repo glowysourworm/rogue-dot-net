@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
@@ -471,7 +472,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// Generates a distance pdf to simulate a "Nearness" draw for edge locations based on the provided location set and
         /// the boundary.
         /// </summary>
-        private Dictionary<GridLocation, double> GetDistancePdf(IEnumerable<GridLocation> locations, RegionBoundary boundary)
+        private SimpleDictionary<GridLocation, double> GetDistancePdf(IEnumerable<GridLocation> locations, RegionBoundary boundary)
         {
             var meanLeft = boundary.Left + (SIMULATION_EDGE_NEARNESS * boundary.Width);
             var meanRight = boundary.Right - (SIMULATION_EDGE_NEARNESS * boundary.Width);
@@ -479,7 +480,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var meanBottom = boundary.Bottom - (SIMULATION_EDGE_NEARNESS * boundary.Height);
             var center = boundary.GetCenter();
 
-            return locations.ToDictionary(location => location, location =>
+            return locations.ToSimpleDictionary(location => location, location =>
             {
                 var distanceLeft = location.Column - boundary.Left;
                 var distanceRight = boundary.Right - location.Column;
@@ -509,13 +510,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Generates a distance pdf to simulate a "Distant" draw for locations "far away from the specified location"
         /// </summary>
-        private Dictionary<GridLocation, double> GetDistancePdf(IEnumerable<GridLocation> locations, IEnumerable<GridLocation> sourceLocations)
+        private SimpleDictionary<GridLocation, double> GetDistancePdf(IEnumerable<GridLocation> locations, IEnumerable<GridLocation> sourceLocations)
         {
             // Want a PDF based on max distance from the source location
             //
             var maxDistance = locations.Max(location => sourceLocations.Max(source => Metric.ForceDistance(location, source, Metric.MetricType.Euclidean)));
 
-            return locations.ToDictionary(location => location, location =>
+            return locations.ToSimpleDictionary(location => location, location =>
             {
                 // Select the minimum distance between this location and each of the source locations as a weight
                 var minDistance = sourceLocations.Min(source => Metric.ForceDistance(location, source, Metric.MetricType.Euclidean));

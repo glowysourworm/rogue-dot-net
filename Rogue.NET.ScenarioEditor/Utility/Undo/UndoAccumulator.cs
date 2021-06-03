@@ -7,6 +7,8 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.Reflection;
 using System;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.ScenarioEditor.Utility.Undo
 {
@@ -20,10 +22,10 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         Stack<UndoChange> _redoAccumulator;
 
         // PropertyInfo dictionary for fast retrieval and caching of reflection objects
-        Dictionary<Type, Dictionary<string, PropertyInfo>> _propertyDict;
+        SimpleDictionary<Type, SimpleDictionary<string, PropertyInfo>> _propertyDict;
 
         // Pending changes for INotifyPropertyChanging event hooks
-        Dictionary<string, UndoChange> _pendingChangeDict;
+        SimpleDictionary<string, UndoChange> _pendingChangeDict;
 
         // Require blocker to prevent events from being consumed during an undo / redo
         bool _performingUndo = false;
@@ -40,8 +42,8 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             _undoAccumulator = new Stack<UndoChange>();
             _redoAccumulator = new Stack<UndoChange>();
 
-            _propertyDict = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
-            _pendingChangeDict = new Dictionary<string, UndoChange>();
+            _propertyDict = new SimpleDictionary<Type, SimpleDictionary<string, PropertyInfo>>();
+            _pendingChangeDict = new SimpleDictionary<string, UndoChange>();
 
             Initialize();
         }
@@ -110,7 +112,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             if (!_propertyDict.ContainsKey(type))
             {
                 properties = type.GetProperties();
-                _propertyDict[type] = properties.ToDictionary(x => x.Name, x => x);
+                _propertyDict[type] = properties.ToSimpleDictionary(x => x.Name, x => x);
             }
             else
                 properties = _propertyDict[type].Values.ToArray();

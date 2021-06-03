@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Math;
 using Rogue.NET.Core.Math.Geometry;
 using Rogue.NET.Core.Model;
@@ -418,7 +419,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
                                               (region1, region2) => CalculateConnection(region1, region2));
 
             // Create vertices for the graph -> filter duplicates. OPTIMIZE FOR PERFORMANCE!
-            var vertices = new Dictionary<GraphVertex, GraphVertex>();
+            var vertices = new SimpleDictionary<GraphVertex, GraphVertex>();
 
             foreach (var connection in connectionList)
             {
@@ -441,7 +442,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Layout.Component
         private RegionConnectionInfo<T> CalculateConnection<T>(RegionInfo<T> region1, RegionInfo<T> region2) where T : class, IGridLocator
         {
             // Finalized connections
-            var connections = new Dictionary<string, RegionConnectionInfo<T>>();
+            var connections = new SimpleDictionary<string, RegionConnectionInfo<T>>();
 
             // Search related edges to look for candidates to know the minimum distance
             var candidateLocations = new List<Tuple<T, T, double>>();
