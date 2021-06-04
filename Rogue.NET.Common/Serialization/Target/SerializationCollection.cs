@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Common.Serialization.Planning;
+﻿using Rogue.NET.Common.Serialization.Component;
+using Rogue.NET.Common.Serialization.Planning;
+using Rogue.NET.Common.Serialization.Utility;
 
 using System;
 using System.Collections;
@@ -8,43 +10,23 @@ namespace Rogue.NET.Common.Serialization.Target
 {
     internal class SerializationCollection : SerializationObjectBase
     {
-        public IEnumerable Collection { get; private set; }
-        public int Count { get; private set; }
+        internal int Count { get; private set; }
+        internal IEnumerable Collection { get; private set; }
+        internal IList<HashedType> ResolvedElementTypes { get; private set; }
+        internal CollectionInterfaceType InterfaceType { get; private set; }
 
-        public Type ElementType { get; private set; }
-        public CollectionInterfaceType InterfaceType { get; private set; }
-
-        public SerializationCollection(HashedObjectInfo objectInfo,
+        public SerializationCollection(ObjectInfo objectInfo,
                                        RecursiveSerializerMemberInfo memberInfo,
                                        IEnumerable collection,
+                                       IList<HashedType> resolvedElementTypes,
                                        int count,
                                        CollectionInterfaceType interfaceType,
-                                       Type elementType) : base(objectInfo, memberInfo)
+                                       HashedType elementDeclaringType) : base(objectInfo, memberInfo)
         {
             this.Collection = collection;
             this.Count = count;
-            this.InterfaceType = interfaceType;
-            this.ElementType = elementType;
-        }
-
-        protected override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
-        {
-            // DEFAULT MODE - NO PROPERTY SUPPORT
-            if (this.MemberInfo.Mode == SerializationMode.Default ||
-                this.MemberInfo.Mode == SerializationMode.None)
-                return new PropertyStorageInfo[] { };
-
-            // CALL OBJECT'S GetPropertyDefinitions METHOD
-            try
-            {
-                this.MemberInfo.GetMethod.Invoke(this.Collection, new object[] { writer });
-            }
-            catch (Exception)
-            {
-                throw new RecursiveSerializerException(this.ObjectInfo.Type, "Error trying to read properties");
-            }
-
-            return writer.GetResult();
+            this.InterfaceType = interfaceType;           
+            this.ResolvedElementTypes = new List<HashedType>(resolvedElementTypes);
         }
     }
 }

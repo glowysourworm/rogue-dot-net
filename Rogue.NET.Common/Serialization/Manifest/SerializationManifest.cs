@@ -59,7 +59,7 @@ namespace Rogue.NET.Common.Serialization
                 IsGeneric = node.ObjectInfo.Type.DeclaringIsGeneric,
                 GenericArgumentTypes = node.ObjectInfo.Type.DeclaringGenericArguments.Select(x => x.DeclaringType).ToArray(),
                 NodeTypeHashCode = node.ObjectInfo.Type.GetHashCode(),
-                ObjectHashCode = node.ObjectInfo.GetHashCode()
+                ObjectId = node.ObjectInfo.GetHashCode()
 
             }).ToList();
 
@@ -68,7 +68,7 @@ namespace Rogue.NET.Common.Serialization
                 Node = GetNodeType(node),
 
                 // Mode not kept for deserialization - but is used to validate the data
-                Mode = Planning.SerializationMode.None,
+                Mode = Planning.SerializationMode.Default,
                 CollectionCount = (node as DeserializationCollection)?.Count ?? 0,
                 CollectionType = (node as DeserializationCollection)?.InterfaceType ?? CollectionInterfaceType.IList,
                 Type = node.Reference.Type.DeclaringType,
@@ -76,7 +76,7 @@ namespace Rogue.NET.Common.Serialization
                 IsGeneric = node.Reference.Type.DeclaringIsGeneric,
                 GenericArgumentTypes = node.Reference.Type.DeclaringGenericArguments.Select(x => x.DeclaringType).ToArray(),
                 NodeTypeHashCode = node.Reference.Type.GetHashCode(),
-                ObjectHashCode = node.Reference.GetHashCode()
+                ObjectId = node.Reference.GetHashCode()
 
             }).ToList();
         }

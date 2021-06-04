@@ -1,11 +1,12 @@
 ﻿using Rogue.NET.Common.Collection;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Component.Interface;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
+using Rogue.NET.Common.Serialization.Utility;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -17,13 +18,13 @@ namespace Rogue.NET.Common.Serialization
     internal static class RecursiveSerializerStore
     {
         // Keep track of property types to avoid extra reflection calls
-        static SimpleDictionary<Type, IEnumerable<PropertyInfo>> _propertyDict;
+        static SimpleDictionary<HashedType, PropertySpecification> _propertyDict;
 
         internal static readonly string GetMethodName = "GetProperties";
 
         static RecursiveSerializerStore()
         {
-            _propertyDict = new SimpleDictionary<Type, IEnumerable<PropertyInfo>>();
+            _propertyDict = new SimpleDictionary<HashedType, PropertySpecification>();
         }
 
         /// <summary>
@@ -44,10 +45,10 @@ namespace Rogue.NET.Common.Serialization
             return ValidateMemberInfo(hashedType, memberInfo.ParameterlessConstructor, memberInfo.SpecifiedConstructor, memberInfo.GetMethod, mode);
         }
 
-        private static RecursiveSerializerMemberInfo ValidateMemberInfo(HashedType hashedType, 
-                                                                        ConstructorInfo parameterlessCtor, 
-                                                                        ConstructorInfo specifiedCtor, 
-                                                                        MethodInfo getMethod, 
+        private static RecursiveSerializerMemberInfo ValidateMemberInfo(HashedType hashedType,
+                                                                        ConstructorInfo parameterlessCtor,
+                                                                        ConstructorInfo specifiedCtor,
+                                                                        MethodInfo getMethod,
                                                                         SerializationMode mode)
         {
             var hasInterfaceImplementing = hashedType.GetImplementingType().HasInterface<IRecursiveSerializable>();
@@ -87,32 +88,35 @@ namespace Rogue.NET.Common.Serialization
         }
 
         /// <summary>
-        /// NOTE*** ORDERED TO KEEP SERIALIZATION CONSISTENT!!!
+        /// NOTE*** ORDERED TO KEEP SERIALIZATION CONSISTENT!!! THESE NEED TO BE RESOLVED AGAINST THE OBJECT IMPLEMENTATION!
         /// </summary>
-        internal static IEnumerable<PropertyInfo> GetOrderedProperties(Type type)
+        internal static PropertySpecification GetOrderedProperties(HashedType type)
         {
             return Impl(type);
         }
 
         /// <summary>
-        /// NOTE*** ORDERED TO KEEP SERIALIZATION CONSISTENT!!!
+        /// PRIMARY GATEWAY FROM MSFT -> OUR NAMESPACE. HASHED TYPE IS TO BE USED FROM HERE ON.
         /// </summary>
-        internal static IEnumerable<PropertyInfo> GetOrderedProperties<T>()
-        {
-            var type = typeof(T);
-
-            return Impl(type);
-        }
-
-        private static IEnumerable<PropertyInfo> Impl(Type type)
+        private static PropertySpecification Impl(HashedType type)
         {
             if (!_propertyDict.ContainsKey(type))
             {
                 // ORDER BY PROPERTY NAME
-                _propertyDict.Add(type, type.GetProperties()
-                                            .Where(property => property.GetMethod != null && property.SetMethod != null)
-                                            .OrderBy(property => property.Name)
-                                            .Actualize());
+                _propertyDict.Add(type, new PropertySpecification(type,
+                    type.GetImplementingType()
+                        .GetProperties()
+                        .Where(property => property.GetMethod != null && property.SetMethod != null)
+                        .OrderBy(property => property.Name)
+                        .Select(property => new PropertyDefinition(property)
+                        {
+                            IsUserDefined = false,
+                            PropertyName = property.Name,
+
+                            // NOTE*** USING PROPERTY TYPE AS THE DECLARED TYPE
+                            PropertyType = new HashedType(property.PropertyType)
+                        })
+                        .Actualize()));
             }
 
             return _propertyDict[type];

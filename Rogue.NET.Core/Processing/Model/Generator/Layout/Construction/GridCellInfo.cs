@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Collection;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Common.Serialization.Component.Interface;
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;

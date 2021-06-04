@@ -11,12 +11,17 @@ namespace Rogue.NET.Common.Serialization.Interface
         /// <summary>
         /// Stores dictionary of unique references to reference-type objects
         /// </summary>
-        SimpleDictionary<HashedObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; }
+        SimpleDictionary<ObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; }
 
         /// <summary>
-        /// Collection of ALL SERIAILZED OBJECTS in the plan
+        /// Stores collection of unique property specifications
         /// </summary>
-        IEnumerable<SerializationObjectBase> AllSerializedObjects { get; }
+        IEnumerable<PropertySpecification> UniquePropertySpecifications { get; }
+
+        /// <summary>
+        /// Stores grouping of objects by property specification
+        /// </summary>
+        SimpleDictionary<PropertySpecification, List<SerializationObjectBase>> PropertySpecificationGroups { get; }
 
         /// <summary>
         /// Root node for the object graph

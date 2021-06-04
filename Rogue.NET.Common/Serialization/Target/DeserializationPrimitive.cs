@@ -10,15 +10,15 @@ namespace Rogue.NET.Common.Serialization.Target
         /// <summary>
         /// Completed hashed info object with data already filled out
         /// </summary>
-        public HashedObjectInfo ObjectInfo { get; private set; }
+        public ObjectInfo ObjectInfo { get; private set; }
 
-        public DeserializationPrimitive(HashedObjectInfo info) : base(new HashedObjectReference(info.Type, info.GetHashCode()), 
+        public DeserializationPrimitive(ObjectInfo info) : base(new ObjectReference(info.Type, info.GetHashCode()), 
                                                                           RecursiveSerializerMemberInfo.Empty)
         {
             this.ObjectInfo = info;
         }
 
-        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
+        internal override PropertySpecification GetPropertySpecification()
         {
             throw new Exception("Trying to get property definitions for a primitive:  DeserializationPrimitive.cs");
         }
@@ -28,7 +28,7 @@ namespace Rogue.NET.Common.Serialization.Target
             throw new Exception("Trying to call constructor on a primitive");
         }
 
-        protected override HashedObjectInfo ProvideResult()
+        protected override ObjectInfo ProvideResult()
         {
             return this.ObjectInfo;
         }

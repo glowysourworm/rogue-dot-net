@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -114,14 +115,14 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
         {
             this.GradientStops = new List<GradientStopTemplate>();
             this.Opacity = 1;
-            this.SolidColor = Colors.White.ToString();
+            this.SolidColor = ColorOperations.ConvertBack(Colors.White);
         }
         public BrushTemplate(string name)
         {
             this.GradientStops = new List<GradientStopTemplate>();
             this.Name = name;
             this.Opacity = 1;
-            this.SolidColor = Colors.White.ToString();
+            this.SolidColor = ColorOperations.ConvertBack(Colors.White);
         }
 
         public Brush GenerateBrush()

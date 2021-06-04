@@ -1,77 +1,67 @@
-﻿using Rogue.NET.Common.Serialization.Planning;
+﻿using Rogue.NET.Common.Serialization.Component;
+using Rogue.NET.Common.Serialization.Planning;
+using Rogue.NET.Common.Serialization.Utility;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
     internal class DeserializationCollection : DeserializationObjectBase
     {
         internal int Count { get { return _count; } }
-        internal Type ElementType { get { return _elementType; } }
+        internal IList<HashedType> ElementTypes { get { return _elementTypes; } }
         internal CollectionInterfaceType InterfaceType { get { return _interfaceType; } }
 
         // Stored data from serialization
         CollectionInterfaceType _interfaceType;
         int _count;
-        Type _elementType;
+        IList<HashedType> _elementTypes;
 
         // ACTUAL COLLECTION
         IEnumerable _collection;
 
-        IEnumerable<PropertyDefinition> _definitions;
+        PropertySpecification _specification;
 
-        internal DeserializationCollection(HashedObjectReference reference,
+        internal DeserializationCollection(ObjectReference reference,
                                            RecursiveSerializerMemberInfo memberInfo,
-                                           IEnumerable<PropertyDefinition> definitions,
-                                           Type elementType,
+                                           PropertySpecification specification,
+                                           IList<HashedType> elementTypes,
                                            int count,
                                            CollectionInterfaceType interfaceType) : base(reference, memberInfo)
         {
             _count = count;
             _interfaceType = interfaceType;
-            _elementType = elementType;
-
-            _definitions = definitions;
+            _elementTypes = elementTypes;
+            _specification = specification;
         }
 
-        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
+        internal override PropertySpecification GetPropertySpecification()
         {
-            return _definitions;
+            return _specification;
         }
 
-        internal void FinalizeCollection(IEnumerable<HashedObjectInfo> resolvedChildren)
+        internal void FinalizeCollection(IList<ObjectInfo> resolvedChildren)
         {
+            if (this.InterfaceType != CollectionInterfaceType.IList)
+                throw new Exception("UNHANDLED INTERFACE TYPE DeserializationCollection.cs");
+
             if (this.MemberInfo.Mode == SerializationMode.Specified)
                 throw new Exception("Trying to call DeserializationCollection in SPECIFIED MODE");
 
-            var elements = new ArrayList();
-
-            foreach (var resolvedChild in resolvedChildren)
+            for (int index = 0; index < _count; index++)
             {
+                var element = resolvedChildren[index];
+                var elementType = _elementTypes[index];
+
                 // VALIDATE ELEMENT TYPE
-                if (!_elementType.IsAssignableFrom(resolvedChild.Type.GetImplementingType()))
-                    throw new Exception("Invalid collection element type: " + resolvedChild.Type.DeclaringType);
+                if (!element.Type.GetDeclaringType().IsAssignableFrom(elementType.GetImplementingType()))
+                    throw new Exception("Invalid collection element type: " + element.Type.DeclaringType);
 
-                // Add the finished object to the elements
-                elements.Add(resolvedChild.GetObject());
-            }
-
-            foreach (var element in elements)
-            {
-                switch (_interfaceType)
-                {
-                    case CollectionInterfaceType.IList:
-                        {
-                            (_collection as IList).Add(element);
-                        }
-                        break;
-                    default:
-                        throw new Exception("Unhandled collection interface type: DeserializationCollection.FinalizeCollection");
-                }
+                // ADD TO THE LIST
+                (_collection as IList).Add(element.GetObject());
             }
         }
 
@@ -85,7 +75,6 @@ namespace Rogue.NET.Common.Serialization.Target
                 case SerializationMode.Specified:
                     ConstructSpecified(resolvedProperties);
                     break;
-                case SerializationMode.None:
                 default:
                     throw new Exception("Unhandled SerializationMode type:  DeserializationCollection.cs");
             }
@@ -128,9 +117,9 @@ namespace Rogue.NET.Common.Serialization.Target
             }
         }
 
-        protected override HashedObjectInfo ProvideResult()
+        protected override ObjectInfo ProvideResult()
         {
-            return new HashedObjectInfo(_collection, _collection.GetType());
+            return new ObjectInfo(_collection, new HashedType(this.Reference.Type.GetDeclaringType(), _collection.GetType()));
         }
     }
 }

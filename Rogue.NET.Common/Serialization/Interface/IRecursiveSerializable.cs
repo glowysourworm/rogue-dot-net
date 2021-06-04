@@ -1,4 +1,6 @@
-﻿namespace Rogue.NET.Common.Serialization.Interface
+﻿using Rogue.NET.Common.Serialization.Component.Interface;
+
+namespace Rogue.NET.Common.Serialization.Interface
 {
     /// <summary>
     /// Provides custom serialization control for use with the RecursiveSerializer.

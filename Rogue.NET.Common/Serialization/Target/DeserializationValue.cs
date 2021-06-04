@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Common.Serialization.Planning;
+﻿using Rogue.NET.Common.Serialization.Component;
+using Rogue.NET.Common.Serialization.Planning;
+using Rogue.NET.Common.Serialization.Utility;
 
 using System;
 using System.Collections.Generic;
@@ -12,16 +14,16 @@ namespace Rogue.NET.Common.Serialization.Target
         private object _defaultObject;
 
         // Property definitions
-        private IEnumerable<PropertyDefinition> _definitions;
+        PropertySpecification _specification;
 
-        internal DeserializationValue(HashedObjectReference reference, RecursiveSerializerMemberInfo memberInfo, IEnumerable<PropertyDefinition> definitions) : base(reference, memberInfo)
+        internal DeserializationValue(ObjectReference reference, RecursiveSerializerMemberInfo memberInfo, PropertySpecification specification) : base(reference, memberInfo)
         {
-            _definitions = definitions;
+            _specification = specification;
         }
 
-        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
+        internal override PropertySpecification GetPropertySpecification()
         {
-            return _definitions;
+            return _specification;
         }
 
         internal override void Construct(IEnumerable<PropertyResolvedInfo> resolvedProperties)
@@ -34,9 +36,8 @@ namespace Rogue.NET.Common.Serialization.Target
                 case SerializationMode.Specified:
                     ConstructSpecified(resolvedProperties);
                     break;
-                case SerializationMode.None:
                 default:
-                    throw new Exception("Unhandled SerializationMode type:  DeserializationObject.cs");
+                    throw new Exception("Unhandled SerializationMode type:  DeserializationValue.cs");
             }
         }
 
@@ -55,19 +56,17 @@ namespace Rogue.NET.Common.Serialization.Target
             // SET PROPERTIES
             try
             {
-                var allProperties = RecursiveSerializerStore.GetOrderedProperties(this.Reference.Type.GetImplementingType());
-
                 foreach (var property in resolvedProperties)
                 {
+                    if (property.IsUserDefined)
+                        throw new RecursiveSerializerException(property.ResolvedInfo.Type, "Trying to set user defined property using DEFAULT mode");
+
                     // LOCATE PROPERTY INFO
-                    var propertyInfo = allProperties.FirstOrDefault(info => info.Name == property.PropertyName &&
-                                                                            info.PropertyType.IsAssignableFrom(property.PropertyType));
+                    var propertyDefinition = _specification.GetHashedDefinition(property.PropertyName, property.ResolvedInfo.Type);
 
-                    if (propertyInfo == null)
-                        throw new Exception("Error locating property info:  " + propertyInfo.Name);
-
-                    // SAFE TO CALL GetObject() 
-                    propertyInfo.SetValue(_defaultObject, property.ResolvedInfo.GetObject());
+                    // SAFE TO CALL GetPropertyInfo() and GetObject() 
+                    propertyDefinition.GetReflectedInfo()
+                                      .SetValue(_defaultObject, property.ResolvedInfo.GetObject());
                 }
             }
             catch (Exception ex)
@@ -90,9 +89,9 @@ namespace Rogue.NET.Common.Serialization.Target
             }
         }
 
-        protected override HashedObjectInfo ProvideResult()
+        protected override ObjectInfo ProvideResult()
         {
-            return new HashedObjectInfo(_defaultObject, _defaultObject.GetType());
+            return new ObjectInfo(_defaultObject, new HashedType(this.Reference.Type.GetDeclaringType(), _defaultObject.GetType()));
         }
     }
 }

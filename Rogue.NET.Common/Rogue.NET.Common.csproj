@@ -230,6 +230,7 @@
     <Compile Include="Constant\Symbol.cs" />
     <Compile Include="Control\EditableTextBlock.cs" />
     <Compile Include="CustomException\FormattedException.cs" />
+    <Compile Include="Extension\ArrayExtension.cs" />
     <Compile Include="Extension\ButtonExtension.cs" />
     <Compile Include="Extension\EnumerableExtension.cs" />
     <Compile Include="Extension\EnumExtension.cs" />
@@ -256,6 +257,10 @@
     <Compile Include="Extension\TypeExtension.cs" />
     <Compile Include="Extension\UpdatingTextBox.cs" />
     <Compile Include="Extension\MapperExtension.cs" />
+    <Compile Include="Serialization\Component\Interface\IPropertyDeserializer.cs" />
+    <Compile Include="Serialization\Component\Interface\IPropertySerializer.cs" />
+    <Compile Include="Serialization\Component\ObjectInfoResolver.cs" />
+    <Compile Include="Serialization\Component\PropertyWriterFactory.cs" />
     <Compile Include="Serialization\Formatter\BaseFormatter.cs" />
     <Compile Include="Serialization\Formatter\BooleanFormatter.cs" />
     <Compile Include="Serialization\Formatter\ByteFormatter.cs" />
@@ -268,8 +273,8 @@
     <Compile Include="Serialization\Formatter\StringFormatter.cs" />
     <Compile Include="Serialization\Formatter\UnsignedIntegerFormatter.cs" />
     <Compile Include="Serialization\Interface\IBaseFormatter.cs" />
-    <Compile Include="Serialization\Interface\IPropertyReader.cs" />
-    <Compile Include="Serialization\Interface\IPropertyWriter.cs" />
+    <Compile Include="Serialization\Component\Interface\IPropertyReader.cs" />
+    <Compile Include="Serialization\Component\Interface\IPropertyWriter.cs" />
     <Compile Include="Serialization\Interface\IRecursiveSerializable.cs" />
     <Compile Include="Serialization\Interface\ISerializationPlan.cs" />
     <Compile Include="Serialization\Manifest\SerializedNodeDifference.cs" />
@@ -278,18 +283,18 @@
     <Compile Include="Serialization\Planning\DeserializationCollectionNode.cs" />
     <Compile Include="Serialization\Planning\DeserializationNode.cs" />
     <Compile Include="Serialization\Planning\DeserializationNodeBase.cs" />
-    <Compile Include="Serialization\Planning\DeserializationResolver.cs" />
+    <Compile Include="Serialization\Component\DeserializationResolver.cs" />
     <Compile Include="Serialization\Planning\PropertyDefinition.cs" />
     <Compile Include="Serialization\Planning\PropertyResolvedInfo.cs" />
-    <Compile Include="Serialization\PropertyDeserializer.cs" />
-    <Compile Include="Serialization\PropertyReader.cs" />
-    <Compile Include="Serialization\PropertySerializer.cs" />
+    <Compile Include="Serialization\Planning\PropertySpecification.cs" />
+    <Compile Include="Serialization\Component\PropertyDeserializer.cs" />
+    <Compile Include="Serialization\Component\PropertyReader.cs" />
+    <Compile Include="Serialization\Component\PropertySerializer.cs" />
     <Compile Include="Serialization\Planning\SerializationNode.cs" />
-    <Compile Include="Serialization\Planning\PropertyStorageInfo.cs" />
-    <Compile Include="Serialization\PropertyWriter.cs" />
+    <Compile Include="Serialization\Component\PropertyWriter.cs" />
     <Compile Include="Serialization\RecursiveSerializer.cs" />
-    <Compile Include="Serialization\RecursiveSerializerException.cs" />
-    <Compile Include="Serialization\RecursiveSerializerInnerException.cs" />
+    <Compile Include="Serialization\Utility\RecursiveSerializerException.cs" />
+    <Compile Include="Serialization\Utility\RecursiveSerializerInnerException.cs" />
     <Compile Include="Serialization\Manifest\SerializationManifest.cs" />
     <Compile Include="Serialization\Target\CollectionInterfaceType.cs" />
     <Compile Include="Serialization\Planning\RecursiveSerializerMemberInfo.cs" />
@@ -303,11 +308,11 @@
     <Compile Include="Serialization\Target\DeserializationNullReference.cs" />
     <Compile Include="Serialization\Target\DeserializationObject.cs" />
     <Compile Include="Serialization\Target\DeserializationObjectBase.cs" />
-    <Compile Include="Serialization\Target\DeserializationObjectFactory.cs" />
+    <Compile Include="Serialization\Component\DeserializationObjectFactory.cs" />
     <Compile Include="Serialization\Target\DeserializationPrimitive.cs" />
     <Compile Include="Serialization\Target\DeserializationValue.cs" />
-    <Compile Include="Serialization\Target\HashedObjectInfo.cs" />
-    <Compile Include="Serialization\Target\HashedObjectReference.cs" />
+    <Compile Include="Serialization\Target\ObjectInfo.cs" />
+    <Compile Include="Serialization\Target\ObjectReference.cs" />
     <Compile Include="Serialization\Target\HashedType.cs" />
     <Compile Include="Serialization\Target\SerializationCollection.cs" />
     <Compile Include="Serialization\Planning\SerializationCollectionNode.cs" />
@@ -316,9 +321,9 @@
     <Compile Include="Serialization\Target\SerializationObject.cs" />
     <Compile Include="Serialization\Target\SerializationObjectBase.cs" />
     <Compile Include="Serialization\Planning\SerializationPlan.cs" />
-    <Compile Include="Serialization\Planning\SerializationPlanner.cs" />
+    <Compile Include="Serialization\Component\SerializationPlanner.cs" />
     <Compile Include="Serialization\Target\SerializationPrimitive.cs" />
-    <Compile Include="Serialization\Target\SerializationObjectFactory.cs" />
+    <Compile Include="Serialization\Component\SerializationObjectFactory.cs" />
     <Compile Include="Serialization\Target\SerializationValue.cs" />
     <Compile Include="Utility\BinarySerializer.cs" />
     <Compile Include="Utility\ConstantStrings.cs" />
@@ -443,6 +448,7 @@
     <EmbeddedResource Include="Resource\Configuration\Sorcerer.rdns" />
     <EmbeddedResource Include="Resource\Configuration\Witch.rdns" />
     <EmbeddedResource Include="Resource\Configuration\Adventurer.rdns" />
+    <EmbeddedResource Include="Resource\Configuration\MSFT\Adventurer.rdns" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource\Svg\Game\TeleportRandom.svg" />

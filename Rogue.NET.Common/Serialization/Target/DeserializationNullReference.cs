@@ -7,11 +7,11 @@ namespace Rogue.NET.Common.Serialization.Target
 {
     internal class DeserializationNullReference : DeserializationObjectBase
     {
-        internal DeserializationNullReference(HashedObjectReference reference) : base(reference, RecursiveSerializerMemberInfo.Empty)
+        internal DeserializationNullReference(ObjectReference reference) : base(reference, RecursiveSerializerMemberInfo.Empty)
         {
         }
 
-        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
+        internal override PropertySpecification GetPropertySpecification()
         {
             throw new Exception("Trying to get property definitions for a null refereence:  DeserializationNullReference.cs");
         }
@@ -21,9 +21,9 @@ namespace Rogue.NET.Common.Serialization.Target
             throw new Exception("Trying to construct a null reference:  DeserializationNullReference.cs");
         }
 
-        protected override HashedObjectInfo ProvideResult()
+        protected override ObjectInfo ProvideResult()
         {
-            return new HashedObjectInfo(this.Reference.Type);
+            return new ObjectInfo(this.Reference.Type);
         }
     }
 }

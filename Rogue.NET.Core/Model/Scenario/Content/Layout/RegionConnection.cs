@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Interface;
+﻿using Rogue.NET.Common.Serialization.Component.Interface;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Math.Algorithm.Interface;
 
 using System;
@@ -45,7 +46,5 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             writer.Write("AdjacentLocation", this.AdjacentLocation);
             writer.Write("Weight", this.Weight);
         }
-
-
     }
 }

@@ -11,12 +11,9 @@ namespace Rogue.NET.Common.Serialization.Planning
     {
         public List<DeserializationNodeBase> Children { get; private set; }
 
-        public int Count { get; private set; }
-
         public DeserializationCollectionNode(DeserializationCollection nodeObject, PropertyDefinition definition) : base(nodeObject, definition)
         {
             this.Children = new List<DeserializationNodeBase>();
-            this.Count = nodeObject.Count;
         }
     }
 }

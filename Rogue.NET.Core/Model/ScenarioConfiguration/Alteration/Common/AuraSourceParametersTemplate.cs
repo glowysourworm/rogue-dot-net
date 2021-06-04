@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Windows.Media;
 
@@ -37,7 +38,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
         public AuraSourceParametersTemplate()
         {
-            this.AuraColor = Colors.White.ToString();
+            this.AuraColor = ColorOperations.ConvertBack(Colors.White);
             this.AuraRange = 2;
         }
     }

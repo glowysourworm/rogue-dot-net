@@ -55,6 +55,9 @@ namespace Rogue.NET.Common.Serialization.Target
         Type _declaringType;
         Type _implementingType;
 
+        // CACHE THE HASH CODE FOR PERFORMANCE!
+        int _calculatedHashCode;
+
         internal HashedType(Type declaringType)
         {
             Initialize(declaringType, declaringType);
@@ -82,12 +85,11 @@ namespace Rogue.NET.Common.Serialization.Target
             var arguments = declaringType.GetGenericArguments() ?? new Type[] { };
             var implementingArguments = _implementingType.GetGenericArguments() ?? new Type[] { };
 
-            // Create generic arguments array
-            this.DeclaringGenericArguments = arguments.Select(argument => new HashedType(argument))
-                                                      .ToArray();
+            // Create generic arguments array (PERFORMANCE TUNED)
+            this.DeclaringGenericArguments = arguments.Transform(type => new HashedType(type));
+            this.ImplementingGenericArguments = implementingArguments.Transform(type => new HashedType(type));
 
-            this.ImplementingGenericArguments = implementingArguments.Select(argument => new HashedType(argument))
-                                                                     .ToArray();
+            _calculatedHashCode = default(int);
         }
 
         /// <summary>
@@ -160,29 +162,34 @@ namespace Rogue.NET.Common.Serialization.Target
 
         public override int GetHashCode()
         {
-            var baseHash = this.CreateHashCode(this.DeclaringAssembly,
-                                               this.DeclaringType,
-                                               this.DeclaringIsGeneric);
-
-            // RECURSIVE!!
-            baseHash = baseHash.ExtendHashCode(this.DeclaringGenericArguments);
-
-            if (HasTypeDiscrepancy())
+            if (_calculatedHashCode == default(int))
             {
-                baseHash = baseHash.ExtendHashCode(this.ImplementingAssembly,
-                                                   this.ImplementingType,
-                                                   this.ImplementingIsGeneric);
+
+                var baseHash = this.CreateHashCode(this.DeclaringAssembly,
+                                                   this.DeclaringType,
+                                                   this.DeclaringIsGeneric);
 
                 // RECURSIVE!!
-                baseHash = baseHash.ExtendHashCode(this.ImplementingGenericArguments);
-            }
+                baseHash = baseHash.ExtendHashCode(this.DeclaringGenericArguments);
 
-            return baseHash;
+                if (HasTypeDiscrepancy())
+                {
+                    baseHash = baseHash.ExtendHashCode(this.ImplementingAssembly,
+                                                       this.ImplementingType,
+                                                       this.ImplementingIsGeneric);
+
+                    // RECURSIVE!!
+                    baseHash = baseHash.ExtendHashCode(this.ImplementingGenericArguments);
+                }
+
+                _calculatedHashCode = baseHash;
+            }
+            return _calculatedHashCode;
         }
 
         public override string ToString()
         {
-            return string.Format("Declaring Type={0}, ImplementingType={1}", _declaringType.Name, _implementingType.Name);
+            return "Declaring Type=" + _declaringType.Name + ", Implementing Type=" + _implementingType.Name;
         }
     }
 }

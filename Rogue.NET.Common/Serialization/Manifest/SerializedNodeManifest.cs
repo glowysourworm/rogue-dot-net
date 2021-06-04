@@ -15,7 +15,7 @@ namespace Rogue.NET.Common.Serialization.Manifest
         public bool IsGeneric { get; set; }
         public string[] GenericArgumentTypes { get; set; }
         public int NodeTypeHashCode { get; set; }
-        public int ObjectHashCode { get; set; }
+        public int ObjectId { get; set; }
         public int CollectionCount { get; set; }
         public CollectionInterfaceType CollectionType { get; set; }
 

@@ -525,5 +525,17 @@ namespace Rogue.NET.Common.Extension
 
             return result;
         }
+
+        public static SimpleDictionary<KResult, VResult> ToSimpleDictionary<T, KResult, VResult>(this ICollection<T> collection,
+                                                                                         Func<T, KResult> keySelector,
+                                                                                         Func<T, VResult> valueSelector)
+        {
+            var result = new SimpleDictionary<KResult, VResult>(collection.Count);
+
+            foreach (var element in collection)
+                result.Add(keySelector(element), valueSelector(element));
+
+            return result;
+        }
     }
 }

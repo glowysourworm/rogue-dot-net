@@ -7,11 +7,11 @@ namespace Rogue.NET.Common.Serialization.Target
 {
     internal class DeserializationReference : DeserializationObjectBase
     {
-        internal DeserializationReference(HashedObjectReference reference, RecursiveSerializerMemberInfo memberInfo) : base(reference, memberInfo)
+        internal DeserializationReference(ObjectReference reference, RecursiveSerializerMemberInfo memberInfo) : base(reference, memberInfo)
         {
         }
 
-        internal override IEnumerable<PropertyDefinition> GetPropertyDefinitions()
+        internal override PropertySpecification GetPropertySpecification()
         {
             throw new Exception("Trying to get property definitions for a reference:  DeserializationReference.cs");
         }
@@ -21,7 +21,7 @@ namespace Rogue.NET.Common.Serialization.Target
             throw new NotSupportedException("Trying to CONSTRUCT a referenced deserialized object - should not be recursing");
         }
 
-        protected override HashedObjectInfo ProvideResult()
+        protected override ObjectInfo ProvideResult()
         {
             throw new NotSupportedException("Trying to RESOLVE a referenced deserialized object - should be using the actual data reference");
         }

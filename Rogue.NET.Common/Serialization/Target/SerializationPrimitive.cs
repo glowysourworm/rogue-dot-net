@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Planning;
+﻿using Rogue.NET.Common.Serialization.Component;
+using Rogue.NET.Common.Serialization.Planning;
 
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,8 @@ namespace Rogue.NET.Common.Serialization.Target
     /// </summary>
     internal class SerializationPrimitive : SerializationObjectBase
     {
-        internal SerializationPrimitive(HashedObjectInfo objectInfo) : base(objectInfo, RecursiveSerializerMemberInfo.Empty)
+        internal SerializationPrimitive(ObjectInfo objectInfo) : base(objectInfo, RecursiveSerializerMemberInfo.Empty)
         {
-        }
-
-        protected override IEnumerable<PropertyStorageInfo> GetProperties(PropertyWriter writer)
-        {
-            throw new Exception("Invalid use of GetProperties for SerializationPrimitive");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Windows.Media;
@@ -157,11 +158,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         public SymbolEffectTemplate()
         {
             this.SmileyExpression = SmileyExpression.Happy;
-            this.SmileyBodyColor = Colors.Yellow.ToString();
-            this.SmileyLineColor = Colors.Black.ToString();
+            this.SmileyBodyColor = ColorOperations.ConvertBack(Colors.Yellow);
+            this.SmileyLineColor = ColorOperations.ConvertBack(Colors.Black);
 
             this.SymbolType = SymbolType.Smiley;
-            this.BackgroundColor = Colors.Transparent.ToString();
+            this.BackgroundColor = ColorOperations.ConvertBack(Colors.Transparent);
         }
     }
 }

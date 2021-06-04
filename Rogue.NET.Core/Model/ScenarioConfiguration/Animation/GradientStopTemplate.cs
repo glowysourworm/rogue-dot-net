@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Windows.Media;
 
@@ -35,9 +36,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
             }
         }
         public GradientStopTemplate() { }
-        public GradientStopTemplate(double offset, Color c)
+        public GradientStopTemplate(double offset, Color color)
         {
-            this.GradientColor = c.ToString();
+            this.GradientColor = ColorOperations.ConvertBack(color);
             this.GradientOffset = offset;
         }
     }

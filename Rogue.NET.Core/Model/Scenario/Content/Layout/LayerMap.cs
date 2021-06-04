@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Common.Serialization.Interface;
+﻿using Rogue.NET.Common.Serialization.Component.Interface;
+using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout.Interface;
 
 using System;

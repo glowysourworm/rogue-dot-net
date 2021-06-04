@@ -6,19 +6,14 @@
     public enum SerializationMode : byte
     {
         /// <summary>
-        /// No constructor used to create object (ARRAYS, PRIMITIVES AND NULL REFERENCES)
-        /// </summary>
-        None = 0,
-
-        /// <summary>
         /// Uses default constructor for creating objects
         /// </summary>
-        Default = 1,
+        Default = 0,
 
         /// <summary>
         /// Uses specified methods for creating objects:  parameterless ctor(), 
         /// GetPropertyDefinitions(PropertyPlanner), GetProperties(PropertyWriter), SetProperties(PropertyReader)
         /// </summary>
-        Specified = 2
+        Specified = 1
     }
 }

@@ -12,7 +12,7 @@ namespace Rogue.NET.Common.Serialization.Planning
 
         static RecursiveSerializerMemberInfo()
         {
-            RecursiveSerializerMemberInfo.Empty = new RecursiveSerializerMemberInfo(null, null, null, SerializationMode.None);
+            RecursiveSerializerMemberInfo.Empty = new RecursiveSerializerMemberInfo(null, null, null, SerializationMode.Default);
         }
 
         /// <summary>

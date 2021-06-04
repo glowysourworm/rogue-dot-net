@@ -10,17 +10,20 @@ namespace Rogue.NET.Common.Serialization.Planning
     {
         public SerializationNodeBase RootNode { get; private set; }
 
-        public SimpleDictionary<HashedObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; private set; }
+        public SimpleDictionary<ObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; private set; }
 
-        public IEnumerable<SerializationObjectBase> AllSerializedObjects { get; private set; }
+        public IEnumerable<PropertySpecification> UniquePropertySpecifications { get; private set; }
 
-        public SerializationPlan(SimpleDictionary<HashedObjectInfo, SerializationObjectBase> referenceDict,
-                                 SimpleDictionary<HashedType, HashedType> typeDict,
-                                 IEnumerable<SerializationObjectBase> allObjects,
+        public SimpleDictionary<PropertySpecification, List<SerializationObjectBase>> PropertySpecificationGroups { get; private set; }
+
+        public SerializationPlan(SimpleDictionary<ObjectInfo, SerializationObjectBase> referenceDict,
+                                 IEnumerable<PropertySpecification> propertySpecifications,
+                                 SimpleDictionary<PropertySpecification, List<SerializationObjectBase>> propertySpecificationGroups,
                                  SerializationNodeBase rootNode)
         {
             this.UniqueReferenceDict = referenceDict;
-            this.AllSerializedObjects = allObjects;
+            this.UniquePropertySpecifications = propertySpecifications;
+            this.PropertySpecificationGroups = propertySpecificationGroups;
             this.RootNode = rootNode;
         }
     }

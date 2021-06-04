@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 
 using System;
@@ -119,13 +120,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
             this.SymbolSize = CharacterSymbolSize.Medium;
             this.SymbolEffectType = CharacterSymbolEffectType.None;
 
-            this.BackgroundColor = Colors.Transparent.ToString();
-            this.SymbolClampColor = Colors.White.ToString();
+            this.BackgroundColor = ColorOperations.ConvertBack(Colors.Transparent);
+            this.SymbolClampColor = ColorOperations.ConvertBack(Colors.White);
             this.SymbolPath = GameSymbol.Identify;
 
             this.SmileyExpression = SmileyExpression.Happy;
-            this.SmileyBodyColor = Colors.Yellow.ToString();
-            this.SmileyLineColor = Colors.Black.ToString();
+            this.SmileyBodyColor = ColorOperations.ConvertBack(Colors.Yellow);
+            this.SmileyLineColor = ColorOperations.ConvertBack(Colors.Black);
 
             this.SymbolHue = 0;
             this.SymbolLightness = 0;

@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
@@ -33,18 +34,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.SymbolSize = CharacterSymbolSize.Large;
             this.SymbolEffectType = CharacterSymbolEffectType.None;
 
-            this.SmileyBodyColor = Colors.Yellow.ToString();
+            this.SmileyBodyColor = ColorOperations.ConvertBack(Colors.Yellow);
             this.SmileyExpression = SmileyExpression.Happy;
-            this.SmileyLineColor = Colors.Black.ToString();
+            this.SmileyLineColor = ColorOperations.ConvertBack(Colors.Black);
 
             this.SymbolPath = GameSymbol.Identify;
 
             this.SymbolHue = 0;
             this.SymbolLightness = 0;
             this.SymbolSaturation = 0;
-            this.SymbolClampColor = Colors.White.ToString();
+            this.SymbolClampColor = ColorOperations.ConvertBack(Colors.White);
 
-            this.BackgroundColor = Colors.Transparent.ToString();
+            this.BackgroundColor = ColorOperations.ConvertBack(Colors.Transparent);
         }
 
         public ScenarioImage(SymbolDetailsTemplate template)

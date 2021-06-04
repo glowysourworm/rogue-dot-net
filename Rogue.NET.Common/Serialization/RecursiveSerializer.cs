@@ -1,5 +1,6 @@
 ﻿using KellermanSoftware.CompareNetObjects;
 
+using Rogue.NET.Common.Serialization.Component;
 using Rogue.NET.Common.Serialization.Manifest;
 
 using System;

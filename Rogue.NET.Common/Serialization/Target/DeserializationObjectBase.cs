@@ -8,11 +8,11 @@ namespace Rogue.NET.Common.Serialization.Target
 {
     internal abstract class DeserializationObjectBase
     {
-        public HashedObjectReference Reference { get; private set; }
+        public ObjectReference Reference { get; private set; }
 
         protected RecursiveSerializerMemberInfo MemberInfo { get; private set; }
 
-        public DeserializationObjectBase(HashedObjectReference reference, RecursiveSerializerMemberInfo memberInfo)
+        public DeserializationObjectBase(ObjectReference reference, RecursiveSerializerMemberInfo memberInfo)
         {
             this.Reference = reference;
             this.MemberInfo = memberInfo;
@@ -27,13 +27,13 @@ namespace Rogue.NET.Common.Serialization.Target
         /// Retrieves list of property definitions passed in at the constructor (SHOULD BE FOR REFERENCE TYPES ONLY)
         /// </summary>
         /// <returns></returns>
-        internal abstract IEnumerable<PropertyDefinition> GetPropertyDefinitions();
+        internal abstract PropertySpecification GetPropertySpecification();
 
         /// <summary>
         /// Resolves the object's hash code with the initial reference and returns the 
         /// final result. 
         /// </summary>
-        internal HashedObjectInfo Resolve()
+        internal ObjectInfo Resolve()
         {
             var hashedInfo = ProvideResult();
 
@@ -42,7 +42,7 @@ namespace Rogue.NET.Common.Serialization.Target
             return hashedInfo;
         }
 
-        private void Validate(HashedObjectInfo providedResult)
+        private void Validate(ObjectInfo providedResult)
         {
             // CAN ONLY VALIDATE TYPE BASED ON HASH CODE
             if (providedResult.Type.GetHashCode() != this.Reference.Type.GetHashCode())
@@ -53,11 +53,11 @@ namespace Rogue.NET.Common.Serialization.Target
             }
 
             // *** PROVIDE HASH CODE VAILDATION FOR PRIMITIVE ONLY! (THIS SIMULATES A CHECKSUM FOR ALL PRIMITIVES)
-            if ((this is DeserializationPrimitive) && providedResult.GetHashCode() != this.Reference.HashCode)
+            if ((this is DeserializationPrimitive) && providedResult.GetHashCode() != this.Reference.ReferenceId)
                 throw new Exception("Invalid hash code for primitive type:  " + providedResult.Type.ToString());
         }
 
-        protected abstract HashedObjectInfo ProvideResult();
+        protected abstract ObjectInfo ProvideResult();
 
         public override string ToString()
         {

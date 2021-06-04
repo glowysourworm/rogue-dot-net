@@ -62,8 +62,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         {
             var configuration = _embeddedScenarioConfigurations.Union(_userScenarioConfigurations)
                                                                .FirstOrDefault(x => x.ScenarioDesign.Name == configurationName);
-
-            //// NOTE*** Creating clone of the configuration using binary copy
+            // NOTE*** Creating clone of the configuration using binary copy
             return BinarySerializer.BinaryCopy(configuration, BinarySerializer.SerializationMode.RecursiveSerializer);
         }
 
