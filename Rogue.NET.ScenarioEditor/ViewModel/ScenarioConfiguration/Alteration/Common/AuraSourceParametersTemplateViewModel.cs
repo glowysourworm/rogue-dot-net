@@ -1,4 +1,5 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
         public AuraSourceParametersTemplateViewModel()
         {
-            this.AuraColor = Colors.White.ToString();
+            this.AuraColor = ColorOperations.ConvertBack(Colors.White);
             this.AuraRange = 2;
         }
     }

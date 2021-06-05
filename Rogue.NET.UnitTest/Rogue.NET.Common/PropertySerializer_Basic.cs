@@ -49,7 +49,7 @@ namespace Rogue.NET.UnitTest
         [Test]
         public void ScenarioConfigurationSave()
         {
-            var scenario = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Fighter.ToString());
+            var scenario = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Adventurer.ToString());
 
             ScenarioConfigurationContainer scenarioResult1 = null;
             ScenarioConfigurationContainer scenarioResult2 = null;
@@ -76,7 +76,7 @@ namespace Rogue.NET.UnitTest
         [Test]
         public void LayoutSave()
         {
-            var configuration = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Fighter.ToString());
+            var configuration = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Adventurer.ToString());
             var layout = _layoutGenerator.CreateLayout(configuration.LayoutTemplates.First());
 
             LayoutGrid layoutDeserialized1 = null;
@@ -94,7 +94,7 @@ namespace Rogue.NET.UnitTest
         [Test]
         public void ScenarioSave()
         {
-            var configuration = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Fighter.ToString());
+            var configuration = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Adventurer.ToString());
             var scenario = _scenarioGenerator.CreateScenario(configuration, "Test Scenario", configuration.PlayerTemplates.First().Name, 1, false);
 
             ScenarioContainer scenarioDeserialized1 = null;
