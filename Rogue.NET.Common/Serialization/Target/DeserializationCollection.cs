@@ -13,11 +13,12 @@ namespace Rogue.NET.Common.Serialization.Target
     {
         internal int Count { get { return _count; } }
         internal CollectionInterfaceType InterfaceType { get { return _interfaceType; } }
+        internal HashedType ElementType { get { return _elementType; } }
 
         // Stored data from serialization
         CollectionInterfaceType _interfaceType;
         int _count;
-        int[] _elementTypeHashCodes;
+        HashedType _elementType;
 
         // ACTUAL COLLECTION
         IEnumerable _collection;
@@ -27,13 +28,13 @@ namespace Rogue.NET.Common.Serialization.Target
         internal DeserializationCollection(ObjectReference reference,
                                            RecursiveSerializerMemberInfo memberInfo,
                                            PropertySpecification specification,
-                                           int[] elementTypeHashCodes,
+                                           HashedType elementType,
                                            int count,
                                            CollectionInterfaceType interfaceType) : base(reference, memberInfo)
         {
             _count = count;
             _interfaceType = interfaceType;
-            _elementTypeHashCodes = elementTypeHashCodes;
+            _elementType = elementType;
             _specification = specification;
         }
 
@@ -42,15 +43,7 @@ namespace Rogue.NET.Common.Serialization.Target
             return _specification;
         }
 
-        /// <summary>
-        /// FOR PERFORMANCE
-        /// </summary>
-        internal int GetElementTypeHashCode(int index)
-        {
-            return _elementTypeHashCodes[index];
-        }
-
-        internal void FinalizeCollection(IList<ObjectInfo> resolvedChildren, Func<int, HashedType> hashCodeResolver)
+        internal void FinalizeCollection(IList<ObjectInfo> resolvedChildren)
         {
             if (this.InterfaceType != CollectionInterfaceType.IList)
                 throw new Exception("UNHANDLED INTERFACE TYPE DeserializationCollection.cs");
@@ -61,10 +54,9 @@ namespace Rogue.NET.Common.Serialization.Target
             for (int index = 0; index < _count; index++)
             {
                 var element = resolvedChildren[index];
-                var elementType = hashCodeResolver(_elementTypeHashCodes[index]);
 
-                // VALIDATE ELEMENT TYPE
-                if (!element.Type.GetDeclaringType().IsAssignableFrom(elementType.GetImplementingType()))
+                // VALIDATE ELEMENT TYPE (NOTE*** ELEMENT TYPE IMPLEMENTING TYPE NOT TRACKED!)
+                if (!_elementType.GetDeclaringType().IsAssignableFrom(element.Type.GetImplementingType()))
                     throw new Exception("Invalid collection element type: " + element.Type.DeclaringType);
 
                 // ADD TO THE LIST

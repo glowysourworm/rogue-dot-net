@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.IO.Interface;
 using Rogue.NET.Common.Serialization.Manifest;
 using Rogue.NET.Common.Serialization.Planning;
@@ -56,12 +57,19 @@ namespace Rogue.NET.Common.Serialization.Component
             // Run the planner
             var plan = planner.Plan(theObject);
 
+            // Collect distinct types RESOLVER + ELEMENT TYPES (Distinct)
+            var distinctTypes = _resolver.GetResolvedTypes()
+                                         .Union(plan.ElementTypeDict)
+                                         .DistinctBy(keyValuePair => keyValuePair.Key)
+                                         .Select(keyValuePair => keyValuePair.Value)
+                                         .ToList();
+
             // TYPE TABLE COUNT
-            _writer.Write<int>(_resolver.GetResolvedTypes().Count);
+            _writer.Write<int>(distinctTypes.Count);
 
             // TYPE TABLE
-            foreach (var type in _resolver.GetResolvedTypes())
-                _writer.Write<HashedType>(type.Value);
+            foreach (var type in distinctTypes)
+                _writer.Write<HashedType>(type);
 
             // PROPERTY TABLE
             _writer.Write<int>(plan.PropertySpecificationGroups.Count);
@@ -79,8 +87,8 @@ namespace Rogue.NET.Common.Serialization.Component
                     // PROPERTY NAME
                     _writer.Write<string>(definition.PropertyName);
 
-                    // PROPERTY TYPE
-                    _writer.Write<HashedType>(definition.PropertyType);
+                    // PROPERTY TYPE (HASH CODE)
+                    _writer.Write<int>(definition.PropertyType.GetHashCode());
 
                     // IS USER DEFINED
                     _writer.Write<bool>(definition.IsUserDefined);
@@ -245,7 +253,7 @@ namespace Rogue.NET.Common.Serialization.Component
             // Serialize:  [ Collection = 6,     Serialization Mode, Hashed Type Code, Object Id,
             //                                   Collection Interface Type,
             //                                   Child Count,
-            //                                   Child Hash Type Code[] ] (loop) Children (Recruse Sub-graphs)
+            //                                   Child Hash Type Code ] (loop) Children (Recruse Sub-graphs)
 
             // var manifest = new SerializedNodeManifest();
 
@@ -287,7 +295,7 @@ namespace Rogue.NET.Common.Serialization.Component
                     _writer.Write<int>(collection.Count);
 
                     // ELEMENT HASH TYPES
-                    _writer.Write<int[]>(collection.ResolvedElementTypeHashCodes);
+                    _writer.Write<int>(collection.ElementDeclaringType.GetHashCode());
 
                     // Write manifest
                     //manifest.CollectionCount = (nodeObject as SerializationCollection).Count;

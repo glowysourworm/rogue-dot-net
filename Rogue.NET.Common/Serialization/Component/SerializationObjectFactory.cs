@@ -20,18 +20,15 @@ namespace Rogue.NET.Common.Serialization.Component
 
         List<SerializationObjectBase> _allObjects;
 
-        readonly ObjectInfoResolver _resolver;
-
         internal SerializationObjectBase this[ObjectInfo objectInfo]
         {
             get { return _referenceDict[objectInfo]; }
         }
 
-        internal SerializationObjectFactory(ObjectInfoResolver resolver)
+        internal SerializationObjectFactory()
         {
             _referenceDict = new SimpleDictionary<ObjectInfo, SerializationObjectBase>();
             _allObjects = new List<SerializationObjectBase>();
-            _resolver = resolver;
         }
 
         internal bool ContainsReference(ObjectInfo reference)
@@ -129,21 +126,9 @@ namespace Rogue.NET.Common.Serialization.Component
                     throw new Exception("Invalid IList argument for PropertySerializer: " + info.Type.DeclaringType);
 
                 var list = info.GetObject() as IList;
-                var elementTypeHashCodes = new int[list.Count];
                 var elementDeclaringType = new HashedType(argument);
 
-                // RESOLVE TYPES FOR ENTIRE COLLECTION
-                try
-                {
-                    for (int index = 0; index < list.Count; index++)
-                        elementTypeHashCodes[index] = _resolver.Resolve(list[index], elementDeclaringType).Type.GetHashCode();
-                }
-                catch (Exception innerException)
-                {
-                    throw new RecursiveSerializerException(info.Type, "Error resolving element type for collection: " + argument.Name, innerException);
-                }
-
-                return new SerializationCollection(info, memberInfo, list, elementTypeHashCodes, list.Count, CollectionInterfaceType.IList, new HashedType(argument));
+                return new SerializationCollection(info, memberInfo, list, list.Count, CollectionInterfaceType.IList, elementDeclaringType);
             }
             else
                 throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>: " + info.Type.DeclaringType);

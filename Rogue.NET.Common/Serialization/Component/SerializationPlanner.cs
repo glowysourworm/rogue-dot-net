@@ -2,11 +2,9 @@
 using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
-using Rogue.NET.Common.Serialization.Utility;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Rogue.NET.Common.Serialization.Component
 {
@@ -24,11 +22,15 @@ namespace Rogue.NET.Common.Serialization.Component
         // Creates primitive object infos according to HASHED TYPE RULES!
         readonly ObjectInfoResolver _resolver;
 
+        // Additional collection element types
+        SimpleDictionary<int, HashedType> _elementTypeDict;
+
         internal SerializationPlanner(ObjectInfoResolver resolver)
         {
             _propertySpecifications = new SimpleDictionary<PropertySpecification, PropertySpecification>();
             _propertySpecificationGroups = new SimpleDictionary<PropertySpecification, List<SerializationObjectBase>>();
-            _factory = new SerializationObjectFactory(resolver);
+            _elementTypeDict = new SimpleDictionary<int, HashedType>();
+            _factory = new SerializationObjectFactory();
             _resolver = resolver;
         }
 
@@ -46,8 +48,9 @@ namespace Rogue.NET.Common.Serialization.Component
             // Recurse
             Analyze(node);
 
-            return new SerializationPlan(_factory.GetReferences(), 
-                                         _propertySpecifications.Values, 
+            return new SerializationPlan(_factory.GetReferences(),
+                                         _elementTypeDict,
+                                         _propertySpecifications.Values,
                                          _propertySpecificationGroups,
                                          node);
         }
@@ -98,20 +101,16 @@ namespace Rogue.NET.Common.Serialization.Component
                 }
 
                 var collection = (node.NodeObject as SerializationCollection);
-                var counter = 0;
+
+                // STORE ADDITIONAL ELEMENT DECLARING TYPES
+                if (!_elementTypeDict.ContainsKey(collection.ElementDeclaringType.GetHashCode()))
+                    _elementTypeDict.Add(collection.ElementDeclaringType.GetHashCode(), collection.ElementDeclaringType);
 
                 // READ ELEMENTS
                 foreach (var item in collection.Collection)
                 {
-                    var elementTypeHashCode = collection.ResolvedElementTypeHashCodes[counter++];
-
-                    if (!_resolver.GetResolvedTypes().ContainsKey(elementTypeHashCode))
-                        throw new Exception("Unresolved element type hash code: " + collection.ObjectInfo.Type.ToString());
-
-                    var elementType = _resolver.GetResolvedTypes()[elementTypeHashCode];
-
                     // RESOLVE OBJECT INFO
-                    var childInfo = _resolver.Resolve(item, elementType);
+                    var childInfo = _resolver.Resolve(item, collection.ElementDeclaringType);
 
                     // Create wrapped object for the element
                     var wrappedChild = _factory.Create(childInfo);
@@ -146,7 +145,7 @@ namespace Rogue.NET.Common.Serialization.Component
                     // STORE AS SUB-NODE
                     (node as SerializationNode).SubNodes.Add(propertyNode);
                 }
-            }   
+            }
 
             else
                 throw new Exception("Unhandled SerializationObjectBase type SerializationPlanner.CreateNode");

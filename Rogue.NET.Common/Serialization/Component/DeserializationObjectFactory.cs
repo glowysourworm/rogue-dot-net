@@ -23,7 +23,7 @@ namespace Rogue.NET.Common.Serialization.Component
                                                             int childCount,
                                                             SerializationMode mode,
                                                             PropertySpecification specification,
-                                                            int[] elementTypeHashCodes)
+                                                            HashedType elementType)
         {
             // Procedure
             //
@@ -46,7 +46,11 @@ namespace Rogue.NET.Common.Serialization.Component
                 if (argument == null)
                     throw new RecursiveSerializerException(reference.Type, "Invalid IList argument for PropertySerializer");
 
-                return new DeserializationCollection(reference, memberInfo, specification, elementTypeHashCodes, childCount, CollectionInterfaceType.IList);
+                // NOTE*** Element IMPLEMENTING type is not tracked. So, the declaring type should be equal to the implemeting type.
+                if (!argument.IsAssignableFrom(elementType.GetDeclaringType()))
+                    throw new RecursiveSerializerException(elementType, "Invalid collection element type against referenced argument type");
+
+                return new DeserializationCollection(reference, memberInfo, specification, elementType, childCount, CollectionInterfaceType.IList);
             }
             else
                 throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>");

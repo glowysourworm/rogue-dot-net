@@ -14,6 +14,11 @@ namespace Rogue.NET.Common.Serialization.Interface
         SimpleDictionary<ObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; }
 
         /// <summary>
+        /// Additional element DECLARING types built by the serialization planner
+        /// </summary>
+        SimpleDictionary<int, HashedType> ElementTypeDict { get; }
+
+        /// <summary>
         /// Stores collection of unique property specifications
         /// </summary>
         IEnumerable<PropertySpecification> UniquePropertySpecifications { get; }

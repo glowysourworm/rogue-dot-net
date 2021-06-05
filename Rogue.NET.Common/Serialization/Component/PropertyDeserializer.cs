@@ -111,8 +111,13 @@ namespace Rogue.NET.Common.Serialization.Component
                     // PROPERTY NAME
                     var propertyName = _reader.Read<string>();
 
-                    // PROPERTY TYPE
-                    var propertyType = _reader.Read<HashedType>();
+                    // PROPERTY TYPE (HASH CODE)
+                    var propertyTypeHashCode = _reader.Read<int>();
+
+                    if (!_loadedTypes.ContainsKey(propertyTypeHashCode))
+                        throw new Exception("Missing HashedType for PropertyDefinition");
+
+                    var propertyType = _loadedTypes[propertyTypeHashCode];
 
                     // IS USER DEFINED -> NO REFLECTION SUPPORT!
                     var isUserDefined = _reader.Read<bool>();
@@ -136,7 +141,6 @@ namespace Rogue.NET.Common.Serialization.Component
                                                                                 definition.PropertyType.GetDeclaringType()
                                                                                                        .IsAssignableFrom(propertyType.GetImplementingType());
                                                                      });
-
 
                         // PROPERTY REMOVED FROM SPECIFICATION!!
                         if (propertyDefinition == null)
@@ -170,7 +174,7 @@ namespace Rogue.NET.Common.Serialization.Component
             }
 
             // Read root
-            var wrappedRoot = ReadNext(new HashedType(typeof(T)));
+            var wrappedRoot = ReadNext(new HashedType(typeof(T)), false);
 
             if (wrappedRoot.Reference.Type.GetImplementingType() != typeof(T))
                 throw new Exception("File type doesn't match the type of object being Deserialized:  " + wrappedRoot.Reference.Type.DeclaringType);
@@ -238,7 +242,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 foreach (var definition in specification.Definitions)
                 {
                     // READ NEXT
-                    var wrappedObject = ReadNext(definition.PropertyType);
+                    var wrappedObject = ReadNext(definition.PropertyType, false);
 
                     // Create node for the property
                     var subNode = CreateNode(wrappedObject, definition);
@@ -253,19 +257,14 @@ namespace Rogue.NET.Common.Serialization.Component
                 // Iterate expected ELEMENT TYPES
                 var collection = (collectionNode.NodeObject as DeserializationCollection);
 
+                // VALIDATE ELEMENT TYPE
+                if (!_loadedTypes.ContainsKey(collection.ElementType.GetHashCode()))
+                    throw new Exception("Missing ElementType for collection: " + collection.Reference.Type.ToString());
+
                 for (int index = 0; index < collection.Count; index++)
                 {
-                    // Expected type serialized with the stream
-                    var expectedChildTypeHashCode = collection.GetElementTypeHashCode(index);
-
-                    // RESOLVE ELEMENT TYPE
-                    if (!_loadedTypes.ContainsKey(expectedChildTypeHashCode))
-                        throw new Exception("Missing element HashedType for collection: " + collection.Reference.Type.ToString());
-
-                    var expectedChildType = _loadedTypes[expectedChildTypeHashCode];
-
-                    // READ NEXT
-                    var wrappedObject = ReadNext(expectedChildType);
+                    // READ NEXT (ELEMENT TYPE => DECLARING TYPE)
+                    var wrappedObject = ReadNext(collection.ElementType, true);
 
                     // Create child node
                     var childNode = CreateNode(wrappedObject, PropertyDefinition.CollectionElement);
@@ -304,7 +303,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 foreach (var definition in specification.Definitions)
                 {
                     // READ NEXT
-                    var wrappedSubObject = ReadNext(definition.PropertyType);
+                    var wrappedSubObject = ReadNext(definition.PropertyType, false);
 
                     // Create sub-node
                     var subNode = CreateNode(wrappedSubObject, definition);
@@ -320,7 +319,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 throw new Exception("Unhandled DeserializationNodeBase type:  PropertyDeserializer.DeserializeRecurse");
         }
 
-        private DeserializationObjectBase ReadNext(HashedType expectedType)
+        private DeserializationObjectBase ReadNext(HashedType expectedType, bool isCollectionElement)
         {
             // FROM SERIALIZER
             //
@@ -341,31 +340,50 @@ namespace Rogue.NET.Common.Serialization.Component
             var nextMode = _reader.Read<SerializationMode>();
             var nextTypeHash = _reader.Read<int>();
 
+            HashedType resolvedType = expectedType;
+
             // VAILDATE HASHED TYPE
             if (nextTypeHash != expectedType.GetHashCode())
-                throw new Exception("Invalid hash code read from stream for EXPECTED type:  " + expectedType.ToString());
+            {
+                // CHECK THAT TYPE IS LOADED
+                if (!_loadedTypes.ContainsKey(nextTypeHash))
+                    throw new Exception("Invalid hash code read from stream for EXPECTED type:  " + expectedType.ToString());
+
+                var actualType = _loadedTypes[nextTypeHash];
+
+                // CHECK FOR COLLECTION ASSIGNABILITY
+                if (isCollectionElement)
+                {
+                    if (!expectedType.GetDeclaringType().IsAssignableFrom(actualType.GetImplementingType()))
+                        throw new Exception("Collection assignability failed for deserialized type:  " + expectedType.ToString());
+
+                    // RESOLVE THE ACTUAL TYPE FOR THE COLLECTION
+                    else
+                        resolvedType = actualType;
+                }
+            }
 
             //// Write manifest
             //manifest.Mode = nextMode;
             //manifest.Node = nextNode;
-            //manifest.Type = expectedType.ToString();
+            //manifest.Type = resolvedType.ToString();
 
             DeserializationObjectBase result = null;
 
             switch (nextNode)
             {
                 case SerializedNodeType.NullPrimitive:
-                    result = _factory.CreateNullPrimitive(new ObjectReference(expectedType, 0), nextMode);
+                    result = _factory.CreateNullPrimitive(new ObjectReference(resolvedType, 0), nextMode);
                     break;
                 case SerializedNodeType.Null:
-                    result = _factory.CreateNullReference(new ObjectReference(expectedType, 0), nextMode);
+                    result = _factory.CreateNullReference(new ObjectReference(resolvedType, 0), nextMode);
                     break;
                 case SerializedNodeType.Primitive:
                     {
                         // READ PRIMITIVE VALUE FROM STREAM
-                        var primitive = _reader.Read(expectedType.GetImplementingType());
+                        var primitive = _reader.Read(resolvedType.GetImplementingType());
 
-                        result = _factory.CreatePrimitive(new ObjectInfo(primitive, expectedType), nextMode);
+                        result = _factory.CreatePrimitive(new ObjectInfo(primitive, resolvedType), nextMode);
 
                         break;
                     }
@@ -375,7 +393,7 @@ namespace Rogue.NET.Common.Serialization.Component
                         var objectId = _reader.Read<int>();
 
                         // Create reference
-                        var reference = new ObjectReference(expectedType, objectId);
+                        var reference = new ObjectReference(resolvedType, objectId);
 
                         // GET PROPERTY SPECIFICATION
                         var specification = _specifiedPropertyDict[objectId];
@@ -390,7 +408,7 @@ namespace Rogue.NET.Common.Serialization.Component
                         var objectId = _reader.Read<int>();
 
                         // Create reference
-                        var reference = new ObjectReference(expectedType, objectId);
+                        var reference = new ObjectReference(resolvedType, objectId);
 
                         // GET PROPERTY SPECIFICATION
                         var specification = _specifiedPropertyDict[objectId];
@@ -405,7 +423,7 @@ namespace Rogue.NET.Common.Serialization.Component
                         // READ OBJECT ID FROM STREAM
                         var objectId = _reader.Read<int>();
 
-                        result = _factory.CreateReference(new ObjectReference(expectedType, objectId), nextMode);
+                        result = _factory.CreateReference(new ObjectReference(resolvedType, objectId), nextMode);
 
                         break;
                     }
@@ -420,16 +438,21 @@ namespace Rogue.NET.Common.Serialization.Component
                         // READ CHILD COUNT
                         var childCount = _reader.Read<int>();
 
-                        // ELEMENT HASH TYPES
-                        var elementTypeHashCodes = _reader.Read<int[]>();
+                        // ELEMENT HASH TYPE CODE
+                        var elementTypeHashCode = _reader.Read<int>();
+
+                        if (!_loadedTypes.ContainsKey(elementTypeHashCode))
+                            throw new Exception("Missing collection element type hash code " + resolvedType.ToString());
+
+                        var elementType = _loadedTypes[elementTypeHashCode];
 
                         // Create reference
-                        var reference = new ObjectReference(expectedType, objectId);
+                        var reference = new ObjectReference(resolvedType, objectId);
 
                         // GET PROPERTY SPECIFICATION
                         var specification = _specifiedPropertyDict[objectId];
 
-                        result = _factory.CreateCollection(reference, interfaceType, childCount, nextMode, specification, elementTypeHashCodes);
+                        result = _factory.CreateCollection(reference, interfaceType, childCount, nextMode, specification, elementType);
 
                         // Write manifest
                         //manifest.CollectionCount = childCount;

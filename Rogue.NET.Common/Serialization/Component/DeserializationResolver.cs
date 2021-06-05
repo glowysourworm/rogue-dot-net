@@ -105,13 +105,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 // FINALIZE COLLECTION (MUST HAVE CALLED Construct())
                 //                
                 if (resolvedChildNodes.Any())
-                    (collectionNode.NodeObject as DeserializationCollection).FinalizeCollection(resolvedChildNodes, (hashCode) =>
-                    {
-                        if (!_typeTable.ContainsKey(hashCode))
-                            throw new Exception("Un-resolved type for collection element " + node.Property.PropertyName);
-
-                        return _typeTable[hashCode];
-                    });
+                    (collectionNode.NodeObject as DeserializationCollection).FinalizeCollection(resolvedChildNodes);
             }
             // NODE
             else if (node is DeserializationNode)

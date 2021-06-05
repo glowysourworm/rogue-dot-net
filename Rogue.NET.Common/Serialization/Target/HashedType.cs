@@ -189,7 +189,7 @@ namespace Rogue.NET.Common.Serialization.Target
 
         public override string ToString()
         {
-            return "Declaring Type=" + _declaringType.Name + ", Implementing Type=" + _implementingType.Name;
+            return "Declaring Type=" + _declaringType.FullName + ", Implementing Type=" + _implementingType.FullName;
         }
     }
 }
