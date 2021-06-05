@@ -6,11 +6,11 @@ using System;
 namespace Rogue.NET.Common.Serialization.Manifest
 {
     [Serializable]
-    public class SerializedNodeDifference
+    public struct SerializedNodeDifference
     {
+        public static SerializedNodeDifference Empty = new SerializedNodeDifference();
+
         public SerializedNodeManifest SerializedNode { get; set; }
         public SerializedNodeManifest DeserializedNode { get; set; }
-
-        public SerializedNodeDifference() { }
     }
 }

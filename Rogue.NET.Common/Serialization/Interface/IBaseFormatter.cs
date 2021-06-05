@@ -12,6 +12,8 @@ namespace Rogue.NET.Common.Serialization.Interface
     /// </summary>
     internal interface IBaseFormatter
     {
+        Type DataType { get; }
+
         object Read(Stream stream);
 
         void Write(Stream stream, object theObject);

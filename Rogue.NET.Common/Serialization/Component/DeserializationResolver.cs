@@ -14,6 +14,9 @@ namespace Rogue.NET.Common.Serialization.Component
         // Collection of UNIQUE objects that HAVE BEEN DESERIALIZED
         SimpleDictionary<ObjectReference, DeserializationObjectBase> _deserializedObjectcs;
 
+        // DESERIALIZATION ARTIFACT - ALL LOADED TYPES
+        SimpleDictionary<int, HashedType> _typeTable;
+
         internal DeserializationResolver()
         {
             _deserializedObjectcs = new SimpleDictionary<ObjectReference, DeserializationObjectBase>();
@@ -24,8 +27,10 @@ namespace Rogue.NET.Common.Serialization.Component
             return _deserializedObjectcs;
         }
 
-        internal DeserializationNodeBase Resolve(DeserializationNodeBase node)
+        internal DeserializationNodeBase Resolve(DeserializationNodeBase node, SimpleDictionary<int, HashedType> typeTable)
         {
+            _typeTable = typeTable;
+
             ResolveImpl(node);
 
             return node;
@@ -78,7 +83,7 @@ namespace Rogue.NET.Common.Serialization.Component
                         throw new Exception("Invalid Property Definition for collection element:  DeserializationResolver.cs");
 
                     // RECURSE TO RESOLVE (Child Nodes are NON-PROPERTY NODES)
-                    Resolve(childNode);
+                    ResolveImpl(childNode);
 
                     // NOTE*** Data from these child nodes MUST BE PASSED to the DeserializationObjectBase WITH REFERENCES
                     //         RESOLVED. 
@@ -100,7 +105,13 @@ namespace Rogue.NET.Common.Serialization.Component
                 // FINALIZE COLLECTION (MUST HAVE CALLED Construct())
                 //                
                 if (resolvedChildNodes.Any())
-                    (collectionNode.NodeObject as DeserializationCollection).FinalizeCollection(resolvedChildNodes);
+                    (collectionNode.NodeObject as DeserializationCollection).FinalizeCollection(resolvedChildNodes, (hashCode) =>
+                    {
+                        if (!_typeTable.ContainsKey(hashCode))
+                            throw new Exception("Un-resolved type for collection element " + node.Property.PropertyName);
+
+                        return _typeTable[hashCode];
+                    });
             }
             // NODE
             else if (node is DeserializationNode)
@@ -194,7 +205,7 @@ namespace Rogue.NET.Common.Serialization.Component
             else
             {
                 // VALUE, OBJECT, COLLECTION
-                Resolve(node);
+                ResolveImpl(node);
 
                 if (!_deserializedObjectcs.ContainsKey(node.NodeObject.Reference))
                     throw new Exception("Unresolved subnode PropertyDeserializer.ResolveNodeRecurse");

@@ -12,13 +12,12 @@ namespace Rogue.NET.Common.Serialization.Target
     internal class DeserializationCollection : DeserializationObjectBase
     {
         internal int Count { get { return _count; } }
-        internal IList<HashedType> ElementTypes { get { return _elementTypes; } }
         internal CollectionInterfaceType InterfaceType { get { return _interfaceType; } }
 
         // Stored data from serialization
         CollectionInterfaceType _interfaceType;
         int _count;
-        IList<HashedType> _elementTypes;
+        int[] _elementTypeHashCodes;
 
         // ACTUAL COLLECTION
         IEnumerable _collection;
@@ -28,13 +27,13 @@ namespace Rogue.NET.Common.Serialization.Target
         internal DeserializationCollection(ObjectReference reference,
                                            RecursiveSerializerMemberInfo memberInfo,
                                            PropertySpecification specification,
-                                           IList<HashedType> elementTypes,
+                                           int[] elementTypeHashCodes,
                                            int count,
                                            CollectionInterfaceType interfaceType) : base(reference, memberInfo)
         {
             _count = count;
             _interfaceType = interfaceType;
-            _elementTypes = elementTypes;
+            _elementTypeHashCodes = elementTypeHashCodes;
             _specification = specification;
         }
 
@@ -43,7 +42,15 @@ namespace Rogue.NET.Common.Serialization.Target
             return _specification;
         }
 
-        internal void FinalizeCollection(IList<ObjectInfo> resolvedChildren)
+        /// <summary>
+        /// FOR PERFORMANCE
+        /// </summary>
+        internal int GetElementTypeHashCode(int index)
+        {
+            return _elementTypeHashCodes[index];
+        }
+
+        internal void FinalizeCollection(IList<ObjectInfo> resolvedChildren, Func<int, HashedType> hashCodeResolver)
         {
             if (this.InterfaceType != CollectionInterfaceType.IList)
                 throw new Exception("UNHANDLED INTERFACE TYPE DeserializationCollection.cs");
@@ -54,7 +61,7 @@ namespace Rogue.NET.Common.Serialization.Target
             for (int index = 0; index < _count; index++)
             {
                 var element = resolvedChildren[index];
-                var elementType = _elementTypes[index];
+                var elementType = hashCodeResolver(_elementTypeHashCodes[index]);
 
                 // VALIDATE ELEMENT TYPE
                 if (!element.Type.GetDeclaringType().IsAssignableFrom(elementType.GetImplementingType()))

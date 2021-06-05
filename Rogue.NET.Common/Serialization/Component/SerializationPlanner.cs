@@ -103,7 +103,12 @@ namespace Rogue.NET.Common.Serialization.Component
                 // READ ELEMENTS
                 foreach (var item in collection.Collection)
                 {
-                    var elementType = collection.ResolvedElementTypes[counter++];
+                    var elementTypeHashCode = collection.ResolvedElementTypeHashCodes[counter++];
+
+                    if (!_resolver.GetResolvedTypes().ContainsKey(elementTypeHashCode))
+                        throw new Exception("Unresolved element type hash code: " + collection.ObjectInfo.Type.ToString());
+
+                    var elementType = _resolver.GetResolvedTypes()[elementTypeHashCode];
 
                     // RESOLVE OBJECT INFO
                     var childInfo = _resolver.Resolve(item, elementType);

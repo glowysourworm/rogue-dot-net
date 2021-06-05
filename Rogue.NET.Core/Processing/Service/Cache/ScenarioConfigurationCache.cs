@@ -62,8 +62,13 @@ namespace Rogue.NET.Core.Processing.Service.Cache
         {
             var configuration = _embeddedScenarioConfigurations.Union(_userScenarioConfigurations)
                                                                .FirstOrDefault(x => x.ScenarioDesign.Name == configurationName);
+
+#if CONFIGURATION_MSFT
+            return configuration;
+#else
             // NOTE*** Creating clone of the configuration using binary copy
             return BinarySerializer.BinaryCopy(configuration, BinarySerializer.SerializationMode.RecursiveSerializer);
+#endif
         }
 
         public void SaveConfiguration(ScenarioConfigurationContainer configuration)
@@ -138,6 +143,18 @@ namespace Rogue.NET.Core.Processing.Service.Cache
             {
                 var name = configResource.ToString();
                 var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
+
+#if CONFIGURATION_MSFT
+
+                var location = "Rogue.NET.Common.Resource.Configuration.MSFT." + name.ToString() + "." + ResourceConstants.ScenarioConfigurationExtension;
+                using (var stream = assembly.GetManifestResourceStream(location))
+                {
+                    var memoryStream = new MemoryStream();
+                    stream.CopyTo(memoryStream);
+
+                    AddEmbeddedConfiguration(BinarySerializer.Deserialize<ScenarioConfigurationContainer>(memoryStream.GetBuffer(), BinarySerializer.SerializationMode.MSFT));
+                }
+#else
                 var location = "Rogue.NET.Common.Resource.Configuration." + name.ToString() + "." + ResourceConstants.ScenarioConfigurationExtension;
                 using (var stream = assembly.GetManifestResourceStream(location))
                 {
@@ -146,6 +163,7 @@ namespace Rogue.NET.Core.Processing.Service.Cache
 
                     AddEmbeddedConfiguration(BinarySerializer.Deserialize<ScenarioConfigurationContainer>(memoryStream.GetBuffer(), BinarySerializer.SerializationMode.RecursiveSerializer));
                 }
+#endif
             }
 
             // User Scenario Configurations (On Disk)

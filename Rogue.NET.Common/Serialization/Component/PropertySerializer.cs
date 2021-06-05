@@ -1,27 +1,17 @@
 ﻿using Rogue.NET.Common.Collection;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Serialization.Component;
-using Rogue.NET.Common.Serialization.Formatter;
-using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Common.Serialization.IO.Interface;
 using Rogue.NET.Common.Serialization.Manifest;
 using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Rogue.NET.Common.Serialization.Component
 {
     internal class PropertySerializer
     {
-        // Collection of formatters for serialization
-        SimpleDictionary<Type, IBaseFormatter> _primitiveFormatters;
-
-        // Used to create TYPE TABLE
-        HashedTypeFormatter _hashedTypeFormatter;
-
         // Collection of UNIQUE objects that HAVE BEEN SERIALIZED
         SimpleDictionary<ObjectInfo, SerializationObjectBase> _serializedObjects;
 
@@ -31,17 +21,20 @@ namespace Rogue.NET.Common.Serialization.Component
         // SINGLE INSTANCE - ONE PER RUN
         ObjectInfoResolver _resolver;
 
+        // PRIMARY OUTPUT STREAM
+        ISerializationStreamWriter _writer;
+
         internal PropertySerializer()
         {
-            _primitiveFormatters = new SimpleDictionary<Type, IBaseFormatter>();
             _serializedObjects = new SimpleDictionary<ObjectInfo, SerializationObjectBase>();
-            _hashedTypeFormatter = new HashedTypeFormatter();
             _outputManifest = new List<SerializedNodeManifest>();
             _resolver = new ObjectInfoResolver();
         }
 
-        internal void Serialize<T>(Stream stream, T theObject)
+        internal void Serialize<T>(ISerializationStreamWriter writer, T theObject)
         {
+            _writer = writer;
+
             // SINGLE INSTANCE PER RUN - STORES ALL RESOLVED TYPES
             _resolver = new ObjectInfoResolver();
 
@@ -64,47 +57,47 @@ namespace Rogue.NET.Common.Serialization.Component
             var plan = planner.Plan(theObject);
 
             // TYPE TABLE COUNT
-            Write<int>(stream, _resolver.GetResolvedTypes().Count);
+            _writer.Write<int>(_resolver.GetResolvedTypes().Count);
 
             // TYPE TABLE
             foreach (var type in _resolver.GetResolvedTypes())
-                _hashedTypeFormatter.Write(stream, type.Key);
+                _writer.Write<HashedType>(type.Value);
 
             // PROPERTY TABLE
-            Write<int>(stream, plan.PropertySpecificationGroups.Count);
+            _writer.Write<int>(plan.PropertySpecificationGroups.Count);
 
             foreach (var element in plan.PropertySpecificationGroups)
             {
                 // PROPERTY SPECIFICATION { Count, PropertyDefinition[] }
-                Write<int>(stream, element.Key.Definitions.Count());
+                _writer.Write<int>(element.Key.Definitions.Count());
 
                 // PROPERTY SPECIFICATION TYPE (HASH CODE ONLY)
-                Write<int>(stream, element.Key.ObjectType.GetHashCode());
+                _writer.Write<int>(element.Key.ObjectType.GetHashCode());
 
                 foreach (var definition in element.Key.Definitions)
                 {
                     // PROPERTY NAME
-                    Write<string>(stream, definition.PropertyName);
+                    _writer.Write<string>(definition.PropertyName);
 
                     // PROPERTY TYPE
-                    _hashedTypeFormatter.Write(stream, definition.PropertyType);
+                    _writer.Write<HashedType>(definition.PropertyType);
 
                     // IS USER DEFINED
-                    Write<bool>(stream, definition.IsUserDefined);
+                    _writer.Write<bool>(definition.IsUserDefined);
                 }
 
                 // OBJECT REFERENCES
-                Write<int>(stream, element.Value.Count);
+                _writer.Write<int>(element.Value.Count);
 
                 foreach (var objectBase in element.Value)
                 {
                     // OBJECT ID
-                    Write<int>(stream, objectBase.ObjectInfo.Id);
+                    _writer.Write<int>(objectBase.ObjectInfo.Id);
                 }
             }
 
             // Recurse
-            SerializeRecurse(stream, plan.RootNode);
+            SerializeRecurse(plan.RootNode);
 
             // Validate
             foreach (var element in plan.UniqueReferenceDict)
@@ -126,10 +119,10 @@ namespace Rogue.NET.Common.Serialization.Component
 
         internal IEnumerable<HashedType> GetTypeTable()
         {
-            return _resolver.GetResolvedTypes().Keys;
+            return _resolver.GetResolvedTypes().Values;
         }
 
-        private void SerializeRecurse(Stream stream, SerializationNodeBase node)
+        private void SerializeRecurse(SerializationNodeBase node)
         {
             // Recursively identify node children and analyze by type inspection for SerializationObjectBase.
             // Select formatter for objects that are value types if no ctor / get methods are supplied
@@ -140,15 +133,15 @@ namespace Rogue.NET.Common.Serialization.Component
                 var collectionNode = node as SerializationCollectionNode;
 
                 // Serialize Collection Node (STORES CHILD COUNT)
-                SerializeNodeObject(stream, collectionNode.NodeObject);
+                SerializeNodeObject(collectionNode.NodeObject);
 
                 // Serialize Sub-Nodes (USED FOR CUSTOM COLLECTION PROPERTIES)
                 foreach (var subNode in collectionNode.SubNodes)
-                    SerializeRecurse(stream, subNode);
+                    SerializeRecurse(subNode);
 
                 // Serialize Child Nodes
                 foreach (var childNode in collectionNode.Children)
-                    SerializeRecurse(stream, childNode);
+                    SerializeRecurse(childNode);
             }
 
             // NODE
@@ -157,15 +150,15 @@ namespace Rogue.NET.Common.Serialization.Component
                 var objectNode = node as SerializationNode;
 
                 // Serialize Node
-                SerializeNodeObject(stream, objectNode.NodeObject);
+                SerializeNodeObject(objectNode.NodeObject);
 
                 // Serialize Sub-Nodes
                 foreach (var subNode in objectNode.SubNodes)
-                    SerializeRecurse(stream, subNode);
+                    SerializeRecurse(subNode);
             }
         }
 
-        private void SerializeNodeObject(Stream stream, SerializationObjectBase nodeObject)
+        private void SerializeNodeObject(SerializationObjectBase nodeObject)
         {
             // Procedure
             //
@@ -181,7 +174,7 @@ namespace Rogue.NET.Common.Serialization.Component
             // PRIMITIVE NULL
             if (nodeObject is SerializationNullPrimitive)
             {
-                WriteNode(stream, SerializedNodeType.NullPrimitive, nodeObject.Mode, nodeObject);
+                WriteNode(SerializedNodeType.NullPrimitive, nodeObject.Mode, nodeObject);
 
                 return;
             }
@@ -189,7 +182,7 @@ namespace Rogue.NET.Common.Serialization.Component
             // NULL
             else if (nodeObject is SerializationNullObject)
             {
-                WriteNode(stream, SerializedNodeType.Null, nodeObject.Mode, nodeObject);
+                WriteNode(SerializedNodeType.Null, nodeObject.Mode, nodeObject);
 
                 return;
             }
@@ -197,7 +190,7 @@ namespace Rogue.NET.Common.Serialization.Component
             // PRIMITIVE
             else if (nodeObject is SerializationPrimitive)
             {
-                WriteNode(stream, SerializedNodeType.Primitive, nodeObject.Mode, nodeObject);
+                WriteNode(SerializedNodeType.Primitive, nodeObject.Mode, nodeObject);
 
                 return;
             }
@@ -207,7 +200,7 @@ namespace Rogue.NET.Common.Serialization.Component
             // REFERENCE
             if (nodeObject is SerializationReference)
             {
-                WriteNode(stream, SerializedNodeType.Reference, nodeObject.Mode, nodeObject);
+                WriteNode(SerializedNodeType.Reference, nodeObject.Mode, nodeObject);
 
                 return;
             }
@@ -221,26 +214,25 @@ namespace Rogue.NET.Common.Serialization.Component
             // VALUE (Either new sub-graph OR reference to serialized object)
             if (nodeObject is SerializationValue)
             {
-                WriteNode(stream, SerializedNodeType.Value, nodeObject.Mode, nodeObject);
+                WriteNode(SerializedNodeType.Value, nodeObject.Mode, nodeObject);
             }
 
             // OBJECT (Either new sub-graph OR reference to serialized object)
             else if (nodeObject is SerializationObject)
             {
-                WriteNode(stream, SerializedNodeType.Object, nodeObject.Mode, nodeObject);
+                WriteNode(SerializedNodeType.Object, nodeObject.Mode, nodeObject);
             }
 
             // COLLECTION
             else if (nodeObject is SerializationCollection)
             {
-                WriteNode(stream, SerializedNodeType.Collection, nodeObject.Mode, nodeObject);
+                WriteNode(SerializedNodeType.Collection, nodeObject.Mode, nodeObject);
             }
             else
                 throw new Exception("Invalid SerializationObjectBase PropertySerializer.SerializeNodeObject");
         }
 
-        private void WriteNode(Stream stream,
-                               SerializedNodeType type,
+        private void WriteNode(SerializedNodeType type,
                                SerializationMode mode,
                                SerializationObjectBase nodeObject)
         {
@@ -255,24 +247,20 @@ namespace Rogue.NET.Common.Serialization.Component
             //                                   Child Count,
             //                                   Child Hash Type Code[] ] (loop) Children (Recruse Sub-graphs)
 
-            var manifest = new SerializedNodeManifest();
+            // var manifest = new SerializedNodeManifest();
 
             var objectInfo = nodeObject.ObjectInfo;
             var objectType = nodeObject.ObjectInfo.Type;
 
-            Write(stream, type);
-            Write(stream, mode);
-            Write(stream, objectType.GetHashCode());
+            _writer.Write<SerializedNodeType>(type);
+            _writer.Write<SerializationMode>(mode);
+            _writer.Write<int>(objectType.GetHashCode());
 
-            // Write manifest
-            manifest.Assembly = objectType.DeclaringAssembly;
-            manifest.GenericArgumentTypes = objectType.DeclaringGenericArguments.Transform(hashedType => hashedType.ToString());
-            manifest.IsGeneric = objectType.DeclaringIsGeneric;
-            manifest.Mode = mode;
-            manifest.Node = type;
-            manifest.NodeTypeHashCode = objectType.GetHashCode();
-            manifest.Type = objectType.ToString();
-            manifest.ObjectId = objectInfo.Id;
+            //// Write manifest
+            //manifest.Mode = mode;
+            //manifest.Node = type;
+            //manifest.Type = objectType.ToString();
+            //manifest.ObjectId = objectInfo.Id;
 
             switch (type)
             {
@@ -281,89 +269,36 @@ namespace Rogue.NET.Common.Serialization.Component
                     break;
 
                 case SerializedNodeType.Primitive:
-                    Write(stream, objectInfo.GetObject(), objectType.GetImplementingType());
+                    _writer.Write(objectInfo.GetObject(), objectType.GetImplementingType());
                     break;
 
                 case SerializedNodeType.Value:
                 case SerializedNodeType.Object:
                 case SerializedNodeType.Reference:
-                    Write(stream, objectInfo.Id);
+                    _writer.Write<int>(objectInfo.Id);
                     break;
 
                 case SerializedNodeType.Collection:
 
                     var collection = (nodeObject as SerializationCollection);
 
-                    Write(stream, objectInfo.Id);
-                    Write(stream, collection.InterfaceType);
-                    Write(stream, collection.Count);
+                    _writer.Write<int>(objectInfo.Id);
+                    _writer.Write<CollectionInterfaceType>(collection.InterfaceType);
+                    _writer.Write<int>(collection.Count);
 
                     // ELEMENT HASH TYPES
-                    foreach (var elementType in collection.ResolvedElementTypes)
-                        Write(stream, elementType.GetHashCode());
+                    _writer.Write<int[]>(collection.ResolvedElementTypeHashCodes);
 
                     // Write manifest
-                    manifest.CollectionCount = (nodeObject as SerializationCollection).Count;
-                    manifest.CollectionType = (nodeObject as SerializationCollection).InterfaceType;
+                    //manifest.CollectionCount = (nodeObject as SerializationCollection).Count;
+                    //manifest.CollectionType = (nodeObject as SerializationCollection).InterfaceType;
                     break;
                 default:
                     throw new Exception("Unhandled SerializedNodeType PropertySerializer.cs");
             }
 
             // STORE MANIFEST OBJECT
-            _outputManifest.Add(manifest);
-        }
-
-        private void Write(Stream stream, object theObject, Type theObjectType)
-        {
-            var formatter = SelectFormatter(theObjectType);
-
-            formatter.Write(stream, theObject);
-        }
-
-        private void Write<T>(Stream stream, T theObject)
-        {
-            var formatter = SelectFormatter(typeof(T));
-
-            formatter.Write(stream, theObject);
-        }
-
-        private IBaseFormatter SelectFormatter(Type type)
-        {
-            if (!_primitiveFormatters.ContainsKey(type))
-                _primitiveFormatters.Add(type, CreateFormatter(type));
-
-            return _primitiveFormatters[type];
-        }
-
-        private IBaseFormatter CreateFormatter(Type type)
-        {
-            if (type == typeof(bool))
-                return new BooleanFormatter();
-
-            else if (type == typeof(byte))
-                return new ByteFormatter();
-
-            else if (type == typeof(DateTime))
-                return new DateTimeFormatter();
-
-            else if (type == typeof(double))
-                return new DoubleFormatter();
-
-            else if (type == typeof(uint))
-                return new UnsignedIntegerFormatter();
-
-            else if (type == typeof(int))
-                return new IntegerFormatter();
-
-            else if (type == typeof(string))
-                return new StringFormatter();
-
-            else if (type.IsEnum)
-                return new EnumFormatter(type);
-
-            else
-                throw new Exception("Unhandled type:  PropertySerializer.CreateFormatter: " + type.FullName);
+            //_outputManifest.Add(manifest);
         }
     }
 }

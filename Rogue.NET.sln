@@ -13,10 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Scenario", "Rogue
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Core", "Rogue.NET.Core\Rogue.NET.Core.csproj", "{3E574589-233F-4B39-B93C-445E6F44A736}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.UnitTest", "Rogue.NET.UnitTest\Rogue.NET.UnitTest.csproj", "{59B9DB4D-2667-414C-AF34-81E1ECF8748B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rogue.NET.UnitTest", "Rogue.NET.UnitTest\Rogue.NET.UnitTest.csproj", "{59B9DB4D-2667-414C-AF34-81E1ECF8748B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Configuration MSFT|Any CPU = Debug Configuration MSFT|Any CPU
+		Debug Configuration MSFT|Mixed Platforms = Debug Configuration MSFT|Mixed Platforms
+		Debug Configuration MSFT|x86 = Debug Configuration MSFT|x86
 		Debug Minimum Content|Any CPU = Debug Minimum Content|Any CPU
 		Debug Minimum Content|Mixed Platforms = Debug Minimum Content|Mixed Platforms
 		Debug Minimum Content|x86 = Debug Minimum Content|x86
@@ -31,6 +34,12 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Configuration MSFT|Any CPU.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Configuration MSFT|Any CPU.Build.0 = Debug Configuration MSFT|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Configuration MSFT|Mixed Platforms.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Configuration MSFT|Mixed Platforms.Build.0 = Debug Configuration MSFT|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Configuration MSFT|x86.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Configuration MSFT|x86.Build.0 = Debug Configuration MSFT|Any CPU
 		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Minimum Content|Any CPU.ActiveCfg = Debug Minimum Content|Any CPU
 		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Minimum Content|Any CPU.Build.0 = Debug Minimum Content|Any CPU
 		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug Minimum Content|Mixed Platforms.ActiveCfg = Debug Minimum Content|Any CPU
@@ -53,6 +62,12 @@ Global
 		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Release|x86.ActiveCfg = Release|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Configuration MSFT|Any CPU.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Configuration MSFT|Any CPU.Build.0 = Debug Configuration MSFT|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Configuration MSFT|Mixed Platforms.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Configuration MSFT|Mixed Platforms.Build.0 = Debug Configuration MSFT|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Configuration MSFT|x86.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Configuration MSFT|x86.Build.0 = Debug Configuration MSFT|Any CPU
 		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Minimum Content|Any CPU.ActiveCfg = Debug Minimum Content|Any CPU
 		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Minimum Content|Any CPU.Build.0 = Debug Minimum Content|Any CPU
 		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug Minimum Content|Mixed Platforms.ActiveCfg = Debug Minimum Content|Any CPU
@@ -76,6 +91,12 @@ Global
 		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Release|x86.ActiveCfg = Release|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Configuration MSFT|Any CPU.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Configuration MSFT|Any CPU.Build.0 = Debug Configuration MSFT|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Configuration MSFT|Mixed Platforms.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Configuration MSFT|Mixed Platforms.Build.0 = Debug Configuration MSFT|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Configuration MSFT|x86.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Configuration MSFT|x86.Build.0 = Debug Configuration MSFT|Any CPU
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Minimum Content|Any CPU.ActiveCfg = Debug Minimum Content|Any CPU
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Minimum Content|Any CPU.Build.0 = Debug Minimum Content|Any CPU
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug Minimum Content|Mixed Platforms.ActiveCfg = Debug Minimum Content|Any CPU
@@ -98,6 +119,12 @@ Global
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|x86.ActiveCfg = Release|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Configuration MSFT|Any CPU.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Configuration MSFT|Any CPU.Build.0 = Debug Configuration MSFT|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Configuration MSFT|Mixed Platforms.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Configuration MSFT|Mixed Platforms.Build.0 = Debug Configuration MSFT|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Configuration MSFT|x86.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Configuration MSFT|x86.Build.0 = Debug Configuration MSFT|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Minimum Content|Any CPU.ActiveCfg = Debug Minimum Content|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Minimum Content|Any CPU.Build.0 = Debug Minimum Content|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug Minimum Content|Mixed Platforms.ActiveCfg = Debug Minimum Content|Any CPU
@@ -120,6 +147,12 @@ Global
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|x86.ActiveCfg = Release|Any CPU
+		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Configuration MSFT|Any CPU.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Configuration MSFT|Any CPU.Build.0 = Debug Configuration MSFT|Any CPU
+		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Configuration MSFT|Mixed Platforms.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Configuration MSFT|Mixed Platforms.Build.0 = Debug Configuration MSFT|Any CPU
+		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Configuration MSFT|x86.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Configuration MSFT|x86.Build.0 = Debug Configuration MSFT|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Minimum Content|Any CPU.ActiveCfg = Debug Minimum Content|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Minimum Content|Any CPU.Build.0 = Debug Minimum Content|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Debug Minimum Content|Mixed Platforms.ActiveCfg = Debug Minimum Content|Any CPU
@@ -144,6 +177,12 @@ Global
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|x86.ActiveCfg = Release|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|x86.Build.0 = Release|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Configuration MSFT|Any CPU.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Configuration MSFT|Any CPU.Build.0 = Debug Configuration MSFT|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Configuration MSFT|Mixed Platforms.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Configuration MSFT|Mixed Platforms.Build.0 = Debug Configuration MSFT|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Configuration MSFT|x86.ActiveCfg = Debug Configuration MSFT|Any CPU
+		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Configuration MSFT|x86.Build.0 = Debug Configuration MSFT|Any CPU
 		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|Any CPU.ActiveCfg = Debug|Any CPU
 		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|Any CPU.Build.0 = Debug|Any CPU
 		{59B9DB4D-2667-414C-AF34-81E1ECF8748B}.Debug Minimum Content|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -173,8 +212,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {9AAB88A4-A649-4401-988C-B3E0EA12D13D}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True

@@ -52,6 +52,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Configuration MSFT|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug Configuration MSFT\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AgileObjects.AgileMapper, Version=1.8.0.0, Culture=neutral, PublicKeyToken=40b730fcfbe52fee, processorArchitecture=MSIL">
       <HintPath>..\packages\AgileObjects.AgileMapper.1.8.0\lib\net40\AgileObjects.AgileMapper.dll</HintPath>
@@ -261,17 +270,21 @@
     <Compile Include="Serialization\Component\Interface\IPropertySerializer.cs" />
     <Compile Include="Serialization\Component\ObjectInfoResolver.cs" />
     <Compile Include="Serialization\Component\PropertyWriterFactory.cs" />
-    <Compile Include="Serialization\Formatter\BaseFormatter.cs" />
-    <Compile Include="Serialization\Formatter\BooleanFormatter.cs" />
-    <Compile Include="Serialization\Formatter\ByteFormatter.cs" />
-    <Compile Include="Serialization\Formatter\DateTimeFormatter.cs" />
-    <Compile Include="Serialization\Formatter\DoubleFormatter.cs" />
-    <Compile Include="Serialization\Formatter\EnumFormatter.cs" />
-    <Compile Include="Serialization\Formatter\FormatterFactory.cs" />
-    <Compile Include="Serialization\Formatter\HashedTypeFormatter.cs" />
-    <Compile Include="Serialization\Formatter\IntegerFormatter.cs" />
-    <Compile Include="Serialization\Formatter\StringFormatter.cs" />
-    <Compile Include="Serialization\Formatter\UnsignedIntegerFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\PrimitiveArray\IntegerArrayFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\BaseFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\BooleanFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\ByteFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\DateTimeFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\DoubleFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\EnumFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\FormatterFactory.cs" />
+    <Compile Include="Serialization\IO\Formatter\HashedTypeFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\IntegerFormatter.cs" />
+    <Compile Include="Serialization\IO\Interface\ISerializationStreamReader.cs" />
+    <Compile Include="Serialization\IO\Interface\ISerializationStreamWriter.cs" />
+    <Compile Include="Serialization\IO\SerializationStream.cs" />
+    <Compile Include="Serialization\IO\Formatter\StringFormatter.cs" />
+    <Compile Include="Serialization\IO\Formatter\UnsignedIntegerFormatter.cs" />
     <Compile Include="Serialization\Interface\IBaseFormatter.cs" />
     <Compile Include="Serialization\Component\Interface\IPropertyReader.cs" />
     <Compile Include="Serialization\Component\Interface\IPropertyWriter.cs" />
@@ -279,6 +292,7 @@
     <Compile Include="Serialization\Interface\ISerializationPlan.cs" />
     <Compile Include="Serialization\Manifest\SerializedNodeDifference.cs" />
     <Compile Include="Serialization\Manifest\SerializedNodeManifest.cs" />
+    <Compile Include="Serialization\Manifest\SerializedStreamData.cs" />
     <Compile Include="Serialization\Manifest\SerializedTypeManifest.cs" />
     <Compile Include="Serialization\Planning\DeserializationCollectionNode.cs" />
     <Compile Include="Serialization\Planning\DeserializationNode.cs" />

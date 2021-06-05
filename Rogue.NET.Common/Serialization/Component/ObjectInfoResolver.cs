@@ -8,14 +8,14 @@ namespace Rogue.NET.Common.Serialization.Component
     internal class ObjectInfoResolver
     {
         // TRACK HASHED TYPES
-        SimpleDictionary<HashedType, HashedType> _typeDict;
+        SimpleDictionary<int, HashedType> _typeDict;
 
         internal ObjectInfoResolver()
         {
-            _typeDict = new SimpleDictionary<HashedType, HashedType>();
+            _typeDict = new SimpleDictionary<int, HashedType>();
         }
 
-        internal SimpleDictionary<HashedType, HashedType> GetResolvedTypes()
+        internal SimpleDictionary<int, HashedType> GetResolvedTypes()
         {
             return _typeDict;
         }
@@ -84,8 +84,8 @@ namespace Rogue.NET.Common.Serialization.Component
 
         private ObjectInfo TrackAndReturn(ObjectInfo objectInfo)
         {
-            if (!_typeDict.ContainsKey(objectInfo.Type))
-                _typeDict.Add(objectInfo.Type, objectInfo.Type);
+            if (!_typeDict.ContainsKey(objectInfo.Type.GetHashCode()))
+                _typeDict.Add(objectInfo.Type.GetHashCode(), objectInfo.Type);
 
             return objectInfo;
         }

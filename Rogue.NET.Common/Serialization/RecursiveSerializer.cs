@@ -1,6 +1,7 @@
 ﻿using KellermanSoftware.CompareNetObjects;
 
 using Rogue.NET.Common.Serialization.Component;
+using Rogue.NET.Common.Serialization.IO;
 using Rogue.NET.Common.Serialization.Manifest;
 
 using System;
@@ -78,19 +79,21 @@ namespace Rogue.NET.Common.Serialization
 
         public void Serialize(Stream stream, T theObject)
         {
-            _serializer.Serialize(stream, theObject);
+            var serializationStream = new SerializationStream(stream);
+
+            _serializer.Serialize(serializationStream, theObject);
         }
 
         public T Deserialize(Stream stream)
         {
-            return _deserializer.Deserialize<T>(stream);
+            var serializationStream = new SerializationStream(stream);
+
+            return _deserializer.Deserialize<T>(serializationStream);
         }
 
         public SerializationManifest CreateManifest()
         {
-            return new SerializationManifest(_serializer.GetTypeTable(), 
-                                             _serializer.GetManifest(), 
-                                             _deserializer.GetTypeTable(), 
+            return new SerializationManifest(_serializer.GetManifest(), 
                                              _deserializer.GetManifest());
         }
 
@@ -107,7 +110,7 @@ namespace Rogue.NET.Common.Serialization
                 if (index >= serializerOutput.Count)
                     differences.Add(new SerializedNodeDifference()
                     {
-                        SerializedNode = null,
+                        SerializedNode = SerializedNodeManifest.Empty,
                         DeserializedNode = deserializerOutput[index]
                     });
 
@@ -115,7 +118,7 @@ namespace Rogue.NET.Common.Serialization
                     differences.Add(new SerializedNodeDifference()
                     {
                         SerializedNode = serializerOutput[index],
-                        DeserializedNode = null
+                        DeserializedNode = SerializedNodeManifest.Empty
                     });
 
                 else if (!compareLogic.Compare(serializerOutput[index], deserializerOutput[index]).AreEqual)

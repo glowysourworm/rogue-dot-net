@@ -129,21 +129,21 @@ namespace Rogue.NET.Common.Serialization.Component
                     throw new Exception("Invalid IList argument for PropertySerializer: " + info.Type.DeclaringType);
 
                 var list = info.GetObject() as IList;
-                var elementTypes = new List<HashedType>(list.Count);
+                var elementTypeHashCodes = new int[list.Count];
                 var elementDeclaringType = new HashedType(argument);
 
                 // RESOLVE TYPES FOR ENTIRE COLLECTION
                 try
                 {
-                    foreach (var item in list)
-                        elementTypes.Add(_resolver.Resolve(item, elementDeclaringType).Type);
+                    for (int index = 0; index < list.Count; index++)
+                        elementTypeHashCodes[index] = _resolver.Resolve(list[index], elementDeclaringType).Type.GetHashCode();
                 }
                 catch (Exception innerException)
                 {
                     throw new RecursiveSerializerException(info.Type, "Error resolving element type for collection: " + argument.Name, innerException);
                 }
 
-                return new SerializationCollection(info, memberInfo, list, elementTypes, list.Count, CollectionInterfaceType.IList, new HashedType(argument));
+                return new SerializationCollection(info, memberInfo, list, elementTypeHashCodes, list.Count, CollectionInterfaceType.IList, new HashedType(argument));
             }
             else
                 throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>: " + info.Type.DeclaringType);

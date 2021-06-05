@@ -2,6 +2,7 @@
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Formatter;
 using Rogue.NET.Common.Serialization.Interface;
+using Rogue.NET.Common.Serialization.IO.Interface;
 using Rogue.NET.Common.Serialization.Manifest;
 using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
@@ -16,12 +17,6 @@ namespace Rogue.NET.Common.Serialization.Component
 {
     internal class PropertyDeserializer
     {
-        // Collection of formatters for serialization
-        SimpleDictionary<Type, IBaseFormatter> _primitiveFormatters;
-
-        // Created for loading hashed TYPE TABLE
-        HashedTypeFormatter _hashedTypeFormatter;
-
         // Collection of all types from loaded ASSEMBLIES with their EXPECTED HASH CODES
         SimpleDictionary<int, HashedType> _loadedTypes;
 
@@ -35,14 +30,15 @@ namespace Rogue.NET.Common.Serialization.Component
         DeserializationObjectFactory _factory;
         DeserializationResolver _resolver;
 
+        // PRIMARY INPUT STREAM
+        ISerializationStreamReader _reader;
+
         internal PropertyDeserializer()
         {
-            _primitiveFormatters = new SimpleDictionary<Type, IBaseFormatter>();
             _loadedTypes = new SimpleDictionary<int, HashedType>();
             _specifiedPropertyDict = new SimpleDictionary<int, PropertySpecification>();
             _factory = new DeserializationObjectFactory();
             _resolver = new DeserializationResolver();
-            _hashedTypeFormatter = new HashedTypeFormatter();
             _outputManifest = new List<SerializedNodeManifest>();
         }
 
@@ -61,8 +57,10 @@ namespace Rogue.NET.Common.Serialization.Component
             return _outputManifest;
         }
 
-        internal T Deserialize<T>(Stream stream)
+        internal T Deserialize<T>(ISerializationStreamReader reader)
         {
+            _reader = reader;
+
             // Procedure
             //
             // 1) Read TYPE TABLE
@@ -75,27 +73,27 @@ namespace Rogue.NET.Common.Serialization.Component
             //
 
             // Read TYPE TABLE
-            var typeTableCount = Read<int>(stream);
+            var typeTableCount = _reader.Read<int>();
 
             for (int index = 0; index < typeTableCount; index++)
             {
                 // READ HASHED TYPE (Recurses)
-                var hashedType = _hashedTypeFormatter.Read(stream);
+                var hashedType = _reader.Read<HashedType>();
 
                 // LOAD TYPE TABLE - UNIQUE HASH CODE
                 _loadedTypes.Add(hashedType.GetHashCode(), hashedType);
             }
 
             // PROPERTY TABLE
-            var propertyTableCount = Read<int>(stream);
+            var propertyTableCount = _reader.Read<int>();
 
             for (int index = 0; index < propertyTableCount; index++)
             {
                 // PROPERTY SPECIFICATION { Count, Hashed Type, PropertyDefinition[] }
-                var propertyDefinitionCount = Read<int>(stream);
+                var propertyDefinitionCount = _reader.Read<int>();
 
                 // PROPERTY SPECIFICATION TYPE
-                var typeHashCode = Read<int>(stream);
+                var typeHashCode = _reader.Read<int>();
 
                 // VALIDATE HASHED TYPE
                 if (!_loadedTypes.ContainsKey(typeHashCode))
@@ -111,13 +109,13 @@ namespace Rogue.NET.Common.Serialization.Component
                 for (int propertyIndex = 0; propertyIndex < propertyDefinitionCount; propertyIndex++)
                 {
                     // PROPERTY NAME
-                    var propertyName = Read<string>(stream);
+                    var propertyName = _reader.Read<string>();
 
                     // PROPERTY TYPE
-                    var propertyType = _hashedTypeFormatter.Read(stream);
+                    var propertyType = _reader.Read<HashedType>();
 
                     // IS USER DEFINED -> NO REFLECTION SUPPORT!
-                    var isUserDefined = Read<bool>(stream);
+                    var isUserDefined = _reader.Read<bool>();
 
                     if (isUserDefined)
                         properties.Add(new PropertyDefinition(null)
@@ -157,12 +155,12 @@ namespace Rogue.NET.Common.Serialization.Component
                 var specification = new PropertySpecification(objectType, properties);
 
                 // OBJECT REFERENCES
-                var objectIdCount = Read<int>(stream);
+                var objectIdCount = _reader.Read<int>();
 
                 for (int objectIndex = 0; objectIndex < objectIdCount; objectIndex++)
                 {
                     // OBJECT ID
-                    var objectId = Read<int>(stream);
+                    var objectId = _reader.Read<int>();
 
                     if (_specifiedPropertyDict.ContainsKey(objectId))
                         throw new Exception("Duplicate OBJECT ID found in property specification table");
@@ -172,7 +170,7 @@ namespace Rogue.NET.Common.Serialization.Component
             }
 
             // Read root
-            var wrappedRoot = ReadNext(stream, new HashedType(typeof(T)));
+            var wrappedRoot = ReadNext(new HashedType(typeof(T)));
 
             if (wrappedRoot.Reference.Type.GetImplementingType() != typeof(T))
                 throw new Exception("File type doesn't match the type of object being Deserialized:  " + wrappedRoot.Reference.Type.DeclaringType);
@@ -181,10 +179,10 @@ namespace Rogue.NET.Common.Serialization.Component
             var node = CreateNode(wrappedRoot, PropertyDefinition.Empty);
 
             // Read stream recursively
-            ReadRecurse(stream, node);
+            ReadRecurse(node);
 
             // Stitch together object references recursively
-            var resolvedRoot = _resolver.Resolve(node);
+            var resolvedRoot = _resolver.Resolve(node, _loadedTypes);
 
             // And -> We've -> Resolved() -> TheObject()! :)
             return (T)resolvedRoot.NodeObject.Resolve().GetObject();
@@ -220,7 +218,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 throw new Exception("Unhandled DeserializationObjectBase type:  " + wrappedObject.GetType().ToString());
         }
 
-        private void ReadRecurse(Stream stream, DeserializationNodeBase node)
+        private void ReadRecurse(DeserializationNodeBase node)
         {
             // FROM SERIALIZER:
             //
@@ -240,7 +238,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 foreach (var definition in specification.Definitions)
                 {
                     // READ NEXT
-                    var wrappedObject = ReadNext(stream, definition.PropertyType);
+                    var wrappedObject = ReadNext(definition.PropertyType);
 
                     // Create node for the property
                     var subNode = CreateNode(wrappedObject, definition);
@@ -249,7 +247,7 @@ namespace Rogue.NET.Common.Serialization.Component
                     collectionNode.SubNodes.Add(subNode);
 
                     // RECURSE
-                    ReadRecurse(stream, subNode);
+                    ReadRecurse(subNode);
                 }
 
                 // Iterate expected ELEMENT TYPES
@@ -258,10 +256,16 @@ namespace Rogue.NET.Common.Serialization.Component
                 for (int index = 0; index < collection.Count; index++)
                 {
                     // Expected type serialized with the stream
-                    var expectedChildType = collection.ElementTypes[index];
+                    var expectedChildTypeHashCode = collection.GetElementTypeHashCode(index);
+
+                    // RESOLVE ELEMENT TYPE
+                    if (!_loadedTypes.ContainsKey(expectedChildTypeHashCode))
+                        throw new Exception("Missing element HashedType for collection: " + collection.Reference.Type.ToString());
+
+                    var expectedChildType = _loadedTypes[expectedChildTypeHashCode];
 
                     // READ NEXT
-                    var wrappedObject = ReadNext(stream, expectedChildType);
+                    var wrappedObject = ReadNext(expectedChildType);
 
                     // Create child node
                     var childNode = CreateNode(wrappedObject, PropertyDefinition.CollectionElement);
@@ -270,7 +274,7 @@ namespace Rogue.NET.Common.Serialization.Component
                     collectionNode.Children.Add(childNode);
 
                     // RECURSE
-                    ReadRecurse(stream, childNode);
+                    ReadRecurse(childNode);
                 }
             }
             // NODE
@@ -300,7 +304,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 foreach (var definition in specification.Definitions)
                 {
                     // READ NEXT
-                    var wrappedSubObject = ReadNext(stream, definition.PropertyType);
+                    var wrappedSubObject = ReadNext(definition.PropertyType);
 
                     // Create sub-node
                     var subNode = CreateNode(wrappedSubObject, definition);
@@ -309,14 +313,14 @@ namespace Rogue.NET.Common.Serialization.Component
                     nextNode.SubNodes.Add(subNode);
 
                     // RECURSE
-                    ReadRecurse(stream, subNode);
+                    ReadRecurse(subNode);
                 }
             }
             else
                 throw new Exception("Unhandled DeserializationNodeBase type:  PropertyDeserializer.DeserializeRecurse");
         }
 
-        private DeserializationObjectBase ReadNext(Stream stream, HashedType expectedType)
+        private DeserializationObjectBase ReadNext(HashedType expectedType)
         {
             // FROM SERIALIZER
             //
@@ -331,24 +335,20 @@ namespace Rogue.NET.Common.Serialization.Component
             //                                   Child Count,
             //                                   Child Hash Type Code[] ] (loop) Children (Recruse Sub-graphs)
 
-            var manifest = new SerializedNodeManifest();
+            //var manifest = new SerializedNodeManifest();
 
-            var nextNode = Read<SerializedNodeType>(stream);
-            var nextMode = Read<SerializationMode>(stream);
-            var nextTypeHash = Read<int>(stream);
+            var nextNode = _reader.Read<SerializedNodeType>();
+            var nextMode = _reader.Read<SerializationMode>();
+            var nextTypeHash = _reader.Read<int>();
 
             // VAILDATE HASHED TYPE
             if (nextTypeHash != expectedType.GetHashCode())
                 throw new Exception("Invalid hash code read from stream for EXPECTED type:  " + expectedType.ToString());
 
-            // Write manifest
-            manifest.Assembly = expectedType.DeclaringAssembly;
-            manifest.GenericArgumentTypes = expectedType.DeclaringGenericArguments.Transform(hashedType => hashedType.ToString());
-            manifest.IsGeneric = expectedType.DeclaringIsGeneric;
-            manifest.Mode = nextMode;
-            manifest.Node = nextNode;
-            manifest.NodeTypeHashCode = nextTypeHash;
-            manifest.Type = expectedType.ToString();
+            //// Write manifest
+            //manifest.Mode = nextMode;
+            //manifest.Node = nextNode;
+            //manifest.Type = expectedType.ToString();
 
             DeserializationObjectBase result = null;
 
@@ -363,7 +363,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 case SerializedNodeType.Primitive:
                     {
                         // READ PRIMITIVE VALUE FROM STREAM
-                        var primitive = Read(stream, expectedType.GetImplementingType());
+                        var primitive = _reader.Read(expectedType.GetImplementingType());
 
                         result = _factory.CreatePrimitive(new ObjectInfo(primitive, expectedType), nextMode);
 
@@ -372,7 +372,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 case SerializedNodeType.Value:
                     {
                         // READ OBJECT ID FROM STREAM
-                        var objectId = Read<int>(stream);
+                        var objectId = _reader.Read<int>();
 
                         // Create reference
                         var reference = new ObjectReference(expectedType, objectId);
@@ -387,7 +387,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 case SerializedNodeType.Object:
                     {
                         // READ OBJECT ID FROM STREAM
-                        var objectId = Read<int>(stream);
+                        var objectId = _reader.Read<int>();
 
                         // Create reference
                         var reference = new ObjectReference(expectedType, objectId);
@@ -403,7 +403,7 @@ namespace Rogue.NET.Common.Serialization.Component
                 case SerializedNodeType.Reference:
                     {
                         // READ OBJECT ID FROM STREAM
-                        var objectId = Read<int>(stream);
+                        var objectId = _reader.Read<int>();
 
                         result = _factory.CreateReference(new ObjectReference(expectedType, objectId), nextMode);
 
@@ -412,27 +412,16 @@ namespace Rogue.NET.Common.Serialization.Component
                 case SerializedNodeType.Collection:
                     {
                         // READ OBJECT ID FROM STREAM
-                        var objectId = Read<int>(stream);
+                        var objectId = _reader.Read<int>();
 
                         // READ INTERFACE TYPE
-                        var interfaceType = Read<CollectionInterfaceType>(stream);
+                        var interfaceType = _reader.Read<CollectionInterfaceType>();
 
                         // READ CHILD COUNT
-                        var childCount = Read<int>(stream);
+                        var childCount = _reader.Read<int>();
 
                         // ELEMENT HASH TYPES
-                        var elementTypes = new List<HashedType>(childCount);
-
-                        for (int index = 0; index < childCount; index++)
-                        {
-                            var elementTypeCode = Read<int>(stream);
-
-                            // VAILDATE HASHED TYPE
-                            if (!_loadedTypes.ContainsKey(elementTypeCode))
-                                throw new Exception("Invalid hash code read from stream for collection type:  " + expectedType.ToString());
-
-                            elementTypes.Add(_loadedTypes[elementTypeCode]);
-                        }
+                        var elementTypeHashCodes = _reader.Read<int[]>();
 
                         // Create reference
                         var reference = new ObjectReference(expectedType, objectId);
@@ -440,11 +429,11 @@ namespace Rogue.NET.Common.Serialization.Component
                         // GET PROPERTY SPECIFICATION
                         var specification = _specifiedPropertyDict[objectId];
 
-                        result = _factory.CreateCollection(reference, interfaceType, childCount, nextMode, specification, elementTypes);
+                        result = _factory.CreateCollection(reference, interfaceType, childCount, nextMode, specification, elementTypeHashCodes);
 
                         // Write manifest
-                        manifest.CollectionCount = childCount;
-                        manifest.CollectionType = interfaceType;
+                        //manifest.CollectionCount = childCount;
+                        //manifest.CollectionType = interfaceType;
 
                         break;
                     }
@@ -453,34 +442,12 @@ namespace Rogue.NET.Common.Serialization.Component
             }
 
             // Write manifest
-            manifest.ObjectId = result.Reference.ReferenceId;
+            //manifest.ObjectId = result.Reference.ReferenceId;
 
             // MANIFEST NODE READY!
-            _outputManifest.Add(manifest);
+            //_outputManifest.Add(manifest);
 
             return result;
-        }
-
-        private object Read(Stream stream, Type type)
-        {
-            var formatter = SelectFormatter(type);
-
-            return formatter.Read(stream);
-        }
-
-        private T Read<T>(Stream stream)
-        {
-            var formatter = SelectFormatter(typeof(T));
-
-            return (T)formatter.Read(stream);
-        }
-
-        private IBaseFormatter SelectFormatter(Type type)
-        {
-            if (!_primitiveFormatters.ContainsKey(type))
-                _primitiveFormatters.Add(type, FormatterFactory.CreatePrimitiveFormatter(type));
-
-            return _primitiveFormatters[type];
         }
     }
 }
