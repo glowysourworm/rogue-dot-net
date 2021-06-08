@@ -161,7 +161,10 @@ namespace Rogue.NET.UnitTest
 
         private SerializationManifest RunSerializer<T>(T theObject, out T theObjectResult)
         {
-            var serializer = new RecursiveSerializer<T>();
+            var serializer = new RecursiveSerializer<T>(new RecursiveSerializerConfiguration()
+            {
+                IgnoreRemovedProperties = false
+            });
 
             theObjectResult = default(T);
 

@@ -5,10 +5,16 @@ using System.Collections.Generic;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
-    internal class DeserializationReference : DeserializationObjectBase
+    internal class DeserializedReferenceNode : DeserializedNodeBase
     {
-        internal DeserializationReference(ObjectReference reference, RecursiveSerializerMemberInfo memberInfo) : base(reference, memberInfo)
+        /// <summary>
+        /// ID FROM SERIALIZATION PROCEDURE
+        /// </summary>
+        internal int ReferenceId { get; private set; }
+
+        internal DeserializedReferenceNode(PropertyDefinition definition, int referenceId, HashedType type) : base(definition, type, RecursiveSerializerMemberInfo.Empty)
         {
+            this.ReferenceId = referenceId;
         }
 
         internal override PropertySpecification GetPropertySpecification()
@@ -21,9 +27,20 @@ namespace Rogue.NET.Common.Serialization.Target
             throw new NotSupportedException("Trying to CONSTRUCT a referenced deserialized object - should not be recursing");
         }
 
-        protected override ObjectInfo ProvideResult()
+        protected override object ProvideResult()
         {
             throw new NotSupportedException("Trying to RESOLVE a referenced deserialized object - should be using the actual data reference");
+        }
+
+        public override bool Equals(object obj)
+        {
+            var node = obj as DeserializedReferenceNode;
+
+            return this.ReferenceId == node.ReferenceId;
+        }
+        public override int GetHashCode()
+        {
+            return this.ReferenceId;
         }
     }
 }

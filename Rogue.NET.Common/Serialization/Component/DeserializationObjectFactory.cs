@@ -4,7 +4,6 @@ using Rogue.NET.Common.Serialization.Target;
 using Rogue.NET.Common.Serialization.Utility;
 
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Rogue.NET.Common.Serialization.Component
 {
@@ -18,12 +17,12 @@ namespace Rogue.NET.Common.Serialization.Component
         {
         }
 
-        internal DeserializationObjectBase CreateCollection(ObjectReference reference,
-                                                            CollectionInterfaceType interfaceType,
-                                                            int childCount,
-                                                            SerializationMode mode,
-                                                            PropertySpecification specification,
-                                                            HashedType elementType)
+        internal DeserializedNodeBase CreateCollection(PropertyDefinition definingProperty, int referenceId, HashedType type,
+                                                       CollectionInterfaceType interfaceType,
+                                                       int childCount,
+                                                       SerializationMode mode,
+                                                       PropertySpecification specification,
+                                                       HashedType elementType)
         {
             // Procedure
             //
@@ -34,65 +33,57 @@ namespace Rogue.NET.Common.Serialization.Component
             //
 
             // Validate type and get members
-            var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
+            var memberInfo = RecursiveSerializerStore.GetMemberInfo(type, mode);
 
-            if (!reference.Type.GetImplementingType().IsGenericType)
-                throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>");
+            if (!type.GetImplementingType().IsGenericType)
+                throw new RecursiveSerializerException(type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>");
 
-            else if (reference.Type.GetImplementingType().HasInterface<IList>())
+            else if (type.GetImplementingType().HasInterface<IList>())
             {
-                var argument = reference.Type.GetImplementingType().GetGenericArguments()[0];
+                var argument = type.GetImplementingType().GetGenericArguments()[0];
 
                 if (argument == null)
-                    throw new RecursiveSerializerException(reference.Type, "Invalid IList argument for PropertySerializer");
+                    throw new RecursiveSerializerException(type, "Invalid IList argument for PropertySerializer");
 
                 // NOTE*** Element IMPLEMENTING type is not tracked. So, the declaring type should be equal to the implemeting type.
                 if (!argument.IsAssignableFrom(elementType.GetDeclaringType()))
                     throw new RecursiveSerializerException(elementType, "Invalid collection element type against referenced argument type");
 
-                return new DeserializationCollection(reference, memberInfo, specification, elementType, childCount, CollectionInterfaceType.IList);
+                return new DeserializedCollectionNode(definingProperty, type, referenceId, memberInfo, specification, elementType, childCount, CollectionInterfaceType.IList);
             }
             else
-                throw new RecursiveSerializerException(reference.Type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>");
+                throw new RecursiveSerializerException(type, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>");
         }
 
-        internal DeserializationObjectBase CreateNullReference(ObjectReference reference, SerializationMode mode)
+        internal DeserializedNodeBase CreateNullReference(PropertyDefinition definingProperty, HashedType type, SerializationMode mode)
         {
-            return new DeserializationNullReference(reference);
+            return new DeserializedNullLeafNode(definingProperty, type);
         }
 
-        internal DeserializationObjectBase CreateNullPrimitive(ObjectReference reference, SerializationMode mode)
+        internal DeserializedNodeBase CreateNullPrimitive(PropertyDefinition definingProperty, HashedType type, SerializationMode mode)
         {
-            return new DeserializationNullPrimitive(reference);
+            return new DeserializedNullLeafNode(definingProperty, type);
         }
 
-        internal DeserializationObjectBase CreatePrimitive(ObjectInfo info, SerializationMode mode)
+        internal DeserializedNodeBase CreatePrimitive(PropertyDefinition definingProperty, object theObject, HashedType type, SerializationMode mode)
         {
-            return new DeserializationPrimitive(info);
+            return new DeserializedLeafNode(definingProperty, type, theObject);
         }
 
-        internal DeserializationObjectBase CreateReference(ObjectReference reference, SerializationMode mode)
-        {
-            // Validate type and get members
-            var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
-
-            return new DeserializationReference(reference, memberInfo);
-        }
-
-        internal DeserializationObjectBase CreateValue(ObjectReference reference, SerializationMode mode, PropertySpecification specification)
+        internal DeserializedNodeBase CreateReference(PropertyDefinition definingProperty, int referenceId, HashedType type, SerializationMode mode)
         {
             // Validate type and get members
-            var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
+            // var memberInfo = RecursiveSerializerStore.GetMemberInfo(type, mode);
 
-            return new DeserializationValue(reference, memberInfo, specification);
+            return new DeserializedReferenceNode(definingProperty, referenceId, type);
         }
 
-        internal DeserializationObjectBase CreateObject(ObjectReference reference, SerializationMode mode, PropertySpecification specification)
+        internal DeserializedNodeBase CreateObject(PropertyDefinition definingProperty, int referenceId, HashedType type, SerializationMode mode, PropertySpecification specification)
         {
             // Validate type and get members
-            var memberInfo = RecursiveSerializerStore.GetMemberInfo(reference.Type, mode);
+            var memberInfo = RecursiveSerializerStore.GetMemberInfo(type, mode);
 
-            return new DeserializationObject(reference, memberInfo, specification);
+            return new DeserializedObjectNode(definingProperty, type, referenceId, memberInfo, specification);
         }
     }
 }

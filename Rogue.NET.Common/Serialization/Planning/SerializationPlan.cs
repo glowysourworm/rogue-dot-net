@@ -8,23 +8,23 @@ namespace Rogue.NET.Common.Serialization.Planning
 {
     internal class SerializationPlan : ISerializationPlan
     {
-        public SerializationNodeBase RootNode { get; private set; }
+        public SerializedNodeBase RootNode { get; private set; }
 
-        public SimpleDictionary<ObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; private set; }
+        public IEnumerable<SerializedObjectNode> ReferenceObjects { get; private set; }
 
         public SimpleDictionary<int, HashedType> ElementTypeDict { get; private set; }
 
         public IEnumerable<PropertySpecification> UniquePropertySpecifications { get; private set; }
 
-        public SimpleDictionary<PropertySpecification, List<SerializationObjectBase>> PropertySpecificationGroups { get; private set; }
+        public SimpleDictionary<PropertySpecification, List<SerializedNodeBase>> PropertySpecificationGroups { get; private set; }
 
-        public SerializationPlan(SimpleDictionary<ObjectInfo, SerializationObjectBase> referenceDict,
+        public SerializationPlan(IEnumerable<SerializedObjectNode> referenceObjects,
                                  SimpleDictionary<int, HashedType> elementTypeDict,
                                  IEnumerable<PropertySpecification> propertySpecifications,
-                                 SimpleDictionary<PropertySpecification, List<SerializationObjectBase>> propertySpecificationGroups,
-                                 SerializationNodeBase rootNode)
+                                 SimpleDictionary<PropertySpecification, List<SerializedNodeBase>> propertySpecificationGroups,
+                                 SerializedNodeBase rootNode)
         {
-            this.UniqueReferenceDict = referenceDict;
+            this.ReferenceObjects = referenceObjects;
             this.UniquePropertySpecifications = propertySpecifications;
             this.ElementTypeDict = elementTypeDict;
             this.PropertySpecificationGroups = propertySpecificationGroups;

@@ -20,11 +20,15 @@ namespace Rogue.NET.Common.Serialization
         // Keep track of property types to avoid extra reflection calls
         static SimpleDictionary<HashedType, PropertySpecification> _propertyDict;
 
+        // Keep track of constructors and get methods
+        static SimpleDictionary<HashedType, RecursiveSerializerMemberInfo> _memberInfoDict;
+
         internal static readonly string GetMethodName = "GetProperties";
 
         static RecursiveSerializerStore()
         {
             _propertyDict = new SimpleDictionary<HashedType, PropertySpecification>();
+            _memberInfoDict = new SimpleDictionary<HashedType, RecursiveSerializerMemberInfo>();
         }
 
         /// <summary>
@@ -33,24 +37,52 @@ namespace Rogue.NET.Common.Serialization
         /// </summary>
         internal static RecursiveSerializerMemberInfo GetMemberInfo(HashedType hashedType)
         {
-            var memberInfo = CreateBaseMemberInfo(hashedType);
+            // Fetch + Validate the serialization mode
+            var serializationMode = GetMemberInfoMode(hashedType);
 
-            return ValidateMemberInfo(hashedType, memberInfo.ParameterlessConstructor, memberInfo.SpecifiedConstructor, memberInfo.GetMethod, memberInfo.Mode);
+            return CreateBaseMemberInfo(hashedType, serializationMode);
         }
 
         internal static RecursiveSerializerMemberInfo GetMemberInfo(HashedType hashedType, SerializationMode mode)
         {
-            var memberInfo = CreateBaseMemberInfo(hashedType);
-
-            return ValidateMemberInfo(hashedType, memberInfo.ParameterlessConstructor, memberInfo.SpecifiedConstructor, memberInfo.GetMethod, mode);
+            return CreateBaseMemberInfo(hashedType, mode);
         }
 
-        private static RecursiveSerializerMemberInfo ValidateMemberInfo(HashedType hashedType,
-                                                                        ConstructorInfo parameterlessCtor,
-                                                                        ConstructorInfo specifiedCtor,
-                                                                        MethodInfo getMethod,
-                                                                        SerializationMode mode)
+        private static SerializationMode GetMemberInfoMode(HashedType hashedType)
         {
+            if (_memberInfoDict.ContainsKey(hashedType))
+                return _memberInfoDict[hashedType].Mode;
+
+            var hasInterfaceImplementing = hashedType.GetImplementingType().HasInterface<IRecursiveSerializable>();
+            var hasInterfaceDeclaring = hashedType.GetDeclaringType().HasInterface<IRecursiveSerializable>();
+            var hasInterface = hasInterfaceDeclaring && hasInterfaceImplementing;
+
+            if (hasInterfaceDeclaring && !hasInterfaceImplementing)
+                throw new RecursiveSerializerException(hashedType, "Implementing type does not implement IRecursiveSerializable");
+
+            if (!hasInterfaceDeclaring && hasInterfaceImplementing)
+                throw new RecursiveSerializerException(hashedType, "Declaring type does not implement IRecursiveSerializable");
+
+            if (hasInterface)
+                return SerializationMode.Specified;
+
+            else
+                return SerializationMode.Default;
+        }
+
+        private static RecursiveSerializerMemberInfo CreateBaseMemberInfo(HashedType hashedType, SerializationMode mode)
+        {
+            // CAN ONLY UTILIZE IF MODES MATCH
+            if (_memberInfoDict.ContainsKey(hashedType))
+            {
+                if (_memberInfoDict[hashedType].Mode != mode)
+                    throw new RecursiveSerializerException(hashedType, "Serialization mode for type doesn't match the code definition");
+            }
+
+            var parameterlessCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { });
+            var specifiedModeCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { typeof(IPropertyReader) });
+            var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(IPropertyWriter) });
+
             var hasInterfaceImplementing = hashedType.GetImplementingType().HasInterface<IRecursiveSerializable>();
             var hasInterfaceDeclaring = hashedType.GetDeclaringType().HasInterface<IRecursiveSerializable>();
             var hasInterface = hasInterfaceDeclaring && hasInterfaceImplementing;
@@ -67,24 +99,15 @@ namespace Rogue.NET.Common.Serialization
                     throw new RecursiveSerializerException(hashedType, "Improper use of IRecursiveSerializable:  Both declaring and implementing types must be marked IRecursiveSerializable:  " + hashedType.ToString());
             }
 
-            // Refine the member info parameters
-            return new RecursiveSerializerMemberInfo(parameterlessCtor,
-                                                     mode == SerializationMode.Specified ? specifiedCtor : null,
-                                                     mode == SerializationMode.Specified ? getMethod : null,
-                                                     mode);
-        }
-
-        private static RecursiveSerializerMemberInfo CreateBaseMemberInfo(HashedType hashedType)
-        {
-            var parameterlessCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { });
-            var specifiedModeCtor = hashedType.GetImplementingType().GetConstructor(new Type[] { typeof(IPropertyReader) });
-            var getMethod = hashedType.GetImplementingType().GetMethod(RecursiveSerializerStore.GetMethodName, new Type[] { typeof(IPropertyWriter) });
-
             // Create the primary members for the serializer
-            return new RecursiveSerializerMemberInfo(parameterlessCtor,
-                                                     specifiedModeCtor,
-                                                     getMethod,
-                                                     specifiedModeCtor == null ? SerializationMode.Default : SerializationMode.Specified);
+            var memberInfo = new RecursiveSerializerMemberInfo(parameterlessCtor,
+                                                               mode == SerializationMode.Specified ? specifiedModeCtor : null,
+                                                               mode == SerializationMode.Specified ? getMethod : null,
+                                                               mode);
+
+            _memberInfoDict[hashedType] = memberInfo;
+
+            return memberInfo;
         }
 
         /// <summary>

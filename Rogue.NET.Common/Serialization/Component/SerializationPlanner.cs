@@ -14,21 +14,21 @@ namespace Rogue.NET.Common.Serialization.Component
         SimpleDictionary<PropertySpecification, PropertySpecification> _propertySpecifications;
 
         // GROUP SERIALIZED OBJECTS BY PROPERTY SPECIFICATION
-        SimpleDictionary<PropertySpecification, List<SerializationObjectBase>> _propertySpecificationGroups;
+        SimpleDictionary<PropertySpecification, List<SerializedNodeBase>> _propertySpecificationGroups;
 
         // Creates basic object wrappers for serialization. TRACKS HASH REFERENCES!
         SerializationObjectFactory _factory;
 
         // Creates primitive object infos according to HASHED TYPE RULES!
-        readonly ObjectInfoResolver _resolver;
+        readonly HashedTypeResolver _resolver;
 
         // Additional collection element types
         SimpleDictionary<int, HashedType> _elementTypeDict;
 
-        internal SerializationPlanner(ObjectInfoResolver resolver)
+        internal SerializationPlanner(HashedTypeResolver resolver)
         {
             _propertySpecifications = new SimpleDictionary<PropertySpecification, PropertySpecification>();
-            _propertySpecificationGroups = new SimpleDictionary<PropertySpecification, List<SerializationObjectBase>>();
+            _propertySpecificationGroups = new SimpleDictionary<PropertySpecification, List<SerializedNodeBase>>();
             _elementTypeDict = new SimpleDictionary<int, HashedType>();
             _factory = new SerializationObjectFactory();
             _resolver = resolver;
@@ -37,25 +37,22 @@ namespace Rogue.NET.Common.Serialization.Component
         internal ISerializationPlan Plan(T theObject)
         {
             // Create / validate root object
-            var rootInfo = _resolver.Resolve(theObject, new HashedType(typeof(T)));
-
-            // Create wrapper for the object
-            var wrappedObject = _factory.Create(rootInfo);
+            var rootType = _resolver.Resolve(theObject, new HashedType(typeof(T)));
 
             // Create root node
-            var node = CreateNode(wrappedObject);
+            var node = _factory.Create(theObject, rootType);
 
             // Recurse
             Analyze(node);
 
-            return new SerializationPlan(_factory.GetReferences(),
+            return new SerializationPlan(_factory.GetReferenceObjects(),
                                          _elementTypeDict,
                                          _propertySpecifications.Values,
                                          _propertySpecificationGroups,
                                          node);
         }
 
-        private void Analyze(SerializationNodeBase node)
+        private void Analyze(SerializedNodeBase node)
         {
             // Procedure
             //
@@ -65,42 +62,31 @@ namespace Rogue.NET.Common.Serialization.Component
             // 3) STORE REFERENCE
             //
 
-            // NULL PRIMITIVE
-            if (node.NodeObject is SerializationNullPrimitive)
+            // LEAF NODE -> Halts Recursion
+            if (node is SerializedLeafNode)
                 return;
 
-            // NULL
-            else if (node.NodeObject is SerializationNullObject)
-                return;
-
-            // PRIMITIVE
-            else if (node.NodeObject is SerializationPrimitive)
-                return;
-
-            // REFERENCE (NOTE*** THESE ARE CREATED BY THE FACTORY!!) (HALTS RECURSION)
-            else if (node.NodeObject is SerializationReference)
+            // REFERENCE NODE -> Halts Recursion
+            else if (node is SerializedReferenceNode)
                 return;
 
             // COLLECTION
-            else if (node.NodeObject is SerializationCollection)
+            else if (node is SerializedCollectionNode)
             {
                 // READ PROPERTIES
-                foreach (var property in ReadProperties(node.NodeObject))
+                foreach (var property in ReadProperties(node))
                 {
-                    // Create wrapped object for the property
-                    var wrappedProperty = _factory.Create(property.ResolvedInfo);
-
-                    // Create node
-                    var propertyNode = CreateNode(wrappedProperty);
+                    // Create node for the property
+                    var propertyNode = _factory.Create(property.ResolvedObject, property.ResolvedType);
 
                     // RECURSE
                     Analyze(propertyNode);
 
                     // STORE AS SUB-NODE
-                    (node as SerializationCollectionNode).SubNodes.Add(propertyNode);
+                    (node as SerializedCollectionNode).SubNodes.Add(propertyNode);
                 }
 
-                var collection = (node.NodeObject as SerializationCollection);
+                var collection = (node as SerializedCollectionNode);
 
                 // STORE ADDITIONAL ELEMENT DECLARING TYPES
                 if (!_elementTypeDict.ContainsKey(collection.ElementDeclaringType.GetHashCode()))
@@ -109,87 +95,45 @@ namespace Rogue.NET.Common.Serialization.Component
                 // READ ELEMENTS
                 foreach (var item in collection.Collection)
                 {
-                    // RESOLVE OBJECT INFO
-                    var childInfo = _resolver.Resolve(item, collection.ElementDeclaringType);
+                    // RESOLVE OBJECT TYPE
+                    var childType = _resolver.Resolve(item, collection.ElementDeclaringType);
 
-                    // Create wrapped object for the element
-                    var wrappedChild = _factory.Create(childInfo);
-
-                    // Create node
-                    var childNode = CreateNode(wrappedChild);
+                    // Create child node for the element
+                    var childNode = _factory.Create(item, childType);
 
                     // RECURSE
                     Analyze(childNode);
 
                     // STORE AS ELEMENT (CHILD) NODE
-                    (node as SerializationCollectionNode).Children.Add(childNode);
+                    (node as SerializedCollectionNode).CollectionNodes.Add(childNode);
                 }
             }
 
-            // VALUE or OBJECT
-            else if (node.NodeObject is SerializationValue ||
-                     node.NodeObject is SerializationObject)
+            // OBJECT
+            else if (node is SerializedObjectNode)
             {
                 // READ PROPERTIES
-                foreach (var property in ReadProperties(node.NodeObject))
+                foreach (var property in ReadProperties(node))
                 {
                     // Create wrapped object for the property
-                    var wrappedProperty = _factory.Create(property.ResolvedInfo);
-
-                    // Create node
-                    var propertyNode = CreateNode(wrappedProperty);
+                    var propertyNode = _factory.Create(property.ResolvedObject, property.ResolvedType);
 
                     // RECURSE
                     Analyze(propertyNode);
 
                     // STORE AS SUB-NODE
-                    (node as SerializationNode).SubNodes.Add(propertyNode);
+                    (node as SerializedObjectNode).SubNodes.Add(propertyNode);
                 }
             }
 
             else
-                throw new Exception("Unhandled SerializationObjectBase type SerializationPlanner.CreateNode");
+                throw new Exception("Unhandled SerializedNodeBase type SerializationPlanner.CreateNode");
         }
 
-        private SerializationNodeBase CreateNode(SerializationObjectBase wrappedObject)
+        private IEnumerable<PropertyResolvedInfo> ReadProperties(SerializedNodeBase wrappedObject)
         {
-            // NULL PRIMITIVE
-            if (wrappedObject is SerializationNullPrimitive)
-                return new SerializationNode(wrappedObject);
-
-            // NULL
-            if (wrappedObject is SerializationNullObject)
-                return new SerializationNode(wrappedObject);
-
-            // PRIMITIVE
-            else if (wrappedObject is SerializationPrimitive)
-                return new SerializationNode(wrappedObject);
-
-            // REFERENCE
-            else if (wrappedObject is SerializationReference)
-                return new SerializationNode(wrappedObject);
-
-            // VALUE
-            else if (wrappedObject is SerializationValue)
-                return new SerializationNode(wrappedObject);
-
-            // OBJECT
-            else if (wrappedObject is SerializationObject)
-                return new SerializationNode(wrappedObject);
-
-            // COLLECTION
-            else if (wrappedObject is SerializationCollection)
-                return new SerializationCollectionNode(wrappedObject);
-
-            else
-                throw new Exception("Unhandled SerializationObjectBase type SerializationPlanner.CreateNode");
-        }
-
-        private IEnumerable<PropertyResolvedInfo> ReadProperties(SerializationObjectBase wrappedObject)
-        {
-            if (wrappedObject is SerializationCollection ||
-                wrappedObject is SerializationValue ||
-                wrappedObject is SerializationObject)
+            if (wrappedObject is SerializedCollectionNode ||
+                wrappedObject is SerializedObjectNode)
             {
                 // INITIALIZE PROPERTY WRITER
                 var writer = PropertyWriterFactory.CreateAndResolve(_resolver, wrappedObject);
@@ -202,7 +146,7 @@ namespace Rogue.NET.Common.Serialization.Component
 
                 // ADD TO PROPERTY SPECIFICATION GROUP FOR THIS OBJECT
                 if (!_propertySpecificationGroups.ContainsKey(specification))
-                    _propertySpecificationGroups.Add(specification, new List<SerializationObjectBase>() { wrappedObject });
+                    _propertySpecificationGroups.Add(specification, new List<SerializedNodeBase>() { wrappedObject });
 
                 else
                     _propertySpecificationGroups[specification].Add(wrappedObject);
@@ -211,8 +155,6 @@ namespace Rogue.NET.Common.Serialization.Component
             }
             else
                 throw new Exception("Invalid SerializationObjectBase type for reading properties");
-
-
         }
     }
 }

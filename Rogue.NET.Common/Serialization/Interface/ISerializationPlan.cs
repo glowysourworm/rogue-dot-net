@@ -11,7 +11,7 @@ namespace Rogue.NET.Common.Serialization.Interface
         /// <summary>
         /// Stores dictionary of unique references to reference-type objects
         /// </summary>
-        SimpleDictionary<ObjectInfo, SerializationObjectBase> UniqueReferenceDict { get; }
+        public IEnumerable<SerializedObjectNode> ReferenceObjects { get; }
 
         /// <summary>
         /// Additional element DECLARING types built by the serialization planner
@@ -26,11 +26,11 @@ namespace Rogue.NET.Common.Serialization.Interface
         /// <summary>
         /// Stores grouping of objects by property specification
         /// </summary>
-        SimpleDictionary<PropertySpecification, List<SerializationObjectBase>> PropertySpecificationGroups { get; }
+        SimpleDictionary<PropertySpecification, List<SerializedNodeBase>> PropertySpecificationGroups { get; }
 
         /// <summary>
         /// Root node for the object graph
         /// </summary>
-        SerializationNodeBase RootNode { get; }
+        SerializedNodeBase RootNode { get; }
     }
 }

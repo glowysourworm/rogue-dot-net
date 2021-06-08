@@ -4,20 +4,29 @@ using Rogue.NET.Common.Serialization.Utility;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
-    internal class DeserializationValue : DeserializationObjectBase
+    internal class DeserializedObjectNode : DeserializedNodeBase
     {
-        // Object being constructed
-        private object _defaultObject;
+        internal List<DeserializedNodeBase> SubNodes { get; private set; }
+
+        /// <summary>
+        /// ID FROM SERIALIZATION PROCEDURE
+        /// </summary>
+        internal int ReferenceId { get; private set; }
 
         // Property definitions
         PropertySpecification _specification;
 
-        internal DeserializationValue(ObjectReference reference, RecursiveSerializerMemberInfo memberInfo, PropertySpecification specification) : base(reference, memberInfo)
+        // Object being constructed
+        private object _defaultObject;
+
+        internal DeserializedObjectNode(PropertyDefinition definition, HashedType type, int referenceId, RecursiveSerializerMemberInfo memberInfo, PropertySpecification specification) : base(definition, type, memberInfo)
         {
+            this.ReferenceId = referenceId;
+            this.SubNodes = new List<DeserializedNodeBase>();
+
             _specification = specification;
         }
 
@@ -37,7 +46,7 @@ namespace Rogue.NET.Common.Serialization.Target
                     ConstructSpecified(resolvedProperties);
                     break;
                 default:
-                    throw new Exception("Unhandled SerializationMode type:  DeserializationValue.cs");
+                    throw new Exception("Unhandled SerializationMode type:  DeserializationObject.cs");
             }
         }
 
@@ -50,7 +59,7 @@ namespace Rogue.NET.Common.Serialization.Target
             }
             catch (Exception ex)
             {
-                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing from parameterless constructor", ex);
+                throw new RecursiveSerializerException(this.Type, "Error constructing from parameterless constructor", ex);
             }
 
             // SET PROPERTIES
@@ -59,19 +68,19 @@ namespace Rogue.NET.Common.Serialization.Target
                 foreach (var property in resolvedProperties)
                 {
                     if (property.IsUserDefined)
-                        throw new RecursiveSerializerException(property.ResolvedInfo.Type, "Trying to set user defined property using DEFAULT mode");
+                        throw new RecursiveSerializerException(property.ResolvedType, "Trying to set user defined property using DEFAULT mode");
 
                     // LOCATE PROPERTY INFO
-                    var propertyDefinition = _specification.GetHashedDefinition(property.PropertyName, property.ResolvedInfo.Type);
+                    var propertyDefinition = _specification.GetHashedDefinition(property.PropertyName, property.ResolvedType);
 
                     // SAFE TO CALL GetPropertyInfo() and GetObject() 
                     propertyDefinition.GetReflectedInfo()
-                                      .SetValue(_defaultObject, property.ResolvedInfo.GetObject());
+                                      .SetValue(_defaultObject, property.ResolvedObject);
                 }
             }
             catch (Exception ex)
             {
-                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing object from properties", ex);
+                throw new RecursiveSerializerException(this.Type, "Error constructing object from properties", ex);
             }
         }
 
@@ -85,13 +94,24 @@ namespace Rogue.NET.Common.Serialization.Target
             }
             catch (Exception ex)
             {
-                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing from specified constructor", ex);
+                throw new RecursiveSerializerException(this.Type, "Error constructing from specified constructor", ex);
             }
         }
 
-        protected override ObjectInfo ProvideResult()
+        public override bool Equals(object obj)
         {
-            return new ObjectInfo(_defaultObject, new HashedType(this.Reference.Type.GetDeclaringType(), _defaultObject.GetType()));
+            var node = obj as DeserializedObjectNode;
+
+            return this.ReferenceId == node.ReferenceId;
+        }
+        public override int GetHashCode()
+        {
+            return this.ReferenceId;
+        }
+
+        protected override object ProvideResult()
+        {
+            return _defaultObject;
         }
     }
 }

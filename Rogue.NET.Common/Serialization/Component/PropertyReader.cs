@@ -29,10 +29,10 @@ namespace Rogue.NET.Common.Serialization.Component
                 throw new ArgumentException("Property not present in the underlying stream:  " + propertyName);
 
             // CHECK ASSIGNABILITY
-            if (!typeof(T).IsAssignableFrom(_properties[propertyName].ResolvedInfo.Type.GetImplementingType()))
+            if (!typeof(T).IsAssignableFrom(_properties[propertyName].ResolvedType.GetImplementingType()))
                 throw new ArgumentException("Requested property type is invalid:  " + propertyName);
 
-            return (T)_properties[propertyName].ResolvedInfo.GetObject();
+            return (T)_properties[propertyName].ResolvedObject;
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using Rogue.NET.Common.Collection;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Serialization.Formatter;
-using Rogue.NET.Common.Serialization.Interface;
 using Rogue.NET.Common.Serialization.IO.Interface;
 using Rogue.NET.Common.Serialization.Manifest;
 using Rogue.NET.Common.Serialization.Planning;
@@ -10,7 +7,6 @@ using Rogue.NET.Common.Serialization.Utility;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Rogue.NET.Common.Serialization.Component
@@ -33,16 +29,19 @@ namespace Rogue.NET.Common.Serialization.Component
         // PRIMARY INPUT STREAM
         ISerializationStreamReader _reader;
 
-        internal PropertyDeserializer()
+        readonly RecursiveSerializerConfiguration _configuration;
+
+        internal PropertyDeserializer(RecursiveSerializerConfiguration configuration)
         {
             _loadedTypes = new SimpleDictionary<int, HashedType>();
             _specifiedPropertyDict = new SimpleDictionary<int, PropertySpecification>();
             _factory = new DeserializationObjectFactory();
             _resolver = new DeserializationResolver();
             _outputManifest = new List<SerializedNodeManifest>();
+            _configuration = configuration;
         }
 
-        internal IEnumerable<DeserializationObjectBase> GetDeserializedObjects()
+        internal IEnumerable<DeserializedNodeBase> GetDeserializedObjects()
         {
             return _resolver.GetDeserializedObjects().Values;
         }
@@ -174,55 +173,22 @@ namespace Rogue.NET.Common.Serialization.Component
             }
 
             // Read root
-            var wrappedRoot = ReadNext(new HashedType(typeof(T)), false);
+            var rootNode = ReadNext(PropertyDefinition.Empty, new HashedType(typeof(T)), false);
 
-            if (wrappedRoot.Reference.Type.GetImplementingType() != typeof(T))
-                throw new Exception("File type doesn't match the type of object being Deserialized:  " + wrappedRoot.Reference.Type.DeclaringType);
-
-            // Create root node
-            var node = CreateNode(wrappedRoot, PropertyDefinition.Empty);
+            if (rootNode.Type.GetImplementingType() != typeof(T))
+                throw new RecursiveSerializerException(rootNode.Type, "File type doesn't match the type of object being Deserialized");
 
             // Read stream recursively
-            ReadRecurse(node);
+            ReadRecurse(rootNode);
 
             // Stitch together object references recursively
-            var resolvedRoot = _resolver.Resolve(node, _loadedTypes);
+            var resolvedRoot = _resolver.Resolve(rootNode, _loadedTypes);
 
             // And -> We've -> Resolved() -> TheObject()! :)
-            return (T)resolvedRoot.NodeObject.Resolve().GetObject();
+            return (T)resolvedRoot.Resolve();
         }
 
-        /// <summary>
-        /// Creates a node based on a wrapped object along with the property definition. This must be read from the PropertyPlanner
-        /// </summary>
-        private DeserializationNodeBase CreateNode(DeserializationObjectBase wrappedObject, PropertyDefinition definition)
-        {
-            if (wrappedObject is DeserializationNullPrimitive)
-                return new DeserializationNode(wrappedObject, definition);
-
-            else if (wrappedObject is DeserializationNullReference)
-                return new DeserializationNode(wrappedObject, definition);
-
-            else if (wrappedObject is DeserializationPrimitive)
-                return new DeserializationNode(wrappedObject, definition);
-
-            else if (wrappedObject is DeserializationReference)
-                return new DeserializationNode(wrappedObject, definition);
-
-            else if (wrappedObject is DeserializationValue)
-                return new DeserializationNode(wrappedObject, definition);
-
-            else if (wrappedObject is DeserializationObject)
-                return new DeserializationNode(wrappedObject, definition);
-
-            else if (wrappedObject is DeserializationCollection)
-                return new DeserializationCollectionNode(wrappedObject as DeserializationCollection, definition);
-
-            else
-                throw new Exception("Unhandled DeserializationObjectBase type:  " + wrappedObject.GetType().ToString());
-        }
-
-        private void ReadRecurse(DeserializationNodeBase node)
+        private void ReadRecurse(DeserializedNodeBase node)
         {
             // FROM SERIALIZER:
             //
@@ -231,82 +197,58 @@ namespace Rogue.NET.Common.Serialization.Component
             //
 
             // COLLECTION
-            if (node is DeserializationCollectionNode)
+            if (node is DeserializedCollectionNode)
             {
-                var collectionNode = node as DeserializationCollectionNode;
+                var collectionNode = node as DeserializedCollectionNode;
 
                 // Fetch definitions for properties from the node object
-                var specification = collectionNode.NodeObject.GetPropertySpecification();
+                var specification = collectionNode.GetPropertySpecification();
 
                 // RECURSE ANY CUSTOM PROPERTIES
                 foreach (var definition in specification.Definitions)
                 {
                     // READ NEXT
-                    var wrappedObject = ReadNext(definition.PropertyType, false);
-
-                    // Create node for the property
-                    var subNode = CreateNode(wrappedObject, definition);
+                    var propertyNode = ReadNext(definition, definition.PropertyType, false);
 
                     // Store sub-node
-                    collectionNode.SubNodes.Add(subNode);
+                    collectionNode.SubNodes.Add(propertyNode);
 
                     // RECURSE
-                    ReadRecurse(subNode);
+                    ReadRecurse(propertyNode);
                 }
 
                 // Iterate expected ELEMENT TYPES
-                var collection = (collectionNode.NodeObject as DeserializationCollection);
+                var collection = (collectionNode as DeserializedCollectionNode);
 
                 // VALIDATE ELEMENT TYPE
                 if (!_loadedTypes.ContainsKey(collection.ElementType.GetHashCode()))
-                    throw new Exception("Missing ElementType for collection: " + collection.Reference.Type.ToString());
+                    throw new Exception("Missing ElementType for collection: " + collection.Type.ToString());
 
                 for (int index = 0; index < collection.Count; index++)
                 {
                     // READ NEXT (ELEMENT TYPE => DECLARING TYPE)
-                    var wrappedObject = ReadNext(collection.ElementType, true);
-
-                    // Create child node
-                    var childNode = CreateNode(wrappedObject, PropertyDefinition.CollectionElement);
+                    var elementNode = ReadNext(PropertyDefinition.CollectionElement, collection.ElementType, true);
 
                     // STORE CHILD NODE
-                    collectionNode.Children.Add(childNode);
+                    collectionNode.CollectionNodes.Add(elementNode);
 
                     // RECURSE
-                    ReadRecurse(childNode);
+                    ReadRecurse(elementNode);
                 }
             }
+
             // NODE
-            else if (node is DeserializationNode)
+            else if (node is DeserializedObjectNode)
             {
-                var nextNode = node as DeserializationNode;
+                var nextNode = node as DeserializedObjectNode;
 
-                // PRIMITIVE NULL (Halt Recursion)
-                if (nextNode.NodeObject is DeserializationNullPrimitive)
-                    return;
-
-                // NULL (Halt Recursion)
-                else if (nextNode.NodeObject is DeserializationNullReference)
-                    return;
-
-                // PRIMITIVE (Halt Recursion)
-                else if (nextNode.NodeObject is DeserializationPrimitive)
-                    return;
-
-                // REFERENCE (Halt Recursion)
-                else if (nextNode.NodeObject is DeserializationReference)
-                    return;
-
-                var specification = nextNode.NodeObject.GetPropertySpecification();
+                var specification = nextNode.GetPropertySpecification();
 
                 // Loop properties:  Verify sub-nodes -> Recurse
                 foreach (var definition in specification.Definitions)
                 {
                     // READ NEXT
-                    var wrappedSubObject = ReadNext(definition.PropertyType, false);
-
-                    // Create sub-node
-                    var subNode = CreateNode(wrappedSubObject, definition);
+                    var subNode = ReadNext(definition, definition.PropertyType, false);
 
                     // Store sub-node
                     nextNode.SubNodes.Add(subNode);
@@ -315,24 +257,42 @@ namespace Rogue.NET.Common.Serialization.Component
                     ReadRecurse(subNode);
                 }
             }
+
+            // REFERENCE NODE -> Halt Recursion
+            else if (node is DeserializedReferenceNode)
+            {
+                return;
+            }
+
+            // LEAF NODE -> Halt Recursion
+            else if (node is DeserializedLeafNode)
+            {
+                return;
+            }
+
+            // NULL LEAF NODE -> Halt Recursion
+            else if (node is DeserializedNullLeafNode)
+            {
+                return;
+            }
+
             else
-                throw new Exception("Unhandled DeserializationNodeBase type:  PropertyDeserializer.DeserializeRecurse");
+                throw new Exception("Unhandled DeserializedNodeBase type:  PropertyDeserializer.cs");
         }
 
-        private DeserializationObjectBase ReadNext(HashedType expectedType, bool isCollectionElement)
+        private DeserializedNodeBase ReadNext(PropertyDefinition definingProperty, HashedType expectedType, bool isCollectionElement)
         {
             // FROM SERIALIZER
             //
             // Serialize:  [ Null Primitive = 0, Serialization Mode, Hashed Type Code ]
             // Serialize:  [ Null = 1,           Serialization Mode, Hashed Type Code ]
             // Serialize:  [ Primitive = 2,      Serialization Mode, Hashed Type Code, Primitive Value ]
-            // Serialize:  [ Value = 3,          Serialization Mode, Hashed Type Code, Object Id ] (Recruse Sub - graph)
-            // Serialize:  [ Object = 4,         Serialization Mode, Hashed Type Code, Object Id ] (Recruse Sub - graph)
-            // Serialize:  [ Reference = 5,      Serialization Mode, Hashed Type Code, Object Id ]
-            // Serialize:  [ Collection = 6,     Serialization Mode, Hashed Type Code, Object Id,
+            // Serialize:  [ Object = 3,         Serialization Mode, Hashed Type Code, Object Id ] (Recruse Sub - graph)
+            // Serialize:  [ Reference = 4,      Serialization Mode, Hashed Type Code, Reference Object Id ]
+            // Serialize:  [ Collection = 5,     Serialization Mode, Hashed Type Code, Object Id,
             //                                   Collection Interface Type,
             //                                   Child Count,
-            //                                   Child Hash Type Code[] ] (loop) Children (Recruse Sub-graphs)
+            //                                   Child Hash Type Code ] (loop) Children (Recruse Sub-graphs)
 
             //var manifest = new SerializedNodeManifest();
 
@@ -368,37 +328,22 @@ namespace Rogue.NET.Common.Serialization.Component
             //manifest.Node = nextNode;
             //manifest.Type = resolvedType.ToString();
 
-            DeserializationObjectBase result = null;
+            DeserializedNodeBase result = null;
 
             switch (nextNode)
             {
                 case SerializedNodeType.NullPrimitive:
-                    result = _factory.CreateNullPrimitive(new ObjectReference(resolvedType, 0), nextMode);
+                    result = _factory.CreateNullPrimitive(definingProperty, resolvedType, nextMode);
                     break;
                 case SerializedNodeType.Null:
-                    result = _factory.CreateNullReference(new ObjectReference(resolvedType, 0), nextMode);
+                    result = _factory.CreateNullReference(definingProperty, resolvedType, nextMode);
                     break;
                 case SerializedNodeType.Primitive:
                     {
                         // READ PRIMITIVE VALUE FROM STREAM
                         var primitive = _reader.Read(resolvedType.GetImplementingType());
 
-                        result = _factory.CreatePrimitive(new ObjectInfo(primitive, resolvedType), nextMode);
-
-                        break;
-                    }
-                case SerializedNodeType.Value:
-                    {
-                        // READ OBJECT ID FROM STREAM
-                        var objectId = _reader.Read<int>();
-
-                        // Create reference
-                        var reference = new ObjectReference(resolvedType, objectId);
-
-                        // GET PROPERTY SPECIFICATION
-                        var specification = _specifiedPropertyDict[objectId];
-
-                        result = _factory.CreateValue(reference, nextMode, specification);
+                        result = _factory.CreatePrimitive(definingProperty, primitive, resolvedType, nextMode);
 
                         break;
                     }
@@ -407,13 +352,10 @@ namespace Rogue.NET.Common.Serialization.Component
                         // READ OBJECT ID FROM STREAM
                         var objectId = _reader.Read<int>();
 
-                        // Create reference
-                        var reference = new ObjectReference(resolvedType, objectId);
-
                         // GET PROPERTY SPECIFICATION
                         var specification = _specifiedPropertyDict[objectId];
 
-                        result = _factory.CreateObject(reference, nextMode, specification);
+                        result = _factory.CreateObject(definingProperty, objectId, resolvedType, nextMode, specification);
 
                         break;
                     }
@@ -421,9 +363,9 @@ namespace Rogue.NET.Common.Serialization.Component
                 case SerializedNodeType.Reference:
                     {
                         // READ OBJECT ID FROM STREAM
-                        var objectId = _reader.Read<int>();
+                        var referenceId = _reader.Read<int>();
 
-                        result = _factory.CreateReference(new ObjectReference(resolvedType, objectId), nextMode);
+                        result = _factory.CreateReference(definingProperty, referenceId, resolvedType, nextMode);
 
                         break;
                     }
@@ -446,13 +388,10 @@ namespace Rogue.NET.Common.Serialization.Component
 
                         var elementType = _loadedTypes[elementTypeHashCode];
 
-                        // Create reference
-                        var reference = new ObjectReference(resolvedType, objectId);
-
                         // GET PROPERTY SPECIFICATION
                         var specification = _specifiedPropertyDict[objectId];
 
-                        result = _factory.CreateCollection(reference, interfaceType, childCount, nextMode, specification, elementType);
+                        result = _factory.CreateCollection(definingProperty, objectId, resolvedType, interfaceType, childCount, nextMode, specification, elementType);
 
                         // Write manifest
                         //manifest.CollectionCount = childCount;

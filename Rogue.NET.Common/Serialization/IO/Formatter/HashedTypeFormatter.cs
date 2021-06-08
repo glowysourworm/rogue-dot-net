@@ -1,7 +1,11 @@
-﻿using Rogue.NET.Common.Serialization.Target;
+﻿using Rogue.NET.Common.Collection;
+using Rogue.NET.Common.CustomException;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Serialization.Target;
 
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace Rogue.NET.Common.Serialization.Formatter
 {
@@ -15,9 +19,26 @@ namespace Rogue.NET.Common.Serialization.Formatter
 
         public override Type DataType { get { return _dataType; } }
 
+        static SimpleDictionary<string, Assembly> _assemblyLookup;
+        static SimpleDictionary<string, SimpleDictionary<string, Type>> _typeLookup;
+
         readonly StringFormatter _stringFormatter;
         readonly IntegerFormatter _integerFormatter;
         readonly BooleanFormatter _booleanFormatter;
+
+        // Create static type lookup for formatter
+        static HashedTypeFormatter()
+        {
+            _assemblyLookup = AppDomain.CurrentDomain.GetAssemblies().ToSimpleDictionary(assembly => assembly.FullName, assembly => assembly);
+            _typeLookup = AppDomain.CurrentDomain
+                                   .GetAssemblies()
+                                   .ToSimpleDictionary(assembly => assembly.FullName,
+                                                       assembly =>
+                                                       {
+                                                           return assembly.GetTypes()
+                                                                          .ToSimpleDictionary(type => type.FullName, type => type);
+                                                       });
+        }
 
         internal HashedTypeFormatter()
         {
@@ -43,6 +64,9 @@ namespace Rogue.NET.Common.Serialization.Formatter
                 declaringGenericArguments[index] = ReadImpl(stream);
             }
 
+            // NOTE*** NOT ALL DATA FROM HASHED TYPE WAS NECESSARY TO SERIALIZE
+            var declaringTypeResolved = ResolveFromFields(declaringAssembly, declaringType);
+
             if (hasTypeDiscrepancy)
             {
                 var implementingAssembly = _stringFormatter.Read(stream);
@@ -58,11 +82,13 @@ namespace Rogue.NET.Common.Serialization.Formatter
                     implementingGenericArguments[index] = ReadImpl(stream);
                 }
 
-                return HashedType.Create(declaringAssembly, declaringType, declaringIsGeneric, declaringGenericArguments,
-                                         implementingAssembly, implementingType, implementingIsGeneric, implementingGenericArguments);
+                // NOTE*** NOT ALL DATA FROM HASHED TYPE WAS NECESSARY TO SERIALIZE
+                var implementingTypeResolved = ResolveFromFields(implementingAssembly, implementingType);
+
+                return new HashedType(declaringTypeResolved, implementingTypeResolved);
             }
 
-            return HashedType.Create(declaringAssembly, declaringType, declaringIsGeneric, declaringGenericArguments);
+            return new HashedType(declaringTypeResolved);
         }
 
         protected override void WriteImpl(Stream stream, HashedType theObject)
@@ -92,6 +118,26 @@ namespace Rogue.NET.Common.Serialization.Formatter
                 foreach (var argument in theObject.ImplementingGenericArguments)
                     WriteImpl(stream, argument);
             }
+        }
+
+        private static Type ResolveFromFields(string assemblyName, string typeName)
+        {
+            if (!_typeLookup.ContainsKey(assemblyName))
+                throw new Exception("No assembly found for type:  " + typeName);
+
+            if (!_typeLookup[assemblyName].ContainsKey(typeName))
+            {
+                // Try resolving using the assembly
+                var type = _assemblyLookup[assemblyName].GetType(typeName);
+
+                if (type == null)
+                    throw new FormattedException("No type {0} found in assembly {1}", typeName, assemblyName);
+
+                // Cache resolved type
+                _typeLookup[assemblyName].Add(typeName, type);
+            }
+
+            return _typeLookup[assemblyName][typeName];
         }
     }
 }

@@ -3,14 +3,16 @@ using Rogue.NET.Common.Serialization.Formatter;
 using Rogue.NET.Common.Serialization.Target;
 using Rogue.NET.Common.Serialization.Utility;
 
+using System;
+
 namespace Rogue.NET.Common.Serialization.Component
 {
-    internal class ObjectInfoResolver
+    internal class HashedTypeResolver
     {
         // TRACK HASHED TYPES
         SimpleDictionary<int, HashedType> _typeDict;
 
-        internal ObjectInfoResolver()
+        internal HashedTypeResolver()
         {
             _typeDict = new SimpleDictionary<int, HashedType>();
         }
@@ -20,25 +22,35 @@ namespace Rogue.NET.Common.Serialization.Component
             return _typeDict;
         }
 
+        internal HashedType Resolve(object theObject, Type declaringType)
+        {
+            // PERFORMANCE: Try to prevent creating new hashed type
+            var hashCode = HashedType.CalculateHashCode(declaringType, theObject.GetType());
+
+            if (_typeDict.ContainsKey(hashCode))
+                return _typeDict[hashCode];
+
+            return Resolve(theObject, new HashedType(declaringType));
+        }
+
         /// <summary>
-        /// CALCULATES OBJECT INFO FROM PROPERTY + PROPERTY HASHED TYPE. Throw exceptions for circular 
-        /// references for REFERENCE TYPES. VAILDATES THE HASHED TYPE AGAINST THE OBJECT
+        /// Calculate object hashed type from the object and from it's property type. VALIDATES TYPE!
         /// </summary>
-        internal ObjectInfo Resolve(object theObject, HashedType theObjectType)
+        internal HashedType Resolve(object theObject, HashedType theObjectType)
         {
             var isPrimitive = FormatterFactory.IsPrimitiveSupported(theObjectType.GetImplementingType());
 
             // PRIMITIVE NULL
             if (isPrimitive && ReferenceEquals(theObject, null))
-                return TrackAndReturn(new ObjectInfo(theObjectType));
+                return CreateDeclaringType(theObjectType);
 
             // NULL
             if (theObject == null)
-                return TrackAndReturn(new ObjectInfo(theObjectType));
+                return CreateDeclaringType(theObjectType);
 
             // PRIMITIVE
             if (isPrimitive)
-                return TrackAndReturn(new ObjectInfo(theObject, theObjectType));
+                return CreateDeclaringAndImplementingType(theObject, theObjectType);
 
             // *** NOTE:  Trying to work with MSFT Type... So, just using this to catch things we 
             //            might have missed.
@@ -60,17 +72,17 @@ namespace Rogue.NET.Common.Serialization.Component
                     throw new RecursiveSerializerException(theObjectType, "Invalid property definition:  property DECLARING type is NOT ASSIGNABLE from the object IMPLEMENTING type");
 
                 // Re-create HASHED TYPE
-                var hashedType = new HashedType(theObjectType.GetDeclaringType(), theObject.GetType());
+                var hashedType = CreateDeclaringAndImplementingType(theObject, theObjectType);
 
-                // INTERFACE
+                // INTERFACE (VALIDATING)
                 if (theObjectType.GetDeclaringType().IsInterface)
                 {
-                    return TrackAndReturn(new ObjectInfo(theObject, hashedType));
+                    return hashedType;
                 }
-                // SUB CLASS
+                // SUB CLASS (VALIDATING)
                 else if (theObject.GetType().IsSubclassOf(theObjectType.GetDeclaringType()))
                 {
-                    return TrackAndReturn(new ObjectInfo(theObject, hashedType));
+                    return hashedType;
                 }
                 else
                     throw new RecursiveSerializerException(theObjectType, "Unhandled polymorphic object type:  " + theObjectType.DeclaringType);
@@ -78,16 +90,29 @@ namespace Rogue.NET.Common.Serialization.Component
             // DECLARING TYPE == IMPLEMENTING TYPE
             else
             {
-                return TrackAndReturn(new ObjectInfo(theObject, theObjectType));
+                return CreateDeclaringAndImplementingType(theObject, theObjectType);
             }
         }
 
-        private ObjectInfo TrackAndReturn(ObjectInfo objectInfo)
+        private HashedType CreateDeclaringType(HashedType hashedType)
         {
-            if (!_typeDict.ContainsKey(objectInfo.Type.GetHashCode()))
-                _typeDict.Add(objectInfo.Type.GetHashCode(), objectInfo.Type);
+            var hashCode = hashedType.GetHashCode();
 
-            return objectInfo;
+            if (!_typeDict.ContainsKey(hashCode))
+                _typeDict.Add(hashedType.GetHashCode(), hashedType);
+
+            return _typeDict[hashCode];
+        }
+
+        private HashedType CreateDeclaringAndImplementingType(object theObject, HashedType theObjectType)
+        {
+            // PERFORMANCE: Try to prevent creating new hashed type
+            var hashCode = HashedType.CalculateHashCode(theObjectType.GetDeclaringType(), theObject.GetType());
+
+            if (!_typeDict.ContainsKey(hashCode))
+                _typeDict.Add(hashCode, new HashedType(theObjectType.GetDeclaringType(), theObject.GetType()));
+
+            return _typeDict[hashCode];
         }
     }
 }

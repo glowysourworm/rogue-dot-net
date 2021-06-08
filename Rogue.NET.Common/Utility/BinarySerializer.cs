@@ -138,7 +138,7 @@ namespace Rogue.NET.Common.Utility
 
         private static byte[] Serialize<T>(T theObject)
         {
-            var serializer = new RecursiveSerializer<T>();
+            var serializer = new RecursiveSerializer<T>(new RecursiveSerializerConfiguration());
 
             using (var stream = new MemoryStream())
             {
@@ -150,7 +150,7 @@ namespace Rogue.NET.Common.Utility
 
         private static T Deserialize<T>(byte[] buffer)
         {
-            var serializer = new RecursiveSerializer<T>();
+            var serializer = new RecursiveSerializer<T>(new RecursiveSerializerConfiguration());
 
             using (var stream = new MemoryStream(buffer))
             {

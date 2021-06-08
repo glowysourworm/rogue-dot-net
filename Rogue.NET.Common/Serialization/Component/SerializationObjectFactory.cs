@@ -1,12 +1,14 @@
 ﻿using Rogue.NET.Common.Collection;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Serialization.Formatter;
+using Rogue.NET.Common.Serialization.Planning;
 using Rogue.NET.Common.Serialization.Target;
 using Rogue.NET.Common.Serialization.Utility;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rogue.NET.Common.Serialization.Component
 {
@@ -16,41 +18,48 @@ namespace Rogue.NET.Common.Serialization.Component
     /// </summary>
     internal class SerializationObjectFactory
     {
-        SimpleDictionary<ObjectInfo, SerializationObjectBase> _referenceDict;
+        // Referenced by object.GetHashCode() + HashedType.GetHashCode()
+        SimpleDictionary<int, SerializedNodeBase> _primitiveReferences;
 
-        List<SerializationObjectBase> _allObjects;
+        // Referenced by object.GetHashCode() -> ReferenceEquals( , )
+        SimpleDictionary<object, List<SerializedObjectNode>> _objectReferences;
 
-        internal SerializationObjectBase this[ObjectInfo objectInfo]
-        {
-            get { return _referenceDict[objectInfo]; }
-        }
+        List<SerializedNodeBase> _allObjects;
 
         internal SerializationObjectFactory()
         {
-            _referenceDict = new SimpleDictionary<ObjectInfo, SerializationObjectBase>();
-            _allObjects = new List<SerializationObjectBase>();
+            _primitiveReferences = new SimpleDictionary<int, SerializedNodeBase>();
+            _objectReferences = new SimpleDictionary<object, List<SerializedObjectNode>>();
+            _allObjects = new List<SerializedNodeBase>();
         }
 
-        internal bool ContainsReference(ObjectInfo reference)
-        {
-            return _referenceDict.ContainsKey(reference);
-        }
-
-        internal SimpleDictionary<ObjectInfo, SerializationObjectBase> GetReferences()
-        {
-            return _referenceDict;
-        }
-
-        internal IEnumerable<SerializationObjectBase> GetAllSerializedObjects()
+        internal IEnumerable<SerializedNodeBase> GetAllSerializedObjects()
         {
             return _allObjects;
+        }
+
+        internal IEnumerable<SerializedObjectNode> GetReferenceObjects()
+        {
+            return _objectReferences.Values
+                                    .SelectMany(list => list)
+                                    .Actualize();
+        }
+
+        private int CreatePrimitiveReference(object theObject, HashedType resolvedType)
+        {
+            if (ReferenceEquals(theObject, null))
+            {
+                return resolvedType.GetHashCode();
+            }
+            else
+                return theObject.CreateHashCode(theObject, resolvedType);
         }
 
         /// <summary>
         /// HANDLES NULLS!  Wraps object for serialization - locating methods for ctor and get method for reproducing object. 
         /// The object type is referenced for creating a wrapper for a null ref object.
         /// </summary>
-        internal SerializationObjectBase Create(ObjectInfo objectInfo)
+        internal SerializedNodeBase Create(object theObject, HashedType resolvedType)
         {
             // PRIMITIVE TYPE:    Treated as primitive value type - MUST HAVE FORMATTER!
             //
@@ -66,43 +75,78 @@ namespace Rogue.NET.Common.Serialization.Component
             // NULL REFERENCE:    Wrapped by type
             //
 
-            var isPrimitive = FormatterFactory.IsPrimitiveSupported(objectInfo.Type.GetImplementingType());
+            // FOR LEAF NODES -> RETURN EXISTING REFERENCES
+            var primitiveReference = CreatePrimitiveReference(theObject, resolvedType);
+            var isPrimitive = FormatterFactory.IsPrimitiveSupported(resolvedType.GetImplementingType());
 
             // PRIMITIVE NULL
-            if (objectInfo.RepresentsNullReference() && isPrimitive)
-                return Finalize(new SerializationNullPrimitive(objectInfo));
+            if (ReferenceEquals(theObject, null) && isPrimitive)
+            {
+                if (_primitiveReferences.ContainsKey(primitiveReference))
+                    return _primitiveReferences[primitiveReference];
+
+                return FinalizePrimitive(new SerializedLeafNode(SerializedNodeType.NullPrimitive, resolvedType));
+            }
 
             // NULL
-            if (objectInfo.RepresentsNullReference())
-                return Finalize(new SerializationNullObject(objectInfo));
+            if (ReferenceEquals(theObject, null))
+            {
+                if (_primitiveReferences.ContainsKey(primitiveReference))
+                    return _primitiveReferences[primitiveReference];
+
+                return FinalizePrimitive(new SerializedLeafNode(SerializedNodeType.Null, resolvedType));
+            }
 
             // STRINGS IMPLEMENT IEnumerable!
-            var isCollection = objectInfo.GetObject().ImplementsInterface<IList>() && !isPrimitive;
+            var isCollection = theObject.ImplementsInterface<IList>() && !isPrimitive;
 
             // PRIMITIVE
             if (isPrimitive)
-                return Finalize(CreatePrimitive(objectInfo));
+            {
+                if (_primitiveReferences.ContainsKey(primitiveReference))
+                    return _primitiveReferences[primitiveReference];
+
+                return FinalizePrimitive(new SerializedLeafNode(SerializedNodeType.Primitive, resolvedType, theObject));
+            }
+
+            // SEARCH FOR REFERENCE 
+            var referenceNode = FindReference(theObject);
 
             // REFERENCE (Is reference type AND is OLD REFERENCE)
-            else if (_referenceDict.ContainsKey(objectInfo))
-                return Finalize(CreateReference(objectInfo));
+            if (referenceNode != null)
+                return new SerializedReferenceNode(referenceNode.Id, resolvedType, RecursiveSerializerStore.GetMemberInfo(resolvedType));
 
             // ***** THE REST GET ADDED TO THE REFERENCE DICT
 
             // COLLECTION (STRINGS IMPLEMENT IEnumerable!)
             if (isCollection)
-                return Finalize(CreateCollection(objectInfo));
+                return FinalizeObject(CreateCollectionNode(theObject, resolvedType));
 
-            // VAULE TYPE
-            else if (objectInfo.Type.GetImplementingType().IsValueType)
-                return Finalize(CreateValue(objectInfo));
-
-            // OBJECT TYPE
+            // OBJECT
             else
-                return Finalize(CreateObject(objectInfo));
+                return FinalizeObject(new SerializedObjectNode(SerializedNodeType.Object, resolvedType, theObject, RecursiveSerializerStore.GetMemberInfo(resolvedType)));
         }
 
-        private SerializationObjectBase CreateCollection(ObjectInfo info)
+        // Referenced by object.GetHashCode() -> ReferenceEquals( , )
+        //
+        private SerializedObjectNode FindReference(object theObject)
+        {
+            // NARROW SEARCH BY HASH CODE
+            if (_objectReferences.ContainsKey(theObject))
+            {
+                // Iterate reference type nodes
+                foreach (var objectNode in _objectReferences[theObject])
+                {
+                    // MUST USE MSFT REFERENCE EQUALS!!!
+                    if (ReferenceEquals(objectNode.GetObject(), theObject))
+                        return objectNode;
+                }
+            }
+
+            return null;
+        }
+
+        private SerializedCollectionNode CreateCollectionNode(object theObject, HashedType resolvedType)
         {
             // Procedure
             //
@@ -113,75 +157,51 @@ namespace Rogue.NET.Common.Serialization.Component
             //
 
             // Validates type and SerializationMode
-            var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
+            var memberInfo = RecursiveSerializerStore.GetMemberInfo(resolvedType);
 
-            if (!info.Type.GetImplementingType().IsGenericType)
-                throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>: " + info.Type.DeclaringType);
+            if (!resolvedType.GetImplementingType().IsGenericType)
+                throw new RecursiveSerializerException(resolvedType, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>");
 
-            else if (info.GetObject().ImplementsInterface<IList>())
+            else if (theObject.ImplementsInterface<IList>())
             {
-                var argument = (info.GetObject() as IList).GetType().GetGenericArguments()[0];
+                var argument = (theObject as IList).GetType().GetGenericArguments()[0];
 
                 if (argument == null)
-                    throw new Exception("Invalid IList argument for PropertySerializer: " + info.Type.DeclaringType);
+                    throw new Exception("Invalid IList argument for PropertySerializer: " + resolvedType.DeclaringType);
 
-                var list = info.GetObject() as IList;
+                var list = theObject as IList;
                 var elementDeclaringType = new HashedType(argument);
 
-                return new SerializationCollection(info, memberInfo, list, list.Count, CollectionInterfaceType.IList, elementDeclaringType);
+                return new SerializedCollectionNode(resolvedType, memberInfo, list, list.Count, CollectionInterfaceType.IList, elementDeclaringType);
             }
             else
-                throw new Exception("PropertySerializer only supports Arrays, and Generic Collections:  List<T>: " + info.Type.DeclaringType);
-        }
-
-        private SerializationObjectBase CreatePrimitive(ObjectInfo info)
-        {
-            return new SerializationPrimitive(info);
-        }
-
-        private SerializationObjectBase CreateReference(ObjectInfo referencedInfo)
-        {
-            // Validates type and SerializationMode
-            var memberInfo = RecursiveSerializerStore.GetMemberInfo(referencedInfo.Type);
-
-            return new SerializationReference(referencedInfo, memberInfo);
-        }
-
-        private SerializationObjectBase CreateValue(ObjectInfo info)
-        {
-            // Validates type and SerializationMode
-            var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
-
-            return new SerializationValue(info, memberInfo);
-        }
-
-        private SerializationObjectBase CreateObject(ObjectInfo info)
-        {
-            // Validates type and SerializationMode
-            var memberInfo = RecursiveSerializerStore.GetMemberInfo(info.Type);
-
-            return new SerializationObject(info, memberInfo);
+                throw new RecursiveSerializerException(resolvedType, "PropertySerializer only supports Arrays, and Generic Collections:  List<T>");
         }
 
         // TRACK REFERENCES AND ALL OBJECTS -> RETURN
-        private SerializationObjectBase Finalize(SerializationObjectBase result)
+        private SerializedNodeBase FinalizePrimitive(SerializedLeafNode result)
         {
             _allObjects.Add(result);
 
-            if (result is SerializationNullObject ||
-                result is SerializationPrimitive ||
-                result is SerializationNullPrimitive)
-                return result;
+            var primitiveReference = CreatePrimitiveReference(result.GetObject(), result.Type);
 
-            var isReference = result is SerializationReference;
+            if (!_primitiveReferences.ContainsKey(primitiveReference))
+                _primitiveReferences.Add(primitiveReference, result);
 
-            if (isReference)
-                return result;
+            return result;
+        }
 
-            if (_referenceDict.ContainsKey(result.ObjectInfo))
-                throw new Exception("Duplicate reference found:  " + result.ObjectInfo.Type.GetImplementingType().FullName);
+        // TRACK REFERENCES AND ALL OBJECTS -> RETURN
+        private SerializedNodeBase FinalizeObject(SerializedObjectNode result)
+        {
+            _allObjects.Add(result);
 
-            _referenceDict.Add(result.ObjectInfo, result);
+            // Existing HASH CODE -> Add REFERENCE
+            if (_objectReferences.ContainsKey(result.GetObject()))
+                _objectReferences[result.GetObject()].Add(result);
+
+            else
+                _objectReferences.Add(result.GetObject(), new List<SerializedObjectNode>() { result });
 
             return result;
         }

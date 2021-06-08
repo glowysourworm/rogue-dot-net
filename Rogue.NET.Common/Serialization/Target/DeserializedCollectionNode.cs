@@ -9,8 +9,10 @@ using System.Linq;
 
 namespace Rogue.NET.Common.Serialization.Target
 {
-    internal class DeserializationCollection : DeserializationObjectBase
+    internal class DeserializedCollectionNode : DeserializedObjectNode
     {
+        internal List<DeserializedNodeBase> CollectionNodes { get; private set; }
+
         internal int Count { get { return _count; } }
         internal CollectionInterfaceType InterfaceType { get { return _interfaceType; } }
         internal HashedType ElementType { get { return _elementType; } }
@@ -25,17 +27,21 @@ namespace Rogue.NET.Common.Serialization.Target
 
         PropertySpecification _specification;
 
-        internal DeserializationCollection(ObjectReference reference,
-                                           RecursiveSerializerMemberInfo memberInfo,
-                                           PropertySpecification specification,
-                                           HashedType elementType,
-                                           int count,
-                                           CollectionInterfaceType interfaceType) : base(reference, memberInfo)
+        internal DeserializedCollectionNode(PropertyDefinition definition,
+                                            HashedType type,
+                                            int referenceId,
+                                            RecursiveSerializerMemberInfo memberInfo,
+                                            PropertySpecification specification,
+                                            HashedType elementType,
+                                            int count,
+                                            CollectionInterfaceType interfaceType) : base(definition, type, referenceId, memberInfo, specification)
         {
             _count = count;
             _interfaceType = interfaceType;
             _elementType = elementType;
             _specification = specification;
+
+            this.CollectionNodes = new List<DeserializedNodeBase>(count);
         }
 
         internal override PropertySpecification GetPropertySpecification()
@@ -43,7 +49,7 @@ namespace Rogue.NET.Common.Serialization.Target
             return _specification;
         }
 
-        internal void FinalizeCollection(IList<ObjectInfo> resolvedChildren)
+        internal void FinalizeCollection(IList<PropertyResolvedInfo> resolvedChildren)
         {
             if (this.InterfaceType != CollectionInterfaceType.IList)
                 throw new Exception("UNHANDLED INTERFACE TYPE DeserializationCollection.cs");
@@ -56,11 +62,11 @@ namespace Rogue.NET.Common.Serialization.Target
                 var element = resolvedChildren[index];
 
                 // VALIDATE ELEMENT TYPE (NOTE*** ELEMENT TYPE IMPLEMENTING TYPE NOT TRACKED!)
-                if (!_elementType.GetDeclaringType().IsAssignableFrom(element.Type.GetImplementingType()))
-                    throw new Exception("Invalid collection element type: " + element.Type.DeclaringType);
+                if (!_elementType.GetDeclaringType().IsAssignableFrom(element.ResolvedType.GetImplementingType()))
+                    throw new Exception("Invalid collection element type: " + element.ResolvedType.DeclaringType);
 
                 // ADD TO THE LIST
-                (_collection as IList).Add(element.GetObject());
+                (_collection as IList).Add(element.ResolvedObject);
             }
         }
 
@@ -83,7 +89,7 @@ namespace Rogue.NET.Common.Serialization.Target
         {
             // NO PROPERTY SUPPORT FOR DEFAULT MODE
             if (resolvedProperties.Any())
-                throw new RecursiveSerializerException(this.Reference.Type, "No property support for DEFAULT mode collections");
+                throw new RecursiveSerializerException(this.Type, "No property support for DEFAULT mode collections");
 
             // CONSTRUCT
             try
@@ -91,11 +97,11 @@ namespace Rogue.NET.Common.Serialization.Target
                 _collection = this.MemberInfo.ParameterlessConstructor.Invoke(new object[] { }) as IEnumerable;
 
                 if (_collection == null)
-                    throw new Exception("Constructor failed for collection of type:  " + this.Reference.Type.DeclaringType);
+                    throw new Exception("Constructor failed for collection of type:  " + this.Type.DeclaringType);
             }
             catch (Exception ex)
             {
-                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing from parameterless constructor", ex);
+                throw new RecursiveSerializerException(this.Type, "Error constructing from parameterless constructor", ex);
             }
         }
 
@@ -108,17 +114,29 @@ namespace Rogue.NET.Common.Serialization.Target
                 _collection = this.MemberInfo.SpecifiedConstructor.Invoke(new object[] { reader }) as IEnumerable;
 
                 if (_collection == null)
-                    throw new Exception("Constructor failed for collection of type:  " + this.Reference.Type.ToString());
+                    throw new Exception("Constructor failed for collection of type:  " + this.Type.ToString());
             }
             catch (Exception ex)
             {
-                throw new RecursiveSerializerException(this.Reference.Type, "Error constructing from specified constructor: " + this.MemberInfo.SpecifiedConstructor.Name, ex);
+                throw new RecursiveSerializerException(this.Type, "Error constructing from specified constructor: " + this.MemberInfo.SpecifiedConstructor.Name, ex);
             }
         }
 
-        protected override ObjectInfo ProvideResult()
+        public override int GetHashCode()
         {
-            return new ObjectInfo(_collection, new HashedType(this.Reference.Type.GetDeclaringType(), _collection.GetType()));
+            return this.ReferenceId;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var node = obj as DeserializedCollectionNode;
+
+            return this.GetHashCode() == node.GetHashCode();
+        }
+
+        protected override object ProvideResult()
+        {
+            return _collection;
         }
     }
 }

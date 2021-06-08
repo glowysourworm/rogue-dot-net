@@ -93,43 +93,6 @@ namespace Rogue.NET.Common.Serialization.Target
         }
 
         /// <summary>
-        /// Used for creating instance with NO TYPE DISCREPANCY
-        /// </summary>
-        public static HashedType Create(string declaringAssembly, string declaringType, bool declaringIsGeneric, HashedType[] declaringGenericArguments)
-        {
-            return new HashedType(ResolveFromFields(declaringAssembly, declaringType));
-        }
-
-        /// <summary>
-        /// Used for creating instance with TYPE DISCREPANCY
-        /// </summary>
-        public static HashedType Create(string declaringAssembly, string declaringType, bool declaringIsGeneric, HashedType[] declaringGenericArguments,
-                                        string implementingAssembly, string implementingType, bool implementingIsGeneric, HashedType[] implementingGenericArguments)
-        {
-            var typeDeclaring = ResolveFromFields(declaringAssembly, declaringType);
-            var typeImplementing = ResolveFromFields(implementingAssembly, implementingType);
-
-            return new HashedType(typeDeclaring, typeImplementing);
-        }
-
-        private static Type ResolveFromFields(string assemblyName, string typeName)
-        {
-            var assembly = AppDomain.CurrentDomain
-                                    .GetAssemblies()
-                                    .FirstOrDefault(assembly => assembly.FullName == assemblyName);
-
-            if (assembly == null)
-                throw new Exception("No assembly found for type:  " + typeName);
-
-            var type = assembly.GetType(typeName);
-
-            if (type == null)
-                throw new Exception("No type found in loaded assembly:  " + typeName);
-
-            return type;
-        }
-
-        /// <summary>
         /// Tries to resolve Type object from type name + assembly name. ALSO USES CACHED TYPE FROM CONSTRUCTOR!
         /// </summary>
         public Type GetImplementingType()
@@ -158,6 +121,44 @@ namespace Rogue.NET.Common.Serialization.Target
             var type = obj as HashedType;
 
             return this.GetHashCode() == type.GetHashCode();
+        }
+
+        public static int CalculateHashCode(Type declaringType, Type implementingType)
+        {
+            var arguments = declaringType.GetGenericArguments();
+            var implementingArguments = implementingType.GetGenericArguments();
+
+            var baseHash = ObjectExtension.CreateHashCode(null,
+                                                          declaringType.Assembly.FullName,
+                                                          declaringType.FullName,
+                                                          declaringType.IsGenericType);
+
+            // RECURSIVE!!
+            if (arguments != null)
+            {
+                // TYPE ARGUMENTS DO NOT HAVE DIFFERING IMPLEMENTING TYPE!
+                foreach (var type in arguments)
+                    baseHash = baseHash.ExtendHashCode(CalculateHashCode(type, type));
+            }
+
+            if (HasTypeDiscrepancy(declaringType, implementingType))
+            {
+                baseHash = baseHash.ExtendHashCode(implementingType.Assembly.FullName,
+                                                   implementingType.FullName,
+                                                   implementingType.IsGenericType);
+
+                // TYPE ARGUMENTS DO NOT HAVE DIFFERING IMPLEMENTING TYPE!
+                foreach (var type in implementingArguments)
+                    baseHash = baseHash.ExtendHashCode(CalculateHashCode(type, type));
+            }
+
+            return baseHash;
+        }
+
+        private static bool HasTypeDiscrepancy(Type declaringType, Type implementingType)
+        {
+            return ((declaringType.FullName != implementingType.FullName) && !string.IsNullOrEmpty(implementingType.FullName)) ||
+                   ((declaringType.Assembly.FullName != implementingType.Assembly.FullName) && !string.IsNullOrEmpty(implementingType.Assembly.FullName));
         }
 
         public override int GetHashCode()

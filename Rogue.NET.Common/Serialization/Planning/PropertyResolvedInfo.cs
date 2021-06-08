@@ -8,7 +8,8 @@ namespace Rogue.NET.Common.Serialization.Planning
     internal class PropertyResolvedInfo
     {
         public string PropertyName { get; set; }
-        public ObjectInfo ResolvedInfo { get; set; }
+        public object ResolvedObject { get; set; }
+        public HashedType ResolvedType { get; set; }
         public bool IsUserDefined { get; set; }
 
         readonly PropertyInfo _reflectedInfo;
@@ -32,7 +33,7 @@ namespace Rogue.NET.Common.Serialization.Planning
         internal bool AreEqualProperties(PropertyResolvedInfo info)
         {
             return this.PropertyName.Equals(info.PropertyName) &&
-                   this.ResolvedInfo.Type.Equals(info.ResolvedInfo.Type);
+                   this.ResolvedType.Equals(info.ResolvedType);
         }
 
         public override string ToString()

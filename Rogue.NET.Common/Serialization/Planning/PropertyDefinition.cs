@@ -61,7 +61,7 @@ namespace Rogue.NET.Common.Serialization.Planning
 
         public override string ToString()
         {
-            return this.FormatToString();
+            return string.Format("Name={0}, Type={1}, IsUserDefined={2}", this.PropertyName, this.PropertyType, this.IsUserDefined);
         }
     }
 }

@@ -23,56 +23,5 @@ namespace Rogue.NET.Common.Serialization
             this.SerializerOutput = new List<SerializedNodeManifest>(serializerOutput);
             this.DeserializerOutput = new List<SerializedNodeManifest>(deserializerOutput);
         }
-
-        private SerializedNodeType GetNodeType(SerializationObjectBase objectBase)
-        {
-            if (objectBase is SerializationNullPrimitive)
-                return SerializedNodeType.NullPrimitive;
-
-            if (objectBase is SerializationNullObject)
-                return SerializedNodeType.Null;
-
-            else if (objectBase is SerializationPrimitive)
-                return SerializedNodeType.Primitive;
-
-            else if (objectBase is SerializationReference)
-                return SerializedNodeType.Reference;
-
-            else if (objectBase is SerializationValue)
-                return SerializedNodeType.Value;
-
-            else if (objectBase is SerializationObject)
-                return SerializedNodeType.Object;
-
-            else if (objectBase is SerializationCollection)
-                return SerializedNodeType.Collection;
-
-            else
-                throw new Exception("Unhandled SerializationObjectBase type:  SerializationManifest.cs");
-        }
-
-        private SerializedNodeType GetNodeType(DeserializationObjectBase objectBase)
-        {
-            if (objectBase is DeserializationNullReference)
-                return SerializedNodeType.Null;
-
-            else if (objectBase is DeserializationPrimitive)
-                return SerializedNodeType.Primitive;
-
-            else if (objectBase is DeserializationReference)
-                return SerializedNodeType.Reference;
-
-            else if (objectBase is DeserializationValue)
-                return SerializedNodeType.Value;
-
-            else if (objectBase is DeserializationObject)
-                return SerializedNodeType.Object;
-
-            else if (objectBase is DeserializationCollection)
-                return SerializedNodeType.Collection;
-
-            else
-                throw new Exception("Unhandled DeserializationObjectBase type:  SerializationManifest.cs");
-        }
     }
 }
